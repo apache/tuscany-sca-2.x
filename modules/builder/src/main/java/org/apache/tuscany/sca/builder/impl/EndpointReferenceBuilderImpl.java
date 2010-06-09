@@ -128,24 +128,17 @@ public class EndpointReferenceBuilderImpl {
                     }
                     
                     for (ComponentReference reference : component.getReferences()) {
+                        // create the endpoint references for this component reference
                         processComponentReference(composite,
-                                                 component,
-                                                 reference,
-                                                 context);
+                                                  component,
+                                                  reference,
+                                                  context);
                         
-                        // fix up links between endpoints and endpoint references that represent callbacks
-                        for (ComponentService service : component.getServices()) {
-                            if ((service.getInterfaceContract() != null) && (service.getInterfaceContract()
-                                .getCallbackInterface() != null)) {
-                                if (reference.getName().equals(service.getName())) {
-                                    for (Endpoint endpoint : service.getEndpoints()) {
-                                        endpoint.getCallbackEndpointReferences().addAll(reference
-                                            .getEndpointReferences());
-                                    }
-                                    break;
-                                } // end if
-                            } // end if
-                        } // end for
+                        // we assume that endpoints have already been created so we can now
+                        // create the links between enpoint references and endpoints that 
+                        // represent callbacks
+                        fixUpCallbackLinks(component,
+                                           reference);
                         
                         // push down endpoint references into the leaf component references
                         // in the case where this component reference promotes a reference from
@@ -315,12 +308,6 @@ public class EndpointReferenceBuilderImpl {
                             endpointRef.setStatus(EndpointReference.Status.RESOLVED_BINDING);
                         }
                         
-//                        if (reference.getCallbackService() != null) {
-//                            Endpoint callbackEndpoint =
-//                                createEndpoint(component, reference.getCallbackService(), false);
-//                            endpointRef.setCallbackEndpoint(callbackEndpoint);
-//                        }
-                        
                         reference.getEndpointReferences().add(endpointRef);
                         continue;
                     } // end if
@@ -352,11 +339,6 @@ public class EndpointReferenceBuilderImpl {
                     }
                     
                     endpointRef.setTargetEndpoint(endpoint);   
-//                    if (reference.getCallbackService() != null) {
-//                        Endpoint callbackEndpoint =
-//                            createEndpoint(component, reference.getCallbackService(), false);
-//                        endpointRef.setCallbackEndpoint(callbackEndpoint);
-//                    }
                     reference.getEndpointReferences().add(endpointRef);
                 }
             }
@@ -659,15 +641,6 @@ public class EndpointReferenceBuilderImpl {
         endpointRef.setComponent(component);
         endpointRef.setReference(reference);
         endpointRef.setUnresolved(unresolved);
-
-        // [rfeng] Populate the callback endpoints
-        if (reference.getCallbackService() != null) {
-            List<Endpoint> callbackEndpoints = reference.getCallbackService().getEndpoints();
-            if (!callbackEndpoints.isEmpty()) {
-                // [rfeng] FIXME: how to select the callback endpoints?
-                endpointRef.setCallbackEndpoint(callbackEndpoints.get(0));
-            }
-        }
         return endpointRef;
     } // end method createEndpointRef   
 
@@ -786,6 +759,57 @@ public class EndpointReferenceBuilderImpl {
             }
         }
     }   
+    
+    /**
+     * The SCA callback model causes services and references to be automatically created
+     * to present the callback services and references. These are identifiable as their names
+     * will match the name of the forward reference or service to which they relate. In the general
+     * endpoint reference and endpoint processing we will have created endpoints and endpoint references 
+     * for these callback services and references. We now need to related forward enspoint references with
+     * callback endpoints and forward endpoints with callback endpoint references. Here's the model...
+     * 
+     *    Client Component                                     Target Component
+     *        Reference (with callback iface)                      Service (with callback iface)
+     *            EndpointReference ----------------------------------> Endpoint
+     *                  |                                                    |
+     *                  |                                                    |
+     *        Service   \/ (for the callback)                      Reference \/  (for the callback)
+     *            Endpoint <--------------------------------------------EndpointReference
+     *  
+     * TODO - there are issues here with callback binding multiplicities and which callback 
+     *        endpoint is associated with which endpointreference
+     * 
+     * @param reference
+     * @param component
+     */
+    private void fixUpCallbackLinks (Component component, ComponentReference reference){
+        
+        // fix up the links between endpoint references and endpoints that represent callbacks
+        // [rfeng] Populate the callback endpoints
+        if (reference.getCallbackService() != null) {
+            List<Endpoint> callbackEndpoints = reference.getCallbackService().getEndpoints();
+            if (!callbackEndpoints.isEmpty()) {
+                for (EndpointReference endpointReference : reference.getEndpointReferences()){
+                    // [rfeng] FIXME: how to select the callback endpoints?
+                    endpointReference.setCallbackEndpoint(callbackEndpoints.get(0));
+                }
+            }
+        }
+        
+        // fix up links between endpoints and endpoint references that represent callbacks
+        for (ComponentService service : component.getServices()) {
+            if ((service.getInterfaceContract() != null) && (service.getInterfaceContract()
+                .getCallbackInterface() != null)) {
+                if (reference.getName().equals(service.getName())) {
+                    for (Endpoint endpoint : service.getEndpoints()) {
+                        endpoint.getCallbackEndpointReferences().addAll(reference
+                            .getEndpointReferences());
+                    }
+                    break;
+                } 
+            } 
+        } 
+    }
     
     //=========================================================================
     // methods below related to build time matching which is currently disabled
