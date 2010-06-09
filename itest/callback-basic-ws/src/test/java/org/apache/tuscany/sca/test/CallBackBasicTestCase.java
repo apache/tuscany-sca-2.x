@@ -24,32 +24,43 @@ import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class CallBackBasicTestCase {
 
     private static Node node;
-    private CallBackBasicClient aCallBackClient;
+    
+    @BeforeClass
+    public static void setUp() throws Exception {
+        String location = ContributionLocationHelper.getContributionLocation("CallBackBasicTest.composite");
+        node = NodeFactory.newInstance().createNode("CallBackBasicTest.composite", new Contribution("c1", location));
+        node.start();
+    }
 
     @Test
-    public void testCallBackBasic() {
+    public void testCallBackBasic1() {
+        CallBackBasicClient aCallBackClient = node.getService(CallBackBasicClient.class, "CallBackBasicClient1");
         aCallBackClient.run();
     }
-
-    @Before
-    public void setUp() throws Exception {
-        if (node == null) {
-            String location = ContributionLocationHelper.getContributionLocation("CallBackBasicTest.composite");
-            node = NodeFactory.newInstance().createNode("CallBackBasicTest.composite", new Contribution("c1", location));
-            node.start();
-        }
-
-        aCallBackClient = node.getService(CallBackBasicClient.class, "CallBackBasicClient");
+    
+    @Test
+    public void testCallBackBasic2() {
+        CallBackBasicClient aCallBackClient = node.getService(CallBackBasicClient.class, "CallBackBasicClient2");
+        aCallBackClient.run();
     }
-
-    @After
-    public void tearDown() throws Exception {
+    
+    @Test
+    public void testCallBackBasic3() {
+        CallBackBasicClient aCallBackClient = node.getService(CallBackBasicClient.class, "CallBackBasicClient3");
+        aCallBackClient.run();
+    }    
+    
+    @AfterClass
+    public static void tearDown() throws Exception {
         node.stop();
     }
 

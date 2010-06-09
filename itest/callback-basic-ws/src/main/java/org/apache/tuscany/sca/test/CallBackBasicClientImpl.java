@@ -27,6 +27,7 @@ public class CallBackBasicClientImpl implements CallBackBasicClient, CallBackBas
 
     @Reference
     protected CallBackBasicService aCallBackService;
+    
     private static String returnMessage = null;
     private static int callBackCount = 0;
     private static Object monitor = new Object();
@@ -34,6 +35,7 @@ public class CallBackBasicClientImpl implements CallBackBasicClient, CallBackBas
     public void run() {
 
         // This tests basic callback patterns.
+        callBackCount = 0;
 
         // Test1 is the basic callback where the target calls back prior to
         // returning to the client.

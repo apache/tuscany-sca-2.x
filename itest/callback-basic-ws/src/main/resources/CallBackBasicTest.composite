@@ -20,24 +20,56 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
 	targetNamespace="http://callback"
 	name="CallBackBasicTest">
+	
+	<!-- 1 - target specified forward binding implied callback binding-->
+    <component name="CallBackBasicClient1">
+        <implementation.java class="org.apache.tuscany.sca.test.CallBackBasicClientImpl"/>
+        <reference name="aCallBackService" target="CallBackBasicService1"/>
+    </component> 
+    
+    <component name="CallBackBasicService1">
+      <implementation.java class="org.apache.tuscany.sca.test.CallBackBasicServiceImpl"/>
+      <service name="CallBackBasicService">
+         <binding.ws uri="http://localhost:8085/CallBackTargetService"/>
+      </service>
+    </component>  	
  	      
-    <component name="CallBackBasicClient">
+ 	<!-- 2 - target specified forward binding and fully specified callback binding -->
+    <component name="CallBackBasicClient2">
 		<implementation.java class="org.apache.tuscany.sca.test.CallBackBasicClientImpl"/>
-		<reference name="aCallBackService" target="CallBackBasicService">
+		<reference name="aCallBackService" target="CallBackBasicService2">
 		    <callback>
-		      <binding.ws uri="http://localhost:8084/aCallBackService"/>
+		      <binding.ws uri="http://localhost:8084/CallBackClientService"/>
 		    </callback>
 		</reference>
     </component> 
     
-    <component name="CallBackBasicService">
+    <component name="CallBackBasicService2">
       <implementation.java class="org.apache.tuscany.sca.test.CallBackBasicServiceImpl"/>
       <service name="CallBackBasicService">
-         <binding.ws uri="http://localhost:8085/CallBackBasicService"/>
+         <binding.ws uri="http://localhost:8085/CallBackTargetService"/>
          <callback>
-            <binding.ws uri="http://localhost:8084/aCallBackService"/>
+            <binding.ws uri="http://localhost:8084/CallBackClientService"/>
          </callback>
       </service>
     </component>  
-  
+    
+    <!-- 3 - fully specified forward binding implied callback binding-->
+    <component name="CallBackBasicClient3">
+        <implementation.java class="org.apache.tuscany.sca.test.CallBackBasicClientImpl"/>
+        <reference name="aCallBackService">
+            <binding.ws uri="http://localhost:8085/CallBackTargetService"/>
+        </reference>
+    </component> 
+    
+    <component name="CallBackBasicService3">
+      <implementation.java class="org.apache.tuscany.sca.test.CallBackBasicServiceImpl"/>
+      <service name="CallBackBasicService">
+         <binding.ws uri="http://localhost:8085/CallBackTargetService"/>
+      </service>
+    </component>     
+    
+    <!-- 4 - part specified callback binding -->
+    <!-- TODO -->
+    
 </composite>
