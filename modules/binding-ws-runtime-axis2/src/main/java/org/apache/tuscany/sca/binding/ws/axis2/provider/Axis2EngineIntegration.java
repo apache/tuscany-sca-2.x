@@ -424,11 +424,11 @@ public class Axis2EngineIntegration {
                 }
 
                 MessageReceiver msgrec = null;
-                Axis2ServiceProvider serviceProvider = new Axis2ServiceProvider(endpoint, wsBinding, extensionPoints);
+                TuscanyServiceProvider serviceProvider = new TuscanyServiceProvider(extensionPoints, endpoint, wsBinding, op);
                 if (op.isNonBlocking()) {
-                    msgrec = new Axis2ServiceInMessageReceiver(serviceProvider, op);
+                    msgrec = new Axis2ServiceInMessageReceiver(serviceProvider);
                 } else {
-                    msgrec = new Axis2ServiceInOutSyncMessageReceiver(serviceProvider, op);
+                    msgrec = new Axis2ServiceInOutSyncMessageReceiver(serviceProvider);
                 }
                 axisOp.setMessageReceiver(msgrec);
             }

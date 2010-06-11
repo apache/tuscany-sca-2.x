@@ -28,20 +28,16 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
     private static final Logger logger = Logger.getLogger(Axis2ServiceInOutSyncMessageReceiver.class.getName());
 	
-    protected Operation operation;
+    private TuscanyServiceProvider provider;
 
-    private Axis2ServiceProvider provider;
-
-    public Axis2ServiceInOutSyncMessageReceiver(Axis2ServiceProvider provider, Operation operation) {
+    public Axis2ServiceInOutSyncMessageReceiver(TuscanyServiceProvider provider) {
         this.provider = provider;
-        this.operation = operation;
     }
 
     public Axis2ServiceInOutSyncMessageReceiver() {
@@ -51,25 +47,8 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
     public void invokeBusinessLogic(MessageContext inMC, MessageContext outMC) throws AxisFault {
         try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
-            Object[] args = null;
-            	
-            if (requestOM != null) {
-            	args = new Object[] {requestOM};
-            }
             
-            /*
-            for ( PolicyHandler policyHandler : policyHandlerList ) {
-                policyHandler.beforeInvoke(operation, args, inMC);
-            }
-            */
-            
-            OMElement responseOM = (OMElement)provider.invokeTarget(operation, args, inMC);
-            
-            /*
-            for ( PolicyHandler policyHandler : policyHandlerList ) {
-                policyHandler.afterInvoke(operation, args, inMC, responseOM);
-            }
-            */
+            OMElement responseOM = (OMElement)provider.invoke(requestOM, inMC);
 
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
             if (null != responseOM ) {

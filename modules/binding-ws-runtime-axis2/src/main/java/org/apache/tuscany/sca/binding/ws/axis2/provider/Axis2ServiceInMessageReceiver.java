@@ -28,13 +28,10 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 
 public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
 
-    protected Operation operation;
-
-    private Axis2ServiceProvider provider;
+    private TuscanyServiceProvider provider;
     
-    public Axis2ServiceInMessageReceiver(Axis2ServiceProvider provider, Operation operation) {
+    public Axis2ServiceInMessageReceiver(TuscanyServiceProvider provider) {
         this.provider = provider;
-        this.operation = operation;
     }
 
     public Axis2ServiceInMessageReceiver() {
@@ -44,9 +41,8 @@ public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
     public void invokeBusinessLogic(MessageContext inMC) throws AxisFault {
         try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
-            Object[] args = new Object[] {requestOM};
             
-            provider.invokeTarget(operation, args, inMC);
+            provider.invoke(requestOM, inMC);
             
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
