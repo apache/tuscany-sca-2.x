@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 
 /**
- * Axis2BindingProviderFactory
+ * JAXWSBindingProviderFactory
  *
  * @version $Rev$ $Date$
  */
