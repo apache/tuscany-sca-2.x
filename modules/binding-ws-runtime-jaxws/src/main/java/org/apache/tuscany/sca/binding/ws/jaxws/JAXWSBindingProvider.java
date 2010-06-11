@@ -61,7 +61,11 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
     private SOAPFactory soapFactory;
     
     @Resource
-    private WebServiceContext context;    
+    private WebServiceContext context;  
+    
+    public JAXWSBindingProvider(){
+        // to keep Axis2 JAXWS implementation happy
+    }
 
     public JAXWSBindingProvider(RuntimeEndpoint endpoint,
                                 ServletHost servletHost,
