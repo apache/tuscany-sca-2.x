@@ -59,7 +59,8 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
     private final static String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
 
     public static final String TUSCANY_PREFIX = "tuscany";
-    public static final QName CALLBACK_ID_REFPARM_QN = new QName(SCA11_TUSCANY_NS, "CallbackID", TUSCANY_PREFIX);
+    public static final QName CALLBACK_ID_REFPARM_QN = 
+        new QName(SCA11_TUSCANY_NS, "CallbackID", TUSCANY_PREFIX);
     public static final QName CONVERSATION_ID_REFPARM_QN =
         new QName(SCA11_TUSCANY_NS, "ConversationID", TUSCANY_PREFIX);
 
@@ -192,6 +193,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         // FIXME: We need to find out the soapAction
         String action = getSOAPAction(operation.getName());
         if (action != null) {
+            dispatch.getRequestContext().put(Dispatch.SOAPACTION_USE_PROPERTY, true);
             dispatch.getRequestContext().put(Dispatch.SOAPACTION_URI_PROPERTY, action);
         }
         SOAPMessage response = dispatch.invoke(soapMessage);
