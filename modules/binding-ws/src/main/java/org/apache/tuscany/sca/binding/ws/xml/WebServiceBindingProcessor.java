@@ -193,6 +193,9 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
 
         // Read wsdlLocation
         wsBinding.setLocation(reader.getAttributeValue(WSDLI_NS, WSDL_LOCATION));
+        if (wsdlElement == null && wsBinding.getLocation() != null) {
+            error(monitor, "WsdliLocationMissingWsdlElement", reader);
+        }
 
         // Skip to end element
         while (reader.hasNext()) {

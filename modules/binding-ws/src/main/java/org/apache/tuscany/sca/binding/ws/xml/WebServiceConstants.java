@@ -35,7 +35,7 @@ public interface WebServiceConstants {
     QName WSDL_ELEMENT_QNAME = new QName(SCA11_NS, WSDL_ELEMENT);
     
     String WSDL_LOCATION = "wsdlLocation";
-    String WSDLI_NS = "http://www.w3.org/2004/08/wsdl-instance";
+    String WSDLI_NS = "http://www.w3.org/ns/wsdl-instance";
     
     QName WSDL_LOCATION_QNAME = new QName(WSDLI_NS, WSDL_LOCATION); 
     
