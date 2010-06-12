@@ -83,7 +83,6 @@
               <!-- exclude>**/BWS_2009_TestCase.java</exclude -->
               <!-- exclude>**/BWS_2011_TestCase.java</exclude -->
               <!-- exclude>**/BWS_2013_TestCase.java</exclude -->
-              <!-- exclude>**/BWS_2015_TestCase.java</exclude -->
               <!-- exclude>**/BWS_2016_TestCase.java</exclude -->
               <!-- exclude>**/BWS_2017_TestCase.java</exclude -->
               <!-- exclude>**/BWS_4007_TestCase.java</exclude -->
