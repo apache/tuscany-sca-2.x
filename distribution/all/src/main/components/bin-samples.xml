@@ -41,6 +41,8 @@
                 <exclude>**/target/maven-archiver/**/*</exclude>
                 <exclude>**/target/test-classes</exclude>
                 <exclude>**/target/test-classes/**/*</exclude>
+                <exclude>**/target/sdo-source</exclude>
+                <exclude>**/target/sdo-source/**/*</exclude>
                 <exclude>**/target/surefire-reports</exclude>
                 <exclude>**/target/surefire-reports/**/*</exclude>
                 <exclude>**/target/surefire-osgi-reports</exclude>
