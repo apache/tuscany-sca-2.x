@@ -82,17 +82,18 @@
            <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-assembly-plugin</artifactId>
-              <version>2.2-beta-2</version>
+              <version>2.2-beta-5</version>
               <executions>
                  <execution>
                    <id>war</id>
                    <phase>package</phase>
                    <goals>
-                      <goal>attached</goal>
+                      <goal>single</goal>
                    </goals>
                  </execution>
               </executions>
               <configuration>
+                 <attach>true</attach>
                  <appendAssemblyId>false</appendAssemblyId>
                  <descriptors>
                     <descriptor>src/main/assembly/war.xml</descriptor>
