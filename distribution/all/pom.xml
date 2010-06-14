@@ -126,7 +126,13 @@
         </profile>
 
         <profile>
-            <id>distribution</id>
+            <id>release</id>
+            <activation>
+                <property>
+                   <name>buildZips</name>
+                   <value>true</value>
+                </property>
+            </activation>
             <properties>
                 <useDistributionName>false</useDistributionName>
                 <generateAggregatedBundle>false</generateAggregatedBundle>
@@ -136,7 +142,7 @@
                      <plugin>
                          <groupId>org.apache.maven.plugins</groupId>
                          <artifactId>maven-assembly-plugin</artifactId>
-                         <version>2.2-beta-3</version>
+                         <version>2.2-beta-5</version>
                          <executions>
                              <execution>
                                  <id>distribution-package</id>
@@ -153,6 +159,7 @@
                                      <finalName>apache-tuscany-sca-all-${version}</finalName>
                                      <appendAssemblyId>true</appendAssemblyId>
                                      <ignoreDirFormatExtensions>true</ignoreDirFormatExtensions>
+                                    <attach>true</attach>
                                  </configuration>
                              </execution>
                          </executions>
