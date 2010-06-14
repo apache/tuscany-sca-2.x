@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.invocation;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
@@ -113,7 +114,7 @@ public interface Message {
      * 
      * @return
      */
-    List<Object> getHeaders();
+    Map<String, Object> getHeaders();
 
     /**
      * Returns the binding context in force for this message

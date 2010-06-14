@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.core.invocation;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -170,7 +171,7 @@ public class NonBlockingInterceptor implements Interceptor {
             throw new UnsupportedOperationException();
         }
         
-        public List<Object> getHeaders() {
+        public Map<String, Object> getHeaders() {
             return null;
         }        
         public <T> T getBindingContext() {

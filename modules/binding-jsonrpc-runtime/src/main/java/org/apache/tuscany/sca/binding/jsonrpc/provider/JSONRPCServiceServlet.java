@@ -297,7 +297,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         Message requestMessage = messageFactory.createMessage();
         requestMessage.setOperation(jsonOperation);
 
-        requestMessage.getHeaders().add(request);
+        requestMessage.getHeaders().put("RequestMessage", request);
 
         requestMessage.setBody(args);
 

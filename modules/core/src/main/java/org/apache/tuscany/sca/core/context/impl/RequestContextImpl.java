@@ -45,7 +45,7 @@ public class RequestContextImpl implements RequestContext {
     public Subject getSecuritySubject() {
         Subject subject = null;
         
-        for (Object header : ThreadMessageContext.getMessageContext().getHeaders()){
+        for (Object header : ThreadMessageContext.getMessageContext().getHeaders().values()){
             if (header instanceof Subject){
                 subject  = (Subject)header;
                 break;

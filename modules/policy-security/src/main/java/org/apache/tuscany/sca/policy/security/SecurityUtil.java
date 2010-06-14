@@ -33,20 +33,16 @@ import org.apache.tuscany.sca.invocation.Message;
  */
 public class SecurityUtil {
     
+    public static String SubjectString = "Subject";
+    public static String PrincipalString = "Principal";
+    
     public static Subject getSubject(Message msg){
         
-        Subject subject = null;
-        
-        for (Object header : msg.getHeaders()){
-            if (header instanceof Subject){
-                subject  = (Subject)header;
-                break;
-            }
-        }
+        Subject subject = (Subject)msg.getHeaders().get(SubjectString);
         
         if (subject == null){
             subject = new Subject(); 
-            msg.getHeaders().add(subject); 
+            msg.getHeaders().put(SubjectString, subject); 
         }
         
         return subject;
@@ -64,15 +60,6 @@ public class SecurityUtil {
     
     public static Principal getPrincipal(Message msg){
         
-        Principal principal = null;
-        
-        for (Object header : msg.getHeaders()){
-            if (header instanceof Principal){
-                principal  = (Principal)header;
-                break;
-            }
-        }
-        
-        return principal;
+        return (Principal)msg.getHeaders().get(PrincipalString);
     }    
 }

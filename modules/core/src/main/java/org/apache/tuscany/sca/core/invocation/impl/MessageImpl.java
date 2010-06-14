@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.core.invocation.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.invocation.Message;
  * @version $Rev $Date$
  */
 public class MessageImpl implements Message { 
-    private List<Object> headers = new ArrayList<Object>();
+    private Map<String, Object> headers = new HashMap<String, Object>();
     private Object body;
     private Object messageID;
     private boolean isFault;
@@ -99,7 +99,7 @@ public class MessageImpl implements Message {
         this.operation = op;
     }
     
-    public List<Object> getHeaders() {
+    public Map<String, Object> getHeaders() {
         return headers;
     }    
 
