@@ -570,7 +570,6 @@
             <properties>
                 <skipTests>true</skipTests>
                 <buildZips>true</buildZips>
-                <altDeploymentRepository>id::default::file:target/deploy</altDeploymentRepository>
             </properties>
             <modules>
                 <module>maven/maven-tuscany-plugin</module>
@@ -622,6 +621,18 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <!-- plugin>
+                        <groupId>org.apache.rat</groupId>
+                        <artifactId>apache-rat-plugin</artifactId>
+                        <version>0.6</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin -->
               </plugins>
            </build>
         </profile>
