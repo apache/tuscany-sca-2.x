@@ -23,6 +23,7 @@
     <includeBaseDirectory>true</includeBaseDirectory>
     <baseDirectory>tuscany-sca-${version}</baseDirectory>
     <formats>
+        <format>dir</format>
         <format>tar.gz</format>
         <format>zip</format>
     </formats>
