@@ -64,6 +64,8 @@
               </property>
           </activation>
           <modules>
+              <module>src-distro-unzip</module>
+              <module>src-distro-rat</module>
               <module>bin-distro-unzip</module>
               <module>legal-checks</module>
               <module>contribution-binding-sca-calculator</module>
