@@ -101,7 +101,7 @@ public class JarsInLICENSETestCase {
         String licenseText = readLICENSE(licenseFile);
         for (String jar : jars) {
             if (!licenseText.contains(jar)) {
-                if (jar.startsWith("tuscany-")) {
+                if (jar.startsWith("tuscany-") || jar.startsWith("sample-") || jar.startsWith("test-") || jar.startsWith("itest-")) {
                     // ignore tuscany jars as they're not mentioned in the LICENSE file
                 } else {
                     badJars.add(jar);
