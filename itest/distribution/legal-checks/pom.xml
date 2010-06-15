@@ -43,5 +43,28 @@
     </profiles>
 
     <build>
+                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.rat</groupId>
+                        <artifactId>apache-rat-plugin</artifactId>
+                        <version>0.6</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                           <basedir>../../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT.dir</basedir>
+                           <excludeSubProjects>false</excludeSubProjects>
+                           <excludes> 
+                              <exclude>tuscany-sca-2.0-SNAPSHOT/CHANGES</exclude>
+                              <exclude>**/MANIFEST.MF</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT/features/configuration/config.ini</exclude>
+                           </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
     </build>
 </project>
