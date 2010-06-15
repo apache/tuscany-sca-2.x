@@ -45,7 +45,7 @@ public class JavaFirstTestCase {
         externalService.createService();
        
         // Start the SCA contribution
-        node = NodeFactory.newInstance().createNode(new Contribution("java-first", "../contribution-java-first/target/classes"));
+        node = NodeFactory.newInstance().createNode(new Contribution("java-first", "../contribution-java-first/target/itest-ws-contribution-java-first.jar"));
         node.start();
         
         // start the external client
