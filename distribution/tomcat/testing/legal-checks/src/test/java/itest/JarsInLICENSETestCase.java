@@ -127,7 +127,7 @@ public class JarsInLICENSETestCase {
     }
 
     private File getUnzipedDistroRoot() {
-        return  new File("../../tomcat-war/target/tuscany.dir");
+        return  new File("../../tomcat-war/target/tuscany");
     }
 
     private static String readLICENSE(File licenseFile) throws java.io.IOException {
