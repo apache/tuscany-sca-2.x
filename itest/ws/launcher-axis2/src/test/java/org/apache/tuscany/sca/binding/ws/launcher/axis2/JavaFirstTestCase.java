@@ -72,7 +72,6 @@ public class JavaFirstTestCase {
     }
     
     @Test
-    @Ignore
     public void testGetGreetingsException() throws Exception {
         try {
             externalClient.getGreetingsException("Fred");

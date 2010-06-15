@@ -43,6 +43,12 @@
     <module>autherization-wssecurity</module>
     <module>confidentiality-wssecurity</module>
 -->
+    <!-- separate test contributions from launcher -->
+    <module>contribution-java-first</module>
+    <module>contribution-wsdl-first</module>
+    <module>external-client</module>
+    <module>external-service</module>
+    <module>launcher-axis2</module>
   </modules>
 
 </project>
