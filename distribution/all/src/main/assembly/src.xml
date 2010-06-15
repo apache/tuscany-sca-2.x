@@ -38,7 +38,8 @@
                 <exclude>**/target</exclude>
                 <exclude>**/target/**/*</exclude>
                 <exclude>**/maven-eclipse.xml</exclude>
-				<exclude>modules/web-javascript-dojo/src/main/resources/dojo/**</exclude>
+                <exclude>modules/web-javascript-dojo/src/main/resources/dojo/**</exclude>
+                <exclude>shades/**/dependency-reduced-pom.xml</exclude>
             </excludes>
         </fileSet>
     </fileSets>
