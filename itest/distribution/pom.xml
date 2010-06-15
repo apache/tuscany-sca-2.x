@@ -44,17 +44,7 @@
           <activation>
               <activeByDefault>true</activeByDefault>
           </activation>
-      </profile>
-
-      <profile>
-          <id>distribution</id>
           <modules>
-              <module>bin-distro-unzip</module>
-          </modules>
-      </profile>
-    </profiles>
-
-    <modules>
         <module>legal-checks</module>
         <module>contribution-binding-sca-calculator</module>
         <module>contribution-binding-ws-calculator</module>
@@ -62,7 +52,29 @@
         <module>contribution-implementation-java-calculator</module>
         <module>launcher-embedded-jse</module>
         <module>launcher-embedded-osgi</module>
-    </modules>
+          </modules>
+      </profile>
+
+      <profile>
+          <id>distribution</id>
+          <activation>
+              <property>
+                 <name>buildZips</name>
+                 <value>true</value>
+              </property>
+          </activation>
+          <modules>
+              <module>bin-distro-unzip</module>
+              <module>legal-checks</module>
+              <module>contribution-binding-sca-calculator</module>
+              <module>contribution-binding-ws-calculator</module>
+              <module>contribution-binding-rmi-calculator</module>
+              <module>contribution-implementation-java-calculator</module>
+              <module>launcher-embedded-jse</module>
+              <module>launcher-embedded-osgi</module>
+          </modules>
+      </profile>
+    </profiles>
 
     <build>
 	<defaultGoal>install</defaultGoal>
