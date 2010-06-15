@@ -121,29 +121,6 @@
                              </execution>
                          </executions>
                      </plugin>
-                    <plugin>
-                        <groupId>org.apache.rat</groupId>
-                        <artifactId>apache-rat-plugin</artifactId>
-                        <version>0.6</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>check</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                           <basedir>target\apache-tuscany-sca-all-2.0-SNAPSHOT.dir</basedir>
-                           <excludeSubProjects>false</excludeSubProjects>
-                           <excludes> 
-                              <exclude>CHANGES</exclude>
-                              <exclude>**/*.mf</exclude>
-                              <exclude>features/configuration/config.ini</exclude>
-                           </excludes>
-                           <!-- excludes doesn't seem to work so use explicit count for now --> 
-                           <numUnapprovedLicenses>105</numUnapprovedLicenses>
-                        </configuration>
-                    </plugin>
                 </plugins>
             </build>
         </profile>
