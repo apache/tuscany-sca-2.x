@@ -1,9 +1,9 @@
-Installing the Apache Tuscany SCA 2.0-M5 May 2010 Release binary distribution
-==================================================================================
+Installing the Apache Tuscany SCA binary distribution
+=====================================================
 
 Unzip Tuscany binary distribution archive and you get the following:
 
-tuscany-sca-2.0-M5     
+tuscany-sca-<version>     
    CHANGES       - A note of the major changes in this release   
    INSTALL       - this help file
    LICENSE       - the Apache License and any dependecy licenses
