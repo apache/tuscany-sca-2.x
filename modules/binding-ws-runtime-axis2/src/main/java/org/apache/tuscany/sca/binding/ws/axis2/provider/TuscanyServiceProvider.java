@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
@@ -56,6 +57,7 @@ public class TuscanyServiceProvider {
     private MessageFactory messageFactory;
     private FactoryExtensionPoint modelFactories;
     private RuntimeAssemblyFactory assemblyFactory;
+    private WebServiceBindingFactory webServiceBindingFactory;
     private Operation operation;
     
     public TuscanyServiceProvider(ExtensionPointRegistry extensionPoints,
@@ -67,7 +69,8 @@ public class TuscanyServiceProvider {
         this.operation = operation;
         this.modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.messageFactory = modelFactories.getFactory(MessageFactory.class);
-        this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);        
+        this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
+        this.webServiceBindingFactory = (WebServiceBindingFactory)modelFactories.getFactory(WebServiceBindingFactory.class);
     }
     
     public OMElement invoke(OMElement requestOM, MessageContext inMC) throws InvocationTargetException {
@@ -104,6 +107,11 @@ public class TuscanyServiceProvider {
             from.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
             msg.setFrom(from);
             Endpoint callbackEndpoint = assemblyFactory.createEndpoint();
+            //
+            WebServiceBinding cbBinding = webServiceBindingFactory.createWebServiceBinding();
+            cbBinding.setURI(callbackAddress);
+            callbackEndpoint.setBinding(cbBinding);
+            //
             callbackEndpoint.setURI(callbackAddress);
             callbackEndpoint.setUnresolved(true);
             from.setCallbackEndpoint(callbackEndpoint);
