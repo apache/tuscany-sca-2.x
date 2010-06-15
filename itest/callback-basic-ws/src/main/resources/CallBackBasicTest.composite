@@ -30,7 +30,7 @@
     <component name="CallBackBasicService1">
       <implementation.java class="org.apache.tuscany.sca.test.CallBackBasicServiceImpl"/>
       <service name="CallBackBasicService">
-         <binding.ws uri="http://localhost:8085/CallBackTargetService"/>
+         <binding.ws uri="http://localhost:8085/CallBackBasicService1"/>
       </service>
     </component>  	
  	      
@@ -39,7 +39,7 @@
 		<implementation.java class="org.apache.tuscany.sca.test.CallBackBasicClientImpl"/>
 		<reference name="aCallBackService" target="CallBackBasicService2">
 		    <callback>
-		      <binding.ws uri="http://localhost:8084/CallBackClientService"/>
+		      <binding.ws uri="http://localhost:8084/CallBackBasicClient2"/>
 		    </callback>
 		</reference>
     </component> 
@@ -47,9 +47,9 @@
     <component name="CallBackBasicService2">
       <implementation.java class="org.apache.tuscany.sca.test.CallBackBasicServiceImpl"/>
       <service name="CallBackBasicService">
-         <binding.ws uri="http://localhost:8085/CallBackTargetService"/>
+         <binding.ws uri="http://localhost:8085/CallBackTargetService2"/>
          <callback>
-            <binding.ws uri="http://localhost:8084/CallBackClientService"/>
+            <binding.ws uri="http://localhost:8084/CallBackBasicClient2"/>
          </callback>
       </service>
     </component>  
@@ -58,14 +58,14 @@
     <component name="CallBackBasicClient3">
         <implementation.java class="org.apache.tuscany.sca.test.CallBackBasicClientImpl"/>
         <reference name="aCallBackService">
-            <binding.ws uri="http://localhost:8085/CallBackTargetService"/>
+            <binding.ws uri="http://localhost:8085/CallBackBasicService3"/>
         </reference>
     </component> 
     
     <component name="CallBackBasicService3">
       <implementation.java class="org.apache.tuscany.sca.test.CallBackBasicServiceImpl"/>
       <service name="CallBackBasicService">
-         <binding.ws uri="http://localhost:8085/CallBackTargetService"/>
+         <binding.ws uri="http://localhost:8085/CallBackBasicService3"/>
       </service>
     </component>     
     

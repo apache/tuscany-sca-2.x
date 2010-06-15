@@ -23,9 +23,7 @@ import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -42,6 +40,7 @@ public class CallBackBasicTestCase {
     }
 
     @Test
+    @Ignore("TUSCANY-3593")
     public void testCallBackBasic1() {
         CallBackBasicClient aCallBackClient = node.getService(CallBackBasicClient.class, "CallBackBasicClient1");
         aCallBackClient.run();
