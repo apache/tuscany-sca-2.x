@@ -34,6 +34,8 @@
                 <exclude>**/target/classes</exclude>
                 <exclude>**/target/classes/**/*</exclude>
                 <exclude>**/target/dependency-maven-plugin-markers</exclude>
+                <exclude>**/target/equinox/**/*</exclude>
+                <exclude>**/target/equinox</exclude>
                 <exclude>**/target/dependency-maven-plugin-markers/**/*</exclude>
                 <exclude>**/target/.felix</exclude>
                 <exclude>**/target/.felix/**/*</exclude>
@@ -47,6 +49,8 @@
                 <exclude>**/target/surefire-reports/**/*</exclude>
                 <exclude>**/target/surefire-osgi-reports</exclude>
                 <exclude>**/target/surefire-osgi-reports/**/*</exclude>
+                <exclude>**/target/war</exclude>
+                <exclude>**/target/war/**/*</exclude>
                 <exclude>webapps/*/target</exclude>
                 <exclude>webapps/*/target/**/*</exclude>
             </excludes>
