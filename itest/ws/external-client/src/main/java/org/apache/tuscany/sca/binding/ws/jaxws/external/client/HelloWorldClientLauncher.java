@@ -26,6 +26,7 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
 import org.apache.tuscany.sca.binding.ws.jaxws.sca.Exception_Exception;
+import org.apache.tuscany.sca.binding.ws.jaxws.sca.Foo;
 import org.apache.tuscany.sca.binding.ws.jaxws.sca.HelloWorldImpl;
 
 public class HelloWorldClientLauncher {
@@ -60,8 +61,18 @@ public class HelloWorldClientLauncher {
     }
     
     public String getGreetingsException(String name) throws Exception_Exception {
-        return wsProxy.getGreetingsException(name);
-    }    
+        System.out.println("Entering External Client HelloWorld.getGreetingsException: " + name);
+        String response =  wsProxy.getGreetingsException(name);
+        System.out.println("Leaving External Client HelloWorld.getGreetingsException: " + response);
+        return response;
+    }  
+    
+    public Foo getGreetingsComplex(Foo f) throws Exception_Exception {
+        System.out.println("Entering External Client HelloWorld.getGreetingsComplex: " + f.getBars().get(0).getS());
+        Foo response =  wsProxy.getGreetingsComplex(f);
+        System.out.println("Leaving External Client HelloWorld.getGreetingsComplex: " + response.getBars().get(0).getS());
+        return response;
+    }     
     
     public static void main(String[] args) throws Exception {
         HelloWorldClientLauncher launcher = new HelloWorldClientLauncher();

@@ -30,10 +30,20 @@
   <message name="getGreetingsResponse">
     <part name="parameters" element="tns:getGreetingsResponse"/>
   </message>
+  <message name="getGreetingsComplex">
+    <part name="parameters" element="tns:getGreetingsComplex"/>
+  </message>
+  <message name="getGreetingsComplexResponse">
+    <part name="parameters" element="tns:getGreetingsComplexResponse"/>
+  </message>
   <portType name="HelloWorldService">
     <operation name="getGreetings">
       <input message="tns:getGreetings"/>
       <output message="tns:getGreetingsResponse"/>
+    </operation>
+    <operation name="getGreetingsComplex">
+      <input message="tns:getGreetingsComplex"/>
+      <output message="tns:getGreetingsComplexResponse"/>
     </operation>
   </portType>
   <binding name="HelloWorldServicePortBinding" type="tns:HelloWorldService">
@@ -47,11 +57,19 @@
         <soap:body use="literal"/>
       </output>
     </operation>
+    <operation name="getGreetingsComplex">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
   </binding>
   <service name="HelloWorldServiceService">
     <port name="HelloWorldServicePort" binding="tns:HelloWorldServicePortBinding">
-      <soap:address location="http://localhost:8086/External/HelloWorld"/>
+      <soap:address location="REPLACE_WITH_ACTUAL_URL"/>
     </port>
   </service>
 </definitions>
-

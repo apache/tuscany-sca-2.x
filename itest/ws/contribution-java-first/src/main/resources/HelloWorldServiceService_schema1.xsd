@@ -21,6 +21,10 @@
 
   <xs:element name="getGreetings" type="tns:getGreetings"/>
 
+  <xs:element name="getGreetingsComplex" type="tns:getGreetingsComplex"/>
+
+  <xs:element name="getGreetingsComplexResponse" type="tns:getGreetingsComplexResponse"/>
+
   <xs:element name="getGreetingsResponse" type="tns:getGreetingsResponse"/>
 
   <xs:complexType name="getGreetings">
@@ -34,5 +38,33 @@
       <xs:element name="getGreetingsReturn" type="xs:string" form="qualified" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
+
+  <xs:complexType name="getGreetingsComplex">
+    <xs:sequence>
+      <xs:element name="arg0" type="tns:foo" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="foo">
+    <xs:sequence>
+      <xs:element name="bars" type="tns:bar" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="bar">
+    <xs:sequence>
+      <xs:element name="b" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="s" type="xs:string" minOccurs="0"/>
+      <xs:element name="x" type="xs:int"/>
+      <xs:element name="y" type="xs:int" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsComplexResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:foo" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
 </xs:schema>
+
 

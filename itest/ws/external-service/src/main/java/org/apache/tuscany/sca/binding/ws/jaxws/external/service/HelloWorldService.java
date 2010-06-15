@@ -41,17 +41,17 @@ public class HelloWorldService {
         return response;
     }
 
-/*
     public Foo getGreetingsComplex(Foo foo){
+        System.out.println("Entering External Service HelloWorld.getGreetingsComplex: " + foo.getBars().get(0).getS());
         Foo response = foo;
         Bar b3 = new Bar();
         b3.setS("simon");
-        b3.setX(4);
-        b3.setY(new Integer(5));
+        b3.setX(7);
+        b3.setY(new Integer(8));
         b3.setB(Boolean.TRUE);
-        response.getBars()[1] = b3;
-        System.out.println("At sevice: " + response.getBars()[0].getS());
+        response.getBars().add(b3);
+        System.out.println("Leaving External Service HelloWorld.getGreetingsComplex: " + foo.getBars().get(0).getS());
         return response;
     }    
-*/
+
 }

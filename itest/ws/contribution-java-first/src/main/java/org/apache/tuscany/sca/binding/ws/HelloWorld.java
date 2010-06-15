@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.ws;
 
+import org.apache.tuscany.sca.binding.ws.jaxws.external.service.iface.Foo;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Remotable;
 

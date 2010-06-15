@@ -20,10 +20,13 @@
 package org.apache.tuscany.sca.binding.ws.launcher.axis2;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.apache.tuscany.sca.binding.ws.jaxws.external.client.HelloWorldClientLauncher;
 import org.apache.tuscany.sca.binding.ws.jaxws.external.service.HelloWorldServiceLauncher;
+import org.apache.tuscany.sca.binding.ws.jaxws.sca.Bar;
+import org.apache.tuscany.sca.binding.ws.jaxws.sca.Foo;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
@@ -82,9 +85,8 @@ public class JavaFirstTestCase {
         fail("expecting exception");
     }
     
-    public void testGetGreetingsComplex() throws Exception {    
-        
-/*        
+    @Test
+    public void testGetGreetingsComplex() throws Exception {        
         Foo f = new Foo();
         Bar b1 = new Bar();
         b1.setS("petra");
@@ -96,19 +98,19 @@ public class JavaFirstTestCase {
         b2.setX(3);
         b2.setY(new Integer(4));
         b2.setB(Boolean.FALSE);
-        f.setBars(new Bar[] { b1, b2} );
+        f.getBars().add(b1);
+        f.getBars().add(b2);
        
-        Foo f2 = helloWorld.getGreetingsComplex(f);
+        Foo f2 = externalClient.getGreetingsComplex(f);
 
-        assertEquals("petra", f2.getBars()[0].getS());
-        assertEquals(1, f2.getBars()[0].getX());
-        assertEquals(2, f2.getBars()[0].getY().intValue());
-        assertTrue(f2.getBars()[0].getB().booleanValue());
-        assertEquals("simon", f2.getBars()[1].getS());
-        assertEquals(4, f2.getBars()[1].getX());
-        assertEquals(5, f2.getBars()[1].getY().intValue());
-        assertTrue(f2.getBars()[1].getB().booleanValue());
-*/
+        assertEquals("petra", f2.getBars().get(0).getS());
+        assertEquals(1, f2.getBars().get(0).getX());
+        assertEquals(2, f2.getBars().get(0).getY().intValue());
+        assertTrue(f2.getBars().get(0).isB());
+        assertEquals("simon", f2.getBars().get(2).getS());
+        assertEquals(7, f2.getBars().get(2).getX());
+        assertEquals(8, f2.getBars().get(2).getY().intValue());
+        assertTrue(f2.getBars().get(2).isB().booleanValue());
     }  
     
     @After
