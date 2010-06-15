@@ -29,7 +29,7 @@ public class TestTestCase {
     private Node node;
     private Node node2;
 
- //   @Test
+   @Test
     public void testOneNode() throws Exception {
 
         node = NodeFactory.newInstance().createNode((String)null, new String[] {"../exports/target/classes", "../imports/target/classes"});
