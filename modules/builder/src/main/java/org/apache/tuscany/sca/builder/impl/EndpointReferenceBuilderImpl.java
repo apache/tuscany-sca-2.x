@@ -455,16 +455,21 @@ public class EndpointReferenceBuilderImpl {
     private void collectPromotedComponentReferences(CompositeReference compositeReference,
                                                     List<ComponentReference> componentReferences) {
         for (ComponentReference componentReference : compositeReference.getPromotedReferences()) {
-            Reference reference = componentReference.getReference();
-            if (reference instanceof CompositeReference) {
-
-                // Continue to follow the reference promotion chain
-                collectPromotedComponentReferences((CompositeReference)reference, componentReferences);
-
-            } else if (reference != null) {
-
-                // Found a non-composite reference
-                componentReferences.add(componentReference);
+            // If the user has entered an incorrect promotion string an error will be reported to 
+            // tell them but the processing will still reach here so only continue processing 
+            // if the promotion chain is well formed
+            if (componentReference != null){
+                Reference reference = componentReference.getReference();
+                if (reference instanceof CompositeReference) {
+    
+                    // Continue to follow the reference promotion chain
+                    collectPromotedComponentReferences((CompositeReference)reference, componentReferences);
+    
+                } else if (reference != null) {
+    
+                    // Found a non-composite reference
+                    componentReferences.add(componentReference);
+                }
             }
         }
     }

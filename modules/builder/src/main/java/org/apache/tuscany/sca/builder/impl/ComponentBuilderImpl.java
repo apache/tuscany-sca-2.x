@@ -23,6 +23,7 @@ import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -82,7 +83,6 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.xsd.XSDefinition;
-import org.apache.ws.commons.schema.XmlSchema;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -995,6 +995,8 @@ public class ComponentBuilderImpl {
             ComponentReference callbackReference = assemblyFactory.createComponentReference();
             callbackReference.setForCallback(true);
             callbackReference.setName(service.getName());
+            // MJE: multiplicity = 0..n for these callback references
+            callbackReference.setMultiplicity(Multiplicity.ZERO_N);
             try {
                 InterfaceContract contract = (InterfaceContract)service.getInterfaceContract().clone();
                 contract.setInterface(contract.getCallbackInterface());
@@ -1014,15 +1016,20 @@ public class ComponentBuilderImpl {
                     // Set the promoted component from the promoted component of the composite service
                     implCompReference.getPromotedComponents().add(((CompositeService)implService)
                         .getPromotedComponent());
-                    // Set the promoted service
-                    ComponentReference promotedReference = assemblyFactory.createComponentReference();
-                    String promotedRefName =
-                        ((CompositeService)implService).getPromotedComponent().getName() + "/"
-                            + ((CompositeService)implService).getPromotedService().getName();
-                    promotedReference.setName(promotedRefName);
-                    promotedReference.setUnresolved(true);
-                    implCompReference.getPromotedReferences().add(promotedReference);
+                    
+                    // Get the promoted component reference corresponding to the service with the callback
+                    // fist checking that the promoted service is resolved lest we get a NPE trying to
+                    // retrieve the promoted component. It could be unresolved if the user gets the 
+                    // promotes string wrong
+                    // TODO - is there any danger that the callback reference name will clash with other
+                    //        reference names. Old code used to qualify it with promoted component name
+                    if (((CompositeService)implService).getPromotedService().isUnresolved() == false){
+                        String referenceName = ((CompositeService)implService).getPromotedService().getName();
+                        ComponentReference promotedReference = ((CompositeService)implService).getPromotedComponent().getReference(referenceName);
+                        implCompReference.getPromotedReferences().add(promotedReference);
+                    }                 
                     implReference = implCompReference;
+                    
                     // Add the composite reference to the composite implementation artifact
                     Implementation implementation = component.getImplementation();
                     if (implementation != null && implementation instanceof Composite) {
@@ -1033,6 +1040,8 @@ public class ComponentBuilderImpl {
                 }
 
                 implReference.setName(implService.getName());
+                // MJE: Fixup multiplicity as 0..n for callback references in the component type
+                implReference.setMultiplicity(Multiplicity.ZERO_N);
                 try {
                     InterfaceContract implContract = (InterfaceContract)implService.getInterfaceContract().clone();
                     implContract.setInterface(implContract.getCallbackInterface());
@@ -1049,17 +1058,28 @@ public class ComponentBuilderImpl {
             if (callbackReference.getBindings().isEmpty()) {
                 // If there are specific callback bindings set in the SCDL service
                 // callback element then use them
+                // at runtime a callback binding will be selected based on the forward call
                 if (service.getCallback() != null && service.getCallback().getBindings().size() > 0) {
                     callbackReference.getBindings().addAll(service.getCallback().getBindings());
                 } else {
-                    // otherwise create a default binding which 
-                    // will cause the EPR for this reference to be 
-                    // marked as EndpointReference.NOT_CONFIGURED
-                    createSCABinding(callbackReference, null);
-
-                    // TODO - should really use the forward binding here but 
-                    //        awaiting OASIS decision on what's going to 
-                    //        happen with callbacks
+                    // otherwise take a copy of all the bindings on the forward service
+                    // at runtime a callback binding will be selected based on the forward call
+                    List<Binding> serviceBindings = service.getBindings();
+                    for ( Binding serviceBinding: serviceBindings ) {
+                    	try {
+							Binding referenceBinding = (Binding)serviceBinding.clone();
+							referenceBinding.setURI(null);
+							callbackReference.getBindings().add(referenceBinding);
+						} catch (CloneNotSupportedException e) {
+							// will not happen
+						} // end try
+                    } // end for
+                    
+                    // if there are still no bindings for the callback create a default binding which 
+                    // will cause the EPR for this reference to be marked as EndpointReference.NOT_CONFIGURED
+                    if( serviceBindings.size() == 0 ) {
+                    	createSCABinding(callbackReference, null);
+                    } // end if
                 }
             }
             service.setCallbackReference(callbackReference);
@@ -1074,7 +1094,7 @@ public class ComponentBuilderImpl {
      */
     private void createCallbackService(Component component, ComponentReference reference) {
         if (reference.getInterfaceContract() != null && // can be null in unit tests
-        reference.getInterfaceContract().getCallbackInterface() != null) {
+            reference.getInterfaceContract().getCallbackInterface() != null) {
             ComponentService componentService = assemblyFactory.createComponentService();
             componentService.setForCallback(true);
             componentService.setName(reference.getName());
@@ -1096,17 +1116,21 @@ public class ComponentBuilderImpl {
                     // TODO The reality here is that the composite reference which has the callback COULD promote more than
                     // one component reference - and there must be a separate composite callback service for each of these component
                     // references
+                    
                     // Set the promoted component from the promoted component of the composite reference
-                    implCompService.setPromotedComponent(((CompositeReference)implReference).getPromotedComponents()
-                        .get(0));
+                    implCompService.setPromotedComponent(((CompositeReference)implReference).getPromotedComponents().get(0));
                     implCompService.setForCallback(true);
-                    // Set the promoted service
-                    ComponentService promotedService = assemblyFactory.createComponentService();
-                    promotedService.setName(((CompositeReference)implReference).getPromotedReferences().get(0)
-                        .getName());
-                    promotedService.setUnresolved(true);
-                    promotedService.setForCallback(true);
-                    implCompService.setPromotedService(promotedService);
+                    
+                    // Get the promoted component service corresponding to the reference with the callback
+                    // fist checking that the promoted reference is resolved lest we get a NPE trying to
+                    // retrieve the promoted component. It could be unresolved if the user gets the 
+                    // promotes string wrong
+                    if (((CompositeReference)implReference).getPromotedReferences().get(0).isUnresolved() == false){
+                        String serviceName = ((CompositeReference)implReference).getPromotedReferences().get(0).getName();
+                        ComponentService promotedService = ((CompositeReference)implReference).getPromotedComponents().get(0).getService(serviceName);
+                        implCompService.setPromotedService(promotedService);
+                    }
+                    
                     implService = implCompService;
                     // Add the composite service to the composite implementation artifact
                     Implementation implementation = component.getImplementation();
@@ -1150,9 +1174,8 @@ public class ComponentBuilderImpl {
                         }
                     }
                 } else {
-                    // TODO - should use the binding resolved from the service but
-                    //        waiting for OASIS to decide what to do about callbacks
                     // create a default binding
+                    // TODO - need to mark the binding as needing resolution
                     createSCABinding(componentService, null);
                 }
             }
