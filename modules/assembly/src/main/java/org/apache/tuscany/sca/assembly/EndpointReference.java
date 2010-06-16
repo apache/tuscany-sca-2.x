@@ -41,9 +41,9 @@ public interface EndpointReference extends Base, PolicySubject, Cloneable, Seria
         RESOLVED_BINDING, // The endpoint reference is configured with a binding
         AUTOWIRE_PLACEHOLDER, // Autowire to be performed
         WIRED_TARGET_NOT_FOUND, // Wire target not found
-        WIRED_TARGET_FOUND_READY_FOR_MATCHING, // Wire target found and to be resolved to an endpoint
+        WIRED_TARGET_FOUND_READY_FOR_MATCHING, // Wire target found and ready to be resolved to an endpoint
         WIRED_TARGET_FOUND_AND_MATCHED, // Wire target found and resolved to an endpoint
-        WIRED_TARGET_IN_BINDING_URI // Target specified by the binding uri
+        WIRED_TARGET_IN_BINDING_URI // SCA target specified by the binding uri
     };
 
     /**
