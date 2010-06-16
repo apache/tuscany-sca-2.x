@@ -59,7 +59,7 @@ public class ExternalBrokerTestCase {
         broker = new BrokerService();
         broker.setPersistent(false);
         broker.setUseJmx(false);
-        broker.addConnector("tcp://localhost:61616");
+        broker.addConnector("tcp://localhost:61606");
         broker.start();
     }
     protected void stopBroker() throws Exception {
