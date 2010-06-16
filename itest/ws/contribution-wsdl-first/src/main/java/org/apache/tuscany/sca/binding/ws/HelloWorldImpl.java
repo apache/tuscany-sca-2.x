@@ -19,13 +19,15 @@
 
 package org.apache.tuscany.sca.binding.ws;
 
-import org.apache.tuscany.sca.binding.ws.HelloWorld;
+import org.apache.tuscany.sca.binding.ws.jaxws.external.service.iface.HelloWorldService;
+import org.apache.tuscany.sca.binding.ws.jaxws.external.service.iface.Foo;
+import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Reference;
 
 public class HelloWorldImpl implements HelloWorld {
 
     @Reference
-    public org.apache.tuscany.sca.binding.ws.jaxws.external.service.iface.HelloWorld helloWorldExternal;
+    public HelloWorldService helloWorldExternal;
     
     public String getGreetings(String s) {
         System.out.println("Entering SCA HelloWorld.getGreetings: " + s);
@@ -33,11 +35,19 @@ public class HelloWorldImpl implements HelloWorld {
         System.out.println("Leaving SCA HelloWorld.getGreetings: " + response);
         return response;
     }
-/*
+    
+    public String getGreetingsException(String s) throws ServiceRuntimeException {
+        System.out.println("Entering SCA HelloWorld.getGreetingsException: " + s);
+        String response = helloWorldExternal.getGreetings(s);
+        System.out.println("Leaving SCA HelloWorld.getGreetings: " + response);
+        throw new ServiceRuntimeException(response);
+    }  
+
     public Foo getGreetingsComplex(Foo foo){
-        Foo response = null;//helloWorldExternal.getGreetingsComplex(foo);
-        System.out.println("At client: " + response.getBars()[0].getS());
+        System.out.println("Entering SCA HelloWorld.getGreetingsComplex: " + foo.getBars().get(0).getS());
+        Foo response = helloWorldExternal.getGreetingsComplex(foo);
+        System.out.println("Leaving SCA HelloWorld.getGreetingsComplex: " + foo.getBars().get(0).getS());
         return response;
     } 
-*/    
+   
 }

@@ -89,10 +89,10 @@
                             <goal>wsimport</goal>
                         </goals>
                         <configuration>
-                            <packageName>org.apache.tuscany.sca.binding.ws</packageName>
+                            <packageName>org.apache.tuscany.sca.binding.ws.sca</packageName>
                             <wsdlDirectory>${basedir}/target/classes</wsdlDirectory>
                             <wsdlFiles>
-                                <wsdlFile>helloworld-sca.wsdl</wsdlFile>
+                                <wsdlFile>HelloWorldImplService.wsdl</wsdlFile>
                             </wsdlFiles>
                             <staleFile>${project.build.directory}/jaxws/stale/.wsimport1StaleFlag</staleFile>
                         </configuration>
@@ -107,7 +107,7 @@
                             <packageName>org.apache.tuscany.sca.binding.ws.jaxws.external.service.iface</packageName>
                             <wsdlDirectory>${basedir}/target/classes</wsdlDirectory>
                             <wsdlFiles>
-                                <wsdlFile>helloworld-external.wsdl</wsdlFile>
+                                <wsdlFile>helloworld-external-service.wsdl</wsdlFile>
                             </wsdlFiles>
                             <staleFile>${project.build.directory}/jaxws/stale/.wsimport2StaleFlag</staleFile>
                         </configuration>
