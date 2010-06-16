@@ -47,6 +47,7 @@
     <module>contribution-java-first</module>
     <module>contribution-wsdl-first</module>
     <module>contribution-callback</module>
+    <module>contribution-callback-promotion</module>
     <module>external-client</module>
     <module>external-service</module>
     <module>launcher-axis2</module>
