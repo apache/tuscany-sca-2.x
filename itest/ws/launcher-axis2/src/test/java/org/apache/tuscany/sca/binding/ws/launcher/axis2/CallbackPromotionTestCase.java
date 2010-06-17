@@ -62,6 +62,7 @@ public class CallbackPromotionTestCase {
     }
 
     @Test
+    @Ignore
     public void testWait() throws Exception {
         System.out.println("Press a key");
         System.in.read();
