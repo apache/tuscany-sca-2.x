@@ -47,6 +47,8 @@
     <module>contribution-java-first</module>
     <module>contribution-wsdl-first</module>
     <module>contribution-callback</module>
+    <module>contribution-callback-forwardspec</module>
+    <module>contribution-callback-fullspec</module>
     <module>contribution-callback-promotion</module>
     <module>external-client</module>
     <module>external-service</module>
