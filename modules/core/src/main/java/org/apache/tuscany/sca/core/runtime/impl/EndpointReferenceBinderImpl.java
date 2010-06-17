@@ -363,13 +363,13 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
       
         // find the first callback endpoint that matches a callback endpoint reference
         // at the service
-        RuntimeEndpoint matchedEndpoint = null;
+        RuntimeEndpoint callbackEndpoint = null;
         match:
         for ( EndpointReference callbackEndpointReference : endpointReference.getTargetEndpoint().getCallbackEndpointReferences()){
             for (Endpoint endpoint : callbackService.getEndpoints()){
                 if (haveMatchingPolicy(callbackEndpointReference, endpoint, matchAudit) &&
                     haveMatchingInterfaceContracts(callbackEndpointReference, endpoint, matchAudit)){
-                    matchedEndpoint = (RuntimeEndpoint)endpoint;
+                    callbackEndpoint = (RuntimeEndpoint)endpoint;
                     break match;
                 }
             }
@@ -381,13 +381,13 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         //        callback that is different from the forward binding. Waiting for feedback form OASIS
         //        before doing more drastic surgery to fix this corner case as there are other things
         //        wrong with the default case, such as what to do about policy
-        if (matchedEndpoint == null ||
-            (matchedEndpoint.getBinding().getType().equals(SCABinding.TYPE) &&
+        if (callbackEndpoint == null ||
+            (callbackEndpoint.getBinding().getType().equals(SCABinding.TYPE) &&
              !endpointReference.getBinding().getType().equals(SCABinding.TYPE))){
             // no endpoint in place so we need to create one 
-            matchedEndpoint = (RuntimeEndpoint)assemblyFactory.createEndpoint();
-            matchedEndpoint.setComponent(endpointReference.getComponent());
-            matchedEndpoint.setService(callbackService);
+            callbackEndpoint = (RuntimeEndpoint)assemblyFactory.createEndpoint();
+            callbackEndpoint.setComponent(endpointReference.getComponent());
+            callbackEndpoint.setService(callbackService);
             
             Binding forwardBinding = endpointReference.getBinding();
             Binding callbackBinding = null;
@@ -411,25 +411,25 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                 }
             }
             
-            matchedEndpoint.setBinding(callbackBinding);
+            callbackEndpoint.setBinding(callbackBinding);
             callbackService.getBindings().add(callbackBinding);
             
-            matchedEndpoint.setUnresolved(false);
-            callbackService.getEndpoints().add(matchedEndpoint);
+            callbackEndpoint.setUnresolved(false);
+            callbackService.getEndpoints().add(callbackEndpoint);
             
             // build it
-            build(matchedEndpoint);
+            build(callbackEndpoint);
             
             // activate it
             compositeActivator.activate(((RuntimeEndpointReferenceImpl)endpointReference).getCompositeContext(), 
-                                        matchedEndpoint);
+                                        callbackEndpoint);
             
             // start it
             compositeActivator.start(((RuntimeEndpointReferenceImpl)endpointReference).getCompositeContext(), 
-                                     matchedEndpoint);  
+                                     callbackEndpoint);  
         } 
         
-        endpointReference.setCallbackEndpoint(matchedEndpoint);
+        endpointReference.setCallbackEndpoint(callbackEndpoint);
     }
     
     private void build(Endpoint endpoint) {
