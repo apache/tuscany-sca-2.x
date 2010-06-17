@@ -150,14 +150,14 @@ public class TestUtils {
             for (ComponentService componentService : component.getServices()) {
                 for (Binding binding : componentService.getBindings()) {
                     if (binding instanceof WebServiceBinding) {
-                        writeWSDL(component, componentService, ((WebServiceBinding)binding).getWSDLDocument());
+                        writeWSDL(component, componentService, ((WebServiceBinding)binding).getGeneratedWSDLDocument());
                     }
                 }
             }
             for (ComponentReference componentReference : component.getReferences()) {
                 for (Binding binding : componentReference.getBindings()) {
                     if (binding instanceof WebServiceBinding) {
-                        writeWSDL(component, componentReference, ((WebServiceBinding)binding).getWSDLDocument());
+                        writeWSDL(component, componentReference, ((WebServiceBinding)binding).getGeneratedWSDLDocument());
                     }
                 }
             }
@@ -167,14 +167,14 @@ public class TestUtils {
         for (Service service : composite.getServices()) {
             for (Binding binding : service.getBindings()) {
                 if (binding instanceof WebServiceBinding) {
-                    writeWSDL(null, service, ((WebServiceBinding)binding).getWSDLDocument());
+                    writeWSDL(null, service, ((WebServiceBinding)binding).getGeneratedWSDLDocument());
                 }
             }
         }
         for (Reference reference : composite.getReferences()) {
             for (Binding binding : reference.getBindings()) {
                 if (binding instanceof WebServiceBinding) {
-                    writeWSDL(null, reference, ((WebServiceBinding)binding).getWSDLDocument());
+                    writeWSDL(null, reference, ((WebServiceBinding)binding).getGeneratedWSDLDocument());
                 }
             }
         }

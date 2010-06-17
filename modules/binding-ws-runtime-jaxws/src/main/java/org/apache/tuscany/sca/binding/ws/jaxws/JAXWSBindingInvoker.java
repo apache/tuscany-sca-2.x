@@ -82,7 +82,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
     private Dispatch<SOAPMessage> createDispatch(WebServiceBinding wsBinding) {
         URL wsdlLocation = null;
         try {
-            wsdlLocation = new URL(wsBinding.getWSDLDocument().getDocumentBaseURI());
+            wsdlLocation = new URL(wsBinding.getGeneratedWSDLDocument().getDocumentBaseURI());
         } catch (Exception e) {
             try {
                 if (wsBinding.getWSDLDefinition().getLocation() != null){

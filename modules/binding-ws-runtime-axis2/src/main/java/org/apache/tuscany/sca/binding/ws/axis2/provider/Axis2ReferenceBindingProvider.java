@@ -96,7 +96,7 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
         this.reference = (RuntimeComponentReference)endpointReference.getReference();
 
         // A WSDL document should always be present in the binding
-        if (wsBinding.getWSDLDocument() == null) {
+        if (wsBinding.getGeneratedWSDLDocument() == null) {
             throw new ServiceRuntimeException("No WSDL document for " + component.getName() + "/" + reference.getName());
         }
 
@@ -128,7 +128,7 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
         configContext = Axis2EngineIntegration.getAxisConfigurationContext(extensionPoints.getServiceDiscovery());
         
         try {
-            Definition definition = wsBinding.getWSDLDocument();
+            Definition definition = wsBinding.getGeneratedWSDLDocument();
             QName serviceQName = wsBinding.getService().getQName();
             Port port = wsBinding.getPort();
             if (port == null) {

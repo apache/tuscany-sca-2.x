@@ -349,7 +349,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             builder.build(endpointReference.getComponent(),
                           endpointReference.getReference(),
                           endpointReference.getBinding(),
-                          new BuilderContext(extensionPoints));
+                          new BuilderContext(extensionPoints),
+                          false);
         }
     }
 
@@ -439,7 +440,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             builder.build(endpoint.getComponent(),
                           endpoint.getService(),
                           endpoint.getBinding(),
-                          new BuilderContext(extensionPoints));
+                          new BuilderContext(extensionPoints), 
+                          true);
         }
     }    
 

@@ -70,7 +70,7 @@ public class ComponentServiceBindingBuilderImpl implements CompositeBuilder {
                 for (Binding binding : componentService.getBindings()) {
                     BindingBuilder builder = builders.getBindingBuilder(binding.getType());
                     if (builder != null) {
-                        builder.build(component, componentService, binding, context);
+                        builder.build(component, componentService, binding, context, false);
                     }
                 }
             }

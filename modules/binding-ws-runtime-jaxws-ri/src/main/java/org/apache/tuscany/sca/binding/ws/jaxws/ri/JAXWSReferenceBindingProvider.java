@@ -43,7 +43,7 @@ public class JAXWSReferenceBindingProvider implements ReferenceBindingProvider {
         this.wsBinding = (WebServiceBinding) endpointReference.getBinding();
 
         // A WSDL document should always be present in the binding
-        if (wsBinding.getWSDLDocument() == null) {
+        if (wsBinding.getGeneratedWSDLDocument() == null) {
             throw new ServiceRuntimeException("No WSDL document for " + endpointReference.getURI());
         }
 

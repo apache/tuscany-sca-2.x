@@ -205,7 +205,7 @@ public interface WebServiceBinding extends Binding {
      * Returns the generated WSDL definitions document.
      * @return the generated WSDL definitions document
      */
-    Definition getWSDLDocument();
+    Definition getGeneratedWSDLDocument();
 
     /**
      * Sets the generated WSDL definitions document. The WSDL is generated
@@ -213,14 +213,6 @@ public interface WebServiceBinding extends Binding {
      * 
      * @param definition the generated WSDL definitions document
      */
-    void setWSDLDocument(Definition definition);
-    
-    
-    // TODO - There are a wealth of oddly named methods in this binding 
-    //        We have an opportunity with the JAXWS version of the WS binding
-    //        to re-think how the information here should be present so am 
-    //        going to start adding/moving methods to below this point that 
-    //        (hopefully) give a better idea of where the information is
-    //        derived from. 
+    void setGeneratedWSDLDocument(Definition definition);
 
 }

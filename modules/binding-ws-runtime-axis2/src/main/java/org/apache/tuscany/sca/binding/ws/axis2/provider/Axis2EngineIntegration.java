@@ -230,7 +230,7 @@ public class Axis2EngineIntegration {
                                                     Port port, 
                                                     WebServiceBinding wsBinding) throws AxisFault {
 
-        Definition definition = wsBinding.getWSDLDocument();
+        Definition definition = wsBinding.getGeneratedWSDLDocument();
         QName serviceQName = wsBinding.getService().getQName();
         Definition def = getDefinition(definition, serviceQName);
 

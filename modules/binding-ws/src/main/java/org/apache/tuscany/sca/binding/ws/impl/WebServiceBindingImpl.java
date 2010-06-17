@@ -287,11 +287,11 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
         this.endPointReference = epr;
     }
 
-    public Definition getWSDLDocument() {
+    public Definition getGeneratedWSDLDocument() {
         return generatedWSDLDocument;
     }
 
-    public void setWSDLDocument(Definition definition) {
+    public void setGeneratedWSDLDocument(Definition definition) {
         this.generatedWSDLDocument = definition;
     }
 

@@ -275,8 +275,8 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
             this.qname = ServiceDeclarationParser.getQName(sd.getAttributes().get("qname"));
         }
 
-        public void build(Component component, Contract contract, Binding binding, BuilderContext context) {
-            getBuilder().build(component, contract, binding, context);
+        public void build(Component component, Contract contract, Binding binding, BuilderContext context, boolean rebuild) {
+            getBuilder().build(component, contract, binding, context, rebuild);
         }
 
         public QName getBindingType() {

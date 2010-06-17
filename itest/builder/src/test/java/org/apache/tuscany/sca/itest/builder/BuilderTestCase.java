@@ -201,7 +201,7 @@ public class BuilderTestCase {
             }
         }
        
-        Definition def = wsBinding.getWSDLDocument();
+        Definition def = wsBinding.getGeneratedWSDLDocument();
         TestUtils.writeWSDL(def);
         
         javax.wsdl.Service svc = def.getService(new QName("http://builder.itest.sca.tuscany.apache.org/", "Service3Service")); 

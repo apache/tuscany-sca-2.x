@@ -154,7 +154,7 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
                 PortType portType = ((WSDLInterface)wsBinding.getBindingInterfaceContract().getInterface()).getPortType();
                 Operation op = portType.getOperation(wsdlOperationName.getLocalPart(), null, null);
                 action =
-                    WSDL11ActionHelper.getActionFromInputElement(wsBinding.getWSDLDocument(), portType, op, op
+                    WSDL11ActionHelper.getActionFromInputElement(wsBinding.getGeneratedWSDLDocument(), portType, op, op
                         .getInput());
             }
 

@@ -89,7 +89,7 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
         this.service = (RuntimeComponentService)endpoint.getService();
         
         // A WSDL document should always be present in the binding
-        if (wsBinding.getWSDLDocument() == null) {
+        if (wsBinding.getGeneratedWSDLDocument() == null) {
             throw new ServiceRuntimeException("No WSDL document for " + component.getName() + "/" + service.getName());
         }
         
@@ -273,7 +273,7 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
     
     private void createAxisService(String endpointURL, Port port) throws AxisFault {
         AxisService axisService;
-        if (wsBinding.getWSDLDocument() != null) {
+        if (wsBinding.getGeneratedWSDLDocument() != null) {
             axisService = Axis2EngineIntegration.createWSDLAxisService(endpointURL, port, wsBinding);
         } else {
             axisService = Axis2EngineIntegration.createJavaAxisService(endpointURL, configContext, service);

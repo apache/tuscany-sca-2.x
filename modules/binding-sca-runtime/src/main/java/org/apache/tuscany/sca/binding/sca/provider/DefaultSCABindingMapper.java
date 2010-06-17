@@ -143,7 +143,7 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
         Binding binding = map(endpoint.getBinding());
         ep.setBinding(binding);
         if (builder != null) {
-            builder.build(ep.getComponent(), ep.getService(), binding, new BuilderContext(registry));
+            builder.build(ep.getComponent(), ep.getService(), binding, new BuilderContext(registry), false);
         }
         return ep;
     }
@@ -166,7 +166,7 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
         // epr.setTargetEndpoint(map((RuntimeEndpoint)epr.getTargetEndpoint()));
 
         if (builder != null) {
-            builder.build(epr.getComponent(), epr.getReference(), binding, new BuilderContext(registry));
+            builder.build(epr.getComponent(), epr.getReference(), binding, new BuilderContext(registry), false);
         }
 
         return epr;

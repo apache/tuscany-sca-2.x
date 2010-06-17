@@ -244,10 +244,10 @@ public class BindingWSDLGenerator {
         // attempt to share the same document across multiple bindings.
 
         // generate a WSDL definitions document if needed
-        Definition definition = wsBinding.getWSDLDocument();
+        Definition definition = wsBinding.getGeneratedWSDLDocument();
         if (definition == null) {
             definition = WSDLServiceGenerator.configureWSDLDefinition(wsBinding, component, contract, monitor);
-            wsBinding.setWSDLDocument(definition);
+            wsBinding.setGeneratedWSDLDocument(definition);
         }
     }
 

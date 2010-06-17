@@ -39,8 +39,11 @@ public interface BindingBuilder<B extends Binding> {
      * @param component The component for the binding's service or reference
      * @param contract The binding's service or reference
      * @param context The context for the builder
+     * @param rebuild Set true to have derived data in the binding rebuilt
+     *                caching can cause problems in the late binding case so we
+     *                need to be able to remove cached data
      */
-    void build(Component component, Contract contract, B binding, BuilderContext context);
+    void build(Component component, Contract contract, B binding, BuilderContext context, boolean rebuild);
 
     /**
      * Get QName of the binding type

@@ -285,7 +285,7 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
             BindingBuilder bindingBuilder = builders.getBindingBuilder(binding.getType());
             if (bindingBuilder != null) {
                 org.apache.tuscany.sca.assembly.builder.BuilderContext context = new BuilderContext(registry);
-                bindingBuilder.build(endpointReference.getComponent(), reference, endpointReference.getBinding(), context);
+                bindingBuilder.build(endpointReference.getComponent(), reference, endpointReference.getBinding(), context, false);
             }
         }
 

@@ -63,7 +63,7 @@ public class ComponentReferenceBindingBuilderImpl implements CompositeBuilder {
                 for (Binding binding : componentReference.getBindings()) {
                     BindingBuilder builder = builders.getBindingBuilder(binding.getType());
                     if (builder != null) {
-                        builder.build(component, componentReference, binding, context);
+                        builder.build(component, componentReference, binding, context, false);
                     }
                 }
             }
