@@ -30,9 +30,7 @@
         <reference name="helloWorldExternal">
             <binding.ws uri="http://localhost:8086/External/HelloWorld"/>
         </reference>  	    
-        <reference name="helloWorldCallbackService">
-            <binding.ws uri="http://localhost:8085/HelloWorldService/HelloWorldCallbackService"/>
-        </reference>
+        <reference name="helloWorldCallbackService" target="HelloWorldCallbackService"/>
     </component>
     
     <component name="HelloWorldCallbackService">
