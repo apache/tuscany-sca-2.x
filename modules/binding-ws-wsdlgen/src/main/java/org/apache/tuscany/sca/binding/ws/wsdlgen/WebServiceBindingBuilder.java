@@ -45,6 +45,7 @@ public class WebServiceBindingBuilder implements BindingBuilder<WebServiceBindin
      * Create a calculated WSDL document and save it in the Web Service binding. 
      */
     public void build(Component component, Contract contract, WebServiceBinding binding, BuilderContext context) {
+        binding.setWSDLDocument(null);
         BindingWSDLGenerator.generateWSDL(component, contract, binding, extensionPoints, context.getMonitor());
     }
 

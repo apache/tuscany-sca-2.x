@@ -30,9 +30,11 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
@@ -40,6 +42,7 @@ import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointReferenceImpl;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -49,6 +52,7 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.Qualifier;
+import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
@@ -71,7 +75,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
     protected AssemblyFactory assemblyFactory;
     protected InterfaceContractMapper interfaceContractMapper;
     protected BuilderExtensionPoint builders;
-    private Monitor monitor;
+    protected CompositeActivator compositeActivator;
+    protected Monitor monitor;
 
 
     public EndpointReferenceBinderImpl(ExtensionPointRegistry extensionPoints) {
@@ -87,6 +92,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         monitor = monitorFactory.createMonitor();
         
         this.builders = extensionPoints.getExtensionPoint(BuilderExtensionPoint.class);
+        this.compositeActivator = extensionPoints.getExtensionPoint(CompositeActivator.class);
     }
     
     /**
@@ -97,7 +103,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param endpointReference
      */
     public void bindBuildTime(EndpointRegistry endpointRegistry, 
-                                 EndpointReference endpointReference) {
+                              EndpointReference endpointReference) {
        bind(endpointRegistry, endpointReference, false);
     }
     
@@ -109,7 +115,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param endpointReference
      */
     public void bindRunTime(EndpointRegistry endpointRegistry,
-                               EndpointReference endpointReference) {
+                            EndpointReference endpointReference) {
         bind(endpointRegistry, endpointReference, true);
     }
     
@@ -121,8 +127,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param runtime set true if called from the runtime 
      */
     public void bind(EndpointRegistry endpointRegistry,  
-                        EndpointReference endpointReference,
-                        boolean runtime){
+                     EndpointReference endpointReference,
+                     boolean runtime){
         
         logger.fine("Binding " + endpointReference.toString());
         
@@ -205,7 +211,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                 (endpointReference.getCallbackEndpoint() == null 
                     || endpointReference.getCallbackEndpoint().isUnresolved())) {
                 selectCallbackEndpoint(endpointReference,
-                                       endpointReference.getReference().getCallbackService().getEndpoints(),
+                                       endpointReference.getReference().getCallbackService(),
                                        matchAudit);
             } 
         } else if (endpointReference.getStatus() == EndpointReference.Status.WIRED_TARGET_FOUND_READY_FOR_MATCHING ){
@@ -220,7 +226,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
 
             if (hasCallback(endpointReference)){
                 selectCallbackEndpoint(endpointReference,
-                                       endpointReference.getReference().getCallbackService().getEndpoints(),
+                                       endpointReference.getReference().getCallbackService(),
                                        matchAudit);
             }             
         } else if (endpointReference.getStatus() == EndpointReference.Status.WIRED_TARGET_IN_BINDING_URI ||
@@ -258,7 +264,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
 
             if (hasCallback(endpointReference)){
                 selectCallbackEndpoint(endpointReference,
-                                       endpointReference.getReference().getCallbackService().getEndpoints(),
+                                       endpointReference.getReference().getCallbackService(),
                                        matchAudit);
             }             
         } 
@@ -353,28 +359,89 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param endpointReference
      * @param endpoints
      */
-    private void selectCallbackEndpoint(EndpointReference endpointReference, List<Endpoint> endpoints, StringBuffer matchAudit) {
+    private void selectCallbackEndpoint(EndpointReference endpointReference, ComponentService callbackService, StringBuffer matchAudit) {
       
         // find the first callback endpoint that matches a callback endpoint reference
         // at the service
-        Endpoint matchedEndpoint = null;
+        RuntimeEndpoint matchedEndpoint = null;
         match:
         for ( EndpointReference callbackEndpointReference : endpointReference.getTargetEndpoint().getCallbackEndpointReferences()){
-            for (Endpoint endpoint : endpoints){
+            for (Endpoint endpoint : callbackService.getEndpoints()){
                 if (haveMatchingPolicy(callbackEndpointReference, endpoint, matchAudit) &&
                     haveMatchingInterfaceContracts(callbackEndpointReference, endpoint, matchAudit)){
-                    matchedEndpoint = endpoint;
+                    matchedEndpoint = (RuntimeEndpoint)endpoint;
                     break match;
                 }
             }
         }
         
-        if (matchedEndpoint == null){
-            return;
-        } else {
-            endpointReference.setCallbackEndpoint(matchedEndpoint);
-        }
+        // if no callback endpoint was found or if the binding is the SCA binding and it doesn't match 
+        // the forward binding then create a new callback endpoint
+        // TODO - there is a hole here in that the user may explicitly specify an SCA binding for the
+        //        callback that is different from the forward binding. Waiting for feedback form OASIS
+        //        before doing more drastic surgery to fix this corner case as there are other things
+        //        wrong with the default case, such as what to do about policy
+        if (matchedEndpoint == null ||
+            (matchedEndpoint.getBinding().getType().equals(SCABinding.TYPE) &&
+             !endpointReference.getBinding().getType().equals(SCABinding.TYPE))){
+            // no endpoint in place so we need to create one 
+            matchedEndpoint = (RuntimeEndpoint)assemblyFactory.createEndpoint();
+            matchedEndpoint.setComponent(endpointReference.getComponent());
+            matchedEndpoint.setService(callbackService);
+            
+            Binding forwardBinding = endpointReference.getBinding();
+            Binding callbackBinding = null;
+            for (EndpointReference callbackEPR : endpointReference.getTargetEndpoint().getCallbackEndpointReferences()){
+                if (callbackEPR.getBinding().getType().equals(forwardBinding.getType())){
+                    try {
+                        callbackBinding = (Binding)callbackEPR.getBinding().clone();
+                    } catch (CloneNotSupportedException ex){
+                        
+                    }  
+                    break;
+                }
+            }
+            
+            // get the callback binding URI by looking at the SCA binding 
+            // that will have been added at build time
+            callbackBinding.setURI(null);
+            for (Endpoint endpoint : callbackService.getEndpoints()){
+                if (endpoint.getBinding().getType().equals(SCABinding.TYPE)){
+                    callbackBinding.setURI(endpoint.getBinding().getURI());
+                }
+            }
+            
+            matchedEndpoint.setBinding(callbackBinding);
+            callbackService.getBindings().add(callbackBinding);
+            
+            matchedEndpoint.setUnresolved(false);
+            callbackService.getEndpoints().add(matchedEndpoint);
+            
+            // build it
+            build(matchedEndpoint);
+            
+            // activate it
+            compositeActivator.activate(((RuntimeEndpointReferenceImpl)endpointReference).getCompositeContext(), 
+                                        matchedEndpoint);
+            
+            // start it
+            compositeActivator.start(((RuntimeEndpointReferenceImpl)endpointReference).getCompositeContext(), 
+                                     matchedEndpoint);  
+        } 
+        
+        endpointReference.setCallbackEndpoint(matchedEndpoint);
     }
+    
+    private void build(Endpoint endpoint) {
+        
+        BindingBuilder builder = builders.getBindingBuilder(endpoint.getBinding().getType());
+        if (builder != null) {
+            builder.build(endpoint.getComponent(),
+                          endpoint.getService(),
+                          endpoint.getBinding(),
+                          new BuilderContext(extensionPoints));
+        }
+    }    
 
     /**
      * Determine if endpoint reference and endpoint policies match. We know by this stage

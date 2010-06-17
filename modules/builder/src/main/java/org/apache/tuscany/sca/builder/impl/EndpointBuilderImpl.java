@@ -111,6 +111,8 @@ public class EndpointBuilderImpl implements CompositeBuilder {
                         // to the services they promote. This is not actually done
                         // until the wire is created though in order that the 
                         // uri is calculated correctly
+                        // Callback endpoints may not be added here in the case that the
+                        // forward reference is not yet resolved. 
                         for (Binding binding : service.getBindings()) {
                             Endpoint endpoint = assemblyFactory.createEndpoint();
                             endpoint.setComponent(component);

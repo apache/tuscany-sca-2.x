@@ -40,7 +40,7 @@ public class CallBackBasicTestCase {
     }
 
     @Test
-    @Ignore("TUSCANY-3593")
+    //@Ignore("TUSCANY-3593")
     public void testCallBackBasic1() {
         CallBackBasicClient aCallBackClient = node.getService(CallBackBasicClient.class, "CallBackBasicClient1");
         aCallBackClient.run();

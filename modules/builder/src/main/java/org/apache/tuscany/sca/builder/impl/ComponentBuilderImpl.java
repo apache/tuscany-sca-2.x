@@ -1095,14 +1095,14 @@ public class ComponentBuilderImpl {
     private void createCallbackService(Component component, ComponentReference reference) {
         if (reference.getInterfaceContract() != null && // can be null in unit tests
             reference.getInterfaceContract().getCallbackInterface() != null) {
-            ComponentService componentService = assemblyFactory.createComponentService();
-            componentService.setForCallback(true);
-            componentService.setName(reference.getName());
+            ComponentService callbackService = assemblyFactory.createComponentService();
+            callbackService.setForCallback(true);
+            callbackService.setName(reference.getName());
             try {
                 InterfaceContract contract = (InterfaceContract)reference.getInterfaceContract().clone();
                 contract.setInterface(contract.getCallbackInterface());
                 contract.setCallbackInterface(null);
-                componentService.setInterfaceContract(contract);
+                callbackService.setInterfaceContract(contract);
             } catch (CloneNotSupportedException e) {
                 // will not happen
             }
@@ -1151,16 +1151,16 @@ public class ComponentBuilderImpl {
                 } catch (CloneNotSupportedException e) {
                     // will not happen
                 }
-                componentService.setService(implService);
+                callbackService.setService(implService);
             }
-            component.getServices().add(componentService);
+            component.getServices().add(callbackService);
 
             // configure bindings for the callback service
-            if (componentService.getBindings().isEmpty()) {
+            if (callbackService.getBindings().isEmpty()) {
                 if (reference.getCallback() != null && reference.getCallback().getBindings().size() > 0) {
                     // set bindings of the callback service based on the information provided in 
                     // SCDL reference callback element
-                    componentService.getBindings().addAll(reference.getCallback().getBindings());
+                    callbackService.getBindings().addAll(reference.getCallback().getBindings());
                 } else if (reference.getBindings().size() > 0) {
                     // use any bindings explicitly declared on the forward reference
                     for (Binding binding : reference.getBindings()) {
@@ -1168,19 +1168,24 @@ public class ComponentBuilderImpl {
                             Binding clonedBinding = (Binding)binding.clone();
                             // binding uri will be calculated during runtime build
                             clonedBinding.setURI(null);
-                            componentService.getBindings().add(clonedBinding);
+                            callbackService.getBindings().add(clonedBinding);
                         } catch (CloneNotSupportedException ex) {
 
                         }
                     }
                 } else {
-                    // create a default binding
-                    // TODO - need to mark the binding as needing resolution
-                    createSCABinding(componentService, null);
+                    // create a default binding which will have the correct policy 
+                    // and URI added. We check later to see if a new binding is required
+                    // based on the forward binding but can then copy policy and URI
+                    // details from here. 
+                    // TODO - there is a hole here. If the user explicitly specified an
+                    //        SCA callback binding that is different from the forward 
+                    //        binding type then we're in trouble
+                    createSCABinding(callbackService, null);
                 }
             }
 
-            reference.setCallbackService(componentService);
+            reference.setCallbackService(callbackService);
         }
     }
 

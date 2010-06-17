@@ -41,6 +41,7 @@ public interface RuntimeEndpointReference extends EndpointReference, Invocable, 
      * @return The binding provider
      */
     ReferenceBindingProvider getBindingProvider();
+    
     /**
      * Get the interface contract for the binding. This represents the data types that the binding
      * protocol stack can process.
@@ -54,7 +55,8 @@ public interface RuntimeEndpointReference extends EndpointReference, Invocable, 
      * implementation code uses to make the outbound call.
      * @return The source component type reference interface contract
      */
-    InterfaceContract getComponentTypeReferenceInterfaceContract();    
+    InterfaceContract getComponentTypeReferenceInterfaceContract();   
+    
     boolean isOutOfDate();
     void rebuild();
     boolean isStarted();
