@@ -43,7 +43,6 @@
                 <module>bpel</module>
                 <module>callback-api</module>
                 <module>callback-basic</module>
-                <module>callback-basic-ws</module>
                 <module>callback-complex-type</module>
                 <module>callback-multiple-wires</module>
                 <module>callback-separatethread</module>
