@@ -40,6 +40,7 @@ import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
+import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
@@ -60,6 +61,11 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
     public static final QName QNAME_WSA_FROM =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, 
                   AddressingConstants.WSA_FROM,
+                  AddressingConstants.WSA_DEFAULT_PREFIX);
+    
+    public static final QName QNAME_WSA_TO =
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, 
+                  AddressingConstants.WSA_TO,
                   AddressingConstants.WSA_DEFAULT_PREFIX);
     
     public static final QName QNAME_WSA_ACTION =
@@ -132,51 +138,29 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
 
         Endpoint callbackEndpoint = msg.getFrom().getCallbackEndpoint();
 
-        // add WS-Addressing header
+        SOAPEnvelope sev = requestMC.getEnvelope();
+        SOAPHeader sh = sev.getHeader();
+        
+        // add WS-Addressing header for the invocation of a bidirectional service
         //FIXME: is there any way to use the Axis2 addressing support for this?
         if (callbackEndpoint != null) {
-            //EndpointReference fromEPR = new EndpointReference(callbackEndpoint.getURI());
-        	// Load the actual callback endpoint URI into an Axis EPR ready to form the content of the wsa:From header
+            // Load the actual callback endpoint URI into an Axis EPR ready to form the content of the wsa:From header
             EndpointReference fromEPR = new EndpointReference(callbackEndpoint.getBinding().getURI());
-            SOAPEnvelope sev = requestMC.getEnvelope();
-            SOAPHeader sh = sev.getHeader();
-            OMElement epr =
-                EndpointReferenceHelper.toOM(sev.getOMFactory(),
-                                             fromEPR,
-                                             QNAME_WSA_FROM,
-                                             AddressingConstants.Final.WSA_NAMESPACE);
-            sh.addChild(epr);
+           
+            addWSAFromHeader( sh, fromEPR );
             
-            // Create wsa:Action header which is required by ws-addressing spec
-            String action = options.getAction();
-
-            if (action == null) {
-                PortType portType = ((WSDLInterface)wsBinding.getBindingInterfaceContract().getInterface()).getPortType();
-                Operation op = portType.getOperation(wsdlOperationName.getLocalPart(), null, null);
-                action =
-                    WSDL11ActionHelper.getActionFromInputElement(wsBinding.getGeneratedWSDLDocument(), portType, op, op
-                        .getInput());
-            }
-
-            OMElement actionOM = sev.getOMFactory().createOMElement(QNAME_WSA_ACTION);
-            actionOM.setText(action == null ? "" : action);
-            sh.addChild(actionOM);
+            addWSAActionHeader( sh );
             
             requestMC.setFrom(fromEPR);
-        }
-
-        // if target endpoint was not specified when this invoker was created, 
-        // use dynamically specified target endpoint passed in on this call
-        if (options.getTo() == null) {
-            Endpoint ep = msg.getTo();
-            if (ep != null && ep.getBinding() != null) {
-                requestMC.setTo(new EndpointReference(ep.getBinding().getURI()));
-            } else {
-                throw new ServiceRuntimeException("Unable to determine destination endpoint");
-            }
-        } else {
-            requestMC.setTo(new EndpointReference(options.getTo().getAddress())); 
-        }
+        } // end if 
+        
+        String toAddress = getToAddress( msg );
+        requestMC.setTo( new EndpointReference(toAddress) ); 
+        
+        if( isInvocationForCallback( msg ) ) {
+        	addWSAToHeader( sh, toAddress );
+        	addWSAActionHeader( sh );
+        } // end if 
         
         // Allow privileged access to read properties. Requires PropertiesPermission read in
         // security policy.
@@ -191,6 +175,73 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
             throw (AxisFault)e.getException();
         }
         return operationClient;
-    }
+    } // end method createOperationClient
+    
+    private String getToAddress( Message msg ) throws ServiceRuntimeException {
+    	String address = null;
+    	
+        // if target endpoint was not specified when this invoker was created, 
+        // use dynamically specified target endpoint passed in with the message
+        if (options.getTo() == null) {
+            Endpoint ep = msg.getTo();
+            if (ep != null && ep.getBinding() != null) {
+                address = ep.getBinding().getURI();
+            } else {
+                throw new ServiceRuntimeException("Unable to determine destination endpoint");
+            }
+        } else {
+        	address = options.getTo().getAddress(); 
+        }
+        
+    	return address;
+    } // end method getToAddress
+    
+    private void addWSAFromHeader( SOAPHeader sh, EndpointReference fromEPR ) throws AxisFault {
+        OMElement epr = EndpointReferenceHelper.toOM(sh.getOMFactory(),
+			                                         fromEPR,
+			                                         QNAME_WSA_FROM,
+			                                         AddressingConstants.Final.WSA_NAMESPACE);
+        sh.addChild(epr);
+
+    } // end method addWSAFromHeader
+    
+    private void addWSAToHeader( SOAPHeader sh, String address ) {
+        // Create wsa:To header which is required by ws-addressing spec
+
+        OMElement wsaToOM = sh.getOMFactory().createOMElement(QNAME_WSA_TO);
+        wsaToOM.setText( address );
+        sh.addChild(wsaToOM);
+        
+    } // end method addWSAActionHeader
+        
+    
+    private void addWSAActionHeader( SOAPHeader sh ) {
+        // Create wsa:Action header which is required by ws-addressing spec
+        String action = options.getAction();
+
+        if (action == null) {
+            PortType portType = ((WSDLInterface)wsBinding.getBindingInterfaceContract().getInterface()).getPortType();
+            Operation op = portType.getOperation(wsdlOperationName.getLocalPart(), null, null);
+            action = WSDL11ActionHelper.getActionFromInputElement(wsBinding.getGeneratedWSDLDocument(), portType, op, op.getInput());
+        }
+
+        OMElement actionOM = sh.getOMFactory().createOMElement(QNAME_WSA_ACTION);
+        actionOM.setText(action == null ? "" : action);
+        sh.addChild(actionOM);
+    } // end method addWSAActionHeader
+    
+    /**
+     * Indicates if the invocation is for the callback of a bidirectional service
+     * @param msg the Message
+     * @return true if the invocation is for the callback of a bidirectional service, false otherwise
+     */
+    private boolean isInvocationForCallback( Message msg ) {
+    	org.apache.tuscany.sca.assembly.EndpointReference fromEPR = msg.getFrom();
+    	if( fromEPR != null ) {
+    		ComponentReference ref = fromEPR.getReference();
+    		if( ref != null ) return ref.isForCallback();
+    	} // end if
+    	return false;
+    } // end method isInvocationForCallback
     
 }
