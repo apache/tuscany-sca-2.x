@@ -26,6 +26,7 @@ import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
+import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPBody;
 import org.apache.axiom.soap.SOAPEnvelope;
@@ -59,20 +60,17 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class Axis2ReferenceBindingInvoker implements Invoker {
     public static final QName QNAME_WSA_FROM =
-        new QName(AddressingConstants.Final.WSA_NAMESPACE, 
-                  AddressingConstants.WSA_FROM,
-                  AddressingConstants.WSA_DEFAULT_PREFIX);
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM, AddressingConstants.WSA_DEFAULT_PREFIX);
     
     public static final QName QNAME_WSA_TO =
-        new QName(AddressingConstants.Final.WSA_NAMESPACE, 
-                  AddressingConstants.WSA_TO,
-                  AddressingConstants.WSA_DEFAULT_PREFIX);
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_TO, AddressingConstants.WSA_DEFAULT_PREFIX);
     
     public static final QName QNAME_WSA_ACTION =
-        new QName(AddressingConstants.Final.WSA_NAMESPACE, 
-                  AddressingConstants.WSA_ACTION,
-                  AddressingConstants.WSA_DEFAULT_PREFIX);
-    
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_ACTION, AddressingConstants.WSA_DEFAULT_PREFIX);
+
+    public static final QName QNAME_WSA_RELATESTO =
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_RELATES_TO, AddressingConstants.WSA_DEFAULT_PREFIX);
+
     private RuntimeEndpointReference endpointReference;
     private ServiceClient serviceClient;
     private QName wsdlOperationName;
@@ -160,6 +158,7 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
         if( isInvocationForCallback( msg ) ) {
         	addWSAToHeader( sh, toAddress );
         	addWSAActionHeader( sh );
+        	addWSARelatesTo( sh, msg );
         } // end if 
         
         // Allow privileged access to read properties. Requires PropertiesPermission read in
@@ -229,6 +228,25 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
         actionOM.setText(action == null ? "" : action);
         sh.addChild(actionOM);
     } // end method addWSAActionHeader
+ 
+    private static String WS_MESSAGE_ID = "WS_MESSAGE_ID";
+    protected static String SCA_CALLBACK_REL = "http://docs.oasis-open.org/opencsa/sca-bindings/ws/callback";
+    /**
+     * Adds a wsa:RelatesTo SOAP header if the incoming invocation had a wsa:MessageID SOAP header present
+     * - note that OASIS SCA requires that the RelationshipType attribute is set to a particular SCA value
+     * @param sh - the SOAP headers
+     * @param msg - the message
+     */
+    private void addWSARelatesTo( SOAPHeader sh, Message msg ) {
+    	String idValue = (String) msg.getHeaders().get(WS_MESSAGE_ID);
+    	if( idValue != null ){
+            OMElement relatesToOM = sh.getOMFactory().createOMElement( QNAME_WSA_RELATESTO );
+            OMAttribute relType = sh.getOMFactory().createOMAttribute("RelationshipType", null, SCA_CALLBACK_REL);
+            relatesToOM.addAttribute( relType );
+            relatesToOM.setText( idValue );
+            sh.addChild( relatesToOM );
+    	}
+    } // end method addWSARelatesTo
     
     /**
      * Indicates if the invocation is for the callback of a bidirectional service

@@ -52,7 +52,8 @@ public class TuscanyServiceProvider {
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM);
     public static final QName QNAME_WSA_REFERENCE_PARAMETERS =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_REFERENCE_PARAMETERS);
-    
+    public static final QName QNAME_WSA_MESSAGEID =
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_MESSAGE_ID);
     
     private RuntimeEndpoint endpoint;
     private WebServiceBinding wsBinding;
@@ -116,7 +117,8 @@ public class TuscanyServiceProvider {
                 }
             } // end if
             // Retrieve other callback-related headers
-        }
+            handleMessageIDHeader( header, msg );
+        } // end if
 
         // Create a from EPR to hold the details of the callback endpoint
         EndpointReference from = null;
@@ -146,5 +148,21 @@ public class TuscanyServiceProvider {
             throw new InvocationTargetException((Throwable) response.getBody());
         }
         return response.getBody();
-    }
+    } // end method 
+    
+    private static String WS_MESSAGE_ID = "WS_MESSAGE_ID";
+    /**
+     * Handle a SOAP wsa:MessageID header - place the contents into the Tuscany message for use by any callback
+     * @param header - the SOAP Headers
+     * @param msg - the Tuscany Message
+     */
+    private void handleMessageIDHeader( SOAPHeader header, Message msg ) {
+    	if( header == null ) return;
+        OMElement messageID = header.getFirstChildWithName(QNAME_WSA_MESSAGEID);
+        if (messageID != null) {
+        	String idValue = messageID.getText();
+        	// Store the value of the message ID element into the message under "WS_MESSAGE_ID"...
+        	msg.getHeaders().put(WS_MESSAGE_ID, idValue);
+        } // end if
+    } // end method handleMessageID
 }
