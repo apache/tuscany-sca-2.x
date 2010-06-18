@@ -43,9 +43,17 @@ public class RequestContextImpl implements RequestContext {
     }
 
     public Subject getSecuritySubject() {
-        Subject subject = null;
         
-        for (Object header : ThreadMessageContext.getMessageContext().getHeaders().values()){
+        Message msgContext = ThreadMessageContext.getMessageContext();
+        
+        if (msgContext == null){
+            // message in thread context could be null if the user has 
+            // spun up a new thread inside their component implementation 
+            return null;
+        }
+        
+        Subject subject = null;
+        for (Object header : msgContext.getHeaders().values()){
             if (header instanceof Subject){
                 subject  = (Subject)header;
                 break;
@@ -55,11 +63,24 @@ public class RequestContextImpl implements RequestContext {
     }
 
     public String getServiceName() {
-        return ThreadMessageContext.getMessageContext().getTo().getService().getName();
+        Message msgContext = ThreadMessageContext.getMessageContext();
+        
+        if (msgContext != null){
+            return msgContext.getTo().getService().getName();
+        } else {
+            // message in thread context could be null if the user has 
+            // spun up a new thread inside their component implementation 
+            return null;
+        }
     }
 
     public <B> ServiceReference<B> getServiceReference() {
         Message msgContext = ThreadMessageContext.getMessageContext();
+        if (msgContext == null){
+            // message in thread context could be null if the user has 
+            // spun up a new thread inside their component implementation 
+            return null;
+        }
         // FIXME: [rfeng] Is this the service reference matching the caller side?
         RuntimeEndpoint to = (RuntimeEndpoint) msgContext.getTo();
         RuntimeComponent component = (RuntimeComponent) to.getComponent();
@@ -80,6 +101,12 @@ public class RequestContextImpl implements RequestContext {
     @SuppressWarnings("unchecked")
     public <CB> ServiceReference<CB> getCallbackReference() {
         Message msgContext = ThreadMessageContext.getMessageContext();
+        if (msgContext == null){
+            // message in thread context could be null if the user has 
+            // spun up a new thread inside their component implementation 
+            return null;
+        }
+        
         Endpoint to = msgContext.getTo();
         RuntimeComponentService service = (RuntimeComponentService) to.getService();
         RuntimeComponentReference callbackReference = (RuntimeComponentReference)service.getCallbackReference();
