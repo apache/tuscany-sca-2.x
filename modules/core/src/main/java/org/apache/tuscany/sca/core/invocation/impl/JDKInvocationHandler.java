@@ -246,6 +246,9 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
         Message msgContext = ThreadMessageContext.getMessageContext();
         
+        // Deal with header information that needs to be copied from the message context to the new message...
+        transferMessageHeaders( msg, msgContext);
+        
         ThreadMessageContext.setMessageContext(msg);
 
         try {
@@ -260,6 +263,17 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             ThreadMessageContext.setMessageContext(msgContext);
         }
     }
+    
+    /**
+     * Transfer relevant header information from the old message (incoming) to the new message (outgoing)
+     * @param newMsg
+     * @param oldMsg
+     */
+    private void transferMessageHeaders( Message newMsg, Message oldMsg ) {
+    	if( oldMsg == null ) return;
+    	// For the present, simply copy all the headers 
+    	if( !oldMsg.getHeaders().isEmpty() ) newMsg.getHeaders().putAll( oldMsg.getHeaders() );
+    } // end transferMessageHeaders
 
     /**
      * @return the callableReference
