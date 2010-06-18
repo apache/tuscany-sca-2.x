@@ -26,7 +26,9 @@ import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPHeader;
+import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.AddressingConstants;
+import org.apache.axis2.addressing.AddressingFaultsHelper;
 import org.apache.axis2.context.MessageContext;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Endpoint;
@@ -73,7 +75,24 @@ public class TuscanyServiceProvider {
         this.webServiceBindingFactory = (WebServiceBindingFactory)modelFactories.getFactory(WebServiceBindingFactory.class);
     }
     
-    public OMElement invoke(OMElement requestOM, MessageContext inMC) throws InvocationTargetException {
+    // Special WS_Addressing values
+    private static String WS_ADDR_ANONYMOUS = "http://www.w3.org/2005/08/addressing/anonymous";
+    private static String WS_ADDR_NONE		= "http://www.w3.org/2005/08/addressing/none";
+    /**
+     * Check if the received callback address has either of the special WS-Addressing forms which are outlawed by the
+     * Web Service Binding specification [BWS50004]
+     * @param callbackAddress - the received callback address
+     * @param inMC - the Axis message context for the received forward call
+     * @throws AxisFault - throws a "OnlyNonAnonymousAddressSupportedFault" if the callback address has either of the special forms
+     */
+    private void checkCallbackAddress( String callbackAddress, MessageContext inMC ) throws AxisFault {
+    	// If the address is anonymous or none, throw a SOAP fault...
+    	if( WS_ADDR_ANONYMOUS.equals(callbackAddress) || WS_ADDR_NONE.equals(callbackAddress) ) {
+    		AddressingFaultsHelper.triggerOnlyNonAnonymousAddressSupportedFault(inMC, "wsa:From");
+    	}
+    } // end method checkCallbackAddress
+    
+    public OMElement invoke(OMElement requestOM, MessageContext inMC) throws InvocationTargetException, AxisFault {
         String callbackAddress = null;
         String callbackID = null;
 
@@ -95,12 +114,16 @@ public class TuscanyServiceProvider {
                         callbackAddress = callbackAddrElement.getText();
                     }
                 }
-            }            
+            } // end if
+            // Retrieve other callback-related headers
         }
 
         // Create a from EPR to hold the details of the callback endpoint
         EndpointReference from = null;
         if (callbackAddress != null ) {
+        	// Check for special (& not allowed!) WS_Addressing values
+        	checkCallbackAddress( callbackAddress, inMC );
+        	//
             from = assemblyFactory.createEndpointReference();
             Endpoint fromEndpoint = assemblyFactory.createEndpoint();
             from.setTargetEndpoint(fromEndpoint);
