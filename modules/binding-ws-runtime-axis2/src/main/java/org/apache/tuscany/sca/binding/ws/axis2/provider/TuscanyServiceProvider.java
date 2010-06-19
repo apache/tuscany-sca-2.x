@@ -50,6 +50,8 @@ public class TuscanyServiceProvider {
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_ADDRESS);
     public static final QName QNAME_WSA_FROM =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM);
+    public static final QName QNAME_WSA_REPLYTO =
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_REPLY_TO);
     public static final QName QNAME_WSA_REFERENCE_PARAMETERS =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_REFERENCE_PARAMETERS);
     public static final QName QNAME_WSA_MESSAGEID =
@@ -107,15 +109,7 @@ public class TuscanyServiceProvider {
         //FIXME: can we use the Axis2 addressing support for this?
         SOAPHeader header = inMC.getEnvelope().getHeader();
         if (header != null) {
-            OMElement from = header.getFirstChildWithName(QNAME_WSA_FROM);
-            if (from != null) {
-                OMElement callbackAddrElement = from.getFirstChildWithName(QNAME_WSA_ADDRESS);
-                if (callbackAddrElement != null) {
-                    if (endpoint.getService().getInterfaceContract().getCallbackInterface() != null) {
-                        callbackAddress = callbackAddrElement.getText();
-                    }
-                }
-            } // end if
+            callbackAddress = handleCallbackAddress( header, msg );
             // Retrieve other callback-related headers
             handleMessageIDHeader( header, msg );
         } // end if
@@ -149,6 +143,27 @@ public class TuscanyServiceProvider {
         }
         return response.getBody();
     } // end method 
+
+    private static String WS_REF_PARMS = "WS_REFERENCE_PARAMETERS";
+    private String handleCallbackAddress( SOAPHeader header, Message msg ) {
+    	String callbackAddress = null;
+        
+    	OMElement from = header.getFirstChildWithName(QNAME_WSA_FROM);
+    	if( from == null ) from = header.getFirstChildWithName(QNAME_WSA_REPLYTO);
+    	
+        if (from != null) {
+            OMElement callbackAddrElement = from.getFirstChildWithName(QNAME_WSA_ADDRESS);
+            if (callbackAddrElement != null) {
+                if (endpoint.getService().getInterfaceContract().getCallbackInterface() != null) {
+                    callbackAddress = callbackAddrElement.getText();
+                }
+                OMElement refParms = from.getFirstChildWithName(QNAME_WSA_REFERENCE_PARAMETERS);
+                if( refParms != null ) msg.getHeaders().put(WS_REF_PARMS, refParms);
+            }
+        } // end if
+    	
+    	return callbackAddress;
+    } // end method handleCallbackAddress
     
     private static String WS_MESSAGE_ID = "WS_MESSAGE_ID";
     /**

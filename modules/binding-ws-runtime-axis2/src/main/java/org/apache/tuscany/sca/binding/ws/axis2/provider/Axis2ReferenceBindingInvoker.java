@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.ws.axis2.provider;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Iterator;
 
 import javax.wsdl.Operation;
 import javax.wsdl.PortType;
@@ -28,6 +29,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMNode;
 import org.apache.axiom.soap.SOAPBody;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
@@ -156,7 +158,7 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
         requestMC.setTo( new EndpointReference(toAddress) ); 
         
         if( isInvocationForCallback( msg ) ) {
-        	addWSAToHeader( sh, toAddress );
+        	addWSAToHeader( sh, toAddress, msg );
         	addWSAActionHeader( sh );
         	addWSARelatesTo( sh, msg );
         } // end if 
@@ -204,12 +206,22 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
 
     } // end method addWSAFromHeader
     
-    private void addWSAToHeader( SOAPHeader sh, String address ) {
+    private static String WS_REF_PARMS = "WS_REFERENCE_PARAMETERS";
+    private void addWSAToHeader( SOAPHeader sh, String address, Message msg ) {
         // Create wsa:To header which is required by ws-addressing spec
-
         OMElement wsaToOM = sh.getOMFactory().createOMElement(QNAME_WSA_TO);
         wsaToOM.setText( address );
         sh.addChild(wsaToOM);
+        
+        // Deal with Reference Parameters, if present - copy to the header without the wsa:ReferenceParameters wrapper
+        OMElement refParms = (OMElement) msg.getHeaders().get(WS_REF_PARMS);
+        if( refParms != null ) {
+        	Iterator<?> children = refParms.getChildren();
+        	while( children.hasNext() ) {
+        		OMNode node = (OMNode) children.next();
+        		sh.addChild(node);
+        	}
+        } // end if 
         
     } // end method addWSAActionHeader
         
