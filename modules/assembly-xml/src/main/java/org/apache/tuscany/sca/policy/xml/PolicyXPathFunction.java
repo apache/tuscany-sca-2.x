@@ -33,6 +33,7 @@ import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathFunction;
 import javax.xml.xpath.XPathFunctionException;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -123,15 +124,79 @@ public class PolicyXPathFunction implements XPathFunction {
     }
 
     private Boolean evaluateIntents(String[] intents, Node node) {
+    	if ( node == null ) 
+    		return false;
+    	if ( node.getAttributes() != null ) {
+    		for  ( int i=0; i < node.getAttributes().getLength(); i++) {
+    			Node attr = node.getAttributes().item(i);
+    			
+    			if ( "requires".equalsIgnoreCase(attr.getNodeName())) {
+    				
+    				for ( int j = 0; j < intents.length; j++ ) {
+    					// Check negative intents
+    					if ( intents[j].startsWith("!")) {
+    						if ( matchIntent(intents[j].substring(1), attr, node.getNamespaceURI()))
+    							return Boolean.FALSE;
+    					} else if ( !matchIntent(intents[j], attr, node.getNamespaceURI())){
+    						return Boolean.FALSE;
+    					}    					
+    				}
+    				return Boolean.TRUE;
+    			}
+    			
+    		}
+    	}
+
         return Boolean.FALSE;
     }
 
-    private static Pattern FUNCTION;
+    private boolean matchIntent(String intent, Node node, String namespaceURI) {
+    	String[] requires = node.getNodeValue().split("(\\s)+");
+		QName intentName = getStringAsQName(intent);
+		
+		
+		for ( int i=0; i < requires.length; i++ ) {
+			QName nodeName = null;
+			int idx = requires[i].indexOf(':');
+			
+			// No prefix specified
+			if ( idx == -1 ) {
+				nodeName = new QName(namespaceURI, requires[i]);
+			} else {
+				String prefix = requires[i].substring(0, idx);
+				String name = requires[i].substring(idx + 1);
+				String ns = node.lookupNamespaceURI(prefix);
+				nodeName = new QName(ns, name, prefix);
+			}
+			if ( intentName.equals(nodeName))
+				return true;
+		}
+		return false;
+	}
+
+
+	private QName getStringAsQName(String intent) {
+		int idx = intent.indexOf(':');
+		if (idx == -1)
+			return new QName(intent);
+		
+		String prefix = intent.substring(0, idx);
+		intent = intent.substring(idx + 1);
+		
+		return new QName(namespaceContext.getNamespaceURI(prefix), intent, prefix);
+		
+	}
+
+
+	private static Pattern FUNCTION;
     static {
         String functionPattern = "(URIRef|InterfaceRef|OperationRef|MessageRef|IntentRefs)\\s*\\((.*)\\)";
         FUNCTION = Pattern.compile(functionPattern);
     }
 
+    /** Adds the node as an argument to the XPath function. 
+     * Required in order to have access to the NodeList within the function
+     */
     public static String normalize(String attachTo) {
         Matcher matcher = FUNCTION.matcher(attachTo);
         boolean result = matcher.find();

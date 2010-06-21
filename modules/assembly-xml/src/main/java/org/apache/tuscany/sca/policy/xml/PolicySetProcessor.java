@@ -162,7 +162,9 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
             try {
                 XPath path = xpathHelper.newXPath();
                 NamespaceContext nsContext = xpathHelper.getNamespaceContext(attachTo, reader.getNamespaceContext());
-                path.setXPathFunctionResolver(new PolicyXPathFunctionResolver(nsContext));
+                path.setXPathFunctionResolver(new PolicyXPathFunctionResolver(nsContext));                
+                           
+                attachTo = PolicyXPathFunction.normalize(attachTo);
                 XPathExpression expression = xpathHelper.compile(path, nsContext, attachTo);
                 policySet.setAttachTo(attachTo);
                 policySet.setAttachToXPathExpression(expression);
