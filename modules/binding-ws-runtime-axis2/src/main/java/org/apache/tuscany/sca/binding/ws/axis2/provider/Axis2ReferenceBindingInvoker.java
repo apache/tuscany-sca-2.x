@@ -188,7 +188,7 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
             if (ep != null && ep.getBinding() != null) {
                 address = ep.getBinding().getURI();
             } else {
-                throw new ServiceRuntimeException("Unable to determine destination endpoint");
+                throw new ServiceRuntimeException("Unable to determine destination endpoint for endpoint reference " + endpointReference);
             }
         } else {
         	address = options.getTo().getAddress(); 
