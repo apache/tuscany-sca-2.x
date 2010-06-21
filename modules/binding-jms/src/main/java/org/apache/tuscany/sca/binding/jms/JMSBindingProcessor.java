@@ -137,9 +137,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     private PolicySubjectProcessor policyProcessor;
     private ConfiguredOperationProcessor configuredOperationProcessor;
     protected StAXArtifactProcessor<Object> extensionProcessor;
-    
 
-    private FactoryExtensionPoint modelFactories; // DOB
     public JMSBindingProcessor(FactoryExtensionPoint modelFactories, StAXArtifactProcessor<Object> extensionProcessor) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
@@ -147,7 +145,6 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         this.configuredOperationProcessor = 
             new ConfiguredOperationProcessor(modelFactories);
         this.extensionProcessor = extensionProcessor;
-        this.modelFactories = modelFactories;
     }
     
     /**
@@ -382,7 +379,6 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     public void resolve(JMSBinding model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
-        Monitor monitor = context.getMonitor();
         if (model.getRequestConnectionName() != null) {
             model.setRequestConnectionBinding(getConnectionBinding(model, "requestConnection", model.getRequestConnectionName(), resolver, context));
         }
@@ -394,7 +390,6 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         }
     }
 
-    @SuppressWarnings("unchecked")
     private JMSBinding getConnectionBinding(JMSBinding model, String attrName, QName bindingName, ModelResolver resolver, ProcessorContext context) {
         JMSBinding binding = new JMSBinding();
         binding.setTargetNamespace(bindingName.getNamespaceURI());
@@ -1054,6 +1049,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      * If the value is of type box (e.g.Integer, Long) or BindingProperty, the output will be    
      *    <property name="key" type="int">42</property>
      */
+    @SuppressWarnings("unchecked")
     private void writeProperties(Map<String, Object> properties, XMLStreamWriter writer) throws XMLStreamException {
         if (( properties == null ) || ( properties.size() == 0 )) {
             return;
@@ -1201,6 +1197,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      * If the value is of type box (e.g.Integer, Long) or BindingProperty, the output will be    
      *    <property name="key" type="int">42</property>
      */
+    @SuppressWarnings("unchecked")
     private void writeBindingProperties(Map<String, BindingProperty> properties, XMLStreamWriter writer) throws XMLStreamException {
         if (( properties == null ) || ( properties.size() == 0 )) {
             return;
