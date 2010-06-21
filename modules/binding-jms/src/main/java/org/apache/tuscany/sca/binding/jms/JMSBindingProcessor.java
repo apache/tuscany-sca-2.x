@@ -305,13 +305,13 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                                 if (jmsBinding.getRequestWireFormat() == null) {
                                     jmsBinding.setRequestWireFormat((WireFormat) extension);
                                 } else {
-                                    throw new ContributionReadException("The request wireformat has already been defined. " + "Only one request wire format can be specified.");
+                                    error(monitor, "WireFormatAlreadyDefined", reader, extension.toString());
                                 }
                             } else if (extension instanceof OperationSelector) {
                                 if (jmsBinding.getOperationSelector() == null) {
                                     jmsBinding.setOperationSelector((OperationSelector) extension);
                                 } else {
-                                    throw new ContributionReadException("More than one operation selector has been specified. " + "Only one operation selector can be specified.");
+                                    error(monitor, "OpSelectorAlreadyDefined", reader, extension.toString());
                                 }
 
                             } else {
@@ -517,7 +517,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                                 if (jmsBinding.getResponseWireFormat() == null) {
                                     jmsBinding.setResponseWireFormat((WireFormat)extension);
                                 } else {
-                                    throw new ContributionReadException("The response wireformat has already been defined. " + "Only one response wire format can be specified.");
+                                    error(context.getMonitor(), "ResponseWireformatAlreadyDefined", reader, extension.toString());
                                 }
                             } else {
                                 error(context.getMonitor(), "UnexpectedElement", reader, extension.toString());
