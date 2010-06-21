@@ -340,7 +340,7 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                     wsdlDefinition.setDefinition(binding.getDefinition());
                     model.setBinding(binding.getElement());
                 } else {
-                	warning(monitor, "WsdlBindingDoesNotMatch", wsdlDefinition, model.getBindingName());
+                	error(monitor, "WsdlBindingDoesNotMatch", wsdlDefinition, model.getBindingName());
                 }
             }
             if (model.getServiceName() != null) {
@@ -358,7 +358,7 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                         }
                     }
                 } else {
-                	warning(monitor, "WsdlServiceDoesNotMatch", wsdlDefinition, model.getServiceName());
+                	error(monitor, "WsdlServiceDoesNotMatch", wsdlDefinition, model.getServiceName());
                 }
             }
 
