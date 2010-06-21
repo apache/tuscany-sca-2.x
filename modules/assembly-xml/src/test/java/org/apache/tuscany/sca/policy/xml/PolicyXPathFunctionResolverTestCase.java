@@ -64,7 +64,7 @@ public class PolicyXPathFunctionResolverTestCase {
         Object result = exp.evaluate(xml, XPathConstants.NODESET);
         Assert.assertTrue(result instanceof NodeList);
         NodeList nodes = (NodeList)result;
-        // Assert.assertEquals(1, nodes.getLength());
+        Assert.assertEquals(1, nodes.getLength());
     }
     
     @Test
