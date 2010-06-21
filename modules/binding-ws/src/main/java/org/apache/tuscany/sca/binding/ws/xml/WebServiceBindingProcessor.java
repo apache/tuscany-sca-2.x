@@ -135,6 +135,7 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
         if (uri != null) {
             wsBinding.setURI(uri);
             
+            // BWS20001
             if (context.getParentModel() instanceof Reference){
                 try {
                     URI tmpURI = new URI(uri);
@@ -164,6 +165,11 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
             String localName = wsdlElement.substring(index + 1);
             if (localName.startsWith("wsdl.service")) {
 
+                // BWS20003
+                if (context.getParentModel() instanceof org.apache.tuscany.sca.assembly.Service){
+                    error(monitor, "WSDLServiceOnService", reader, wsdlElement);
+                }
+                
                 // Read a wsdl.service
                 localName = localName.substring("wsdl.service(".length(), localName.length() - 1);
                 wsBinding.setServiceName(new QName(namespace, localName));
