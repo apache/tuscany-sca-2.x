@@ -267,6 +267,11 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 policyProcessor.readPolicies(contract, reader);
                             }
 
+                            // set the parent model so that binding processing can 
+                            // detect it they're being read as part of a reference 
+                            // or a service
+                            context.setParentModel(contract);
+                            
                         } else if (REFERENCE_QNAME.equals(name)) {
                             if (component != null) {
                                 // Read a <component><reference>
@@ -332,6 +337,11 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 policyProcessor.readPolicies(contract, reader);
                             }
 
+                            // set the parent model so that binding processing can 
+                            // detect it they're being read as part of a reference 
+                            // or a service
+                            context.setParentModel(contract);
+                            
                         } else if (PROPERTY_QNAME.equals(name)) {
                             if (component != null) {
 

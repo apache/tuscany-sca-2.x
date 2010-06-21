@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.binding.ws.xml;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import javax.wsdl.Binding;
@@ -33,6 +35,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
@@ -131,6 +134,18 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
         String uri = getURIString(reader, URI);
         if (uri != null) {
             wsBinding.setURI(uri);
+            
+            if (context.getParentModel() instanceof Reference){
+                try {
+                    URI tmpURI = new URI(uri);
+                    
+                    if (!tmpURI.isAbsolute()){
+                        error(monitor, "URINotAbsolute", reader, uri);
+                    }
+                } catch (URISyntaxException ex){
+                    error(monitor, "InvalidURISyntax", reader, ex.getMessage());
+                }
+            }
         }
 
         // Read a qname in the form:
