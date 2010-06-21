@@ -414,7 +414,6 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
         String type = reader.getAttributeValue(null, "type");                
         if (type != null && type.length() > 0) {
-            warning(monitor, "DoesntProcessDestinationType", jmsBinding);
             if (JMSBindingConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(type)) {
                 jmsBinding.setDestinationType(JMSBindingConstants.DESTINATION_TYPE_QUEUE);
             } else if (JMSBindingConstants.DESTINATION_TYPE_TOPIC.equalsIgnoreCase(type)) {
