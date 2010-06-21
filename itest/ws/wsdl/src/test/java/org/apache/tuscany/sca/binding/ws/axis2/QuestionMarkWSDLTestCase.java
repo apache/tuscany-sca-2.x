@@ -68,10 +68,10 @@ public class QuestionMarkWSDLTestCase extends TestCase {
         assertNotNull(definition);
         Service service = definition.getService(new QName("http://helloworld/HelloWorldService/HelloWorld",
                                                  "HelloWorldService"));        
-        Port port = service.getPort("HelloWorldSoapPort");
+        Port port = service.getPort("HelloWorldPort");
 
         String endpoint = getEndpoint(port);
-        assertEquals("http://localhost:8085/services/HelloWorldWebService", endpoint);
+        assertEquals("http://localhost:8085/services/HelloWorldWebService2", endpoint);
     }
 
     /**

@@ -24,7 +24,7 @@
     <component name="AccountService">
 		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.AccountService" />
 		<service name="Account">
-            <binding.ws wsdlElement="http://account2#wsdl.port(AccountService/AccountSoapPort)" />
+            <binding.ws uri="http://localhost:8086/AccountService" wsdlElement="http://account2#wsdl.binding(AccountSoapBinding)" />
         </service>
     </component>
 

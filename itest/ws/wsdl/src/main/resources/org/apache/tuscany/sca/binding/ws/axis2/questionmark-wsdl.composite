@@ -26,7 +26,7 @@
 		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.HelloWorldService"/>
 		<service name="HelloWorld">
 	        <binding.ws name="ep1" uri="http://localhost:8085/foo/bar" />
-	        <binding.ws name="ep2" wsdlElement="http://helloworld#wsdl.service(HelloWorldService)"/>
+	        <binding.ws name="ep2" uri="http://localhost:8085/services/HelloWorldWebService2" wsdlElement="http://helloworld#wsdl.binding(HelloWorldSoapBinding)"/>
 	    </service>
     </component>
 
