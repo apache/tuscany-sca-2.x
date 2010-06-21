@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.builder.impl;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -311,6 +312,23 @@ public class EndpointReferenceBuilderImpl {
                         reference.getEndpointReferences().add(endpointRef);
                         continue;
                     } // end if
+                    
+                    // if it's an absolute URI then assume that it's a resolved binding
+                    try {
+                        URI tmpURI = new URI(uri);
+                        if (tmpURI.isAbsolute()){
+                            // The user has configured a binding with an absolute URI so assume 
+                            // they know what they are doing and mark in as already resolved. 
+                            EndpointReference endpointRef = createEndpointRef(component, reference, binding, null, false);
+                            endpointRef.setTargetEndpoint(createEndpoint(false));
+                            endpointRef.setStatus(EndpointReference.Status.RESOLVED_BINDING);
+                            reference.getEndpointReferences().add(endpointRef);
+                            continue;
+                        }
+                    } catch (Exception ex){
+                        // do nothing and go to the next bit of code
+                        // which assumes that the URI is an SCA usi
+                    }
     
                     // The user has put something in the binding uri but we don't know if it's
                     // a real URI or a target name. We can't tell until we have access to the 

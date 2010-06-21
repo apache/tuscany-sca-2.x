@@ -30,6 +30,8 @@ import javax.wsdl.Binding;
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
+import javax.wsdl.extensions.soap.SOAPAddress;
+import javax.wsdl.extensions.soap12.SOAP12Address;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -348,14 +350,25 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                 if (service != null) {
                     wsdlDefinition.setDefinition(service.getDefinition());
                     model.setService(service.getElement());
+                    
+                    Port port = null;
                     if (model.getPortName() != null) {
-                        Port port = service.getElement().getPort(model.getPortName());
-                        if (port != null) {
-                            model.setPort(port);
-                            model.setBinding(port.getBinding());
-                        } else {
-                            warning(monitor, "WsdlPortTypeDoesNotMatch", wsdlDefinition, model.getPortName());
+                        port = service.getElement().getPort(model.getPortName());
+                    } else {
+                        // BWS20006 - no port specified so pick the first one
+                        port = (Port)service.getElement().getPorts().values().iterator().next();
+                    }
+                    
+                    if (port != null) {
+                        model.setPort(port);
+                        model.setBinding(port.getBinding());
+                        
+                        // if no URI specified set it from the WSDL port location
+                        if (model.getURI() == null){
+                            model.setURI(getPortAddress(port));
                         }
+                    } else {
+                        error(monitor, "WsdlPortTypeDoesNotMatch", wsdlDefinition, model.getPortName());
                     }
                 } else {
                 	error(monitor, "WsdlServiceDoesNotMatch", wsdlDefinition, model.getServiceName());
@@ -397,6 +410,17 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
         }
         return portType;
     }
+    
+    public static String getPortAddress(Port port) {
+        Object ext = port.getExtensibilityElements().get(0);
+        if (ext instanceof SOAPAddress) {
+            return ((SOAPAddress)ext).getLocationURI();
+        }
+        if (ext instanceof SOAP12Address) {
+            return ((SOAP12Address)ext).getLocationURI();
+        }
+        return null;
+    }    
 
     public QName getArtifactType() {
         return WebServiceConstants.BINDING_WS_QNAME;
