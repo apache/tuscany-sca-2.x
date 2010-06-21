@@ -35,5 +35,19 @@ public interface Callback extends Base, Extensible, PolicySubject {
      * @return the bindings supported for callbacks
      */
     List<Binding> getBindings();
+    
+    /**
+     * Returns the contract that holds this callback
+     * 
+     * @return the contract that holds this callback
+     */
+    Contract getParentContract();
+    
+    /**
+     * Sets the contract that holds this callback
+     * 
+     * @param contract the contract that holds this callback
+     */    
+    void setParentContract(Contract contract);
 
 }

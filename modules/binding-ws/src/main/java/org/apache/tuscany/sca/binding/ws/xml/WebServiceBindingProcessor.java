@@ -37,6 +37,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
@@ -148,6 +149,12 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                 } catch (URISyntaxException ex){
                     error(monitor, "InvalidURISyntax", reader, ex.getMessage());
                 }
+            }
+            
+            // BWS20020
+            if ((context.getParentModel() instanceof Callback) &&
+                (((Callback)context.getParentModel()).getParentContract() instanceof org.apache.tuscany.sca.assembly.Service)){
+                error(monitor, "URIFoundForServiceCallback", reader, uri);
             }
         }
 

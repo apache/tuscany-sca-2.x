@@ -467,11 +467,16 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                             // Read a <callback>
                             callback = assemblyFactory.createCallback();
                             contract.setCallback(callback);
+                            callback.setParentContract(contract);
 
                             //handle extension attributes
                             this.readExtendedAttributes(reader, name, callback, extensionAttributeProcessor, context);
 
                             policyProcessor.readPolicies(callback, reader);
+                            
+                            // set the parent model so that binding processing can 
+                            // detect it they're being read as part of a callback 
+                            context.setParentModel(callback);                            
 
                         } else if (IMPLEMENTATION_COMPOSITE_QNAME.equals(name)) {
 

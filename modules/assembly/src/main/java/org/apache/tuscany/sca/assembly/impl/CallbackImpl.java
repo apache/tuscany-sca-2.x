@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
+import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -37,6 +38,7 @@ public class CallbackImpl extends ExtensibleImpl implements Callback {
     private List<Binding> bindings = new ArrayList<Binding>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private Contract parentContract;
 
     public List<PolicySet> getPolicySets() {
         return policySets;
@@ -62,6 +64,16 @@ public class CallbackImpl extends ExtensibleImpl implements Callback {
 
     public void setRequiredIntents(List<Intent> intents) {
         this.requiredIntents = intents;
+    }
+    
+    @Override
+    public Contract getParentContract() {
+        return parentContract;
+    }
+    
+    @Override
+    public void setParentContract(Contract contract) {
+        this.parentContract = contract;
     }
 
 }
