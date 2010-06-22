@@ -82,7 +82,7 @@ public class NamespaceContextImpl implements NamespaceContext {
             }
         }
         final Iterator<String> currentIterator = prefixList.iterator();
-        final Iterator parentIterator = parent != null ? null : parent.getPrefixes(nsURI);
+        final Iterator parentIterator = parent == null ? null : parent.getPrefixes(nsURI);
         return new Iterator() {
 
             public boolean hasNext() {
