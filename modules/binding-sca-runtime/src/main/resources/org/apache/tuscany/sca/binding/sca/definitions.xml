@@ -22,5 +22,6 @@
  			xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
  			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
  			
-	<sca:bindingType type="sca:binding.sca"  mayProvide="" alwaysProvides=""/>	 		
+    <!-- MJE 22/06/2010 - add asyncInvocation to the @mayProvide list, for async services support --> 			
+	<sca:bindingType type="sca:binding.sca"  mayProvide="sca:asyncInvocation" alwaysProvides=""/>	 		
  </sca:definitions>
