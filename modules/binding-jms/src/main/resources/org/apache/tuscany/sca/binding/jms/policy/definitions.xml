@@ -25,6 +25,11 @@
     <!--sca:bindingType type="sca:binding.jms"  
                      alwaysProvides="JMS"
                      mayProvide="atLeastOnce atMostOnce ordered conversation" /-->
+                     
+    <!-- MJE 22/06/2010 - add asyncInvocation to the @mayProvide list, for async services support -->
+    <sca:bindingType type="sca:binding.jms"  
+                     alwaysProvides=""
+                     mayProvide="sca:asyncInvocation" />
 
     <!-- PolicyIntents defined by the SCA Runtime Extension for JMS Binding -->
     
