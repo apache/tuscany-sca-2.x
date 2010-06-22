@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.policy.xml;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -78,6 +79,22 @@ public class PolicyXPathFunction implements XPathFunction {
 
         String arg = (String)args.get(0);
         Node node = getContextNode(args);
+        /**
+         * If the xpath expression that contains the function does not select any nodes
+         * (eg IntentRefs('someIntent')), the context node passed in will be a Document. 
+         * In this case we need to iterate over every Node in the Document and evaluate it. 
+         * 
+         * If the xpath expression does select nodes (eg //sca:component[IntentRefs('someIntent')])
+         * then xpath will call evaluate for each node and we only need to return the result for that
+         * node.
+         */
+        if ( node instanceof Document ) 
+        	return evaluateDocument(arg, (Document)node);
+        else
+        	return evaluateNode(arg, node);
+    }
+    
+    public Object evaluateNode(String arg, Node node) {
         if (InterfaceRef.equals(functionName)) {
             return evaluateInterface(arg, node);
         } else if (OperationRef.equals(functionName)) {
@@ -107,7 +124,38 @@ public class PolicyXPathFunction implements XPathFunction {
         }
     }
 
-    private Boolean evaluateInterface(String interfaceName, Node node) {
+    private class NodeListImpl implements NodeList {
+
+    	private ArrayList<Node> list;
+
+		public NodeListImpl() {
+    		this.list = new ArrayList<Node>();
+    	}
+		public int getLength() {
+			return this.list.size();
+		}
+
+		public Node item(int index) {			
+			return this.list.get(index);
+		}
+		public boolean add(Node node) {
+			return this.list.add(node);
+			
+		}
+    	
+    }
+    private Object evaluateDocument(String arg, Document doc) {
+    	NodeListImpl retList = new NodeListImpl();
+    	NodeList elements = doc.getElementsByTagName("*");
+		for ( int i=0; i < elements.getLength(); i++) {
+			Object node = evaluateNode(arg, elements.item(i));
+			if ( node != null ) 
+				retList.add((Node)node);
+		}
+		return retList;
+	}
+
+	private Boolean evaluateInterface(String interfaceName, Node node) {
         return Boolean.FALSE;
     }
 
@@ -123,9 +171,16 @@ public class PolicyXPathFunction implements XPathFunction {
         return Boolean.FALSE;
     }
 
-    private Boolean evaluateIntents(String[] intents, Node node) {
+    /**
+     * Evaluates a single node for the given intents. 
+     * @param intents
+     * @param node
+     * @return
+     */
+    private Object evaluateIntents(String[] intents, Node node) {
     	if ( node == null ) 
     		return false;
+    	    	
     	if ( node.getAttributes() != null ) {
     		for  ( int i=0; i < node.getAttributes().getLength(); i++) {
     			Node attr = node.getAttributes().item(i);
@@ -136,21 +191,30 @@ public class PolicyXPathFunction implements XPathFunction {
     					// Check negative intents
     					if ( intents[j].startsWith("!")) {
     						if ( matchIntent(intents[j].substring(1), attr, node.getNamespaceURI()))
-    							return Boolean.FALSE;
+    							return null; 
     					} else if ( !matchIntent(intents[j], attr, node.getNamespaceURI())){
-    						return Boolean.FALSE;
+    						return null; 
     					}    					
     				}
-    				return Boolean.TRUE;
+    				return node; 
     			}
     			
     		}
     	}
 
-        return Boolean.FALSE;
+        return null; 
     }
 
-    private boolean matchIntent(String intent, Node node, String namespaceURI) {
+    
+
+    /**
+     * Determine whether the given intent is present in the "requires" attribute
+     * @param intent
+     * @param node
+     * @param namespaceURI
+     * @return
+     */
+	private boolean matchIntent(String intent, Node node, String namespaceURI) {
     	String[] requires = node.getNodeValue().split("(\\s)+");
 		QName intentName = getStringAsQName(intent);
 		
@@ -197,7 +261,10 @@ public class PolicyXPathFunction implements XPathFunction {
     /** Adds the node as an argument to the XPath function. 
      * Required in order to have access to the NodeList within the function
      */
-    public static String normalize(String attachTo) {
+    public static String normalize(String attachTo, String scaPrefix) {
+    	// Get rid of any whitespace
+    	attachTo = attachTo.trim();
+    	
         Matcher matcher = FUNCTION.matcher(attachTo);
         boolean result = matcher.find();
         if (result) {
@@ -205,6 +272,9 @@ public class PolicyXPathFunction implements XPathFunction {
             do {
                 String function = matcher.group(1);
                 String args = matcher.group(2);
+                if ( (matcher.start() == 0) || (attachTo.charAt( matcher.start() -1) != ':' )) {
+                	function = scaPrefix + ":" + function; 
+                }
                 String replacement = null;
                 if (args.trim().length() > 0) {
                     replacement = function + "(" + args + "," + "self::node())";
@@ -214,6 +284,7 @@ public class PolicyXPathFunction implements XPathFunction {
                 matcher.appendReplacement(sb, replacement);
                 result = matcher.find();
             } while (result);
+            
             matcher.appendTail(sb);
             return sb.toString();
         }

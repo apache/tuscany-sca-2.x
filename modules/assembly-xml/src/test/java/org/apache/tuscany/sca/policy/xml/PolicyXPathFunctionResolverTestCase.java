@@ -57,8 +57,8 @@ public class PolicyXPathFunctionResolverTestCase {
     @Test
     public void testIntentsRef() throws Exception {
         InputSource xml = new InputSource(getClass().getResourceAsStream("Calculator.composite"));
-        String str = "//sca:composite/sca:component[sca:IntentRefs('sca:confidentiality')]";
-        str = normalize(str);
+        String str = "//sca:composite/sca:component[IntentRefs('sca:confidentiality')]";
+        str = normalize(str, "sca");
         // Test the rewrite of xpath so that the self:node() is passed into the SCA function
         XPathExpression exp = xpath.compile(str);
         Object result = exp.evaluate(xml, XPathConstants.NODESET);
@@ -68,9 +68,34 @@ public class PolicyXPathFunctionResolverTestCase {
     }
     
     @Test
+    public void testIntentsRef2() throws Exception {
+        InputSource xml = new InputSource(getClass().getResourceAsStream("Calculator.composite"));
+        String str = " //sca:composite/sca:component[sca:IntentRefs('sca:confidentiality')]";
+        str = normalize(str, "sca");
+        // Test the rewrite of xpath so that the self:node() is passed into the SCA function
+        XPathExpression exp = xpath.compile(str);
+        Object result = exp.evaluate(xml, XPathConstants.NODESET);
+        Assert.assertTrue(result instanceof NodeList);
+        NodeList nodes = (NodeList)result;
+        Assert.assertEquals(1, nodes.getLength());
+    }
+    
+    @Test
+    public void testIntentsRef3() throws Exception {
+        InputSource xml = new InputSource(getClass().getResourceAsStream("Calculator.composite"));
+        String str = "   IntentRefs('sca:confidentiality')  ";
+        str = normalize(str, "sca");
+        // Test the rewrite of xpath so that the self:node() is passed into the SCA function
+        XPathExpression exp = xpath.compile(str);
+        Object result = exp.evaluate(xml, XPathConstants.NODESET);
+        Assert.assertTrue(result instanceof NodeList);
+        NodeList nodes = (NodeList)result;
+        Assert.assertEquals(1, nodes.getLength());
+    }
+    @Test
     public void testURIRef() throws Exception {
         InputSource xml = new InputSource(getClass().getResourceAsStream("Calculator.composite"));
-        XPathExpression exp = xpath.compile(normalize("sca:composite/sca:component[sca:URIRef('AddServiceComponent')]"));
+        XPathExpression exp = xpath.compile(normalize("sca:composite/sca:component[sca:URIRef('AddServiceComponent')]","sca"));
         Object result = exp.evaluate(xml, XPathConstants.NODESET);
         Assert.assertTrue(result instanceof NodeList);
         NodeList nodes = (NodeList)result;
@@ -80,7 +105,7 @@ public class PolicyXPathFunctionResolverTestCase {
     @Test
     public void testInterfaceRef() throws Exception {
         InputSource xml = new InputSource(getClass().getResourceAsStream("Calculator.composite"));
-        XPathExpression exp = xpath.compile(normalize("//sca:composite/sca:component/sca:service[sca:InterfaceRef('AddService')]"));
+        XPathExpression exp = xpath.compile(normalize("//sca:composite/sca:component/sca:service[sca:InterfaceRef('AddService')]","sca"));
         Object result = exp.evaluate(xml, XPathConstants.NODESET);
         Assert.assertTrue(result instanceof NodeList);
         NodeList nodes = (NodeList)result;
@@ -90,7 +115,7 @@ public class PolicyXPathFunctionResolverTestCase {
     @Test
     public void testOperationRef() throws Exception {
         InputSource xml = new InputSource(getClass().getResourceAsStream("Calculator.composite"));
-        XPathExpression exp = xpath.compile(normalize("//sca:composite/sca:component/sca:reference[sca:OperationRef('AddService/add')]"));
+        XPathExpression exp = xpath.compile(normalize("//sca:composite/sca:component/sca:reference[sca:OperationRef('AddService/add')]","sca"));
         Object result = exp.evaluate(xml, XPathConstants.NODESET);
         Assert.assertTrue(result instanceof NodeList);
         NodeList nodes = (NodeList)result;
