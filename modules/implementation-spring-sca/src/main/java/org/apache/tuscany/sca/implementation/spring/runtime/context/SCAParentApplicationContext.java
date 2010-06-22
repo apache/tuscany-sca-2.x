@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.implementation.spring.runtime.context;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.Locale;
 import java.util.Map;
 
@@ -73,6 +74,18 @@ class SCAParentApplicationContext implements ApplicationContext {
 
     public Object getBean(String name, Object[] args) throws BeansException {
          return getBean(name, ((Class)null));
+    }
+
+    public <T> T getBean(Class<T> clazz) throws BeansException {
+        return clazz.cast(implementation.getBean(clazz.getName(), clazz));
+    }
+
+    public Map<String, Object> getBeansWithAnnotation(Class<? extends Annotation> clazz) throws BeansException {
+        return null;
+    }
+
+    public <A extends Annotation> A findAnnotationOnBean(String arg0, Class<A> clazz) {
+        return null;
     }
 
     public boolean containsBean(String name) {

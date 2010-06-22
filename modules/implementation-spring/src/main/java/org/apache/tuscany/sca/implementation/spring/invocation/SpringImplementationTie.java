@@ -50,7 +50,7 @@ public class SpringImplementationTie {
     }
     
     public String getURI() {
-        throw new IllegalStateException("Not yet impl");
+        return implementation.getURI();
     }
 
     public String getComponentName() {
