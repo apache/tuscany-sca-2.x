@@ -21,11 +21,14 @@ package org.apache.tuscany.sca.policy.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.apache.tuscany.sca.policy.xml.PolicyConstants.SCA11_NS;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -35,6 +38,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.tuscany.sca.common.xml.stax.reader.NamespaceContextImpl;
 import org.apache.tuscany.sca.common.xml.xpath.XPathHelper;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -163,8 +167,8 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                 XPath path = xpathHelper.newXPath();
                 NamespaceContext nsContext = xpathHelper.getNamespaceContext(attachTo, reader.getNamespaceContext());
                 path.setXPathFunctionResolver(new PolicyXPathFunctionResolver(nsContext));                
-                           
-                attachTo = PolicyXPathFunction.normalize(attachTo,nsContext.getPrefix(SCA11_NS));
+                                           
+                attachTo = PolicyXPathFunction.normalize(attachTo,getSCAPrefix(nsContext));
                 XPathExpression expression = xpathHelper.compile(path, nsContext, attachTo);
                 policySet.setAttachTo(attachTo);
                 policySet.setAttachToXPathExpression(expression);
@@ -247,7 +251,22 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         return policySet;
     }
 
-    public void readIntentMap(XMLStreamReader reader, PolicySet policySet, Intent mappedIntent, ProcessorContext context)
+    private String getSCAPrefix(NamespaceContext nsContext) {   
+    	
+    	Iterator iter = nsContext.getPrefixes(SCA11_NS);
+    	while ( iter.hasNext()) {
+    		String prefix = (String)iter.next();
+    		if ( !prefix.equals(XMLConstants.DEFAULT_NS_PREFIX))
+    			return prefix;
+    	}
+    	// We have to have some prefix here to use before the function name. Otherwise the 
+    	// XPathFunctionResolver will never be called. 
+    	NamespaceContextImpl nsImpl = (NamespaceContextImpl) nsContext;
+    	nsImpl.register("sca_internal", SCA11_NS);
+    	return "sca_internal";
+	}
+
+	public void readIntentMap(XMLStreamReader reader, PolicySet policySet, Intent mappedIntent, ProcessorContext context)
         throws ContributionReadException {
         Monitor monitor = context.getMonitor();
         QName name = reader.getName();
