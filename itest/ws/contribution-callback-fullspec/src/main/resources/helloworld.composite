@@ -43,7 +43,7 @@
         <service name="HelloWorldCallbackService">
             <binding.ws uri="http://localhost:8084/HelloWorldCallbackService"/>
             <callback>
-                <binding.ws uri="http://localhost:8085/HelloWorldService/HelloWorldCallback"/>
+                <binding.ws/>
             </callback>            
         </service>   
     </component>    
