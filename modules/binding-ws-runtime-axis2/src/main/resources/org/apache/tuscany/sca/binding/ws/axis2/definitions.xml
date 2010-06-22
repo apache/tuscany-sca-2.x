@@ -25,7 +25,10 @@
             xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
             xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
             
-    <sca:bindingType type="sca:binding.ws"  mayProvide="sca:SOAP sca:SOAP.v1_1 sca:SOAP.v1_2 tuscany:MTOM" alwaysProvides=""/>
+    <!-- MJE 22/06/2010 - add asyncInvocation to the @mayProvide list, for async services support -->
+    <sca:bindingType type="sca:binding.ws"  
+                     mayProvide="sca:SOAP sca:SOAP.v1_1 sca:SOAP.v1_2 tuscany:MTOM sca:asyncInvocation" 
+                     alwaysProvides=""/>
 
     <!-- see the file sca-policy-1.1-intents-definitions.xml in the -->
     <!-- assembly-xsd module for spec defined intents               -->
