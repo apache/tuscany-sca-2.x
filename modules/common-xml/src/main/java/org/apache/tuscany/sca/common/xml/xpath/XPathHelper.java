@@ -86,13 +86,18 @@ public class XPathHelper {
     public NamespaceContext getNamespaceContext(String expression, NamespaceContext context) {
         NamespaceContextImpl nsContext = new NamespaceContextImpl(null);
 
+        boolean found = false;
         for (String prefix : getPrefixes(expression)) {
             String namespace = context.getNamespaceURI(prefix);
             if (namespace != null && !XMLConstants.NULL_NS_URI.equals(namespace)) {
                 nsContext.register(prefix, namespace);
+                found = true;
             }
-        }    	
-    	
+        }
+        
+        if(!found) {
+            nsContext.register("__sca", "http://docs.oasis-open.org/ns/opencsa/sca/200912");
+        }
         return nsContext;
     }
 
