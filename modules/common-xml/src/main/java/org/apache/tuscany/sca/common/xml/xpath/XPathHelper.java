@@ -91,10 +91,22 @@ public class XPathHelper {
             if (namespace != null && !XMLConstants.NULL_NS_URI.equals(namespace)) {
                 nsContext.register(prefix, namespace);
             }
-        }
+        }    	
+    	
         return nsContext;
     }
 
+    /**
+     * Registers a prefix in an existing NamespaceContext
+     * @param prefix
+     * @param namespace
+     * @param context
+     */
+    public void registerPrefix(String prefix, String namespace, NamespaceContext context) {
+    	NamespaceContextImpl nsContext = (NamespaceContextImpl) context;
+    	nsContext.register(prefix, namespace);
+    }
+    
     /**
      * Parse the XPath expression to collect all the prefixes for namespaces
      * @param expression

@@ -259,10 +259,11 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
     		if ( !prefix.equals(XMLConstants.DEFAULT_NS_PREFIX))
     			return prefix;
     	}
+    	
     	// We have to have some prefix here to use before the function name. Otherwise the 
     	// XPathFunctionResolver will never be called. 
-    	NamespaceContextImpl nsImpl = (NamespaceContextImpl) nsContext;
-    	nsImpl.register("sca_internal", SCA11_NS);
+    	xpathHelper.registerPrefix("sca_internal", SCA11_NS, nsContext);
+    
     	return "sca_internal";
 	}
 
