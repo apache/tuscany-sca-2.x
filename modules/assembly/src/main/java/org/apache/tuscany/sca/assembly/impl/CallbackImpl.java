@@ -66,12 +66,10 @@ public class CallbackImpl extends ExtensibleImpl implements Callback {
         this.requiredIntents = intents;
     }
     
-    @Override
     public Contract getParentContract() {
         return parentContract;
     }
     
-    @Override
     public void setParentContract(Contract contract) {
         this.parentContract = contract;
     }
