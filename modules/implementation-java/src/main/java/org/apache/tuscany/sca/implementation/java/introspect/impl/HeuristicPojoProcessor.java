@@ -113,8 +113,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
                 addService(type, clazz);
             }
         }
-        Set<Method> methods = getAllUniquePublicProtectedMethods(clazz, false);
-        if (!type.getReferenceMembers().isEmpty() || !type.getPropertyMembers().isEmpty()) {
+        if (!(type.getReferenceMembers().isEmpty() && type.getPropertyMembers().isEmpty())) {
             // references and properties have been explicitly defined
             //            if (type.getServices().isEmpty()) {
             //                calculateServiceInterface(clazz, type, methods);
@@ -125,6 +124,8 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             evaluateConstructor(type, clazz);
             return;
         }
+        Set<Method> methods = getAllUniquePublicProtectedMethods(clazz, false);
+
         calcPropRefs(methods, services, type, clazz);
         evaluateConstructor(type, clazz);
     }

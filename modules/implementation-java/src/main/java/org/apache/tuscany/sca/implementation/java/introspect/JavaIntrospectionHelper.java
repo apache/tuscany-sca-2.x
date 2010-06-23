@@ -107,16 +107,17 @@ public final class JavaIntrospectionHelper {
     }
     
     /**
-     * Returns a collection of injectable fields (neither final or static) declared by a class
+     * Returns a collection of injectable fields declared by a class
      * or one of its supertypes
+     * 
+     * For now we will include final or static fields so that validation problems can be reported 
      */
     public static Set<Field> getInjectableFields(Class<?> clazz, boolean validating) {
         return getInjectableFields(clazz, new HashSet<Field>(), validating);
     }
     
     /**
-     * Recursively evaluates the type hierarchy to return all fields that are
-     * not static or final
+     * Recursively evaluates the type hierarchy to return all fields 
      */
     private static Set<Field> getInjectableFields(Class<?> clazz, Set<Field> fields, boolean validating) {
         if (clazz == null || clazz.isArray() || Object.class.equals(clazz)) {
@@ -127,7 +128,10 @@ public final class JavaIntrospectionHelper {
         for (final Field field : declaredFields) {
             int modifiers = field.getModifiers();
             // The field should be non-final and non-static
-            if (!Modifier.isStatic(modifiers) && !Modifier.isFinal(modifiers)) {
+            if (!Modifier.isStatic(modifiers) 
+                // && !Modifier.isFinal(modifiers)
+                ) {
+            
                 // Allow privileged access to set accessibility. Requires ReflectPermission
                 // in security policy.
                 AccessController.doPrivileged(new PrivilegedAction<Object>() {
