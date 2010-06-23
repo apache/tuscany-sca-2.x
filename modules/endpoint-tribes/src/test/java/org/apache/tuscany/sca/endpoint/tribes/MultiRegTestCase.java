@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.endpoint.tribes;
 
-import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,8 +54,8 @@ public class MultiRegTestCase implements EndpointListener {
     public void testReplication() throws Exception {
         RuntimeEndpoint ep1 = createEndpoint("ep1uri");
 
-        String host = InetAddress.getLocalHost().getHostAddress();
-        String bind = null; // "9.65.158.31";
+        // String host = InetAddress.getLocalHost().getHostAddress();
+        String bind = "127.0.0.1"; // "9.65.158.31";
         String port1 = "8085";
         String port2 = "8086";
         String port3 = "8087";
@@ -74,7 +73,7 @@ public class MultiRegTestCase implements EndpointListener {
 
         Map<String, String> attrs2 = new HashMap<String, String>();
         // attrs2.put("nomcast", "true");
-        attrs1.put("bind", bind);
+        attrs2.put("bind", bind);
         attrs2.put("receiverPort", port2);
         attrs2.put("receiverAutoBind", range);
         // attrs2.put("routes", host + ":"+port1);
@@ -84,7 +83,7 @@ public class MultiRegTestCase implements EndpointListener {
 
         Map<String, String> attrs3 = new HashMap<String, String>();
         // attrs3.put("nomcast", "true");
-        attrs1.put("bind", bind);
+        attrs3.put("bind", bind);
         attrs3.put("receiverPort", port3);
         attrs3.put("receiverAutoBind", range);
         // attrs3.put("routes", host + ":"+port1);

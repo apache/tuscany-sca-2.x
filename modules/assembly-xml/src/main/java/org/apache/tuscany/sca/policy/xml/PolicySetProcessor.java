@@ -250,21 +250,18 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         return policySet;
     }
 
-    private String getSCAPrefix(NamespaceContext nsContext) {   
-    	
-    	Iterator iter = nsContext.getPrefixes(SCA11_NS);
-    	while ( iter.hasNext()) {
-    		String prefix = (String)iter.next();
-    		if ( !prefix.equals(XMLConstants.DEFAULT_NS_PREFIX))
-    			return prefix;
-    	}
-    	
-    	// We have to have some prefix here to use before the function name. Otherwise the 
-    	// XPathFunctionResolver will never be called. 
-    	xpathHelper.registerPrefix("sca_internal", SCA11_NS, nsContext);
-    
-    	return "sca_internal";
-	}
+    private String getSCAPrefix(NamespaceContext nsContext) {
+
+        Iterator<String> iter = nsContext.getPrefixes(SCA11_NS);
+        while (iter.hasNext()) {
+            String prefix = iter.next();
+            if (!prefix.equals(XMLConstants.DEFAULT_NS_PREFIX)) {
+                return prefix;
+            }
+        }
+
+        return "_sca";
+    }
 
 	public void readIntentMap(XMLStreamReader reader, PolicySet policySet, Intent mappedIntent, ProcessorContext context)
         throws ContributionReadException {

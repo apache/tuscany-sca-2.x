@@ -100,17 +100,23 @@ public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArti
             Composite composite = assemblyFactory.createComposite();
             composite.setName(ENDPOINT_QNAME);
             composite.setLocal(false);
-            Component component = (Component)endpoint.getComponent().clone();
-            component.setImplementation(null);
-            composite.getComponents().add(component);
-            component.getReferences().clear();
-            component.getServices().clear();
-            ComponentService service = (ComponentService)endpoint.getService().clone();
-            component.getServices().add(service);
-            service.getBindings().clear();
-            service.setInterfaceContract(endpoint.getComponentServiceInterfaceContract());
-            Binding binding = (Binding)endpoint.getBinding().clone();
-            service.getBindings().add(binding);
+            if (endpoint.getComponent() != null) {
+                Component component = (Component)endpoint.getComponent().clone();
+                component.setImplementation(null);
+                composite.getComponents().add(component);
+                component.getReferences().clear();
+                component.getServices().clear();
+                if (endpoint.getService() != null) {
+                    ComponentService service = (ComponentService)endpoint.getService().clone();
+                    component.getServices().add(service);
+                    service.getBindings().clear();
+                    service.setInterfaceContract(endpoint.getComponentServiceInterfaceContract());
+                    if (endpoint.getBinding() != null) {
+                        Binding binding = (Binding)endpoint.getBinding().clone();
+                        service.getBindings().add(binding);
+                    }                
+                }
+            }
             return composite;
         } catch (CloneNotSupportedException e) {
             return null;

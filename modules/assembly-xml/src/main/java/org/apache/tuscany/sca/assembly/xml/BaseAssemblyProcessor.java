@@ -84,9 +84,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -493,7 +491,8 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
                     if (VALUE_QNAME.equals(name)) {
                     	if (gotOneValue && !isMany) {
                     	    // TODO: TUSCANY-3231 this should be error not warning but that breaks OASIS tests
-                    		warning(context.getMonitor(), "ASM50032: multiple value elements for single-valued property", name, name);
+                    	    // [rfeng] We should not issue warning here as the component property many inherit @many from the componentType property
+                    	    // warning(context.getMonitor(), "ASM50032: multiple value elements for single-valued property", name, name);
                     	}
                         loadElement(reader, root);
                         gotOneValue = true;
