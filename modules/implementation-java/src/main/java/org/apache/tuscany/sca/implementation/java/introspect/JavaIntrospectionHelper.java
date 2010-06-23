@@ -50,7 +50,7 @@ import org.oasisopen.sca.ServiceReference;
  */
 public final class JavaIntrospectionHelper {
     private static final Logger logger = Logger.getLogger(JavaIntrospectionHelper.class.getName());
-    private static final Class[] EMPTY_CLASS_ARRY = new Class[0];
+    private static final Class<?>[] EMPTY_CLASS_ARRY = new Class[0];
 
     /**
      * Hide the constructor
@@ -62,7 +62,7 @@ public final class JavaIntrospectionHelper {
      * Returns a collection of public, and protected fields declared by a class
      * or one of its supertypes
      */
-    public static Set<Field> getAllPublicAndProtectedFields(Class clazz, boolean validating) {
+    public static Set<Field> getAllPublicAndProtectedFields(Class<?> clazz, boolean validating) {
         return getAllPublicAndProtectedFields(clazz, new HashSet<Field>(), validating);
     }
 
@@ -78,7 +78,7 @@ public final class JavaIntrospectionHelper {
      * Recursively evaluates the type hierarchy to return all fields that are
      * public or protected
      */
-    private static Set<Field> getAllPublicAndProtectedFields(Class clazz, Set<Field> fields, boolean validating) {
+    private static Set<Field> getAllPublicAndProtectedFields(Class<?> clazz, Set<Field> fields, boolean validating) {
         if (clazz == null || clazz.isArray() || Object.class.equals(clazz)) {
             return fields;
         }
@@ -86,7 +86,8 @@ public final class JavaIntrospectionHelper {
         Field[] declaredFields = clazz.getDeclaredFields();
         for (final Field field : declaredFields) {
             int modifiers = field.getModifiers();
-            if ((Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) && !Modifier.isStatic(modifiers)) {
+            // The field should be non-final and non-static
+            if ((Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) && !Modifier.isStatic(modifiers) && !Modifier.isFinal(modifiers)) {
                 // Allow privileged access to set accessibility. Requires ReflectPermission
                 // in security policy.
                 AccessController.doPrivileged(new PrivilegedAction<Object>() {
@@ -104,6 +105,46 @@ public final class JavaIntrospectionHelper {
         }
         return fields;
     }
+    
+    /**
+     * Returns a collection of injectable fields (neither final or static) declared by a class
+     * or one of its supertypes
+     */
+    public static Set<Field> getInjectableFields(Class<?> clazz, boolean validating) {
+        return getInjectableFields(clazz, new HashSet<Field>(), validating);
+    }
+    
+    /**
+     * Recursively evaluates the type hierarchy to return all fields that are
+     * not static or final
+     */
+    private static Set<Field> getInjectableFields(Class<?> clazz, Set<Field> fields, boolean validating) {
+        if (clazz == null || clazz.isArray() || Object.class.equals(clazz)) {
+            return fields;
+        }
+        fields = getInjectableFields(clazz.getSuperclass(), fields, validating);
+        Field[] declaredFields = clazz.getDeclaredFields();
+        for (final Field field : declaredFields) {
+            int modifiers = field.getModifiers();
+            // The field should be non-final and non-static
+            if (!Modifier.isStatic(modifiers) && !Modifier.isFinal(modifiers)) {
+                // Allow privileged access to set accessibility. Requires ReflectPermission
+                // in security policy.
+                AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                    public Object run() {
+                        field.setAccessible(true); // ignore Java accessibility
+                        return null;
+                    }
+                });
+                fields.add(field);
+            } else {
+                if (validating) {
+                    checkInvalidAnnotations(field);
+                }
+            }
+        }
+        return fields;
+    }
 
     /**
      * Returns a collection of public and protected methods declared by a class
@@ -113,14 +154,14 @@ public final class JavaIntrospectionHelper {
      * cached. It is assumed that this method will be used during a
      * configuration phase.
      */
-    public static Set<Method> getAllUniquePublicProtectedMethods(Class clazz, boolean validating) {
+    public static Set<Method> getAllUniquePublicProtectedMethods(Class<?> clazz, boolean validating) {
         return getAllUniqueMethods(clazz, new HashSet<Method>(), validating);
     }
 
     /**
      * Recursively evaluates the type hierarchy to return all unique methods
      */
-    private static Set<Method> getAllUniqueMethods(Class pClass, Set<Method> methods, boolean validating) {
+    private static Set<Method> getAllUniqueMethods(Class<?> pClass, Set<Method> methods, boolean validating) {
         if (pClass == null || pClass.isArray() || Object.class.equals(pClass)) {
             return methods;
         }

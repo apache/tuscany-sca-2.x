@@ -84,14 +84,8 @@ public class JavaClassIntrospectorImpl {
                 }
             }
 
-            Set<Field> fields = JavaIntrospectionHelper.getAllPublicAndProtectedFields(clazz, true);
+            Set<Field> fields = JavaIntrospectionHelper.getInjectableFields(clazz, true);
             for (Field field : fields) {
-                visitor.visitField(field, type);
-            }
-
-            // Check if any private fields have illegal annotations that should be raised as errors
-            Set<Field> privateFields = JavaIntrospectionHelper.getPrivateFields(clazz);
-            for (Field field : privateFields) {
                 visitor.visitField(field, type);
             }
 
