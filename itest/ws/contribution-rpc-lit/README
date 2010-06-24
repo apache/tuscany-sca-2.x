@@ -1,0 +1,30 @@
+RPC Literal WSDL Style
+======================
+
+Interface
+---------
+
+
+WSDL
+----
+
+
+SOAP
+----
+
+POST /HelloWorldService/HelloWorld-rpclit HTTP/1.1
+Content-Type: text/xml; charset=UTF-8
+SOAPAction: ""
+User-Agent: Axis2
+Host: localhost:8088
+Content-Length: 364
+
+<?xml version='1.0' encoding='UTF-8'?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Body>
+    <parameters xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                xmlns:ns2="http://ws.binding.sca.tuscany.apache.org/" 
+                xsi:type="xs:string">Fred</parameters>
+  </soapenv:Body>
+</soapenv:Envelope>

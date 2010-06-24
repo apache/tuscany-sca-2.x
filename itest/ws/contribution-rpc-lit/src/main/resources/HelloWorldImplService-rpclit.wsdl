@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<definitions targetNamespace="http://ws.binding.sca.tuscany.apache.org/rpclit" 
+             name="HelloWorldImplService" 
+             xmlns="http://schemas.xmlsoap.org/wsdl/" 
+             xmlns:tns="http://ws.binding.sca.tuscany.apache.org/rpclit" 
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://ws.binding.sca.tuscany.apache.org/rpclit" 
+                  schemaLocation="HelloWorldImplService-rpclit.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="getGreetings">
+    <part name="s" type="xsd:string"/>
+  </message>
+  <message name="getGreetingsResponse">
+    <part name="s" type="xsd:string"/>
+  </message>
+  <message name="getGreetingsException">
+    <part name="s" type="xsd:string"/>
+  </message>
+  <message name="getGreetingsExceptionResponse">
+    <part name="s" type="xsd:string"/>
+  </message>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception"/>
+  </message>
+  <message name="getGreetingsComplex">
+    <part name="foo" type="tns:foo"/>
+  </message>
+  <message name="getGreetingsComplexResponse">
+    <part name="foo" type="tns:foo"/>
+  </message>
+  <portType name="HelloWorldImpl">
+    <operation name="getGreetings">
+      <input message="tns:getGreetings"/>
+      <output message="tns:getGreetingsResponse"/>
+    </operation>
+    <operation name="getGreetingsException">
+      <input message="tns:getGreetingsException"/>
+      <output message="tns:getGreetingsExceptionResponse"/>
+      <fault message="tns:Exception" name="Exception"/>
+    </operation>
+    <operation name="getGreetingsComplex">
+      <input message="tns:getGreetingsComplex"/>
+      <output message="tns:getGreetingsComplexResponse"/>
+    </operation>
+  </portType>
+  <binding name="HelloWorldImplPortBinding" type="tns:HelloWorldImpl">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
+    <operation name="getGreetings">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="getGreetingsException">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getGreetingsComplex">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="HelloWorldImplService">
+    <port name="HelloWorldImplPort" binding="tns:HelloWorldImplPortBinding">
+      <soap:address location="http://localhost:8087/HelloWorldService/HelloWorld-rpclit"/>
+    </port>
+  </service>
+</definitions>
+
+
+
