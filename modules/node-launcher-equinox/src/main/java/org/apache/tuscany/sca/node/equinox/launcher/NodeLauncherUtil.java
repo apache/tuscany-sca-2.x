@@ -1117,6 +1117,11 @@ final class NodeLauncherUtil {
                 return false;
             }
 
+            // Don't include the sources jar files
+            if (name.endsWith("-sources.jar")) {
+                return false;
+            }
+
             // Include JAR and MAR files
             if (name.endsWith(".jar")) {
                 return true;
