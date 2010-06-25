@@ -57,6 +57,7 @@ import org.apache.tuscany.sca.implementation.java.context.InstanceFactory;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -291,7 +292,7 @@ public class JavaComponentContextProvider {
         Class<?> implClass = instanceFactoryProvider.getImplementationClass();
 
         Method method = JavaInterfaceUtil.findMethod(implClass, operation);
-        if( operation.isAsyncServer() ) {
+        if( ((JavaOperation) operation).isAsyncServer() ) {
         	return new JavaAsyncImplementationInvoker(operation, method, component);
         } else {
         	return new JavaImplementationInvoker(operation, method, component);

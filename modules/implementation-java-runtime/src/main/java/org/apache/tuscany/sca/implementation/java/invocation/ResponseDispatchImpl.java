@@ -68,7 +68,6 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 	/**
 	 * Provide Context data for this ResponseDispatch that the service implementation can use
 	 */
-	@Override
 	public Map<String, Object> getContext() {
 		return null;
 	}
@@ -78,7 +77,6 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 	 * @param e - the Fault to send
 	 * @throws IllegalStateException if either the sendResponse method or the sendFault method have been called previously
 	 */
-	@Override
 	public void sendFault(Throwable e) {
 		if( sendOK() ) {
 			lock.lock();
@@ -98,7 +96,6 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 	 * @throws IllegalStateException if either the sendResponse method or the sendFault method have been called previously
 	 * @param res - the response message, which is of type T
 	 */
-	@Override
 	public void sendResponse(T res) {
 		if( sendOK() ) {
 			lock.lock();

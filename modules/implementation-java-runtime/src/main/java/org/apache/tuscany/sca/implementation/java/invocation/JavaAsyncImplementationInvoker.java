@@ -21,17 +21,13 @@ package org.apache.tuscany.sca.implementation.java.invocation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
-import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
-import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.oasisopen.sca.ResponseDispatch;
@@ -47,7 +43,7 @@ public class JavaAsyncImplementationInvoker extends JavaImplementationInvoker {
     public JavaAsyncImplementationInvoker(Operation operation, Method method, RuntimeComponent component) {
     	super( operation, method, component);
         assert method != null : "Operation method cannot be null";
-        assert operation.isAsyncServer() : "Operation must be async";
+        assert ((JavaOperation) operation).isAsyncServer() : "Operation must be async";
     } // end constructor
     
     public Message invoke(Message msg) {
