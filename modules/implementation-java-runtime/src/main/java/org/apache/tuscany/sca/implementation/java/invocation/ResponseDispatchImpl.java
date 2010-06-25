@@ -1,0 +1,137 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.apache.tuscany.sca.implementation.java.invocation;
+
+import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.oasisopen.sca.ResponseDispatch;
+
+/**
+ * Implementation of the ResponseDispatch interface of the OASIS SCA Java API
+ * 
+ * This is used for invocations of asynchronous services, where it is passed as a parameter on async service operations
+ * and it provides the path by which the service implementation returns the response to the request, or a Fault
+ * 
+ * Note that this class is serializable and can be serialized, stored and deserialized by the service implementation
+ *
+ * @param <T> - type of the response message
+ */
+public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializable {
+
+	/**
+	 * Generated serialVersionUID value
+	 */
+	private static final long serialVersionUID = 300158355992568592L;
+	
+	// A latch used to ensure that the sendResponse() and sendFault() operations are used at most once
+	// The latch is initialized with the value "false"
+	private AtomicBoolean latch = new AtomicBoolean();
+	
+	private final Lock lock = new ReentrantLock();
+    private final Condition completed  = lock.newCondition(); 
+	
+	// The result
+	private T response = null;
+	private Throwable fault = null; 
+	
+	public ResponseDispatchImpl( ) {
+		super();
+	} // end constructor
+	
+	public static <T> ResponseDispatchImpl<T> newInstance( Class<T> type ) {
+		return new ResponseDispatchImpl<T>();
+	}
+	
+	/**
+	 * Provide Context data for this ResponseDispatch that the service implementation can use
+	 */
+	@Override
+	public Map<String, Object> getContext() {
+		return null;
+	}
+
+	/**
+	 * Send a Fault.  Must only be invoked once for this ResponseDispatch object
+	 * @param e - the Fault to send
+	 * @throws IllegalStateException if either the sendResponse method or the sendFault method have been called previously
+	 */
+	@Override
+	public void sendFault(Throwable e) {
+		if( sendOK() ) {
+			lock.lock();
+			try {
+				fault = e;
+			} finally {
+				lock.unlock();
+			} // end try
+		} else {
+			throw new IllegalStateException("sendResponse() or sendFault() has been called previously");
+		} // end if
+	} // end method sendFault
+
+	/**
+	 * Send the response message.  Must only be invoked once for this ResponseDispatch object
+	 * @throws IllegalStateException if either the sendResponse method or the sendFault method have been called previously
+	 * @param res - the response message, which is of type T
+	 */
+	@Override
+	public void sendResponse(T res) {
+		if( sendOK() ) {
+			lock.lock();
+			try {
+				response = res;
+			} finally {
+				lock.unlock();
+			} // end try
+		} else {
+			throw new IllegalStateException("sendResponse() or sendFault() has been called previously");
+		} // end if
+	} // end method sendResponse
+	
+	public T get(long timeout, TimeUnit unit) throws Throwable {
+		lock.lock();
+		try {
+			// wait for result to be available
+			if( response == null && fault == null ) completed.await( timeout, unit);
+			if( response != null ) return response;
+			if( fault != null ) throw fault;
+		} finally {
+			lock.unlock();
+		} // end try
+
+		return null;
+	} // end method get
+
+	/**
+	 * Indicates that sending a response is OK - this is a transactional
+	 * query in that it also updates the state of this ResponseDispatch, so
+	 * that it will return true once and once only
+	 * @return - true if it is OK to send the response, false otherwise
+	 */
+	private boolean sendOK() {
+		return latch.compareAndSet(false, true);
+	}
+}

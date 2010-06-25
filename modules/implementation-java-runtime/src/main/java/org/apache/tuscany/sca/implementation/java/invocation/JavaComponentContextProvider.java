@@ -291,8 +291,12 @@ public class JavaComponentContextProvider {
         Class<?> implClass = instanceFactoryProvider.getImplementationClass();
 
         Method method = JavaInterfaceUtil.findMethod(implClass, operation);
-        return new JavaImplementationInvoker(operation, method, component);
-    }
+        if( operation.isAsyncServer() ) {
+        	return new JavaAsyncImplementationInvoker(operation, method, component);
+        } else {
+        	return new JavaImplementationInvoker(operation, method, component);
+        } // end if
+    } // end 
 
     private static class OptimizedObjectFactory<T> implements ObjectFactory<T> {
         private ScopeContainer scopeContainer;
