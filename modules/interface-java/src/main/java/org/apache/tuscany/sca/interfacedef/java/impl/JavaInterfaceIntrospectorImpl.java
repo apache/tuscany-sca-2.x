@@ -51,6 +51,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.oasisopen.sca.annotation.AsyncFault;
 import org.oasisopen.sca.annotation.OneWay;
 import org.oasisopen.sca.annotation.Remotable;
 
@@ -199,6 +200,11 @@ public class JavaInterfaceIntrospectorImpl {
                 getActualTypes(method.getGenericParameterTypes(), method.getParameterTypes(), typeBindings);
             Class<?>[] faultTypes =
                 getActualTypes(method.getGenericExceptionTypes(), method.getExceptionTypes(), typeBindings);
+            
+            // For async server interfaces, faults are described using the @AsyncFaults annotation
+            if( method.isAnnotationPresent(AsyncFault.class) ) {
+            	faultTypes = readAsyncFaultTypes( method );
+            } // end if 
 
             boolean nonBlocking = method.isAnnotationPresent(OneWay.class);
             if (nonBlocking) {
@@ -256,6 +262,17 @@ public class JavaInterfaceIntrospectorImpl {
         }
         return operations;
     }
+    
+    /**
+     * Reads the fault types declared in an @AsyncFault annotation on an async server method
+     * @param method - the Method
+     * @return - an array of fault/exception classes
+     */
+    private  Class<?>[] readAsyncFaultTypes( Method method ) {
+    	AsyncFault theFaults = method.getAnnotation(AsyncFault.class);
+    	if ( theFaults == null ) return null;
+    	return theFaults.value();
+    } // end method readAsyncFaultTypes
 
     private boolean jaxwsAsyncMethod(Method method) {
         if (method.getName().endsWith("Async")) {

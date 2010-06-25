@@ -54,5 +54,17 @@ public interface JavaOperation extends Operation {
      * @param action the action value
      */
     void setAction(String action);
+    
+    /**
+     * Sets whether this operation has async server style
+     * @param isAsync - "true" marks this operation as async server style
+     */
+    public void setAsyncServer( boolean isAsync );
+    
+    /** 
+     * Indicates whether this operation is async server style
+     * @return - true if the operation is async server style
+     */
+    public boolean isAsyncServer();
 
 }

@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 
 /**
@@ -54,7 +55,12 @@ public final class JavaInterfaceUtil {
     public static Method findMethod(Class<?> implClass, Operation operation) throws NoSuchMethodException {
         String name = operation.getName();
         if (operation instanceof JavaOperation) {
-            name = ((JavaOperation)operation).getJavaMethod().getName();
+        	if( ((JavaOperation)operation).isAsyncServer() ) {
+        		// In this case, the operation is a mapped async server style method and needs special handling
+        		return findAsyncServerMethod( implClass, (JavaOperation)operation );
+        	} else {
+        		name = ((JavaOperation)operation).getJavaMethod().getName();
+        	} // end if
         }
         Interface interface1 = operation.getInterface();
         int numParams = operation.getInputType().getLogical().size();
@@ -85,6 +91,49 @@ public final class JavaInterfaceUtil {
         Class<?>[] paramTypes = getPhysicalTypes(operation);
         return implClass.getMethod(name, paramTypes);
     }
+    
+    /**
+     * Return the method on the implementation class that matches the async server version of the operation.
+     * 
+     * @param implClass the implementation class or interface
+     * @param operation the operation to match - this is the sync equivalent of an async server operation
+     * @return the method described by the operation
+     * @throws NoSuchMethodException if no such method exists
+     */
+    public static Method findAsyncServerMethod(Class<?> implClass, JavaOperation operation) throws NoSuchMethodException {
+        String name = operation.getJavaMethod().getName();
+        List<Operation> actualOps = (List<Operation>) operation.getInterface().getAttributes().get("ASYNC-SERVER-OPERATIONS");
+        Operation matchingOp = null;
+        for( Operation op: actualOps ) {
+        	if( op.getName().equals(name) ) {
+        		matchingOp = op;
+        		break;
+        	}
+        } // end for
+        if( matchingOp == null ) throw new NoSuchMethodException("No matching async method for operation " + operation.getName());
+        
+        int numParams = matchingOp.getInputType().getLogical().size();
+        
+        List<Method> matchingMethods = new ArrayList<Method>();
+        for (Method m : implClass.getMethods()) {
+            if (m.getName().equals(name) && m.getParameterTypes().length == (numParams) ) {
+                matchingMethods.add(m);
+            }
+        }
+        
+        if (matchingMethods.size() == 1) {
+            return matchingMethods.get(0);
+        }
+        if (matchingMethods.size() > 1) {
+            Class<?>[] paramTypes = getPhysicalTypes(matchingOp);
+            return implClass.getMethod(name, paramTypes);
+        } 
+        
+        // No matching method found
+        throw new NoSuchMethodException("No matching method for operation " + operation.getName()
+            + " is found on " + implClass);
+        
+    } // end method findAsyncServerMethod
 
     /**
      * @Deprecated

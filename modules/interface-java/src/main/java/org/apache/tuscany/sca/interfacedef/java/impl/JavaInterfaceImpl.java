@@ -19,10 +19,25 @@
 package org.apache.tuscany.sca.interfacedef.java.impl;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
+import java.util.List;
+import java.lang.reflect.ParameterizedType;
 
 import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.apache.tuscany.sca.policy.Intent;
+
+import org.oasisopen.sca.ResponseDispatch;
 
 /**
  * Represents a Java interface.
@@ -37,6 +52,10 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
     private QName qname;
     
     protected JavaInterfaceImpl() {
+    	super();
+    	// Mark the interface as unresolved until all the basic processing is complete
+    	// including Intent & Policy introspection
+    	this.setUnresolved(true);
     }
 
     public String getName() {
@@ -135,5 +154,172 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
 
         return true;
     }
+    
+    public List<Operation> getOperations() {
+    	if( !isUnresolved() && isAsyncServer() ) {
+    		return equivalentSyncOperations();
+    	} else {
+    		return super.getOperations();
+    	}
+    } // end method getOperations
+    
+
+    private List<Operation> syncOperations = null;
+    private List<Operation> equivalentSyncOperations() {
+    	if( syncOperations != null ) return syncOperations;
+    	List<Operation> allOperations = super.getOperations();
+    	syncOperations = new ArrayList<Operation>();
+    	for( Operation operation: allOperations) {
+    		syncOperations.add( getSyncFormOfOperation( (JavaOperation) operation ) );
+    	// Store the actual async operations under the attribute "ASYNC-SERVER-OPERATIONS"
+    	this.getAttributes().put("ASYNC-SERVER-OPERATIONS", allOperations);
+    	} // end for
+    	
+    	return syncOperations;
+    } // end method equivalentSyncOperations
+    
+    private static final String UNKNOWN_DATABINDING = null;
+    /**
+     * Prepares the synchronous form of an asynchronous operation
+     * - async form:      void someOperationAsync( FooType inputParam, DispatchResponse<BarType> )
+     * - sync form:       BarType someOperation( FooType inputParam )
+     * @param operation - the operation to convert
+     * @return - the synchronous form of the operation - for an input operation that is not async server in form, this 
+     *           method simply returns the original operation unchanged
+     */
+    private Operation getSyncFormOfOperation( JavaOperation operation ) {
+    	if( isAsyncServerOperation( operation ) ) {
+            JavaOperation syncOperation = new JavaOperationImpl();
+            String opName = operation.getName().substring(0, operation.getName().length() - 5 );
+        	
+            // Prepare the list of equivalent input parameters, which simply excludes the (final) DispatchResponse object
+            // and the equivalent return parameter, which is the (generic) type from the DispatchResponse object
+            DataType<List<DataType>> requestParams = operation.getInputType();
+
+        	DataType<List<DataType>> inputType = prepareSyncInputParams( requestParams );
+            DataType<XMLType> returnDataType = prepareSyncReturnParam( requestParams );
+            List<DataType> faultDataTypes = prepareSyncFaults( operation );
+        	
+        	syncOperation.setName(opName);
+        	syncOperation.setAsyncServer(true);
+            syncOperation.setInputType(inputType);
+            syncOperation.setOutputType(returnDataType);
+            syncOperation.setFaultTypes(faultDataTypes);
+            syncOperation.setNonBlocking(operation.isNonBlocking());
+            syncOperation.setJavaMethod(operation.getJavaMethod());
+            syncOperation.setInterface(this);
+    		return syncOperation;
+    	} else {
+    		// If it's not Async form, then it's a synchronous operation
+    		return operation;
+    	} // end if
+    } // end getSyncFormOfOperation
+    
+    /**
+     * Produce the equivalent sync method input parameters from the input parameters of the async method
+     * @param requestParams - async method input parameters
+     * @return - the equivalent sync method input parameters
+     */
+    private DataType<List<DataType>> prepareSyncInputParams( DataType<List<DataType>> requestParams ) {
+        List<DataType> requestLogical = requestParams.getLogical();
+    	int paramCount = requestLogical.size();
+    	
+    	// Copy the list of async parameters, removing the final DispatchResponse
+    	List<DataType> asyncParams = new ArrayList<DataType>( paramCount - 1);
+    	for( int i = 0 ; i < (paramCount - 1) ; i++ ) {
+    		asyncParams.add( requestLogical.get(i) );
+    	} // end for
+    	
+    	DataType<List<DataType>> inputType =
+            new DataTypeImpl<List<DataType>>(requestParams.getDataBinding(),
+            		                         requestParams.getPhysical(), asyncParams);
+    	return inputType;
+    } // end method prepareSyncInputParams
+    
+    /**
+     * Prepare the return data type of the equivalent sync operation, based on the parameterization of the ResponseDispatch object
+     * of the async operation - the return data type is the Generic type of the final DispatchResponse<?>
+     * @param requestParams - - async method input parameters
+     * @return - the sync method return parameter
+     */
+    private DataType<XMLType> prepareSyncReturnParam( DataType<List<DataType>> requestParams ) {
+    	List<DataType> requestLogical = requestParams.getLogical();
+    	int paramCount = requestLogical.size();
+    	
+    	DataType<?> finalParam = requestLogical.get( paramCount - 1 );
+    	ParameterizedType t = (ParameterizedType)finalParam.getGenericType();
+    	XMLType returnXMLType = (XMLType)finalParam.getLogical();
+    	
+    	String namespace = null;
+    	if( returnXMLType.isElement() ) {
+    		namespace = returnXMLType.getElementName().getNamespaceURI();
+    	} else {
+    		namespace = returnXMLType.getTypeName().getNamespaceURI();
+    	}
+    	
+    	Type[] typeArgs = t.getActualTypeArguments();
+    	if( typeArgs.length != 1 ) throw new IllegalArgumentException( "ResponseDispatch parameter is not parameterized correctly");
+    	
+    	Class<?> returnType = (Class<?>)typeArgs[0];
+        
+    	// Set outputType to null for void
+        XMLType xmlReturnType = new XMLType(new QName(namespace, "return"), null);
+        DataType<XMLType> returnDataType =
+            returnType == void.class ? null : new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, returnType, xmlReturnType);
+        
+        return returnDataType;
+    } // end method prepareSyncReturnParam
+    
+    /**
+     * Prepare the set of equivalent sync faults for a given async operation
+     * @return - the list of faults
+     */
+    private List<DataType> prepareSyncFaults( JavaOperation operation ) {
+    	//TODO - deal with Faults - for now just copy through whatever is associated with the async operation
+    	return operation.getFaultTypes();
+    }
+    
+    /**
+     * Determines if an interface operation has the form of an async server operation
+     * - async form:      void someOperationAsync( FooType inputParam, ...., DispatchResponse<BarType> )
+     * @param operation - the operation to examine
+     * @return - true if the operation has the form of an async operation, false otherwise
+     */
+    private boolean isAsyncServerOperation( Operation operation ) {
+    	// Async form operations have:
+    	// 1) void return type
+    	// 2) name ending in "Async"
+    	// 3) final parameter which is of ResponseDispatch<?> type
+    	DataType<?> response = operation.getOutputType();
+    	if( response != null ) {
+    	   if ( response.getPhysical() != void.class ) return false;
+    	} // end if
+    	
+    	if ( !operation.getName().endsWith("Async") ) return false;
+    	
+    	DataType<List<DataType>> requestParams = operation.getInputType();
+    	int paramCount = requestParams.getLogical().size();
+    	if( paramCount < 1 ) return false;
+    	DataType<?> finalParam = requestParams.getLogical().get( paramCount - 1 );
+    	if ( finalParam.getPhysical() != ResponseDispatch.class ) return false;
+    	
+    	return true;
+    } // end method isAsyncServerOperation
+    
+    static QName ASYNC_INVOCATION = new QName(Constants.SCA11_NS, "asyncInvocation");
+    /**
+     * Indicates if this interface is an Async Server interface
+     * @return true if the interface is Async Server, false otherwise
+     */
+    private boolean isAsyncServer() {
+    	
+    	List<Intent> intents = getRequiredIntents();
+    	for( Intent intent: intents ) {
+    		if ( intent.getName().equals(ASYNC_INVOCATION) ) {
+    			return true;
+    		}
+    	} // end for
+    	return false;
+    } // end method isAsyncServer
 
 }

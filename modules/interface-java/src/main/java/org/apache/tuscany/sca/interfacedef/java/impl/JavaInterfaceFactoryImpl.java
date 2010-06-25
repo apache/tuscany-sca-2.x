@@ -58,6 +58,8 @@ public abstract class JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
             if (javaInterface == null) {
                 javaInterface = createJavaInterface();
                 introspector.introspectInterface(javaInterface, interfaceClass);
+                // Now that all introspection is complete we can mark the interface resolved
+                javaInterface.setUnresolved(false);
                 cache.put(interfaceClass, javaInterface);
             }
             return javaInterface;

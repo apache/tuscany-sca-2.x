@@ -33,6 +33,7 @@ public class JavaOperationImpl extends OperationImpl implements JavaOperation {
 
     private Method method;
     private String action;
+    private boolean isAsyncServer = false;
 
     public Method getJavaMethod() {
         return method;
@@ -73,6 +74,22 @@ public class JavaOperationImpl extends OperationImpl implements JavaOperation {
         } else if (!method.equals(other.method))
             return false;
         return true;
+    }
+    
+    /**
+     * Sets whether this operation has async server style
+     * @param isAsync - "true" marks this operation as async server style
+     */
+    public void setAsyncServer( boolean isAsync ) {
+    	isAsyncServer = isAsync;
+    }
+    
+    /** 
+     * Indicates whether this operation is async server style
+     * @return - true if the operation is async server style
+     */
+    public boolean isAsyncServer() {
+    	return isAsyncServer;
     }
 
     @Override
