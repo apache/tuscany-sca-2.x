@@ -1,0 +1,24 @@
+OSGI Sample Launcher
+===================
+
+This directory contains a sample launcher for the running the
+tuscany sample contributions in an OSGI environment.
+
+The difference between this sample and the sample with the name without the
+-base suffix is that this one uses the Tuscany aggregated jar to minimize the
+jars a user needs to use.
+
+The README file in the <distribution-unpack-dir>/samples directory provides 
+general instructions about building and running sample contributions using the
+tuscany sample launchers. ( where
+distribution-unpack-dir is the directory in which you unpacked the tuscany
+binary distribution archive)
+
+To use this sample OSGI launcher with ant excute the command
+
+ant run-<contributionname>
+
+where run-<contributionname> is one of the targets in the build.xml file
+
+To use this sample launcher to run all of the contributions as junit test cases,
+execute the command "mvn" in the launcher directory.
