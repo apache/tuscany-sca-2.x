@@ -294,7 +294,7 @@ public class EquinoxHost {
             for (int i = 0, n = bundleFiles.size(); i < n; i++) {
                 URL bundleFile = bundleFiles.get(i);
                 String bundleName = bundleNames.get(i);
-                if (bundleName.contains("org.eclipse.jdt.junit")) {
+                if (bundleName.contains("org.eclipse.jdt.junit") || bundleName.contains("org.apache.tuscany.sca.base")) {
                     continue;
                 }
                 installBundle(bundleFile, bundleName);

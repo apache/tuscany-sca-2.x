@@ -86,6 +86,7 @@ import org.osgi.framework.Constants;
  */
 final class NodeLauncherUtil {
     private static final String NODE_API_BUNDLE = "org.apache.tuscany.sca.node.api";
+    private static final String BASE_BUNDLE = "org.apache.tuscany.sca.base";
 
     private static final Logger logger = Logger.getLogger(NodeLauncherUtil.class.getName());
 
@@ -126,6 +127,10 @@ final class NodeLauncherUtil {
             Bundle bundle = null;
             for (Bundle b : bundleContext.getBundles()) {
                 if (NODE_API_BUNDLE.equals(b.getSymbolicName())) {
+                    bundle = b;
+                    break;
+                }
+                if (b.getSymbolicName().contains(BASE_BUNDLE)) {
                     bundle = b;
                     break;
                 }
