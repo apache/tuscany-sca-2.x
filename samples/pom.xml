@@ -86,6 +86,7 @@
                 -->
                 <module>launcher-embedded-jse</module>
                 <module>launcher-embedded-osgi</module>
+                <module>launcher-embedded-osgi-base</module>
 
                 <!-- Application samples -->
 
