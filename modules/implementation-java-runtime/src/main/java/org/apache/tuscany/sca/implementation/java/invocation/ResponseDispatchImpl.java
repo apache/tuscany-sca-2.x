@@ -84,6 +84,7 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 			lock.lock();
 			try {
 				fault = e;
+				completed.signalAll();
 			} finally {
 				lock.unlock();
 			} // end try
@@ -103,6 +104,7 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 			lock.lock();
 			try {
 				response = res;
+				completed.signalAll();
 			} finally {
 				lock.unlock();
 			} // end try
