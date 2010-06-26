@@ -24,6 +24,7 @@ import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospe
 import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.toPropertyName;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -55,8 +56,8 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.ComponentName;
 import org.oasisopen.sca.annotation.Context;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
@@ -138,7 +139,19 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             throw new IntrospectionException(e);
         }
     }
+    
+    private static boolean isAnnotatedWithSCA(AnnotatedElement element) {
+        for (Annotation a : element.getAnnotations()) {
+            if (isSCAAnnotation(a)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    private static boolean isSCAAnnotation(Annotation a) {
+        return a.annotationType().getName().startsWith("org.oasisopen.sca.annotation.");
+    }
 
     private <T> void calcPropRefs(Set<Method> methods,
                                   List<org.apache.tuscany.sca.assembly.Service> services,
@@ -152,7 +165,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             if (!isPublicSetter(method)) {
                 continue;
             }
-            if (method.isAnnotationPresent(Callback.class) || method.isAnnotationPresent(Context.class)) {
+            if (isAnnotatedWithSCA(method)) {
                 // Add the property name as others
                 others.add(toPropertyName(method.getName()));
                 continue;
@@ -169,7 +182,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
                         type.getReferences().add(createReference(name, param));
                         type.getReferenceMembers().put(name, new JavaElementImpl(method, 0));
                     } else {
-                        type.getProperties().add(createProperty(name, param));
+                        type.getProperties().add(createProperty(name, param, genericType));
                         type.getPropertyMembers().put(name, new JavaElementImpl(method, 0));
                     }
                 }
@@ -180,12 +193,14 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             if (!isProtectedSetter(method)) {
                 continue;
             }
-            if (method.isAnnotationPresent(Callback.class) || method.isAnnotationPresent(Context.class)) {
+            if (isAnnotatedWithSCA(method)) {
                 // Add the property name as others
                 others.add(toPropertyName(method.getName()));
                 continue;
             }
             Class<?> param = method.getParameterTypes()[0];
+            Type paramType = method.getGenericParameterTypes()[0];
+            
             String name = toPropertyName(method.getName());
             setters.add(name);
             // avoid duplicate property or ref names
@@ -196,7 +211,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
                 }
             } else {
                 if (!type.getPropertyMembers().containsKey(name)) {
-                    type.getProperties().add(createProperty(name, param));
+                    type.getProperties().add(createProperty(name, param, paramType));
                     type.getPropertyMembers().put(name, new JavaElementImpl(method, 0));
                 }
             }
@@ -207,7 +222,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         // for the same name
         Set<Field> fields = getAllPublicAndProtectedFields(clazz, false);
         for (Field field : fields) {
-            if (field.isAnnotationPresent(Callback.class) || field.isAnnotationPresent(Context.class)) {
+            if (isAnnotatedWithSCA(field)) {
                 continue;
             }
             if (setters.contains(field.getName()) || others.contains(field.getName())) {
@@ -215,6 +230,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             }
             String name = field.getName();
             Class<?> paramType = field.getType();
+            Type genericType = field.getGenericType();
             if (isReferenceType(paramType, field.getGenericType())) {
                 if (!type.getReferenceMembers().containsKey(name)) {
                     type.getReferences().add(createReference(name, paramType));
@@ -222,7 +238,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
                 }
             } else {
                 if (!type.getPropertyMembers().containsKey(name)) {
-                    type.getProperties().add(createProperty(name, paramType));
+                    type.getProperties().add(createProperty(name, paramType, genericType));
                     type.getPropertyMembers().put(name, new JavaElementImpl(field));
                 }
             }
@@ -362,7 +378,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
                 p.setClassifer(Reference.class);
                 type.getReferenceMembers().put(name, p);
             } else {
-                type.getProperties().add(createProperty(name, p.getType()));
+                type.getProperties().add(createProperty(name, p.getType(), p.getGenericType()));
                 p.setClassifer(Property.class);
                 type.getPropertyMembers().put(name, p);
             }
@@ -452,11 +468,8 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
      * @param name the property name
      * @param paramType the property type
      */
-    private org.apache.tuscany.sca.assembly.Property createProperty(String name, Class<?> paramType) {
-        org.apache.tuscany.sca.assembly.Property property = assemblyFactory.createProperty();
-        property.setName(name);
-        property.setXSDType(JavaXMLMapper.getXMLType(paramType));
-        return property;
+    private org.apache.tuscany.sca.assembly.Property createProperty(String name, Class<?> javaClass, Type genericType) {
+        return AbstractPropertyProcessor.createProperty(assemblyFactory, name, javaClass, genericType);
     }
 
      private org.apache.tuscany.sca.assembly.Reference createReference(String name, Class<?> paramType)
@@ -582,6 +595,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
      *          The name of the reference or of the property is derived from the
      *          name found on the setter method or on the field.
      */
+    // FIXME: [rfeng] What if it's a collection of references?
     private static boolean isReferenceType(Class<?> cls, Type genericType) {
         Class<?> baseType = JavaIntrospectionHelper.getBaseType(cls, genericType);
         return baseType.isInterface() && baseType.isAnnotationPresent(Remotable.class);
@@ -635,9 +649,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
      */
     private static boolean isAnnotated(JavaParameterImpl parameter) {
         for (Annotation annotation : parameter.getAnnotations()) {
-            Class<? extends Annotation> annotType = annotation.annotationType();
-            if (annotType.equals(Property.class) || annotType.equals(Reference.class)
-                || annotType.equals(Resource.class)) {
+            if (isSCAAnnotation(annotation)) {
                 return true;
             }
         }
@@ -668,8 +680,11 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         for (Annotation[] annotations : annots) {
             for (Annotation annotation : annotations) {
                 Class<? extends Annotation> annotType = annotation.annotationType();
-                if (annotType.equals(Property.class) || annotType.equals(Reference.class)
-                    || annotType.equals(Resource.class)) {
+                if (annotType == Property.class || annotType == Reference.class
+                    || annotType == Resource.class
+                    || annotType == ComponentName.class
+                    || annotType == Context.class
+                    || annotType == Callback.class) {
                     return true;
                 }
             }

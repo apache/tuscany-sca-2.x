@@ -29,6 +29,7 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.COMPONENT_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.COMPOSITE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.COMPOSITE_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.ELEMENT;
+import static org.apache.tuscany.sca.assembly.xml.Constants.EXTENSION_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.FILE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.IMPLEMENTATION_COMPOSITE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.IMPLEMENTATION_COMPOSITE_QNAME;
@@ -59,7 +60,6 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.URI;
 import static org.apache.tuscany.sca.assembly.xml.Constants.WIRE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.WIRED_BY_IMPL;
 import static org.apache.tuscany.sca.assembly.xml.Constants.WIRE_QNAME;
-import static org.apache.tuscany.sca.assembly.xml.Constants.EXTENSION_QNAME;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -1121,7 +1121,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                 XSDefinition resolved = contribution.getModelResolver().resolveModel(XSDefinition.class, xsdDefinition, context);
                 if (resolved == null || resolved.isUnresolved()){
                     // raise an error
-                    error(context.getMonitor(), "PropertyTypeNotFound", property, property.getXSDType().toString(), property.getName(), parentName);
+                    // [rfeng] The XSD might be not available if we use JAXB annotated classes, report it as a warning for now
+                    warning(context.getMonitor(), "PropertyTypeNotFound", property, property.getXSDType().toString(), property.getName(), parentName);
                 } else {
                     // store the schema in the property
                     property.setXSDDefinition(resolved);

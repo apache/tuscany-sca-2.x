@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
-import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
@@ -53,12 +52,10 @@ public class PropertyDataTypeProcessor extends BaseJavaClassVisitor {
      * @param javaElement
      * @return
      */
-    private DataType<?> introspect(Property property, JavaElementImpl javaElement) {
-        XMLType xmlType = new XMLType(property.getXSDElement(), property.getXSDType());
-        DataType<XMLType> dt =
-            new DataTypeImpl<XMLType>(null, javaElement.getType(), javaElement.getGenericType(), xmlType);
-        mediator.getDataBindings().introspectType(dt, null);
-        return dt;
+    private void introspect(Property property, JavaElementImpl javaElement) {
+        // XMLType xmlType = new XMLType(property.getXSDElement(), property.getXSDType());
+        // property.getDataType().setLogical(xmlType);
+        mediator.getDataBindings().introspectType(property.getDataType(), null);
     }
 
     @Override
@@ -66,8 +63,8 @@ public class PropertyDataTypeProcessor extends BaseJavaClassVisitor {
         for (Property property : type.getProperties()) {
             String name = property.getName();
             JavaElementImpl element = type.getPropertyMembers().get(name);
-            DataType dt = introspect(property, element);
-            property.setDataType(dt);
+            introspect(property, element);
+            DataType dt = property.getDataType();
             if (dt.getLogical() instanceof XMLType) {
                 XMLType xmlType = (XMLType)dt.getLogical();
                 property.setXSDType(xmlType.getTypeName());

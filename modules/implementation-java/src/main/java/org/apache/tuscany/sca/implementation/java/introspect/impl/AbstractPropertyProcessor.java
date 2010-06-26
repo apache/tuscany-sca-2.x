@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -29,6 +30,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
@@ -37,7 +39,9 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
-import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * Base class for ImplementationProcessors that handle annotations that add
@@ -203,21 +207,45 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
     
     protected Property createProperty(String name, JavaElementImpl element) throws IntrospectionException {
 
+        Type type = element.getGenericType();
+        Class<?> javaType = element.getType();
+        
+        return createProperty(assemblyFactory, name, javaType, type);
+
+    }
+
+    public static Property createProperty(AssemblyFactory assemblyFactory, String name, Class<?> javaClass, Type genericType) {
         Property property = assemblyFactory.createProperty();
         property.setName(name);
-        
-        Class<?> javaType = element.getType();
-        if (javaType.isArray() || Collection.class.isAssignableFrom(javaType)) {
+
+        if (javaClass.isArray() || Collection.class.isAssignableFrom(javaClass)) {
             property.setMany(true);
-            Type type = element.getGenericType();
-            if (type instanceof ParameterizedType){
-                property.setXSDType(JavaXMLMapper.getXMLType((Class)((ParameterizedType)type).getActualTypeArguments()[0]));
+            if (javaClass.isArray()) {
+                Class<?> propType = javaClass.getComponentType();
+                Type genericPropType = propType;
+                if (genericType instanceof GenericArrayType) {
+                    genericPropType = ((GenericArrayType)genericType).getGenericComponentType();
+                }
+                DataType dt = new DataTypeImpl(null, propType, genericPropType, XMLType.UNKNOWN);
+                property.setDataType(dt);
+            } else {
+                if (genericType instanceof ParameterizedType) {
+                    // Collection<BaseType> property;
+                    Type genericPropType = ((ParameterizedType)genericType).getActualTypeArguments()[0];
+                    Class<?> propType = JavaIntrospectionHelper.getErasure(genericPropType);
+                    DataType dt = new DataTypeImpl(null, propType, genericPropType, XMLType.UNKNOWN);
+                    property.setDataType(dt);
+                } else {
+                    // Collection property;
+                    DataType dt = new DataTypeImpl(null, Object.class, Object.class, XMLType.UNKNOWN);
+                    property.setDataType(dt);
+                }
             }
         } else {
-            property.setXSDType(JavaXMLMapper.getXMLType(javaType));
+            DataType dt = new DataTypeImpl(null, javaClass, genericType, XMLType.UNKNOWN);
+            property.setDataType(dt);
         }
         return property;
-
     }
 
     protected abstract String getName(A annotation);
