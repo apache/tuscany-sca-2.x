@@ -19,8 +19,11 @@
 
 package services.customer;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.ws.rs.core.Response;
 
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Scope;
@@ -38,8 +41,13 @@ public class CustomerServiceImpl implements CustomerService {
         return customers.values().iterator().next();
     }
     
-    public void addCustomer(Customer customer) {
+    public Response getResponse() {
+        return Response.ok(get()).build();
+    }
+
+    public Response addCustomer(Customer customer) {
         customers.put(customer.getName(), customer);
+        return Response.created(URI.create("/001")).build();
     }
     
     public void updateCustomer(Customer customer) {

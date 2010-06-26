@@ -23,6 +23,7 @@ import javax.jws.WebResult;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import javax.ws.rs.core.Response;
 
 import org.oasisopen.sca.annotation.Remotable;
 
@@ -33,8 +34,12 @@ public interface CustomerService {
     @WebResult(name = "Customer", targetNamespace = "")
     Customer get();
     
+    @GET
+    @WebResult(name = "Customer", targetNamespace = "")
+    Response getResponse();
+    
     @POST
-    void addCustomer(Customer customer);
+    Response addCustomer(Customer customer);
     
     @PUT
     void updateCustomer(Customer customer);
