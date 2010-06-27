@@ -65,8 +65,8 @@
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/itest/implementation-spring/src/main/resources/implementation/policies/CalculatorJass.config</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/binding-ws-runtime-axis2/src/main/resources/org/apache/tuscany/sca/binding/ws/axis2/engine/repository/modules/modules.list</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/binding-ws-runtime-axis2/src/main/resources/org/apache/tuscany/sca/binding/ws/axis2/engine/repository/services/services.list</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-spring-sca/src/main/resources/META-INF/spring.handlers</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-spring-sca/src/main/resources/META-INF/spring.schemas</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-spring-runtime/src/main/resources/META-INF/spring.handlers</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-spring-runtime/src/main/resources/META-INF/spring.schemas</exclude>
 
                               <!-- these ones we need to implement RAT license processors to handle the non-AL headers, just exclude for now -->
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/assembly-xsd/**/*.*</exclude>

@@ -61,7 +61,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-spring-sca</artifactId>
+            <artifactId>tuscany-implementation-spring-runtime</artifactId>
             <version>${pom.version}</version>
             <exclusions>
                 <exclusion>
