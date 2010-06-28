@@ -68,9 +68,10 @@ public interface Node {
      */
     void installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException;
     void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException;
+
+    String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException;
     
     /* Useful short forms of that for when you don't care or have the others (but leave out for now to keep as simple as possible):
-    String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException;
     void installContribution(String uri, String contributionURL) throws ContributionReadException, ActivationException, ValidationException;
     String installContribution(String contributionURL, boolean autoDeploy) throws ContributionReadException, ActivationException, ValidationException;
     */

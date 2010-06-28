@@ -68,6 +68,19 @@ public class NodeImpl implements Node {
         this.extensionPointRegistry = extensionPointRegistry;
     }
 
+    public String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException {
+        int lastDot = contributionURL.lastIndexOf('.');
+        int lastSep = contributionURL.lastIndexOf("/");
+        String uri;
+        if (lastDot > -1 && lastSep > -1 && lastDot > lastSep) {
+            uri = contributionURL.substring(lastSep+1, lastDot);
+        } else {
+            uri = contributionURL;
+        }
+        installContribution(uri, contributionURL, null, null, true);
+        return uri;
+    }
+    
     public void installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException {
         Monitor monitor = deployer.createMonitor();
         Contribution contribution = deployer.loadContribution(URI.create(uri), IOHelper.getLocationAsURL(contributionURL), monitor);
