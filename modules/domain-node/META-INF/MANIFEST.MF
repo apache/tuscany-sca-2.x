@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 SCA-Version: 1.1
+Export-Package: org.apache.tuscany.sca.node2;version="2.0.0";uses:="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.contribution,org.apache.tuscany.sca.core,org.apache.tuscany.sca.deployment,org.apache.tuscany.sca.monitor,org.apache.tuscany.sca.runtime,org.apache.tuscany.sca.work,javax.xml.namespace,javax.xml.stream,org.oasisopen.sca"
 Bundle-Name: Apache Tuscany SCA Domain Node
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
@@ -9,6 +10,7 @@ Bundle-Description: Apache Tuscany SCA Domain Node
 Import-Package: 
  org.apache.tuscany.sca.management;version="2.0.0",
  org.apache.tuscany.sca.node;version="2.0.0",
+ org.apache.tuscany.sca.node2;version="2.0.0",
  org.apache.tuscany.sca.node.configuration;version="2.0.0",
  org.apache.tuscany.sca.node.impl;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",

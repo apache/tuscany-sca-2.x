@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.something;
+package org.apache.tuscany.sca.node2;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -33,6 +33,8 @@ import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.ValidationException;
+import org.apache.tuscany.sca.node2.Node;
+import org.apache.tuscany.sca.node2.NodeFactory;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
@@ -42,7 +44,7 @@ public class DeployerTestCase {
 
     @Test
     public void testInstalledContribution() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, MalformedURLException {
-        Section10 section10 = Section10Factory.createSection10();
+        Node section10 = NodeFactory.createSection10();
         
         Deployer deployer = section10.getDeployer();
         Monitor monitor = deployer.createMonitor();
@@ -57,7 +59,7 @@ public class DeployerTestCase {
 
     @Test
     public void testAddDeploymentComposite() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, MalformedURLException, XMLStreamException {
-        Section10 section10 = Section10Factory.createSection10();
+        Node section10 = NodeFactory.createSection10();
         
         section10.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
 
