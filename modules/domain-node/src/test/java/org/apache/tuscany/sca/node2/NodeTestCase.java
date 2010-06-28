@@ -34,11 +34,11 @@ import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
 
-public class Section10TestCase {
+public class NodeTestCase {
 
     @Test
     public void testInstallDeployable() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        Node section10 = NodeFactory.createSection10();
+        Node section10 = NodeFactory.createNode();
         section10.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null, true);
 
 //        Helloworld helloworldService = section10.getService(Helloworld.class, "HelloworldComponent");
@@ -48,7 +48,7 @@ public class Section10TestCase {
     @Ignore("TODO: fails with Sun JDK due to SCA properties issue")
     @Test
     public void testInstallWithDependent() throws NoSuchServiceException, ContributionReadException, ActivationException, ValidationException {
-        Node section10 = NodeFactory.createSection10();
+        Node section10 = NodeFactory.createNode();
         section10.installContribution("store", "/Tuscany/svn/2.x-trunk/itest/T3558/src/test/resources/sample-store.jar", null, null, true);
         section10.installContribution("store-client", "/Tuscany/svn/2.x-trunk/itest/T3558/src/test/resources/sample-store-client.jar", null, null, true);
 
@@ -58,7 +58,7 @@ public class Section10TestCase {
 
     @Test
     public void testInstallNoDeployable() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        Node section10 = NodeFactory.createSection10();
+        Node section10 = NodeFactory.createNode();
         section10.installContribution("helloworld", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
 
 //        SCAClientFactory scaClientFactory = section10.getSCAClientFactory();
@@ -76,7 +76,7 @@ public class Section10TestCase {
 
     @Test
     public void testGetInstalledContributions() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        Node section10 = NodeFactory.createSection10();
+        Node section10 = NodeFactory.createNode();
         section10.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
         List<String> ics = section10.getInstalledContributions();
         Assert.assertEquals(1, ics.size());
@@ -85,7 +85,7 @@ public class Section10TestCase {
 
     @Test
     public void testGetDeployedCompostes() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, MalformedURLException, ActivationException, ValidationException {
-        Node section10 = NodeFactory.createSection10();
+        Node section10 = NodeFactory.createNode();
         section10.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
         List<String> dcs = section10.getDeployedCompostes("foo");
         Assert.assertEquals(1, dcs.size());
@@ -94,7 +94,7 @@ public class Section10TestCase {
 
     @Test
     public void testRemoveComposte() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, MalformedURLException, ActivationException, ValidationException {
-        Node section10 = NodeFactory.createSection10();
+        Node section10 = NodeFactory.createNode();
         section10.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
         section10.removeFromDomainLevelComposite("foo/helloworld.composite");
         List<String> dcs = section10.getDeployedCompostes("foo");
@@ -103,7 +103,7 @@ public class Section10TestCase {
 
     @Test
     public void testInstallWithMetaData() throws ContributionReadException, ActivationException, ValidationException {
-        Node section10 = NodeFactory.createSection10();
+        Node section10 = NodeFactory.createNode();
         ((NodeImpl)section10).installContribution("helloworld", "src/test/resources/sample-helloworld-nodeployable.jar", "src/test/resources/sca-contribution-generated.xml", null, true);
 
         List<String> dcs = section10.getDeployedCompostes("helloworld");
@@ -112,5 +112,12 @@ public class Section10TestCase {
 
 //        Helloworld helloworldService = scaClientFactory.getService(Helloworld.class, "HelloworldComponent");
 //        Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
+    }
+
+    @Test
+    public void testURI() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
+        Node section10 = NodeFactory.createNode();
+        String uri = section10.installContribution("src/test/resources/sample-helloworld.jar");
+        Assert.assertEquals("sample-helloworld", uri);
     }
 }

@@ -44,7 +44,7 @@ public class DeployerTestCase {
 
     @Test
     public void testInstalledContribution() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, MalformedURLException {
-        Node section10 = NodeFactory.createSection10();
+        Node section10 = NodeFactory.createNode();
         
         Deployer deployer = section10.getDeployer();
         Monitor monitor = deployer.createMonitor();
@@ -59,7 +59,7 @@ public class DeployerTestCase {
 
     @Test
     public void testAddDeploymentComposite() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, MalformedURLException, XMLStreamException {
-        Node section10 = NodeFactory.createSection10();
+        Node section10 = NodeFactory.createNode();
         
         section10.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
 
