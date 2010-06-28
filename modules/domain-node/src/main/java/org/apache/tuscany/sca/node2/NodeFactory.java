@@ -44,8 +44,8 @@ public class NodeFactory {
     private ExtensibleDomainRegistryFactory domainRegistryFactory;
 
     // TODO: keep this method?
-    public static Node createSection10() {
-        return new NodeFactory().createSection10("default");
+    public static Node createNode() {
+        return new NodeFactory().createNode("default");
     }
 
     public NodeFactory() {
@@ -56,7 +56,7 @@ public class NodeFactory {
         init(config);
     }
 
-    public Node createSection10(String domainName) {
+    public Node createNode(String domainName) {
         EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry("default", domainName);
         return new NodeImpl(domainName, deployer, compositeActivator, endpointRegistry, extensionPointRegistry);
     }
