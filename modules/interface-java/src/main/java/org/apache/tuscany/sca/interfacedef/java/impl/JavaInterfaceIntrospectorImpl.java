@@ -235,6 +235,9 @@ public class JavaInterfaceIntrospectorImpl {
             }
             List<DataType> faultDataTypes = new ArrayList<DataType>(faultTypes.length);
             Type[] genericFaultTypes = method.getGenericExceptionTypes();
+            if( method.isAnnotationPresent(AsyncFault.class) ) {
+            	genericFaultTypes = readAsyncGenericFaultTypes( method );
+            } // end if
             for (int i = 0; i < faultTypes.length; i++) {
                 Class<?> faultType = faultTypes[i];
                 // Only add checked exceptions
@@ -269,6 +272,17 @@ public class JavaInterfaceIntrospectorImpl {
      * @return - an array of fault/exception classes
      */
     private  Class<?>[] readAsyncFaultTypes( Method method ) {
+    	AsyncFault theFaults = method.getAnnotation(AsyncFault.class);
+    	if ( theFaults == null ) return null;
+    	return theFaults.value();
+    } // end method readAsyncFaultTypes
+    
+    /**
+     * Reads the generic fault types declared in an @AsyncFault annotation on an async server method
+     * @param method - the Method
+     * @return - an array of fault/exception classes
+     */
+    private  Type[] readAsyncGenericFaultTypes( Method method ) {
     	AsyncFault theFaults = method.getAnnotation(AsyncFault.class);
     	if ( theFaults == null ) return null;
     	return theFaults.value();
