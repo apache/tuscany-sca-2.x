@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.core.invocation.impl;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.concurrent.Future;
 
@@ -30,6 +31,21 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.Invocable;
 import org.oasisopen.sca.ServiceReference;
 
+/**
+ * An InvocationHandler which deals with JAXWS-defined asynchronous client Java API method calls
+ * 
+ * 2 asynchronous mappings exist for any given synchronous service operation, as shown in this example:
+ *  public interface StockQuote {
+ *      float getPrice(String ticker);
+ *      Response<Float> getPriceAsync(String ticker);
+ *      Future<?> getPriceAsync(String ticker, AsyncHandler<Float> handler);
+ *  }
+ *
+ * - the second method is called the "polling method", since the returned Response<?> object permits
+ *   the client to poll to see if the async call has completed
+ * - the third method is called the "async callback method", since in this case the client application can specify
+ *   a callback operation that is automatically called when the async call completes
+ */
 public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
     
     private static final long serialVersionUID = 1L;
@@ -44,6 +60,10 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
         super(messageFactory, businessInterface, source);
     }
 
+    /**
+     * Perform the invocation of the operation
+     * - provides support for all 3 forms of client method: synchronous, polling and async callback
+     */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (isAsyncCallback(method)) {
@@ -51,10 +71,16 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
         } else if (isAsyncPoll(method)) {
             return doInvokeAsyncPoll(proxy, method, args);            
         } else {
+        	// Regular synchronous method call
             return super.invoke(proxy, method, args);
         }
     }
 
+    /**
+     * Indicates if a supplied method has the form of an async callback method
+     * @param method - the method
+     * @return - true if the method has the form of an async callback
+     */
     protected boolean isAsyncCallback(Method method) {
         if (method.getName().endsWith("Async") && (method.getReturnType().isAssignableFrom(Future.class))) {
             if (method.getParameterTypes().length > 0) {
@@ -64,31 +90,63 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
         return false;
     }
 
+    /**
+     * Indicates is a supplied method has the form of an async polling method
+     * @param method - the method
+     * @return - true if the method has the form of an async polling method
+     */
     protected boolean isAsyncPoll(Method method) {
         return method.getName().endsWith("Async") && (method.getReturnType().isAssignableFrom(Response.class));
     }
 
-    protected AsyncResponse doInvokeAsyncPoll(Object proxy, Method asyncMethod, Object[] args) {
+    /**
+     * Invoke an async polling method
+     * @param proxy - the reference proxy
+     * @param asyncMethod - the async method to invoke
+     * @param args - array of input arguments to the method
+     * @return - the Response<?> object that is returned to the client application, typed by the 
+     *           type of the response
+     */
+    protected Response doInvokeAsyncPoll(Object proxy, Method asyncMethod, Object[] args) {
         Object response;
         boolean isException;
+        Class<?> returnType = getNonAsyncMethod(asyncMethod).getReturnType();
+        // Allocate the Future<?> / Response<?> object - note: Response<?> is a subclass of Future<?>
+        AsyncInvocationFutureImpl future = AsyncInvocationFutureImpl.newInstance( returnType );
         try {
             response = super.invoke(proxy, getNonAsyncMethod(asyncMethod), args);
             isException = false;
+            future.setResponse(response);
         } catch (Throwable e) {
             response = e;
             isException = true;
+            future.setFault(e);
         }
-        return new AsyncResponse(response, isException);
+        return future;
+        //return new AsyncResponse(response, isException);
     }
 
+    /**
+     * Invoke an async callback method
+     * @param proxy - the reference proxy
+     * @param asyncMethod - the async method to invoke
+     * @param args - array of input arguments to the method
+     * @return - the Future<?> object that is returned to the client application, typed by the type of
+     *           the response
+     */
     private Object doInvokeAsyncCallback(Object proxy, Method asyncMethod, Object[] args) {
         AsyncHandler handler = (AsyncHandler)args[args.length-1];
         Response response = doInvokeAsyncPoll(proxy,asyncMethod,Arrays.copyOf(args, args.length-1));
         handler.handleResponse(response);
         
-        return null;
+        return response;
     }
 
+    /**
+     * Return the synchronous method that is the equivalent of an async method
+     * @param asyncMethod - the async method
+     * @return - the equivalent synchronous method
+     */
     protected Method getNonAsyncMethod(Method asyncMethod) {
         String methodName = asyncMethod.getName().substring(0, asyncMethod.getName().length()-5);
         for (Method m : businessInterface.getMethods()) {
@@ -96,6 +154,6 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
                 return m;
             }
         }
-        throw new IllegalStateException("No non-async method matching async method " + asyncMethod.getName());
+        throw new IllegalStateException("No synchronous method matching async method " + asyncMethod.getName());
     }
 }
