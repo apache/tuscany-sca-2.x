@@ -40,7 +40,7 @@ public class HelloWorld1Impl implements HelloWorld {
     
     public String getGreetingsException(String s) throws ServiceRuntimeException {
         System.out.println("Entering SCA HelloWorld1.getGreetingsException: " + s);
-        String response = helloWorld2.getGreetings(s);
+        String response = helloWorld2.getGreetingsException(s);
         System.out.println("Leaving SCA HelloWorld1.getGreetings: " + response);
         throw new ServiceRuntimeException(response);
     }    

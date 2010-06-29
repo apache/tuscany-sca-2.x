@@ -70,19 +70,19 @@
     <operation name="getGreetings">
       <soap:operation soapAction=""/>
       <input>
-        <soap:body use="literal"/>
+        <soap:body use="literal" namespace="http://ws.binding.sca.tuscany.apache.org/rpclit/getGreetingsNamespace" />
       </input>
       <output>
-        <soap:body use="literal"/>
+        <soap:body use="literal" namespace="http://ws.binding.sca.tuscany.apache.org/rpclit/getGreetingsResponseNamespace"/>
       </output>
     </operation>
     <operation name="getGreetingsException">
       <soap:operation soapAction=""/>
       <input>
-        <soap:body use="literal"/>
+        <soap:body use="literal" namespace="http://ws.binding.sca.tuscany.apache.org/rpclit/getGreetingsExceptionNamespace"/>
       </input>
       <output>
-        <soap:body use="literal"/>
+        <soap:body use="literal" namespace="http://ws.binding.sca.tuscany.apache.org/rpclit/getGreetingsExceptionResponseNamespace"/>
       </output>
       <fault name="Exception">
         <soap:fault name="Exception" use="literal"/>

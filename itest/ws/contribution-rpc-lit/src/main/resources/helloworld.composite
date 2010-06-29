@@ -28,10 +28,28 @@
             <binding.ws uri="http://localhost:8085/HelloWorldService/HelloWorld"/>
 	    </service>
         <reference name="helloWorld2">
-            <!--binding.ws uri="http://localhost:8088/HelloWorldService/HelloWorld-rpclit" wsdlElement="http://ws.binding.sca.tuscany.apache.org/rpclit#wsdl.port(HelloWorldImplService/HelloWorldImplPort)"/-->
-            <binding.ws uri="http://localhost:8088/HelloWorldService/HelloWorld-rpclit" wsdlElement="http://ws.binding.sca.tuscany.apache.org/rpclit#wsdl.binding(HelloWorldImplPortBinding)"/>            
+            <interface.wsdl interface="http://ws.binding.sca.tuscany.apache.org/rpclit#wsdl.porttype(HelloWorldImpl)"/>
+            <binding.ws uri="http://localhost:8087/HelloWorldService/HelloWorld-rpclit-porttype"
+                        wsdlElement="http://ws.binding.sca.tuscany.apache.org/rpclit#wsdl.binding(HelloWorldImplPortBinding)"/>
+            <!-- 
+                note that it's not necessary to have interface.wsdl here but I left it in after
+                I added the wsdlElement on the binding in order to configure the binding with the
+                wrapper element namespace that appears in the binding configuration
+             -->             
         </reference>	
     </component>
+    
+    <component name="HelloWorldService1a">
+        <implementation.java class="org.apache.tuscany.sca.binding.ws.HelloWorld1Impl"/>
+        <service name="HelloWorld">
+            <binding.ws uri="http://localhost:8087/HelloWorldService/HelloWorld-rpclit-porttype" 
+                        wsdlElement="http://ws.binding.sca.tuscany.apache.org/rpclit#wsdl.binding(HelloWorldImplPortBinding)"/>
+        </service>
+        <reference name="helloWorld2">
+            <binding.ws uri="http://localhost:8087/HelloWorldService/HelloWorld-rpclit" 
+                        wsdlElement="http://ws.binding.sca.tuscany.apache.org/rpclit#wsdl.binding(HelloWorldImplPortBinding)"/>            
+        </reference>    
+    </component>    
     
     <component name="HelloWorldService2">
         <implementation.java class="org.apache.tuscany.sca.binding.ws.HelloWorld2Impl"/>

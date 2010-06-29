@@ -4,27 +4,251 @@ RPC Literal WSDL Style
 Interface
 ---------
 
+@Remotable
+public interface HelloWorld {
+    String getGreetings(String s);
+    String getGreetingsException(String s) throws ServiceRuntimeException;
+    Foo getGreetingsComplex(Foo foo);
+}
 
 WSDL
 ----
 
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://ws.binding.sca.tuscany.apache.org/rpclit" 
+                  schemaLocation="HelloWorldImplService-rpclit.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="getGreetings">
+    <part name="s" type="xsd:string"/>
+  </message>
+  <message name="getGreetingsResponse">
+    <part name="s" type="xsd:string"/>
+  </message>
+  <message name="getGreetingsException">
+    <part name="s" type="xsd:string"/>
+  </message>
+  <message name="getGreetingsExceptionResponse">
+    <part name="s" type="xsd:string"/>
+  </message>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception"/>
+  </message>
+  <message name="getGreetingsComplex">
+    <part name="foo" type="tns:foo"/>
+  </message>
+  <message name="getGreetingsComplexResponse">
+    <part name="foo" type="tns:foo"/>
+  </message>
+  <portType name="HelloWorldImpl">
+    <operation name="getGreetings">
+      <input message="tns:getGreetings"/>
+      <output message="tns:getGreetingsResponse"/>
+    </operation>
+    <operation name="getGreetingsException">
+      <input message="tns:getGreetingsException"/>
+      <output message="tns:getGreetingsExceptionResponse"/>
+      <fault message="tns:Exception" name="Exception"/>
+    </operation>
+    <operation name="getGreetingsComplex">
+      <input message="tns:getGreetingsComplex"/>
+      <output message="tns:getGreetingsComplexResponse"/>
+    </operation>
+  </portType>
+  <binding name="HelloWorldImplPortBinding" type="tns:HelloWorldImpl">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
+    <operation name="getGreetings">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://ws.binding.sca.tuscany.apache.org/rpclit/getGreetingsNamespace"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://ws.binding.sca.tuscany.apache.org/rpclit/getGreetingsNamespace"/>
+      </output>
+    </operation>
+    <operation name="getGreetingsException">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://ws.binding.sca.tuscany.apache.org/rpclit/getGreetingsExceptionNamespace"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://ws.binding.sca.tuscany.apache.org/rpclit/getGreetingsExceptionNamespace"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getGreetingsComplex">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
 
-SOAP
-----
+getGreetings SOAP Request/Response
+----------------------------------
 
-POST /HelloWorldService/HelloWorld-rpclit HTTP/1.1
+POST /HelloWorldService/HelloWorld-rpclit-porttype HTTP/1.1
 Content-Type: text/xml; charset=UTF-8
 SOAPAction: ""
 User-Agent: Axis2
 Host: localhost:8088
-Content-Length: 364
+Content-Length: 480
 
 <?xml version='1.0' encoding='UTF-8'?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
-  <soapenv:Body>
-    <parameters xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-                xmlns:ns2="http://ws.binding.sca.tuscany.apache.org/" 
-                xsi:type="xs:string">Fred</parameters>
-  </soapenv:Body>
+    <soape nv:Body>
+        <axis2ns1:getGreetings
+            xmlns:axis2ns1="http://ws.binding.sca.tuscany.apache.org/rpclit/getGreetingsNamespace">
+            <s xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:ns2="http://ws.binding.sca.tuscany.apache.org/" 
+               xsi:type="xs:string">Fred
+            </s>
+        </axis2ns1:getGreetings>
+    </soapenv:Body>
+</soapenv:Envelope>
+
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset=utf-8
+Transfer-Encoding: chunked
+
+1FE
+<?xml version='1.0' encoding='UTF-8'?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <soape nv:Body>
+        <axis2ns4:getGreetingsResponse
+            xmlns:axis2ns4="http://ws.binding.sca.tuscany.apache.org/rpclit/getGreetingsResponseNamespace">
+            <s xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:ns2="http://ws.binding.sca.tuscany.apache.org/" 
+               xsi:type="xs:string">Hello Fred</s>
+        </axis2ns4:getGreetingsResponse>
+    </soapenv:Body>
+</soapenv:Envelope>
+
+
+getGreetingsException SOAP Request/Response
+-------------------------------------------
+
+POST /HelloWorldService/HelloWorld-rpclit-porttype HTTP/1.1
+Content-Type: text/xml; charset=UTF-8
+SOAPAction: ""
+User-Agent: Axis2
+Host: localhost:8088
+Content-Length: 507
+
+<?xml version='1.0' encoding='UTF-8'?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <soape nv:Body>
+        <axis2ns5:getGreetingsException
+            xmlns:axis2ns5="http://ws.binding.sca.tuscany.apache.org/rpclit/getGreetingsExceptionNamespace">
+            <s xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:ns2="http://ws.binding.sca.tuscany.apache.org/" 
+               xsi:type="xs:string">Fred
+            </s>
+        </axis2ns5:getGreetingsException>
+    </soapenv:Body>
+</soapenv:Envelope>
+
+HTTP/1.1 500 Internal Server Error
+Content-Type: text/xml; charset=utf-8
+Transfer-Encoding: chunked
+
+133C
+<?xml version='1.0' encoding='UTF-8'?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <soape nv:Body>
+        <soapenv:Fault>
+            <faultcode>soapenv:Server</faultcode>
+            <faultstring>org.apache.tuscany.sca.interfacedef.util.FaultE
+                xception cannot be cast to org.apache.axiom.om.OMElement</faultstring>
+            <detail>
+                ...
+            </Exception>
+            </detail>
+        </soapenv:Fault>
+    </soapenv:Body>
+</soapenv:Envelope>
+
+TODO - exception is wrong
+
+getGreetingsComplex SOAP Request/Response
+-----------------------------------------
+
+POST /HelloWorldService/HelloWorld-rpclit-porttype HTTP/1.1
+Content-Type: text/xml; charset=UTF-8
+SOAPAction: ""
+User-Agent: Axis2
+Host: localhost:8088
+Content-Length: 570
+
+<?xml version='1.0' encoding='UTF-8'?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <soape nv:Body>
+        <axis2ns7:getGreetingsComplex
+            xmlns:axis2ns7="http://ws.binding.sca.tuscany.apache.org/rpclit">
+            <foo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xmlns:ns3="http://ws.binding.sca.tuscany.apache.org/" 
+                 xmlns:ns2="http://helloworld/external"
+                xsi:type="ns2:foo">
+                <bars>
+                    <b>true</b>
+                    <s>petra</s>
+                    <x>1</x>
+                    <y>2</y>
+                </bars>
+                <bars>
+                    <b>false</b>
+                    <s>beate</s>
+                    <x>3</x>
+                    <y>4</y>
+                </bars>
+            </foo>
+        </axis2ns7:getGreetingsComplex>
+    </soapenv:Body>
+</soapenv:Envelope>
+
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset=utf-8
+Transfer-Encoding: chunked
+
+281
+<?xml version='1.0' encoding='UTF-8'?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <soape nv:Body>
+        <axis2ns10:getGreetingsComplexResponse
+            xmlns:axis2ns10="http://ws.binding.sca.tuscany.apache.org/rpclit">
+            <foo xm lns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns:ns3="http://ws.binding.sca.tuscany.apache.org/" 
+                xmlns:ns2="http://helloworld/external"
+                xsi:type="ns2:foo">
+                <bars>
+                    <b>true</b>
+                    <s>petra</s>
+                    <x>1</x>
+                    <y>2</y>
+                </bars>
+                <bars>
+                    <b>false</b>
+                    <s>bea
+                        te</s>
+                    <x>3</x>
+                    <y>4</y>
+                </bars>
+                <bars>
+                    <b>true</b>
+                    <s>simon</s>
+                    <x>7</x>
+                    <y>8</y>
+                </bars>
+            </foo>
+        </axis2ns10:getGreetingsComplexResponse>
+    </soapenv:Body>
 </soapenv:Envelope>
