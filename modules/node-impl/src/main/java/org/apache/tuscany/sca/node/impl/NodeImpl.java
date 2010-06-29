@@ -269,13 +269,24 @@ public class NodeImpl implements Node {
         // non-composite component that provides the requested service
         if (component.getImplementation() instanceof Composite) {
             for (ComponentService componentService : component.getServices()) {
+                String bindingName = null;
+                if (serviceName != null) {
+                    int index = serviceName.indexOf('/');
+                    if (index != -1) {
+                        bindingName = serviceName.substring(index + 1);
+                        serviceName = serviceName.substring(0, index);
+                    }
+                }
                 if (serviceName == null || serviceName.equals(componentService.getName())) {
                     CompositeService compositeService = (CompositeService)componentService.getService();
                     if (compositeService != null) {
                         componentContext =
                             ((RuntimeComponent)compositeService.getPromotedComponent()).getComponentContext();
-                        return componentContext.createSelfReference(businessInterface, compositeService
-                            .getPromotedService());
+                        serviceName = compositeService.getPromotedService().getName();
+                        if (bindingName != null) {
+                            serviceName = serviceName + "/" + bindingName;
+                        }
+                        return componentContext.createSelfReference(businessInterface, serviceName);
                     }
                     break;
                 }
