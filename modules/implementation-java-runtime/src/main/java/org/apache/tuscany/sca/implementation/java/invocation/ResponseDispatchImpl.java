@@ -54,8 +54,8 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
     private final Condition completed  = lock.newCondition(); 
 	
 	// The result
-	private T response = null;
-	private Throwable fault = null; 
+	private volatile T response = null;
+	private volatile Throwable fault = null; 
 	
 	public ResponseDispatchImpl( ) {
 		super();
