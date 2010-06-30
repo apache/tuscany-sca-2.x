@@ -40,7 +40,9 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.soap.SOAPBody;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReferenceHelper;
@@ -122,6 +124,19 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
         for (PolicyProvider pp : this.endpointReference.getPolicyProviders()) {
             pp.configureBinding(this);
         }
+        
+        // check the WSDL style as we currently only support some of them
+        if (wsBinding.isRpcEncoded()){
+            throw new ServiceRuntimeException("rpc/encoded WSDL style not supported for endpoint reference " + endpointReference);
+        } 
+
+        if (wsBinding.isDocEncoded()){
+            throw new ServiceRuntimeException("doc/encoded WSDL style not supported for endpoint reference " + endpointReference);
+        } 
+        
+        if (wsBinding.isDocLiteralUnwrapped()){
+            //throw new ServiceRuntimeException("doc/literal/unwrapped WSDL style not supported for endpoint reference " + endpointReference);
+        } 
     }
     
     public void start() {

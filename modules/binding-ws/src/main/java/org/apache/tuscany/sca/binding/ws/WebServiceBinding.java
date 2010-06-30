@@ -214,5 +214,30 @@ public interface WebServiceBinding extends Binding {
      * @param definition the generated WSDL definitions document
      */
     void setGeneratedWSDLDocument(Definition definition);
-
-}
+   
+    
+    /*
+     * Returns true if the WSDL style is rpc/encoded
+     */
+    boolean isRpcEncoded();
+    
+    /*
+     * Returns true if the WSDL style is rpc/literal
+     */
+    boolean isRpcLiteral();
+    
+    /* 
+     * Returns true if the WSDL style is doc/encoded 
+     */
+    boolean isDocEncoded();
+    
+    /*
+     * Returns true is the WSDL style is doc/literal
+     */
+    boolean isDocLiteralUnwrapped();
+    
+    /*
+     * Returns true if the WSDL style is doc/literal/wrapped
+     */
+    boolean isDocLiteralWrapped();
+}  

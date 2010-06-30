@@ -23,9 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.wsdl.Binding;
+import javax.wsdl.BindingOperation;
 import javax.wsdl.Definition;
+import javax.wsdl.Message;
+import javax.wsdl.Part;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
+import javax.wsdl.extensions.soap.SOAPBinding;
+import javax.wsdl.extensions.soap.SOAPBody;
+import javax.wsdl.extensions.soap12.SOAP12Body;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Extensible;
@@ -71,6 +77,9 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     private InterfaceContract bindingInterfaceContract;
     private Element endPointReference;
     private Definition generatedWSDLDocument;
+    private boolean isDocumentStyle;
+    private boolean isLiteralEncoding;
+    private boolean isMessageWrapped;
 
     protected WebServiceBindingImpl() {
     }
@@ -131,6 +140,8 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
         if (binding == null) {
             if (getWSDLDefinition() != null && wsdlDefinition.getBinding() != null) {
                 binding = wsdlDefinition.getBinding();
+                setIsDocumentStyle();
+                setIsLiteralEncoding();
             }
         }
         return binding;
@@ -191,6 +202,8 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
 
     public void setBinding(Binding binding) {
         this.binding = binding;
+        setIsDocumentStyle();
+        setIsLiteralEncoding();
     }
 
     public void setBindingName(QName bindingName) {
@@ -293,6 +306,8 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
 
     public void setGeneratedWSDLDocument(Definition definition) {
         this.generatedWSDLDocument = definition;
+        setIsDocumentStyle();
+        setIsLiteralEncoding();
     }
 
     public QName getType() {
@@ -318,5 +333,87 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     }
     
     public void setOperationSelector(OperationSelector operationSelector) {
-    }    
+    }   
+    
+    protected void setIsDocumentStyle() {
+        
+        if (binding == null){
+            if (wsdlDefinition != null && wsdlDefinition.getDefinition() != null){
+                Message firstMessage = (Message)wsdlDefinition.getDefinition().getMessages().values().iterator().next();
+                Part firstPart = (Part)firstMessage.getParts().values().iterator().next();
+                if (firstPart.getTypeName() != null){
+                    isDocumentStyle = false;
+                    return;
+                }
+            } 
+            
+            // default to document style
+            isDocumentStyle = true;
+            return;
+        } else {
+           for (Object ext : binding.getExtensibilityElements()){
+               if (ext instanceof SOAPBinding){
+                  if (((SOAPBinding)ext).getStyle().equals("rpc")){
+                      isDocumentStyle = false;
+                      return;
+                  } else {
+                      isDocumentStyle = true;
+                      return;
+                  }
+               }
+           }
+           isDocumentStyle = true;
+           return;
+        }
+        
+    }
+    
+    protected void setIsLiteralEncoding() {
+        
+        if (binding == null){
+            // default to literal encoding
+            isLiteralEncoding = true;
+            return;
+        } else {
+            for(Object ext : ((BindingOperation)binding.getBindingOperations().get(0)).getBindingInput().getExtensibilityElements()){
+                if (ext instanceof SOAPBody){
+                    if (((SOAPBody)ext).getUse().equals("literal")){
+                        isLiteralEncoding = true;
+                        return;
+                    } else {
+                        isLiteralEncoding = false;
+                        return;
+                    }
+                }
+            }
+            isLiteralEncoding = true;
+            return;
+        }
+    }
+    
+    protected void setIsMessageWrapped() {
+        isMessageWrapped = getBindingInterfaceContract().getInterface().getOperations().get(0).isWrapperStyle();
+    }
+   
+    public boolean isRpcEncoded() {
+        return (!isDocumentStyle) && (!isLiteralEncoding);
+    }
+    
+    public boolean isRpcLiteral() {
+        return (!isDocumentStyle) && (isLiteralEncoding);
+    }
+    
+    public boolean isDocEncoded() {
+        return (isDocumentStyle) && (!isLiteralEncoding);
+    }
+    
+    public boolean isDocLiteralUnwrapped() {
+        setIsMessageWrapped();
+        return (isDocumentStyle) && (isLiteralEncoding) && (!isMessageWrapped);
+    }
+    
+    public boolean isDocLiteralWrapped() {
+        setIsMessageWrapped();
+        return (isDocumentStyle) && (isLiteralEncoding) &&(isMessageWrapped);
+    }
 }

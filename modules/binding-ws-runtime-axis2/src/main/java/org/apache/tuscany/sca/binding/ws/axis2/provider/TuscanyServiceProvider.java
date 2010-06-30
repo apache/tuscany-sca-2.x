@@ -20,11 +20,19 @@
 package org.apache.tuscany.sca.binding.ws.axis2.provider;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
+import javax.wsdl.BindingOperation;
 import javax.xml.namespace.QName;
 
+import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNode;
+import org.apache.axiom.soap.SOAPBody;
 import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.AddressingConstants;
@@ -42,6 +50,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 public class TuscanyServiceProvider {
     private static final Logger logger = Logger.getLogger(TuscanyServiceProvider.class.getName());
@@ -101,10 +110,35 @@ public class TuscanyServiceProvider {
 
         // create a message object and set the args as its body
         Message msg = messageFactory.createMessage();
-        Object[] args = new Object[] {requestOM};
-        msg.setBody(args);
         msg.setOperation(operation);
         msg.setBindingContext(inMC);
+        
+        if (wsBinding.isRpcLiteral()){               
+            // remove the wrapping element containing
+            // the operation name
+            Iterator iter = requestOM.getChildElements();
+            List<OMNode> list = new ArrayList<OMNode>();
+            while(iter.hasNext()){
+                OMNode node = (OMNode)iter.next();
+                list.add(node);
+            }
+            
+            Object[] args = list.toArray();
+            msg.setBody(args);
+            
+        } else if (wsBinding.isRpcEncoded()){
+            throw new ServiceRuntimeException("rpc/encoded WSDL style not supported for endpoint " + endpoint);
+        } else if (wsBinding.isDocEncoded()){
+            throw new ServiceRuntimeException("doc/encoded WSDL style not supported for endpoint " + endpoint);
+        //} else if (wsBinding.isDocLiteralUnwrapped()){
+           // throw new ServiceRuntimeException("doc/literal/unwrapped WSDL style not supported for endpoint " + endpoint);
+        } else if (wsBinding.isDocLiteralWrapped() ||
+                   wsBinding.isDocLiteralUnwrapped()){
+            Object[] args = new Object[] {requestOM};
+            msg.setBody(args);
+        } else {
+            throw new ServiceRuntimeException("Unrecognized WSDL style for endpoint " + endpoint);
+        }        
 
         //FIXME: can we use the Axis2 addressing support for this?
         SOAPHeader header = inMC.getEnvelope().getHeader();
@@ -141,7 +175,45 @@ public class TuscanyServiceProvider {
         if(response.isFault()) {
             throw new InvocationTargetException((Throwable) response.getBody());
         }
-        return response.getBody();
+        
+        OMElement responseOM = response.getBody();
+        
+        if (wsBinding.isRpcLiteral()){               
+            // add the response wrapping element
+            OMFactory factory = OMAbstractFactory.getOMFactory();
+            String wrapperNamespace = null;
+            
+            // the rpc style creates a wrapper with a namespace where the namespace is
+            // defined on the wsdl binding operation. If no binding is provided by the 
+            // user then default to the namespace of the WSDL itself. 
+            if (wsBinding.getBinding() != null){
+                Iterator iter = wsBinding.getBinding().getBindingOperations().iterator();
+                loopend:
+                while(iter.hasNext()){
+                    BindingOperation bOp = (BindingOperation)iter.next();
+                    if (bOp.getName().equals(msg.getOperation().getName())){
+                        for (Object ext : bOp.getBindingOutput().getExtensibilityElements()){
+                            if (ext instanceof javax.wsdl.extensions.soap.SOAPBody){
+                                wrapperNamespace = ((javax.wsdl.extensions.soap.SOAPBody)ext).getNamespaceURI();
+                                break loopend;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if (wrapperNamespace == null){
+                wrapperNamespace =  wsBinding.getWSDLDefinition().getNamespace();
+            }
+                      
+            QName operationResponseQName = new QName(wrapperNamespace,
+                                             msg.getOperation().getName() + "Response");
+            OMElement operationResponseElement = factory.createOMElement(operationResponseQName);
+            operationResponseElement.addChild(responseOM);
+            responseOM = operationResponseElement;
+        }
+        
+        return responseOM;
     } // end method 
 
     private static String WS_REF_PARMS = "WS_REFERENCE_PARAMETERS";

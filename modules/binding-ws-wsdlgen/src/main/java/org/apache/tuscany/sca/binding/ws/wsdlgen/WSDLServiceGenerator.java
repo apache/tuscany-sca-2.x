@@ -31,6 +31,8 @@ import java.util.logging.Logger;
 import javax.wsdl.Binding;
 import javax.wsdl.Definition;
 import javax.wsdl.Import;
+import javax.wsdl.Message;
+import javax.wsdl.Part;
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
@@ -260,6 +262,23 @@ public class WSDLServiceGenerator {
             }
             helper.createBindingOperations(def, binding, portType);
             binding.setUndefined(false);
+            
+            // set binding style based on the interface specified by the 
+            // user if one is available
+            // TODO - set encoding style also currently default to literal
+            if (wsdlDefinition != null && wsdlDefinition.getDefinition() != null){
+                Message firstMessage = (Message)wsdlDefinition.getDefinition().getMessages().values().iterator().next();
+                Part firstPart = (Part)firstMessage.getParts().values().iterator().next();
+                if (firstPart.getTypeName() != null){
+                    for (Object ext : binding.getExtensibilityElements()){
+                        if (ext instanceof SOAPBinding){
+                            ((SOAPBinding)ext).setStyle("rpc");
+                            break;
+                        }
+                    }                    
+                }
+            }      
+                    
             def.addBinding(binding);
             
             String endpointURI = computeActualURI(wsBinding, null);

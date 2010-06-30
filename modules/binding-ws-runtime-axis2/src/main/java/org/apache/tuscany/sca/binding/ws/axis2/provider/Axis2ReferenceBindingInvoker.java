@@ -21,14 +21,20 @@ package org.apache.tuscany.sca.binding.ws.axis2.provider;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
+import javax.wsdl.BindingOperation;
 import javax.wsdl.Operation;
 import javax.wsdl.PortType;
+import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.xml.namespace.QName;
 
+import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNode;
 import org.apache.axiom.soap.SOAPBody;
 import org.apache.axiom.soap.SOAPEnvelope;
@@ -99,6 +105,15 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
             final OperationClient operationClient = createOperationClient(msg);
             msg.setBindingContext(operationClient);
             msg = endpointReference.getBindingInvocationChain().getHeadInvoker().invoke(msg);
+            
+            if (wsBinding.isRpcLiteral()){   
+                // remove the wrapping element containing
+                // the operation response name
+                OMElement operationResponseElement = msg.getBody();
+                if (operationResponseElement != null){
+                    msg.setBody(operationResponseElement.getChildElements().next());
+                }
+            }
              
         } catch (AxisFault e) {
             if (e.getDetail() != null ) {
@@ -120,15 +135,74 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
         SOAPEnvelope env = soapFactory.getDefaultEnvelope();
         Object[] args = (Object[])msg.getBody();
         if (args != null && args.length > 0) {
-            SOAPBody body = env.getBody();
-            for (Object bc : args) {
-                if (bc instanceof OMElement) {
-                    body.addChild((OMElement)bc);
-                } else {
-                    throw new IllegalArgumentException( "Can't handle mixed payloads between OMElements and other types.");
+            
+            if (wsBinding.isRpcLiteral()){               
+                // create the wrapping element containing
+                // the operation name
+                OMFactory factory = OMAbstractFactory.getOMFactory();
+                String wrapperNamespace = null;
+               
+                // the rpc style creates a wrapper with a namespace where the namespace is
+                // defined on the wsdl binding operation. If no binding is provided by the 
+                // user then default to the namespace of the WSDL itself. 
+                if (wsBinding.getBinding() != null){
+                    Iterator iter = wsBinding.getBinding().getBindingOperations().iterator();
+                    loopend:
+                    while(iter.hasNext()){
+                        BindingOperation bOp = (BindingOperation)iter.next();
+                        if (bOp.getName().equals(msg.getOperation().getName())){
+                            for (Object ext : bOp.getBindingInput().getExtensibilityElements()){
+                                if (ext instanceof javax.wsdl.extensions.soap.SOAPBody){
+                                    wrapperNamespace = ((javax.wsdl.extensions.soap.SOAPBody)ext).getNamespaceURI();
+                                    break loopend;
+                                }
+                            }
+                        }
+                    }
                 }
+                
+                if (wrapperNamespace == null){
+                    wrapperNamespace =  wsBinding.getWSDLDefinition().getNamespace();
+                }
+                
+                QName operationQName = new QName(wrapperNamespace,
+                                                 msg.getOperation().getName());
+                OMElement operationNameElement = factory.createOMElement(operationQName);
+                
+                // add the parameters as children of the operation name element
+                for (Object bc : args) {
+                    if (bc instanceof OMElement) {
+                        operationNameElement.addChild((OMElement)bc);
+                    } else {
+                        throw new IllegalArgumentException( "Can't handle mixed payloads between OMElements and other types for endpoint reference " + endpointReference);
+                    }
+                }
+                
+                SOAPBody body = env.getBody();
+                body.addChild(operationNameElement);
+                
+            } else if (wsBinding.isRpcEncoded()){
+                throw new ServiceRuntimeException("rpc/encoded WSDL style not supported for endpoint reference " + endpointReference);
+            } else if (wsBinding.isDocEncoded()){
+                throw new ServiceRuntimeException("doc/encoded WSDL style not supported for endpoint reference " + endpointReference);
+           // } else if (wsBinding.isDocLiteralUnwrapped()){
+           //     throw new ServiceRuntimeException("doc/literal/unwrapped WSDL style not supported for endpoint reference " + endpointReference);
+            } else if (wsBinding.isDocLiteralWrapped() ||
+                       wsBinding.isDocLiteralUnwrapped()){
+                // it's doc/lit
+                SOAPBody body = env.getBody();
+                for (Object bc : args) {
+                    if (bc instanceof OMElement) {
+                        body.addChild((OMElement)bc);
+                    } else {
+                        throw new IllegalArgumentException( "Can't handle mixed payloads between OMElements and other types for endpoint reference " + endpointReference);
+                    }
+                }
+            } else {
+                throw new ServiceRuntimeException("Unrecognized WSDL style for endpoint reference " + endpointReference);
             }
         }
+        
         final MessageContext requestMC = new MessageContext();
         requestMC.setEnvelope(env);
 

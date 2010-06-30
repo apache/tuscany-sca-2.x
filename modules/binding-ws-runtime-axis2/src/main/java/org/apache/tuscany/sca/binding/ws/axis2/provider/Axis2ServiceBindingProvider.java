@@ -166,6 +166,20 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
             // TODO - do we need to go back to configurator?
         }  
         wsBinding.setURI(deployedURI);
+        
+        // Check the WSDL style as we only support some of them
+        
+        if (wsBinding.isRpcEncoded()){
+            throw new ServiceRuntimeException("rpc/encoded WSDL style not supported for endpoint " + endpoint);
+        } 
+        
+        if (wsBinding.isDocEncoded()){
+            throw new ServiceRuntimeException("doc/encoded WSDL style not supported for endpoint " + endpoint);
+        } 
+        
+      //  if (wsBinding.isDocLiteralUnwrapped()){
+      //      throw new ServiceRuntimeException("doc/literal/unwrapped WSDL style not supported for endpoint " + endpoint);
+      //  }
     }
     
     private static final String DEFAULT_QUEUE_CONNECTION_FACTORY = "TuscanyQueueConnectionFactory";

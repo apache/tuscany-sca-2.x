@@ -51,6 +51,7 @@
     <module>contribution-callback-fullspec</module>
     <module>contribution-callback-promotion</module>
     <module>contribution-doc-lit-wrapped</module>
+    <module>contribution-rpc-lit</module>
     <module>external-client</module>
     <module>external-service</module>
     <module>launcher-axis2</module>
