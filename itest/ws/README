@@ -1,10 +1,9 @@
 
-Scenarios
-=========
+Features/Tests
+==============
 
 General Patterns
 ----------------
-
 For simple synchronous tests:
 
 Jaxws client -> (b.ws service) SCA Component (b.ws reference) -> Jaxws Service
@@ -15,21 +14,59 @@ JUnit client -> SCA Component (b.ws reference) -> (b.ws service) SCA component
 
 Java First
 ----------
-scratch java component impl 
-interface jaave (simple + JAXB + SDO )
+implemenation.java 
+interface.java 
+  simple 
+  JAXB 
+  SDO - TODO
 ?wsdl - gens wsdl
     
 Java First with JAX-WS annotations
 ----------------------------------
-WSDL -> wsimport -> Java component impl
-interface java
+WSDL -> wsimport -> implemenation.java
+interface.java
 ?wsdl - re-gens wsdl
 
 WSDL first
 ----------
-Java component impl -> wsgen -> wsdl
-interface wsdl
+implemenation.java -> wsgen -> wsdl
+interface.wsdl
 ?wsld - provided wsdl
+
+Callback 
+--------
+Various combinations of specified callback and default configuration
+WSCallback ws policy - TODO
+
+WSDL Styles
+-----------
+
+rpc-lit              - supported 
+                          WSDL configuration where 
+                          message parts use types       - <part name="s" type="xsd:string"/>
+                          binding style set to rpc      - <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
+                          body uses literal             - <soap:body use="literal" namespace="http://ws.binding.sca.tuscany.apache.org/rpclit/getGreetingsNamespace" />
+                             Note the use of a namespace on the body element to set the namespace of the wrapper child of the body element
+doc-lit              - not supported without wrapped style WSDL
+                          WS-I BP1.1 4.7.6 states that an operation signature is a 
+                          "fully qualified name of the child element of SOAP body of the SOAP input message"
+                          to make this true for doc-lit encoding you have to design the WSDL to wrap the parameters
+                          in an appropriate type. Hence doc-literal-wrapped is supported which encompasses this wrapping style. 
+doc-lit-wrapped      - supported
+                          WSDL configuration where 
+                          message parts use types       - <part name="parameters" element="tns:getGreetings"/>
+                          binding style set to document - <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+                          body uses literal             - <soap:body use="literal"/>
+doc-lit-wrapped-bare - supported 
+                          WSDL configuration as per doc-lit-wrapped
+                          Java implementation configuration where
+                          SOAP binding is set to        - @SOAPBinding(parameterStyle = SOAPBinding.ParameterStyle.BARE)
+rpc-encoded          - not supported
+                          not WS-I compliant
+doc-encoded          - not supported
+                          not WS-I compliant
+
+================================== TODO below =========================
 
 Policy
 ------
@@ -63,20 +100,11 @@ noListener Intent
 SOAP1.1 intent
 --------------
 
-
 SOAP1.2 intent
 --------------
 
 MTOM intent
 --------------
-
-callback
---------
-new OASIS protocol
-WSCallback ws policy
-
-JAXWS Asynch APIs
------------------
 
 Streaming
 ---------
