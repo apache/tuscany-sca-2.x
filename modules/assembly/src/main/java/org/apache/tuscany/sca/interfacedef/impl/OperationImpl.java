@@ -271,4 +271,12 @@ public class OperationImpl implements Operation {
         return attributes;
     }
 
+	/**
+	 * Indicates if this operation is an async server style of operation
+	 * @return true if the operation is async server style
+	 */
+	public boolean isAsyncServer() {
+		return false;
+	}
+
 }

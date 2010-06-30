@@ -116,6 +116,12 @@ public interface Operation extends Cloneable, PolicySubject {
      * @return
      */
     boolean isNonBlocking();
+    
+    /**
+     * Indicate if the operation is an async server operation
+     * @return - true if the operation is an async server operation
+     */
+    boolean isAsyncServer();
 
     /**
      * Set the operation to be non-blocking
