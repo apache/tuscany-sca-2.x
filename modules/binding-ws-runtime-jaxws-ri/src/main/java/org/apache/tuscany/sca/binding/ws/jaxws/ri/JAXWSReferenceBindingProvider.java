@@ -34,11 +34,13 @@ public class JAXWSReferenceBindingProvider implements ReferenceBindingProvider {
 
     private javax.xml.soap.MessageFactory messageFactory;
     private WebServiceBinding wsBinding;
+    private RuntimeEndpointReference endpointReference;
 
     public JAXWSReferenceBindingProvider(RuntimeEndpointReference endpointReference,
                                          FactoryExtensionPoint modelFactories,
                                          DataBindingExtensionPoint dataBindings) {
 
+        this.endpointReference = endpointReference;
         this.messageFactory = modelFactories.getFactory(javax.xml.soap.MessageFactory.class);
         this.wsBinding = (WebServiceBinding) endpointReference.getBinding();
 
@@ -69,7 +71,7 @@ public class JAXWSReferenceBindingProvider implements ReferenceBindingProvider {
     }
 
     public Invoker createInvoker(Operation operation) {
-        return new JAXWSBindingInvoker(operation, null, messageFactory, wsBinding);
+        return new JAXWSBindingInvoker(operation, null, messageFactory, wsBinding, endpointReference);
     }
 
 }
