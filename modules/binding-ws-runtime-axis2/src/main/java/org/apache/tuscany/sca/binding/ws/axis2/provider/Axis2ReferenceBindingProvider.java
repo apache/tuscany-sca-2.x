@@ -127,11 +127,15 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
         
         // check the WSDL style as we currently only support some of them
         if (wsBinding.isRpcEncoded()){
-            throw new ServiceRuntimeException("rpc/encoded WSDL style not supported for endpoint reference " + endpointReference);
+            throw new ServiceRuntimeException("rpc/encoded WSDL style not supported. Component " + endpointReference.getComponent().getName() +
+                                              " Reference " + endpointReference.getReference() +
+                                              " Binding " + endpointReference.getBinding().getName());
         } 
 
         if (wsBinding.isDocEncoded()){
-            throw new ServiceRuntimeException("doc/encoded WSDL style not supported for endpoint reference " + endpointReference);
+            throw new ServiceRuntimeException("doc/encoded WSDL style not supported. Component " + endpointReference.getComponent().getName() +
+                                              " Reference " + endpointReference.getReference() +
+                                              " Binding " + endpointReference.getBinding().getName());
         } 
         
         if (wsBinding.isDocLiteralUnwrapped()){
