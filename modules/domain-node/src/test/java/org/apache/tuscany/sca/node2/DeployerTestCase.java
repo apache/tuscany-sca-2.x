@@ -33,8 +33,6 @@ import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.ValidationException;
-import org.apache.tuscany.sca.node2.Node;
-import org.apache.tuscany.sca.node2.NodeFactory;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
@@ -44,32 +42,34 @@ public class DeployerTestCase {
 
     @Test
     public void testInstalledContribution() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, MalformedURLException {
-        Node section10 = NodeFactory.createNode();
+        NodeFactory nodeFactory = new NodeFactory();
+        Node node = nodeFactory.createNode("myDomain");
         
-        Deployer deployer = section10.getDeployer();
+        Deployer deployer = nodeFactory.getDeployer();
         Monitor monitor = deployer.createMonitor();
         Contribution contribution = deployer.loadContribution(URI.create("foo"), new File("src/test/resources/sample-helloworld-nodeployable.jar").toURI().toURL(), monitor);
         monitor.analyzeProblems();
         
-        section10.installContribution(contribution, null, true);
-        List<String> ics = section10.getInstalledContributions();
+        node.installContribution(contribution, null, true);
+        List<String> ics = node.getInstalledContributions();
         Assert.assertEquals(1, ics.size());
         Assert.assertEquals("foo", ics.get(0));
     }
 
     @Test
     public void testAddDeploymentComposite() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, MalformedURLException, XMLStreamException {
-        Node section10 = NodeFactory.createNode();
+        NodeFactory nodeFactory = new NodeFactory();
+        Node node = nodeFactory.createNode("myDomain");
         
-        section10.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
+        node.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
 
-        Deployer deployer = section10.getDeployer();
+        Deployer deployer = nodeFactory.getDeployer();
         Monitor monitor = deployer.createMonitor();
         Composite composite = deployer.loadXMLDocument(new File("src/test/resources/helloworld2.composite").toURI().toURL(), monitor);
         monitor.analyzeProblems();
         composite.setURI("helloworld2.composite");
-        section10.addDeploymentComposite("foo", composite);
-        List<String> dcs = section10.getDeployedCompostes("foo");
+        node.addDeploymentComposite("foo", composite);
+        List<String> dcs = node.getDeployedCompostes("foo");
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("foo/helloworld2.composite", dcs.get(0));
     }

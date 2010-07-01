@@ -42,6 +42,7 @@ public class NodeFactory {
     private ExtensionPointRegistry extensionPointRegistry;
     private CompositeActivator compositeActivator;
     private ExtensibleDomainRegistryFactory domainRegistryFactory;
+    private RuntimeAssemblyFactory assemblyFactory;
 
     // TODO: keep this method?
     public static Node createNode() {
@@ -76,7 +77,7 @@ public class NodeFactory {
         extensionPointRegistry.start();
 
         FactoryExtensionPoint modelFactories = extensionPointRegistry.getExtensionPoint(FactoryExtensionPoint.class);
-        AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(extensionPointRegistry);
+        this.assemblyFactory = new RuntimeAssemblyFactory(extensionPointRegistry);
         modelFactories.addFactory(assemblyFactory);
 
         UtilityExtensionPoint utilities = extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class);
@@ -93,5 +94,22 @@ public class NodeFactory {
 //        DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionPointRegistry);
 //        domainRegistryFactory.getEndpointRegistry(config.getProperty("reguri"), config.getProperty("defaultDomainName"));
 
+    }
+    /**
+     * Get the Deployer. The Deployer can be used to create contribution artifacts 
+     * when configuring a Node programatically.
+     * @return the Deployer
+     */
+    public Deployer getDeployer() {
+        return deployer;
+    }
+    
+    /**
+     * Get the AssemblyFactory. The AssemblyFactory can be used to create contribution
+     * artifact contents when configuring a Node programatically.
+     * @return the AssemblyFactory
+     */
+    public AssemblyFactory getAssemblyFactory() {
+        return assemblyFactory;
     }
 }

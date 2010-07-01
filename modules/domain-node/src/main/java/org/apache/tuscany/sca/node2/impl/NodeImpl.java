@@ -81,14 +81,14 @@ public class NodeImpl implements Node {
         return uri;
     }
     
-    public void installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException {
+    public void installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException {
         Monitor monitor = deployer.createMonitor();
         Contribution contribution = deployer.loadContribution(URI.create(uri), IOHelper.getLocationAsURL(contributionURL), monitor);
         monitor.analyzeProblems();
         if (metaDataURL != null) {
             mergeContributionMetaData(metaDataURL, contribution);
         }
-        installContribution(contribution, dependentContributionURIs, deployDeployables);
+        installContribution(contribution, dependentContributionURIs, runDeployables);
     }
 
     private void mergeContributionMetaData(String metaDataURL, Contribution contribution) throws ValidationException {
@@ -105,12 +105,12 @@ public class NodeImpl implements Node {
         contribution.getExports().addAll(metaData.getExports());
     }
     
-    public void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException {
+    public void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException {
         InstalledContribution ic = new InstalledContribution(contribution.getURI(), contribution.getLocation(), contribution, dependentContributionURIs);
         installedContributions.put(contribution.getURI(), ic);
-        if (deployDeployables) {
+        if (runDeployables) {
             for (Composite c : ic.getDefaultDeployables()) {
-                deployComposite(c, ic);
+                runComposite(c, ic);
             }
         }
     }
@@ -128,7 +128,7 @@ public class NodeImpl implements Node {
             throw new IllegalArgumentException("contribution not installed: " + contributionURI);
         }
         String compositeArtifcatURI = deployer.attachDeploymentComposite(ic.getContribution(), composite, true);
-        deployComposite(composite, ic);
+        runComposite(composite, ic);
         return compositeArtifcatURI;
     }
 
@@ -141,7 +141,7 @@ public class NodeImpl implements Node {
         String relativeURI = compositeURI.substring(contributionURI.endsWith("/") ? contributionURI.length() : contributionURI.length()+1);
         for (Artifact a : ic.getContribution().getArtifacts()) {
             if (a.getURI().equals(relativeURI)) {
-                deployComposite((Composite) a.getModel(), ic);
+                runComposite((Composite) a.getModel(), ic);
                 return;
             }
         }
@@ -251,8 +251,11 @@ public class NodeImpl implements Node {
         return new ArrayList<String>(installedContributions.keySet());
     }
 
-    public InstalledContribution getInstalledContribution(String uri) {
-        return installedContributions.get(uri);
+    public Contribution getInstalledContribution(String uri) {
+        if (installedContributions.containsKey(uri)) {
+            return installedContributions.get(uri).getContribution();
+        }
+        throw new IllegalArgumentException("no contribution found for: " + uri);
     }
 
     protected String getContributionUriForArtifact(String artifactURI) {
@@ -269,7 +272,7 @@ public class NodeImpl implements Node {
         return contributionURI;
     }
 
-    protected void deployComposite(Composite c, InstalledContribution ic) throws ActivationException {
+    protected void runComposite(Composite c, InstalledContribution ic) throws ActivationException {
         List<Contribution> dependentContributions = new ArrayList<Contribution>();
         if (ic.getDependentContributionURIs() != null) {
             // if the install specified dependent uris use just those contributions
