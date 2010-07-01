@@ -137,4 +137,47 @@ public interface WSDLDefinition extends Base {
      * @param binding the WSDL binding
      */
     void setBinding(Binding binding);
+    
+    /**
+     * Retrieves the name of the required port type used during the WSDL resolve process
+     * 
+     * @return WSDL port type name
+     */
+    QName getNameOfPortTypeToResolve();
+    
+    /**
+     * Sets the name of the required port type used during the WSDL resolve process
+     * 
+     * @param nameOfPortTypeToResolve
+     */
+    void setNameOfPortTypeToResolve(QName nameOfPortTypeToResolve);    
+    
+    /**
+     * Retrieves the name of the required binding used during the WSDL resolve process
+     * 
+     * @return WSDL binding name
+     */
+    QName getNameOfBindingToResolve();
+    
+    /**
+     * Sets the name of the required binding used during the WSDL resolve process
+     * 
+     * @param nameOfBindingToResolve
+     */
+    void setNameOfBindingToResolve(QName nameOfBindingToResolve);
+    
+    /**
+     * Retrieves the name of the required service used during the WSDL resolve process
+     * 
+     * @return WSDL service name
+     */
+    QName getNameOfServiceToResolve();
+    
+    /**
+     * Sets the name of the required service used during the WSDL resolve process
+     * 
+     * @param nameOfBindingToResolve
+     */
+    void setNameOfServiceToResolve(QName nameOfServiceToResolve);    
+
 }

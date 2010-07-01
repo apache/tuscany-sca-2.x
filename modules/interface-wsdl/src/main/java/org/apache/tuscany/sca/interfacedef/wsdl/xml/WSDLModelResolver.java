@@ -29,9 +29,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.wsdl.Binding;
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
 import javax.wsdl.PortType;
+import javax.wsdl.Service;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.AttributeExtensible;
@@ -50,6 +52,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.common.xml.XMLDocumentHelper;
@@ -369,6 +372,30 @@ public class WSDLModelResolver implements ModelResolver {
         	throw new RuntimeException(e);
         }        
         if (resolved != null && !resolved.isUnresolved()) {
+            // check that the WSDL we just found has the requisite 
+            // port type, binding and/or service. If not return 
+            // the input WSDL to force the resolution process to continue
+            WSDLDefinition inputWSDL = (WSDLDefinition)unresolved;
+            WSDLDefinition outputWSDL = (WSDLDefinition)resolved;
+            
+            if (inputWSDL.getNameOfPortTypeToResolve() != null){
+                if (outputWSDL.getWSDLObject(PortType.class, inputWSDL.getNameOfPortTypeToResolve()) == null){
+                    return modelClass.cast(unresolved);
+                }
+            }
+            
+            if (inputWSDL.getNameOfBindingToResolve() != null){
+                if (outputWSDL.getWSDLObject(Binding.class, inputWSDL.getNameOfBindingToResolve()) == null){
+                    return modelClass.cast(unresolved);
+                }
+            }
+            
+            if (inputWSDL.getNameOfServiceToResolve() != null){
+                if (outputWSDL.getWSDLObject(Service.class, inputWSDL.getNameOfServiceToResolve()) == null){
+                    return modelClass.cast(unresolved);
+                }
+            }            
+            
             return modelClass.cast(resolved);
         }
         
@@ -598,8 +625,12 @@ public class WSDLModelResolver implements ModelResolver {
     	Map<String, String> wsdlImports = new HashMap<String, String>();
     	InputStream is = doc.openStream();
         try {
-        	XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+            // Set up a StreamSource for the composite file, since this has an associated URL that
+            // can be used by the parser to find references to other files such as DTDs
+            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            StreamSource wsdlSource = new StreamSource(is, doc.toString());
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(wsdlSource);
+            
             int eventType = reader.getEventType();
             while (true) {
                 if (eventType == XMLStreamConstants.START_ELEMENT) {

@@ -55,6 +55,13 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     private List<XSDefinition> schemas = new ArrayList<XSDefinition>();
     private boolean unresolved;
     private Binding binding;
+    
+    // WSDL in the same namespace can appear in multiple contributions
+    // so we need to know which port type, binding and/or service we're looking for,
+    // as well as which namespace, when we're resolving WSDL 
+    private QName nameOfPortTypeToResolve;
+    private QName nameOfBindingToResolve;
+    private QName nameOfServiceToResolve;
 
     protected WSDLDefinitionImpl() {
     }
@@ -280,5 +287,28 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     public void setBinding(Binding binding) {
         this.binding = binding;
     }
-
+    
+    public QName getNameOfPortTypeToResolve() {
+        return nameOfPortTypeToResolve;
+    }
+    
+    public void setNameOfPortTypeToResolve(QName nameOfPortTypeToResolve) {
+        this.nameOfPortTypeToResolve = nameOfPortTypeToResolve;
+    }
+    
+    public QName getNameOfBindingToResolve() {
+        return nameOfBindingToResolve;
+    }
+    
+    public void setNameOfBindingToResolve(QName nameOfBindingToResolve) {
+        this.nameOfBindingToResolve = nameOfBindingToResolve;
+    }
+    
+    public QName getNameOfServiceToResolve() {
+        return nameOfServiceToResolve;
+    }
+    
+    public void setNameOfServiceToResolve(QName nameOfServiceToResolve) {
+        this.nameOfServiceToResolve = nameOfServiceToResolve;
+    }
 }

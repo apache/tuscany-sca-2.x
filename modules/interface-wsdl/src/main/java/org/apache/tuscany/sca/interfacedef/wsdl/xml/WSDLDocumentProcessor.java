@@ -215,6 +215,20 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
             xsd.setSchema(null);
             wsdlDefinition.getXmlSchemas().add(xsd);
         }
+        
+        if (attr2.getValues().size() == 0){
+            // if there are no schema defined add in the XSD schema 
+            // so this at least gets resolved otherwise we'll get
+            // errors when trying to resolve part types that 
+            // use primitive types
+            XSDefinition xsd = xsdFactory.createXSDefinition();
+            xsd.setUnresolved(true);
+            xsd.setNamespace("http://www.w3.org/2001/XMLSchema");
+            xsd.setUnresolved(false);
+            xsd.setSchema(null);
+            wsdlDefinition.getXmlSchemas().add(xsd);
+        }
+        
         return wsdlDefinition;
     }
 

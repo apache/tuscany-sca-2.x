@@ -257,6 +257,7 @@ public class WSDLInterfaceProcessor extends BaseStAXArtifactProcessor implements
                 WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
                 wsdlDefinition.setUnresolved(true);
                 wsdlDefinition.setNamespace(wsdlInterface.getName().getNamespaceURI());
+                wsdlDefinition.setNameOfPortTypeToResolve(wsdlInterface.getName());
                 WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition, context);
                 if (!resolved.isUnresolved()) {
                     wsdlDefinition.setDefinition(resolved.getDefinition());

@@ -333,6 +333,8 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
     	WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
         wsdlDefinition.setUnresolved(true);
         wsdlDefinition.setNamespace(model.getNamespace());
+        wsdlDefinition.setNameOfBindingToResolve(model.getBindingName());
+        wsdlDefinition.setNameOfServiceToResolve(model.getServiceName());
         WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition, context);
 
         if (!resolved.isUnresolved()) {
