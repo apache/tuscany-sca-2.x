@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ws.launcher.axis2;
+package org.apache.tuscany.sca.binding.ws.launcher.base;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
