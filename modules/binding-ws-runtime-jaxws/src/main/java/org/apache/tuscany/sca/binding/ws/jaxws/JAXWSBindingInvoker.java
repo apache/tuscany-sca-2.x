@@ -117,8 +117,8 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
             wsdlLocation = new URL(wsBinding.getGeneratedWSDLDocument().getDocumentBaseURI());
         } catch (Exception e) {
             try {
-                if (wsBinding.getWSDLDefinition().getLocation() != null) {
-                    wsdlLocation = wsBinding.getWSDLDefinition().getLocation().toURL();
+                if (wsBinding.getUserSpecifiedWSDLDefinition().getLocation() != null) {
+                    wsdlLocation = wsBinding.getUserSpecifiedWSDLDefinition().getLocation().toURL();
                 }
             } catch (MalformedURLException e1) {
                 // TODO Auto-generated catch block

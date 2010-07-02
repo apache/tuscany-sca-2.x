@@ -278,7 +278,7 @@ public class Axis2EngineIntegration {
         }
 
         // Add schema information to the AxisService (needed for "?xsd=" support)
-        addSchemas(wsBinding.getWSDLDefinition(), axisService);
+        addSchemas(wsBinding.getUserSpecifiedWSDLDefinition(), axisService);
 
         // Use the existing WSDL
         Parameter wsdlParam = new Parameter("wsdl4jDefinition", null);

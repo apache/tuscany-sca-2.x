@@ -203,7 +203,7 @@ public class TuscanyServiceProvider {
             }
             
             if (wrapperNamespace == null){
-                wrapperNamespace =  wsBinding.getWSDLDefinition().getNamespace();
+                wrapperNamespace =  wsBinding.getUserSpecifiedWSDLDefinition().getNamespace();
             }
                       
             QName operationResponseQName = new QName(wrapperNamespace,

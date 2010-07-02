@@ -154,18 +154,24 @@ public interface WebServiceBinding extends Binding {
     void setBinding(javax.wsdl.Binding binding);
 
     /**
-     * Returns the WSDL definition.
+     * Returns the WSDL definition that was specified by the
+     * user either via and interface.wsdl or via a wsdlElement 
+     * on the binding. This may be empty if no WSDL was specified
+     * explicitly in which case the generated WSDL should contain
+     * a full WSDL description
+     * 
      * @return the WSDL definition
      */
-    WSDLDefinition getWSDLDefinition();
+    WSDLDefinition getUserSpecifiedWSDLDefinition();
 
     /**
      * Sets the WSDL definition if one was specified by the user in the
-     * composite file
+     * composite file either via and interface.wsdl or via a wsdlElement 
+     * on the binding
      * 
      * @param wsdlDefinition the WSDL definition
      */
-    void setDefinition(WSDLDefinition wsdlDefinition);
+    void setUserSpecifiedWSDLDefinition(WSDLDefinition wsdlDefinition);
 
     /**
      * Returns the WSDL namespace.
@@ -215,29 +221,51 @@ public interface WebServiceBinding extends Binding {
      */
     void setGeneratedWSDLDocument(Definition definition);
    
+    /**
+     * Returns string from the WSDL that represents the SOAP binding transport
+     */
+    String getBindingTransport();
     
-    /*
+    /**
      * Returns true if the WSDL style is rpc/encoded
      */
     boolean isRpcEncoded();
     
-    /*
+    /**
      * Returns true if the WSDL style is rpc/literal
      */
     boolean isRpcLiteral();
     
-    /* 
+    /**
      * Returns true if the WSDL style is doc/encoded 
      */
     boolean isDocEncoded();
     
-    /*
+    /**
      * Returns true is the WSDL style is doc/literal
      */
     boolean isDocLiteralUnwrapped();
     
-    /*
+    /**
      * Returns true if the WSDL style is doc/literal/wrapped
      */
     boolean isDocLiteralWrapped();
+    
+    /**
+     * Returns true if the WSDL style is doc/literal
+     * and the mapping to the interface is bare
+     */
+    boolean isDocLiteralBare(); 
+    
+    /**
+     * Returns true is the WSBinding is configured, via WSDL,
+     * to use an HTTP transport
+     */
+    boolean isHTTPTransport();
+    
+    /**
+     * Returns true is the WSBinding is configured, via WSDL,
+     * to use a JMS transport
+     */
+    boolean isJMSTransport();
 }  

@@ -162,7 +162,7 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
                 }
                 
                 if (wrapperNamespace == null){
-                    wrapperNamespace =  wsBinding.getWSDLDefinition().getNamespace();
+                    wrapperNamespace =  wsBinding.getUserSpecifiedWSDLDefinition().getNamespace();
                 }
                 
                 QName operationQName = new QName(wrapperNamespace,

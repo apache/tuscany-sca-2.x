@@ -81,7 +81,7 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider {
         //           sometimes getService().getQName returns a QName namespace that doesn't match the WSDL
         //           sometimes getNamespace() returns null
         //        So here we delve directly into the WSDL4J model as the Tuscany model isn't up to date
-        String targetNamespace = wsBinding.getWSDLDefinition().getDefinition().getTargetNamespace();
+        String targetNamespace = wsBinding.getUserSpecifiedWSDLDefinition().getDefinition().getTargetNamespace();
        
         //set up WSDL for Provider   
         List<Source> metadata = new ArrayList<Source>();
@@ -94,7 +94,7 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         try {
             WSDLWriter writer = WSDLFactory.newInstance().newWSDLWriter();
-            writer.writeWSDL(wsBinding.getWSDLDefinition().getDefinition(), outStream);
+            writer.writeWSDL(wsBinding.getUserSpecifiedWSDLDefinition().getDefinition(), outStream);
         } catch (Exception ex){
             ex.printStackTrace();
         }

@@ -137,7 +137,7 @@ public class WSDLServiceGenerator {
         String contractName = contract.getName();
 
         List<Port> ports = new ArrayList<Port>();
-        WSDLDefinition wsdlDefinition = wsBinding.getWSDLDefinition();
+        WSDLDefinition wsdlDefinition = wsBinding.getUserSpecifiedWSDLDefinition();
         if (wsdlDefinition == null) {
             error(monitor, "NoWsdlInterface", wsBinding, component.getName(), contract.getName());
             return null;

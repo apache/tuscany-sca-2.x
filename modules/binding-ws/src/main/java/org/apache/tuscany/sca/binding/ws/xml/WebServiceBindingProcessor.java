@@ -24,6 +24,8 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.wsdl.Binding;
@@ -31,6 +33,7 @@ import javax.wsdl.Port;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
 import javax.wsdl.extensions.soap.SOAPAddress;
+import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap12.SOAP12Address;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -132,6 +135,10 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
         if (name != null) {
             wsBinding.setName(name);
         }
+        
+        // a collection of endpoint specifications so that we can test that 
+        // only one is present
+        List<String> endpointSpecifications = new ArrayList<String>();
 
         // Read URI
         String uri = getURIString(reader, URI);
@@ -149,6 +156,7 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                 } catch (URISyntaxException ex){
                     error(monitor, "InvalidURISyntax", reader, ex.getMessage());
                 }
+                endpointSpecifications.add("uri");
             }
             
             // BWS20020
@@ -182,6 +190,8 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                 // Read a wsdl.service
                 localName = localName.substring("wsdl.service(".length(), localName.length() - 1);
                 wsBinding.setServiceName(new QName(namespace, localName));
+                
+                endpointSpecifications.add("#wsdl.service");
 
             } else if (localName.startsWith("wsdl.port")) {
 
@@ -195,6 +205,8 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                     wsBinding.setServiceName(new QName(namespace, localName.substring(0, s)));
                     wsBinding.setPortName(localName.substring(s + 1));
                 }
+                
+                endpointSpecifications.add("#wsdl.port");
             } else if (localName.startsWith("wsdl.endpoint")) {
 
                 // Read a wsdl.endpoint
@@ -207,6 +219,7 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                     wsBinding.setServiceName(new QName(namespace, localName.substring(0, s)));
                     wsBinding.setEndpointName(localName.substring(s + 1));
                 }
+                
             } else if (localName.startsWith("wsdl.binding")) {
 
                 // Read a wsdl.binding
@@ -237,7 +250,9 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                         	error(monitor, "MustUseWsdlBinding", reader, wsdlElement);
                             throw new ContributionReadException(wsdlElement + " must use wsdl.binding when using wsa:EndpointReference");
                         }
+                        
                         wsBinding.setEndPointReference(EndPointReferenceHelper.readEndPointReference(reader));
+                        endpointSpecifications.add("wsa:EndpointReference");
                     } 
                 }
                     break;
@@ -248,6 +263,11 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                 break;
             }
         }
+        
+        if (endpointSpecifications.size() > 1){
+            error(monitor, "MultipleEndpointsSpecified", reader, endpointSpecifications.toString() );
+        }
+        
         return wsBinding;
     }
 
@@ -344,7 +364,7 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
             wsdlDefinition.getImportedDefinitions().addAll(resolved.getImportedDefinitions());
             wsdlDefinition.getXmlSchemas().addAll(resolved.getXmlSchemas());
             wsdlDefinition.setUnresolved(false);
-            model.setDefinition(wsdlDefinition);
+            model.setUserSpecifiedWSDLDefinition(wsdlDefinition);
             if (model.getBindingName() != null) {
                 WSDLObject<Binding> binding = wsdlDefinition.getWSDLObject(Binding.class, model.getBindingName());
                 if (binding != null) {
@@ -396,11 +416,54 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                 interfaceContract.setInterface(wsdlInterface);
                 model.setBindingInterfaceContract(interfaceContract);
             }
+            
+            validateWSDL(context, model);
+        } else {
+            if (model.getBindingName() != null){
+                error(monitor, "WsdlBindingDoesNotMatch", model, model.getBindingName());
+            }
+            
+            if (model.getServiceName() != null){
+                error(monitor, "WsdlServiceDoesNotMatch", model, model.getServiceName());
+            }
         }
         
         policyProcessor.resolvePolicies(model, resolver, context);
     }
 
+    private void validateWSDL(ProcessorContext context, WebServiceBinding model) {
+        WSDLDefinition wsdlDefinition = model.getUserSpecifiedWSDLDefinition();
+        
+        Port port = model.getPort();
+        
+        if (port != null){
+            validateWSDLPort(context, model, port);
+        } 
+        
+        Binding binding = model.getBinding();
+        
+        if (binding != null){
+            validateWSDLBinding(context, model, binding);
+        } 
+    }
+    
+    private void validateWSDLPort(ProcessorContext context, WebServiceBinding model, Port port){
+        
+        validateWSDLBinding(context, model, port.getBinding());
+        
+    }
+    
+    private void validateWSDLBinding(ProcessorContext context, WebServiceBinding model, Binding binding){
+        // BWS20005 & BWS20010 
+        // Check that the WSDL binding is of a supported type
+        if (!model.isHTTPTransport() && !model.isJMSTransport()){
+            error(context.getMonitor(), 
+                  "InvalidWSDLBindingTransport", 
+                  model, 
+                  model.getBindingTransport());
+        }
+    }
+    
     private PortType getPortType(WebServiceBinding model) {
         PortType portType = null;
         if (model.getPort() != null) {

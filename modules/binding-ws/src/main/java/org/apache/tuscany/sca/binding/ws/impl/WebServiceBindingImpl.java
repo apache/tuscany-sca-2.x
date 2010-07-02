@@ -138,10 +138,9 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
 
     public Binding getBinding() {
         if (binding == null) {
-            if (getWSDLDefinition() != null && wsdlDefinition.getBinding() != null) {
+            if (getUserSpecifiedWSDLDefinition() != null && wsdlDefinition.getBinding() != null) {
                 binding = wsdlDefinition.getBinding();
-                setIsDocumentStyle();
-                setIsLiteralEncoding();
+                determineWSDLCharacteristics();
             }
         }
         return binding;
@@ -202,8 +201,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
 
     public void setBinding(Binding binding) {
         this.binding = binding;
-        setIsDocumentStyle();
-        setIsLiteralEncoding();
+        determineWSDLCharacteristics();
     }
 
     public void setBindingName(QName bindingName) {
@@ -246,7 +244,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
         this.serviceName = serviceName;
     }
 
-    public WSDLDefinition getWSDLDefinition() {
+    public WSDLDefinition getUserSpecifiedWSDLDefinition() {
         if (wsdlDefinition == null) {
             Interface iface = bindingInterfaceContract.getInterface();
             if (iface instanceof WSDLInterface) {
@@ -256,7 +254,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
         return wsdlDefinition;
     }
 
-    public void setDefinition(WSDLDefinition wsdlDefinition) {
+    public void setUserSpecifiedWSDLDefinition(WSDLDefinition wsdlDefinition) {
         this.wsdlDefinition = wsdlDefinition;
     }
 
@@ -306,8 +304,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
 
     public void setGeneratedWSDLDocument(Definition definition) {
         this.generatedWSDLDocument = definition;
-        setIsDocumentStyle();
-        setIsLiteralEncoding();
+        determineWSDLCharacteristics();
     }
 
     public QName getType() {
@@ -334,6 +331,16 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     
     public void setOperationSelector(OperationSelector operationSelector) {
     }   
+    
+    /**
+     * Some items get calculated and cached as they are used are runtime
+     * to decide what message processing is required
+     */
+    protected void determineWSDLCharacteristics() {
+        setIsDocumentStyle();
+        setIsLiteralEncoding();
+        setIsMessageWrapped();
+    }
     
     protected void setIsDocumentStyle() {
         
@@ -392,7 +399,9 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     }
     
     protected void setIsMessageWrapped() {
-        isMessageWrapped = getBindingInterfaceContract().getInterface().getOperations().get(0).isWrapperStyle();
+        if (getBindingInterfaceContract() != null){
+            isMessageWrapped = getBindingInterfaceContract().getInterface().getOperations().get(0).isWrapperStyle();
+        }
     }
    
     public boolean isRpcEncoded() {
@@ -415,5 +424,31 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     public boolean isDocLiteralWrapped() {
         setIsMessageWrapped();
         return (isDocumentStyle) && (isLiteralEncoding) &&(isMessageWrapped);
+    }
+    
+    public boolean isDocLiteralBare() {
+        setIsMessageWrapped();
+        return (isDocumentStyle) && (isLiteralEncoding);
+    }   
+    
+    public boolean isHTTPTransport() {
+        return getBindingTransport().equals("http://schemas.xmlsoap.org/soap/http");
+    }
+    
+    public boolean isJMSTransport() {
+        return getBindingTransport().equals("http://schemas.xmlsoap.org/soap/jms");
+    }
+    
+    public String getBindingTransport() {
+        if (binding != null){
+            for (Object ext : binding.getExtensibilityElements()){
+                if (ext instanceof SOAPBinding){
+                    return ((SOAPBinding)ext).getTransportURI();
+                }
+            }
+        }
+        
+        // if no binding is explicitly specified by the user then default to http
+        return "http://schemas.xmlsoap.org/soap/http";
     }
 }
