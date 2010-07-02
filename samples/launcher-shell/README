@@ -6,7 +6,7 @@ start and stop SCA composites.
 
 To build the sample shell do this:
 mvn install
-mvn dependency copy-dependencies
+mvn dependency:copy-dependencies
 
 To run it:
 ./sca
