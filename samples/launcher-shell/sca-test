@@ -1,0 +1,20 @@
+start foo c1 ../contribution-implementation-java-calculator/target/classes
+stop foo
+start foo c1 ../contribution-implementation-java-calculator/target/classes
+stop foo
+start foo c1 ../contribution-implementation-java-calculator/target/classes
+stop foo
+start foo c1 ../contribution-implementation-java-calculator/target/classes
+stop foo
+start foo c1 ../contribution-implementation-java-calculator/target/classes
+stop foo
+start foo c1 ../contribution-implementation-java-calculator/target/classes
+stop foo
+start foo c1 ../contribution-implementation-java-calculator/target/classes
+stop foo
+start foo c1 ../contribution-implementation-java-calculator/target/classes
+stop foo
+start foo c1 ../contribution-implementation-java-calculator/target/classes
+stop foo
+start foo c1 ../contribution-implementation-java-calculator/target/classes
+stop foo

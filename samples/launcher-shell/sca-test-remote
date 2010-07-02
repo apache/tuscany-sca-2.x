@@ -1,0 +1,20 @@
+start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+stop foo
+start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+stop foo
+start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+stop foo
+start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+stop foo
+start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+stop foo
+start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+stop foo
+start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+stop foo
+start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+stop foo
+start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+stop foo
+start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+stop foo

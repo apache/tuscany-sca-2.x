@@ -1,0 +1,31 @@
+Sample Tuscany Shell
+====================
+
+This directory contains a sample shell program supporting simple commands to
+start and stop SCA composites.
+
+To build the sample shell do this:
+mvn install
+mvn dependency copy-dependencies
+
+To run it:
+./sca
+
+at the prompt:
+start myNode mySampleContrib ../contribution-implementation-java-calculator/target/classes
+
+or:
+start myNode mySampleContrib http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+
+also try:
+status
+stop myNode
+bye
+
+Starting and stopping composites is pretty fast. To see that, try the following
+two scripts, which start/stop a sample composite 10 times.
+
+./sca <sca-test
+or
+./sca <sca-test-remote
+
