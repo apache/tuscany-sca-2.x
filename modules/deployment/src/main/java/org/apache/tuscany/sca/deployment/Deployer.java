@@ -193,4 +193,15 @@ public interface Deployer extends LifeCycleListener {
      * Get the system definitions   
      */
     Definitions getSystemDefinitions();  
+
+    /**
+     * Resolve a contributions dependencies
+     * 
+     * @param c
+     * @param allContributions
+     * @param monitor
+     * @throws ContributionResolveException
+     * @throws CompositeBuilderException
+     */
+    void resolve(Contribution c, List<Contribution> dependentContributions, Monitor monitor) throws ContributionResolveException, CompositeBuilderException;
 }

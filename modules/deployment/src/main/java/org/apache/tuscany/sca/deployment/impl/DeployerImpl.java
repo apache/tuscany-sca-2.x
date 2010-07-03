@@ -549,6 +549,79 @@ public class DeployerImpl implements Deployer {
 
         return domainComposite;
     }
+    
+    public void resolve(Contribution c, List<Contribution> dependentContributions, Monitor monitor) throws ContributionResolveException, CompositeBuilderException {
+        init();
+        List<Contribution> contributionList = new ArrayList<Contribution>();
+        contributionList.add(c);
+
+        Contribution systemContribution = cloneSystemContribution(monitor);
+        Definitions systemDefinitions = systemContribution.getArtifacts().get(0).getModel();
+        // Build an aggregated SCA definitions model. Must be done before we try and
+        // resolve any contributions or composites as they may depend on the full
+        // definitions.xml picture
+
+        // get all definitions.xml artifacts from contributions and aggregate
+        // into the system contribution. In turn add a default import into
+        // each contribution so that, for unresolved items, the resolution
+        // processing will look in the system contribution
+        ProcessorContext context = new ProcessorContext(monitor);
+        for (Contribution contribution : contributionList) {
+            monitor.pushContext("Contribution: " + contribution.getURI());
+            try {
+                // aggregate definitions
+                for (Artifact artifact : contribution.getArtifacts()) {
+                    if (!"META-INF/definitions.xml".equals(artifact.getURI())) {
+                        continue;
+                    }
+                    Object model = artifact.getModel();
+                    if (model instanceof Definitions) {
+                        try {
+                            monitor.pushContext("Definitions: " + artifact.getLocation());
+                            DefinitionsUtil.aggregate((Definitions)model, systemDefinitions, monitor);
+                        } finally {
+                            monitor.popContext();
+                        }                            
+                    }
+                }
+
+                // create a default import and wire it up to the system contribution
+                // model resolver. This is the trick that makes the resolution processing
+                // skip over to the system contribution if resolution is unsuccessful
+                // in the current contribution
+                DefaultImport defaultImport = contributionFactory.createDefaultImport();
+                defaultImport.setModelResolver(systemContribution.getModelResolver());
+                contribution.getImports().add(defaultImport);
+            } finally {
+                monitor.popContext();
+            }
+        }
+
+        ExtensibleModelResolver modelResolver =
+            new ExtensibleModelResolver(new Contributions(contributionList), modelResolvers, modelFactories);
+
+        // now resolve and add the system contribution
+        contributionProcessor.resolve(systemContribution, modelResolver, context);
+        contributionList.add(systemContribution);
+
+        // pre-resolve the contributions
+        contributionsPreresolve(contributionList, modelResolver, context);
+
+        // Build the contribution dependencies
+        Set<Contribution> resolved = new HashSet<Contribution>();
+        
+        for (Contribution contribution : contributionList) {
+            buildDependencies(contribution, dependentContributions, monitor);
+
+            // Resolve contributions
+            for (Contribution dependency : contribution.getDependencies()) {
+                if (!resolved.contains(dependency)) {
+                    resolved.add(dependency);
+                    contributionProcessor.resolve(dependency, modelResolver, context);
+                }
+            }
+        }
+    }
 
     public Artifact loadArtifact(URI uri, URL location, Monitor monitor) throws ContributionReadException {
         init();
