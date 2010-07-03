@@ -254,4 +254,6 @@ public interface Node {
      * @return the Contribution
      */
     Contribution getInstalledContribution(String uri);
+    
+    String getDomainName();
 }
