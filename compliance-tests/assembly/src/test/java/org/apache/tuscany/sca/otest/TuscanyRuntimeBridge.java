@@ -28,10 +28,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
-import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.monitor.ValidationException;
+import org.apache.tuscany.sca.node2.Node;
+import org.apache.tuscany.sca.node2.NodeFactory;
 
 import client.RuntimeBridge;
 import client.TestConfiguration;
@@ -76,16 +75,23 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
             ps.setProperty("defaultScheme", "vm");
             ps.setProperty("org.apache.tuscany.sca.binding.ws.jaxws.ri.JAXWSBindingProviderFactory.defaultPort", "8080");
             launcher = NodeFactory.newInstance(ps);
+            node = launcher.createNode("default");
 
-            Contribution[] contributions = new Contribution[contributionNames.length];
+//            Contribution[] contributions = new Contribution[contributionNames.length];
             String[] contributionURIs = getContributionURIs(contributionLocation);
-            for (int i = 0; i < contributions.length; i++) {
-                contributions[i] = new Contribution(contributionNames[i], contributionURIs[i]);
-            } // end for
+//            for (int i = 0; i < contributions.length; i++) {
+//                contributions[i] = new Contribution(contributionNames[i], contributionURIs[i]);
+//            } // end for
+            
+            for (int i=contributionURIs.length-1; i > -1; i--) {
+                node.installContribution(contributionNames[i], contributionURIs[i], null, null, false);
+            }
+            
+            node.addToDomainLevelComposite(contributionNames[0] + "/" + testConfiguration.getComposite());
 
-            node = launcher.createNode(testConfiguration.getComposite(), contributions);
+//            node = NodeFactory.createNode(testConfiguration.getComposite(), contributionURIs);
             // Start the node
-            node.start();
+//            node.start();
             
             // For debugging 
             // print out the composites that have been read in success cases
@@ -141,18 +147,17 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
             node.stop();
         } // end if
         if (launcher != null) {
-            launcher.destroy();
+            launcher.stop();
         } // end if
     } // end method stopContribution
 
-    public String getContributionLocation(Class<?> testClass) {
-        return ContributionLocationHelper.getContributionLocation(testConfiguration.getTestClass());
-    } // end method getContributionLocation
-    
     public void checkError(String testName, Throwable ex) throws Throwable { 
               
         String expectedMessage = expectedErrorMessages.getProperty(testName);
         String receivedMessage = ex.getMessage();
+        if (ex instanceof ValidationException && ex.getCause() == null) {
+            receivedMessage = "org.apache.tuscany.sca.monitor.ValidationException: " + receivedMessage;
+        }
         
         if (expectedMessage == null){
             writeMissingMessage(testName, ex);
