@@ -59,7 +59,7 @@ public class DeployedComposite {
                              Deployer deployer,
                              CompositeActivator compositeActivator,
                              EndpointRegistry endpointRegistry,
-                             ExtensionPointRegistry extensionPointRegistry) throws ActivationException {
+                             ExtensionPointRegistry extensionPointRegistry) throws ValidationException, ActivationException {
         this.composite = composite;
         this.installedContribution = ic;
         this.dependedOnContributions = dependedOnContributions;
@@ -69,12 +69,14 @@ public class DeployedComposite {
         this.extensionPointRegistry = extensionPointRegistry;
         try {
             init();
-        } catch (Exception e) {
+        } catch (ContributionResolveException e) {
+            throw new ActivationException(e);
+        } catch (CompositeBuilderException e) {
             throw new ActivationException(e);
         }
     }
 
-    protected void init() throws ValidationException, ContributionResolveException, CompositeBuilderException, ActivationException {
+    protected void init() throws ValidationException, ActivationException, ContributionResolveException, CompositeBuilderException {
         
         List<Contribution> contribution = new ArrayList<Contribution>();
         contribution.add(installedContribution.getContribution());

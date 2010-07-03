@@ -44,22 +44,64 @@ public class NodeFactory {
     private ExtensibleDomainRegistryFactory domainRegistryFactory;
     private RuntimeAssemblyFactory assemblyFactory;
 
-    // TODO: keep this method?
-    public static Node createNode() {
-        return new NodeFactory().createNode("default");
+    /**
+     * A helper method to simplify creating a Node with an installed contributions
+     * @param compositeURI  URI of a composite to run relative to the first contribution
+     *         if compositeURI is null then all deployable composites in the first contribution will be run 
+     * @param contributionURLs  URLs to contributions to install
+     * @return a Node with installed contributions
+     */
+    public static Node createNode(String compositeURI, String... contributionURLs) {
+        try {
+            
+            Node node = newInstance().createOneoffNode();
+            String uri = "";
+            for (int i=contributionURLs.length-1; i>-1; i--) {
+                boolean runDeployables = (i==0) && (compositeURI == null);
+                int lastDot = contributionURLs[i].lastIndexOf('.');
+                int lastSep = contributionURLs[i].lastIndexOf("/");
+                if (lastDot > -1 && lastSep > -1 && lastDot > lastSep) {
+                    uri = contributionURLs[i].substring(lastSep+1, lastDot);
+                } else {
+                    uri = contributionURLs[i];
+                }
+
+                node.installContribution(uri, contributionURLs[i], null, null, runDeployables);
+            }
+            if (compositeURI != null) {
+                if (uri.endsWith("/")) {
+                    uri = uri + compositeURI;
+                } else {
+                    uri = uri + "/" + compositeURI;
+                }
+                node.addToDomainLevelComposite(uri);
+            }
+            return node;
+            
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public NodeFactory() {
-        init(null);
+    public static NodeFactory newInstance() {
+        return new NodeFactory(null);
+    }
+    public static NodeFactory newInstance(Properties config) {
+        return new NodeFactory(config);
     }
 
-    public NodeFactory(Properties config) {
+    protected NodeFactory(Properties config) {
         init(config);
     }
 
-    public Node createNode(String domainName) {
-        EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry("default", domainName);
-        return new NodeImpl(domainName, deployer, compositeActivator, endpointRegistry, extensionPointRegistry);
+    public Node createNode(String domainURI) {
+        EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry("default", domainURI);
+        return new NodeImpl(domainURI, deployer, compositeActivator, endpointRegistry, extensionPointRegistry, null);
+    }
+
+    protected Node createOneoffNode() {
+        EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry("default", "default");
+        return new NodeImpl("default", deployer, compositeActivator, endpointRegistry, extensionPointRegistry, this);
     }
 
     public void stop() {
@@ -91,8 +133,6 @@ public class NodeFactory {
         extensionPointRegistry.getExtensionPoint(ModuleActivatorExtensionPoint.class);
 
         this.domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionPointRegistry);
-//        DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionPointRegistry);
-//        domainRegistryFactory.getEndpointRegistry(config.getProperty("reguri"), config.getProperty("defaultDomainName"));
 
     }
     /**

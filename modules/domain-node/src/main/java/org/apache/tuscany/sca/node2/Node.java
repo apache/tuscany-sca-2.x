@@ -137,7 +137,7 @@ public interface Node {
      * @throws ValidationException 
      */
     String addDeploymentComposite(String contributionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException;
-    String addDeploymentComposite(String contributionURI, Composite composite) throws ActivationException;
+    String addDeploymentComposite(String contributionURI, Composite composite) throws ActivationException, ValidationException;
 
     /**
      * 4599 10.5.2 add Deployment Composite & update Deployment Composite
@@ -183,8 +183,9 @@ public interface Node {
      *  
      * @param compositeURI
      * @throws ActivationException 
+     * @throws ValidationException 
      */
-    void addToDomainLevelComposite(String compositeURI) throws ActivationException;
+    void addToDomainLevelComposite(String compositeURI) throws ActivationException, ValidationException;
     
     /**
      * 4687 10.7.2 remove From Domain-Level Composite

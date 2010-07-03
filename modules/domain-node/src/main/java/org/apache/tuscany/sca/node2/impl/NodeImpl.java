@@ -31,7 +31,6 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
@@ -39,11 +38,11 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.node2.Node;
+import org.apache.tuscany.sca.node2.NodeFactory;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
@@ -59,13 +58,15 @@ public class NodeImpl implements Node {
     private CompositeActivator compositeActivator;
     private EndpointRegistry endpointRegistry;
     private ExtensionPointRegistry extensionPointRegistry;
+    private NodeFactory nodeFactory;
     
-    public NodeImpl(String domainName, Deployer deployer, CompositeActivator compositeActivator, EndpointRegistry endpointRegistry, ExtensionPointRegistry extensionPointRegistry) {
+    public NodeImpl(String domainName, Deployer deployer, CompositeActivator compositeActivator, EndpointRegistry endpointRegistry, ExtensionPointRegistry extensionPointRegistry, NodeFactory nodeFactory) {
         this.domainName = domainName;
         this.deployer = deployer;
         this.compositeActivator = compositeActivator;
         this.endpointRegistry = endpointRegistry;
         this.extensionPointRegistry = extensionPointRegistry;
+        this.nodeFactory = nodeFactory;
     }
 
     public String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException {
@@ -112,7 +113,38 @@ public class NodeImpl implements Node {
             for (Composite c : ic.getDefaultDeployables()) {
                 runComposite(c, ic);
             }
+        } else {
+            contribution.getDeployables().clear();
+            
+            List<Contribution> dependentContributions = calculateDependentContributions(ic);
+
+            Monitor monitor = deployer.createMonitor();
+            try {
+                deployer.resolve(contribution, dependentContributions, monitor);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            monitor.analyzeProblems();
         }
+    }
+
+    protected List<Contribution> calculateDependentContributions(InstalledContribution ic) {
+        List<Contribution> dependentContributions = new ArrayList<Contribution>();
+        if (ic.getDependentContributionURIs() != null) {
+            // if the install specified dependent uris use just those contributions
+            for (String uri : ic.getDependentContributionURIs()) {
+                InstalledContribution dependee = installedContributions.get(uri);
+                if (dependee != null) {
+                    dependentContributions.add(dependee.getContribution());
+                }
+            }
+        } else {
+            // otherwise use all available contributions for dependents
+            for (InstalledContribution ics : installedContributions.values()) {
+                dependentContributions.add(ics.getContribution());
+            }
+        }
+        return dependentContributions;
     }
 
     public String addDeploymentComposite(String contributionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException {
@@ -122,7 +154,7 @@ public class NodeImpl implements Node {
         return addDeploymentComposite(contributionURI, composite);
     }
 
-    public String addDeploymentComposite(String contributionURI, Composite composite) throws ActivationException {
+    public String addDeploymentComposite(String contributionURI, Composite composite) throws ActivationException, ValidationException {
         InstalledContribution ic = installedContributions.get(contributionURI);
         if (ic == null) {
             throw new IllegalArgumentException("contribution not installed: " + contributionURI);
@@ -132,7 +164,7 @@ public class NodeImpl implements Node {
         return compositeArtifcatURI;
     }
 
-    public void addToDomainLevelComposite(String compositeURI) throws ActivationException {
+    public void addToDomainLevelComposite(String compositeURI) throws ActivationException, ValidationException {
         String contributionURI = getContributionUriForArtifact(compositeURI);
         InstalledContribution ic = installedContributions.get(contributionURI);
         if (ic == null) {
@@ -222,6 +254,9 @@ public class NodeImpl implements Node {
                 e.printStackTrace();
             }
         }
+        if (nodeFactory != null) {
+            nodeFactory.stop();
+        }
     }
 
     public <T> T getService(Class<T> interfaze, String serviceURI) throws NoSuchServiceException {
@@ -272,22 +307,8 @@ public class NodeImpl implements Node {
         return contributionURI;
     }
 
-    protected void runComposite(Composite c, InstalledContribution ic) throws ActivationException {
-        List<Contribution> dependentContributions = new ArrayList<Contribution>();
-        if (ic.getDependentContributionURIs() != null) {
-            // if the install specified dependent uris use just those contributions
-            for (String uri : ic.getDependentContributionURIs()) {
-                InstalledContribution dependee = installedContributions.get(uri);
-                if (dependee != null) {
-                    dependentContributions.add(dependee.getContribution());
-                }
-            }
-        } else {
-            // otherwise use all available contributions for dependents
-            for (InstalledContribution ics : installedContributions.values()) {
-                dependentContributions.add(ics.getContribution());
-            }
-        }
+    protected void runComposite(Composite c, InstalledContribution ic) throws ActivationException, ValidationException {
+        List<Contribution> dependentContributions = calculateDependentContributions(ic);
 
         DeployedComposite dc = new DeployedComposite(c, ic, dependentContributions, deployer, compositeActivator, endpointRegistry, extensionPointRegistry);
         ic.getDeployedComposites().add(dc);
@@ -309,14 +330,4 @@ public class NodeImpl implements Node {
         }
         return dependentContributionURIs;
     }
-
-    public Deployer getDeployer() {
-        return deployer;
-    }
-
-    public AssemblyFactory getAssemblyFactory() {
-        FactoryExtensionPoint factories = extensionPointRegistry.getExtensionPoint(FactoryExtensionPoint.class);
-        return factories.getFactory(AssemblyFactory.class);
-    }
-
 }

@@ -38,30 +38,30 @@ public class NodeTestCase {
 
     @Test
     public void testInstallDeployable() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        Node section10 = NodeFactory.createNode();
-        section10.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null, true);
+        Node node = NodeFactory.newInstance().createNode("default");
+        node.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null, true);
 
-//        Helloworld helloworldService = section10.getService(Helloworld.class, "HelloworldComponent");
+//        Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
 //        Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
     }
 
     @Ignore("TODO: fails with Sun JDK due to SCA properties issue")
     @Test
     public void testInstallWithDependent() throws NoSuchServiceException, ContributionReadException, ActivationException, ValidationException {
-        Node section10 = NodeFactory.createNode();
-        section10.installContribution("store", "/Tuscany/svn/2.x-trunk/itest/T3558/src/test/resources/sample-store.jar", null, null, true);
-        section10.installContribution("store-client", "/Tuscany/svn/2.x-trunk/itest/T3558/src/test/resources/sample-store-client.jar", null, null, true);
+        Node node = NodeFactory.newInstance().createNode("default");
+        node.installContribution("store", "/Tuscany/svn/2.x-trunk/itest/T3558/src/test/resources/sample-store.jar", null, null, true);
+        node.installContribution("store-client", "/Tuscany/svn/2.x-trunk/itest/T3558/src/test/resources/sample-store-client.jar", null, null, true);
 
-//        Helloworld helloworldService = section10.getService(Helloworld.class, "HelloworldComponent");
+//        Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
 //        Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
     }
 
     @Test
     public void testInstallNoDeployable() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        Node section10 = NodeFactory.createNode();
-        section10.installContribution("helloworld", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
+        Node node = NodeFactory.newInstance().createNode("default");
+        node.installContribution("helloworld", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
 
-//        SCAClientFactory scaClientFactory = section10.getSCAClientFactory();
+//        SCAClientFactory scaClientFactory = node.getSCAClientFactory();
 //        try {
 //            scaClientFactory.getService(Helloworld.class, "HelloworldComponent");
 //            Assert.fail();
@@ -69,44 +69,44 @@ public class NodeTestCase {
 //            // expected as there is no deployables
 //        }
 
-        section10.addToDomainLevelComposite("helloworld" + "/helloworld.composite");
+        node.addToDomainLevelComposite("helloworld" + "/helloworld.composite");
 //        Helloworld helloworldService = scaClientFactory.getService(Helloworld.class, "HelloworldComponent");
 //        Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
     }
 
     @Test
     public void testGetInstalledContributions() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        Node section10 = NodeFactory.createNode();
-        section10.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
-        List<String> ics = section10.getInstalledContributions();
+        Node node = NodeFactory.newInstance().createNode("default");
+        node.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
+        List<String> ics = node.getInstalledContributions();
         Assert.assertEquals(1, ics.size());
         Assert.assertEquals("foo", ics.get(0));
     }
 
     @Test
     public void testGetDeployedCompostes() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, MalformedURLException, ActivationException, ValidationException {
-        Node section10 = NodeFactory.createNode();
-        section10.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
-        List<String> dcs = section10.getDeployedCompostes("foo");
+        Node node = NodeFactory.newInstance().createNode("default");
+        node.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
+        List<String> dcs = node.getDeployedCompostes("foo");
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("foo/helloworld.composite", dcs.get(0));
     }
 
     @Test
     public void testRemoveComposte() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, MalformedURLException, ActivationException, ValidationException {
-        Node section10 = NodeFactory.createNode();
-        section10.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
-        section10.removeFromDomainLevelComposite("foo/helloworld.composite");
-        List<String> dcs = section10.getDeployedCompostes("foo");
+        Node node = NodeFactory.newInstance().createNode("default");
+        node.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
+        node.removeFromDomainLevelComposite("foo/helloworld.composite");
+        List<String> dcs = node.getDeployedCompostes("foo");
         Assert.assertEquals(0, dcs.size());
     }
 
     @Test
     public void testInstallWithMetaData() throws ContributionReadException, ActivationException, ValidationException {
-        Node section10 = NodeFactory.createNode();
-        ((NodeImpl)section10).installContribution("helloworld", "src/test/resources/sample-helloworld-nodeployable.jar", "src/test/resources/sca-contribution-generated.xml", null, true);
+        Node node = NodeFactory.newInstance().createNode("default");
+        ((NodeImpl)node).installContribution("helloworld", "src/test/resources/sample-helloworld-nodeployable.jar", "src/test/resources/sca-contribution-generated.xml", null, true);
 
-        List<String> dcs = section10.getDeployedCompostes("helloworld");
+        List<String> dcs = node.getDeployedCompostes("helloworld");
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("helloworld/helloworld.composite", dcs.get(0));
 
@@ -116,8 +116,28 @@ public class NodeTestCase {
 
     @Test
     public void testURI() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        Node section10 = NodeFactory.createNode();
-        String uri = section10.installContribution("src/test/resources/sample-helloworld.jar");
+        Node node = NodeFactory.newInstance().createNode("default");
+        String uri = node.installContribution("src/test/resources/sample-helloworld.jar");
         Assert.assertEquals("sample-helloworld", uri);
+    }
+
+    @Test
+    public void testStaticCreate() {
+        Node node = NodeFactory.createNode("helloworld.composite", "src/test/resources/sample-helloworld.jar");
+        List<String> cs = node.getInstalledContributions();
+        Assert.assertEquals(1, cs.size());
+        List<String> dcs = node.getDeployedCompostes(cs.get(0));
+        Assert.assertEquals(1, dcs.size());
+        Assert.assertEquals("sample-helloworld/helloworld.composite", dcs.get(0));
+    }
+
+    @Test
+    public void testStaticCreateWithNullComposite() {
+        Node node = NodeFactory.createNode(null, "src/test/resources/sample-helloworld.jar");
+        List<String> cs = node.getInstalledContributions();
+        Assert.assertEquals(1, cs.size());
+        List<String> dcs = node.getDeployedCompostes(cs.get(0));
+        Assert.assertEquals(1, dcs.size());
+        Assert.assertEquals("sample-helloworld/helloworld.composite", dcs.get(0));
     }
 }
