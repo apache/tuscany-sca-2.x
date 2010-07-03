@@ -17,23 +17,26 @@
  * under the License.    
  */
 
-package sample;
+package org.apache.tuscany.sca.shell;
 
 import static java.lang.System.in;
 import static java.lang.System.out;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.concurrent.Callable;
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
-import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFactory;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.monitor.ValidationException;
+import org.apache.tuscany.sca.node2.Node;
+import org.apache.tuscany.sca.node2.NodeFactory;
+import org.apache.tuscany.sca.runtime.ActivationException;
 
 
 /**
@@ -67,10 +70,10 @@ public class Shell {
         new Shell().run();
     }
 
-    boolean start(final String name, final String curi, final String cloc) {
-        final Node node = nodeFactory.createNode(new Contribution(curi, cloc));
+    boolean start(final String name, final String curi, final String cloc) throws ContributionReadException, ActivationException, ValidationException {
+        final Node node = nodeFactory.createNode("default");
+        node.installContribution(curi, cloc, null, null, true);
         nodes.put(name, new NodeInfo(name, curi, cloc, node));
-        node.start();
         return true;
     }
 
@@ -99,12 +102,12 @@ public class Shell {
         out.print("=> ");
         final String l = r.readLine();
         history.add(l);
-        return Arrays.asList(l != null? l.split(" ") : "bye".split(" "));
+        return Arrays.asList(l != null? l.trim().split(" ") : "bye".split(" "));
     }
        
     Callable<Boolean> eval(final List<String> toks) {
         final String op = toks.get(0);
-        if (op.equals("start")) return new Callable<Boolean>() { public Boolean call() {
+        if (op.equals("start")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return start(toks.get(1), toks.get(2), toks.get(3));
         }};
         if (op.equals("stop")) return new Callable<Boolean>() { public Boolean call() {
