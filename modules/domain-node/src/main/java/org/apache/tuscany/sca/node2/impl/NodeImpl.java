@@ -84,7 +84,7 @@ public class NodeImpl implements Node {
     
     public void installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException {
         Monitor monitor = deployer.createMonitor();
-        Contribution contribution = deployer.loadContribution(URI.create(uri), IOHelper.getLocationAsURL(contributionURL), monitor);
+        Contribution contribution = deployer.loadContribution(IOHelper.createURI(uri), IOHelper.getLocationAsURL(contributionURL), monitor);
         monitor.analyzeProblems();
         if (metaDataURL != null) {
             mergeContributionMetaData(metaDataURL, contribution);
