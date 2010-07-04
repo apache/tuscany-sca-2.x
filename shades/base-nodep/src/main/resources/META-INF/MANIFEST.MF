@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+Main-Class: org.apache.tuscany.sca.shell.Shell
 Bundle-Activator: org.apache.tuscany.sca.base.AggregatedBundleActivator
 Tuscany-Bundle-Activator-List: org.apache.tuscany.sca.contribution.osgi.impl.OSGiBundleActivator,org.apache.tuscany.sca.extensibility.equinox.EquinoxServiceDiscoveryActivator,org.apache.tuscany.sca.implementation.osgi.xml.OSGiImplementationActivator,org.apache.tuscany.sca.node.osgi.impl.NodeActivator,org.apache.tuscany.sca.node.equinox.launcher.FrameworkLauncher
 Export-Package: org.apache.tuscany.sca.launcher;version="2.0",org.apac
