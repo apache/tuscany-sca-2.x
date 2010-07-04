@@ -274,10 +274,12 @@ public class NodeImpl implements Node {
 
     public List<String> getDeployedCompostes(String contributionURI) {
         ArrayList<String> compositeURIs = new ArrayList<String>();
-        for (InstalledContribution ic : installedContributions.values()) {
-            for (DeployedComposite dc : ic.getDeployedComposites()) {
-                compositeURIs.add(ic.getURI() + "/" + dc.getURI());
-            }
+        InstalledContribution ic = installedContributions.get(contributionURI);
+        if (ic == null) {
+            throw new IllegalArgumentException("no contribution found for: " + contributionURI);
+        }
+        for (DeployedComposite dc : ic.getDeployedComposites()) {
+            compositeURIs.add(ic.getURI() + "/" + dc.getURI());
         }
         return compositeURIs;
     }
