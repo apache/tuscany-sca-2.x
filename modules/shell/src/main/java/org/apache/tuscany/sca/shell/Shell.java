@@ -97,8 +97,7 @@ public class Shell {
 
     boolean listDeployedCompostes(String curi) throws ContributionReadException, ActivationException, ValidationException {
         for (String uri : node.getDeployedCompostes(curi)) {
-//            out.println(uri.substring(curi.length()+1));
-            out.println(uri);
+            out.println(uri.substring(curi.length()+1));
         }
         return true;
     }
