@@ -6,13 +6,16 @@ Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Bundle-Description: Apache Tuscany SCA Shell
+Bundle-Description: Apache Tuscany SCA Domain Node
 Import-Package: 
- org.apache.tuscany.sca.contribution.processor;version="2.0.0",
- org.apache.tuscany.sca.monitor;version="2.0.0",
+ org.apache.tuscany.sca.management;version="2.0.0",
+ org.apache.tuscany.sca.node;version="2.0.0",
  org.apache.tuscany.sca.node2;version="2.0.0",
+ org.apache.tuscany.sca.node.configuration;version="2.0.0",
+ org.apache.tuscany.sca.node.impl;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
- org.apache.tuscany.sca.shell;version="2.0.0"
+ org.apache.tuscany.sca.context;version="2.0.0",
+ org.apache.tuscany.sca.work;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.domain.node
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
