@@ -23,6 +23,7 @@ import static java.lang.System.in;
 import static java.lang.System.out;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -69,13 +70,35 @@ public class Shell {
     }
 
     boolean install(final String cloc) throws ContributionReadException, ActivationException, ValidationException {
-        node.installContribution(cloc, cloc, null, null, true);
+        String uri = getURI(cloc);
+        node.installContribution(getURI(cloc), cloc, null, null, true);
+        out.println("installed: " + uri);
         return true;
+    }
+
+    private String getURI(String contributionURL) {
+        int lastDot = contributionURL.lastIndexOf('.');
+        int lastSep = contributionURL.lastIndexOf("/");
+        String uri = contributionURL;
+        if (lastDot > -1 && lastSep > -1 && lastDot > lastSep) {
+            uri = contributionURL.substring(lastSep+1, lastDot);
+        } else {
+            try {
+                File f = new File(contributionURL);
+                if ("classes".equals(f.getName())) {
+                    uri = f.getParentFile().getParentFile().getName();                   
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+        return uri;
     }
 
     boolean listDeployedCompostes(String curi) throws ContributionReadException, ActivationException, ValidationException {
         for (String uri : node.getDeployedCompostes(curi)) {
-            out.println(uri.substring(curi.length()+1));
+//            out.println(uri.substring(curi.length()+1));
+            out.println(uri);
         }
         return true;
     }
