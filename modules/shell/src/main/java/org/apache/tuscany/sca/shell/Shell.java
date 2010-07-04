@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.node2.Node;
 import org.apache.tuscany.sca.node2.NodeFactory;
 import org.apache.tuscany.sca.runtime.ActivationException;
+import org.apache.tuscany.sca.runtime.Version;
 
 
 /**
@@ -130,8 +131,10 @@ public class Shell {
     }
 
     boolean help() {
+        out.println("Apache Tuscany Shell (" + Version.getVersion() + " " + Version.getRevsion() + " " + Version.getBuildTime() + ")");
         out.println("Commands:");
         out.println();
+        out.println("   help");
         out.println("   install <contributionURL>");
         out.println("   remove <contributionURL>");
         out.println("   addDeploymentComposite <contributionURL> <content>");
@@ -140,6 +143,7 @@ public class Shell {
         out.println("   listDeployedCompostes <contributionURI>");
         out.println("   listInstalledContributions");
         out.println("   printDomainLevelComposite");
+        out.println("   status");
         out.println("   stop");
         out.println();
         return true;
@@ -231,6 +235,7 @@ public class Shell {
     }
 
     public void run() throws IOException {
+        help();
         final BufferedReader r = new BufferedReader(new InputStreamReader(in));
         while(apply(eval(read(r))));
     }
