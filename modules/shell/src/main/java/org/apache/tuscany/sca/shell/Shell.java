@@ -25,12 +25,13 @@ import static java.lang.System.out;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
+
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
@@ -43,48 +44,98 @@ import org.apache.tuscany.sca.runtime.ActivationException;
  * A little SCA command shell.
  */
 public class Shell {
+    
     final NodeFactory nodeFactory = NodeFactory.newInstance();
-
-    public static class NodeInfo {
-        final String name;
-        final String curi;
-        final String cloc;
-        final Node node;
-
-        NodeInfo(final String name, final String curi, final String cloc, final Node node) {
-            this.name = name;
-            this.curi = curi;
-            this.cloc = cloc;
-            this.node = node;
-        }
-
-        public String toString() {
-            return name + " " + curi + " " + cloc;
-        }
+    Node node;
+    
+    public Shell(String domainURI) {
+        this.node = nodeFactory.createNode(domainURI);
     }
-    final Map<String, NodeInfo> nodes = new HashMap<String, NodeInfo>();
 
     final List<String> history = new ArrayList<String>();
     
     public static void main(final String[] args) throws Exception {
-        new Shell().run();
+        new Shell(args.length > 0 ? args[0] : "default").run();
     }
 
-    boolean start(final String name, final String curi, final String cloc) throws ContributionReadException, ActivationException, ValidationException {
-        final Node node = nodeFactory.createNode("default");
-        node.installContribution(curi, cloc, null, null, true);
-        nodes.put(name, new NodeInfo(name, curi, cloc, node));
+    boolean addDeploymentComposite(final String curi, String content) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException {
+        node.addDeploymentComposite(curi, new StringReader(content));
         return true;
     }
 
-    boolean stop(final String name) {
-        nodes.get(name).node.stop();
-        nodes.remove(name);
+    boolean addToDomainLevelComposite(final String uri) throws ContributionReadException, ActivationException, ValidationException {
+        node.addToDomainLevelComposite(uri);
         return true;
+    }
+
+    boolean install(final String cloc) throws ContributionReadException, ActivationException, ValidationException {
+        node.installContribution(cloc, cloc, null, null, true);
+        return true;
+    }
+
+    boolean listDeployedCompostes(String curi) throws ContributionReadException, ActivationException, ValidationException {
+        for (String uri : node.getDeployedCompostes(curi)) {
+            out.println(uri.substring(curi.length()+1));
+        }
+        return true;
+    }
+
+    boolean listInstalledContributions() throws ContributionReadException, ActivationException, ValidationException {
+        for (String uri : node.getInstalledContributions()) {
+            out.println(uri);
+        }
+        return true;
+    }
+
+    boolean printDomainLevelComposite() throws ContributionReadException, ActivationException, ValidationException {
+        out.println(node.getDomainLevelCompositeAsString());
+        return true;
+    }
+    
+    boolean getQNameDefinition(final String curi, String definintion, String symbolSpace) throws ContributionReadException, ActivationException, ValidationException {
+        // TODO:
+        return true;
+    }
+
+    boolean remove(final String curi) throws ContributionReadException, ActivationException, ValidationException {
+        node.removeContribution(curi);
+        return true;
+    }
+
+    boolean removeFromDomainLevelComposite(final String uri) throws ContributionReadException, ActivationException, ValidationException {
+        node.removeFromDomainLevelComposite(uri);
+        return true;
+    }
+
+    boolean help() {
+        out.println("Commands:");
+        out.println();
+        out.println("   install <contributionURL>");
+        out.println("   remove <contributionURL>");
+        out.println("   addDeploymentComposite <contributionURL> <content>");
+        out.println("   addToDomainLevelComposite <contributionURI/compositeURI>");
+        out.println("   removeFromDomainLevelComposite <contributionURI/compositeURI>");
+        out.println("   listDeployedCompostes <contributionURI>");
+        out.println("   listInstalledContributions");
+        out.println("   printDomainLevelComposite");
+        out.println("   stop");
+        out.println();
+        return true;
+    }
+
+    boolean stop() {
+        node.stop();
+        return false;
     }
 
     boolean status() {
-        out.println(nodes.values());
+        out.println("Domain: " + node.getDomainName());
+        out.println("   installed contributions: " + node.getInstalledContributions().size());
+        int x = 0;
+        for (String curi : node.getInstalledContributions()) {
+            x += node.getDeployedCompostes(curi).size();
+        }
+        out.println("   deployed composites: " + x);
         return true;
     }
 
@@ -92,10 +143,6 @@ public class Shell {
         for (String l: history)
             out.println(l);
         return true;
-    }
-
-    static boolean bye() {
-        return false;
     }
 
     List<String> read(final BufferedReader r) throws IOException {
@@ -107,20 +154,45 @@ public class Shell {
        
     Callable<Boolean> eval(final List<String> toks) {
         final String op = toks.get(0);
-        if (op.equals("start")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return start(toks.get(1), toks.get(2), toks.get(3));
+
+        if (op.equals("addDeploymentComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+            return addDeploymentComposite(toks.get(1), toks.get(2));
+        }};
+        if (op.equals("addToDomainLevelComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+            return addToDomainLevelComposite(toks.get(1));
+        }};
+        if (op.equals("install")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+            return install(toks.get(1));
+        }};
+        if (op.equals("listDeployedCompostes")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+            return listDeployedCompostes(toks.get(1));
+        }};
+        if (op.equals("printDomainLevelComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+            return printDomainLevelComposite();
+        }};
+        if (op.equals("listInstalledContributions")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+            return listInstalledContributions();
+        }};
+        if (op.equals("getQNameDefinition")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+            return getQNameDefinition(toks.get(1), toks.get(2), toks.get(3));
+        }};
+        if (op.equals("remove")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+            return remove(toks.get(1));
+        }};
+        if (op.equals("removeFromDomainLevelComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+            return removeFromDomainLevelComposite(toks.get(1));
+        }};
+        if (op.equals("help")) return new Callable<Boolean>() { public Boolean call() {
+            return help();
         }};
         if (op.equals("stop")) return new Callable<Boolean>() { public Boolean call() {
-            return stop(toks.get(1));
+            return stop();
         }};
         if (op.equals("status")) return new Callable<Boolean>() { public Boolean call() {
             return status();
         }};
         if (op.equals("history")) return new Callable<Boolean>() { public Boolean call() {
             return history();
-        }};
-        if (op.equals("bye")) return new Callable<Boolean>() { public Boolean call() {
-            return bye();
         }};
         return new Callable<Boolean>() { public Boolean call() {
             return true;
@@ -136,9 +208,8 @@ public class Shell {
         }
     }
 
-    public Map<String, NodeInfo> run() throws IOException {
+    public void run() throws IOException {
         final BufferedReader r = new BufferedReader(new InputStreamReader(in));
         while(apply(eval(read(r))));
-        return nodes;
     }
 }
