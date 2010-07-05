@@ -56,9 +56,9 @@ public class Shell {
     private boolean useJline;
     final List<String> history = new ArrayList<String>();
     static final String[] COMMANDS = new String[] {"addDeploymentComposite", "addToDomainLevelComposite", "help",
-                                                           "install", "listDeployedCompostes",
-                                                           "printDomainLevelComposite", "listInstalledContributions",
-                                                           "removeFromDomainLevelComposite", "remove", "status", "stop"};
+                                                   "install", "listDeployedCompostes", "listInstalledContributions",
+                                                   "printDomainLevelComposite", "removeFromDomainLevelComposite", 
+                                                   "remove", "status", "stop"};
 
     public static void main(final String[] args) throws Exception {
         boolean useJline = !Arrays.asList(args).contains("-nojline");
@@ -179,7 +179,7 @@ public class Shell {
         out.println("   listDeployedCompostes <contributionURI>");
         out.println("   listInstalledContributions");
         out.println("   printDomainLevelComposite");
-        out.println("   status");
+        out.println("   status [<curi> <compositeUri>]");
         out.println("   stop");
         out.println();
         return true;
@@ -190,14 +190,33 @@ public class Shell {
         return false;
     }
 
-    boolean status() {
+    boolean status(final List<String> toks) {
         out.println("Domain: " + node.getDomainName());
-        out.println("   installed contributions: " + node.getInstalledContributions().size());
-        int x = 0;
-        for (String curi : node.getInstalledContributions()) {
-            x += node.getDeployedCompostes(curi).size();
+        List<String> ics;
+        if (toks.size()>1) {
+            ics = new ArrayList<String>();
+            ics.add(toks.get(1));
+        } else {
+            ics = node.getInstalledContributions();
         }
-        out.println("   deployed composites: " + x);
+
+        for (String curi : ics) {
+            Contribution c = node.getInstalledContribution(curi);
+            List<String> dcs = node.getDeployedCompostes(curi);
+            if (toks.size()>2) {
+                dcs = new ArrayList<String>();
+                dcs.add(toks.get(2));
+            } else {
+                dcs = node.getDeployedCompostes(curi);
+            }
+            for (String compositeUri : dcs) {
+                for (Artifact a : c.getArtifacts()) {
+                    if (compositeUri.equals(curi + "/" + a.getURI())) {
+                        out.println("   " + curi + " " + c.getLocation() + " " + compositeUri + " " + ((Composite)a.getModel()).getName());
+                    }
+                }
+            }
+        }
         return true;
     }
 
@@ -257,7 +276,7 @@ public class Shell {
             return stop();
         }};
         if (op.equals("status")) return new Callable<Boolean>() { public Boolean call() {
-            return status();
+            return status(toks);
         }};
         if (op.equals("history")) return new Callable<Boolean>() { public Boolean call() {
             return history();
