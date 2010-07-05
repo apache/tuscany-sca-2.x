@@ -25,8 +25,10 @@ import static java.lang.System.out;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +36,10 @@ import java.util.concurrent.Callable;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.common.java.io.IOHelper;
+import org.apache.tuscany.sca.contribution.Artifact;
+import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.node2.Node;
@@ -41,27 +47,31 @@ import org.apache.tuscany.sca.node2.NodeFactory;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.Version;
 
-
 /**
  * A little SCA command shell.
  */
 public class Shell {
     
-    final NodeFactory nodeFactory = NodeFactory.newInstance();
     Node node;
-    
-    public Shell(String domainURI) {
-        this.node = nodeFactory.createNode(domainURI);
-    }
-
+    private boolean useJline;
     final List<String> history = new ArrayList<String>();
-    
+    static final String[] COMMANDS = new String[] {"addDeploymentComposite", "addToDomainLevelComposite", "help",
+                                                           "install", "listDeployedCompostes",
+                                                           "printDomainLevelComposite", "listInstalledContributions",
+                                                           "removeFromDomainLevelComposite", "remove", "status", "stop"};
+
     public static void main(final String[] args) throws Exception {
-        new Shell(args.length > 0 ? args[0] : "default").run();
+        boolean useJline = !Arrays.asList(args).contains("-nojline");
+        new Shell(args.length > 0 ? args[0] : "default", useJline).run();
     }
 
-    boolean addDeploymentComposite(final String curi, String content) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException {
-        node.addDeploymentComposite(curi, new StringReader(content));
+    public Shell(String domainURI, boolean useJLine) {
+        this.node = NodeFactory.newInstance().createNode(domainURI);
+        this.useJline = useJLine;
+    }
+
+    boolean addDeploymentComposite(final String curi, String contentURL) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException, IOException {
+        node.addDeploymentComposite(curi, new StringReader(readContents(contentURL)));
         return true;
     }
 
@@ -70,14 +80,29 @@ public class Shell {
         return true;
     }
 
-    boolean install(final String cloc) throws ContributionReadException, ActivationException, ValidationException {
-        String uri = getURI(cloc);
-        node.installContribution(getURI(cloc), cloc, null, null, true);
-        out.println("installed: " + uri);
+    boolean install(final String cloc, final List<String> toks) throws ContributionReadException, ActivationException, ValidationException {
+        boolean runDeployables = !toks.contains("-norun");
+        String uri;
+        if (toks.contains("-uri")) {
+            uri = toks.get(toks.indexOf("-uri")+1);
+        } else {
+            uri = getDefaultURI(cloc);
+            out.println("installing at: " + uri);
+        }
+        String metaDataURL = null;
+        if (toks.contains("-metadata")) {
+            metaDataURL = toks.get(toks.indexOf("-metadata")+1);
+        }
+        List<String> duris = null;
+        if (toks.contains("-duris")) {
+            duris = Arrays.asList(toks.get(toks.indexOf("-duris")+1).split(","));
+        }
+        
+        node.installContribution(uri, cloc, metaDataURL, duris, runDeployables);
         return true;
     }
 
-    private String getURI(String contributionURL) {
+    private String getDefaultURI(String contributionURL) {
         int lastDot = contributionURL.lastIndexOf('.');
         int lastSep = contributionURL.lastIndexOf("/");
         String uri = contributionURL;
@@ -86,7 +111,7 @@ public class Shell {
         } else {
             try {
                 File f = new File(contributionURL);
-                if ("classes".equals(f.getName())) {
+                if ("classes".equals(f.getName()) && "target".equals(f.getParentFile().getName())) {
                     uri = f.getParentFile().getParentFile().getName();                   
                 }
             } catch (Exception e) {
@@ -106,6 +131,7 @@ public class Shell {
     boolean listInstalledContributions() throws ContributionReadException, ActivationException, ValidationException {
         for (String uri : node.getInstalledContributions()) {
             out.println(uri);
+            listComposites(uri);
         }
         return true;
     }
@@ -130,14 +156,24 @@ public class Shell {
         return true;
     }
 
+    boolean listComposites(final String curi) {
+        Contribution c = node.getInstalledContribution(curi);
+        for (Artifact a : c.getArtifacts()) {
+            if (a.getModel() instanceof Composite) {
+                out.println(((Composite)a.getModel()).getName());
+            }
+        }
+        return true;
+    }
+
     boolean help() {
         out.println("Apache Tuscany Shell (" + Version.getVersion() + " " + Version.getRevsion() + " " + Version.getBuildTime() + ")");
         out.println("Commands:");
         out.println();
         out.println("   help");
-        out.println("   install <contributionURL>");
-        out.println("   remove <contributionURL>");
-        out.println("   addDeploymentComposite <contributionURL> <content>");
+        out.println("   install <contributionURL> [-uri <uri> -norun -metadata <url> -duris <uri,uri,...>]");
+        out.println("   remove <contributionURI>");
+        out.println("   addDeploymentComposite <contributionURI> <content>");
         out.println("   addToDomainLevelComposite <contributionURI/compositeURI>");
         out.println("   removeFromDomainLevelComposite <contributionURI/compositeURI>");
         out.println("   listDeployedCompostes <contributionURI>");
@@ -170,14 +206,20 @@ public class Shell {
             out.println(l);
         return true;
     }
-
-    List<String> read(final BufferedReader r) throws IOException {
+    
+    List<String> read(Object r) throws IOException {
         out.print("=> ");
-        final String l = r.readLine();
-        history.add(l);
-        return Arrays.asList(l != null? l.trim().split(" ") : "bye".split(" "));
+        final String l;
+        if (useJline) {
+            l = JLine.readLine(r);
+        } else {
+            l = ((BufferedReader)r).readLine();
+            history.add(l);
+        }
+//        history.add(l);
+        return Arrays.asList(l != null? l.trim().split(" ") : "stop".split(" "));
     }
-       
+
     Callable<Boolean> eval(final List<String> toks) {
         final String op = toks.get(0);
 
@@ -188,7 +230,7 @@ public class Shell {
             return addToDomainLevelComposite(toks.get(1));
         }};
         if (op.equals("install")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return install(toks.get(1));
+            return install(toks.get(1), toks);
         }};
         if (op.equals("listDeployedCompostes")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return listDeployedCompostes(toks.get(1));
@@ -220,7 +262,11 @@ public class Shell {
         if (op.equals("history")) return new Callable<Boolean>() { public Boolean call() {
             return history();
         }};
+        if (op.equals("")) return new Callable<Boolean>() { public Boolean call() {
+            return true;
+        }};
         return new Callable<Boolean>() { public Boolean call() {
+            out.println("unknown command");
             return true;
         }};
     }
@@ -236,7 +282,29 @@ public class Shell {
 
     public void run() throws IOException {
         help();
-        final BufferedReader r = new BufferedReader(new InputStreamReader(in));
-        while(apply(eval(read(r))));
+        Object reader;
+        if (useJline) {
+            reader = JLine.createJLineReader(this);
+        } else {
+            reader = new BufferedReader(new InputStreamReader(in));
+        }
+        while(apply(eval(read(reader))));
     }
+
+    String readContents(String location) throws IOException {
+        URL url = IOHelper.getLocationAsURL(location);
+        InputStream is = IOHelper.openStream(url);
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            StringBuilder builder = new StringBuilder(8192);
+            for(String line=br.readLine(); line!=null; line=br.readLine()) {
+                builder.append(line);
+                builder.append('\n');
+            }
+            return builder.toString();
+        } finally {
+            IOHelper.close(is);
+        }
+     }
+
 }
