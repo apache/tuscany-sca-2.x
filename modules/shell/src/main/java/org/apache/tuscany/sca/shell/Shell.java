@@ -194,6 +194,7 @@ public class Shell {
         out.println();
         out.println("   help");
         out.println("   install <contributionURL> [-uri <uri> -norun -metadata <url> -duris <uri,uri,...>]");
+        out.println("   installed [<contributionURI>]");
         out.println("   remove <contributionURI>");
         out.println("   addDeploymentComposite <contributionURI> <content>");
         out.println("   addToDomainLevelComposite <contributionURI/compositeURI>");
