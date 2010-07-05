@@ -279,7 +279,7 @@ public class NodeImpl implements Node {
             throw new IllegalArgumentException("no contribution found for: " + contributionURI);
         }
         for (DeployedComposite dc : ic.getDeployedComposites()) {
-            compositeURIs.add(ic.getURI() + "/" + dc.getURI());
+            compositeURIs.add(dc.getURI());
         }
         return compositeURIs;
     }

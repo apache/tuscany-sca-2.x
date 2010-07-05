@@ -71,7 +71,7 @@ public class DeployerTestCase {
         node.addDeploymentComposite("foo", composite);
         List<String> dcs = node.getDeployedCompostes("foo");
         Assert.assertEquals(1, dcs.size());
-        Assert.assertEquals("foo/helloworld2.composite", dcs.get(0));
+        Assert.assertEquals("helloworld2.composite", dcs.get(0));
     }
 
 }

@@ -89,7 +89,7 @@ public class NodeTestCase {
         node.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
         List<String> dcs = node.getDeployedCompostes("foo");
         Assert.assertEquals(1, dcs.size());
-        Assert.assertEquals("foo/helloworld.composite", dcs.get(0));
+        Assert.assertEquals("helloworld.composite", dcs.get(0));
     }
 
     @Test
@@ -108,7 +108,7 @@ public class NodeTestCase {
 
         List<String> dcs = node.getDeployedCompostes("helloworld");
         Assert.assertEquals(1, dcs.size());
-        Assert.assertEquals("helloworld/helloworld.composite", dcs.get(0));
+        Assert.assertEquals("helloworld.composite", dcs.get(0));
 
 //        Helloworld helloworldService = scaClientFactory.getService(Helloworld.class, "HelloworldComponent");
 //        Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
@@ -128,7 +128,7 @@ public class NodeTestCase {
         Assert.assertEquals(1, cs.size());
         List<String> dcs = node.getDeployedCompostes(cs.get(0));
         Assert.assertEquals(1, dcs.size());
-        Assert.assertEquals("sample-helloworld/helloworld.composite", dcs.get(0));
+        Assert.assertEquals("helloworld.composite", dcs.get(0));
     }
 
     @Test
@@ -138,6 +138,6 @@ public class NodeTestCase {
         Assert.assertEquals(1, cs.size());
         List<String> dcs = node.getDeployedCompostes(cs.get(0));
         Assert.assertEquals(1, dcs.size());
-        Assert.assertEquals("sample-helloworld/helloworld.composite", dcs.get(0));
+        Assert.assertEquals("helloworld.composite", dcs.get(0));
     }
 }
