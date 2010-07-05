@@ -56,7 +56,7 @@ public class Shell {
     private boolean useJline;
     final List<String> history = new ArrayList<String>();
     static final String[] COMMANDS = new String[] {"addDeploymentComposite", "addToDomainLevelComposite", "help",
-                                                   "install", "listDeployedCompostes", "listInstalledContributions",
+                                                   "install", "installed", "listDeployedCompostes", "listInstalledContributions",
                                                    "printDomainLevelComposite", "removeFromDomainLevelComposite", 
                                                    "remove", "start", "status", "stop"};
 
@@ -99,6 +99,28 @@ public class Shell {
         }
         
         node.installContribution(uri, cloc, metaDataURL, duris, runDeployables);
+        return true;
+    }
+
+    boolean installed(final List<String> toks) {
+        List<String> curis;
+        if (toks.size() > 1) {
+            curis = Arrays.asList(new String[]{toks.get(1)});
+        } else {
+            curis =node.getInstalledContributions();
+        }
+        for (String curi : curis) {
+            out.println(curi + " " + node.getInstalledContribution(curi).getLocation());
+            Contribution c = node.getInstalledContribution(curi);
+            for (String dcuri : node.getDeployedCompostes(curi)) {
+                for (Artifact a : c.getArtifacts()) {
+                    if (dcuri.equals(a.getURI())) {
+                        out.println("   " + dcuri + " " + ((Composite)a.getModel()).getName());
+                        break;
+                    }
+                }
+            }
+        }
         return true;
     }
 
@@ -268,6 +290,9 @@ public class Shell {
         }};
         if (op.equals("install")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return install(toks.get(1), toks);
+        }};
+        if (op.equals("installed")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+            return installed(toks);
         }};
         if (op.equals("listDeployedCompostes")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return listDeployedCompostes(toks.get(1));
