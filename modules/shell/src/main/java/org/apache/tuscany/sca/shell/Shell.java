@@ -58,7 +58,7 @@ public class Shell {
     static final String[] COMMANDS = new String[] {"addDeploymentComposite", "addToDomainLevelComposite", "help",
                                                    "install", "listDeployedCompostes", "listInstalledContributions",
                                                    "printDomainLevelComposite", "removeFromDomainLevelComposite", 
-                                                   "remove", "status", "stop"};
+                                                   "remove", "start", "status", "stop"};
 
     public static void main(final String[] args) throws Exception {
         boolean useJline = !Arrays.asList(args).contains("-nojline");
@@ -179,6 +179,7 @@ public class Shell {
         out.println("   listDeployedCompostes <contributionURI>");
         out.println("   listInstalledContributions");
         out.println("   printDomainLevelComposite");
+        out.println("   start <curi> <compositeUri>");
         out.println("   status [<curi> <compositeUri>]");
         out.println("   stop [<curi> <compositeUri>]");
         out.println();
@@ -202,6 +203,11 @@ public class Shell {
         return true;
     }
 
+    boolean start(String curi, String compositeURI) throws ActivationException, ValidationException {
+        node.addToDomainLevelComposite(curi + "/" + compositeURI);
+        return true;
+    }
+    
     boolean status(final List<String> toks) {
         out.println("Domain: " + node.getDomainName());
         List<String> ics;
@@ -286,6 +292,9 @@ public class Shell {
         }};
         if (op.equals("stop")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return stop(toks);
+        }};
+        if (op.equals("start")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+            return start(toks.get(1), toks.get(2));
         }};
         if (op.equals("status")) return new Callable<Boolean>() { public Boolean call() {
             return status(toks);
