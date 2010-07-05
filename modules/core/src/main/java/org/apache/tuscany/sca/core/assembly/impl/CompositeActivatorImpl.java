@@ -279,7 +279,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
             activate(compositeContext, (RuntimeEndpointReference) epr);
         }
 
-        // TODO reference wires are added at component start for some reason
     }
 
     public void deactivate(RuntimeComponent component, RuntimeComponentReference reference) {
@@ -290,6 +289,27 @@ public class CompositeActivatorImpl implements CompositeActivator {
             deactivate((RuntimeEndpointReference)endpointReference);
         }
     }
+    
+    public void activate(CompositeContext compositeContext, RuntimeEndpointReference epr) {
+        // create the wire
+        // null endpoint passed in here as the endpoint reference may
+        // not be resolved yet
+        epr.bind(compositeContext);
+
+        ComponentReference reference = epr.getReference(); 
+        InterfaceContract sourceContract = epr.getComponentTypeReferenceInterfaceContract();
+
+        // TODO - EPR - interface contract seems to be null in the implementation.web
+        //              case. Not introspecting the CT properly?
+        if (sourceContract == null){
+            // TODO - Can't do this with move of matching to wire
+            // take the contract from the service to which the reference is connected
+            sourceContract = ((RuntimeEndpoint) epr.getTargetEndpoint()).getComponentTypeServiceInterfaceContract();
+            reference.setInterfaceContract(sourceContract);
+        }
+
+        // endpointReference.setInterfaceContract(sourceContract.makeUnidirectional(false));
+    }    
 
     public void deactivate(RuntimeEndpointReference endpointReference) {
         endpointReference.unbind();
@@ -573,27 +593,4 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
         }
     }
-
-    public void activate(CompositeContext compositeContext, RuntimeEndpointReference epr) {
-        // create the wire
-        // null endpoint passed in here as the endpoint reference may
-        // not be resolved yet
-        epr.bind(compositeContext);
-
-        ComponentReference reference = epr.getReference(); 
-        InterfaceContract sourceContract = epr.getComponentTypeReferenceInterfaceContract();
-
-        // TODO - EPR - interface contract seems to be null in the implementation.web
-        //              case. Not introspecting the CT properly?
-        if (sourceContract == null){
-            // TODO - Can't do this with move of matching to wire
-            // take the contract from the service to which the reference is connected
-            sourceContract = ((RuntimeEndpoint) epr.getTargetEndpoint()).getComponentTypeServiceInterfaceContract();
-            reference.setInterfaceContract(sourceContract);
-        }
-
-        // endpointReference.setInterfaceContract(sourceContract.makeUnidirectional(false));
-    }
-
-
 }
