@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.core.invocation.impl;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +30,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.xml.ws.Response;
+
+import org.apache.tuscany.sca.core.invocation.AsyncFaultWrapper;
+import org.apache.tuscany.sca.core.invocation.AsyncResponseHandler;
 
 /**
  * A class which provides an Implementation of a Future<V> and Response<V> for use with the JAXWS defined client
@@ -41,7 +45,7 @@ import javax.xml.ws.Response;
  *
  * @param <V> - this is the type of the response message from the invoked service.
  */
-public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V> {
+public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, AsyncResponseHandler<V> {
 	
 	// Lock for handling the completion of this Future
 	private final Lock lock = new ReentrantLock();
@@ -50,6 +54,8 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V> {
 	// The result
 	private volatile V response = null;
 	private volatile Throwable fault = null; 
+	
+	private String uniqueID = UUID.randomUUID().toString();
 	
 	protected AsyncInvocationFutureImpl() {
 		super();
@@ -138,8 +144,10 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V> {
 	 * @param e - the Fault to send
 	 * @throws IllegalStateException if either the setResponse method or the setFault method have been called previously
 	 */
-	public void setFault(Throwable e) {
+	public void setFault(AsyncFaultWrapper w) {
 
+		Exception e = w.retrieveFault();
+		if( e != null ) throw new IllegalArgumentException("AsyncFaultWrapper did not return an Exception");
 		lock.lock();
 		try {
 			if( notSetYet() ) {
@@ -176,13 +184,18 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V> {
 	} // end method setResponse
 	
 	/**
+	 * Gets the unique ID of this future as a String
+	 */
+	public String getUniqueID() { return uniqueID; }
+
+	/**
 	 * Indicates that setting a response value is OK - can only set the response value or fault once
 	 * @return - true if it is OK to set the response, false otherwise
 	 */
 	private boolean notSetYet() {
 		return ( response == null && fault == null );
 	}
-
+	
 	/**
 	 * Returns the JAXWS context for the response
 	 * @return - a Map containing the context
