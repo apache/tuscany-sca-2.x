@@ -170,10 +170,8 @@ public class TestOperation implements Operation {
         
     }
 
-    @Override
-    public boolean isAsyncServer() {
-        // TODO Auto-generated method stub
-        return false;
-    }
+	public boolean isAsyncServer() {
+		return false;
+	}
 
 }
