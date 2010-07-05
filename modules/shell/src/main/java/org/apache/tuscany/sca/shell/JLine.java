@@ -32,6 +32,8 @@ import jline.ConsoleReader;
 import jline.FileNameCompletor;
 import jline.SimpleCompletor;
 
+import org.apache.tuscany.sca.runtime.ActivationException;
+
 /**
  * Keep all the JLine specific code out of the Shell class so that it runs ok
  * when jline isn't on the classpath.  
@@ -48,7 +50,11 @@ public class JLine {
         // Add a Ctrl-c listener
         reader.addTriggeredAction((char)3, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                shell.stop();
+                try {
+                    shell.stop(null);
+                } catch (ActivationException e1) {
+                    e1.printStackTrace();
+                }
                 System.exit(0);
             }
         });

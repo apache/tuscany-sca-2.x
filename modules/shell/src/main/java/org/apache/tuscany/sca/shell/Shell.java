@@ -180,14 +180,26 @@ public class Shell {
         out.println("   listInstalledContributions");
         out.println("   printDomainLevelComposite");
         out.println("   status [<curi> <compositeUri>]");
-        out.println("   stop");
+        out.println("   stop [<curi> <compositeUri>]");
         out.println();
         return true;
     }
 
-    boolean stop() {
-        node.stop();
-        return false;
+    boolean stop(List<String> toks) throws ActivationException {
+        if (toks == null || toks.size() < 2) {
+            node.stop();
+            return false;
+        }
+        String curi = toks.get(1);
+        if (toks.size() > 2) {
+            node.removeFromDomainLevelComposite(curi + "/" + toks.get(2));
+        } else {
+            for (String compositeURI : node.getDeployedCompostes(curi)) {
+                node.removeFromDomainLevelComposite(curi + "/" + compositeURI);
+            }
+        }
+
+        return true;
     }
 
     boolean status(final List<String> toks) {
@@ -211,7 +223,7 @@ public class Shell {
             }
             for (String compositeUri : dcs) {
                 for (Artifact a : c.getArtifacts()) {
-                    if (compositeUri.equals(curi + "/" + a.getURI())) {
+                    if (compositeUri.equals(a.getURI())) {
                         out.println("   " + curi + " " + c.getLocation() + " " + compositeUri + " " + ((Composite)a.getModel()).getName());
                     }
                 }
@@ -272,8 +284,8 @@ public class Shell {
         if (op.equals("help")) return new Callable<Boolean>() { public Boolean call() {
             return help();
         }};
-        if (op.equals("stop")) return new Callable<Boolean>() { public Boolean call() {
-            return stop();
+        if (op.equals("stop")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+            return stop(toks);
         }};
         if (op.equals("status")) return new Callable<Boolean>() { public Boolean call() {
             return status(toks);
