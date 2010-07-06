@@ -294,52 +294,52 @@ public class Shell {
     Callable<Boolean> eval(final List<String> toks) {
         final String op = toks.get(0);
 
-        if (op.equals("addDeploymentComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+        if (op.equalsIgnoreCase("addDeploymentComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return addDeploymentComposite(toks.get(1), toks.get(2));
         }};
-        if (op.equals("addToDomainLevelComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+        if (op.equalsIgnoreCase("addToDomainLevelComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return addToDomainLevelComposite(toks.get(1));
         }};
-        if (op.equals("install")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+        if (op.equalsIgnoreCase("install")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return install(toks);
         }};
-        if (op.equals("installed")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+        if (op.equalsIgnoreCase("installed")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return installed(toks);
         }};
-        if (op.equals("listDeployedCompostes")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+        if (op.equalsIgnoreCase("listDeployedCompostes")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return listDeployedCompostes(toks.get(1));
         }};
-        if (op.equals("printDomainLevelComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+        if (op.equalsIgnoreCase("printDomainLevelComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return printDomainLevelComposite();
         }};
-        if (op.equals("listInstalledContributions")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+        if (op.equalsIgnoreCase("listInstalledContributions")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return listInstalledContributions();
         }};
-        if (op.equals("getQNameDefinition")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+        if (op.equalsIgnoreCase("getQNameDefinition")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return getQNameDefinition(toks.get(1), toks.get(2), toks.get(3));
         }};
-        if (op.equals("remove")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+        if (op.equalsIgnoreCase("remove")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return remove(toks.get(1));
         }};
-        if (op.equals("removeFromDomainLevelComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+        if (op.equalsIgnoreCase("removeFromDomainLevelComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return removeFromDomainLevelComposite(toks.get(1));
         }};
-        if (op.equals("help")) return new Callable<Boolean>() { public Boolean call() {
+        if (op.equalsIgnoreCase("help")) return new Callable<Boolean>() { public Boolean call() {
             return help(toks);
         }};
-        if (op.equals("stop")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+        if (op.equalsIgnoreCase("stop")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return stop(toks);
         }};
-        if (op.equals("start")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+        if (op.equalsIgnoreCase("start")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return start(toks.get(1), toks.get(2));
         }};
-        if (op.equals("status")) return new Callable<Boolean>() { public Boolean call() {
+        if (op.equalsIgnoreCase("status")) return new Callable<Boolean>() { public Boolean call() {
             return status(toks);
         }};
-        if (op.equals("history")) return new Callable<Boolean>() { public Boolean call() {
+        if (op.equalsIgnoreCase("history")) return new Callable<Boolean>() { public Boolean call() {
             return history();
         }};
-        if (op.equals("")) return new Callable<Boolean>() { public Boolean call() {
+        if (op.equalsIgnoreCase("")) return new Callable<Boolean>() { public Boolean call() {
             return true;
         }};
         return new Callable<Boolean>() { public Boolean call() {
