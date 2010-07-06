@@ -91,7 +91,8 @@ public class XPathHelper {
             String namespace = context.getNamespaceURI(prefix);
             if (namespace != null && !XMLConstants.NULL_NS_URI.equals(namespace)) {
                 nsContext.register(prefix, namespace);
-                found = true;
+                if ( (namespace.equals("http://docs.oasis-open.org/ns/opencsa/sca/200912")) && !prefix.equals(XMLConstants.DEFAULT_NS_PREFIX))
+                	found = true;
             }
         }
         

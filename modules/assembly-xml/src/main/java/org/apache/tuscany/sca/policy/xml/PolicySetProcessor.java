@@ -260,7 +260,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
             }
         }
 
-        return "_sca";
+        return "__sca";
     }
 
 	public void readIntentMap(XMLStreamReader reader, PolicySet policySet, Intent mappedIntent, ProcessorContext context)
