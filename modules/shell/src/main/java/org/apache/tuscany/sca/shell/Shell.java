@@ -198,27 +198,6 @@ public class Shell {
         return true;
     }
 
-    boolean help() {
-        out.println("Apache Tuscany Shell (" + Version.getVersion() + " " + Version.getRevsion() + " " + Version.getBuildTime() + ")");
-        out.println("Commands:");
-        out.println();
-        out.println("   help");
-        out.println("   install <contributionURL> [-uri <uri> -norun -metadata <url> -duris <uri,uri,...>]");
-        out.println("   installed [<contributionURI>]");
-        out.println("   remove <contributionURI>");
-        out.println("   addDeploymentComposite <contributionURI> <contentURL>");
-        out.println("   addToDomainLevelComposite <contributionURI/compositeURI>");
-        out.println("   removeFromDomainLevelComposite <contributionURI/compositeURI>");
-        out.println("   listDeployedCompostes <contributionURI>");
-        out.println("   listInstalledContributions");
-        out.println("   printDomainLevelComposite");
-        out.println("   start <curi> <compositeUri>");
-        out.println("   status [<curi> <compositeUri>]");
-        out.println("   stop [<curi> <compositeUri>]");
-        out.println();
-        return true;
-    }
-
     boolean stop(List<String> toks) throws ActivationException {
         if (toks == null || toks.size() < 2) {
             node.stop();
@@ -325,7 +304,7 @@ public class Shell {
             return removeFromDomainLevelComposite(toks.get(1));
         }};
         if (op.equals("help")) return new Callable<Boolean>() { public Boolean call() {
-            return help();
+            return help(toks);
         }};
         if (op.equals("stop")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return stop(toks);
@@ -358,7 +337,7 @@ public class Shell {
     }
 
     public void run() throws IOException {
-        help();
+        help(null);
         Object reader;
         if (useJline) {
             reader = JLine.createJLineReader(this);
@@ -383,5 +362,218 @@ public class Shell {
             IOHelper.close(is);
         }
      }
+    
+    boolean help(List<String> toks) {
+        String command = (toks == null || toks.size() < 2) ? null : toks.get(1);
+        if (command == null) {
+            helpOverview();
+        } else if ("help".equalsIgnoreCase(command)){
+            helpHelp();
+        } else if ("install".equalsIgnoreCase(command)) {
+            helpInstall();
+        } else if ("installed".equalsIgnoreCase(command)) {
+            helpInstalled();
+        } else if ("remove".equalsIgnoreCase(command)) {
+            helpRemove();
+        } else if ("addDeploymentComposite".equalsIgnoreCase(command)) {
+            helpAddDeploymentComposite();
+        } else if ("addToDomainLevelComposite".equalsIgnoreCase(command)) {
+            helpAddToDomainLevelComposite();
+        } else if ("removeFromDomainLevelComposite".equalsIgnoreCase(command)) {
+            helpRemoveFromDomainLevelComposite();
+        } else if ("listDeployedCompostes".equalsIgnoreCase(command)) {
+            helpListDeployedCompostes();
+        } else if ("listInstalledContributions".equalsIgnoreCase(command)) {
+            helpListInstalledContributions();
+        } else if ("printDomainLevelComposite".equalsIgnoreCase(command)) {
+            helpPrintDomainLevelComposite();
+        } else if ("start".equalsIgnoreCase(command)) {
+            helpStart();
+        } else if ("status".equalsIgnoreCase(command)) {
+            helpStatus();
+        } else if ("stop".equalsIgnoreCase(command)) {
+            helpStop();
+        } else if ("startup".equalsIgnoreCase(command)){
+            helpStartUp();
+        }
+        return true;
+    }
 
+    boolean helpOverview() {
+        out.println("Apache Tuscany Shell (" + Version.getVersion() + " " + Version.getRevsion() + " " + Version.getBuildTime() + ")");
+        out.println("Commands:");
+        out.println();
+        out.println("   help");
+        out.println("   install <contributionURL> [-uri <uri> -norun -metadata <url> -duris <uri,uri,...>]");
+        out.println("   installed [<contributionURI>]");
+        out.println("   remove <contributionURI>");
+        out.println("   addDeploymentComposite <contributionURI> <contentURL>");
+        out.println("   addToDomainLevelComposite <contributionURI/compositeURI>");
+        out.println("   removeFromDomainLevelComposite <contributionURI/compositeURI>");
+        out.println("   listDeployedCompostes <contributionURI>");
+        out.println("   listInstalledContributions");
+        out.println("   printDomainLevelComposite");
+        out.println("   start <curi> <compositeUri>");
+        out.println("   status [<curi> <compositeUri>]");
+        out.println("   stop [<curi> <compositeUri>]");
+        out.println();
+        return true;
+    }
+    void helpHelp() {
+        out.println("   help [<command>]");
+        out.println();
+        out.println("   Outputs help on the Tuscany Shell");
+        out.println("   If the command argument is used it provides detailed help on that command otherwise");
+        out.println("   it provides an overview of available Shell commands");
+        out.println();
+        out.println("   To get help on starting the Tuscany Shell use 'help startup'");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      <command> - (optional) the command to get detailed help on");
+    }
+
+    void helpAddDeploymentComposite() {
+        out.println("   addDeploymentComposite <contributionURI> <contentURL>");
+        out.println();
+        out.println("   Adds a deployment composite using a supplied composite ('composite by value' - a data");
+        out.println("   structure, not an existing resource in the Domain) to the contribution identified by a"); 
+        out.println("   supplied contribution URI. The added deployment composite is given a relative URI that");
+        out.println("   matches the @name attribute of the composite, with a '.composite' suffix. Since all composites"); 
+        out.println("   run within the context of an installed contribution (any component implementations or other");
+        out.println("   definitions are resolved within that contribution), this functionality makes it possible");
+        out.println("   for the deployer to create a composite with final configuration and wiring decisions and add");  
+        out.println("   it to an installed contribution without having to modify the contents of the root contribution.");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      <contributionURI> - (required) the URI of an installed contribution");
+        out.println("      <contentURL> - (required) the location of the composite");
+    }
+
+    void helpInstall() {
+        out.println("   install <contributionURL> [-uri <uri> -norun -metadata <url> -duris <uri,uri,...>]");
+        out.println();
+        out.println("   Creates an installed contribution with a supplied root contribution, installed at base URI.");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      contributionURL - (required) the URL to the contribution to install");
+        out.println("      -uri <uri> - (optional) the URI (name) to use for the contribution. When");
+        out.println("               no uri is defined a default URI is automatically choosen based on the contribution URL");
+        out.println("      -norun - (optional) do not start any composites listed as deployable in the sca-contribution.xml file");
+        out.println("      -metadata <url> - (optional) the URL to an external contribution meta data document that should be");
+        out.println("               merged into any existing sca-contributions.xml file within the contribution.");
+        out.println("      -duris <uri,uri,...> - (optional) specifies the URIs of contributions that are used to resolve the");
+        out.println("               dependencies of the root contribution and other dependent contributions.");
+        out.println("               When not specified all installed contributions are used to resolve dependencies.");
+    }
+
+    void helpInstalled() {
+        out.println("   installed [<contributionURI>]");
+        out.println();
+        out.println("   XXX");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      contributionURI - (optional) the URI of an installed contribution");
+    }
+
+    void helpRemove() {
+        out.println("   remove <contributionURI>");
+        out.println();
+        out.println("   XXX");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      contributionURI - (optional) the URI of an installed contribution");
+    }
+
+    void helpAddToDomainLevelComposite() {
+        out.println("   addToDomainLevelComposite <contributionURI/compositeURI>");
+        out.println();
+        out.println("   XXX");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      xxx - (required) xxx");
+    }
+
+    void helpRemoveFromDomainLevelComposite() {
+        out.println("   removeFromDomainLevelComposite <contributionURI/compositeURI>");
+        out.println();
+        out.println("   XXX");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      xxx - (required) xxx");
+    }
+
+    void helpListDeployedCompostes() {
+        out.println("   listDeployedCompostes <contributionURI>");
+        out.println();
+        out.println("   XXX");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      contributionURI - (required) the URI of an installed contribution");
+    }
+
+    void helpListInstalledContributions() {
+        out.println("   listInstalledContributions");
+        out.println();
+        out.println("   XXX");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      xxx - (required) xxx");
+    }
+
+    void helpPrintDomainLevelComposite() {
+        out.println("   printDomainLevelComposite");
+        out.println();
+        out.println("   XXX");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      xxx - (required) xxx");
+    }
+
+    void helpStart() {
+        out.println("   start <curi> <compositeUri>");
+        out.println();
+        out.println("   XXX");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      curi - (optional) the URI of an installed contribution");
+        out.println("      compositeUri - (optional) the URI of a composite");
+    }
+
+    void helpStatus() {
+        out.println("   status [<curi> <compositeUri>]");
+        out.println();
+        out.println("   XXX");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      curi - (optional) the URI of an installed contribution");
+        out.println("      compositeUri - (optional) the URI of a composite");
+    }
+
+    void helpStop() {
+        out.println("   stop [<curi> <compositeUri>]");
+        out.println();
+        out.println("   XXX");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      curi - (optional) the URI of an installed contribution");
+        out.println("      compositeUri - (optional) the URI of a composite");
+    }
+
+    void helpStartUp() {
+        out.println("   XXX ");
+        out.println();
+        out.println("   XXX");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      xxx - (required) xxx");
+    }
+
+    void helpXXX() {
+        out.println("   XXX ");
+        out.println();
+        out.println("   XXX");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      xxx - (required) xxx");
+    }
 }
