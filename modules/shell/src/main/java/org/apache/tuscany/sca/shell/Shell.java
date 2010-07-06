@@ -90,15 +90,8 @@ public class Shell {
         return true;
     }
 
-    boolean install(final String cloc, final List<String> toks) throws ContributionReadException, ActivationException, ValidationException {
+    boolean install(final List<String> toks) throws ContributionReadException, ActivationException, ValidationException {
         boolean runDeployables = !toks.contains("-norun");
-        String uri;
-        if (toks.contains("-uri")) {
-            uri = toks.get(toks.indexOf("-uri")+1);
-        } else {
-            uri = getDefaultURI(cloc);
-            out.println("installing at: " + uri);
-        }
         String metaDataURL = null;
         if (toks.contains("-metadata")) {
             metaDataURL = toks.get(toks.indexOf("-metadata")+1);
@@ -107,8 +100,36 @@ public class Shell {
         if (toks.contains("-duris")) {
             duris = Arrays.asList(toks.get(toks.indexOf("-duris")+1).split(","));
         }
+
+        String first = null;
+        String second = null;
+        for (int i=1; i<toks.size();i++) {
+            if (toks.get(i).startsWith("-")) {
+              if (!toks.get(i).equals("-norun")) {
+                  i++;
+              }
+            } else {
+                if (first == null) {
+                    first = toks.get(i);
+                } else {
+                    second = toks.get(i);
+                    break;
+                }
+            }
+        }
         
-        node.installContribution(uri, cloc, metaDataURL, duris, runDeployables);
+        String curi = null;
+        String curl = null;
+        if (second != null) {
+            curi = first;
+            curl = second;
+        } else {
+            curl = first;
+            curi = getDefaultURI(curl);
+            out.println("installing at: " + curi);
+        }
+
+        node.installContribution(curi, curl, metaDataURL, duris, runDeployables);
         return true;
     }
 
@@ -280,7 +301,7 @@ public class Shell {
             return addToDomainLevelComposite(toks.get(1));
         }};
         if (op.equals("install")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return install(toks.get(1), toks);
+            return install(toks);
         }};
         if (op.equals("installed")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return installed(toks);
@@ -404,7 +425,7 @@ public class Shell {
         out.println("Commands:");
         out.println();
         out.println("   help");
-        out.println("   install <contributionURL> [-uri <uri> -norun -metadata <url> -duris <uri,uri,...>]");
+        out.println("   install [<uri>] <contributionURL> [-norun -metadata <url> -duris <uri,uri,...>]");
         out.println("   installed [<contributionURI>]");
         out.println("   remove <contributionURI>");
         out.println("   addDeploymentComposite <contributionURI> <contentURL>");
@@ -416,6 +437,8 @@ public class Shell {
         out.println("   start <curi> <compositeUri>");
         out.println("   status [<curi> <compositeUri>]");
         out.println("   stop [<curi> <compositeUri>]");
+        out.println();
+        out.println("For detailed help on each command do 'help <command>', for help of startup options do 'help startup'");
         out.println();
         return true;
     }
@@ -450,14 +473,14 @@ public class Shell {
     }
 
     void helpInstall() {
-        out.println("   install <contributionURL> [-uri <uri> -norun -metadata <url> -duris <uri,uri,...>]");
+        out.println("   install [<uri>] <contributionURL> [-norun -metadata <url> -duris <uri,uri,...>]");
         out.println();
-        out.println("   Creates an installed contribution with a supplied root contribution, installed at base URI.");
+        out.println("   Creates an installed contribution with a supplied root contribution, installed at abase URI.");
         out.println();
         out.println("   Arguments:");
+        out.println("      uri - (optional) the URI (name) to use for the contribution. When no uri is specified");
+        out.println("               a default URI is used derived from the contribution URL");
         out.println("      contributionURL - (required) the URL to the contribution to install");
-        out.println("      -uri <uri> - (optional) the URI (name) to use for the contribution. When");
-        out.println("               no uri is defined a default URI is automatically choosen based on the contribution URL");
         out.println("      -norun - (optional) do not start any composites listed as deployable in the sca-contribution.xml file");
         out.println("      -metadata <url> - (optional) the URL to an external contribution meta data document that should be");
         out.println("               merged into any existing sca-contributions.xml file within the contribution.");
