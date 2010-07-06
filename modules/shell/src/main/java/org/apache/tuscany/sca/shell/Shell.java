@@ -492,7 +492,8 @@ public class Shell {
     void helpInstalled() {
         out.println("   installed [<contributionURI>]");
         out.println();
-        out.println("   XXX");
+        out.println("   Shows information about the contributions installed on this node,");
+        out.println("   including the contribution URI and location along with the URI and QName of any deployed composites");
         out.println();
         out.println("   Arguments:");
         out.println("      contributionURI - (optional) the URI of an installed contribution");
@@ -501,10 +502,10 @@ public class Shell {
     void helpRemove() {
         out.println("   remove <contributionURI>");
         out.println();
-        out.println("   XXX");
+        out.println("   Removes an installed contribution");
         out.println();
         out.println("   Arguments:");
-        out.println("      contributionURI - (optional) the URI of an installed contribution");
+        out.println("      contributionURI - (required) the URI of an installed contribution");
     }
 
     void helpAddToDomainLevelComposite() {
