@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.runtime.RuntimeProperties;
  * given domain
  */
 public class HazelcastDomainRegistryFactory extends BaseDomainRegistryFactory {
-    private final static String[] schemes = new String[] {"multicast", "wka", "tuscany", "hazelcast"};
+    private final static String[] schemes = new String[] {"multicast", "wka", "tuscany", "hazelcast", "uri"};
 
     public HazelcastDomainRegistryFactory(ExtensionPointRegistry registry) {
         super(registry);

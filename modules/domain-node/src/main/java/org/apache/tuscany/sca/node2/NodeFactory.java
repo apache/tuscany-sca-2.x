@@ -95,8 +95,9 @@ public class NodeFactory {
     }
 
     public Node createNode(String domainURI) {
-        EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry("default", domainURI);
-        return new NodeImpl(domainURI, deployer, compositeActivator, endpointRegistry, extensionPointRegistry, null);
+        String domainName = getDomainName(domainURI);
+        EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, domainName);
+        return new NodeImpl(domainName, deployer, compositeActivator, endpointRegistry, extensionPointRegistry, null);
     }
 
     protected Node createOneoffNode() {
@@ -151,5 +152,15 @@ public class NodeFactory {
      */
     public AssemblyFactory getAssemblyFactory() {
         return assemblyFactory;
+    }
+
+    private String getDomainName(String domainURI) {
+        int scheme = domainURI.indexOf(':');
+        int qm = domainURI.indexOf('?');
+        if (qm == -1) {
+            return domainURI.substring(scheme+1);
+        } else {
+            return domainURI.substring(scheme+1, qm);
+        }
     }
 }

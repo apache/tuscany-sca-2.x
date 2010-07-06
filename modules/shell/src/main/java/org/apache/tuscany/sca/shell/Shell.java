@@ -55,18 +55,28 @@ public class Shell {
     Node node;
     private boolean useJline;
     final List<String> history = new ArrayList<String>();
+    private NodeFactory factory;
     static final String[] COMMANDS = new String[] {"addDeploymentComposite", "addToDomainLevelComposite", "help",
                                                    "install", "installed", "listDeployedCompostes", "listInstalledContributions",
                                                    "printDomainLevelComposite", "removeFromDomainLevelComposite", 
                                                    "remove", "start", "status", "stop"};
 
     public static void main(final String[] args) throws Exception {
-        boolean useJline = !Arrays.asList(args).contains("-nojline");
-        new Shell(args.length > 0 ? args[0] : "default", useJline).run();
+        boolean useJline = true;
+        String domainURI = "default";
+        for (String s : args) {
+            if ("-nojline".equals(s)) {
+                useJline = false;
+            } else {
+                domainURI = s;
+            }
+        }
+        new Shell(domainURI, useJline).run();
     }
 
     public Shell(String domainURI, boolean useJLine) {
-        this.node = NodeFactory.newInstance().createNode(domainURI);
+        this.factory = NodeFactory.newInstance();
+        this.node = factory.createNode(domainURI);
         this.useJline = useJLine;
     }
 
@@ -212,6 +222,7 @@ public class Shell {
     boolean stop(List<String> toks) throws ActivationException {
         if (toks == null || toks.size() < 2) {
             node.stop();
+            factory.stop();
             return false;
         }
         String curi = toks.get(1);
