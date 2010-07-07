@@ -61,9 +61,11 @@ public class JLine {
         reader.setBellEnabled(false);
         // TODO: write a Completor specific to this that can handle the individual command arguments
         List<Completor> completors = new LinkedList<Completor>();
-        completors.add(new SimpleCompletor(Shell.COMMANDS));
-        completors.add(new FileNameCompletor());
-        reader.addCompletor(new ArgumentCompletor(completors));
+//        completors.add(new SimpleCompletor(Shell.COMMANDS));
+//        completors.add(new ICURICompletor(shell.node));
+//        completors.add(new FileNameCompletor());
+//        reader.addCompletor(new ArgumentCompletor(completors));
+        reader.addCompletor(new TShellCompletor(shell.node));
         return reader;
     }
 
