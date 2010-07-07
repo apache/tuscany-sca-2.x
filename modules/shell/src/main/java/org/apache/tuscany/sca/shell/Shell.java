@@ -139,17 +139,25 @@ public class Shell {
         for (String curi : curis) {
             out.println(curi + " " + node.getInstalledContribution(curi).getLocation());
             Contribution c = node.getInstalledContribution(curi);
-            for (String dcuri : node.getDeployedCompostes(curi)) {
-                for (Artifact a : c.getArtifacts()) {
-                    if (dcuri.equals(a.getURI())) {
-                        out.println("   " + dcuri + " " + ((Composite)a.getModel()).getName());
-                        break;
-                    }
+            for (Artifact a : c.getArtifacts()) {
+                if (a.getModel() instanceof Composite) {
+                    Composite composite = (Composite) a.getModel();
+                    out.println("   " + composite.getURI() + " " + composite.getName());
                 }
             }
         }
         return true;
     }
+    boolean listComposites(final String curi) {
+        Contribution c = node.getInstalledContribution(curi);
+        for (Artifact a : c.getArtifacts()) {
+            if (a.getModel() instanceof Composite) {
+                out.println(((Composite)a.getModel()).getName());
+            }
+        }
+        return true;
+    }
+
 
     private String getDefaultURI(String contributionURL) {
         int lastDot = contributionURL.lastIndexOf('.');
@@ -183,16 +191,6 @@ public class Shell {
 
     boolean remove(final String curi) throws ContributionReadException, ActivationException, ValidationException {
         node.removeContribution(curi);
-        return true;
-    }
-
-    boolean listComposites(final String curi) {
-        Contribution c = node.getInstalledContribution(curi);
-        for (Artifact a : c.getArtifacts()) {
-            if (a.getModel() instanceof Composite) {
-                out.println(((Composite)a.getModel()).getName());
-            }
-        }
         return true;
     }
 
@@ -449,7 +447,8 @@ public class Shell {
         out.println("   installed [<contributionURI>]");
         out.println();
         out.println("   Shows information about the contributions installed on this node,");
-        out.println("   including the contribution URI and location along with the URI and QName of any deployed composites");
+        out.println("   including the contribution URI and location along with the URI");
+        out.println("   and QName of any composites within the contribution");
         out.println();
         out.println("   Arguments:");
         out.println("      contributionURI - (optional) the URI of an installed contribution");
