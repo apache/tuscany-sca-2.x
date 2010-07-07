@@ -46,17 +46,18 @@ import org.apache.tuscany.sca.node2.Node;
 import org.apache.tuscany.sca.node2.NodeFactory;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.Version;
+import org.apache.tuscany.sca.shell.jline.JLine;
 
 /**
  * A little SCA command shell.
  */
 public class Shell {
     
-    Node node;
+    public Node node;
     private boolean useJline;
     final List<String> history = new ArrayList<String>();
     private NodeFactory factory;
-    static final String[] COMMANDS = new String[] {"addDeploymentComposite", "addToDomainLevelComposite", "help",
+    public static final String[] COMMANDS = new String[] {"addDeploymentComposite", "addToDomainLevelComposite", "help",
                                                    "install", "installed", "listDeployedCompostes", "listInstalledContributions",
                                                    "printDomainLevelComposite", "removeFromDomainLevelComposite", 
                                                    "remove", "start", "status", "stop"};
@@ -219,7 +220,7 @@ public class Shell {
         return true;
     }
 
-    boolean stop(List<String> toks) throws ActivationException {
+    public boolean stop(List<String> toks) throws ActivationException {
         if (toks == null || toks.size() < 2) {
             node.stop();
             factory.stop();

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.shell;
+package org.apache.tuscany.sca.shell.jline;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,6 +33,7 @@ import jline.FileNameCompletor;
 import jline.SimpleCompletor;
 
 import org.apache.tuscany.sca.runtime.ActivationException;
+import org.apache.tuscany.sca.shell.Shell;
 
 /**
  * Keep all the JLine specific code out of the Shell class so that it runs ok

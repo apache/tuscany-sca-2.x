@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.shell;
+package org.apache.tuscany.sca.shell.jline;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,6 +32,7 @@ import jline.NullCompletor;
 import jline.SimpleCompletor;
 
 import org.apache.tuscany.sca.node2.Node;
+import org.apache.tuscany.sca.shell.Shell;
 
 /**
  * A Completor thats specific to the Tuscany Shell that knows about
