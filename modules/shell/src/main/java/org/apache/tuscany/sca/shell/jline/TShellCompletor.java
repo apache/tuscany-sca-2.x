@@ -81,6 +81,7 @@ public class TShellCompletor extends ArgumentCompletor {
         if (argIndex > 0) {
             /* set the last argument in a static for the CompositeURICompletor */
             lastArg = list.getArguments()[argIndex-1];
+            if (lastArg != null) lastArg = lastArg.trim();
         }
         
         final Completor comp;
