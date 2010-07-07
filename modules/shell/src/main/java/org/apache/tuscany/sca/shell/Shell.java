@@ -171,7 +171,8 @@ public class Shell {
     }
 
     boolean printDomainLevelComposite() throws ContributionReadException, ActivationException, ValidationException {
-        out.println(node.getDomainLevelCompositeAsString());
+        out.println("TODO");
+        //out.println(node.getDomainLevelCompositeAsString());
         return true;
     }
     
@@ -263,7 +264,6 @@ public class Shell {
             l = ((BufferedReader)r).readLine();
             history.add(l);
         }
-//        history.add(l);
         return Arrays.asList(l != null? l.trim().split(" ") : "stop".split(" "));
     }
 
@@ -467,16 +467,20 @@ public class Shell {
     void helpPrintDomainLevelComposite() {
         out.println("   printDomainLevelComposite");
         out.println();
-        out.println("   XXX");
+        out.println("   Not yet implemented");
         out.println();
         out.println("   Arguments:");
-        out.println("      xxx - (required) xxx");
+        out.println("      none");
     }
 
     void helpStart() {
         out.println("   start <curi> <compositeUri>");
         out.println();
-        out.println("   XXX");
+        out.println("   Starts a composite.");
+        out.println("   The composite is added to the domain composite with semantics that correspond to the domain-level");
+        out.println("   composite having an <include> statement that references the supplied composite. All of the composites");
+        out.println("   components become top-level components and the component services become externally visible");
+        out.println("   services (eg. they would be present in a WSDL description of the Domain).");
         out.println();
         out.println("   Arguments:");
         out.println("      curi - (required) the URI of an installed contribution");
@@ -498,9 +502,11 @@ public class Shell {
         out.println("   stop [<curi> <compositeUri>]");
         out.println();
         out.println("   Stops this Node or individual composites and contributions in the Node.");
-        out.println("   If a contribution URI is specified without a composite URI then all deployed composites");
-        out.println("   composites in the contribution are stopped. If no contribution URI is specified");
-        out.println("   then the entire Node is stopped and the Shell exits.");
+        out.println("   If a composite URI is specified then the composite is removed from the Domain Level composite");
+        out.println("   This means that the removal of the components, wires, services and references originally added");
+        out.println("   to the domain level composite by the identified composite. If a contribution URI is specified");
+        out.println("   without a composite URI then all deployed composites composites in the contribution are stopped.");
+        out.println("   If no contribution URI is specified then the entire Node is stopped and the Shell exits.");
         out.println();
         out.println("   Arguments:");
         out.println("      curi - (optional) the URI of an installed contribution");
@@ -520,14 +526,5 @@ public class Shell {
         out.println("                             x");
         out.println("      -nojline    (optional) use plain Java System.in/out instead of JLine");
         out.println("                             (no tab completion or advanced line editing will be available)");
-    }
-
-    void helpXXX() {
-        out.println("   XXX ");
-        out.println();
-        out.println("   XXX");
-        out.println();
-        out.println("   Arguments:");
-        out.println("      xxx - (required) xxx");
     }
 }
