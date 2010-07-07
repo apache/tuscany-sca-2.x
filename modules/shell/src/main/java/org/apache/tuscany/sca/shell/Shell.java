@@ -262,7 +262,14 @@ public class Shell {
             l = ((BufferedReader)r).readLine();
             history.add(l);
         }
-        return Arrays.asList(l != null? l.trim().split(" ") : "stop".split(" "));
+        String[] toks = l != null? l.trim().split(" ") : "stop".split(" ");
+        List<String> toksList = new ArrayList<String>();
+        for (String s : toks) {
+            if (s != null && s.trim().length()>0) {
+                toksList.add(s);
+            }
+        }
+        return toksList;
     }
 
     Callable<Boolean> eval(final List<String> toks) {
