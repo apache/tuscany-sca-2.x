@@ -19,8 +19,11 @@
 -->
 <xs:schema version="1.0" targetNamespace="http://ws.binding.sca.tuscany.apache.org/rpclit" 
                          xmlns:tns="http://ws.binding.sca.tuscany.apache.org/rpclit" 
+                         xmlns:tns2="http://helloworld/external"
                          xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+  <xs:import namespace="http://helloworld/external" schemaLocation="./HelloWorldImplService-rpclit2.xsd"/>
+  
   <xs:element name="Exception" type="tns:Exception"/>
 
   <xs:element name="getGreetings" type="tns:getGreetings"/>
@@ -67,28 +70,13 @@
 
   <xs:complexType name="getGreetingsComplex">
     <xs:sequence>
-      <xs:element name="arg0" type="tns:foo" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="foo">
-    <xs:sequence>
-      <xs:element name="bars" type="tns:bar" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="bar">
-    <xs:sequence>
-      <xs:element name="b" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="s" type="xs:string" minOccurs="0"/>
-      <xs:element name="x" type="xs:int"/>
-      <xs:element name="y" type="xs:int" minOccurs="0"/>
+      <xs:element name="arg0" type="tns2:foo" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="getGreetingsComplexResponse">
     <xs:sequence>
-      <xs:element name="return" type="tns:foo" minOccurs="0"/>
+      <xs:element name="return" type="tns2:foo" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 </xs:schema>

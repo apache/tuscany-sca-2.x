@@ -20,13 +20,14 @@
 <definitions targetNamespace="http://ws.binding.sca.tuscany.apache.org/rpclit" 
              name="HelloWorldImplService" 
              xmlns="http://schemas.xmlsoap.org/wsdl/" 
-             xmlns:tns="http://ws.binding.sca.tuscany.apache.org/rpclit" 
+             xmlns:tns="http://ws.binding.sca.tuscany.apache.org/rpclit"
+             xmlns:tns2="http://helloworld/external" 
              xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
              xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
   <types>
     <xsd:schema>
       <xsd:import namespace="http://ws.binding.sca.tuscany.apache.org/rpclit" 
-                  schemaLocation="HelloWorldImplService-rpclit.xsd"/>
+                  schemaLocation="HelloWorldImplService-rpclit1.xsd"/>
     </xsd:schema>
   </types>
   <message name="getGreetings">
@@ -45,10 +46,10 @@
     <part name="fault" element="tns:Exception"/>
   </message>
   <message name="getGreetingsComplex">
-    <part name="foo" type="tns:foo"/>
+    <part name="foo" type="tns2:foo"/>
   </message>
   <message name="getGreetingsComplexResponse">
-    <part name="foo" type="tns:foo"/>
+    <part name="foo" type="tns2:foo"/>
   </message>
   <portType name="HelloWorldImpl">
     <operation name="getGreetings">
