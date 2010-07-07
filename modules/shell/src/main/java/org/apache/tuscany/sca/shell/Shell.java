@@ -57,9 +57,9 @@ public class Shell {
     private boolean useJline;
     final List<String> history = new ArrayList<String>();
     private NodeFactory factory;
-    public static final String[] COMMANDS = new String[] {"addDeploymentComposite", "addToDomainLevelComposite", "help",
+    public static final String[] COMMANDS = new String[] {"addDeploymentComposite", "help",
                                                    "install", "installed", 
-                                                   "printDomainLevelComposite", "removeFromDomainLevelComposite", 
+                                                   "printDomainLevelComposite", 
                                                    "remove", "start", "status", "stop"};
 
     public static void main(final String[] args) throws Exception {
@@ -83,11 +83,6 @@ public class Shell {
 
     boolean addDeploymentComposite(final String curi, String contentURL) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException, IOException {
         node.addDeploymentComposite(curi, new StringReader(readContents(contentURL)));
-        return true;
-    }
-
-    boolean addToDomainLevelComposite(final String uri) throws ContributionReadException, ActivationException, ValidationException {
-        node.addToDomainLevelComposite(uri);
         return true;
     }
 
@@ -190,11 +185,6 @@ public class Shell {
         return true;
     }
 
-    boolean removeFromDomainLevelComposite(final String uri) throws ContributionReadException, ActivationException, ValidationException {
-        node.removeFromDomainLevelComposite(uri);
-        return true;
-    }
-
     boolean listComposites(final String curi) {
         Contribution c = node.getInstalledContribution(curi);
         for (Artifact a : c.getArtifacts()) {
@@ -283,9 +273,6 @@ public class Shell {
         if (op.equalsIgnoreCase("addDeploymentComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return addDeploymentComposite(toks.get(1), toks.get(2));
         }};
-        if (op.equalsIgnoreCase("addToDomainLevelComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return addToDomainLevelComposite(toks.get(1));
-        }};
         if (op.equalsIgnoreCase("install")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return install(toks);
         }};
@@ -300,9 +287,6 @@ public class Shell {
         }};
         if (op.equalsIgnoreCase("remove")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return remove(toks.get(1));
-        }};
-        if (op.equalsIgnoreCase("removeFromDomainLevelComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return removeFromDomainLevelComposite(toks.get(1));
         }};
         if (op.equalsIgnoreCase("help")) return new Callable<Boolean>() { public Boolean call() {
             return help(toks);
@@ -381,10 +365,6 @@ public class Shell {
             helpRemove();
         } else if ("addDeploymentComposite".equalsIgnoreCase(command)) {
             helpAddDeploymentComposite();
-        } else if ("addToDomainLevelComposite".equalsIgnoreCase(command)) {
-            helpAddToDomainLevelComposite();
-        } else if ("removeFromDomainLevelComposite".equalsIgnoreCase(command)) {
-            helpRemoveFromDomainLevelComposite();
         } else if ("printDomainLevelComposite".equalsIgnoreCase(command)) {
             helpPrintDomainLevelComposite();
         } else if ("start".equalsIgnoreCase(command)) {
@@ -408,8 +388,6 @@ public class Shell {
         out.println("   installed [<contributionURI>]");
         out.println("   remove <contributionURI>");
         out.println("   addDeploymentComposite <contributionURI> <contentURL>");
-        out.println("   addToDomainLevelComposite <contributionURI/compositeURI>");
-        out.println("   removeFromDomainLevelComposite <contributionURI/compositeURI>");
         out.println("   printDomainLevelComposite");
         out.println("   start <curi> <compositeUri>");
         out.println("   status [<curi> <compositeUri>]");
@@ -484,24 +462,6 @@ public class Shell {
         out.println();
         out.println("   Arguments:");
         out.println("      contributionURI - (required) the URI of an installed contribution");
-    }
-
-    void helpAddToDomainLevelComposite() {
-        out.println("   addToDomainLevelComposite <contributionURI/compositeURI>");
-        out.println();
-        out.println("   XXX");
-        out.println();
-        out.println("   Arguments:");
-        out.println("      xxx - (required) xxx");
-    }
-
-    void helpRemoveFromDomainLevelComposite() {
-        out.println("   removeFromDomainLevelComposite <contributionURI/compositeURI>");
-        out.println();
-        out.println("   XXX");
-        out.println();
-        out.println("   Arguments:");
-        out.println("      xxx - (required) xxx");
     }
 
     void helpPrintDomainLevelComposite() {
