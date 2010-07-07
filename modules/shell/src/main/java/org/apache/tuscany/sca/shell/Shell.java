@@ -331,6 +331,9 @@ public class Shell {
         if (op.equalsIgnoreCase("stop")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return stop(toks);
         }};
+        if (op.equalsIgnoreCase("bye")) return new Callable<Boolean>() { public Boolean call() throws Exception {
+            return stop(null);
+        }};
         if (op.equalsIgnoreCase("start")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return start(toks.get(1), toks.get(2));
         }};
