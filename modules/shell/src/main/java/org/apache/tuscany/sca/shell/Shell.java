@@ -273,7 +273,7 @@ public class Shell {
     }
 
     Callable<Boolean> eval(final List<String> toks) {
-        final String op = toks.get(0);
+        final String op = toks.size() > 0 ? toks.get(0) : "";
 
         if (op.equalsIgnoreCase("addDeploymentComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return addDeploymentComposite(toks.get(1), toks.get(2));
