@@ -522,14 +522,25 @@ public class Shell {
     void helpStartUp() {
         out.println("   Tuscany Shell StartUp Options ");
         out.println();
-        out.println("   XXX");
+        out.println("   When starting the Tuscany Shell there are optional arguments that can configure the Shell.");
         out.println();
         out.println("   Arguments:");
         out.println("      <domainURI> (optional) the URI of the domain.");
-        out.println("                             x");
-        out.println("                             x");
-        out.println("                             x");
-        out.println("                             x");
+        out.println("                  When the domainURI is a simple string then the Shell starts a standalone");
+        out.println("                  Node using the string as the domain name or 'default' if no name is specified.");
+        out.println("                  When the domainURI starts with 'uri:' the Shell starts a distributed Node ");
+        out.println("                  and the URI can encode parameters to configure the domain as follows:");
+        out.println("                  uri:<domainName?key1=value1&key2=value2&...");
+        out.println("                  The keys are optional and some keys are:");
+        out.println("                  bind=ip[:port] - defines the local bind address and port, if the port is not specified it");
+        out.println("                      defaults 14820 and if that port in use it will try incrementing by one till a free port is found.");
+        out.println("                  multicast=groupip:port | off - defines if multicast discovery is used and if so what multicast IP group and port is used.");
+        out.println("                      It defaults to 224.5.12.10:51482. A value of 'off' means multicast is disabled.");
+        out.println("                  wka=ip[:port] - a comma separated list of ip address and port for remote nodes in");
+        out.println("                                  the domain group when multicast is not available. The port defaults to 14820.");
+        out.println("                  userid= is the userid other nodes must use to connect to this domain group. The default is the default domain name.");
+        out.println("                  password= is the password other nodes must use to connect to this domain group. The default is 'tuscany'.");
+        out.println();
         out.println("      -nojline    (optional) use plain Java System.in/out instead of JLine");
         out.println("                             (no tab completion or advanced line editing will be available)");
     }
