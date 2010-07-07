@@ -58,7 +58,7 @@ public class Shell {
     final List<String> history = new ArrayList<String>();
     private NodeFactory factory;
     public static final String[] COMMANDS = new String[] {"addDeploymentComposite", "addToDomainLevelComposite", "help",
-                                                   "install", "installed", "listDeployedCompostes", "listInstalledContributions",
+                                                   "install", "installed", 
                                                    "printDomainLevelComposite", "removeFromDomainLevelComposite", 
                                                    "remove", "start", "status", "stop"};
 
@@ -175,21 +175,6 @@ public class Shell {
         return uri;
     }
 
-    boolean listDeployedCompostes(String curi) throws ContributionReadException, ActivationException, ValidationException {
-        for (String uri : node.getDeployedCompostes(curi)) {
-            out.println(uri.substring(curi.length()+1));
-        }
-        return true;
-    }
-
-    boolean listInstalledContributions() throws ContributionReadException, ActivationException, ValidationException {
-        for (String uri : node.getInstalledContributions()) {
-            out.println(uri);
-            listComposites(uri);
-        }
-        return true;
-    }
-
     boolean printDomainLevelComposite() throws ContributionReadException, ActivationException, ValidationException {
         out.println(node.getDomainLevelCompositeAsString());
         return true;
@@ -265,7 +250,7 @@ public class Shell {
             for (String compositeUri : dcs) {
                 for (Artifact a : c.getArtifacts()) {
                     if (compositeUri.equals(a.getURI())) {
-                        out.println("   " + curi + " " + c.getLocation() + " " + compositeUri + " " + ((Composite)a.getModel()).getName());
+                        out.println("   " + curi + " " + compositeUri + " " + ((Composite)a.getModel()).getName());
                     }
                 }
             }
@@ -307,14 +292,8 @@ public class Shell {
         if (op.equalsIgnoreCase("installed")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return installed(toks);
         }};
-        if (op.equalsIgnoreCase("listDeployedCompostes")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return listDeployedCompostes(toks.get(1));
-        }};
         if (op.equalsIgnoreCase("printDomainLevelComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return printDomainLevelComposite();
-        }};
-        if (op.equalsIgnoreCase("listInstalledContributions")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return listInstalledContributions();
         }};
         if (op.equalsIgnoreCase("getQNameDefinition")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return getQNameDefinition(toks.get(1), toks.get(2), toks.get(3));
@@ -406,10 +385,6 @@ public class Shell {
             helpAddToDomainLevelComposite();
         } else if ("removeFromDomainLevelComposite".equalsIgnoreCase(command)) {
             helpRemoveFromDomainLevelComposite();
-        } else if ("listDeployedCompostes".equalsIgnoreCase(command)) {
-            helpListDeployedCompostes();
-        } else if ("listInstalledContributions".equalsIgnoreCase(command)) {
-            helpListInstalledContributions();
         } else if ("printDomainLevelComposite".equalsIgnoreCase(command)) {
             helpPrintDomainLevelComposite();
         } else if ("start".equalsIgnoreCase(command)) {
@@ -435,13 +410,12 @@ public class Shell {
         out.println("   addDeploymentComposite <contributionURI> <contentURL>");
         out.println("   addToDomainLevelComposite <contributionURI/compositeURI>");
         out.println("   removeFromDomainLevelComposite <contributionURI/compositeURI>");
-        out.println("   listDeployedCompostes <contributionURI>");
-        out.println("   listInstalledContributions");
         out.println("   printDomainLevelComposite");
         out.println("   start <curi> <compositeUri>");
         out.println("   status [<curi> <compositeUri>]");
         out.println("   stop [<curi> <compositeUri>]");
         out.println();
+        if (useJline) out.println("Use Tab key for command and argument completion");
         out.println("For detailed help on each command do 'help <command>', for help of startup options do 'help startup'");
         out.println();
         return true;
@@ -530,24 +504,6 @@ public class Shell {
         out.println("      xxx - (required) xxx");
     }
 
-    void helpListDeployedCompostes() {
-        out.println("   listDeployedCompostes <contributionURI>");
-        out.println();
-        out.println("   XXX");
-        out.println();
-        out.println("   Arguments:");
-        out.println("      contributionURI - (required) the URI of an installed contribution");
-    }
-
-    void helpListInstalledContributions() {
-        out.println("   listInstalledContributions");
-        out.println();
-        out.println("   XXX");
-        out.println();
-        out.println("   Arguments:");
-        out.println("      xxx - (required) xxx");
-    }
-
     void helpPrintDomainLevelComposite() {
         out.println("   printDomainLevelComposite");
         out.println();
@@ -563,14 +519,15 @@ public class Shell {
         out.println("   XXX");
         out.println();
         out.println("   Arguments:");
-        out.println("      curi - (optional) the URI of an installed contribution");
-        out.println("      compositeUri - (optional) the URI of a composite");
+        out.println("      curi - (required) the URI of an installed contribution");
+        out.println("      compositeUri - (required) the URI of a composite");
     }
 
     void helpStatus() {
         out.println("   status [<curi> <compositeUri>]");
         out.println();
-        out.println("   XXX");
+        out.println("   Shows the status of the Node, listing for each deployed composite its");
+        out.println("   contribution URI, the composite URI, and the composite QName.");
         out.println();
         out.println("   Arguments:");
         out.println("      curi - (optional) the URI of an installed contribution");
@@ -580,7 +537,10 @@ public class Shell {
     void helpStop() {
         out.println("   stop [<curi> <compositeUri>]");
         out.println();
-        out.println("   XXX");
+        out.println("   Stops this Node or individual composites and contributions in the Node.");
+        out.println("   If a contribution URI is specified without a composite URI then all deployed composites");
+        out.println("   composites in the contribution are stopped. If no contribution URI is specified");
+        out.println("   then the entire Node is stopped and the Shell exits.");
         out.println();
         out.println("   Arguments:");
         out.println("      curi - (optional) the URI of an installed contribution");
@@ -588,12 +548,18 @@ public class Shell {
     }
 
     void helpStartUp() {
-        out.println("   XXX ");
+        out.println("   Tuscany Shell StartUp Options ");
         out.println();
         out.println("   XXX");
         out.println();
         out.println("   Arguments:");
-        out.println("      xxx - (required) xxx");
+        out.println("      <domainURI> (optional) the URI of the domain.");
+        out.println("                             x");
+        out.println("                             x");
+        out.println("                             x");
+        out.println("                             x");
+        out.println("      -nojline    (optional) use plain Java System.in/out instead of JLine");
+        out.println("                             (no tab completion or advanced line editing will be available)");
     }
 
     void helpXXX() {

@@ -59,8 +59,6 @@ public class TShellCompletor extends ArgumentCompletor {
         completors.put("addDeploymentComposite", new Completor[]{commandCompletor, new ICURICompletor(node), new FileNameCompletor(), new NullCompletor()});    
         completors.put("addToDomainLevelComposite", new Completor[]{commandCompletor, new ICURICompletor(node), new CompositeURICompletor(node), new NullCompletor()});    
         completors.put("removeFromDomainLevelComposite", new Completor[]{commandCompletor, new ICURICompletor(node), new CompositeURICompletor(node), new NullCompletor()});    
-        completors.put("listDeployedCompostes", new Completor[]{commandCompletor, new ICURICompletor(node), new NullCompletor()});    
-        completors.put("listInstalledContributions", new Completor[]{commandCompletor, new NullCompletor()});    
         completors.put("printDomainLevelComposite", new Completor[]{commandCompletor, new NullCompletor()});    
         completors.put("start", new Completor[]{commandCompletor, new ICURICompletor(node), new CompositeURICompletor(node), new NullCompletor()});    
         completors.put("status", new Completor[]{commandCompletor, new ICURICompletor(node), new CompositeURICompletor(node), new NullCompletor()});    
