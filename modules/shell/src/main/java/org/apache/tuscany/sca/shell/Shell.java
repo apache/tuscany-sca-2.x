@@ -160,20 +160,23 @@ public class Shell {
 
 
     private String getDefaultURI(String contributionURL) {
-        int lastDot = contributionURL.lastIndexOf('.');
-        int lastSep = contributionURL.lastIndexOf("/");
-        String uri = contributionURL;
-        if (lastDot > -1 && lastSep > -1 && lastDot > lastSep) {
-            uri = contributionURL.substring(lastSep+1, lastDot);
-        } else {
-            try {
-                File f = new File(contributionURL);
-                if ("classes".equals(f.getName()) && "target".equals(f.getParentFile().getName())) {
-                    uri = f.getParentFile().getParentFile().getName();                   
-                }
-            } catch (Exception e) {
-                // ignore
+        String uri = null;
+        try {
+            File f = new File(contributionURL);
+            if ("classes".equals(f.getName()) && "target".equals(f.getParentFile().getName())) {
+                uri = f.getParentFile().getParentFile().getName();                   
+            } else {
+                uri = f.getName();
             }
+        } catch (Exception e) {
+            // ignore
+        }
+        if (uri == null) {
+            uri = contributionURL;
+        }
+        int lastDot = uri.lastIndexOf('.');
+        if (lastDot > -1) {
+            uri = uri.substring(0, lastDot);
         }
         return uri;
     }
