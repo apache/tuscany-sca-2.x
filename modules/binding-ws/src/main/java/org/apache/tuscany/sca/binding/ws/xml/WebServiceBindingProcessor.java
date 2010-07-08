@@ -33,7 +33,6 @@ import javax.wsdl.Port;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
 import javax.wsdl.extensions.soap.SOAPAddress;
-import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap12.SOAP12Address;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -236,8 +235,14 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
 
         // Read wsdlLocation
         wsBinding.setLocation(reader.getAttributeValue(WSDLI_NS, WSDL_LOCATION));
-        if (wsdlElement == null && wsBinding.getLocation() != null) {
-            error(monitor, "WsdliLocationMissingWsdlElement", reader);
+        if (wsBinding.getLocation() != null) {
+            if (wsdlElement == null) {
+                error(monitor, "WsdliLocationMissingWsdlElement", reader);
+            }
+            String[] iris = wsBinding.getLocation().split(" ");
+            if (iris.length % 2 != 0) {
+                error(monitor, "WsdliLocationNotIRIPairs", reader);
+            }
         }
 
         // Skip to end element
