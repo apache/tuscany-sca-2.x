@@ -223,4 +223,8 @@ public class WebAppHelper {
             servletContext.setAttribute(WebAppHelper.SCA_NODE_ATTRIBUTE, null);
         }
     }
+
+    public static NodeFactory getNodeFactory() {
+        return factory;
+    }
 }
