@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.binding.rest.xml;
@@ -46,12 +46,13 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
 /**
  * REST Binding Artifact Processor
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<RESTBinding> {
     private static final QName HEADERS_QNAME = new QName(Base.SCA11_TUSCANY_NS, "http-headers");
     private static final QName HEADER_QNAME = new QName(Base.SCA11_TUSCANY_NS, "header");
+    private static final QName RESPONSE_QNAME = new QName(Base.SCA11_TUSCANY_NS, "response");
 
     private static final String NAME = "name";
     private static final String VALUE = "value";
@@ -60,7 +61,7 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
     private RESTBindingFactory httpBindingFactory;
     private StAXArtifactProcessor<Object> extensionProcessor;
 
-    public RESTBindingProcessor(ExtensionPointRegistry extensionPoints, 
+    public RESTBindingProcessor(ExtensionPointRegistry extensionPoints,
                                 StAXArtifactProcessor<Object> extensionProcessor,
                                 StAXAttributeProcessor<Object> extensionAttributeProcessor) {
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
@@ -81,12 +82,15 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
 
         /**
          *    <tuscany:binding.rest uri="http://localhost:8085/Customer">
-         *       <tuscany:wireFormat.xml />
-         *               <tuscany:operationSelector.jaxrs />
-         *               <tuscany:http-headers>
-         *                  <tuscany:header name="Cache-Control" value="no-cache"/>
-         *                  <tuscany:header name="Expires" value="-1"/> 
-         *               </tuscany:http-headers>
+         *          <tuscany:wireFormat.xml />
+         *          <tuscany:operationSelector.jaxrs />
+         *          <tuscany:http-headers>
+         *             <tuscany:header name="Cache-Control" value="no-cache"/>
+         *             <tuscany:header name="Expires" value="-1"/>
+         *          </tuscany:http-headers>
+         *          <tuscany:response>
+         *             <tuscany:wireFormat.json />
+         *          </tuscany:response>
          *   </tuscany:binding.rest>
          *
          */
@@ -96,9 +100,9 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
             switch (event) {
                 case START_ELEMENT:
                     elementName = reader.getName();
-                    
+
                     if(RESTBinding.TYPE.equals(elementName)) {
-                        
+
                         // binding attributes
                         String name = getString(reader, NAME);
                         if(name != null) {
@@ -110,36 +114,61 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
                             restBinding.setURI(uri);
                         }
                         break;
-                        
+
                     } else if (HEADERS_QNAME.equals(elementName)) {
-                        
+
                         // ignore wrapper element
                         break;
-                        
+
                     } else if (HEADER_QNAME.equals(elementName)) {
-                        
+
                         // header name/value pair
                         String name = getString(reader, NAME);
                         String value = getURIString(reader, VALUE);
-                        
+
                         if(name != null) {
                             restBinding.getHttpHeaders().add(new HTTPHeader(name, value));
                         }
                         break;
-                        
+
+                    } else if (RESPONSE_QNAME.equals(elementName)) {
+
+                        // skip response
+                        reader.next();
+                        // and position to the next start_element event
+                        while (reader.hasNext()) {
+                            int sub_event = reader.getEventType();
+                            switch (sub_event) {
+                                case START_ELEMENT:
+                                    elementName = reader.getName();
+                                    break;
+                                default: reader.next();
+                            }
+                            break;
+                        }
+
+                        // dispatch to read wire format for the response
+                        Object extension = extensionProcessor.read(reader, context);
+                        if (extension != null) {
+                            if (extension instanceof WireFormat) {
+                                restBinding.setResponseWireFormat((WireFormat)extension);
+                            }
+                        }
+                        break;
                     } else {
                         // Read an extension element
                         Object extension = extensionProcessor.read(reader, context);
                         if (extension != null) {
                             if (extension instanceof WireFormat) {
                                 restBinding.setRequestWireFormat((WireFormat)extension);
+                                restBinding.setResponseWireFormat((WireFormat)extension);
                             } else if(extension instanceof OperationSelector) {
                                 restBinding.setOperationSelector((OperationSelector)extension);
                             }
                         }
                         break;
                     }
-                    
+
                 case END_ELEMENT:
                     elementName = reader.getName();
 
@@ -149,7 +178,7 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
                     break;
             }
 
-           
+
 
             // Read the next element
             if (reader.hasNext()) {
@@ -161,7 +190,6 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
     }
 
     public void write(RESTBinding restBinding, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
-        //writer.writeStartElement(Constants.SCA10_NS, BINDING_HTTP);
 
         writeStart(writer, RESTBinding.TYPE.getNamespaceURI(), RESTBinding.TYPE.getLocalPart());
 
@@ -174,24 +202,30 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
         if (restBinding.getURI() != null) {
             writer.writeAttribute(URI, restBinding.getURI());
         }
-        
+
         // Write operation selectors
         if ( restBinding.getOperationSelector() != null ) {
             extensionProcessor.write(restBinding.getOperationSelector(), writer, context);
         }
-        
+
         // Write wire formats
         if ( restBinding.getRequestWireFormat() != null ) {
             extensionProcessor.write(restBinding.getRequestWireFormat(), writer, context);
         }
 
+        if ( restBinding.getResponseWireFormat() != null && restBinding.getRequestWireFormat() != restBinding.getResponseWireFormat()) {
+            writeStart(writer, RESPONSE_QNAME.getNamespaceURI(), RESPONSE_QNAME.getLocalPart());
+            extensionProcessor.write(restBinding.getResponseWireFormat(), writer, context);
+            writeEnd(writer);
+        }
+
+
         writeEnd(writer);
-        //writer.writeEndElement();
     }
 
 
     public void resolve(RESTBinding model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
-        // Should not need to do anything here for now... 
+        // Should not need to do anything here for now...
 
     }
 

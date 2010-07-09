@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.binding.rest.provider;
@@ -66,6 +66,13 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * @version $Rev$ $Date$
  */
 public class RESTServiceBindingProvider implements EndpointProvider {
+    private static Map<QName, String> wireFormatToMediaTypeMapping = new HashMap<QName, String>();
+
+    static {
+        wireFormatToMediaTypeMapping.put(JSONWireFormat.REST_WIREFORMAT_JSON_QNAME, MediaType.APPLICATION_JSON);
+        wireFormatToMediaTypeMapping.put(XMLWireFormat.REST_WIREFORMAT_XML_QNAME, MediaType.APPLICATION_XML);
+    }
+
     private ExtensionPointRegistry extensionPoints;
 
     private RuntimeEndpoint endpoint;
@@ -77,6 +84,7 @@ public class RESTServiceBindingProvider implements EndpointProvider {
 
     private OperationSelectorProvider osProvider;
     private WireFormatProvider wfProvider;
+    private WireFormatProvider wfResponseProvider;
 
     private ServletHost servletHost;
     private String servletMapping;
@@ -106,20 +114,27 @@ public class RESTServiceBindingProvider implements EndpointProvider {
         if (binding.getOperationSelector() != null) {
             // Configure the interceptors for operation selection
             OperationSelectorProviderFactory osProviderFactory =
-                (OperationSelectorProviderFactory)providerFactories.getProviderFactory(binding.getOperationSelector()
-                    .getClass());
+                (OperationSelectorProviderFactory)providerFactories.getProviderFactory(binding.getOperationSelector().getClass());
             if (osProviderFactory != null) {
                 this.osProvider = osProviderFactory.createServiceOperationSelectorProvider(endpoint);
             }
         }
 
-        if (binding.getRequestWireFormat() != null && binding.getResponseWireFormat() != null) {
+        if (binding.getRequestWireFormat() != null) {
             // Configure the interceptors for wire format
             WireFormatProviderFactory wfProviderFactory =
-                (WireFormatProviderFactory)providerFactories.getProviderFactory(binding.getRequestWireFormat()
-                    .getClass());
+                (WireFormatProviderFactory)providerFactories.getProviderFactory(binding.getRequestWireFormat().getClass());
             if (wfProviderFactory != null) {
                 this.wfProvider = wfProviderFactory.createServiceWireFormatProvider(endpoint);
+            }
+        }
+
+        if (binding.getResponseWireFormat() != null ) {
+            // Configure the interceptors for wire format
+            WireFormatProviderFactory wfProviderFactory =
+                (WireFormatProviderFactory)providerFactories.getProviderFactory(binding.getResponseWireFormat().getClass());
+            if (wfProviderFactory != null) {
+                this.wfResponseProvider = wfProviderFactory.createServiceWireFormatProvider(endpoint);
             }
         }
 
@@ -128,8 +143,12 @@ public class RESTServiceBindingProvider implements EndpointProvider {
             this.serviceContract = (InterfaceContract)service.getInterfaceContract().clone();
 
             // configure data binding
-            if (this.wfProvider != null) {
+            if (wfProvider != null ) {
                 wfProvider.configureWireFormatInterfaceContract(serviceContract);
+            }
+
+            if(wfResponseProvider != null) {
+                wfResponseProvider.configureWireFormatInterfaceContract(serviceContract);
             }
         } catch (CloneNotSupportedException e) {
             this.serviceContract = service.getInterfaceContract();
@@ -204,12 +223,27 @@ public class RESTServiceBindingProvider implements EndpointProvider {
         servletHost.addServletMapping(servletMapping, servlet);
     }
 
-    private static Map<QName, String> wireFormatToMediaTypeMapping = new HashMap<QName, String>();
-    static {
-        wireFormatToMediaTypeMapping.put(JSONWireFormat.REST_WIREFORMAT_JSON_QNAME, MediaType.APPLICATION_JSON);
-        wireFormatToMediaTypeMapping.put(XMLWireFormat.REST_WIREFORMAT_XML_QNAME, MediaType.APPLICATION_XML);
+    public void stop() {
+        if (application != null) {
+            application.destroy();
+        }
+        // Unregister the Servlet from the Servlet host
+        servletHost.removeServletMapping(servletMapping);
     }
 
+    public InterfaceContract getBindingInterfaceContract() {
+        return serviceContract;
+    }
+
+    public boolean supportsOneWayInvocation() {
+        return false;
+    }
+
+
+    /**
+     * Register a Tuscany REST Servlet to handle JAX-RS Resources on a binding endpoint
+     * @return
+     */
     private SimpleApplication registerWithJAXRS() {
         try {
             SimpleApplication application = null;
@@ -249,16 +283,11 @@ public class RESTServiceBindingProvider implements EndpointProvider {
 
         public SimpleApplication(Class<?> resourceClass) {
             super();
-            // boolean isJAXRS = isJAXRSResource(resourceClass);
-            // if (isJAXRS) {
             if (resourceClass.isInterface()) {
                 this.resourceClass = generateResourceClass(resourceClass);
             } else {
                 this.resourceClass = resourceClass;
             }
-            // } else {
-            //    throw new ServiceRuntimeException(resourceClass+" is not a JAX-RS resource class.");
-            // }
         }
 
         @Override
@@ -283,7 +312,7 @@ public class RESTServiceBindingProvider implements EndpointProvider {
 
                 String uri = endpoint.getBinding().getURI();
                 String path = URI.create(uri).getPath();
-                
+
                 // FIXME: [rfeng] We need to have a better way to deal with URI template for bindings
                 if(path.startsWith(servletHost.getContextPath())) {
                     path = path.substring(servletHost.getContextPath().length());
@@ -319,36 +348,11 @@ public class RESTServiceBindingProvider implements EndpointProvider {
                     return true;
                 }
             }
-            
-            /*
-            for (Annotation[] annotations : method.getParameterAnnotations()) {
-                for (Annotation a : annotations) {
-                    if (a.annotationType().getName().startsWith("javax.ws.rs.")) {
-                        return true;
-                    }
-                }
-
-            }
-            */
         }
         return false;
     }
 
-    public void stop() {
-        if (application != null) {
-            application.destroy();
-        }
-        // Unregister the Servlet from the Servlet host
-        servletHost.removeServletMapping(servletMapping);
-    }
 
-    public InterfaceContract getBindingInterfaceContract() {
-        return serviceContract;
-    }
-
-    public boolean supportsOneWayInvocation() {
-        return false;
-    }
 
     /**
      * Add specific rest interceptor to invocation chain
@@ -362,6 +366,14 @@ public class RESTServiceBindingProvider implements EndpointProvider {
             if (interceptor != null) {
                 bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT, interceptor);
             }
+        }
+
+        if (wfResponseProvider != null) {
+            Interceptor interceptor = wfResponseProvider.createInterceptor();
+            if (interceptor != null) {
+                bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT, interceptor);
+            }
+
         }
 
         if (osProvider != null) {

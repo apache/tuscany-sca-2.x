@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package services.store;
@@ -31,13 +31,13 @@ import org.oasisopen.sca.annotation.Scope;
 
 @Scope("COMPOSITE")
 public class FruitsCatalogImpl implements Catalog {
-    
+
     @Property
     public String currencyCode = "USD";
-    
+
     @Reference
     public CurrencyConverter currencyConverter;
-    
+
     private Map<String, Item> catalog = new HashMap<String, Item>();
 
     @Init
@@ -50,32 +50,27 @@ public class FruitsCatalogImpl implements Catalog {
 
     public Items getItem() {
         Items items = new Items();
-        // Add by order so that we can test in the json array
-        List<Item> list = new ArrayList<Item>();
-        list.add(catalog.get("Pear"));
-        list.add(catalog.get("Apple"));
-        list.add(catalog.get("Orange"));
-        items.setItems(list);
+        items.setItems(new ArrayList<Item>(catalog.values()));
         return items;
     }
-    
+
     public Item getItemById(String itemId) {
         return catalog.get(itemId);
     }
-    
+
     public void addItem(Item item) {
         catalog.put(item.getName(),item);
     }
-    
+
     public void updateItem(Item item) {
         if(catalog.get(item.getName()) != null) {
             catalog.put(item.getName(), item);
         }
     }
-    
+
     public void deleteItem(String itemId) {
         if(catalog.get(itemId) != null) {
             catalog.remove(itemId);
-        }        
+        }
     }
 }

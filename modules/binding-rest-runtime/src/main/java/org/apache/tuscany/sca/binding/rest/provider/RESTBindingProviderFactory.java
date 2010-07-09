@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.binding.rest.provider;
@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 
 /**
- * Factory for REST binding providers. 
+ * Factory for REST binding providers.
  *
  * @version $Rev$ $Date$
  */
@@ -41,7 +41,7 @@ public class RESTBindingProviderFactory implements BindingProviderFactory<RESTBi
     private ExtensionPointRegistry extensionPoints;
     private MessageFactory messageFactory;
     private ServletHost servletHost;
-    
+
     public RESTBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
         this.servletHost = ServletHostHelper.getServletHost(extensionPoints);
@@ -51,14 +51,12 @@ public class RESTBindingProviderFactory implements BindingProviderFactory<RESTBi
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
         return new RESTReferenceBindingProvider(extensionPoints, endpointReference);
-    	// Binding REST is currently NOT supporting References
-        // throw new UnsupportedOperationException("binding.rest for SCA references is not implemented yet.");
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {
         return new RESTServiceBindingProvider(endpoint, extensionPoints, messageFactory, servletHost);
     }
-    
+
     public Class<RESTBinding> getModelType() {
         return RESTBinding.class;
     }

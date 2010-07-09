@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.binding.rest.wireformat.xml.provider;
@@ -41,46 +41,46 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * XML wire format service provider.
- * 
+ *
  * @version $Rev$ $Date$
 */
 public class XMLWireFormatServiceProvider implements WireFormatProvider {
     private static final String DATABABINDING = XMLStreamReader.class.getName();
-    
+
     private ExtensionPointRegistry extensionPoints;
     private RuntimeEndpoint endpoint;
-    
+
     private InterfaceContract serviceContract;
     private Binding binding;
-    
+
     private boolean jaxrs;
-    
+
     public XMLWireFormatServiceProvider(ExtensionPointRegistry extensionPoints, RuntimeEndpoint endpoint) {
         this.extensionPoints = extensionPoints;
         this.endpoint = endpoint;
         this.binding = endpoint.getBinding();
         this.jaxrs = isJAXRSResource();
     }
-    
+
     private boolean isJAXRSResource() {
         Interface interfaze = endpoint.getComponentServiceInterfaceContract().getInterface();
         if (interfaze instanceof JavaInterface) {
             if (RESTServiceBindingProvider.isJAXRSResource(((JavaInterface)interfaze).getJavaClass())) {
                 return true;
             }
-        } 
+        }
         return false;
     }
-    
+
     public InterfaceContract configureWireFormatInterfaceContract(InterfaceContract interfaceContract) {
         serviceContract = interfaceContract;
-        if (!jaxrs) {
 
-            //make XML databinding default
-            serviceContract.getInterface().resetDataBinding(DATABABINDING);
+        if (!jaxrs) {
+            boolean configureInput = binding.getRequestWireFormat() != null;
+            boolean configureOutput = binding.getRequestWireFormat() != null || binding.getResponseWireFormat() != null;
 
             //set XML databinding
-            setDataBinding(serviceContract.getInterface());
+            setDataBinding(serviceContract.getInterface(), configureInput, configureOutput);
         }
 
         return serviceContract;
@@ -90,7 +90,9 @@ public class XMLWireFormatServiceProvider implements WireFormatProvider {
         if (jaxrs) {
             return null;
         }
-        if (binding.getRequestWireFormat() != null && binding.getRequestWireFormat() instanceof XMLWireFormat) {
+
+        if( (binding.getRequestWireFormat() != null && binding.getRequestWireFormat() instanceof XMLWireFormat) ||
+            (binding.getResponseWireFormat() != null && binding.getResponseWireFormat() instanceof XMLWireFormat) ){
             return new XMLWireFormatInterceptor(extensionPoints, endpoint);
         }
         return null;
@@ -100,28 +102,33 @@ public class XMLWireFormatServiceProvider implements WireFormatProvider {
         return Phase.SERVICE_BINDING_WIREFORMAT;
     }
 
-    
+
     /**
      * Utility method to reset data binding for the interface contract
      * @param interfaze
      */
     @SuppressWarnings({"deprecation", "unchecked"})
-    private void setDataBinding(Interface interfaze) {
+    private void setDataBinding(Interface interfaze, boolean configureInput, boolean configureOutput) {
         List<Operation> operations = interfaze.getOperations();
         for (Operation operation : operations) {
-            operation.setDataBinding(DATABABINDING);
-            DataType<List<DataType>> inputType = operation.getInputType();
-            if (inputType != null) {
-                List<DataType> logical = inputType.getLogical();
-                for (DataType inArg : logical) {
-                    if (!SimpleJavaDataBinding.NAME.equals(inArg.getDataBinding())) {
-                        inArg.setDataBinding(DATABABINDING);
-                    } 
+            // handle input types
+            if (configureInput) {
+                operation.setDataBinding(DATABABINDING);
+                DataType<List<DataType>> inputType = operation.getInputType();
+                if (inputType != null) {
+                    List<DataType> logical = inputType.getLogical();
+                    for (DataType inArg : logical) {
+                        if (!SimpleJavaDataBinding.NAME.equals(inArg.getDataBinding())) {
+                            inArg.setDataBinding(DATABABINDING);
+                        }
+                    }
                 }
             }
-            DataType outputType = operation.getOutputType();
-            if (outputType != null) {
-                if (!SimpleJavaDataBinding.NAME.equals(outputType.getDataBinding())) {
+
+            // handle output types
+            if (configureOutput) {
+                DataType outputType = operation.getOutputType();
+                if (outputType != null) {
                     outputType.setDataBinding(XMLStringDataBinding.NAME);
                 }
             }
