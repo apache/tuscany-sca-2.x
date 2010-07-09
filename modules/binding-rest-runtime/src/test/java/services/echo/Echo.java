@@ -36,6 +36,6 @@ public interface Echo {
 
     String [] echoArrayString(@QueryParam("msgArray") String[] stringArray);
 
-    int [] echoArrayInt(int[] intArray);
+    int [] echoArrayInt(@QueryParam("intArray") int[] intArray);
 
 }

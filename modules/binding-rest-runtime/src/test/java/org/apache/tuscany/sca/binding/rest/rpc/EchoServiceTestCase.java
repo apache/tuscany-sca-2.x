@@ -73,7 +73,7 @@ public class EchoServiceTestCase {
     }
 
     @Test
-    public void testJSONRPCGetOperation() throws Exception {
+    public void testJSONRPCGetOperationWithString() throws Exception {
         String queryString = "?method=echo&msg=Hello RPC";
 
         WebConversation wc = new WebConversation();
@@ -86,7 +86,20 @@ public class EchoServiceTestCase {
     }
 
     @Test
-    public void testRPCGetArrayOperation() throws Exception {
+    public void testJSONRPCGetOperationWithInt() throws Exception {
+        String queryString = "?method=echoInt&param=1000";
+
+        WebConversation wc = new WebConversation();
+        WebRequest request = new GetMethodWebRequest(SERVICE_URL_JSON + queryString);
+        request.setHeaderField("Content-Type", "application/json");
+        WebResponse response = wc.getResource(request);
+
+        Assert.assertEquals(200, response.getResponseCode());
+        Assert.assertEquals("1000", response.getText());
+    }
+
+    @Test
+    public void testRPCGetArrayOperationWithString() throws Exception {
         String queryString = "?method=echoArrayString&msgArray=Hello RPC1&msgArray=Hello RPC2";
 
         WebConversation wc = new WebConversation();
@@ -96,6 +109,19 @@ public class EchoServiceTestCase {
 
         Assert.assertEquals(200, response.getResponseCode());
         Assert.assertEquals("[\"Hello RPC1\",\"Hello RPC2\"]", response.getText());
+    }
+
+    @Test
+    public void testRPCGetArrayOperationWithInt() throws Exception {
+        String queryString = "?method=echoArrayInt&intArray=1000&intArray=2000";
+
+        WebConversation wc = new WebConversation();
+        WebRequest request = new GetMethodWebRequest(SERVICE_URL_JSON + queryString);
+        request.setHeaderField("Content-Type", "application/json");
+        WebResponse response = wc.getResource(request);
+
+        Assert.assertEquals(200, response.getResponseCode());
+        Assert.assertEquals("[1000,2000]", response.getText());
     }
 
 
@@ -108,8 +134,8 @@ public class EchoServiceTestCase {
         request.setHeaderField("Content-Type", "application/xml");
         WebResponse response = wc.getResource(request);
 
-        System.out.println("Expected>>" + XML_RESPONSE);
-        System.out.println("Received>>" + response.getText());
+        //System.out.println("Expected>>" + XML_RESPONSE);
+        //System.out.println("Received>>" + response.getText());
 
         Assert.assertEquals(200, response.getResponseCode());
         Assert.assertEquals(XML_RESPONSE, response.getText());
