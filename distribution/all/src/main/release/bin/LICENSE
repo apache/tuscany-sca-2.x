@@ -320,9 +320,9 @@ The following components come under Apache Software License 2.0
  stripes-1.5.2.jar
  tranql-connector-1.1.jar
  tribes-6.0.26.jar
- wink-common-1.1-incubating.jar
- wink-client-1.1-incubating.jar
- wink-server-1.1-incubating.jar 
+ wink-common-1.1.1-incubating.jar
+ wink-client-1.1.1-incubating.jar
+ wink-server-1.1.1-incubating.jar 
  woden-api-1.0M8.jar
  woden-impl-dom-1.0M8.jar
  wss4j-1.5.4.jar
