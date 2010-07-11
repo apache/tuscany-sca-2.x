@@ -65,6 +65,8 @@ public class TuscanyServiceProvider {
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_REFERENCE_PARAMETERS);
     public static final QName QNAME_WSA_MESSAGEID =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_MESSAGE_ID);
+    public static final QName QNAME_WSA_RELATESTO =
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_RELATES_TO, AddressingConstants.WSA_DEFAULT_PREFIX);
     
     private RuntimeEndpoint endpoint;
     private WebServiceBinding wsBinding;
@@ -106,7 +108,6 @@ public class TuscanyServiceProvider {
     
     public OMElement invoke(OMElement requestOM, MessageContext inMC) throws InvocationTargetException, AxisFault {
         String callbackAddress = null;
-        String callbackID = null;
 
         // create a message object and set the args as its body
         Message msg = messageFactory.createMessage();
@@ -140,35 +141,16 @@ public class TuscanyServiceProvider {
             throw new ServiceRuntimeException("Unrecognized WSDL style for endpoint " + endpoint);
         }        
 
-        //FIXME: can we use the Axis2 addressing support for this?
         SOAPHeader header = inMC.getEnvelope().getHeader();
         if (header != null) {
-            callbackAddress = handleCallbackAddress( header, msg );
-            // Retrieve other callback-related headers
+        	// Retrieve callback-related headers
+        	callbackAddress = handleCallbackAddress( header, msg );
             handleMessageIDHeader( header, msg );
+            handleRelatesToHeader( header, msg );
         } // end if
 
-        // Create a from EPR to hold the details of the callback endpoint
-        EndpointReference from = null;
-        if (callbackAddress != null ) {
-        	// Check for special (& not allowed!) WS_Addressing values
-        	checkCallbackAddress( callbackAddress, inMC );
-        	//
-            from = assemblyFactory.createEndpointReference();
-            Endpoint fromEndpoint = assemblyFactory.createEndpoint();
-            from.setTargetEndpoint(fromEndpoint);
-            from.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
-            msg.setFrom(from);
-            Endpoint callbackEndpoint = assemblyFactory.createEndpoint();
-            //
-            WebServiceBinding cbBinding = webServiceBindingFactory.createWebServiceBinding();
-            cbBinding.setURI(callbackAddress);
-            callbackEndpoint.setBinding(cbBinding);
-            //
-            callbackEndpoint.setURI(callbackAddress);
-            callbackEndpoint.setUnresolved(true);
-            from.setCallbackEndpoint(callbackEndpoint);
-        }
+        // Create a from EPR to hold the details of the callback endpoint, if any
+        createCallbackEPR( callbackAddress, inMC, msg );
 
         Message response = endpoint.invoke(msg);
         
@@ -215,20 +197,63 @@ public class TuscanyServiceProvider {
         
         return responseOM;
     } // end method 
-
+    
+    /**
+     * If there is a callback address, create an EPR for the callback with a referenced endpoint that contains
+     * the binding and the target callback address
+     * @param callbackAddress - the callback address - may be null
+     * @param inMC - the Axis incoming message context
+     * @param msg - the Tuscany message
+     * @throws AxisFault - if the callback address has any of the disallowed forms of callback address
+     */
+    private void createCallbackEPR( String callbackAddress, MessageContext inMC, Message msg ) throws AxisFault {
+        if (callbackAddress != null ) {
+        	// Check for special (& not allowed!) WS_Addressing values
+        	checkCallbackAddress( callbackAddress, inMC );
+        	//
+        	EndpointReference from = assemblyFactory.createEndpointReference();
+            Endpoint fromEndpoint = assemblyFactory.createEndpoint();
+            from.setTargetEndpoint(fromEndpoint);
+            from.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
+            msg.setFrom(from);
+            Endpoint callbackEndpoint = assemblyFactory.createEndpoint();
+            //
+            WebServiceBinding cbBinding = webServiceBindingFactory.createWebServiceBinding();
+            cbBinding.setURI(callbackAddress);
+            callbackEndpoint.setBinding(cbBinding);
+            //
+            callbackEndpoint.setURI(callbackAddress);
+            callbackEndpoint.setUnresolved(true);
+            from.setCallbackEndpoint(callbackEndpoint);
+        } // end if
+    } // end method createCallbackEPR
+    
     private static String WS_REF_PARMS = "WS_REFERENCE_PARAMETERS";
+    /**
+     * Deal with any Callback address contained in the SOAP headers of the received message
+     * The callback address is contained in one of two headers (in the priority order stated by the SCA Web Service Binding spec):
+     * - wsa:From
+     * - wsa:ReplyTo
+     * Either of these headers should then contain a wsa:Address element containing the callback address
+     * A callback address may also be accompanied by wsa:ReferenceParameters
+     * - if present, ReferenceParameters must be read, stored unchanged and then sent in the header of any message sent to the
+     *   callback address, as stated in the WSW-Addressing specification
+     *   Any ReferenceParameters are stored into the headers of the Tuscany message under the key "WS_REFERENCE_PARAMETERS"
+     * @param header - the SOAP header for the message
+     * @param msg - the Tuscany message data structure
+     * @return - the callback address, as a String - null if no callback address is found
+     */
     private String handleCallbackAddress( SOAPHeader header, Message msg ) {
     	String callbackAddress = null;
         
+    	// See if there is a wsa:From element - if not search for a wsa:ReplyTo element
     	OMElement from = header.getFirstChildWithName(QNAME_WSA_FROM);
     	if( from == null ) from = header.getFirstChildWithName(QNAME_WSA_REPLYTO);
     	
         if (from != null) {
             OMElement callbackAddrElement = from.getFirstChildWithName(QNAME_WSA_ADDRESS);
             if (callbackAddrElement != null) {
-                if (endpoint.getService().getInterfaceContract().getCallbackInterface() != null) {
-                    callbackAddress = callbackAddrElement.getText();
-                }
+                callbackAddress = callbackAddrElement.getText();
                 OMElement refParms = from.getFirstChildWithName(QNAME_WSA_REFERENCE_PARAMETERS);
                 if( refParms != null ) msg.getHeaders().put(WS_REF_PARMS, refParms);
             }
@@ -252,4 +277,20 @@ public class TuscanyServiceProvider {
         	msg.getHeaders().put(WS_MESSAGE_ID, idValue);
         } // end if
     } // end method handleMessageID
-}
+    
+    private static String WS_RELATES_TO = "WS_RELATES_TO";
+    /**
+     * Handle a SOAP wsa:RelatesTo header - place the contents into the Tuscany message for use by any callback
+     * @param header - the SOAP Headers
+     * @param msg - the Tuscany Message
+     */
+    private void handleRelatesToHeader( SOAPHeader header, Message msg ) {
+    	if( header == null ) return;
+        OMElement messageID = header.getFirstChildWithName(QNAME_WSA_RELATESTO);
+        if (messageID != null) {
+        	String idValue = messageID.getText();
+        	// Store the value of the message ID element into the message under "WS_MESSAGE_ID"...
+        	msg.getHeaders().put(WS_MESSAGE_ID, idValue);
+        } // end if
+    } // end method handleMessageID
+} // end class AsyncResponseHandler

@@ -71,7 +71,12 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             logger.log(Level.SEVERE, e.getMessage(), t);
             throw new ServiceRuntimeException(e);
         } catch (Throwable e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            if( "AsyncResponse".equals(e.getMessage()) ) {
+            	// Do nothing for an async response exception - it is a signal that the service has been
+            	// invoked asynchronously
+            } else {
+            	logger.log(Level.SEVERE, e.getMessage(), e);
+            } // end if
             throw AxisFault.makeFault(e);
         }
     }

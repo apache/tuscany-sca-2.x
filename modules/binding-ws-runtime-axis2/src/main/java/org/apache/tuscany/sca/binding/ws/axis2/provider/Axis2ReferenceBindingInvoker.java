@@ -68,16 +68,16 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class Axis2ReferenceBindingInvoker implements Invoker {
     public static final QName QNAME_WSA_FROM =
-        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM, AddressingConstants.WSA_DEFAULT_PREFIX);
-    
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM, AddressingConstants.WSA_DEFAULT_PREFIX);   
     public static final QName QNAME_WSA_TO =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_TO, AddressingConstants.WSA_DEFAULT_PREFIX);
-    
     public static final QName QNAME_WSA_ACTION =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_ACTION, AddressingConstants.WSA_DEFAULT_PREFIX);
-
     public static final QName QNAME_WSA_RELATESTO =
-        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_RELATES_TO, AddressingConstants.WSA_DEFAULT_PREFIX);
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_RELATES_TO, AddressingConstants.WSA_DEFAULT_PREFIX);   
+    public static final QName QNAME_WSA_MESSAGEID =
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_MESSAGE_ID, AddressingConstants.WSA_DEFAULT_PREFIX);
+    
 
     private RuntimeEndpointReference endpointReference;
     private ServiceClient serviceClient;
@@ -215,15 +215,14 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
         SOAPEnvelope sev = requestMC.getEnvelope();
         SOAPHeader sh = sev.getHeader();
         
-        // add WS-Addressing header for the invocation of a bidirectional service
-        //FIXME: is there any way to use the Axis2 addressing support for this?
+        // Add WS-Addressing header for the invocation of a bidirectional service
         if (callbackEndpoint != null) {
             // Load the actual callback endpoint URI into an Axis EPR ready to form the content of the wsa:From header
             EndpointReference fromEPR = new EndpointReference(callbackEndpoint.getBinding().getURI());
            
             addWSAFromHeader( sh, fromEPR );
-            
             addWSAActionHeader( sh );
+            addWSAMessageIDHeader( sh, (String)msg.getHeaders().get("MESSAGE_ID"));
             
             requestMC.setFrom(fromEPR);
         } // end if 
@@ -231,14 +230,14 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
         String toAddress = getToAddress( msg );
         requestMC.setTo( new EndpointReference(toAddress) ); 
         
+        // For callback references, add wsa:To, wsa:Action and wsa:RelatesTo headers
         if( isInvocationForCallback( msg ) ) {
         	addWSAToHeader( sh, toAddress, msg );
         	addWSAActionHeader( sh );
         	addWSARelatesTo( sh, msg );
         } // end if 
         
-        // Allow privileged access to read properties. Requires PropertiesPermission read in
-        // security policy.
+        // Allow privileged access to read properties. Requires PropertiesPermission read in security policy.
         try {
             AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                 public Object run() throws AxisFault {
@@ -271,6 +270,12 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
     	return address;
     } // end method getToAddress
     
+    /**
+     * Add wsa:From SOAP header to the message
+     * @param sh - the SOAP header for the message
+     * @param fromEPR - the (Axis2) EPR to include in the wsa:From
+     * @throws AxisFault - if an error occurs setting the wsa:From into the header
+     */
     private void addWSAFromHeader( SOAPHeader sh, EndpointReference fromEPR ) throws AxisFault {
         OMElement epr = EndpointReferenceHelper.toOM(sh.getOMFactory(),
 			                                         fromEPR,
@@ -280,12 +285,36 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
 
     } // end method addWSAFromHeader
     
+    /**
+     * Add wsa:MessageID SOAP header to the message
+     * @param sh - the SOAP header for the message
+     * @param msgID - the message ID
+     * @throws AxisFault - if an error occurs setting the wsa:From into the header
+     */
+    private void addWSAMessageIDHeader( SOAPHeader sh, String msgID ) throws AxisFault {
+        OMElement idHeader = sh.getOMFactory().createOMElement(QNAME_WSA_MESSAGEID);
+        idHeader.setText( msgID );
+        
+        sh.addChild(idHeader);
+
+    } // end method addWSAMessageIDHeader
+    
     private static String WS_REF_PARMS = "WS_REFERENCE_PARAMETERS";
+    /**
+     * Add wsa:To SOAP header to the message - also handles ReferenceParameters, if present
+     * @param sh - the SOAP header for the message
+     * @param address - the address to use
+     * @param msg - the Tuscany message
+     */
     private void addWSAToHeader( SOAPHeader sh, String address, Message msg ) {
+    	if( address == null ) return;
+    	
         // Create wsa:To header which is required by ws-addressing spec
         OMElement wsaToOM = sh.getOMFactory().createOMElement(QNAME_WSA_TO);
         wsaToOM.setText( address );
         sh.addChild(wsaToOM);
+        
+        if( msg == null ) return;
         
         // Deal with Reference Parameters, if present - copy to the header without the wsa:ReferenceParameters wrapper
         OMElement refParms = (OMElement) msg.getHeaders().get(WS_REF_PARMS);
