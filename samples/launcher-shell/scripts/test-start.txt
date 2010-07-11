@@ -1,4 +1,3 @@
-#!/bin/bash
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,5 +14,5 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 
-java -classpath target/classes:`ls target/scashell/WEB-INF/lib/*.jar | awk '{ printf "%s:", $1}'` sample.Shell
-
+start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+status

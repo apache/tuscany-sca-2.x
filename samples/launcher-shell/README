@@ -6,7 +6,6 @@ start and stop SCA composites.
 
 To build the sample shell do this:
 mvn install
-mvn dependency:copy-dependencies
 
 To run it:
 ./sca
@@ -25,7 +24,11 @@ bye
 Starting and stopping composites is pretty fast. To see that, try the following
 two scripts, which start/stop a sample composite 10 times.
 
-./sca <sca-test
+./sca <scripts/test.txt
 or
-./sca <sca-test-remote
+./sca <scripts/test-remote.txt
+
+The shell can also run as a Webapp. To try it install target/scashell.war in
+a Web container, point your Web browser to http://localhost:8080/scashell
+and try the links on that page.
 
