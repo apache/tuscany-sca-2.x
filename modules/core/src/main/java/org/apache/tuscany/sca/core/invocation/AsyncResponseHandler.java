@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.core.invocation;
 
+import org.oasisopen.sca.annotation.OneWay;
 import org.oasisopen.sca.annotation.Remotable;
 
 /**
@@ -34,6 +35,7 @@ public interface AsyncResponseHandler<V> {
 	 * @param e - the wrapper containing the Fault to send
 	 * @throws IllegalStateException if either the setResponse method or the setFault method have been called previously
 	 */
+	@OneWay
 	public void setFault(AsyncFaultWrapper e);
 	
 	/**
@@ -41,6 +43,7 @@ public interface AsyncResponseHandler<V> {
 	 * @throws IllegalStateException if either the setResponse method or the setFault method have been called previously
 	 * @param res - the response message, which is of type V
 	 */
+	@OneWay
 	public void setResponse(V res);
 
 }

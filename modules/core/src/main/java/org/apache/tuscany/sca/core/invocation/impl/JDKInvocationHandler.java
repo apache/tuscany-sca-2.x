@@ -225,8 +225,22 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     protected void setEndpoint(Endpoint endpoint) {
         this.target = endpoint;
     }
-
+    
     protected Object invoke(InvocationChain chain, Object[] args, Invocable source)
+                            throws Throwable {
+    	return invoke( chain, args, source, null );
+    }
+
+    /**
+     * Invoke the chain
+     * @param chain - the chain
+     * @param args - arguments to the invocation as an array of Objects
+     * @param source - the Endpoint or EndpointReference to which the chain relates
+     * @param msgID - an ID for the message being sent, may be null
+     * @return - the Response message from the invocation
+     * @throws Throwable - if any exception occurs during the invocation
+     */
+    protected Object invoke(InvocationChain chain, Object[] args, Invocable source, String msgID)
                          throws Throwable {
         Message msg = messageFactory.createMessage();
         if (source instanceof RuntimeEndpointReference) {
@@ -250,6 +264,11 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         transferMessageHeaders( msg, msgContext);
         
         ThreadMessageContext.setMessageContext(msg);
+        
+        // If there is a supplied message ID, place its value into the Message Header under "MESSAGE_ID"
+        if( msgID != null ){
+        	msg.getHeaders().put("MESSAGE_ID", msgID);
+        } // end if
 
         try {
             // dispatch the source down the chain and get the response

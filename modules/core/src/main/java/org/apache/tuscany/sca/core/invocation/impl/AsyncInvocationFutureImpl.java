@@ -57,6 +57,8 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 	
 	private String uniqueID = UUID.randomUUID().toString();
 	
+	private ClassLoader classLoader = null;
+	
 	protected AsyncInvocationFutureImpl() {
 		super();
 	} // end constructor
@@ -66,10 +68,13 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 	 * to be set for the class instances
 	 * @param <V> - the type of the response from the asynchronously invoked service
 	 * @param type - the type of the AsyncInvocationFutureImpl expressed as a parameter
+	 * @param classLoader - the classloader used for the business interface to which this Future applies
 	 * @return - an instance of AsyncInvocationFutureImpl<V>
 	 */
-	public static <V> AsyncInvocationFutureImpl<V> newInstance( Class<V> type ) {
-		return new AsyncInvocationFutureImpl<V>();
+	public static <V> AsyncInvocationFutureImpl<V> newInstance( Class<V> type, ClassLoader classLoader ) {
+		AsyncInvocationFutureImpl<V> future = new AsyncInvocationFutureImpl<V>();
+		future.setClassLoader( classLoader );
+		return future;
 	}
 
 	/**
@@ -146,8 +151,17 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 	 */
 	public void setFault(AsyncFaultWrapper w) {
 
-		Exception e = w.retrieveFault();
-		if( e != null ) throw new IllegalArgumentException("AsyncFaultWrapper did not return an Exception");
+		ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+		Throwable e;
+		try {
+			 // Set the TCCL to the classloader of the business interface
+            Thread.currentThread().setContextClassLoader(this.getClassLoader());
+			e = w.retrieveFault();
+		} finally {
+			Thread.currentThread().setContextClassLoader(tccl);
+		} // end try
+		
+		if( e == null ) throw new IllegalArgumentException("AsyncFaultWrapper did not return an Exception");
 		lock.lock();
 		try {
 			if( notSetYet() ) {
@@ -201,8 +215,25 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 	 * @return - a Map containing the context
 	 */
 	public Map<String, Object> getContext() {
-		// TODO Auto-generated method stub
+		// Intentionally returns null
 		return null;
 	}
+	
+	/**
+	 * Gets the classloader associated with the business interface to which this Future relates
+	 * @return the ClassLoader of the business interface
+	 */
+	public ClassLoader getClassLoader() {
+		return classLoader;
+	}
+
+	/**
+	 * Sets the classloader associated with the business interface to which this Future relates
+	 * @param classLoader - the classloader of the business interface
+	 */
+	public void setClassLoader(ClassLoader classLoader) {
+		this.classLoader = classLoader;
+	}
+
 
 } // end class AsyncInvocationFutureImpl

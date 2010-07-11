@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 /**
  * A class intended to form the final link in the chain calling into a Future which represents
  * the response to an asynchronous service invocation
+ * 
  * Most methods are dummies, required to fulfil the contracts for ImplementationProvider, Implementation
  * and Invoker, since this class collapses together the functions of these separate interfaces, due to its
  * specialized nature, where most of the function will never be used.
@@ -52,7 +53,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * message header.  On receipt of each message, the class seeks out the Future with that unique ID and completes the future
  * either with a response message or with a Fault.
  *
- * @param <V>
+ * @param <V>  
  */
 public class AsyncResponseHandlerImpl<V> implements AsyncResponseHandler<V>,
 		ImplementationProvider, Implementation, Invoker {
@@ -60,6 +61,9 @@ public class AsyncResponseHandlerImpl<V> implements AsyncResponseHandler<V>,
 	private ConcurrentHashMap< String, AsyncInvocationFutureImpl<?> > table = 
 		new ConcurrentHashMap< String, AsyncInvocationFutureImpl<?> >();
 	
+	/**
+	 * This class is its own invoker...
+	 */
 	public Invoker createInvoker(RuntimeComponentService service,
 			Operation operation) {
 		return this;
@@ -144,13 +148,46 @@ public class AsyncResponseHandlerImpl<V> implements AsyncResponseHandler<V>,
 
 	public void setResponse(V res) { }
 
-	public Message invoke(Message msg) {
-		// TODO Auto-generated method stub
+	/**
+	 * Method which is the termination for the invocation chain from the callback endpoint
+	 * @param msg - the Tuscany message containing the response from the async service invocation
+	 * which is either the Response message or an exception of some kind
+	 */
+    private static final String WS_MESSAGE_ID = "WS_MESSAGE_ID";
+    public Message invoke(Message msg) {
 		// Get the unique ID from the message header
-		// Fetch the Future with that Unique ID
-		// Complete the Future with a Response message
-		// ...or complete the Future with a Fault
-		return null;
-	}
+		String idValue = (String)msg.getHeaders().get(WS_MESSAGE_ID);
+		if( idValue == null ) { 
+			System.out.println( "Async message ID not found ");
+		} else {
+			// Fetch the Future with that Unique ID
+			AsyncInvocationFutureImpl future = table.get(idValue);
+			if( future == null ) {
+				System.out.println("Future not found for id: " + idValue);
+			} else {	
+				// Complete the Future with a Response message
+				Object payload = msg.getBody();
+				Object response;
+				if( payload == null ) {
+					System.out.println("Returned response message was null");
+				} else {
+		            if (payload.getClass().isArray()) {
+		                response = ((Object[])payload)[0];
+		            } else {
+		                response = payload;
+		            } // end if
+		            if( response.getClass().equals(AsyncFaultWrapper.class)) {
+		            	future.setFault((AsyncFaultWrapper) response );
+		            } else {
+		            	future.setResponse(response);
+		            } // end if
+				} // end if
+			} // end if
+		} // end if
+		
+		// Prepare an empty response message
+		msg.setBody(null);
+		return msg;
+	} // end method invoke
 
 } // end class 
