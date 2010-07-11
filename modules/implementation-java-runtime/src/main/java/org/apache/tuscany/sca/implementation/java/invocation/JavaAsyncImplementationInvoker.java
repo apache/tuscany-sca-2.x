@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
+import org.apache.tuscany.sca.core.invocation.AsyncResponseException;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
@@ -70,7 +71,7 @@ public class JavaAsyncImplementationInvoker extends JavaImplementationInvoker {
             // For an async server method, there is an extra input parameter, which is a DispatchResponse instance 
             // which is typed by the type of the response
             Class<?> responseType = op.getOutputType().getPhysical();
-            ResponseDispatch<?> dispatch = ResponseDispatchImpl.newInstance(responseType);
+            ResponseDispatch<?> dispatch = ResponseDispatchImpl.newInstance(responseType, msg );
             
             Object ret;
             Object[] payload2;
@@ -87,15 +88,12 @@ public class JavaAsyncImplementationInvoker extends JavaImplementationInvoker {
             
             ret = method.invoke(instance, (Object[])payload2);
             
-            try {
-            	ret = ((ResponseDispatchImpl<?>)dispatch).get(50, TimeUnit.SECONDS);
-            } catch (Throwable t) {
-            	throw new InvocationTargetException(t);
-            } // end try
+            //ret = ((ResponseDispatchImpl<?>)dispatch).get(50, TimeUnit.SECONDS);
+            throw new InvocationTargetException( new AsyncResponseException("AsyncResponse") );
+
+            //scopeContainer.returnWrapper(wrapper, contextId);
             
-            scopeContainer.returnWrapper(wrapper, contextId);
-            
-            msg.setBody(ret);
+            //msg.setBody(ret);
         } catch (InvocationTargetException e) {
             Throwable cause = e.getTargetException();
             boolean isChecked = false;
