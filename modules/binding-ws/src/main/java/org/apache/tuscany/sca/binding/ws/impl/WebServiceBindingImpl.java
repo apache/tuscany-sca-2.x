@@ -20,7 +20,9 @@
 package org.apache.tuscany.sca.binding.ws.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.wsdl.Binding;
 import javax.wsdl.BindingOperation;
@@ -31,7 +33,6 @@ import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap.SOAPBody;
-import javax.wsdl.extensions.soap12.SOAP12Body;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Extensible;
@@ -80,6 +81,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     private boolean isDocumentStyle;
     private boolean isLiteralEncoding;
     private boolean isMessageWrapped;
+    private Map<String, String> wsdliLocations = new HashMap<String, String>();
 
     protected WebServiceBindingImpl() {
     }
@@ -450,5 +452,9 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
         
         // if no binding is explicitly specified by the user then default to http
         return "http://schemas.xmlsoap.org/soap/http";
+    }
+
+    public Map<String, String> getWsdliLocations() {
+        return wsdliLocations ;
     }
 }

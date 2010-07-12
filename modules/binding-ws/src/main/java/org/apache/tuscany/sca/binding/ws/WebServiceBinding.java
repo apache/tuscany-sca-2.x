@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.binding.ws;
 
+import java.util.Map;
+
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
@@ -48,6 +50,12 @@ public interface WebServiceBinding extends Binding {
      * @return the WSDL location
      */
     String getLocation();
+
+    /**
+     * Returns the wsdli:location attribute namespace mappings
+     * @return a Map with key being namespace and value the location
+     */
+    Map<String, String> getWsdliLocations();
 
     /**
      * Returns the name of the WSDL service.

@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.ws.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.apache.tuscany.sca.binding.ws.xml.WebServiceConstants.SCA11_NS;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -234,14 +235,17 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
         }
 
         // Read wsdlLocation
-        wsBinding.setLocation(reader.getAttributeValue(WSDLI_NS, WSDL_LOCATION));
-        if (wsBinding.getLocation() != null) {
+        String wsdliLocation = reader.getAttributeValue(WSDLI_NS, WSDL_LOCATION);
+        if (wsdliLocation != null) {
             if (wsdlElement == null) {
                 error(monitor, "WsdliLocationMissingWsdlElement", reader);
             }
-            String[] iris = wsBinding.getLocation().split(" ");
+            String[] iris = wsdliLocation.split(" ");
             if (iris.length % 2 != 0) {
                 error(monitor, "WsdliLocationNotIRIPairs", reader);
+            }
+            for (int i=0; i<iris.length-1; i=i+2) {
+                wsBinding.getWsdliLocations().put(iris[i], iris[i+1]);
             }
         }
 
@@ -338,9 +342,19 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
             writer.writeAttribute(WSDL_ELEMENT, wsdlElement);
         }
 
-        // Write location
-        if (wsBinding.getLocation() != null) {
-            writer.writeAttribute(WSDLI_NS, WSDL_LOCATION, wsBinding.getLocation());
+        // Write wsdli:location
+        if (wsBinding.getWsdliLocations().size() > 0) {
+            StringBuilder wsdliLocation = new StringBuilder();
+            Map<String, String> wl = wsBinding.getWsdliLocations();
+            for (String ns : wl.keySet()) {
+                if (wsdliLocation.length() > 0) {
+                    wsdliLocation.append(' ');
+                }
+                wsdliLocation.append(ns); 
+                wsdliLocation.append(' '); 
+                wsdliLocation.append(wl.get(ns)); 
+            }
+            writer.writeAttribute(WSDLI_NS, WSDL_LOCATION, wsdliLocation.toString());
         }
 
         if (wsBinding.getEndPointReference() != null) {
@@ -360,6 +374,7 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
         wsdlDefinition.setNamespace(model.getNamespace());
         wsdlDefinition.setNameOfBindingToResolve(model.getBindingName());
         wsdlDefinition.setNameOfServiceToResolve(model.getServiceName());
+        wsdlDefinition.getWsdliLocations().putAll(model.getWsdliLocations());
         WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition, context);
 
         if (!resolved.isUnresolved()) {
