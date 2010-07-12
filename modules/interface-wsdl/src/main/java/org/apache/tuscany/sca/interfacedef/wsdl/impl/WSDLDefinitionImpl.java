@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +63,7 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     private QName nameOfPortTypeToResolve;
     private QName nameOfBindingToResolve;
     private QName nameOfServiceToResolve;
+    private Map<String, String> wsdliLocations = new HashMap<String, String>();
 
     protected WSDLDefinitionImpl() {
     }
@@ -310,5 +312,10 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     
     public void setNameOfServiceToResolve(QName nameOfServiceToResolve) {
         this.nameOfServiceToResolve = nameOfServiceToResolve;
+    }
+
+    @Override
+    public Map<String, String> getWsdliLocations() {
+        return wsdliLocations ;
     }
 }

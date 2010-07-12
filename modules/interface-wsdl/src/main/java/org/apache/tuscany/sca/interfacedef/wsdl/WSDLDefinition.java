@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.interfacedef.wsdl;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 import javax.wsdl.Binding;
 import javax.wsdl.Definition;
@@ -178,6 +179,12 @@ public interface WSDLDefinition extends Base {
      * 
      * @param nameOfBindingToResolve
      */
-    void setNameOfServiceToResolve(QName nameOfServiceToResolve);    
+    void setNameOfServiceToResolve(QName nameOfServiceToResolve);
+
+    /**
+     * Gets the wsdli:location attribute namespace mappings
+     * @return a Map with key being namespace and value the location
+     */
+    Map<String, String> getWsdliLocations();    
 
 }

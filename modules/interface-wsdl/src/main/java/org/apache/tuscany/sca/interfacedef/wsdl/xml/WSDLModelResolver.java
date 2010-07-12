@@ -339,6 +339,17 @@ public class WSDLModelResolver implements ModelResolver {
             return modelClass.cast(unresolved);
         }    	
     	
+    	// Lookup based on wsdli:location
+    	if (((WSDLDefinition)unresolved).getWsdliLocations().containsKey(namespace)) {
+            try {
+                loadDefinition(((WSDLDefinition)unresolved), context);
+            } catch (ContributionReadException e) {
+                context.getMonitor().error(context.getMonitor(), this, "interface-wsdlxml-validation-messages", "wsdliLocationException", e, ((WSDLDefinition)unresolved).getNamespace());
+            }
+            return modelClass.cast((WSDLDefinition)unresolved);
+    	}
+    	
+    	
     	// Lookup a definition for the given namespace, from imports        
         for (Import import_ : this.contribution.getImports()) {
             if (import_ instanceof NamespaceImport) {
@@ -458,11 +469,20 @@ public class WSDLModelResolver implements ModelResolver {
      * @throws ContributionReadException
      */
     private void loadDefinition(WSDLDefinition wsdlDef, ProcessorContext context) throws ContributionReadException {
-        if (wsdlDef.getDefinition() != null || wsdlDef.getLocation() == null) {
+        if (wsdlDef.getDefinition() != null) {
             return;
         }
         try {
-            URL artifactURL = wsdlDef.getLocation().toURL();
+            URL artifactURL;
+            String loc = wsdlDef.getWsdliLocations().get(wsdlDef.getNamespace());
+            if (loc != null) {
+                artifactURL = new URL(loc);
+            } else {
+                if (wsdlDef.getLocation() == null) {
+                    return;
+                }
+                artifactURL = wsdlDef.getLocation().toURL();
+            }
             // Read a WSDL document
             InputStream is = IOHelper.openStream(artifactURL);
             WSDLReader reader = wsdl4jFactory.newWSDLReader();
@@ -474,6 +494,7 @@ public class WSDLModelResolver implements ModelResolver {
 
             // Collection of namespace,location for wsdl:import definition
             Map<String, String> wsdlImports = indexRead(wsdlDef.getLocation().toURL());
+            wsdlImports.putAll(wsdlDef.getWsdliLocations());
             WSDLLocatorImpl locator = new WSDLLocatorImpl(context, artifactURL, is, wsdlImports);
             Definition definition = reader.readWSDL(locator);
             wsdlDef.setDefinition(definition);
