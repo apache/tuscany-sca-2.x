@@ -50,6 +50,11 @@
             <artifactId>wink-server</artifactId>
             <version>1.1.1-incubating</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.0</version>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
