@@ -325,6 +325,8 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         
        if ((referenceContract != null) &&
            (bindingContract != null)){
+           
+           boolean bindingHasCallback = bindingContract.getCallbackInterface() != null;
 
            try {
                
@@ -333,13 +335,13 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
                    interfaceContractMapper.checkCompatibility(getGeneratedWSDLContract(referenceContract), 
                                                               bindingContract, 
                                                               Compatibility.SUBSET, 
-                                                              true, // we ignore callbacks as binding iface won't have one 
+                                                              !bindingHasCallback, // ignore callbacks if binding doesn't have one 
                                                               false);
                } else {
                    interfaceContractMapper.checkCompatibility(referenceContract, 
                                                               bindingContract, 
                                                               Compatibility.SUBSET, 
-                                                              true, // we ignore callbacks as binding iface won't have one 
+                                                              !bindingHasCallback, // ignore callbacks if binding doesn't have one 
                                                               false);                   
                }  
 

@@ -482,19 +482,22 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 
         if ((serviceContract != null) &&
             (bindingContract != null)){
+           
+            boolean bindingHasCallback = bindingContract.getCallbackInterface() != null;
+            
             try {
                 if ((serviceContract.getClass() != bindingContract.getClass()) &&
                     (serviceContract instanceof JavaInterfaceContract)) {
                         interfaceContractMapper.checkCompatibility(getGeneratedWSDLContract(serviceContract), 
                                                                    bindingContract, 
                                                                    Compatibility.SUBSET, 
-                                                                   true, // we ignore callbacks as binding iface won't have one 
+                                                                   !bindingHasCallback, // ignore callbacks if binding doesn't have one 
                                                                    false);
                     } else {
                         interfaceContractMapper.checkCompatibility(serviceContract, 
                                                                    bindingContract, 
                                                                    Compatibility.SUBSET, 
-                                                                   true, // we ignore callbacks as binding iface won't have one
+                                                                   !bindingHasCallback, // ignore callbacks if binding doesn't have one 
                                                                    false);                   
                     }                 
             } catch (Exception ex){
