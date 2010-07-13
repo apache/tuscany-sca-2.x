@@ -187,6 +187,8 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         this.phaseManager = utilities.getUtility(PhaseManager.class);
         this.serializer = utilities.getUtility(EndpointSerializer.class);
         this.providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
+        this.contractBuilder = builders.getContractBuilder();
     }
 
     public void unbind() {
@@ -224,7 +226,11 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             for (InvocationChain chain : getInvocationChains()) {
                 Operation op = chain.getTargetOperation();
 
-                if (interfaceContractMapper.isCompatible(operation, op, Compatibility.SUBSET)) {
+                // We used to check compatibility here but this is now validated when the 
+                // chain is created. As the chain operations are the real interface types 
+                // they may be incompatible just because they are described in different 
+                // IDLs
+                if (operation.getName().equals(op.getName())) {
                     invocationChainMap.put(operation, chain);
                     return chain;
                 }
@@ -304,6 +310,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         // TODO - EPR - why is this looking at the component types. The endpoint should have the right interface contract by this time
         InterfaceContract targetContract = getComponentTypeServiceInterfaceContract();
         // setInterfaceContract(targetContract);
+        validateServiceInterfaceCompatibility();
         for (Operation operation : sourceContract.getInterface().getOperations()) {
             Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
             if (targetOperation == null) {
@@ -463,6 +470,47 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         return (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
     } // end method RuntimeAssemblyFactory
+    
+    /**
+     * Check that endpoint  has compatible interface at the component and binding ends. 
+     * The user can specify the interfaces at both ends so there is a danger that they won't be compatible.
+     */
+    public void validateServiceInterfaceCompatibility() {
+        
+        InterfaceContract serviceContract = getComponentServiceInterfaceContract();
+        InterfaceContract bindingContract = getBindingInterfaceContract();
+
+        if ((serviceContract != null) &&
+            (bindingContract != null)){
+            try {
+                if ((serviceContract.getClass() != bindingContract.getClass()) &&
+                    (serviceContract instanceof JavaInterfaceContract)) {
+                        interfaceContractMapper.checkCompatibility(getGeneratedWSDLContract(serviceContract), 
+                                                                   bindingContract, 
+                                                                   Compatibility.SUBSET, 
+                                                                   true, // we ignore callbacks as binding iface won't have one 
+                                                                   false);
+                    } else {
+                        interfaceContractMapper.checkCompatibility(serviceContract, 
+                                                                   bindingContract, 
+                                                                   Compatibility.SUBSET, 
+                                                                   true, // we ignore callbacks as binding iface won't have one
+                                                                   false);                   
+                    }                 
+            } catch (Exception ex){
+                throw new ServiceRuntimeException("Component " +
+                                                  this.getComponent().getName() +
+                                                  " Service " +
+                                                  getService().getName() +
+                                                  " interface is incompatible with the interface of the reference binding  - " + 
+                                                  getBinding().getName() +
+                                                  " - " + 
+                                                  ex.getMessage() +
+                                                  " - [" + this.toString() + "]");
+            }
+        }
+                
+    }    
 
     private void initServiceBindingInvocationChains() {
 
@@ -744,5 +792,17 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             }
         }
     }
+    public InterfaceContract getGeneratedWSDLContract(InterfaceContract interfaceContract) {
 
+        if ( interfaceContract.getNormalizedWSDLContract() == null){
+            if (getComponentServiceInterfaceContract() instanceof JavaInterfaceContract){
+                if (contractBuilder == null){
+                    throw new ServiceRuntimeException("Contract builder not found while calculating WSDL contract for " + this.toString());
+                }
+                contractBuilder.build(getComponentServiceInterfaceContract(), null);
+            }
+        }
+        
+        return interfaceContract.getNormalizedWSDLContract();      
+    }    
 }

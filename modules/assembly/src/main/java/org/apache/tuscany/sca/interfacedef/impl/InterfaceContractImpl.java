@@ -125,5 +125,18 @@ public abstract class InterfaceContractImpl implements InterfaceContract {
         }
         return true;
     }
+    
+    // By default there is no normailized contract
+    // as only Java needs it
+    public InterfaceContract getNormalizedWSDLContract() {
+        return null;
+    }
+    
+    // By default there is no normailized contract
+    // as only Java needs it
+    public void setNormailizedWSDLContract(
+            InterfaceContract wsdlInterfaceContract) {
+        // do nothing
+    }
 
 }

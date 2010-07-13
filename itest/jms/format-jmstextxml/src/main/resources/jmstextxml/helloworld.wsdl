@@ -65,7 +65,13 @@
                 </complexType>
             </element>
 
-            <element name="CheckedException" type="xsd:string" />
+            <element name="CheckedException" type="CheckedException" />
+            
+            <complexType name="CheckedException">
+                <sequence>
+                    <element minOccurs="0" name="message" type="xsd:string" />
+                </sequence>
+            </complexType>
 
         </schema>
         

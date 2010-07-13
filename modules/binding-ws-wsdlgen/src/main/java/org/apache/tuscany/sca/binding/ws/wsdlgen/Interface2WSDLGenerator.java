@@ -797,10 +797,20 @@ public class Interface2WSDLGenerator {
             }
             helpers.put(db, helper);
         }
-        TypeInfo typeInfo = helper.getTypeInfo(javaType.isArray() ? javaType.getComponentType() : javaType,
-                                               dataType.getLogical());
-        ElementInfo element = new ElementInfo(name, typeInfo);
-        element.setMany(byte[].class != javaType && javaType.isArray());
+        // TUSCANY-3616 - don't revert a byte[] to a byte type but retain the mapping to base64Binary
+        //                which is carried in the dataType and the original javaType
+        TypeInfo typeInfo = null;
+        ElementInfo element = null;
+        if (byte[].class == javaType){
+            typeInfo = helper.getTypeInfo(javaType, dataType.getLogical());
+            element = new ElementInfo(name, typeInfo);
+            element.setMany(false);
+        } else {
+            typeInfo = helper.getTypeInfo(javaType.isArray() ? javaType.getComponentType() : javaType, dataType.getLogical());
+            element = new ElementInfo(name, typeInfo);
+            element.setMany(javaType.isArray());
+        }
+
         element.setNillable(!javaType.isPrimitive());
         return element;
     }

@@ -61,6 +61,7 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.ContractBuilder;
 import org.apache.tuscany.sca.assembly.builder.ImplementationBuilder;
 import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.assembly.xsd.Constants;
@@ -75,9 +76,12 @@ import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
+import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.ExtensionType;
@@ -106,6 +110,7 @@ public class ComponentBuilderImpl {
     private InterfaceContractMapper interfaceContractMapper;
     private BuilderExtensionPoint builders;
     private Mediator mediator;
+    private ContractBuilder contractBuilder;
 
     public ComponentBuilderImpl(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
@@ -120,6 +125,7 @@ public class ComponentBuilderImpl {
         policyBuilder = new ComponentPolicyBuilderImpl(registry);
         builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
         mediator = new MediatorImpl(registry);
+        contractBuilder = builders.getContractBuilder();
     }
 
     public void setComponentTypeBuilder(CompositeComponentTypeBuilderImpl componentTypeBuilder) {
@@ -1297,7 +1303,8 @@ public class ComponentBuilderImpl {
             boolean isCompatible = true;
             String incompatibilityReason = "";
             try{
-                isCompatible = interfaceContractMapper.checkCompatibility(topInterfaceContract, bottomInterfaceContract, Compatibility.SUBSET, false, false);
+                isCompatible = checkSubsetCompatibility(topInterfaceContract, 
+                                                        bottomInterfaceContract);
             } catch (IncompatibleInterfaceContractException ex){
                 isCompatible = false;
                 incompatibilityReason = ex.getMessage();
@@ -1311,6 +1318,24 @@ public class ComponentBuilderImpl {
                               topContract.getName(),
                               incompatibilityReason);
             }
+            
+            // TODO - there is an issue with the following code if the 
+            //        contracts of of different types. Need to use the 
+            //        normalized form
+            
+            // fix up the forward interface based on the promoted component
+            // Someone might have manually specified a callback interface but
+            // left out the forward interface
+            if (topInterfaceContract.getInterface() == null){
+                topInterfaceContract.setInterface(bottomInterfaceContract.getInterface());
+            }              
+            
+            // fix up the callback interface based on the promoted component
+            // Someone might have manually specified a forward interface but
+            // left out the callback interface
+            if (topInterfaceContract.getCallbackInterface() == null){
+                topInterfaceContract.setCallbackInterface(bottomInterfaceContract.getCallbackInterface());
+            }            
         }
     }
     
@@ -1337,7 +1362,8 @@ public class ComponentBuilderImpl {
             boolean isCompatible = true;
             String incompatibilityReason = "";
             try{
-                isCompatible = interfaceContractMapper.checkCompatibility(bottomInterfaceContract, topInterfaceContract, Compatibility.SUBSET, false, false);
+                isCompatible = checkSubsetCompatibility(bottomInterfaceContract, 
+                                                        topInterfaceContract);
             } catch (IncompatibleInterfaceContractException ex){
                 isCompatible = false;
                 incompatibilityReason = ex.getMessage();
@@ -1351,6 +1377,24 @@ public class ComponentBuilderImpl {
                               topContract.getName(),
                               incompatibilityReason);
             }
+            
+            // TODO - there is an issue with the following code if the 
+            //        contracts of of different types. Need to use the 
+            //        normalized form
+            
+            // fix up the forward interface based on the promoted component
+            // Someone might have manually specified a callback interface but
+            // left out the forward interface
+            if (topInterfaceContract.getInterface() == null){
+                topInterfaceContract.setInterface(bottomInterfaceContract.getInterface());
+            }            
+            
+            // fix up the callback interface based on the promoted component
+            // Someone might have manually specified a forward interface but
+            // left out the callback interface
+            if (topInterfaceContract.getCallbackInterface() == null){
+                topInterfaceContract.setCallbackInterface(bottomInterfaceContract.getCallbackInterface());
+            }            
         }
     }    
 
@@ -1418,6 +1462,43 @@ public class ComponentBuilderImpl {
         } else if (componentReference.getCallback().getBindings().isEmpty() && componentTypeReference.getCallback() != null) {
             componentReference.getCallback().getBindings().addAll(componentTypeReference.getCallback().getBindings());
         }
-    }    
+    }  
+    
+    /**
+     * A local wrapper for the interace contract mapper as we need to normalize the 
+     * interface contracts if appropriate and the mapper doesn't have the right
+     * dependencies to be able to do it. 
+     * 
+     * Sometimes the two interfaces can be presented using different IDLs, for example
+     * Java and WSDL. In this case interfaces are converted so that they are both WSDL1.1 interfaces
+     * and they are then compared. The generated WSDL is cached on the interface object for 
+     * any subsequent matching
+     * 
+     * @param contractA
+     * @param contractB
+     * @return true if the interface contracts match
+     */
+    private boolean checkSubsetCompatibility(InterfaceContract contractA, InterfaceContract contractB)
+        throws IncompatibleInterfaceContractException {
+        
+        if (contractA.getClass() != contractB.getClass()) {
+                      
+            if (contractA instanceof JavaInterfaceContract){
+                contractBuilder.build(contractA, null);
+                contractA = ((JavaInterfaceContract)contractA).getNormalizedWSDLContract();
+            } 
+            
+            if (contractB instanceof JavaInterfaceContract){
+                contractBuilder.build(contractB, null);
+                contractB = ((JavaInterfaceContract)contractB).getNormalizedWSDLContract();
+            }            
+        }   
+        
+        return interfaceContractMapper.checkCompatibility(contractA, 
+                                                          contractB, 
+                                                          Compatibility.SUBSET, 
+                                                          false, 
+                                                          false);
+    }
 
 }

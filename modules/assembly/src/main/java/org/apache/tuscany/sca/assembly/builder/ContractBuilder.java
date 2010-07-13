@@ -17,12 +17,21 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.format.jmsbytes.helloworld;
+package org.apache.tuscany.sca.assembly.builder;
 
-public class CheckedException extends Exception {
-    private static final long serialVersionUID = 1L;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 
-    public CheckedException(String s) {
-        super(s);
-    }
+/**
+ * A builder that builds WSDL versions of component contracts so that the
+ * component contracts can be compared with binding contracts in a generic way.
+ * The generic interface format defined by the Assembly spec is WSDL 1.1
+ */
+public interface ContractBuilder {
+      
+    /**
+     * Build the WSDL version of the Interface Contract
+     */
+    boolean build(InterfaceContract interfaceContract, BuilderContext context);    
 }

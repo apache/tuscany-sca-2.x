@@ -247,6 +247,10 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
     public void activate(CompositeContext compositeContext, RuntimeEndpoint ep) {
         ep.bind(compositeContext);
+        
+        // Check that the service binding interface is compatible with the 
+        // service interface
+        ep.validateServiceInterfaceCompatibility();
     }
 
     public void deactivate(RuntimeComponent component, RuntimeComponentService service) {
@@ -309,6 +313,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
 
         // endpointReference.setInterfaceContract(sourceContract.makeUnidirectional(false));
+        
+        // if the reference already has a binding we can check the reference binding interface
+        // and reference interfaces for compatibility. If we can't check now compatibility 
+        // will be checked when the endpoint reference is resolved. 
+        if (epr.getStatus() == EndpointReference.Status.RESOLVED_BINDING){
+            epr.validateReferenceInterfaceCompatibility();
+        }
     }    
 
     public void deactivate(RuntimeEndpointReference endpointReference) {

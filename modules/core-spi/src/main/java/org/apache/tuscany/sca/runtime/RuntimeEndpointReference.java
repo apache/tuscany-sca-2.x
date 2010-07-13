@@ -49,6 +49,7 @@ public interface RuntimeEndpointReference extends EndpointReference, Invocable, 
      */
     InterfaceContract getBindingInterfaceContract();
     
+    
     /**
      * Get the interface contract of the reference of the source component type, i.e., the
      * componentType.reference.interfaceContract. This represents the data types that the 
@@ -56,6 +57,30 @@ public interface RuntimeEndpointReference extends EndpointReference, Invocable, 
      * @return The source component type reference interface contract
      */
     InterfaceContract getComponentTypeReferenceInterfaceContract();   
+    
+    /**
+     * Check that endpoint reference has compatible interface at the component and binding ends. 
+     * The user can specify the interfaces at both ends so there is a danger that they won't be compatible.
+     * There is checking in the activator but of course endpoint references may not have a binding assigned
+     * until final resolution. 
+     */
+    public void validateReferenceInterfaceCompatibility();   
+    
+    /**
+     * to allow for remote interface comparison we convert a Endpoint Reference's Java interface
+     * to WSDL at build time. 
+     * 
+     * @param wsdlContract
+     */
+//    void setGeneratedWSDLContract(InterfaceContract wsdlContract);
+    
+    /**
+     * to allow for remote interface comparison we convert a Endpoint Reference's Java interface
+     * to WSDL at build time. 
+     * 
+     * @preturn wsdlContract
+     */
+//    InterfaceContract getGeneratedWSDLContract();    
     
     boolean isOutOfDate();
     void rebuild();

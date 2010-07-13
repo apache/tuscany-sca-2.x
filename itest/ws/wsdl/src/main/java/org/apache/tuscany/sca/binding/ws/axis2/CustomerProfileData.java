@@ -33,6 +33,16 @@ public class CustomerProfileData {
     private String loginID;
     private String password;
     private int id;
+    
+    public CustomerProfileData() {
+        firstName = "John";
+        lastName = "Doe";
+        address = "345 Main Street";
+        email = "john@doe.org";
+        this.loginID = "DefaultloginID";
+        password = "hello";
+        id = 1234;
+    }
 
     public CustomerProfileData(String loginID) {
         firstName = "John";

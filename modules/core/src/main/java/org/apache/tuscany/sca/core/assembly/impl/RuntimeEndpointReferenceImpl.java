@@ -37,6 +37,8 @@ import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.ContractBuilder;
 import org.apache.tuscany.sca.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -51,12 +53,15 @@ import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
@@ -99,6 +104,9 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
 
     protected InterfaceContract bindingInterfaceContract;
     protected InterfaceContract referenceInterfaceContract;
+    
+    //protected InterfaceContract generatedReferenceWSDLInterfaceContract;
+    
     private String xml;
 
     private boolean started;
@@ -169,6 +177,9 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         this.phaseManager = utilities.getUtility(PhaseManager.class);
         this.serializer = utilities.getUtility(EndpointSerializer.class);
         this.providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        
+        this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
+        this.contractBuilder = builders.getContractBuilder();
     }
 
     public synchronized List<InvocationChain> getInvocationChains() {
@@ -191,7 +202,12 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         if (cached == null) {
             for (InvocationChain chain : getInvocationChains()) {
                 Operation op = chain.getSourceOperation();
-                if (interfaceContractMapper.isCompatible(operation, op, Compatibility.SUBSET)) {
+                
+                // We used to check compatibility here but this is now validated when the 
+                // chain is created. As the chain operations are the real interface types 
+                // they may be incompatible just because they are described in different 
+                // IDLs
+                if (operation.getName().equals(op.getName())) {
                     invocationChainMap.put(operation, chain);
                     return chain;
                 }
@@ -266,6 +282,8 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
                 throw new IllegalStateException(e);
             }
         }
+        
+        validateReferenceInterfaceCompatibility();
 
         List<InvocationChain> chainList = new ArrayList<InvocationChain>();
         if(sourceContract != null && targetContract != null) {
@@ -293,6 +311,51 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         chains = chainList;
         wireProcessor.process(this);
     }
+    
+    /**
+     * Check that endpoint reference has compatible interface at the component and binding ends. 
+     * The user can specify the interfaces at both ends so there is a danger that they won't be compatible.
+     * There is checking in the activator but of course endpoint references may not have a binding assigned
+     * until final resolution. 
+     */
+    public void validateReferenceInterfaceCompatibility() {
+
+        InterfaceContract referenceContract = getComponentReferenceInterfaceContract();
+        InterfaceContract bindingContract =  getBindingInterfaceContract();
+        
+       if ((referenceContract != null) &&
+           (bindingContract != null)){
+
+           try {
+               
+               if ((referenceContract.getClass() != bindingContract.getClass()) &&
+                   (referenceContract instanceof JavaInterfaceContract)) {
+                   interfaceContractMapper.checkCompatibility(getGeneratedWSDLContract(referenceContract), 
+                                                              bindingContract, 
+                                                              Compatibility.SUBSET, 
+                                                              true, // we ignore callbacks as binding iface won't have one 
+                                                              false);
+               } else {
+                   interfaceContractMapper.checkCompatibility(referenceContract, 
+                                                              bindingContract, 
+                                                              Compatibility.SUBSET, 
+                                                              true, // we ignore callbacks as binding iface won't have one 
+                                                              false);                   
+               }  
+
+           } catch (Exception ex){
+               throw new ServiceRuntimeException("Component " +
+                                                 this.getComponent().getName() +
+                                                 " Reference " +
+                                                 getReference().getName() +
+                                                 " interface is incompatible with the interface of the reference binding " + 
+                                                 getBinding().getName() + 
+                                                 " - " + 
+                                                 ex.getMessage() +
+                                                 " - [" + this.toString() + "]");
+           }
+        }  
+    }     
 
     /**
      * This code used to be in the activator but has moved here as
@@ -535,5 +598,18 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
     public boolean isStarted() {
         return started;
     }
+    
+    public InterfaceContract getGeneratedWSDLContract(InterfaceContract interfaceContract) {
 
+        if ( interfaceContract.getNormalizedWSDLContract() == null){
+            if (getComponentReferenceInterfaceContract() instanceof JavaInterfaceContract){
+                if (contractBuilder == null){
+                    throw new ServiceRuntimeException("Contract builder not found while calculating WSDL contract for " + this.toString());
+                }
+                contractBuilder.build(getComponentReferenceInterfaceContract(), null);
+            }
+        }
+        
+        return interfaceContract.getNormalizedWSDLContract();      
+    }     
 }

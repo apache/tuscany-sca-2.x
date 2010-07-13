@@ -28,11 +28,11 @@ public interface LocalClientComponent {
 
     String foo1(ParameterObject po);
 
-    String foo1(String str) throws Exception;
+    String foo2(String str) throws Exception;
 
-    String foo2(String str, int i);
+    String foo3(String str, int i);
 
-    String foo2(int i, String str) throws Exception;
+    String foo4(int i, String str) throws Exception;
 
     void callback(String str);
 

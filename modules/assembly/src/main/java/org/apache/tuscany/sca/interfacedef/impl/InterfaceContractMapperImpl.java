@@ -21,6 +21,11 @@ package org.apache.tuscany.sca.interfacedef.impl;
 
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.ContractBuilder;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
@@ -28,27 +33,95 @@ import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.apache.tuscany.sca.policy.ExtensionType;
 
 /**
  * @version $Rev$ $Date$
  */
 public class InterfaceContractMapperImpl implements InterfaceContractMapper {
-
+    
+    protected ExtensionPointRegistry registry;
+    protected BuilderExtensionPoint builders;
+    protected ContractBuilder contractBuilder;
+    
+    public InterfaceContractMapperImpl(ExtensionPointRegistry registry){
+        this.registry = registry;
+        this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
+    }
+    
     public boolean isCompatible(DataType source, DataType target, boolean passByValue) {
+        return isCompatible(source, target, passByValue, null);   
+    }
+
+    public boolean isCompatible(DataType source, DataType target, boolean passByValue, StringBuffer audit) {
         if (source == target) {
             return true;
         }
         if (!passByValue) {
             if (source == null || target == null) {
+                if (audit != null){
+                    audit.append("One of either the source or target data types is null for");
+                }
                 return false;
             }
             // For local case
             return target.getPhysical().isAssignableFrom(source.getPhysical());
         } else {
-            // FIXME: [rfeng] How to test if two remotable data type is compatible?
-            // We will need to understand the different typing system used by the databindings
-            // We should probably delegate to some extensions here
-            return true;
+            // For remote interfaces where the target is represented with WSDL 
+            // the source will have been converted to WSDL so we rely on JAXB mappings
+            // being the same in both cases and just compare the type names directly. 
+            // TODO - is this right?
+            XMLType sourceLogicalType = null;
+            
+            // There is some nesting of data types (when GeneratedDataType is used) so
+            // dig a bit deeper to find the real data type
+            if (source.getLogical() instanceof DataType<?>){
+                sourceLogicalType = (XMLType)((DataType<?>)source.getLogical()).getLogical();
+            } else {
+                sourceLogicalType = (XMLType)source.getLogical();
+            }
+            
+            XMLType targetLogicalType = null; 
+            
+            if (target.getLogical() instanceof DataType<?>){
+                targetLogicalType = (XMLType)((DataType<?>)target.getLogical()).getLogical();
+            } else {
+                targetLogicalType = (XMLType)target.getLogical();
+            }
+            
+            // The logical type seems to be null in some cases, e.g. when the 
+            // argument or return type is something like a Map. 
+            // TODO - check when some type give rise to a null logical type
+            if (sourceLogicalType.getTypeName() == null ||
+                targetLogicalType.getTypeName() == null) {
+                return true;
+            }
+            
+            boolean match = sourceLogicalType.getTypeName().equals(targetLogicalType.getTypeName());
+            
+            if (!match){
+                
+                QName anyType = new QName("http://www.w3.org/2001/XMLSchema", "anyType");
+                if (sourceLogicalType.getTypeName().equals(anyType) || 
+                    targetLogicalType.getTypeName().equals(anyType)){
+                    // special case where a Java interface uses a generic type, e.g.
+                    // public OMElement getGreetings(OMElement om)
+                    // while the provided WSDL uses a specific type. So we assume
+                    // that xsd:anyType matched anything
+                    match = true;
+                } else {
+                    if (audit != null){
+                        audit.append("Operation argument types source = " + 
+                                     sourceLogicalType.getTypeName() + 
+                                     " target = " + 
+                                     targetLogicalType.getTypeName() +
+                                     " don't match for");
+                    }
+                }
+            }
+            
+            return match; 
         }
 
     }
@@ -62,6 +135,9 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
      * @return
      */
     public boolean isMutuallyCompatible(InterfaceContract source, InterfaceContract target) {
+        ExtensionType ext = source.getInterface().getExtensionType();
+        InterfaceContract sourceContract = null;
+        
         // Are the forward interfaces equal?
         if (isMutuallyCompatible(source.getInterface(), target.getInterface())) {
             // Is there a Callback interface?
@@ -120,6 +196,10 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
     }
 
     public boolean isCompatible(Operation source, Operation target, Compatibility compatibilityType, boolean byValue) {
+        return isCompatible(source, target, compatibilityType, true, null);
+    }
+    
+    public boolean isCompatible(Operation source, Operation target, Compatibility compatibilityType, boolean byValue, StringBuffer audit) {
         if (source == target) {
             return true;
         }
@@ -130,10 +210,22 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 
         // Check name
         if (!source.getName().equals(target.getName())) {
+            if (audit != null){
+                audit.append("operation names are not the same source = " +
+                             source.getName() + 
+                             " target = " +
+                             target.getName());
+            }
             return false;
         }
 
         if (source.getInterface().isRemotable() != target.getInterface().isRemotable()) {
+            if (audit != null){
+                audit.append("Interfaces have different remote settings source = " +
+                             source.getName() + 
+                             " target = " +
+                             target.getName());
+            }            
             return false;
         }
 
@@ -164,21 +256,32 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             checkTargetWrapper = false;
         }
 
+/* TODO - Why are we assuming compatibility if one side is wrapped and the other is not?
         if (checkSourceWrapper != checkTargetWrapper) {
             return true;
         }
+*/
 
-        if (!isCompatible(targetOutputType, sourceOutputType, passByValue)) {
+        if (!isCompatible(targetOutputType, sourceOutputType, passByValue, audit)) {
+            if (audit != null){
+                audit.append(" output types");
+            } 
             return false;
         }
 
         if (sourceInputType.size() != targetInputType.size()) {
+            if (audit != null){
+                audit.append("different number of input types");
+            } 
             return false;
         }
 
         int size = sourceInputType.size();
         for (int i = 0; i < size; i++) {
-            if (!isCompatible(sourceInputType.get(i), targetInputType.get(i), passByValue)) {
+            if (!isCompatible(sourceInputType.get(i), targetInputType.get(i), passByValue, audit)) {
+                if (audit != null){
+                    audit.append(" input types");
+                } 
                 return false;
             }
         }
@@ -190,13 +293,16 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             boolean found = true;
             for (DataType sourceFaultType : source.getFaultTypes()) {
                 found = false;
-                if (isCompatible(targetFaultType, sourceFaultType, passByValue)) {
+                if (isCompatible(targetFaultType, sourceFaultType, passByValue, audit)) {
                     // Target fault type can be covered by the source fault type
                     found = true;
                     break;
                 }
             }
             if (!found) {
+                if (audit != null){
+                    audit.append("Fault types incompatible");
+                } 
                 return false;
             }
         }
@@ -226,6 +332,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
                                       Compatibility compatibility,
                                       boolean ignoreCallback,
                                       boolean silent) throws IncompatibleInterfaceContractException {
+      
         if (source == target) {
             // Shortcut for performance
             return true;
@@ -268,18 +375,20 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
                     return false;
                 }
             }
-            if (!source.getInterface().isRemotable()) {
-                // FIXME: for remotable operation, only compare name for now
+            
+            if (!silent) {
+                StringBuffer audit = new StringBuffer();
+                if (!isCompatible(operation, targetOperation, Compatibility.SUBSET, true, audit)){
+                    throw new IncompatibleInterfaceContractException("Operations called " +
+                                                                     operation.getName() +
+                                                                     " are not compatible " + 
+                                                                     audit,
+                                                                     source, 
+                                                                     target);
+                }
+            } else {
                 if (!isCompatible(operation, targetOperation, Compatibility.SUBSET)) {
-                    if (!silent) {
-                        throw new IncompatibleInterfaceContractException("Target operations called " +
-                                                                         operation.getName() +
-                                                                         " are not compatible",
-                                                                         source, 
-                                                                         target);
-                    } else {
-                        return false;
-                    }
+                    return false;
                 }
             }
         }
@@ -294,7 +403,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         }
         if (source.getCallbackInterface() == null || target.getCallbackInterface() == null) {
             if (!silent) {
-                throw new IncompatibleInterfaceContractException("Callback interface doesn't match", source, target);
+                throw new IncompatibleInterfaceContractException("Callback interface doesn't match as one of the callback interfaces is null", source, target);
             } else {
                 return false;
             }
@@ -386,7 +495,30 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             }
             return null;
         }
-
     }
+   
+    /**
+     * In various places in the process of an SCA application we match one interface against
+     * another. Sometimes the two interfaces can be presented using different IDLs, for example
+     * Java and WSDL. In this case interfaces are converted so that they are both WSDL1.1 interfaces
+     * and they are then compared. The generated WSDL is cached on the interface object for 
+     * any subsequent matching
+     * 
+     * @param interfaceA
+     * @param interfaceB
+     */
+/*    
+    public void normalizeContractsForComparison(InterfaceContract interfaceA, InterfaceContract interfaceB){
+        // normalize interfaces
+        if (interfaceA.getInterface().getClass() != interfaceB.getInterface().getClass()) {
+            this.contractBuilder = builders.getContractBuilder();
+            if (interfaceA.getInterface() instanceof Interface){
+                contractBuilder.build(interfaceA, null);
+            } else {
+                contractBuilder.build(interfaceB, null);
+            }            
+        }
+    }
+*/
 
 }

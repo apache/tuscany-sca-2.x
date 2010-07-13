@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDeclarationParser;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 
 /**
@@ -56,6 +57,7 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
     private final Map<QName, ImplementationBuilder> implementationBuilders =
         new HashMap<QName, ImplementationBuilder>();
     private final Map<QName, PolicyBuilder> policyBuilders = new HashMap<QName, PolicyBuilder>();
+    private ContractBuilder contractBuilder  = null;
 
     private boolean loaded;
 
@@ -84,6 +86,19 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
     public CompositeBuilder getCompositeBuilder(String id) {
         loadBuilders();
         return builders.get(id);
+    }
+    
+    public void addContractBuilder(ContractBuilder contractBuilder){ 
+        this.contractBuilder = contractBuilder;
+    }
+
+    public void removeContractBuilder(ContractBuilder contractBuilder){
+        this.contractBuilder = null;
+    }
+
+    public ContractBuilder getContractBuilder(){
+        loadBuilders();
+        return contractBuilder;
     }
 
     /**
@@ -146,6 +161,16 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
         for (ServiceDeclaration builderDeclaration : builderDeclarations) {
             PolicyBuilder<?> builder = new LazyPolicyBuilder(builderDeclaration);
             policyBuilders.put(builder.getPolicyType(), builder);
+        }
+        
+        try {
+            builderDeclarations = serviceDiscovery.getServiceDeclarations(ContractBuilder.class);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        
+        for (ServiceDeclaration builderDeclaration : builderDeclarations) {
+            contractBuilder = new LazyContractBuilder(builderDeclaration);
         }
 
 
@@ -405,4 +430,50 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
             return getBuilder().build(endpointReference, endpoint, context);
         }      
     }
+    
+    private class LazyContractBuilder implements ContractBuilder {
+        private ServiceDeclaration sd;
+        private ContractBuilder builder;
+
+        /**
+         * @param sd
+         */
+        public LazyContractBuilder(ServiceDeclaration sd) {
+            super();
+            this.sd = sd;
+        }
+        
+/*        
+        public boolean build(EndpointReference endpointReference, BuilderContext context){
+            return getBuilder().build(endpointReference, context);
+        }
+        
+        public boolean build(Endpoint endpoint, BuilderContext context){
+            return getBuilder().build(endpoint, context);
+        }
+*/        
+        
+        public boolean build(InterfaceContract interfaceContract, BuilderContext context){
+            return getBuilder().build(interfaceContract, context);
+        }        
+        
+        private synchronized ContractBuilder getBuilder() {
+            if (builder == null) {
+                try {
+                    Class<?> builderClass = sd.loadClass();
+                    try {
+                        Constructor<?> constructor = builderClass.getConstructor(ExtensionPointRegistry.class);
+                        builder = (ContractBuilder)constructor.newInstance(registry);
+                    } catch (NoSuchMethodException e) {
+                        Constructor<?> constructor = builderClass.getConstructor();
+                        builder = (ContractBuilder)constructor.newInstance();
+
+                    }
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            return builder;
+        } 
+    }    
 }

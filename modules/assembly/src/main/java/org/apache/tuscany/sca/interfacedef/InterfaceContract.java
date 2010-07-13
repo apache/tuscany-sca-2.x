@@ -78,5 +78,23 @@ public interface InterfaceContract extends Cloneable {
      * Implementations must support cloning.
      */
     Object clone() throws CloneNotSupportedException;
+    
+    /**
+     * For matching purposes the Java interface contract is 
+     * turned into a WSDL contract in the cases where it needs to be matched
+     * against another WSDL contract
+     * 
+     * @return WSDL interface contract
+     */
+    InterfaceContract getNormalizedWSDLContract();
+    
+    /**
+     * For matching purposes the Java interface contract is 
+     * turned into a WSDL contract in the cases where it needs to be matched
+     * against another WSDL contract
+     * 
+     * @param wsdlInterfaceContract
+     */
+    void setNormailizedWSDLContract(InterfaceContract wsdlInterfaceContract);    
 
 }

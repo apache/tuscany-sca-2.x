@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 
@@ -43,5 +44,13 @@ public class WSDLInterfaceContractImpl extends InterfaceContractImpl implements 
     @Override
     public WSDLInterfaceContractImpl clone() throws CloneNotSupportedException {
         return (WSDLInterfaceContractImpl) super.clone();
+    }
+    
+    public InterfaceContract getNormalizedWSDLContract() {
+        return this;
+    }
+    
+    public void setNormailizedWSDLContract(InterfaceContract wsdlInterfaceContract) {
+        // do nothing as this already is a WSDL contract
     }
 }

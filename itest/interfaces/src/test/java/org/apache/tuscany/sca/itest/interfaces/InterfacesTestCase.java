@@ -60,10 +60,10 @@ public class InterfacesTestCase {
             assertEquals("AComponent", local.foo1(po));
             assertEquals("AComponent", po.field1);
 
-            assertEquals("AAComponent", local.foo1("A"));
+            assertEquals("AAComponent", local.foo2("A"));
 
-            assertEquals("AAComponent1", local.foo2("A", 1));
-            assertEquals("AAComponent1", local.foo2(1, "A"));
+            assertEquals("AAComponent1", local.foo3("A", 1));
+            assertEquals("AAComponent1", local.foo4(1, "A"));
         } catch (Exception e) {
             fail();
         }

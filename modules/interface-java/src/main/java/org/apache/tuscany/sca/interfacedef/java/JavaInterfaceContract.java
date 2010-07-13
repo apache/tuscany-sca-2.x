@@ -29,5 +29,5 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
  * @tuscany.spi.extension.asclient
  */
 public interface JavaInterfaceContract extends InterfaceContract {
-
+    
 }

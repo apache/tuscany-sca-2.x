@@ -42,7 +42,6 @@
     <component name="HelloWorldServiceComponent1">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.format.jmsobject.helloworld.HelloWorldServiceImpl" />
         <service name="HelloWorldService">
-            <interface.wsdl interface="http://helloworld.jmsobject.format.jms.binding.sca.tuscany.apache.org/#wsdl.interface(HelloWorldService)"/>
             <binding.jms>
                 <tuscany:wireFormat.jmsObject wrapSingle="true"/>
                 <destination jndiName="HelloWorldService1"/>

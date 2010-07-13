@@ -73,10 +73,10 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     private String portName;
     private QName serviceName;
     private String endpointName;
-    private WSDLDefinition wsdlDefinition;
-    private String wsdlNamespace;
     private InterfaceContract bindingInterfaceContract;
     private Element endPointReference;
+    private String wsdlNamespace;
+    private WSDLDefinition userSpecifiedWSDLDefinition;
     private Definition generatedWSDLDocument;
     private boolean isDocumentStyle;
     private boolean isLiteralEncoding;
@@ -140,8 +140,8 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
 
     public Binding getBinding() {
         if (binding == null) {
-            if (getUserSpecifiedWSDLDefinition() != null && wsdlDefinition.getBinding() != null) {
-                binding = wsdlDefinition.getBinding();
+            if (getUserSpecifiedWSDLDefinition() != null && userSpecifiedWSDLDefinition.getBinding() != null) {
+                binding = userSpecifiedWSDLDefinition.getBinding();
                 determineWSDLCharacteristics();
             }
         }
@@ -247,17 +247,17 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     }
 
     public WSDLDefinition getUserSpecifiedWSDLDefinition() {
-        if (wsdlDefinition == null) {
+        if (userSpecifiedWSDLDefinition == null) {
             Interface iface = bindingInterfaceContract.getInterface();
             if (iface instanceof WSDLInterface) {
-                wsdlDefinition = ((WSDLInterface) iface).getWsdlDefinition();
+                userSpecifiedWSDLDefinition = ((WSDLInterface) iface).getWsdlDefinition();
             }
         }
-        return wsdlDefinition;
+        return userSpecifiedWSDLDefinition;
     }
 
     public void setUserSpecifiedWSDLDefinition(WSDLDefinition wsdlDefinition) {
-        this.wsdlDefinition = wsdlDefinition;
+        this.userSpecifiedWSDLDefinition = wsdlDefinition;
     }
 
     public String getNamespace() {
@@ -335,7 +335,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     }   
     
     /**
-     * Some items get calculated and cached as they are used are runtime
+     * Some items get calculated and cached as they are used at runtime
      * to decide what message processing is required
      */
     protected void determineWSDLCharacteristics() {
@@ -347,8 +347,8 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     protected void setIsDocumentStyle() {
         
         if (binding == null){
-            if (wsdlDefinition != null && wsdlDefinition.getDefinition() != null){
-                Message firstMessage = (Message)wsdlDefinition.getDefinition().getMessages().values().iterator().next();
+            if (userSpecifiedWSDLDefinition != null && userSpecifiedWSDLDefinition.getDefinition() != null){
+                Message firstMessage = (Message)userSpecifiedWSDLDefinition.getDefinition().getMessages().values().iterator().next();
                 Part firstPart = (Part)firstMessage.getParts().values().iterator().next();
                 if (firstPart.getTypeName() != null){
                     isDocumentStyle = false;

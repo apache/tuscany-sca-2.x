@@ -266,27 +266,64 @@ public class BindingWSDLGenerator {
     /**
      * Create a WSDLInterfaceContract from a JavaInterfaceContract
      */
-    protected static WSDLInterfaceContract createWSDLInterfaceContract(JavaInterfaceContract contract,
-                                                                       boolean requiresSOAP12,
-                                                                       ModelResolver resolver,
-                                                                       DataBindingExtensionPoint dataBindings,
-                                                                       WSDLFactory wsdlFactory,
-                                                                       XSDFactory xsdFactory,
-                                                                       DocumentBuilderFactory documentBuilderFactory, 
-                                                                       Monitor monitor) {
+    public static WSDLInterfaceContract createWSDLInterfaceContract(JavaInterfaceContract contract,
+                                                                    boolean requiresSOAP12,
+                                                                    ModelResolver resolver,
+                                                                    DataBindingExtensionPoint dataBindings,
+                                                                    WSDLFactory wsdlFactory,
+                                                                    XSDFactory xsdFactory,
+                                                                    DocumentBuilderFactory documentBuilderFactory, 
+                                                                    Monitor monitor) {
 
         WSDLInterfaceContract wsdlContract = wsdlFactory.createWSDLInterfaceContract();
-        WSDLInterface wsdlInterface = wsdlFactory.createWSDLInterface();
-        wsdlContract.setInterface(wsdlInterface);
+        
+        if (contract.getInterface() != null){
+            WSDLInterface wsdlInterface = createWSDLInterface((JavaInterface)contract.getInterface(),
+                                                               requiresSOAP12,
+                                                               resolver,
+                                                               dataBindings,
+                                                               wsdlFactory,
+                                                               xsdFactory,
+                                                               documentBuilderFactory, 
+                                                               monitor);
+            wsdlContract.setInterface(wsdlInterface);
+        }
+        
+        if (contract.getCallbackInterface() != null){
+            WSDLInterface wsdlInterface = createWSDLInterface((JavaInterface)contract.getCallbackInterface(),
+                    requiresSOAP12,
+                    resolver,
+                    dataBindings,
+                    wsdlFactory,
+                    xsdFactory,
+                    documentBuilderFactory, 
+                    monitor);
+            wsdlContract.setCallbackInterface(wsdlInterface);
+        }
 
+        return wsdlContract;
+    }
+    
+    /**
+     * Create a WSDLInterface from a JavaInterface
+     */
+    public static WSDLInterface createWSDLInterface(JavaInterface javaInterface,
+                                                    boolean requiresSOAP12,
+                                                    ModelResolver resolver,
+                                                    DataBindingExtensionPoint dataBindings,
+                                                    WSDLFactory wsdlFactory,
+                                                    XSDFactory xsdFactory,
+                                                    DocumentBuilderFactory documentBuilderFactory, 
+                                                    Monitor monitor) {
+
+        WSDLInterface wsdlInterface = wsdlFactory.createWSDLInterface();
         WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
-        JavaInterface iface = (JavaInterface)contract.getInterface();
 
         Definition def = null;
         try {
             Interface2WSDLGenerator wsdlGenerator =
                 new Interface2WSDLGenerator(requiresSOAP12, resolver, dataBindings, xsdFactory, documentBuilderFactory, monitor);
-            def = wsdlGenerator.generate(iface, wsdlDefinition);
+            def = wsdlGenerator.generate(javaInterface, wsdlDefinition);
         } catch (WSDLException e) {
             throw new WSDLGenerationException(e);
         }
@@ -294,7 +331,7 @@ public class BindingWSDLGenerator {
         // for debugging
         if (printWSDL) {
             try {
-                System.out.println("Generated WSDL for Java interface " + iface.getName() + " class " + iface.getJavaClass().getName());
+                System.out.println("Generated WSDL for Java interface " + javaInterface.getName() + " class " + javaInterface.getJavaClass().getName());
                 WSDLWriter writer =  javax.wsdl.factory.WSDLFactory.newInstance().newWSDLWriter();
                 writer.writeWSDL(def, System.out);
             } catch (WSDLException e) {
@@ -316,7 +353,7 @@ public class BindingWSDLGenerator {
             throw new WSDLGenerationException(e);
         }
 
-        return wsdlContract;
-    }
+        return wsdlInterface;
+    }    
 
 }

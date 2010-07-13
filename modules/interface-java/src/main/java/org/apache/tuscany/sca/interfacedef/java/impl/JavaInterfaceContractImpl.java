@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.interfacedef.java.impl;
 
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 
@@ -28,6 +29,10 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
  */
 public class JavaInterfaceContractImpl extends InterfaceContractImpl implements JavaInterfaceContract {
     
+    // A cached WSDL version of the Java contract use during normalized
+    // interface comparison
+    private InterfaceContract normailizedWSDLInterfaceContract; 
+    
     protected JavaInterfaceContractImpl() {
     }
 
@@ -36,4 +41,13 @@ public class JavaInterfaceContractImpl extends InterfaceContractImpl implements 
         return (JavaInterfaceContractImpl) super.clone();
     }
 
+    @Override
+    public InterfaceContract getNormalizedWSDLContract() {
+        return normailizedWSDLInterfaceContract;
+    }
+    
+    @Override
+    public void setNormailizedWSDLContract(InterfaceContract wsdlInterfaceContract) {
+        normailizedWSDLInterfaceContract = wsdlInterfaceContract;
+    }
 }

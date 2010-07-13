@@ -288,5 +288,18 @@ public class TestRuntimeWire implements RuntimeEndpoint {
         // TODO Auto-generated method stub
         
     }
+    
+    public void setGeneratedWSDLContract(InterfaceContract wsdlContract){
+        
+    }
+    
+    public InterfaceContract getGeneratedWSDLContract(){
+        return null;
+    }
+    
+    public void validateServiceInterfaceCompatibility() {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

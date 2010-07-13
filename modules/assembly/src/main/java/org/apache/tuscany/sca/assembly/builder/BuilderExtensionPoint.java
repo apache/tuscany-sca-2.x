@@ -33,6 +33,28 @@ import org.apache.tuscany.sca.assembly.Implementation;
  * @tuscany.spi.extension.asclient
  */
 public interface BuilderExtensionPoint {
+    
+    /**
+     * Adds a contract builder.
+     * 
+     * @param compositeBuilder
+     */
+    void addContractBuilder(ContractBuilder contractBuilder);
+
+    /**
+     * Removes a contract builder.
+     *  
+     * @param compositeBuilder
+     */
+    void removeContractBuilder(ContractBuilder contractBuilder);
+
+    /**
+     * Returns the contract builder
+     * 
+     * @param id
+     * @return
+     */
+    ContractBuilder getContractBuilder();    
 
     /**
      * Adds a composite builder.

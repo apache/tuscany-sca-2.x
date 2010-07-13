@@ -44,11 +44,7 @@
                 <xsd:complexType>
                     <xsd:sequence>
                         <xsd:element name="customerProfile"
-                            type="xsd:string" />
-                        <!--
-                        <xsd:element name="customerProfile"
-                            type="account:CustomerProfileData" />
-                        -->
+                            type="account:customerProfileData" />
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>

@@ -26,6 +26,8 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.ContractBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.ExtensionType;
@@ -41,7 +43,9 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 public class EndpointReferenceImpl implements EndpointReference {
     private static final long serialVersionUID = 8838066441709300972L;
 
-    protected ExtensionPointRegistry registry;
+    protected transient ExtensionPointRegistry registry;
+    protected transient BuilderExtensionPoint builders;
+    protected transient ContractBuilder contractBuilder;    
     protected boolean unresolved = true;
     protected String uri;
     protected Component component;

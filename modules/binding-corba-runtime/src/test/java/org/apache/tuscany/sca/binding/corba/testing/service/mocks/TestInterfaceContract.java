@@ -54,5 +54,18 @@ public class TestInterfaceContract implements InterfaceContract {
     public Object clone() {
         return null;
     }
+    
+    // By default there is no normailized contract
+    // as only Java needs it
+    public InterfaceContract getNormalizedWSDLContract() {
+        return null;
+    }
+    
+    // By default there is no normailized contract
+    // as only Java needs it
+    public void setNormailizedWSDLContract(
+            InterfaceContract wsdlInterfaceContract) {
+        // do nothing
+    }
 
 }

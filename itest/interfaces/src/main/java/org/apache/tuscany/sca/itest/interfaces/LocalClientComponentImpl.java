@@ -35,15 +35,15 @@ public class LocalClientComponentImpl implements LocalClientComponent, LocalCall
         return "AComponent";
     }
 
-    public String foo1(String str) throws Exception {
+    public String foo2(String str) throws Exception {
         return str + "AComponent";
     }
 
-    public String foo2(String str, int i) {
+    public String foo3(String str, int i) {
         return str + "AComponent" + i;
     }
 
-    public String foo2(int i, String str) throws Exception {
+    public String foo4(int i, String str) throws Exception {
         return str + "AComponent" + i;
     }
 

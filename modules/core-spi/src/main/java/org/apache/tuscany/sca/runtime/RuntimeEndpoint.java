@@ -58,10 +58,34 @@ public interface RuntimeEndpoint extends Endpoint, Invocable, Serializable {
      */
     InterfaceContract getComponentTypeServiceInterfaceContract();
     
+    
+    /**
+     * Check that endpoint  has compatible interface at the component and binding ends. 
+     * The user can specify the interfaces at both ends so there is a danger that they won't be compatible.
+     */
+    void validateServiceInterfaceCompatibility();    
+    
     /**
      * Get the composite context for the composite that contains this endpoint. This
      * is useful for accessing various composite level objects from within the 
      * runtime code
      */
     CompositeContext getCompositeContext();
+    
+    /**
+     * to allow for remote interface comparison we convert a Endpoint's Java interface
+     * to WSDL at build time. 
+     * 
+     * @param wsdlContract
+     */
+//    void setGeneratedWSDLContract(InterfaceContract wsdlContract);
+    
+    /**
+     * to allow for remote interface comparison we convert a Endpoint's Java interface
+     * to WSDL at build time. 
+     * 
+     * @preturn wsdlContract
+     */
+//    InterfaceContract getGeneratedWSDLContract();
+    
 }
