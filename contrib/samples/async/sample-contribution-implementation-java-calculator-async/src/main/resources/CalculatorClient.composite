@@ -25,6 +25,6 @@
     <component name="CalculatorClient">
 		<implementation.java class="calculator.CalculatorClient"/>
         <reference name="calculatorService" target="CalculatorServiceComponent" />
-    </component>
+     </component>
 
 </composite>

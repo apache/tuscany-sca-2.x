@@ -33,10 +33,12 @@ public class CalculatorClient {
     
     private CalculatorService calculatorService;
 
+
     @Reference
     public void setCalculatorService(CalculatorService calculatorService) {
         this.calculatorService = calculatorService;
     }
+    
     
     @Init
     public void calculate() {

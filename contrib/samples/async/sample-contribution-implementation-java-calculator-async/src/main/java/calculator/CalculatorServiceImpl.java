@@ -18,20 +18,58 @@
  */
 package calculator;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+import javax.xml.ws.AsyncHandler;
+
+import org.oasisopen.sca.annotation.Reference;
+
 
 
 /**
  * An implementation of the Calculator service.
  */
 public class CalculatorServiceImpl implements CalculatorService {
+	
+	@Reference
+	protected CalculateViaAsyncRef calculatorRefSyncService;
+	
+	@Reference
+	protected CalculateViaAsyncRef calculatorRefAsyncService;
 
 	@Override
 	public String calculate(Integer n1) {
-
-		// TODO brute force search for divisors of n1 (http://en.wikipedia.org/wiki/Brute-force_search)
-                // which should give a nice example of a method that takes a long time if given a
-                // big enough input parameter
-		return "1 2";
+		
+		// sync
+		String result = calculatorRefSyncService.calculate(1);
+		
+		// async poll
+		Future<String> future = calculatorRefAsyncService.calculateAsync(2);
+		
+		while (!future.isDone()){
+			System.out.println("Waiting for poll");
+		}
+		
+		try {
+			result = future.get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// async callback 
+//		AsyncHandler<String> handler = new AsyncHandler<String>();
+//		future = calculatorRef.calculateAsync(3, handler);
+/*		
+		while (!future.isDone()){
+			System.out.println("Waiting for callback");
+		}
+*/
+		return result;
 	}
 
 

@@ -13,6 +13,16 @@ import javax.xml.ws.Response;
 
 public interface CalculateViaAsyncRef {
 
-	public Response<String> calculate( Integer i1);
+	//public Response<String> calculate( Integer i1);
+	
+	// Sync
+	public String calculate(Integer i1);
+	
+	// Aysnc Poll
+	public Future<String> calculateAsync(Integer i1);
+	
+	// Async Callback
+	public Future<String> calculateAsync(Integer i1, AsyncHandler<String> handler);
 	
 }
+
