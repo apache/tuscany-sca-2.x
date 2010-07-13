@@ -27,6 +27,5 @@ import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface CalculatorService {
-	String factors(Integer i);
-
+    String calculate(Integer n1);
 }

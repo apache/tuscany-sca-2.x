@@ -24,7 +24,6 @@
 
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
-        <reference name="calcService" interface.java="CalculateViaAsyncRef.java" />
     </component>
 
 </composite>

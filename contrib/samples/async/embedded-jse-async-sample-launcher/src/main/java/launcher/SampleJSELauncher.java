@@ -48,7 +48,7 @@ public class SampleJSELauncher extends RuntimeIntegration {
         
         SampleJSELauncher launcher = new SampleJSELauncher(waitBeforeStopping);
         
-        launcher.launchBindingSCACalculator();
+        launcher.launchImplementationJavaCalculatorAsync();
                
     }
     
@@ -75,8 +75,8 @@ public class SampleJSELauncher extends RuntimeIntegration {
      * The contribution-binding-sca-calculator contribution includes a client component 
      * that calls the CalculatorServiceComponent from an operation marked by @Init. 
      */
-    public void launchBindingSCACalculator(){
-        Node node = startNode(new Contribution("c1", "file://C:/Dev7/SCA/samples/my-contribution/target/my--sample-contribution-implementation-java-calculator.jar"));
+    public void launchImplementationJavaCalculatorAsync(){
+        Node node = startNode(new Contribution("c1", "../sample-contribution-implementation-java-calculator-async/target/sample-contribution-implementation-java-calculator-async.jar"));
         waitBeforeStopping();
         stopNode(node);
     }    
