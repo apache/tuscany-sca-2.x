@@ -72,20 +72,4 @@ public interface RuntimeEndpoint extends Endpoint, Invocable, Serializable {
      */
     CompositeContext getCompositeContext();
     
-    /**
-     * to allow for remote interface comparison we convert a Endpoint's Java interface
-     * to WSDL at build time. 
-     * 
-     * @param wsdlContract
-     */
-//    void setGeneratedWSDLContract(InterfaceContract wsdlContract);
-    
-    /**
-     * to allow for remote interface comparison we convert a Endpoint's Java interface
-     * to WSDL at build time. 
-     * 
-     * @preturn wsdlContract
-     */
-//    InterfaceContract getGeneratedWSDLContract();
-    
 }

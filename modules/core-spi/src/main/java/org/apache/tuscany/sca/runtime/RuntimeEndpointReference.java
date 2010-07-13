@@ -64,23 +64,7 @@ public interface RuntimeEndpointReference extends EndpointReference, Invocable, 
      * There is checking in the activator but of course endpoint references may not have a binding assigned
      * until final resolution. 
      */
-    public void validateReferenceInterfaceCompatibility();   
-    
-    /**
-     * to allow for remote interface comparison we convert a Endpoint Reference's Java interface
-     * to WSDL at build time. 
-     * 
-     * @param wsdlContract
-     */
-//    void setGeneratedWSDLContract(InterfaceContract wsdlContract);
-    
-    /**
-     * to allow for remote interface comparison we convert a Endpoint Reference's Java interface
-     * to WSDL at build time. 
-     * 
-     * @preturn wsdlContract
-     */
-//    InterfaceContract getGeneratedWSDLContract();    
+    public void validateReferenceInterfaceCompatibility();     
     
     boolean isOutOfDate();
     void rebuild();
