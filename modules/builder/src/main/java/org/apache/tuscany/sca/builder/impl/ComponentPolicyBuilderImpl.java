@@ -381,6 +381,18 @@ public class ComponentPolicyBuilderImpl {
         return null;
     }
 
+    // Replace qualifiable intents with their default qualifier. This can't be done until
+    // after inheritance. 
+    protected void expandDefaultIntents(PolicySubject subject, BuilderContext context) {
+      
+        Set<Intent> copy = new HashSet<Intent>(subject.getRequiredIntents());
+        for (Intent i : copy) {
+            if (i.getDefaultQualifiedIntent() != null) {
+                subject.getRequiredIntents().remove(i);
+                subject.getRequiredIntents().add(i.getDefaultQualifiedIntent());
+            }
+        }
+    }
     protected void resolveAndNormalize(PolicySubject subject, BuilderContext context) {
         Definitions definitions = context.getDefinitions();
         Set<Intent> intents = new HashSet<Intent>();
@@ -422,14 +434,6 @@ public class ComponentPolicyBuilderImpl {
 
         }
 
-        // Replace qualifiable intents with the default qualified intent
-        copy = new HashSet<Intent>(intents);
-        for (Intent i : copy) {
-            if (i.getDefaultQualifiedIntent() != null) {
-                intents.remove(i);
-                intents.add(i.getDefaultQualifiedIntent());
-            }
-        }
 
         subject.getRequiredIntents().clear();
         subject.getRequiredIntents().addAll(intents);
@@ -524,7 +528,9 @@ public class ComponentPolicyBuilderImpl {
                 // TODO - this could be because the intent is provided by and extension
                 //        and hence there is no explicit policy set. Need and extra piece
                 //        of processing to walk through the extension models. 
-                warning(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
+        
+            //    warning(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
+            	   error(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
             }
         }
     }

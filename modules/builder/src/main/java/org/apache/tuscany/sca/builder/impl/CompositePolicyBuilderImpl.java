@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.builder.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -37,6 +39,8 @@ import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * A composite builder that computes policy sets based on attached intents and policy sets.
@@ -113,8 +117,14 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                                 // Replace qualifiable intents with the default qualied intent
                                 resolveAndNormalize(ep, context);
                                 
+                                // Replace qualifiable intents with their default qualifier
+                                expandDefaultIntents(ep, context);
+                                
                                 // Remove the intents whose @contraints do not include the current element
                                 removeConstrainedIntents(ep, context);
+                                
+                                // Remove any direct policy sets if an external one has been applied
+                                removeDirectPolicySetsIfExternalExists(ep, context);
                                 
                                 // check that all intents are resolved
                                 checkIntentsResolved(ep, context);
@@ -157,8 +167,13 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                                 // Replace qualifiable intents with the default qualified intent
                                 resolveAndNormalize(epr, context);
                                 
+                                // Replace qualifiable intents with their default qualifier
+                                expandDefaultIntents(epr, context);
+                                
                                 // Remove the intents whose @contraints do not include the current element
                                 removeConstrainedIntents(epr, context);
+                                
+                                removeDirectPolicySetsIfExternalExists(epr, context);
                                 
                                 // check that all intents are resolved
                                 checkIntentsResolved(epr, context);
@@ -183,6 +198,8 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                             // Remove the intents whose @contraints do not include the current element
                             removeConstrainedIntents(implementation, context);
                             
+                            removeDirectPolicySetsIfExternalExists(implementation, context);
+                            
                             // check that all intents are resolved
                             checkIntentsResolved(implementation, context);
                         }
@@ -196,7 +213,26 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
         }
     }
     
-    /**
+    private void removeDirectPolicySetsIfExternalExists(PolicySubject subject,
+			BuilderContext context) {
+    	boolean foundExternalPolicySet = false;
+		for (PolicySet ps : subject.getPolicySets() ) {
+			if ( ps.getAttachTo() != null ) 
+				foundExternalPolicySet = true;
+		}
+		
+		if ( foundExternalPolicySet ) {
+			List<PolicySet> copy = new ArrayList<PolicySet>(subject.getPolicySets());
+			for ( PolicySet ps : copy ) {
+				if ( ps.getAttachTo() == null ) {
+					subject.getPolicySets().remove(ps);
+				}
+			}
+		}
+		
+	} 
+
+	/**
      * This is mainly about removing policies that don't "applyTo" the element where
      * they have ended up after all the attachment and inheritance processing
      * 
