@@ -3,14 +3,15 @@ package calculator;
 import java.util.concurrent.Future;
 
 import javax.xml.ws.AsyncHandler;
-import javax.xml.ws.Response;
+
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
- * client interface for async reference
- * @author kgoodson
+ * Async client version of the CalculatorService interface
  *
  */
 
+@Remotable
 public interface CalculateViaAsyncRef {
 
 	//public Response<String> calculate( Integer i1);

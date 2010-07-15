@@ -34,58 +34,12 @@ public class SampleJSELauncher extends RuntimeIntegration {
     protected boolean waitBeforeStopping = false;
     
     public static void main(String[] args) throws Exception {
-        
-        // get the contribution name from the 1st argument it there is one
-  
-        
-        // assume that more than one argument means that the caller wants to
-        // keep the SCA application running while other clients use the services
-        boolean waitBeforeStopping = false;
-        
-        if (args != null && args.length > 1 && args[1].equals("waitBeforeStopping")){
-            waitBeforeStopping = true;
-        }
-        
-        SampleJSELauncher launcher = new SampleJSELauncher(waitBeforeStopping);
-        
-        launcher.launchImplementationJavaCalculatorAsync();
-               
+        SampleJSELauncher launcher = new SampleJSELauncher();       
+        launcher.launchImplementationJavaCalculatorAsync();          
     }
-    
-    public SampleJSELauncher(boolean waitBeforeStopping){
-        this.waitBeforeStopping = waitBeforeStopping;
-    }
-    
-    /**
-     * Wait for user input. Allows us to keep the Tuscany runtime and the SCA application
-     * running while other clients access the services provided 
-     */
-    public void waitBeforeStopping(){
-        if (waitBeforeStopping){
-            try {
-                System.out.println("Press key to continue");
-                int input = System.in.read();
-            } catch (Exception ex) {
-                // do nothing
-            }
-        }
-    }
-       
-    /**
-     * The contribution-binding-sca-calculator contribution includes a client component 
-     * that calls the CalculatorServiceComponent from an operation marked by @Init. 
-     */
+
     public void launchImplementationJavaCalculatorAsync(){
         Node node = startNode(new Contribution("c1", "../sample-contribution-implementation-java-calculator-async/target/sample-contribution-implementation-java-calculator-async.jar"));
-        waitBeforeStopping();
         stopNode(node);
     }    
-    
-
-//    public void launchImplementationJavaCalculator(){
-//        Node node = startNode(new Contribution("c1", "../contribution-implementation-java-calculator/target/classes"));
-//        waitBeforeStopping();
-//        stopNode(node);
-//    }      
-    
 }

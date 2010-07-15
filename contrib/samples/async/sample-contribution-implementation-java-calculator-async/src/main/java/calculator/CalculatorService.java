@@ -21,8 +21,9 @@ package calculator;
 import org.oasisopen.sca.annotation.Remotable;
 
 /**
- * The Calculator service interface.
+ * The sycn Calculator service interface.
  */
+
 @Remotable
 public interface CalculatorService {
 

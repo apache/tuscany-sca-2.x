@@ -39,12 +39,8 @@ public class CalculatorClient {
         this.calculatorService = calculatorService;
     }
     
-    
     @Init
     public void calculate() {
-
-        // Calculate
-        //System.out.println("SCA API ClassLoader: " + print(Reference.class.getClassLoader()));
         System.out.println("calculation=" + calculatorService.calculate(20));
     }
     

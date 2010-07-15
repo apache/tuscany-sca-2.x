@@ -43,9 +43,9 @@ public class CalculatorServiceImpl implements CalculatorService {
 		
 		// sync
 		String result = calculatorRefSyncService.calculate(1);
-		System.out.println(result);
+		System.out.println("Sync client patern: result = " + result);
 		
-//		// async poll
+		// async poll
 		Future<String> future = calculatorRefSyncService.calculateAsync(20);
 		
 		while (!future.isDone()){
@@ -54,7 +54,7 @@ public class CalculatorServiceImpl implements CalculatorService {
 		
 		try {
 			result = future.get();
-			System.out.println("Async client patern success: result = " + result);
+			System.out.println("Async client poll patern: result = " + result);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -63,16 +63,14 @@ public class CalculatorServiceImpl implements CalculatorService {
 			e.printStackTrace();
 		}
 		
-
-		
 		// async callback 
-//		AsyncHandler<String> handler = new AsyncHandler<String>();
-//		future = calculatorRef.calculateAsync(3, handler);
-/*		
+		CalculatorAsyncHandler handler = new CalculatorAsyncHandler();
+		future = calculatorRefSyncService.calculateAsync(3, handler);
+		
 		while (!future.isDone()){
 			System.out.println("Waiting for callback");
 		}
-*/
+
 		return result;
 	}
 

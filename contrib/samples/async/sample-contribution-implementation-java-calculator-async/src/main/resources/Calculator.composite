@@ -24,14 +24,14 @@
 
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
-                <reference name="calculatorRefSyncService" target="CalculatorSync"/>
-                <!-- <reference name="calculatorRefAsyncService" target="CalculatorAsync"/> -->
- 
+        <reference name="calculatorRefSyncService" target="CalculatorSync"/>
+        <!-- <reference name="calculatorRefAsyncService" target="CalculatorAsync"/> -->
     </component>
 
     <component name="CalculatorSync">
             <implementation.java class="calculator.CalculatorSyncServiceImpl"/>
     </component>
+    
     <!-- <component name="CalculatorAsync">
             <implementation.java class="calculator.CalculatorAsyncServiceImpl"/>
     </component> -->
