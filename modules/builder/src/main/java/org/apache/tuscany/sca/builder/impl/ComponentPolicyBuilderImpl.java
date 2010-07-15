@@ -532,10 +532,23 @@ public class ComponentPolicyBuilderImpl {
             	} else {
             		// Need to check the ExtensionType to see if the intent is provided there. If not, throw an error
             		ExtensionType type = subject.getExtensionType();
-            		if ( type == null )
+
+            		
+            		if ( type == null ) {
             			error(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
-            		else if ( !type.getAlwaysProvidedIntents().contains(intent) && !type.getMayProvidedIntents().contains(intent))
-            			error(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
+            		} else {
+            			// The ExtensionType on the subject only has the binding name. The one in the system
+            			// definitions will have the mayProvide/alwaysProvides values
+            			for ( ExtensionType et : context.getDefinitions().getBindingTypes() ) {
+            				if ( type.getType().equals(et.getType()) ) {
+            					type = et;
+            				}
+            			}
+            		
+            			if ( !type.getAlwaysProvidedIntents().contains(intent) && !type.getMayProvidedIntents().contains(intent)) {            			            	
+            				error(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
+            			}
+            		}
             	}
             }
         }
