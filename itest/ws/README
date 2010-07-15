@@ -7,11 +7,31 @@ General Patterns
 For simple synchronous tests:
 
 Jaxws client -> (b.ws service) SCA Component (b.ws reference) -> Jaxws Service
+     /\                                 /\                              |
+     | use                              | use                           | gen 
+     |                                  |                               \/
+Java Interface<------------------Java Interface<---------gen----------WSDL
 
-For callback or asynchronous tests
 
-JUnit client -> SCA Component (b.ws reference) -> (b.ws service) SCA component
+For message format the external service don't get involved in the varying message formats,
+They are still doing doc/lit/wrapped: 
 
+TODO - we could extend testing to include JAXWS edpoints thatunderstand the different formats
+
+JUnit client -> SCA Component (b.ws reference) -> (b.ws service) SCA component -> Jaxws Service
+     /\                            /\                   /\             /\                  |
+      |                             | config             | config      |                   |
+      |  use                        |                    |             | use               | gen
+      |                             -----------WSDL-------             |                   | 
+      |                                                                |                  \/
+Java Interface<-------------------------------------------------Java Interface<----gen---WSDL
+
+For SCA callback or asynchronous tests the external services don't get involved in the 
+callback or aysnc request:
+
+JUnit client -> SCA Component (b.ws reference) -> (b.ws service) SCA component -> Jaxws Service
+
+  
 Java First
 ----------
 implemenation.java 
@@ -47,20 +67,24 @@ rpc-lit              - supported
                           binding style set to rpc      - <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
                           body uses literal             - <soap:body use="literal" namespace="http://ws.binding.sca.tuscany.apache.org/rpclit/getGreetingsNamespace" />
                              Note the use of a namespace on the body element to set the namespace of the wrapper child of the body element
-doc-lit              - not supported without wrapped style WSDL
+doc-lit(or bare)     - supported (however see note below)
                           WS-I BP1.1 4.7.6 states that an operation signature is a 
                           "fully qualified name of the child element of SOAP body of the SOAP input message"
                           to make this true for doc-lit encoding you have to design the WSDL to wrap the parameters
                           in an appropriate type. Hence doc-literal-wrapped is supported which encompasses this wrapping style. 
-doc-lit-wrapped      - supported
+                          For bare style interfaces you have to mark the Java service interface as follows
+                          SOAP binding is set to        - @SOAPBinding(parameterStyle = SOAPBinding.ParameterStyle.BARE)
                           WSDL configuration where 
-                          message parts use types       - <part name="parameters" element="tns:getGreetings"/>
+                          message parts use elements    - <part name="parameters" element="tns:getGreetings"/>
+                          the elements are directly implemented by the operation parameter type
                           binding style set to document - <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
                           body uses literal             - <soap:body use="literal"/>
-doc-lit-wrapped-bare - supported 
-                          WSDL configuration as per doc-lit-wrapped
-                          Java implementation configuration where
-                          SOAP binding is set to        - @SOAPBinding(parameterStyle = SOAPBinding.ParameterStyle.BARE)
+doc-lit-wrapped      - supported
+                          WSDL configuration where 
+                          message parts use elements       - <part name="parameters" element="tns:getGreetings"/>
+                          the elements are implemented by wrapper types following the name of the operation
+                          binding style set to document - <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+                          body uses literal             - <soap:body use="literal"/>
 rpc-encoded          - not supported
                           not WS-I compliant
 doc-encoded          - not supported
