@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
@@ -522,15 +523,20 @@ public class ComponentPolicyBuilderImpl {
                 }
             }
             
-            if (!intentMatched){
-                // Raise a warning as we have an intent that doesn't have a matching 
-                // policy set at this start. 
-                // TODO - this could be because the intent is provided by and extension
-                //        and hence there is no explicit policy set. Need and extra piece
-                //        of processing to walk through the extension models. 
-        
-            //    warning(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
-            	   error(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
+            if (!intentMatched){              
+            	
+            	// Reference side intents can still be resolved by the service binding, so we can only issue a 
+            	// warning here. 
+            	if ( subject instanceof EndpointReference ) {
+            		 warning(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
+            	} else {
+            		// Need to check the ExtensionType to see if the intent is provided there. If not, throw an error
+            		ExtensionType type = subject.getExtensionType();
+            		if ( type == null )
+            			error(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
+            		else if ( !type.getAlwaysProvidedIntents().contains(intent) && !type.getMayProvidedIntents().contains(intent))
+            			error(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
+            	}
             }
         }
     }
