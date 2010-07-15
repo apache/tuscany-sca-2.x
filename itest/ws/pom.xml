@@ -50,6 +50,7 @@
     <module>contribution-callback-forwardspec</module>
     <module>contribution-callback-fullspec</module>
     <module>contribution-callback-promotion</module>
+    <module>contribution-doc-lit</module>
     <module>contribution-doc-lit-wrapped</module>
     <module>contribution-rpc-lit</module>
     <module>external-client</module>
