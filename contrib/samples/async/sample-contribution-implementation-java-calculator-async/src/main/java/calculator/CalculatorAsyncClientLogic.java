@@ -30,23 +30,22 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  * An implementation of the Calculator service.
  */
-public class CalculatorServiceImpl implements CalculatorService {
+public class CalculatorAsyncClientLogic implements CalculatorService {
 	
 	@Reference
 	protected CalculateViaAsyncRef calculatorRefSyncService;
 	
-//	@Reference
-//	protected CalculateViaAsyncRef calculatorRefAsyncService;
+	@Reference
+	protected CalculateViaAsyncRef calculatorRefAsyncService;
 
 	@Override
 	public String calculate(Integer n1) {
 		
 		// sync
 		String result = calculatorRefSyncService.calculate(1);
-		System.out.println(result);
 		
-//		// async poll
-		Future<String> future = calculatorRefSyncService.calculateAsync(20);
+		// async poll
+		Future<String> future = calculatorRefAsyncService.calculateAsync(2);
 		
 		while (!future.isDone()){
 			System.out.println("Waiting for poll");
@@ -54,7 +53,6 @@ public class CalculatorServiceImpl implements CalculatorService {
 		
 		try {
 			result = future.get();
-			System.out.println("Async client patern success: result = " + result);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -62,8 +60,6 @@ public class CalculatorServiceImpl implements CalculatorService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-
 		
 		// async callback 
 //		AsyncHandler<String> handler = new AsyncHandler<String>();
