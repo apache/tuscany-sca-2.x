@@ -36,11 +36,13 @@ import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
+import org.apache.tuscany.sca.policy.util.PolicyHelper;
 
 /**
  * A composite builder that computes policy sets based on attached intents and policy sets.
@@ -125,6 +127,9 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                                 
                                 // Remove any direct policy sets if an external one has been applied
                                 removeDirectPolicySetsIfExternalExists(ep, context);
+                                
+                                // Validate that noListener is not specified on a service endpoint
+                                checkForNoListenerIntent(ep, context);
                                 
                                 // check that all intents are resolved
                                 checkIntentsResolved(ep, context);
@@ -213,7 +218,18 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
         }
     }
     
-    private void removeDirectPolicySetsIfExternalExists(PolicySubject subject,
+    private void checkForNoListenerIntent(Endpoint ep, BuilderContext context) {
+		PolicyHelper helper = new PolicyHelper();
+		if ( helper.getIntent(ep, Constants.NOLISTENER_INTENT) != null ) {
+			  error(context.getMonitor(), 
+                      "NoListenerIntentSpecifiedOnService", 
+                      this,
+                      ep.toString());
+		} 				
+		
+	}
+
+	private void removeDirectPolicySetsIfExternalExists(PolicySubject subject,
 			BuilderContext context) {
     	boolean foundExternalPolicySet = false;
 		for (PolicySet ps : subject.getPolicySets() ) {
