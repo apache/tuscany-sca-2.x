@@ -21,11 +21,10 @@ package calculator;
 import org.oasisopen.sca.annotation.Remotable;
 
 /**
- * The sycn Calculator service interface.
+ * The sync Calculator service interface.
  */
 
 @Remotable
 public interface CalculatorService {
-
     String calculate(Integer n1);
 }

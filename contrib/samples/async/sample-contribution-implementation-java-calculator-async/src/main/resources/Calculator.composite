@@ -20,20 +20,24 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            targetNamespace="http://sample"
            xmlns:sample="http://sample"
+           xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            name="Calculator">
 
     <component name="CalculatorServiceComponent">
-		<implementation.java class="calculator.CalculatorServiceImpl"/>
-        <reference name="calculatorRefSyncService" target="CalculatorSync"/>
-        <!-- <reference name="calculatorRefAsyncService" target="CalculatorAsync"/> -->
+		<implementation.java class="calculator.CalculatorServiceProxyImpl"/>
+        <reference name="calculatorServiceRefSync" target="CalculatorSync"/>
+        <reference name="calculatorServiceRefAsync" target="CalculatorAsync"/>
     </component>
 
     <component name="CalculatorSync">
-            <implementation.java class="calculator.CalculatorSyncServiceImpl"/>
+        <implementation.java class="calculator.CalculatorServiceSyncImpl"/>
     </component>
     
-    <!-- <component name="CalculatorAsync">
-            <implementation.java class="calculator.CalculatorAsyncServiceImpl"/>
-    </component> -->
+    <component name="CalculatorAsync">
+        <implementation.java class="calculator.CalculatorServiceAsyncImpl"/>
+        <service name="CalculatorServiceAsync">
+            <binding.ws uri="http://localhost:8085/CalculatorAsync"/>
+        </service>
+    </component>
 
 </composite>

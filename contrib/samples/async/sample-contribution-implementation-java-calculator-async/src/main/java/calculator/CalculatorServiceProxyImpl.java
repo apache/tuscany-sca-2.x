@@ -21,32 +21,45 @@ package calculator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import javax.xml.ws.AsyncHandler;
-
 import org.oasisopen.sca.annotation.Reference;
 
-
-
 /**
- * An implementation of the Calculator service.
+ * An implementation of the Calculator service which just proxies
+ * to sync and asyn versions of the calculator service. This proxy
+ * exercises the various async interface alternatives
  */
-public class CalculatorServiceImpl implements CalculatorService {
+public class CalculatorServiceProxyImpl implements CalculatorService {
 	
 	@Reference
-	protected CalculateViaAsyncRef calculatorRefSyncService;
+	protected CalculateViaAsyncRef calculatorServiceRefSync;
 	
-//	@Reference
-//	protected CalculateViaAsyncRef calculatorRefAsyncService;
+	@Reference
+	protected CalculateViaAsyncRef calculatorServiceRefAsync;
 
 	@Override
 	public String calculate(Integer n1) {
+	    String result = null;
+	    
+	    // calculate using a sync service
+	    System.out.println("Calling sync service");
+	    result = calculate(calculatorServiceRefSync, n1);
+	    
+	    // calculate using an aycn service
+	    System.out.println("Calling async service");
+	    result += calculate(calculatorServiceRefAsync, n1);
+	    
+	    return result;
+	}    
+	    
+	// exercise sync and async versions of a service interface method
+	private String calculate(CalculateViaAsyncRef calculatorRef, Integer n1) {	    
 		
 		// sync
-		String result = calculatorRefSyncService.calculate(1);
+		String result = calculatorRef.calculate(1);
 		System.out.println("Sync client patern: result = " + result);
 		
 		// async poll
-		Future<String> future = calculatorRefSyncService.calculateAsync(20);
+		Future<String> future = calculatorRef.calculateAsync(20);
 		
 		while (!future.isDone()){
 			System.out.println("Waiting for poll");
@@ -65,7 +78,7 @@ public class CalculatorServiceImpl implements CalculatorService {
 		
 		// async callback 
 		CalculatorAsyncHandler handler = new CalculatorAsyncHandler();
-		future = calculatorRefSyncService.calculateAsync(3, handler);
+		future = calculatorRef.calculateAsync(3, handler);
 		
 		while (!future.isDone()){
 			System.out.println("Waiting for callback");
@@ -73,11 +86,4 @@ public class CalculatorServiceImpl implements CalculatorService {
 
 		return result;
 	}
-
-
-
-
-
-
-
 }
