@@ -146,6 +146,8 @@ public interface Constants {
     QName AUTHORIZATION_FINE_GRAIN_INTENT = new QName(SCA11_NS, AUTHORIZATION_FINE_GRAIN);  
     
     // TODO - add transaction intent constants
+    String NOLISTENER = "noListener";
+    QName NOLISTENER_INTENT = new QName(SCA11_NS, NOLISTENER);
     
     String SOAP = "SOAP";
     QName SOAP_INTENT = new QName(SCA11_NS, SOAP);
