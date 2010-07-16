@@ -254,7 +254,7 @@ public class PolicyXPathFunction implements XPathFunction {
 
 	private static Pattern FUNCTION;
     static {
-        String functionPattern = "(URIRef|InterfaceRef|OperationRef|MessageRef|IntentRefs)\\s*\\((.*)\\)";
+        String functionPattern = "(URIRef|InterfaceRef|OperationRef|MessageRef|IntentRefs)\\s*\\(([^\\)]*)\\)";
         FUNCTION = Pattern.compile(functionPattern);
     }
 

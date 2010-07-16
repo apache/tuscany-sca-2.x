@@ -22,7 +22,7 @@
              xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
              xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
 
-    <policySet name="ManagedTransactionPolicySet" provides="managedTransaction" appliesTo="implementation" attachTo="IntentRefs('sca:managedTransaction')">
+    <policySet name="ManagedTransactionPolicySet" provides="managedTransaction" appliesTo="implementation" attachTo="IntentRefs('sca:managedTransaction') | IntentRefs('sca:managedTransaction.local') | IntentRefs('sca:managedTransaction.global')">
         <intentMap provides="managedTransaction">
             <qualifier name="global"> <!-- default="true" -->
                 <tuscany:transactionPolicy transactionTimeout="1200" action="REQUIRE_GLOBAL" />
