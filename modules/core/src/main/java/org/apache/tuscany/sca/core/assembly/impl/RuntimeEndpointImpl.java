@@ -230,9 +230,18 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 // chain is created. As the chain operations are the real interface types 
                 // they may be incompatible just because they are described in different 
                 // IDLs
-                if (operation.getName().equals(op.getName())) {
-                    invocationChainMap.put(operation, chain);
-                    return chain;
+                if (operation.getInterface().isRemotable()) {
+                    if (operation.getName().equals(op.getName())) {
+                        invocationChainMap.put(operation, chain);
+                        return chain;
+                    }
+                } else {
+                    // [rfeng] We need to run the compatibility check for local operations as they 
+                    // can be overloaded
+                    if (interfaceContractMapper.isCompatible(operation, op, Compatibility.SUBSET)) {
+                        invocationChainMap.put(operation, chain);
+                        return chain;
+                    }
                 }
             }
             // Cache it with the NULL_CHAIN to avoid NPE
