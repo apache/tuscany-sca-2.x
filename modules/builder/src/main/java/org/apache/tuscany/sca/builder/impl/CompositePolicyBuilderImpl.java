@@ -25,6 +25,7 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -36,7 +37,6 @@ import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
@@ -52,7 +52,7 @@ import org.apache.tuscany.sca.policy.util.PolicyHelper;
  * @version $Rev$ $Date$
  */
 public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl implements CompositeBuilder {
-
+    private final static QName NOLISTENER_INTENT = new QName(Base.SCA11_NS, "noListener");
     private CompositeBuilder policyAppliesToBuilder = null;
     
     public CompositePolicyBuilderImpl(ExtensionPointRegistry registry) {
@@ -219,34 +219,30 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
     }
     
     private void checkForNoListenerIntent(Endpoint ep, BuilderContext context) {
-		PolicyHelper helper = new PolicyHelper();
-		if ( helper.getIntent(ep, Constants.NOLISTENER_INTENT) != null ) {
-			  error(context.getMonitor(), 
-                      "NoListenerIntentSpecifiedOnService", 
-                      this,
-                      ep.toString());
-		} 				
-		
-	}
+        PolicyHelper helper = new PolicyHelper();
+        if (helper.getIntent(ep, NOLISTENER_INTENT) != null) {
+            error(context.getMonitor(), "NoListenerIntentSpecifiedOnService", this, ep.toString());
+        }
 
-	private void removeDirectPolicySetsIfExternalExists(PolicySubject subject,
-			BuilderContext context) {
-    	boolean foundExternalPolicySet = false;
-		for (PolicySet ps : subject.getPolicySets() ) {
-			if ( ps.getAttachTo() != null ) 
-				foundExternalPolicySet = true;
-		}
-		
-		if ( foundExternalPolicySet ) {
-			List<PolicySet> copy = new ArrayList<PolicySet>(subject.getPolicySets());
-			for ( PolicySet ps : copy ) {
-				if ( ps.getAttachTo() == null ) {
-					subject.getPolicySets().remove(ps);
-				}
-			}
-		}
-		
-	} 
+    }
+
+    private void removeDirectPolicySetsIfExternalExists(PolicySubject subject, BuilderContext context) {
+        boolean foundExternalPolicySet = false;
+        for (PolicySet ps : subject.getPolicySets()) {
+            if (ps.getAttachTo() != null)
+                foundExternalPolicySet = true;
+        }
+
+        if (foundExternalPolicySet) {
+            List<PolicySet> copy = new ArrayList<PolicySet>(subject.getPolicySets());
+            for (PolicySet ps : copy) {
+                if (ps.getAttachTo() == null) {
+                    subject.getPolicySets().remove(ps);
+                }
+            }
+        }
+
+    }
 
 	/**
      * This is mainly about removing policies that don't "applyTo" the element where
