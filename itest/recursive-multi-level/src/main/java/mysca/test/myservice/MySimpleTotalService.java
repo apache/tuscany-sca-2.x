@@ -23,4 +23,6 @@ public interface MySimpleTotalService {
     String getLocation();
 
     String getYear();
+    
+    String getYear2();
 }

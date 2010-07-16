@@ -43,6 +43,7 @@
     <component name="TotalServiceComponentLevel1Auto">
         <implementation.java class="mysca.test.myservice.MySimpleTotalServiceImpl"/>
         <reference name="myService" autowire="true"/>
+        <reference name="myService2" target="ServiceComponentLevel1Auto"/>
     </component>
 
     <reference name="myServiceReference1Auto" promote="TotalServiceComponentLevel1Auto/myService" multiplicity="1..1">

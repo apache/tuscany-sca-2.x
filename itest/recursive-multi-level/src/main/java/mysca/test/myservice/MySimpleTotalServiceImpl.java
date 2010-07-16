@@ -27,6 +27,9 @@ public class MySimpleTotalServiceImpl implements MySimpleTotalService {
     // default required==true so it is 1:1
     @Reference
     public MyService myService;
+    
+    @Reference
+    private MyService myService2;
 
     public String getLocation() {
         return myService.getLocation();
@@ -34,6 +37,10 @@ public class MySimpleTotalServiceImpl implements MySimpleTotalService {
 
     public String getYear() {
         return myService.getYear();
+    }
+    
+    public String getYear2() {
+        return myService2.getYear();
     }
 
 }

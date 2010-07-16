@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -67,18 +66,21 @@ public class MultiLevelTestCase {
     public void testLevel1() {
         assertEquals("Level 1", myService1.getLocation());
         assertEquals("2001", myService1.getYear());
+        assertEquals("2001", myService1.getYear2());
     }
 
     @Test
     public void testLevel2() {
         assertEquals("Default 2", myService2.getLocation());
         assertEquals("1992", myService2.getYear());
+        assertEquals("2002", myService2.getYear2());
     }
 
     @Test
     public void testLevel3() {
         assertEquals("Default 3", myService3.getLocation());
         assertEquals("1993", myService3.getYear());
+        assertEquals("2003", myService3.getYear2());
     }
     
     @AfterClass

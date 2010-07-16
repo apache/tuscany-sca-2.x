@@ -93,7 +93,13 @@ public abstract class BaseEndpointRegistry implements EndpointRegistry, LifeCycl
 
         if (endpointReference.getReference() != null) {
             Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
-            return findEndpoint(targetEndpoint.getURI());
+            String uri = targetEndpoint.getURI();
+            // [rfeng] This is a workaround to deal with the case that the endpoint URI doesn't have the 
+            // service name to avoid confusion between structural URIs and service URIs
+            if (uri.indexOf('#') == -1) {
+                uri = uri + "#service()";
+            }
+            return findEndpoint(uri);
         }
 
         return new ArrayList<Endpoint>();

@@ -269,7 +269,10 @@ public class EndpointImpl implements Endpoint {
                 names[2] = parts[1];
             } else if (str.startsWith("service(") && str.endsWith(")")) {
                 str = str.substring("service(".length(), str.length() - 1);
-                names[1] = str;
+                // [rfeng] Deal with empty service name
+                if (!"".equals(str)) {
+                    names[1] = str;
+                }
             } else {
                 throw new IllegalArgumentException("Invalid structural URI: " + structuralURI);
             }
