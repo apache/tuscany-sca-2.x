@@ -748,7 +748,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
              
         boolean match = false;
         match = interfaceContractMapper.isCompatibleSubset(endpointReference.getReference().getInterfaceContract(), 
-                                                     endpoint.getComponentServiceInterfaceContract());
+                                                     endpoint.getComponentServiceInterfaceContract(), matchAudit);
         
         if (!match){
             matchAudit.append("Match failed because the linterface contract mapper failed ");

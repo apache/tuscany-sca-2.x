@@ -327,6 +327,85 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.tuscany.sca.interfacedef.InterfaceContractMapper#checkCompatibility(org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.Compatibility, boolean, boolean, java.lang.StringBuffer)
+     * this variant of the checkCompatibility method is intended to supersede the one without an audit argument
+     * Presence of both method variants indicates a state of partial development
+     */
+    public boolean checkCompatibility(InterfaceContract source,
+			InterfaceContract target, Compatibility compatibility,
+			boolean ignoreCallback, boolean silent, StringBuffer audit)
+			throws IncompatibleInterfaceContractException {
+
+		if (source == target) {
+			// Shortcut for performance
+			return true;
+		}
+
+		if (source == null || target == null) {
+			return false;
+		}
+
+		if (source.getInterface() == target.getInterface()) {
+			return ignoreCallback
+					|| isCallbackCompatible(source, target, silent);
+		}
+
+		if (source.getInterface() == null || target.getInterface() == null) {
+			return false;
+		}
+
+		if (source.getInterface().isDynamic()
+				|| target.getInterface().isDynamic()) {
+			return ignoreCallback
+					|| isCallbackCompatible(source, target, silent);
+		}
+
+		if (source.getInterface().isRemotable() != target.getInterface()
+				.isRemotable()) {
+			if (!silent) {
+				audit.append("Remotable settings do not match: "+ source + "," + target); // TODO see if serialization is sufficient
+				throw new IncompatibleInterfaceContractException(
+						"Remotable settings do not match", source, target);
+			} else {
+				return false;
+			}
+		}
+
+		for (Operation operation : source.getInterface().getOperations()) {
+			Operation targetOperation = map(target.getInterface(), operation);
+			if (targetOperation == null) {
+				if (!silent) {
+					throw new IncompatibleInterfaceContractException(
+							"Operation " + operation.getName()
+									+ " not found on target", source, target);
+				} else {
+					return false;
+				}
+			}
+
+			if (!silent) {
+				if (audit == null)
+					audit = new StringBuffer();
+				if (!isCompatible(operation, targetOperation,
+						Compatibility.SUBSET, true, audit)) {
+					throw new IncompatibleInterfaceContractException(
+							"Operations called " + operation.getName()
+									+ " are not compatible " + audit, source,
+							target);
+				}
+			} else {
+				if (!isCompatible(operation, targetOperation,
+						Compatibility.SUBSET)) {
+					return false;
+				}
+			}
+		}
+
+		return ignoreCallback || isCallbackCompatible(source, target, silent);
+	}
+
     public boolean checkCompatibility(InterfaceContract source,
                                       InterfaceContract target,
                                       Compatibility compatibility,
@@ -396,6 +475,8 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         return ignoreCallback || isCallbackCompatible(source, target, silent);
     }
 
+    
+    
     protected boolean isCallbackCompatible(InterfaceContract source, InterfaceContract target, boolean silent)
         throws IncompatibleInterfaceContractException {
         if (source.getCallbackInterface() == null && target.getCallbackInterface() == null) {
@@ -464,7 +545,21 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         return true;
     }
 
+    /*
+     * the variant of isCompatibleSubset with the audit parameter is intended to supersede the other
+     * -- the presence of both indicates a partial development state
+     */
+    public boolean isCompatibleSubset(InterfaceContract source, InterfaceContract target, StringBuffer audit) {
+
+        try {
+            return checkCompatibility(source, target, Compatibility.SUBSET, false, false, audit);
+        } catch (IncompatibleInterfaceContractException e) {
+            return false;
+        }
+    }
+    
     public boolean isCompatibleSubset(InterfaceContract source, InterfaceContract target) {
+
         try {
             return checkCompatibility(source, target, Compatibility.SUBSET, false, false);
         } catch (IncompatibleInterfaceContractException e) {

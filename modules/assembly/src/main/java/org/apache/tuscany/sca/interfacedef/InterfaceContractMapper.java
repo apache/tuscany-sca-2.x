@@ -40,6 +40,24 @@ public interface InterfaceContractMapper {
                                Compatibility compatibility,
                                boolean ignoreCallback,
                                boolean silent) throws IncompatibleInterfaceContractException;
+    
+    /**
+     * @param source The source interface contract
+     * @param target The target interface contract
+     * @param compatibility The compatibility style 
+     * @param ignoreCallback
+     * @param silent
+     * @return
+     * @throws IncompatibleInterfaceContractException
+     * this interface is intended to incrementally replace the variant without the audit trail
+     * the presence of both interfaces implies a state of partial development
+     */
+    boolean checkCompatibility(InterfaceContract source,
+                               InterfaceContract target,
+                               Compatibility compatibility,
+                               boolean ignoreCallback,
+                               boolean silent,
+                               StringBuffer audit) throws IncompatibleInterfaceContractException;
 
     /**
      * Test if the source data type is compatible with the target data type. The
@@ -155,6 +173,11 @@ public interface InterfaceContractMapper {
      * @return true if the source interface contract is a compatible subset of the target interface contract
      */
     boolean isCompatibleSubset(InterfaceContract source, InterfaceContract target);
+    /*
+     * the variant of isCompatibleSubset with the audit parameter is intended to supersed the other
+     * -- the presence of both indicates a partial development state
+     */
+    boolean isCompatibleSubset(InterfaceContract source, InterfaceContract target, StringBuffer audit);
 
     /**
      * Check that two interfaces are mutually compatible. The interfaces are mutually compatible if the two 
