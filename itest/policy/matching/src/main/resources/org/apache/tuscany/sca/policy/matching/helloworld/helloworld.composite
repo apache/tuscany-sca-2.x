@@ -75,7 +75,7 @@
     
     <component name="HelloWorldService2">
         <implementation.java class="org.apache.tuscany.sca.policy.matching.helloworld.HelloWorldService"/>
-        <service name="HelloWorld" requires="tuscany:testIntent1"/>     
+        <service name="HelloWorld" requires="tuscany:testIntent1" policySets="tuscany:testPolicy1"/>     
     </component>    
     
     <component name="HelloWorldService3">

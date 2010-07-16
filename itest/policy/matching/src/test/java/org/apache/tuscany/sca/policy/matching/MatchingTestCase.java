@@ -118,7 +118,7 @@ public class MatchingTestCase {
             helloWorld.getGreetings("petra");
             fail("Exception expected");
         } catch (Exception ex) {
-            assertTrue(ex.getMessage().indexOf("No match because the policy sets on either side have policies in differnt languages {http://www.w3.org/ns/ws-policy}ExactlyOne and {http://tuscany.apache.org/xmlns/sca/1.1}jdkLogger") > -1);
+            assertTrue(ex.getMessage().indexOf("No match because the policy sets on either side have policies in differnt languages {http://schemas.xmlsoap.org/ws/2004/09/policy}Policy and {http://tuscany.apache.org/xmlns/sca/1.1}jdkLogger") > -1);
         }    
     } 
     
