@@ -192,9 +192,10 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                     }
 
                     if (implementation instanceof Composite) {
-                        inherit(implementation, Intent.Type.implementation, true, component, composite);
-                        checkIntentsResolved(implementation, context);
+                        inherit(implementation, Intent.Type.implementation, true, component, composite);                                             
                         computePolicies((Composite)implementation, context);
+                        expandDefaultIntents(implementation,context);
+                        checkIntentsResolved(implementation,context);
                     } else {
                         resolveAndCheck(implementation, context);
                         if (implementation != null) {
@@ -204,6 +205,9 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                             removeConstrainedIntents(implementation, context);
                             
                             removeDirectPolicySetsIfExternalExists(implementation, context);
+                            
+                         // Replace qualifiable intents with their default qualifier
+                            expandDefaultIntents(implementation, context);
                             
                             // check that all intents are resolved
                             checkIntentsResolved(implementation, context);
@@ -219,30 +223,34 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
     }
     
     private void checkForNoListenerIntent(Endpoint ep, BuilderContext context) {
-        PolicyHelper helper = new PolicyHelper();
-        if (helper.getIntent(ep, NOLISTENER_INTENT) != null) {
-            error(context.getMonitor(), "NoListenerIntentSpecifiedOnService", this, ep.toString());
-        }
+		PolicyHelper helper = new PolicyHelper();
+		if ( helper.getIntent(ep, NOLISTENER_INTENT) != null ) {
+			  error(context.getMonitor(), 
+                      "NoListenerIntentSpecifiedOnService", 
+                      this,
+                      ep.toString());
+		} 				
+		
+	}
 
-    }
-
-    private void removeDirectPolicySetsIfExternalExists(PolicySubject subject, BuilderContext context) {
-        boolean foundExternalPolicySet = false;
-        for (PolicySet ps : subject.getPolicySets()) {
-            if (ps.getAttachTo() != null)
-                foundExternalPolicySet = true;
-        }
-
-        if (foundExternalPolicySet) {
-            List<PolicySet> copy = new ArrayList<PolicySet>(subject.getPolicySets());
-            for (PolicySet ps : copy) {
-                if (ps.getAttachTo() == null) {
-                    subject.getPolicySets().remove(ps);
-                }
-            }
-        }
-
-    }
+	private void removeDirectPolicySetsIfExternalExists(PolicySubject subject,
+			BuilderContext context) {
+    	boolean foundExternalPolicySet = false;
+		for (PolicySet ps : subject.getPolicySets() ) {
+			if ( ps.getAttachTo() != null ) 
+				foundExternalPolicySet = true;
+		}
+		
+		if ( foundExternalPolicySet ) {
+			List<PolicySet> copy = new ArrayList<PolicySet>(subject.getPolicySets());
+			for ( PolicySet ps : copy ) {
+				if ( ps.getAttachTo() == null ) {
+					subject.getPolicySets().remove(ps);
+				}
+			}
+		}
+		
+	} 
 
 	/**
      * This is mainly about removing policies that don't "applyTo" the element where
