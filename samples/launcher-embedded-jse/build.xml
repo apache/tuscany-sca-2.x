@@ -75,7 +75,7 @@
     </target>
 	
     <target name="run-contribution-binding-ws-calculator" depends="compile">
-        <java classname="${main.class}"
+        <java classname="launcher.JSELauncherBindingWSCalculator"
               fork="true"
               failonerror="true">
             <classpath>  
@@ -84,7 +84,6 @@
                    <include name="tuscany-sca-manifest.jar" />
                 </fileset>
             </classpath> 
-            <arg value="contribution-binding-ws-calculator"/> 
         </java>     
     </target>	
 	

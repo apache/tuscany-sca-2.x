@@ -30,10 +30,17 @@ public class LauncherTestCase {
         SampleJSELauncher.main(new String[] {"contribution-binding-sca-calculator"});
     }
     
+/* replaced by call to specific launcher
     @Test
     public void testContributionBindingWSCalculator() throws Exception {
         SampleJSELauncher.main(new String[] {"contribution-binding-ws-calculator"});
-    }  
+    } 
+*/    
+    
+    @Test
+    public void testContributionBindingWSCalculator() throws Exception {
+        JSELauncherBindingWSCalculator.main(null);
+    }     
     
     @Test
     public void testContributionBindingRMICalculator() throws Exception {
