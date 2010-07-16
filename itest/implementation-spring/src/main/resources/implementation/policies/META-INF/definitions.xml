@@ -39,7 +39,10 @@
 
     <!-- PolicySets -->
 
-    <policySet name="JDKLoggingPolicy" provides="tuscany:logging" appliesTo="//sca:implementation.spring">
+    <policySet name="JDKLoggingPolicy" 
+               provides="tuscany:logging" 
+               appliesTo="//sca:implementation.spring"
+               attachTo="//sca:implementation.spring">
 <!-- empty policy set so that intents are resolved and match works but without including 
      any actual policy runtime artifacts
         <tuscany:jdkLogger name="calculator">
