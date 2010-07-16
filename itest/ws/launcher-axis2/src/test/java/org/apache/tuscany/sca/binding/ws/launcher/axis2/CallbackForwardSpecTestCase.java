@@ -68,8 +68,10 @@ public class CallbackForwardSpecTestCase {
         System.in.read();
     }
 
-  
+   // Test may be causing build hang problems: temporarily ignore
+   // see dev list 16th July '10
     @Test
+    @Ignore 
     public void testGetGreetings() throws Exception {
         assertEquals("Hello Fred", externalClient.getGreetings("Fred"));
     }
