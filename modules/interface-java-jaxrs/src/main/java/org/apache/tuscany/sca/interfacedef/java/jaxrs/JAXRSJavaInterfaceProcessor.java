@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxrs;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,22 +55,26 @@ public class JAXRSJavaInterfaceProcessor implements JavaInterfaceVisitor {
         Method method = operation.getJavaMethod();
 
         String methodName = null;
-        HttpMethod httpMethod = method.getAnnotation(HttpMethod.class);
-        if (httpMethod != null) {
-            methodName = httpMethod.value();
-        }
-        if (method.isAnnotationPresent(GET.class)) {
-            methodName = HttpMethod.GET;
-        } else if (method.isAnnotationPresent(POST.class)) {
-            methodName = HttpMethod.POST;
-        } else if (method.isAnnotationPresent(PUT.class)) {
-            methodName = HttpMethod.PUT;
-        } else if (method.isAnnotationPresent(DELETE.class)) {
-            methodName = HttpMethod.DELETE;
-        } else if (method.isAnnotationPresent(HEAD.class)) {
-            methodName = HttpMethod.HEAD;
-        } else if (method.isAnnotationPresent(OPTIONS.class)) {
-            methodName = HttpMethod.OPTIONS;
+
+        /**
+         * A request method designator is a runtime annotation that is annotated with the @HttpMethod annotation.
+         * JAX-RS defines a set of request method designators for the common HTTP methods: @GET, @POST, @PUT,
+         * @DELETE, @HEAD. Users may define their own custom request method designators including alternate 
+         * designators for the common HTTP methods.
+         */
+        for (Annotation a : method.getAnnotations()) {
+            Class<?> annotationType = a.annotationType();
+            if (annotationType == HttpMethod.class) {
+                methodName = ((HttpMethod)a).value();
+                break;
+            }
+            // Http method related annotations such as @GET, @POST will have itself annotated with
+            // @HttpMethod
+            HttpMethod m = a.annotationType().getAnnotation(HttpMethod.class);
+            if (m != null) {
+                methodName = m.value();
+                break;
+            }
         }
 
         boolean jaxrs = false;

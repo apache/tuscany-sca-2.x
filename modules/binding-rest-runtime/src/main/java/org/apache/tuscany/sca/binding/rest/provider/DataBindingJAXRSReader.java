@@ -66,7 +66,10 @@ public class DataBindingJAXRSReader<T> extends DataBindingJAXRSProvider implemen
         // FIXME: [rfeng] This is a hack to handle application/json
         if (MediaType.APPLICATION_JSON_TYPE.equals(mediaType)) {
             dataBinding = mediaType.toString() + "#" + InputStream.class.getName();
-        } else if (MediaType.APPLICATION_XML_TYPE.equals(mediaType) || MediaType.TEXT_XML_TYPE.equals(mediaType)) {
+        } else if ("application/x-protobuf".equals(mediaType.toString())) {
+            dataBinding = mediaType.toString() + "#" + InputStream.class.getName();
+        }
+        else if (MediaType.APPLICATION_XML_TYPE.equals(mediaType) || MediaType.TEXT_XML_TYPE.equals(mediaType)) {
             dataBinding = InputStream.class.getName();
         } else {
             dataBinding = targetDataType.getDataBinding();

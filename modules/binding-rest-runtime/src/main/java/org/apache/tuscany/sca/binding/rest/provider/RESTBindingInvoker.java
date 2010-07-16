@@ -43,6 +43,7 @@ import javax.ws.rs.MatrixParam;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -107,9 +108,9 @@ public class RESTBindingInvoker implements Invoker {
 
     private RestClient createRestClient() {
         ClientConfig config = new ClientConfig();
-        
+
         // configureBasicAuth(config, userName, password);
-        
+
         config.applications(new Application() {
 
             @Override
@@ -127,6 +128,9 @@ public class RESTBindingInvoker implements Invoker {
 
         });
         RestClient client = new RestClient(config);
+        
+        // Default to GET for RPC
+        httpMethod = HttpMethod.GET;
 
         for (Map.Entry<Class<?>, String> e : mapping.entrySet()) {
             if (operation.getAttributes().get(e.getKey()) != null) {
@@ -154,12 +158,21 @@ public class RESTBindingInvoker implements Invoker {
 
         Object entity = null;
         Object[] args = msg.getBody();
-        
+
         URI uri = URI.create(binding.getURI());
         UriBuilder uriBuilder = UriBuilder.fromUri(uri);
 
         Method method = ((JavaOperation)operation).getJavaMethod();
-        uriBuilder.path(method);
+
+        if (method.isAnnotationPresent(Path.class)) {
+            // Only for resource method
+            uriBuilder.path(method);
+        }
+
+        if (!JAXRSHelper.isResourceMethod(method)) {
+            // This is RPC over GET
+            uriBuilder.replaceQueryParam("method", method.getName());
+        }
 
         Map<String, Object> pathParams = new HashMap<String, Object>();
         Map<String, Object> matrixParams = new HashMap<String, Object>();
@@ -168,8 +181,8 @@ public class RESTBindingInvoker implements Invoker {
         Map<String, Object> formParams = new HashMap<String, Object>();
         Map<String, Object> cookieParams = new HashMap<String, Object>();
 
-        boolean isEntity = true;
         for (int i = 0; i < method.getParameterTypes().length; i++) {
+            boolean isEntity = true;
             Annotation[] annotations = method.getParameterAnnotations()[i];
             PathParam pathParam = getAnnotation(annotations, PathParam.class);
             if (pathParam != null) {
@@ -201,7 +214,7 @@ public class RESTBindingInvoker implements Invoker {
                 isEntity = false;
                 cookieParams.put(cookieParam.value(), args[i]);
             }
-            if(isEntity) {
+            if (isEntity) {
                 entity = args[i];
             }
         }
@@ -212,10 +225,10 @@ public class RESTBindingInvoker implements Invoker {
         for (Map.Entry<String, Object> p : matrixParams.entrySet()) {
             uriBuilder.replaceMatrixParam(p.getKey(), p.getValue());
         }
-        
+
         uri = uriBuilder.buildFromMap(pathParams);
         Resource resource = restClient.resource(uri);
-        
+
         for (Map.Entry<String, Object> p : headerParams.entrySet()) {
             resource.header(p.getKey(), String.valueOf(p.getValue()));
         }
@@ -226,18 +239,18 @@ public class RESTBindingInvoker implements Invoker {
         }
 
         resource.contentType(getContentType());
-        resource.accept(getAccepts());        
-        
+        resource.accept(getAccepts());
+
         //handles declarative headers configured on the composite
-        for(HTTPHeader header : binding.getHttpHeaders()) {
+        for (HTTPHeader header : binding.getHttpHeaders()) {
             //treat special headers that need to be calculated
-            if(header.getName().equalsIgnoreCase("Expires")) {
+            if (header.getName().equalsIgnoreCase("Expires")) {
                 GregorianCalendar calendar = new GregorianCalendar();
                 calendar.setTime(new Date());
 
                 calendar.add(Calendar.HOUR, Integer.parseInt(header.getValue()));
 
-                resource.header("Expires", HTTPCacheContext.RFC822DateFormat.format( calendar.getTime() ));
+                resource.header("Expires", HTTPCacheContext.RFC822DateFormat.format(calendar.getTime()));
             } else {
                 //default behaviour to pass the header value to HTTP response
                 resource.header(header.getName(), header.getValue());

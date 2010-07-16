@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.binding.rest.provider;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -114,7 +112,8 @@ public class RESTServiceBindingProvider implements EndpointProvider {
         if (binding.getOperationSelector() != null) {
             // Configure the interceptors for operation selection
             OperationSelectorProviderFactory osProviderFactory =
-                (OperationSelectorProviderFactory)providerFactories.getProviderFactory(binding.getOperationSelector().getClass());
+                (OperationSelectorProviderFactory)providerFactories.getProviderFactory(binding.getOperationSelector()
+                    .getClass());
             if (osProviderFactory != null) {
                 this.osProvider = osProviderFactory.createServiceOperationSelectorProvider(endpoint);
             }
@@ -123,16 +122,18 @@ public class RESTServiceBindingProvider implements EndpointProvider {
         if (binding.getRequestWireFormat() != null) {
             // Configure the interceptors for wire format
             WireFormatProviderFactory wfProviderFactory =
-                (WireFormatProviderFactory)providerFactories.getProviderFactory(binding.getRequestWireFormat().getClass());
+                (WireFormatProviderFactory)providerFactories.getProviderFactory(binding.getRequestWireFormat()
+                    .getClass());
             if (wfProviderFactory != null) {
                 this.wfProvider = wfProviderFactory.createServiceWireFormatProvider(endpoint);
             }
         }
 
-        if (binding.getResponseWireFormat() != null ) {
+        if (binding.getResponseWireFormat() != null) {
             // Configure the interceptors for wire format
             WireFormatProviderFactory wfProviderFactory =
-                (WireFormatProviderFactory)providerFactories.getProviderFactory(binding.getResponseWireFormat().getClass());
+                (WireFormatProviderFactory)providerFactories.getProviderFactory(binding.getResponseWireFormat()
+                    .getClass());
             if (wfProviderFactory != null) {
                 this.wfResponseProvider = wfProviderFactory.createServiceWireFormatProvider(endpoint);
             }
@@ -143,11 +144,11 @@ public class RESTServiceBindingProvider implements EndpointProvider {
             this.serviceContract = (InterfaceContract)service.getInterfaceContract().clone();
 
             // configure data binding
-            if (wfProvider != null ) {
+            if (wfProvider != null) {
                 wfProvider.configureWireFormatInterfaceContract(serviceContract);
             }
 
-            if(wfResponseProvider != null) {
+            if (wfResponseProvider != null) {
                 wfResponseProvider.configureWireFormatInterfaceContract(serviceContract);
             }
         } catch (CloneNotSupportedException e) {
@@ -239,7 +240,6 @@ public class RESTServiceBindingProvider implements EndpointProvider {
         return false;
     }
 
-
     /**
      * Register a Tuscany REST Servlet to handle JAX-RS Resources on a binding endpoint
      * @return
@@ -251,7 +251,8 @@ public class RESTServiceBindingProvider implements EndpointProvider {
             JavaInterface javaInterface = (JavaInterface)endpoint.getComponentServiceInterfaceContract().getInterface();
             Class<?> interfaze = javaInterface.getJavaClass();
 
-            boolean isJAXRS = isJAXRSResource(interfaze);
+            // The @Path annotation can be from the binding uri
+            boolean isJAXRS = JAXRSHelper.isJAXRSResource(interfaze);
             if (isJAXRS) {
                 application = new SimpleApplication(interfaze);
 
@@ -314,7 +315,7 @@ public class RESTServiceBindingProvider implements EndpointProvider {
                 String path = URI.create(uri).getPath();
 
                 // FIXME: [rfeng] We need to have a better way to deal with URI template for bindings
-                if(path.startsWith(servletHost.getContextPath())) {
+                if (path.startsWith(servletHost.getContextPath())) {
                     path = path.substring(servletHost.getContextPath().length());
                 }
                 Class<?> cls =
@@ -335,24 +336,6 @@ public class RESTServiceBindingProvider implements EndpointProvider {
             resourceClass = null;
         }
     }
-
-    public static boolean isJAXRSResource(Class<?> cls) {
-        for (Annotation a : cls.getAnnotations()) {
-            if (a.annotationType().getName().startsWith("javax.ws.rs.")) {
-                return true;
-            }
-        }
-        for (Method method : cls.getMethods()) {
-            for (Annotation a : method.getAnnotations()) {
-                if (a.annotationType().getName().startsWith("javax.ws.rs.")) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-
 
     /**
      * Add specific rest interceptor to invocation chain

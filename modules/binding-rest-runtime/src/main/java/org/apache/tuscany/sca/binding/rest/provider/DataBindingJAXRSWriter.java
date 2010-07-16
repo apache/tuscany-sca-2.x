@@ -69,7 +69,10 @@ public class DataBindingJAXRSWriter<T> extends DataBindingJAXRSProvider implemen
             dataBinding = mediaType.toString() + "#" + OutputStream.class.getName();
         } else if (MediaType.APPLICATION_XML_TYPE.equals(mediaType) || MediaType.TEXT_XML_TYPE.equals(mediaType)) {
             dataBinding = OutputStream.class.getName();
-        } else {
+        } else if ("application/x-protobuf".equals(mediaType.toString())) {
+            dataBinding = mediaType.toString() + "#" + OutputStream.class.getName();
+        }
+        else {
             dataBinding = dataType.getDataBinding();
             write(entityStream, t, type);
             return;

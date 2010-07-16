@@ -24,7 +24,7 @@ import java.util.List;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.binding.rest.provider.RESTServiceBindingProvider;
+import org.apache.tuscany.sca.binding.rest.provider.JAXRSHelper;
 import org.apache.tuscany.sca.binding.rest.wireformat.xml.XMLWireFormat;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
@@ -65,7 +65,7 @@ public class XMLWireFormatServiceProvider implements WireFormatProvider {
     private boolean isJAXRSResource() {
         Interface interfaze = endpoint.getComponentServiceInterfaceContract().getInterface();
         if (interfaze instanceof JavaInterface) {
-            if (RESTServiceBindingProvider.isJAXRSResource(((JavaInterface)interfaze).getJavaClass())) {
+            if (JAXRSHelper.isJAXRSResource(((JavaInterface)interfaze).getJavaClass())) {
                 return true;
             }
         }
