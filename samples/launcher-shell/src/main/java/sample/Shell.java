@@ -150,6 +150,7 @@ public class Shell {
         try {
             return func.call();
         } catch (Exception e) {
+            e.printStackTrace();
             return singletonList(e);
         }
     }
