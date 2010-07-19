@@ -108,11 +108,13 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                                     inherit(ep, Intent.Type.interaction, true, componentService.getInterfaceContract().getInterface());
                                 }
                                 
-                                // Inherit from composite/component/service
-                                inherit(ep, Intent.Type.interaction, true, composite, ep.getComponent(), ep.getService());
-                                
                                 // Inherit from binding
                                 inherit(ep, Intent.Type.interaction, true, ep.getBinding());
+                                
+                                // Inherit from composite/component/service
+                                inherit(ep, Intent.Type.interaction, true, ep.getService(), ep.getComponent(), composite );
+                                
+
 
                                 // Replace profile intents with their required intents
                                 // Replace unqualified intents if there is a qualified intent in the list
@@ -160,12 +162,14 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                                 if (componentReference.getInterfaceContract() != null) {
                                     inherit(epr, Intent.Type.interaction, true, componentReference.getInterfaceContract().getInterface());
                                 }
-
-                                // Inherit from composite/component/reference
-                                inherit(epr, Intent.Type.interaction, true, composite, epr.getComponent(), epr.getReference());
                                 
                                 // Inherit from binding
                                 inherit(epr, Intent.Type.interaction, true, epr.getBinding());
+
+                                // Inherit from composite/component/reference
+                                inherit(epr, Intent.Type.interaction, true,  epr.getReference(), epr.getComponent(),  composite);
+                                
+                              
 
                                 // Replace profile intents with their required intents
                                 // Replace unqualified intents if there is a qualified intent in the list
