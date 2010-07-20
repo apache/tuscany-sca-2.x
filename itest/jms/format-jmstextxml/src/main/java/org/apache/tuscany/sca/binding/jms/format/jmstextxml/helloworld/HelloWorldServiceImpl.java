@@ -33,11 +33,11 @@ public class HelloWorldServiceImpl implements HelloWorldService {
         return response;
     }
     
-    public void throwChecked(String msg) throws CheckedException {
+    public String throwChecked(String msg) throws CheckedException {
         throw new CheckedException("foo");
     }
 
-    public void throwUnChecked(String msg) {
+    public String throwUnChecked(String msg) {
         throw new RuntimeException("bla");
     }    
 }

@@ -29,7 +29,7 @@ public interface HelloWorldService {
     public String getGreetings(String name);  
     public String getPersonGreetings(Person person);
     
-    public void throwChecked(String msg) throws CheckedException;
-    public void throwUnChecked(String msg);
+    public String throwChecked(String msg) throws CheckedException;
+    public String throwUnChecked(String msg);
 }
 

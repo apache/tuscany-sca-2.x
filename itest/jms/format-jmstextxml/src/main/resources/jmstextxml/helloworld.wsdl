@@ -108,10 +108,12 @@
         </wsdl:operation>        
         <wsdl:operation name="throwChecked">
             <wsdl:input message="tns:getPersonGreetingsRequest" name="getPersonGreetingsRequest"/>
+            <wsdl:output message="tns:getPersonGreetingsResponse" name="getPersonGreetingsResponse"/>
             <wsdl:fault message="tns:CheckedException" name="CheckedException"/>
         </wsdl:operation>        
         <wsdl:operation name="throwUnChecked">
             <wsdl:input message="tns:getPersonGreetingsRequest" name="getPersonGreetingsRequest"/>
+            <wsdl:output message="tns:getPersonGreetingsResponse" name="getPersonGreetingsResponse"/>
         </wsdl:operation>        
     </wsdl:portType>
 
