@@ -114,8 +114,6 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
 
         } catch (ClassNotFoundException e) {
             return unresolved;
-        } catch (NoClassDefFoundError e) {
-            return unresolved;
         }
     }
 
