@@ -229,6 +229,16 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             return false;
         }
 
+        if (source.isNonBlocking() != target.isNonBlocking()) {
+            if (audit != null){
+                audit.append("operations one-way not the same, source = " +
+                             source.isNonBlocking() + 
+                             " target = " +
+                             target.isNonBlocking());
+            }            
+            return false;
+        }
+
         boolean passByValue = (source.getInterface().isRemotable()) && byValue;
 
         //        if (source.getInterface().isRemotable()) {
