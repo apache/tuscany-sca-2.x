@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.common.xml.xpath;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -51,6 +52,11 @@ public class XPathHelperTestCase {
             + "</c:child>"
             + "</r:root>";
 
+    private static String XML2 = "<definitions 	xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" " +
+				"xmlns:sca=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" " + 
+				"xmlns:test=\"http://docs.oasis-open.org/ns/opencsa/scatests/200903\" " +
+				"targetNamespace=\"http://docs.oasis-open.org/ns/opencsa/scatests/200903\"></definitions>";
+				
     private static String XPATH =
         "<policySet attachTo=\"//c:child1[@name='child1']/self::node()\" xmlns:c=\"http://child1\" xmlns=\"http://p\">" + "<child xmlns:c=\"http://c2\"/></policySet>";
 
@@ -107,6 +113,27 @@ public class XPathHelperTestCase {
         Node node = nodes.item(0);
         Assert.assertTrue(node instanceof Element);
         Assert.assertEquals(node.getNodeName(), "c:child1");
+    }
+    
+    @Test
+    public void testGetPrefixes() throws Exception {
+    	 XMLStreamReader reader = staxHelper.createXMLStreamReader(XML2);
+         reader.nextTag();
+         NamespaceContext ctx = xpathHelper.getNamespaceContext("//sca:reference[IntentRefs('test:foo')]",
+        		 reader.getNamespaceContext());
+         Assert.assertNotNull(ctx.getNamespaceURI("sca"));
+         Assert.assertNotNull(ctx.getNamespaceURI("test"));
+    
+    }
+    
+    @Test
+    public void testGetPrefixes2() throws Exception {
+    	XMLStreamReader reader = staxHelper.createXMLStreamReader(XML2);
+        reader.nextTag();
+        NamespaceContext ctx = xpathHelper.getNamespaceContext("//sca:implementation.java[ IntentRefs( 'test:foo' ) ]",
+       		 reader.getNamespaceContext());
+        Assert.assertNotNull(ctx.getNamespaceURI("sca"));
+        Assert.assertNotNull(ctx.getNamespaceURI("test"));
     }
 
     /**
