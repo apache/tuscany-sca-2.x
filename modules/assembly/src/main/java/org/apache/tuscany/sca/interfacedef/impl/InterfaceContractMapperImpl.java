@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.util.Audit;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.policy.ExtensionType;
 
@@ -54,7 +55,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         return isCompatible(source, target, passByValue, null);   
     }
 
-    public boolean isCompatible(DataType source, DataType target, boolean passByValue, StringBuffer audit) {
+    public boolean isCompatible(DataType source, DataType target, boolean passByValue, Audit audit) {
         if (source == target) {
             return true;
         }
@@ -199,7 +200,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         return isCompatible(source, target, compatibilityType, true, null);
     }
     
-    public boolean isCompatible(Operation source, Operation target, Compatibility compatibilityType, boolean byValue, StringBuffer audit) {
+    public boolean isCompatible(Operation source, Operation target, Compatibility compatibilityType, boolean byValue, Audit audit) {
         if (source == target) {
             return true;
         }
@@ -345,7 +346,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
      */
     public boolean checkCompatibility(InterfaceContract source,
 			InterfaceContract target, Compatibility compatibility,
-			boolean ignoreCallback, boolean silent, StringBuffer audit)
+			boolean ignoreCallback, boolean silent, Audit audit)
 			throws IncompatibleInterfaceContractException {
 
 		if (source == target) {
@@ -397,7 +398,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 
 			if (!silent) {
 				if (audit == null)
-					audit = new StringBuffer();
+					audit = new Audit();
 				if (!isCompatible(operation, targetOperation,
 						Compatibility.SUBSET, true, audit)) {
 					throw new IncompatibleInterfaceContractException(
@@ -466,7 +467,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             }
             
             if (!silent) {
-                StringBuffer audit = new StringBuffer();
+                Audit audit = new Audit();
                 if (!isCompatible(operation, targetOperation, Compatibility.SUBSET, true, audit)){
                     throw new IncompatibleInterfaceContractException("Operations called " +
                                                                      operation.getName() +
@@ -559,7 +560,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
      * the variant of isCompatibleSubset with the audit parameter is intended to supersede the other
      * -- the presence of both indicates a partial development state
      */
-    public boolean isCompatibleSubset(InterfaceContract source, InterfaceContract target, StringBuffer audit) {
+    public boolean isCompatibleSubset(InterfaceContract source, InterfaceContract target, Audit audit) {
 
         try {
             return checkCompatibility(source, target, Compatibility.SUBSET, false, false, audit);
@@ -601,6 +602,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             return null;
         }
     }
+    
    
     /**
      * In various places in the process of an SCA application we match one interface against

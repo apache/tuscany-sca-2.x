@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.interfacedef;
 
+import org.apache.tuscany.sca.interfacedef.util.Audit;
+
 /**
  * The InterfaceContractMapper is responsible to match interfaces
  * 
@@ -57,7 +59,7 @@ public interface InterfaceContractMapper {
                                Compatibility compatibility,
                                boolean ignoreCallback,
                                boolean silent,
-                               StringBuffer audit) throws IncompatibleInterfaceContractException;
+                               Audit audit) throws IncompatibleInterfaceContractException;
 
     /**
      * Test if the source data type is compatible with the target data type. The
@@ -177,7 +179,7 @@ public interface InterfaceContractMapper {
      * the variant of isCompatibleSubset with the audit parameter is intended to supersed the other
      * -- the presence of both indicates a partial development state
      */
-    boolean isCompatibleSubset(InterfaceContract source, InterfaceContract target, StringBuffer audit);
+    boolean isCompatibleSubset(InterfaceContract source, InterfaceContract target, Audit audit);
 
     /**
      * Check that two interfaces are mutually compatible. The interfaces are mutually compatible if the two 
@@ -226,5 +228,5 @@ public interface InterfaceContractMapper {
      * @return A compatible operation if the target interface is compatible superset of the source interface
      */
     Operation map(Interface target, Operation source);
-
+    
 }
