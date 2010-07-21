@@ -121,7 +121,7 @@ public class XPathHelper {
     private Collection<String> getPrefixes(String expression) {
         Collection<String> prefixes = new HashSet<String>();
         prefixes.add(XMLConstants.DEFAULT_NS_PREFIX);
-        Pattern pattern = Pattern.compile("([^:]+):([^:]+)");
+        Pattern pattern = Pattern.compile("([a-zA-Z.]+):([a-zA-Z.]+)");
         Matcher matcher = pattern.matcher(expression);
         while (matcher.find()) {
             String prefix = extractNCName(matcher.group(1), true);
