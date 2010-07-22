@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.builder.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URI;
@@ -266,7 +267,7 @@ public class ComponentBuilderImpl {
             calculateServiceInterfaceContract(component, componentService, componentTypeService, monitor);
 
             // bindings
-            calculateBindings(component, componentService, componentTypeService, monitor);
+            calculateBindings(component, componentService, componentTypeService, context);
 
             // add callback reference model objects
             createCallbackReference(component, componentService);
@@ -807,138 +808,258 @@ public class ComponentBuilderImpl {
                                                 Monitor monitor) {
         String source = componentProperty.getSource();
 
-        if (source != null) {
-            // $<name>/...
-            int index = source.indexOf('/');
-            if (index == -1) {
-                // Tolerating $prop
-                source = source + "/";
-                index = source.length() - 1;
-            }
-            if (source.charAt(0) == '$') {
-                String name = source.substring(1, index);
-                Property sourceProp = null;
-                if (outerComponent != null) {
-                    sourceProp = outerComponent.getProperty(name);
-                } else {
-                    sourceProp = parentComposite.getProperty(name);
-                }
-                if (sourceProp == null) {
-                    Monitor.error(monitor,
-                                  this,
-                                  Messages.ASSEMBLY_VALIDATION,
-                                  "PropertySourceNotFound",
-                                  source,
-                                  componentProperty.getName(),
-                                  component.getName());
-                }
+        if (source == null) return;
+        
+        try {
+            String sourceName = extractSourcePropertyName( source );
 
-                Document sourcePropValue = (Document)sourceProp.getValue();
-
-                try {
-                    // FIXME: How to deal with namespaces?
-                    Document node =
-                        evaluateXPath(sourcePropValue,
-                                      componentProperty.getSourceXPathExpression(),
-                                      documentBuilderFactory);
-
-                    if (node != null) {
-                        componentProperty.setValue(node);
-                    } else {
-                        Monitor.warning(monitor,
-                                        this,
-                                        Messages.ASSEMBLY_VALIDATION,
-                                        "PropertyXpathExpressionReturnedNull",
-                                        component.getName(),
-                                        componentProperty.getName(),
-                                        componentProperty.getSource());
-                    }
-                } catch (Exception ex) {
-                    Monitor.error(monitor,
-                                  this,
-                                  Messages.ASSEMBLY_VALIDATION,
-                                  "PropertySourceXpathInvalid",
-                                  source,
-                                  componentProperty.getName(),
-                                  component.getName(),
-                                  ex);
-                }
+            Property sourceProp = null;
+            if (outerComponent != null) {
+                sourceProp = outerComponent.getProperty(sourceName);
             } else {
+                sourceProp = parentComposite.getProperty(sourceName);
+            }
+            if (sourceProp == null) {
                 Monitor.error(monitor,
                               this,
                               Messages.ASSEMBLY_VALIDATION,
-                              "PropertySourceValueInvalid",
+                              "PropertySourceNotFound",
                               source,
                               componentProperty.getName(),
                               component.getName());
-            }
-        }
-    }
+            } else {
+
+	            Document sourcePropValue = (Document)sourceProp.getValue();
+	
+	            try {
+	                // FIXME: How to deal with namespaces?
+	                Document node =
+	                    evaluateXPath2(sourcePropValue,
+	                                  componentProperty.getSourceXPathExpression(),
+	                                  documentBuilderFactory);
+	
+	                if (node != null) {
+	                    componentProperty.setValue(node);
+	                } else {
+	                    Monitor.warning(monitor,
+	                                    this,
+	                                    Messages.ASSEMBLY_VALIDATION,
+	                                    "PropertyXpathExpressionReturnedNull",
+	                                    component.getName(),
+	                                    componentProperty.getName(),
+	                                    componentProperty.getSource());
+	                } // end if
+	           
+	            } catch (Exception ex) {
+	                Monitor.error(monitor,
+	                              this,
+	                              Messages.ASSEMBLY_VALIDATION,
+	                              "PropertySourceXpathInvalid",
+	                              source,
+	                              componentProperty.getName(),
+	                              component.getName(),
+	                              ex);
+	            } // end try
+            } // end if
+        } catch (IllegalArgumentException e ) {
+            Monitor.error(monitor,
+                          this,
+                          Messages.ASSEMBLY_VALIDATION,
+                          "PropertySourceValueInvalid",
+                          source,
+                          componentProperty.getName(),
+                          component.getName());
+        } // end try 
+    } // end method
+    
+    /**
+     * Extracts the name of the source property from the value of an @source attribute string
+     * @param source - the value of the @source attribute
+     * @param monitor
+     * @return
+     */
+    private String extractSourcePropertyName( String source ) throws IllegalArgumentException {
+    	String propertyName = null;
+    	
+        // Possible values for the source string:
+    	// a) $name
+    	// b) $name/expression
+    	// c) $name[xx]
+    	// d) $name[xx]/expression
+    	// ...and note that the expression MAY contain '/' and '[' characters
+    	if( source.charAt(0) != '$' ) throw new IllegalArgumentException("Source value does not start with '$'");	
+    	
+        int index = source.indexOf('/');
+        int bracket = source.indexOf('[');
+        
+        if( index == -1 && bracket == -1 ) {
+        	// Format a) - simply remove the '$'
+        	propertyName = source.substring(1);
+        } else if ( bracket == -1 ) {
+        	// Format b) - remove the '$' and the '/' and everything following it
+        	propertyName = source.substring(1, index);
+        } else if ( index == -1 ) {
+        	// Format c) - remove the '$' and the '[' and everything following it
+        	propertyName = source.substring(1, bracket);
+        } else {
+        	// Format d) - but need to ensure that the '[' is BEFORE the '/'
+        	if( bracket < index ) {
+        		// Format d) - remove the '$' and the '[' and everything following it
+        		propertyName = source.substring(1, bracket);
+        	} else {
+        		// Format b) variant where there is a '[' in the expression...
+        		propertyName = source.substring(1, index);
+        	} // end if
+        } // end if
+        
+    	return propertyName;
+    } // end method extractSourcePropertyName( source, monitor )
 
     /**
-     * If the property has a file attribute use this to retrieve the value from a 
-     * local file
-
+     * If the property has a file attribute use this to retrieve the property value from a local file
+     * Format of the property value file is defined in the SCA Assembly specification in ASM50046
      * 
-     * @param parentCompoent the composite that contains the component
-     * @param component
+     * @param component the component holding the property
+     * @param componentProperty - the property 
+     * @param monitor - a Monitor object for reporting problems
+     */
+    /**
+     * Property file format:
+     * MUST contain a <sca:values/> element
+     * - either contains one or more <sca:value/> subelements (mandatory for property with a simple XML type)
+     * - or contains one or more global elements of the type of the property
+     * 
+     * eg.
+     * 	<?xml version="1.0" encoding="UTF-8"?>
+     *  <values>
+     *     <value>MyValue</value>
+     *  </values>
+     *  
+     *  <?xml version="1.0" encoding="UTF-8"?>
+     *  <values>
+     *     <foo:fooElement>
+     *        <foo:a>AValue</foo:a>
+     *        <foo:b>InterestingURI</foo:b>
+     *     </foo:fooElement>
+     *  </values/>
      */
     private void processPropertyFileAttribute(Component component, ComponentProperty componentProperty, Monitor monitor) {
         String file = componentProperty.getFile();
-        if (file != null) {
+        if (file == null) return;
+        try {
+/*        	
+            URI uri = URI.create(file);
+            // URI resolution for relative URIs is done when the composite is resolved.
+            URL url = uri.toURL();
+            URLConnection connection = url.openConnection();
+            connection.setUseCaches(false);
+            InputStream is = null;           
             try {
-                URI uri = URI.create(file);
-                // URI resolution for relative URIs is done when the composite is resolved.
-                URL url = uri.toURL();
-                URLConnection connection = url.openConnection();
-                connection.setUseCaches(false);
-                InputStream is = null;
-                try {
-                    is = connection.getInputStream();
 
-                    Source streamSource = new SAXSource(new InputSource(is));
-                    DOMResult result = new DOMResult();
-                    javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
-                    transformer.transform(streamSource, result);
+                is = connection.getInputStream();
 
-                    Document document = (Document)result.getNode();
+                Source streamSource = new SAXSource(new InputSource(is));
+                DOMResult result = new DOMResult();
+                javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+                transformer.transform(streamSource, result);
 
-                    // TUSCANY-2377, Add a fake value element so it's consistent with
-                    // the DOM tree loaded from inside SCDL
-                    if (!document.getDocumentElement().getLocalName().equals("value")){
-                        Element root = document.createElementNS(null, "value");
-                        root.appendChild(document.getDocumentElement());
-                        
-                        // remove all the child nodes as they will be replaced by 
-                        // the "value" node
-                        NodeList children = document.getChildNodes();
-                        for (int i=0; i < children.getLength(); i++){
-                            document.removeChild(children.item(i));
-                        }
-                        
-                        // add the value node back in
-                        document.appendChild(root);
+                Document document = (Document)result.getNode();
+*/                
+                Document document = readPropertyFileData( file );
+                
+                Element docElement = document.getDocumentElement();
+                if( docElement == null ) throw new Exception("Property File has no XML document element");
+                
+                if( !"values".equals( docElement.getLocalName() ) ) {
+                	throw new Exception("Property File does not start with <values/> element");
+                } // end if
+                
+                // The property value is the subelement(s) of the <values/> element
+                NodeList values = docElement.getChildNodes();
+                
+                Document newdoc = documentBuilderFactory.newDocumentBuilder().newDocument();
+                Element newProperty = newdoc.createElementNS(SCA11_NS, "property");
+                newdoc.appendChild( newProperty );
+                
+                int count = 0;
+                
+                // Copy the property values under the new <property/> element
+                for( int i = 0 ; i < values.getLength() ; i++ ) {
+                	Node valueNode = values.item(i);
+                	// Only <value/> elements or global elements are valid values...
+                	if( valueNode.getNodeType() == Node.ELEMENT_NODE ) {
+                		newProperty.appendChild(newdoc.importNode(values.item(i), true));
+                		count++;
+                	} // end if
+                } // end for
+                
+                if( count == 0 ) {
+                	throw new Exception("Property File has no property values");
+                } // end if 
+                
+                componentProperty.setValue(newdoc);
+                
+/*
+                // TUSCANY-2377, Add a fake value element so it's consistent with
+                // the DOM tree loaded from inside SCDL
+                if (!document.getDocumentElement().getLocalName().equals("value")){
+                    Element root = document.createElementNS(null, "value");
+                    root.appendChild(document.getDocumentElement());
+                    
+                    // remove all the child nodes as they will be replaced by the "value" node
+                    NodeList children = document.getChildNodes();
+                    for (int i=0; i < children.getLength(); i++){
+                        document.removeChild(children.item(i));
                     }
                     
-                    componentProperty.setValue(document);
-                } finally {
-                    if (is != null) {
-                        is.close();
-                    }
-                }
-            } catch (Exception ex) {
-                Monitor.error(monitor,
-                              this,
-                              Messages.ASSEMBLY_VALIDATION,
-                              "PropertyFileValueInvalid",
-                              file,
-                              componentProperty.getName(),
-                              component.getName(),
-                              ex);
+                    // add the value node back in
+                    document.appendChild(root);
+                }               
+                componentProperty.setValue(document);               
+            } finally {
+                if (is != null) {
+                    is.close();
+                }  
+            } // end try
+*/                
+        } catch (Exception ex) {
+            Monitor.error(monitor,
+                          this,
+                          Messages.ASSEMBLY_VALIDATION,
+                          "PropertyFileValueInvalid",
+                          file,
+                          componentProperty.getName(),
+                          component.getName(),
+                          ex);
+        } // end try
+    } // end method processPropertyFileAttribute
+    
+    private Document readPropertyFileData( String file ) throws Exception {
+    	Document doc = null;
+    	
+    	URI uri = URI.create(file);
+        // URI resolution for relative URIs is done when the composite is resolved.
+        URL url = uri.toURL();
+        URLConnection connection = url.openConnection();
+        connection.setUseCaches(false);
+        InputStream is = null;
+        try {
+	        is = connection.getInputStream();
+	
+	        Source streamSource = new SAXSource(new InputSource(is));
+	        DOMResult result = new DOMResult();
+	        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+	        transformer.transform(streamSource, result);
+	        
+	        doc = (Document)result.getNode();
+        } finally {
+            if (is != null) {
+                is.close();
             }
-        }
+        } // end try
 
-    }
+        return doc;
+    } // end method readPropertyFileData
 
     /**
      * Evaluate an XPath expression against a Property value, returning the result as a Property value
@@ -984,6 +1105,51 @@ public class ComponentBuilderImpl {
             return document;
         }
     }
+    
+    /**
+     * Evaluate an XPath expression against a Property value, returning the result as a Property value
+     * - deals with multi-valued input property values and with multi-valued output property values
+     * @param node - the document root element of a Property value
+     * @param expression - the XPath expression
+     * @param documentBuilderFactory - a DOM document builder factory
+     * @return - a DOM Document representing the result of the evaluation as a Property value
+     * @throws XPathExpressionException
+     * @throws ParserConfigurationException
+     */
+    private Document evaluateXPath2(Document node,
+                                   XPathExpression expression,
+                                   DocumentBuilderFactory documentBuilderFactory) throws XPathExpressionException,
+        ParserConfigurationException {
+
+        // The document element is a <sca:property/> element
+        Element property = node.getDocumentElement();
+
+        NodeList result = (NodeList)expression.evaluate(property, XPathConstants.NODESET);
+        if (result == null || result.getLength() == 0) return null;
+
+        if (result instanceof Document) {
+            return (Document)result;
+        } else {
+            Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+            Element newProperty = document.createElementNS(SCA11_NS, "property");
+            
+            for( int i = 0 ; i < result.getLength() ; i++ ) {
+		        if (result.item(i).getNodeType() == Node.ELEMENT_NODE) {
+		            // If the result is an element, use it directly in the result
+		            newProperty.appendChild(document.importNode(result.item(i), true));
+		        } else {
+		            // If the result is not an element, create a <value/> element to contain the result
+		            Element newValue = document.createElementNS(SCA11_NS, "value");
+		            newValue.appendChild(document.importNode(result.item(i), true));
+		            newProperty.appendChild(newValue);
+		        } // end if
+            } // end for
+            
+            document.appendChild(newProperty);
+
+            return document;
+        } // end if
+    } // end method
 
     /**
      * Create a callback reference for a component service
@@ -1404,14 +1570,16 @@ public class ComponentBuilderImpl {
      * @param componentService the top service 
      * @param componentTypeService the bottom service
      */
-    private void calculateBindings(Component component, Service componentService, Service componentTypeService, Monitor monitor) {
+    private void calculateBindings(Component component, Service componentService, Service componentTypeService, BuilderContext context) {
+    	Monitor monitor = context.getMonitor();
+    	
         // forward bindings
         if (componentService.getBindings().isEmpty()) {
             componentService.getBindings().addAll(componentTypeService.getBindings());
         }
 
         if (componentService.getBindings().isEmpty()) {
-            createSCABinding(componentService, null);
+            createSCABinding(componentService, context.getDefinitions());
         }
 
         // callback bindings
