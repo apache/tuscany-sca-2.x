@@ -409,7 +409,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @param element
      * @param type
      * @param reader
-     * @param context TODO
+     * @param context
      * @return
      * @throws XMLStreamException
      * @throws ContributionReadException
