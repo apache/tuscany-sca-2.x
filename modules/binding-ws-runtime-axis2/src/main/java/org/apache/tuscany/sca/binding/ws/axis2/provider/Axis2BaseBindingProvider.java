@@ -33,6 +33,7 @@ public class Axis2BaseBindingProvider {
         
     // derived policy configuration
     protected boolean isSOAP12Required = false;
+    protected boolean isSOAP11Required = false;
     protected boolean isRampartRequired = false;
     protected boolean isMTOMRequired = false;
     protected boolean isJMSRequired = false;    

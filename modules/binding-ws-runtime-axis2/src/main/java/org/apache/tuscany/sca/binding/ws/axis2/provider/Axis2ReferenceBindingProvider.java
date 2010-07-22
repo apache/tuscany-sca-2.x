@@ -29,8 +29,10 @@ import javax.wsdl.BindingOperation;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.extensions.soap.SOAPAddress;
+import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap.SOAPOperation;
 import javax.wsdl.extensions.soap12.SOAP12Address;
+import javax.wsdl.extensions.soap12.SOAP12Binding;
 import javax.xml.namespace.QName;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -40,9 +42,7 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
-import org.apache.axiom.soap.SOAPBody;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReferenceHelper;
@@ -108,6 +108,7 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
             contract.getInterface().resetDataBinding(OMElement.class.getName());
         }
         
+        isSOAP11Required = PolicyHelper.isIntentRequired(wsBinding, Constants.SOAP11_INTENT);
         isSOAP12Required = PolicyHelper.isIntentRequired(wsBinding, Constants.SOAP12_INTENT);
         
         isMTOMRequired = PolicyHelper.isIntentRequired(wsBinding, Axis2BindingProviderFactory.MTOM_INTENT);
@@ -141,6 +142,28 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
         if (wsBinding.isDocLiteralUnwrapped()){
             //throw new ServiceRuntimeException("doc/literal/unwrapped WSDL style not supported for endpoint reference " + endpointReference);
         } 
+        
+        // Validate that the WSDL is not using SOAP v1.2 if requires="SOAP.v1_1" has been specified
+        if ( isSOAP11Required ) {
+        	Definition def = wsBinding.getGeneratedWSDLDocument();
+        	Binding binding = def.getBinding(wsBinding.getBindingName());
+        	for ( Object ext : binding.getExtensibilityElements() ) {
+        		if ( ext instanceof SOAP12Binding )
+        			throw new ServiceRuntimeException("WSDL document is using SOAP v1.2 but SOAP v1.1 " +
+        					"is required by the specified policy intents");
+        	}
+        }
+        
+        // Validate that the WSDL is not using SOAP v1.1 if requires="SOAP.v1_2" has been specified
+        if ( isSOAP12Required ) {
+        	Definition def = wsBinding.getGeneratedWSDLDocument();
+        	Binding binding = def.getBinding(wsBinding.getBindingName());
+        	for ( Object ext : binding.getExtensibilityElements() ) {
+        		if ( ext instanceof SOAPBinding )
+        			throw new ServiceRuntimeException("WSDL document is using SOAP v1.1 but SOAP v1.2 " +
+        					"is required by the specified policy intents");
+        	}
+        }
     }
     
     public void start() {
