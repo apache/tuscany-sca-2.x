@@ -24,7 +24,7 @@
       <parent>
           <groupId>org.apache.tuscany.sca</groupId>
           <artifactId>tuscany-sca</artifactId>
-          <version>2.0-Beta1-SNAPSHOT</version>
+          <version>2.0-Beta1</version>
           <relativePath>../../pom.xml</relativePath>
       </parent>
 
@@ -33,7 +33,7 @@
       <name>Apache Tuscany SCA Sample Helloworld BPEL</name>
 
 	<properties>
-		<tuscany.version>2.0-Beta1-SNAPSHOT</tuscany.version>
+		<tuscany.version>2.0-Beta1</tuscany.version>
 		<jetty.version>6.1.18</jetty.version>
 	</properties>
 
