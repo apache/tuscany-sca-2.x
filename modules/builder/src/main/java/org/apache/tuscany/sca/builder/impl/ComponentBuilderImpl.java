@@ -875,8 +875,7 @@ public class ComponentBuilderImpl {
     /**
      * Extracts the name of the source property from the value of an @source attribute string
      * @param source - the value of the @source attribute
-     * @param monitor
-     * @return
+     * @return - the source property name as a String
      */
     private String extractSourcePropertyName( String source ) throws IllegalArgumentException {
     	String propertyName = null;
