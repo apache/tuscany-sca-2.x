@@ -29,27 +29,23 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Multiplicity;
-import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
-import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointReferenceImpl;
 import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.util.Audit;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.BindingType;
@@ -138,7 +134,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         
         logger.fine("Binding " + endpointReference.toString());
         
-        StringBuffer matchAudit = new StringBuffer();
+        Audit matchAudit = new Audit();
              
         // This logic does post build autowire matching but isn't actually used at the moment
         // as problems with dependencies mean we still do this during build
@@ -302,6 +298,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         // Now the endpoint reference is resolved check that the binding interfaces contract
         // and the reference contract are compatible
         ((RuntimeEndpointReference)endpointReference).validateReferenceInterfaceCompatibility();
+    
+        // System.out.println("MATCH AUDIT:" + matchAudit.toString());
     }       
    
     /**
@@ -323,7 +321,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param endpointReference
      * @param endpoints
      */
-    private void selectForwardEndpoint(EndpointReference endpointReference, List<Endpoint> endpoints, StringBuffer matchAudit) {    
+    private void selectForwardEndpoint(EndpointReference endpointReference, List<Endpoint> endpoints, Audit matchAudit) {    
              
         Endpoint matchedEndpoint = null;
         
@@ -370,7 +368,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param endpointReference
      * @param endpoints
      */
-    private void selectCallbackEndpoint(EndpointReference endpointReference, ComponentService callbackService, StringBuffer matchAudit) {
+    private void selectCallbackEndpoint(EndpointReference endpointReference, ComponentService callbackService, Audit matchAudit) {
       
         // find the first callback endpoint that matches a callback endpoint reference
         // at the service
@@ -473,7 +471,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      *   - Perform policy specific match
      *   
      */
-    private boolean haveMatchingPolicy(EndpointReference endpointReference, Endpoint endpoint, StringBuffer matchAudit){
+    private boolean haveMatchingPolicy(EndpointReference endpointReference, Endpoint endpoint, Audit matchAudit){
         matchAudit.append("Match policy of " + endpointReference.toString() + " to " + endpoint.toString() + " ");
         
         List<PolicySet> referencePolicySets = new ArrayList<PolicySet>();
@@ -727,7 +725,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
     /**
      * Determine if endpoint reference and endpoint interface contracts match 
      */
-    private boolean haveMatchingInterfaceContracts(EndpointReference endpointReference, Endpoint endpoint, StringBuffer matchAudit){
+    private boolean haveMatchingInterfaceContracts(EndpointReference endpointReference, Endpoint endpoint, Audit matchAudit){
         matchAudit.append("Match interface of " + endpointReference.toString() + " to " + endpoint.toString() + " ");
         
         if (endpointReference.getReference().getInterfaceContract() == null){
@@ -803,5 +801,6 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             }
         }
     }
-  
+    
+     
 }
