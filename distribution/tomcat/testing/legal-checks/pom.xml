@@ -29,6 +29,12 @@
     <name>Apache Tuscany SCA WAR Distribution Legal Checks</name>
 
     <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
     
     <build>
