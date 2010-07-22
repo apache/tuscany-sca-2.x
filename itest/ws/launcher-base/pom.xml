@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-itest</artifactId>
-        <version>2.0-SNAPSHOT</version>
+        <version>2.0-Beta1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -33,20 +33,20 @@
        <dependency>
             <groupId>org.apache.tuscany.sca.shades</groupId>
             <artifactId>tuscany-base</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>2.0-Beta1-SNAPSHOT</version>
         </dependency>
 
         <!-- Test resources -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>itest-ws-external-client</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>2.0-Beta1-SNAPSHOT</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>itest-ws-external-service</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>2.0-Beta1-SNAPSHOT</version>
         </dependency>        
                 
     </dependencies>
