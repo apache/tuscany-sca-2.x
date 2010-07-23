@@ -49,6 +49,7 @@ import org.apache.tuscany.sca.interfacedef.util.Audit;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.BindingType;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -559,8 +560,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         // this they must be satisfied by reference policy sets
         // Failing this the intent is unresolved and the reference and 
         // service don't match
-        List<Intent> eprIntents = new ArrayList<Intent>();
-        eprIntents.addAll(endpointReference.getRequiredIntents());
+        
+      
         
         // TODO - seems that we should do this loop on a binding by binding basis
         //        rather than each time we do matching
@@ -572,6 +573,13 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                 break;
             }
         }
+        
+        // Before we start examining intents, remove any whose constrained
+        // types don't include the binding type
+        removeConstrainedIntents(endpointReference, bindingType);
+        
+        List<Intent> eprIntents = new ArrayList<Intent>();
+        eprIntents.addAll(endpointReference.getRequiredIntents());
         
         // first check the binding type
         for (Intent intent : endpointReference.getRequiredIntents()){ 
@@ -703,7 +711,33 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         return match;
     }
     
-    protected boolean isQualifiedBy(Intent qualifiableIntent, Intent qualifiedIntent){
+    // Copied from ComponentPolicyBuilder, should probably be refactored
+    protected void removeConstrainedIntents(EndpointReference subject, BindingType bindingType) {
+        List<Intent> intents = subject.getRequiredIntents();
+        
+        // Remove the intents whose @contrains do not include the current element       
+        if(bindingType != null){
+            List<Intent> copy = new ArrayList<Intent>(intents);
+            for (Intent i : copy) {
+                if (i.getConstrainedTypes().size() > 0){
+                    boolean constraintFound = false;
+                    for (ExtensionType constrainedType : i.getConstrainedTypes()){
+                        if (constrainedType.getType().equals(bindingType.getType()) ||
+                            constrainedType.getType().equals(bindingType.getBaseType())){
+                            constraintFound = true;
+                            break;
+                        }
+                    }
+                    if(!constraintFound){
+                        intents.remove(i);
+                    }
+                }
+            }
+        }
+    }
+  
+
+	protected boolean isQualifiedBy(Intent qualifiableIntent, Intent qualifiedIntent){
         if (qualifiedIntent.getQualifiableIntent() == qualifiableIntent){
             return true;
         } else {
