@@ -29,12 +29,6 @@
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Samples</name>
 
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <modules>
                 <module>calculator-osgi</module>
                 <module>dosgi-calculator</module>
@@ -93,7 +87,18 @@
                 <!-- TODO -->
 
             </modules>
-        </profile>
-    </profiles>    
+
+          <build>
+              <plugins>
+                    <plugin>
+                        <inherited>true</inherited>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.4</version>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+              </plugins>
+          </build>
 
 </project>
