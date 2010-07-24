@@ -1098,8 +1098,17 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     //now resolve the implementation so that even if there is a shared instance
                     //for this that is resolved, the specified intents and policysets are safe in the
                     //component and not lost
+                	List<Intent> intents = implementation.getRequiredIntents();
+                	List<PolicySet> policySets = implementation.getPolicySets();
+                	
+                	
                     implementation = resolveImplementation(implementation, resolver, context);
 
+                    implementation.getPolicySets().clear();
+                    implementation.getPolicySets().addAll(policySets);
+                    implementation.getRequiredIntents().clear();
+                    implementation.getRequiredIntents().addAll(intents);
+                    
                     component.setImplementation(implementation);
                 }
 

@@ -145,7 +145,30 @@ public interface Constants {
     String AUTHORIZATION_FINE_GRAIN = "authorization.fineGrain";
     QName AUTHORIZATION_FINE_GRAIN_INTENT = new QName(SCA11_NS, AUTHORIZATION_FINE_GRAIN);  
     
-    // TODO - add transaction intent constants
+    String MANAGED_TRANSACTION = "managedTransaction";
+    QName MANAGED_TRANSACTION_INTENT = new QName(SCA11_NS, MANAGED_TRANSACTION);
+    
+    String NO_MANAGED_TRANSACTION = "noManagedTransaction";
+    QName NO_MANAGED_TRANSACTION_INTENT = new QName(SCA11_NS, NO_MANAGED_TRANSACTION);
+    
+    String MANAGED_TRANSACTION_LOCAL = "managedTransaction.local";
+    QName MANAGED_TRANSACTION_LOCAL_INTENT = new QName(SCA11_NS, MANAGED_TRANSACTION_LOCAL);
+    
+    String MANAGED_TRANSACTION_GLOBAL = "managedTransaction.global";
+    QName MANAGED_TRANSACTION_GLOBAL_INTENT = new QName(SCA11_NS, MANAGED_TRANSACTION_GLOBAL);
+    
+    String PROPAGATES_TRANSACTION = "propagatesTransaction";
+    QName PROPAGATES_TRANSACTION_INTENT = new QName(SCA11_NS, PROPAGATES_TRANSACTION);
+    
+    String SUSPENDS_TRANSACTION = "suspendsTransaction";
+    QName SUSPENDS_TRANSACTION_INTENT = new QName(SCA11_NS, SUSPENDS_TRANSACTION);
+    
+    String TRANSACTED_ONE_WAY = "transactedOneWay";
+    QName TRANSACTED_ONE_WAY_INTENT = new QName(SCA11_NS, TRANSACTED_ONE_WAY);
+    
+    String IMMEDIATE_ONE_WAY = "immediateOneWay";
+    QName IMMEDIATE_ONE_WAY_INTENT = new QName(SCA11_NS, IMMEDIATE_ONE_WAY);
+    
     String NOLISTENER = "noListener";
     QName NOLISTENER_INTENT = new QName(SCA11_NS, NOLISTENER);
     
