@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.IOException;
@@ -150,8 +151,9 @@ public class Shell {
         try {
             return func.call();
         } catch (Exception e) {
-            e.printStackTrace();
-            return singletonList(e);
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            return singletonList(sw);
         }
     }
 
