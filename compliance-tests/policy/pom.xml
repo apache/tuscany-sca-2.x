@@ -80,6 +80,8 @@
            <excludes>
               <exclude>**/POL_3001_TestCase.java</exclude><!--  see TUSCANY-3370 -->
               <exclude>**/POL_3002_TestCase.java</exclude><!--  see TUSCANY-3370 -->
+              <exclude>**/POL_3012_TestCase.java</exclude>
+              <exclude>**/POL_3020_TestCase.java</exclude>
               <exclude>**/POL_4003_TestCase.java</exclude><!--  see TUSCANY-3488 -->
               <exclude>**/POL_4028_TestCase.java</exclude><!--  see TUSCANY-xxxx - Passes in otest module -->
               <!-- transaction intents -->
