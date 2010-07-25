@@ -80,6 +80,10 @@
          <configuration>
            <excludes>
             <exclude>**/JCA_11008_TestCase.java</exclude><!--  could be due to out of date compliance artifacts -->
+            <exclude>**/JCA_8001_TestCase.java</exclude>
+            <exclude>**/JCA_8006_TestCase.java</exclude>
+            <exclude>**/JCA_8007_TestCase.java</exclude>
+            <exclude>**/JCA_8011_TestCase.java</exclude>
            </excludes>
          </configuration>
       </plugin>
