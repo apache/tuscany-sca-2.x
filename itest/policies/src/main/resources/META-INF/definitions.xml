@@ -47,31 +47,36 @@
     
     <policySet name="SuspendsTransactionPolicy" 
                provides="sca:suspendsTransaction" 
-               appliesTo="//binding | //implementation"
+               appliesTo="//binding.sca | //implementation.java"
                attachTo="IntentRefs('sca:suspendsTransaction')"/>    
                
     <policySet name="AuthorizationFineGrainPolicy" 
                provides="sca:authorization.fineGrain" 
-               appliesTo="//binding | //implementation" 
+               appliesTo="//binding.sca | //implementation.java" 
                attachTo="IntentRefs('sca:authorization') | IntentRefs('sca:authorization.fineGrain')"/>   
                
     <policySet name="ConfidentialityTransportPolicy" 
                provides="sca:confidentiality.transport" 
-               appliesTo="//binding | //implementation"
+               appliesTo="//binding.sca | //implementation.java"
                attachTo="IntentRefs('sca:confidentiality.transport')"/>               
 
     <policySet name="ConfidentialityMessagePolicy" 
                provides="sca:confidentiality.message" 
-               appliesTo="//binding | //implementation"
+               appliesTo="//binding.sca | //implementation.java"
                attachTo="IntentRefs('sca:confidentiality.message')"/>   
                
     <policySet name="ClientAuthenticationTransportPolicy" 
                provides="sca:clientAuthentication.transport" 
-               appliesTo="//binding | //implementation"
+               appliesTo="//binding.sca | //implementation.java"
                attachTo="IntentRefs('sca:clientAuthentication.transport')"/>  
                
     <policySet name="IntegrityTransportPolicy" 
                provides="sca:integrity.transport" 
-               appliesTo="//binding | //implementation"
-               attachTo="IntentRefs('sca:integrity.transport')"/>                
+               appliesTo="//binding.sca | //implementation.java"
+               attachTo="IntentRefs('sca:integrity.transport')"/>   
+               
+	<policySet name="ManagedTransactionGlobalPolicy"
+			   provides="sca:managedTransaction.global"
+			   appliesTo="//implementation.composite | //implementation.java"
+			   attachTo="IntentRefs('sca:managedTransaction.global')"/>	              	              
 </definitions>
