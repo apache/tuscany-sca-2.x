@@ -42,6 +42,7 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.EXTENSION;
 import static org.apache.tuscany.sca.assembly.xml.Constants.EXTENSION_QNAME;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -54,6 +55,7 @@ import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -61,12 +63,15 @@ import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * A componentType processor.
@@ -74,6 +79,8 @@ import org.w3c.dom.Document;
  * @version $Rev$ $Date$
  */
 public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor<ComponentType> {
+	
+    private StAXHelper staxHelper;
     
     /**
      * Constructs a new componentType processor.
@@ -83,10 +90,14 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
      * @param extensionAttributeProcessor
      * @param monitor
      */
-    public ComponentTypeProcessor(FactoryExtensionPoint modelFactories,
+    public ComponentTypeProcessor(ExtensionPointRegistry extensionPoints,
+    //public ComponentTypeProcessor(FactoryExtensionPoint modelFactories,
                                   StAXArtifactProcessor extensionProcessor,
                                   StAXAttributeProcessor extensionAttributeProcessor) {
-        super(modelFactories, extensionProcessor);
+        super(modelFactories(extensionPoints), extensionProcessor);
+        
+        // 
+        staxHelper = StAXHelper.getInstance(extensionPoints);
     }
     
     public ComponentType read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException {
@@ -364,6 +375,75 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
         writeEndDocument(writer);
     }
     
+    /**
+     * Write the value of a property - override to use correct method of creating an XMLStreamReader
+     * @param document
+     * @param element
+     * @param type
+     * @param writer
+     * @throws XMLStreamException
+     */
+    protected void writePropertyValue(Object propertyValue, QName element, QName type, XMLStreamWriter writer)
+        throws XMLStreamException {
+
+        if (propertyValue instanceof Document) {
+            Document document = (Document)propertyValue;
+            NodeList nodeList = document.getDocumentElement().getChildNodes();
+
+            for (int item = 0; item < nodeList.getLength(); ++item) {
+                Node node = nodeList.item(item);
+                int nodeType = node.getNodeType();
+                if (nodeType == Node.ELEMENT_NODE) {
+                	// Correct way to create a reader for a node object...
+                	XMLStreamReader reader = staxHelper.createXMLStreamReader(node);
+
+                    while (reader.hasNext()) {
+                        switch (reader.next()) {
+                            case XMLStreamConstants.START_ELEMENT:
+                                QName name = reader.getName();
+                                writer.writeStartElement(name.getPrefix(), name.getLocalPart(), name.getNamespaceURI());
+
+                                int namespaces = reader.getNamespaceCount();
+                                for (int i = 0; i < namespaces; i++) {
+                                    String prefix = reader.getNamespacePrefix(i);
+                                    String ns = reader.getNamespaceURI(i);
+                                    writer.writeNamespace(prefix, ns);
+                                }
+
+                                if (!"".equals(name.getNamespaceURI())) {
+                                    writer.writeNamespace(name.getPrefix(), name.getNamespaceURI());
+                                }
+
+                                // add the attributes for this element
+                                namespaces = reader.getAttributeCount();
+                                for (int i = 0; i < namespaces; i++) {
+                                    String ns = reader.getAttributeNamespace(i);
+                                    String prefix = reader.getAttributePrefix(i);
+                                    String qname = reader.getAttributeLocalName(i);
+                                    String value = reader.getAttributeValue(i);
+
+                                    writer.writeAttribute(prefix, ns, qname, value);
+                                }
+
+                                break;
+                            case XMLStreamConstants.CDATA:
+                                writer.writeCData(reader.getText());
+                                break;
+                            case XMLStreamConstants.CHARACTERS:
+                                writer.writeCharacters(reader.getText());
+                                break;
+                            case XMLStreamConstants.END_ELEMENT:
+                                writer.writeEndElement();
+                                break;
+                        }
+                    }
+                } else {
+                    writer.writeCharacters(node.getTextContent());
+                }
+            }
+        }
+    } // end method writePropertyValue
+    
     public void resolve(ComponentType componentType, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
 
         // Resolve component type services and references
@@ -377,5 +457,15 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
     
     public Class<ComponentType> getModelType() {
         return ComponentType.class;
+    }
+    
+    /**
+     * Returns the model factory extension point to use.
+     *
+     * @param extensionPoints
+     * @return
+     */
+    private static FactoryExtensionPoint modelFactories(ExtensionPointRegistry extensionPoints) {
+        return extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
     }
 }

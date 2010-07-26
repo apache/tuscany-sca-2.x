@@ -1149,7 +1149,6 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
      * @param writer
      * @throws XMLStreamException
      */
-    @Override
     protected void writePropertyValue(Object propertyValue, QName element, QName type, XMLStreamWriter writer)
         throws XMLStreamException {
 
