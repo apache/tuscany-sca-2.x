@@ -58,6 +58,23 @@
 		</complexType>
 	</element>
 
+	<element name="externalAttachment">
+		<complexType>
+ 			<sequence minOccurs="0" maxOccurs="unbounded">
+ 			<any namespace="##other"
+ 				processContents="lax"/>
+			</sequence>
+			<attribute name="intents" type="sca:listOfQNames"
+				 use="optional"/>
+ 			<attribute name="policySets" type="sca:listOfQNames"
+				 use="optional"/>
+			 <attribute name="attachTo" type="string"
+				 use="required"/>
+			 <anyAttribute namespace="##other"
+ 				processContents="lax"/>
+		</complexType>
+ 	</element>
+
 	<element name="policySet" type="sca:PolicySet"/>
 	<complexType name="PolicySet">
 		<choice minOccurs="0" maxOccurs="unbounded">
