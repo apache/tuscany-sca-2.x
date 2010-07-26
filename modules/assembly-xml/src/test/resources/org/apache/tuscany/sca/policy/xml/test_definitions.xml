@@ -201,4 +201,6 @@
              </description>
     </intent>
 
+   <externalAttachment policySets="test:TestPolicySetOne" attachTo="IntentRefs('test:testIntentOne')"/>
+ 
 </definitions>

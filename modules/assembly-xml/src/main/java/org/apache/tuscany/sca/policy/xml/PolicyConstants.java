@@ -49,7 +49,10 @@ public interface PolicyConstants {
     String REQUIRES = "requires";
     String EXCLUDES = "excludes";
     String DEFAULT = "default";
-
+    String EXTERNAL_ATTACHMENT = "externalAttachment";
+    String INTENTS = "intents";
+    String POLICY_SETS = "policySets";
+    
     String ALWAYS_PROVIDES = "alwaysProvides";
     String MAY_PROVIDE = "mayProvide";
     String INTENT_TYPE = "intentType";
@@ -68,7 +71,7 @@ public interface PolicyConstants {
     QName POLICY_INTENT_MAP_QUALIFIER_QNAME = new QName(SCA11_NS, INTENT_MAP_QUALIFIER);
     QName POLICY_SET_REFERENCE_QNAME = new QName(SCA11_NS, POLICY_SET_REFERENCE);
     QName INTENT_QUALIFIER_QNAME = new QName(SCA11_NS, INTENT_QUALIFIER);
-
+    QName EXTERNAL_ATTACHMENT_QNAME = new QName(SCA11_NS, EXTERNAL_ATTACHMENT);
     String QUALIFIED_INTENT_CONSTRAINS_ERROR = " - Qualified Intents must not specify 'constrains' attribute";
 
 }
