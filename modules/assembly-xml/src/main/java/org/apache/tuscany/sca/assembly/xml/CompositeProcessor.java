@@ -790,11 +790,11 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             // Write the component implementation
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                writeStart(writer, IMPLEMENTATION_COMPOSITE, new XAttr(NAME, ((Composite)implementation).getName()));
+                writeStart(writer, IMPLEMENTATION_COMPOSITE, new XAttr(NAME, ((Composite)implementation).getName()), policyProcessor.writePolicies(implementation));
 
                 //write extended attributes
                 this.writeExtendedAttributes(writer, (Composite)implementation, extensionAttributeProcessor, context);
-
+                
                 writeEnd(writer);
             } else {
                 extensionProcessor.write(component.getImplementation(), writer, context);
