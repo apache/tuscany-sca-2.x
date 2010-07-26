@@ -25,7 +25,9 @@ import org.apache.tuscany.sca.binding.ws.axis2.helloworld.HelloWorld;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.Ignore;
 
+@Ignore("TUSCANY-3632")
 public class HTTPSTestCase extends TestCase {
 
     private Node node;
