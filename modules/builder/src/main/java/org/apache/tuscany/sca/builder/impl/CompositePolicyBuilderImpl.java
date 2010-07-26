@@ -197,18 +197,10 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                         }
                     }
 
-                    if (implementation instanceof Composite) {
-                    	
-                    	// POL-4009 componentType attached policySets are ignored when policySets are 
-                    	// attached to the using component definition.
-                    	if ( !component.getPolicySets().isEmpty() || !composite.getPolicySets().isEmpty() ) {
-                    		implementation.getPolicySets().clear();
-                    	}
-                    		
+                    if (implementation instanceof Composite) {                    	                     		
                     	resolveAndCheck(implementation, context);
                         inherit(implementation, Intent.Type.implementation, true, component, composite);                                             
                         computePolicies((Composite)implementation, context);
-                        removeConstrainedIntents(implementation, context);
                         expandDefaultIntents(implementation,context);
                         checkIntentsResolved(implementation,context);
                     } else {
@@ -254,12 +246,41 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
     									error(context.getMonitor(), 
     										"TransactedOneWayWithManagedTransactionLocal", 
     		    			    			this,
+    		    			    			"reference",
     		    			    			epr.getComponent().getName(),
     		    			    			epr.getReference().getName());
+    								} else if ( Constants.PROPAGATES_TRANSACTION_INTENT.equals(eprIntent.getName())) {
+    									error(context.getMonitor(),
+    											"PropagatesTransactionWithLocalTran",
+    											this,
+    											"reference",
+    											epr.getComponent().getName(),
+    											epr.getReference().getName());
     								}
     							}
     						}
-    					}    			
+    					}    	
+    					for ( ComponentService service : component.getServices() ) {
+    						for ( Endpoint ep : service.getEndpoints() ) {
+    							for ( Intent epIntent : ep.getRequiredIntents() ) {
+    								if ( Constants.TRANSACTED_ONE_WAY_INTENT.equals(epIntent.getName())) {
+    									error(context.getMonitor(),
+    											"TransactedOneWayWithManagedTransactionLocal",
+    											this,
+    											"service",
+    											ep.getComponent().getName(),
+    											ep.getService().getName());
+    								} else if ( Constants.PROPAGATES_TRANSACTION_INTENT.equals(epIntent.getName())) {
+    									error(context.getMonitor(),
+    											"PropagatesTransactionWithLocalTran",
+    											this,
+    											"service",
+    											ep.getComponent().getName(),
+    											ep.getService().getName());
+    								}
+    							}
+    						}
+    					}
     				} else if ( Constants.NO_MANAGED_TRANSACTION_INTENT.equals(implIntent.getName())) {
     					for ( ComponentService service : component.getServices() ) {
     						for ( Endpoint ep : service.getEndpoints() ) {
@@ -268,8 +289,23 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
     									error(context.getMonitor(), 
     										"PropagatesTransactionWithNoManagedTran", 
     		    			    			this,
+    		    			    			"service",
     		    			    			ep.getComponent().getName(),
     		    			    			ep.getService().getName());
+    								}
+    							}
+    						}
+    					}
+    					for ( ComponentReference reference : component.getReferences() ) {
+    						for ( EndpointReference epr : reference.getEndpointReferences() ) {
+    							for ( Intent eprIntent : epr.getRequiredIntents() ) {
+    								if ( Constants.PROPAGATES_TRANSACTION_INTENT.equals(eprIntent.getName())) {
+    									error(context.getMonitor(),
+    											"PropagatesTransactionWithNoManagedTran",
+    											this,
+    											"reference",
+    											epr.getComponent().getName(),
+    											epr.getReference().getName());
     								}
     							}
     						}

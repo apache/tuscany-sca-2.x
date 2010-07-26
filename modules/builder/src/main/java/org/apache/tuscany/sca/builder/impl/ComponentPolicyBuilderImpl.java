@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
@@ -43,7 +42,6 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.Messages;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -465,23 +463,10 @@ public class ComponentPolicyBuilderImpl {
     
     protected void removeConstrainedIntents(PolicySubject subject, BuilderContext context) {
         List<Intent> intents = subject.getRequiredIntents();
-        QName baseType = null;
-        QName type = null;
         
         // Remove the intents whose @contrains do not include the current element
         ExtensionType extensionType = subject.getExtensionType();
-        
-        // Need to check elements that don't have an extension type, like Composites
-        // References don't have an extension type, but they're checked at wiring time
-        if ( extensionType == null ) {
-        	if ( subject instanceof Composite ) 
-        		type = Constants.COMPOSITE_QNAME;
-        } else {
-        	type = extensionType.getType();
-        	baseType = extensionType.getBaseType();
-        }
-        
-        if(type != null){
+        if(extensionType != null){
             List<Intent> copy = new ArrayList<Intent>(intents);
             for (Intent i : copy) {
             	List<ExtensionType> constrainedTypes = i.getConstrainedTypes();
@@ -491,8 +476,8 @@ public class ComponentPolicyBuilderImpl {
                 if (constrainedTypes.size() > 0){
                     boolean constraintFound = false;
                     for (ExtensionType constrainedType : i.getConstrainedTypes()){
-                        if (constrainedType.getType().equals(type) ||
-                            constrainedType.getType().equals(baseType)){
+                        if (constrainedType.getType().equals(extensionType.getType()) ||
+                            constrainedType.getType().equals(extensionType.getBaseType())){
                             constraintFound = true;
                             break;
                         }

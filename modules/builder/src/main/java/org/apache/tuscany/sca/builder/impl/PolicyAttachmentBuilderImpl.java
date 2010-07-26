@@ -112,16 +112,7 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
             if (definitions == null || (definitions.getPolicySets().isEmpty() && definitions.getExternalAttachments().isEmpty()) ) {
                 return composite;
             }
-            // Recursively apply the xpath against the composites referenced by <implementation.composite>
-            for (Component component : composite.getComponents()) {
-                Implementation impl = component.getImplementation();
-                if (impl instanceof Composite) {
-                    Composite patched = applyXPath((Composite)impl, definitions, monitor);
-                    if (patched != impl) {
-                        component.setImplementation(patched);
-                    }
-                }
-            }
+     
             
             Document document = null;
     
@@ -146,6 +137,23 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
             		for ( PolicySet ps : ea.getPolicySets() ) {            		            		                		                		
                 		attachPolicySetToNodes(composite, monitor, nodes, ps);
                 	}
+            	}
+            }
+            
+            // Recursively apply the xpath against the composites referenced by <implementation.composite>
+            // If the composite or component has policy sets attached, we have to ignore policy sets
+            // attached to the inner composite. 
+            if ( composite.getPolicySets().isEmpty() ) {
+            	for (Component component : composite.getComponents()) {
+            		if ( component.getPolicySets().isEmpty() ) {
+            			Implementation impl = component.getImplementation();
+            			if (impl instanceof Composite) {                	               
+            				Composite patched = applyXPath((Composite)impl, definitions, monitor);                                       
+            				if (patched != impl) {                    	                    	                    	                    	
+            					component.setImplementation(patched);
+            				}
+            			}
+            		}
             	}
             }
             
