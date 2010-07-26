@@ -22,7 +22,7 @@
              xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
              xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
 
-    <policySet name="ManagedTransactionPolicySet" provides="managedTransaction" appliesTo="implementation" attachTo="IntentRefs('sca:managedTransaction') | IntentRefs('sca:managedTransaction.local') | IntentRefs('sca:managedTransaction.global')">
+    <policySet name="ManagedTransactionPolicySet" provides="managedTransaction" appliesTo="//*[starts-with(name(.),'implementation')]" attachTo="IntentRefs('sca:managedTransaction') | IntentRefs('sca:managedTransaction.local') | IntentRefs('sca:managedTransaction.global')">
         <intentMap provides="managedTransaction">
             <qualifier name="global"> <!-- default="true" -->
                 <tuscany:transactionPolicy transactionTimeout="1200" action="REQUIRE_GLOBAL" />
@@ -34,23 +34,23 @@
     </policySet>
 
     <policySet name="NoManagedTransactionPolicySet" provides="noManagedTransaction"
-        appliesTo="implementation" attachTo="IntentRefs('sca:noManagedTransaction')">
+        appliesTo="//*[starts-with(name(.),'implementation')]" attachTo="IntentRefs('sca:noManagedTransaction')">
         <tuscany:transactionPolicy action="REQUIRE_NONE" />
     </policySet>
     
-    <policySet name="TransactedOneWayPolicySet" provides="transactedOneWay" appliesTo="binding" attachTo="IntentRefs('sca:transactedOneWay')">
+    <policySet name="TransactedOneWayPolicySet" provides="transactedOneWay" appliesTo="//*[starts-with(name(.),'binding')]" attachTo="IntentRefs('sca:transactedOneWay')">
         <tuscany:transactionPolicy action="PROPAGATE" />
     </policySet>    
     
-    <policySet name="ImmediateOneWayPolicySet" provides="immediateOneWay" appliesTo="binding" attachTo="IntentRefs('sca:immediateOneWay')">
+    <policySet name="ImmediateOneWayPolicySet" provides="immediateOneWay" appliesTo="//*[starts-with(name(.),'binding')]" attachTo="IntentRefs('sca:immediateOneWay')">
         <tuscany:transactionPolicy action="SUSPEND" />
     </policySet>    
 
-    <policySet name="PropagatesTransactionPolicySet" provides="propagatesTransaction" attachTo="IntentRefs('sca:propagatesTransaction')" appliesTo="binding">
+    <policySet name="PropagatesTransactionPolicySet" provides="propagatesTransaction" attachTo="IntentRefs('sca:propagatesTransaction')" appliesTo="//*[starts-with(name(.),'binding')]">
         <tuscany:transactionPolicy action="PROPAGATE" />
     </policySet>
 
-    <policySet name="SuspendsTransactionPolicySet" provides="suspendsTransaction" appliesTo="binding" attachTo="IntentRefs('sca:suspendsTransaction')">
+    <policySet name="SuspendsTransactionPolicySet" provides="suspendsTransaction" appliesTo="//*[starts-with(name(.),'binding')]" attachTo="IntentRefs('sca:suspendsTransaction')">
         <tuscany:transactionPolicy action="SUSPEND" />
     </policySet>  
 
