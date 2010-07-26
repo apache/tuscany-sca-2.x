@@ -475,7 +475,7 @@ public class ComponentPolicyBuilderImpl {
             	
                 if (constrainedTypes.size() > 0){
                     boolean constraintFound = false;
-                    for (ExtensionType constrainedType : i.getConstrainedTypes()){
+                    for (ExtensionType constrainedType : constrainedTypes){
                         if (constrainedType.getType().equals(extensionType.getType()) ||
                             constrainedType.getType().equals(extensionType.getBaseType())){
                             constraintFound = true;
