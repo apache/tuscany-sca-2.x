@@ -26,4 +26,4 @@ org.apache.tuscany.sca.policy.xml.BindingTypeProcessor;qname=http://docs.oasis-o
 org.apache.tuscany.sca.policy.xml.ImplementationTypeProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200912#implementationType,model=org.apache.tuscany.sca.policy.ImplementationType
 org.apache.tuscany.sca.policy.xml.IntentProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200912#intent,model=org.apache.tuscany.sca.policy.Intent
 org.apache.tuscany.sca.policy.xml.PolicySetProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200912#policySet,model=org.apache.tuscany.sca.policy.PolicySet
-
+org.apache.tuscany.sca.policy.xml.ExternalAttachmentProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200912#externalAttachment,model=org.apache.tuscany.sca.policy.ExternalAttachment
