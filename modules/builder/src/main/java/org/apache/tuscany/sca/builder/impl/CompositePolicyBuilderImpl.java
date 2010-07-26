@@ -37,7 +37,9 @@ import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -105,14 +107,14 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                             for (Endpoint ep : componentService.getEndpoints()) {
                                 if (componentService.getInterfaceContract() != null) {
                                     // Inherit from the component.service.interface
-                                    inherit(ep, Intent.Type.interaction, true, componentService.getInterfaceContract().getInterface());
+                                    inherit(ep, null, true, componentService.getInterfaceContract().getInterface());
                                 }
                                 
                                 // Inherit from binding
-                                inherit(ep, Intent.Type.interaction, true, ep.getBinding());
+                                inherit(ep, null, true, ep.getBinding());
                                 
                                 // Inherit from composite/component/service
-                                inherit(ep, Intent.Type.interaction, true, ep.getService(), ep.getComponent(), composite );
+                                inherit(ep, null, true, ep.getService(), ep.getComponent(), composite );
                                 
 
 
@@ -160,14 +162,14 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
 
                                 // Inherit from the component.reference.interface
                                 if (componentReference.getInterfaceContract() != null) {
-                                    inherit(epr, Intent.Type.interaction, true, componentReference.getInterfaceContract().getInterface());
+                                    inherit(epr, null, true, componentReference.getInterfaceContract().getInterface());
                                 }
                                 
                                 // Inherit from binding
-                                inherit(epr, Intent.Type.interaction, true, epr.getBinding());
+                                inherit(epr, null, true, epr.getBinding());
 
                                 // Inherit from composite/component/reference
-                                inherit(epr, Intent.Type.interaction, true,  epr.getReference(), epr.getComponent(),  composite);
+                                inherit(epr, null, true,  epr.getReference(), epr.getComponent(),  composite);
                                 
                               
 
@@ -203,6 +205,7 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                     		implementation.getPolicySets().clear();
                     	}
                     		
+                    	resolveAndCheck(implementation, context);
                         inherit(implementation, Intent.Type.implementation, true, component, composite);                                             
                         computePolicies((Composite)implementation, context);
                         expandDefaultIntents(implementation,context);
@@ -228,12 +231,89 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                     monitor.popContext();
                 }
             }
+            removeConstrainedIntents(composite, context);
         } finally {
             monitor.popContext();
         }
     }
-    
-    private void checkForNoListenerIntent(Endpoint ep, BuilderContext context) {
+ 
+    private void validateTransactionIntents(Composite composite, BuilderContext context) {    	    		       	   
+    	 
+    	for ( Component component : composite.getComponents() ) {    	
+    		if ( component.getImplementation() != null ) {
+    			if ( component.getImplementation() instanceof Composite ) 
+    				validateTransactionIntents((Composite) component.getImplementation(), context);    		   
+    			
+    			for ( Intent implIntent : component.getImplementation().getRequiredIntents() ) {
+    				if ( Constants.MANAGED_TRANSACTION_LOCAL_INTENT.equals(implIntent.getName() ) ) {
+    					for ( ComponentReference reference : component.getReferences() ) {
+    						for ( EndpointReference epr : reference.getEndpointReferences() ) {
+    							for ( Intent eprIntent : epr.getRequiredIntents() ) {
+    								if ( Constants.TRANSACTED_ONE_WAY_INTENT.equals(eprIntent.getName())) {
+    									error(context.getMonitor(), 
+    										"TransactedOneWayWithManagedTransactionLocal", 
+    		    			    			this,
+    		    			    			epr.getComponent().getName(),
+    		    			    			epr.getReference().getName());
+    								}
+    							}
+    						}
+    					}    			
+    				} else if ( Constants.NO_MANAGED_TRANSACTION_INTENT.equals(implIntent.getName())) {
+    					for ( ComponentService service : component.getServices() ) {
+    						for ( Endpoint ep : service.getEndpoints() ) {
+    							for ( Intent epIntent : ep.getRequiredIntents() ) {
+    								if ( Constants.PROPAGATES_TRANSACTION_INTENT.equals(epIntent.getName())) {
+    									error(context.getMonitor(), 
+    										"PropagatesTransactionWithNoManagedTran", 
+    		    			    			this,
+    		    			    			ep.getComponent().getName(),
+    		    			    			ep.getService().getName());
+    								}
+    							}
+    						}
+    					}
+    				}
+    			}
+    			     		
+    			
+       			for ( ComponentReference reference : component.getReferences()) {
+    				for ( EndpointReference epr : reference.getEndpointReferences() ) {
+    					for ( Intent eprIntent : epr.getRequiredIntents() ) {
+    						if ( Constants.TRANSACTED_ONE_WAY_INTENT.equals(eprIntent.getName()) ) {
+    							for ( Operation o : epr.getComponentReferenceInterfaceContract().getInterface().getOperations() ) {
+    								if ( !o.isNonBlocking() ) {
+    									error(context.getMonitor(),
+    											"TransactedOneWayWithTwoWayOp",
+    											this,
+    											reference.getName(),
+    											o.getName());
+    								}
+    									
+    							}
+    						} else if ( Constants.IMMEDIATE_ONE_WAY_INTENT.equals(eprIntent.getName())) {
+    							for ( Operation o : epr.getComponentReferenceInterfaceContract().getInterface().getOperations() ) {
+    								if ( !o.isNonBlocking() ) {
+    									error(context.getMonitor(),
+    											"ImmediateOneWayWithTwoWayOp",
+    											this,
+    											reference.getName(),
+    											o.getName());
+    								}
+    									
+    							}
+    						}
+    					}
+    					
+    				}
+    			}
+    		}   
+    	}
+    }
+    	        					 	
+   
+
+	private void checkForNoListenerIntent(Endpoint ep, BuilderContext context) {
 		PolicyHelper helper = new PolicyHelper();
 		if ( helper.getIntent(ep, NOLISTENER_INTENT) != null ) {
 			  error(context.getMonitor(), 
@@ -272,6 +352,7 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
      */
     protected void checkPolicies(Composite composite, BuilderContext context) throws CompositeBuilderException{
         policyAppliesToBuilder.build(composite, context);
+        validateTransactionIntents(composite, context);
     }
 
     protected void buildPolicies(Composite composite, BuilderContext context) {
