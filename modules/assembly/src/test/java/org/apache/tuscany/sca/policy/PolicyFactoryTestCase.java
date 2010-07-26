@@ -52,4 +52,22 @@ public class PolicyFactoryTestCase {
         policySet.setName(new QName("http://test", "reliability"));
         assertEquals(policySet.getName(), new QName("http://test", "reliability"));
     }
+    
+    @Test
+    public void testCreateExternalAttachment() {
+    	ExternalAttachment attachment = factory.createExternalAttachment();    	
+    	attachment.setAttachTo("sca:component");
+    	
+    	Intent intent = factory.createIntent();
+    	intent.setName(new QName("http://test", "reliability"));
+    	attachment.getIntents().add(intent);
+    	
+    	PolicySet policySet = factory.createPolicySet();
+    	policySet.setName(new QName("http://test", "reliability"));
+    	attachment.getPolicySets().add(policySet);
+    	    
+    	assertEquals("sca:component", attachment.getAttachTo());
+    	assertEquals(intent, attachment.getIntents().get(0));
+    	assertEquals(policySet, attachment.getPolicySets().get(0));
+    }
 }

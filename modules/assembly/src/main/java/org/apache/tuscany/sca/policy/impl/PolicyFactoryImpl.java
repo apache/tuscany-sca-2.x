@@ -28,6 +28,8 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.Qualifier;
 
+import org.apache.tuscany.sca.policy.ExternalAttachment;
+
 /**
  * A factory for the policy model.
  * 
@@ -65,6 +67,10 @@ public abstract class PolicyFactoryImpl implements PolicyFactory {
 
     public ExtensionType createExtensionType() {
         return new ExtensionTypeImpl();
+    }
+    
+    public ExternalAttachment createExternalAttachment() {
+    	return new ExternalAttachmentImpl();
     }
 
 }

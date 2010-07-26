@@ -64,4 +64,9 @@ public interface PolicyFactory {
     BindingType createBindingType();
     ImplementationType createImplementationType();
 
+    /**
+     * Create a new ExternalAttachment
+     * @return
+     */
+    ExternalAttachment createExternalAttachment();
 }
