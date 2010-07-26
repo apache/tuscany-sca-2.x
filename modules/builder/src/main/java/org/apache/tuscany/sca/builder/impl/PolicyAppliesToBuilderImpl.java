@@ -83,44 +83,47 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
         }
     }
     
-    private Composite checkAppliesTo(Document document, Map<PolicySet, List<PolicySubject>> appliesToSubjects, Composite composite, BuilderContext context) throws Exception {
-        // look at policies recursively
-        for (Component component : composite.getComponents()) {
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                checkAppliesTo(document, appliesToSubjects, (Composite)implementation, context);
-            }
-        }
+    private Composite checkAppliesTo(Document document, Map<PolicySet, List<PolicySubject>> appliesToSubjects, Composite topComposite, BuilderContext context) throws Exception {
+ 
+    	for ( Component component : topComposite.getComponents() ) {
+    		if ( component.getImplementation() instanceof Composite ) {
+    			Composite nested = (Composite) component.getImplementation();
+    			checkAppliesTo(saveAsDOM(nested),new HashMap<PolicySet, List<PolicySubject>>(), nested, context );
+    		}
+    	}
 
-        for (Component component : composite.getComponents()) {
+    	for (Component component : topComposite.getComponents()) {
 
-            for (ComponentService componentService : component.getServices()) {
-                for (Endpoint ep : componentService.getEndpoints()) {
-                    if (ep.getBinding() instanceof PolicySubject) {
-                        checkAppliesToSubject(document, appliesToSubjects, composite, (PolicySubject)ep.getBinding(), ep.getPolicySets());
-                    }
-                }
-            }
+    		for (ComponentService componentService : component.getServices()) {
+    			for (Endpoint ep : componentService.getEndpoints()) {
+    				checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep, ep.getPolicySets());
+    				if (ep.getBinding() instanceof PolicySubject) {
+    					checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getBinding(), ep.getPolicySets());
+    				}
+    			}
+    		}
 
-            for (ComponentReference componentReference : component.getReferences()) {
-                for (EndpointReference epr : componentReference.getEndpointReferences()) {
-                    if (epr.getBinding() instanceof PolicySubject) {
-                        checkAppliesToSubject(document, appliesToSubjects, composite, (PolicySubject)epr.getBinding(), epr.getPolicySets());
-                    }
-                }
-            }
+    		for (ComponentReference componentReference : component.getReferences()) {
+    			for (EndpointReference epr : componentReference.getEndpointReferences()) {
+    				checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr, epr.getPolicySets());
+    				if (epr.getBinding() instanceof PolicySubject) {
+    					checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getBinding(), epr.getPolicySets());
+    				}
+    			}
+    		}
 
-            Implementation implementation = component.getImplementation();
-            if (implementation != null && 
-                implementation instanceof PolicySubject) {
-                checkAppliesToSubject(document, appliesToSubjects, composite, implementation, implementation.getPolicySets());
-            }
-        }
-        
-        return composite;
+    		Implementation implementation = component.getImplementation();
+    		if (implementation != null && 
+    				implementation instanceof PolicySubject) {
+    			checkAppliesToSubject(document, appliesToSubjects, topComposite, implementation, implementation.getPolicySets());
+    		}
+    	}
+
+        return topComposite;
     }
     
-    /**
+
+	/**
      * Checks that all the provided policy sets apply to the provided policy subject
      * 
      * @param document
@@ -150,7 +153,8 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
                         Node node = nodes.item(i);
                         String index = getStructuralURI(node);
                         PolicySubject subject = lookup(composite, index);
-                        subjects.add(subject);
+                        if ( subject != null ) 
+                        	subjects.add(subject);
                     }
                 }
             }
