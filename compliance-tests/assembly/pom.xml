@@ -90,6 +90,9 @@
               <exclude>**/ASM_8014_TestCase.java</exclude><!--  see TUSCANY-xxx -->
               <exclude>**/ASM_6008_TestCase.java</exclude><!--  see TUSCANY-xxx -->
               <exclude>**/ASM_6034_TestCase.java</exclude><!--  see TUSCANY-xxx -->
+              <exclude>**/ASM_8017_TestCase.java</exclude><!--  see TUSCANY-xxx -->
+              <exclude>**/ASM_8018_TestCase.java</exclude><!--  see TUSCANY-xxx -->
+              <exclude>**/ASM_10003_TestCase.java</exclude><!--  see TUSCANY-xxx -->
 
               <!-- actually is working but the err msgs come out in a different order so the msg text test fails -->
               <exclude>**/ASM_13004_TestCase.java</exclude>
