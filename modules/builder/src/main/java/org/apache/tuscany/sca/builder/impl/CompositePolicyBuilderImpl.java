@@ -208,6 +208,7 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                     	resolveAndCheck(implementation, context);
                         inherit(implementation, Intent.Type.implementation, true, component, composite);                                             
                         computePolicies((Composite)implementation, context);
+                        removeConstrainedIntents(implementation, context);
                         expandDefaultIntents(implementation,context);
                         checkIntentsResolved(implementation,context);
                     } else {
