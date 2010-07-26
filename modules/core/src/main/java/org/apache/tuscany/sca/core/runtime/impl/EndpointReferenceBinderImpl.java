@@ -719,7 +719,11 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         if(bindingType != null){
             List<Intent> copy = new ArrayList<Intent>(intents);
             for (Intent i : copy) {
-                if (i.getConstrainedTypes().size() > 0){
+            	List<ExtensionType> constrainedTypes = i.getConstrainedTypes();
+            	if (( constrainedTypes.size() == 0 ) && ( i.getQualifiableIntent() != null ) )  
+            		constrainedTypes = i.getQualifiableIntent().getConstrainedTypes();
+            	
+                if (constrainedTypes.size() > 0){               
                     boolean constraintFound = false;
                     for (ExtensionType constrainedType : i.getConstrainedTypes()){
                         if (constrainedType.getType().equals(bindingType.getType()) ||
