@@ -270,7 +270,7 @@ public class ComponentBuilderImpl {
             calculateBindings(component, componentService, componentTypeService, context);
 
             // add callback reference model objects
-            createCallbackReference(component, componentService);
+            createCallbackReference(component, componentService, monitor);
         }
     }
 
@@ -312,7 +312,7 @@ public class ComponentBuilderImpl {
             calculateBindings(componentReference, componentTypeReference);
 
             // add callback service model objects
-            createCallbackService(component, componentReference);
+            createCallbackService(component, componentReference, monitor);
 
             // Propagate autowire setting from the component down the structural 
             // hierarchy
@@ -1156,12 +1156,12 @@ public class ComponentBuilderImpl {
      * @param component
      * @param service
      */
-    private void createCallbackReference(Component component, ComponentService service) {
+    private void createCallbackReference(Component component, ComponentService service, Monitor monitor) {
 
         // if the service has a callback interface create a reference
         // to represent the callback 
         if (service.getInterfaceContract() != null && // can be null in unit tests
-        service.getInterfaceContract().getCallbackInterface() != null) {
+            service.getInterfaceContract().getCallbackInterface() != null) {
 
             ComponentReference callbackReference = assemblyFactory.createComponentReference();
             callbackReference.setForCallback(true);
@@ -1197,7 +1197,19 @@ public class ComponentBuilderImpl {
                     if (((CompositeService)implService).getPromotedService().isUnresolved() == false){
                         String referenceName = ((CompositeService)implService).getPromotedService().getName();
                         ComponentReference promotedReference = ((CompositeService)implService).getPromotedComponent().getReference(referenceName);
-                        implCompReference.getPromotedReferences().add(promotedReference);
+                        
+                        if (promotedReference != null){
+                            implCompReference.getPromotedReferences().add(promotedReference);
+                        } else {
+                            Monitor.error(monitor,
+                                          this,
+                                          Messages.ASSEMBLY_VALIDATION,
+                                          "PromotedCallbackReferenceNotFound",
+                                          component.getName(),
+                                          service.getName(),
+                                          ((CompositeService)implService).getPromotedComponent().getName(),
+                                          referenceName);
+                        }
                     }                 
                     implReference = implCompReference;
                     
@@ -1263,7 +1275,7 @@ public class ComponentBuilderImpl {
      * @param component
      * @param service
      */
-    private void createCallbackService(Component component, ComponentReference reference) {
+    private void createCallbackService(Component component, ComponentReference reference, Monitor monitor) {
         if (reference.getInterfaceContract() != null && // can be null in unit tests
             reference.getInterfaceContract().getCallbackInterface() != null) {
             ComponentService callbackService = assemblyFactory.createComponentService();
@@ -1299,7 +1311,19 @@ public class ComponentBuilderImpl {
                     if (((CompositeReference)implReference).getPromotedReferences().get(0).isUnresolved() == false){
                         String serviceName = ((CompositeReference)implReference).getPromotedReferences().get(0).getName();
                         ComponentService promotedService = ((CompositeReference)implReference).getPromotedComponents().get(0).getService(serviceName);
-                        implCompService.setPromotedService(promotedService);
+                        
+                        if (promotedService != null){
+                            implCompService.setPromotedService(promotedService);
+                        } else {
+                            Monitor.error(monitor,
+                                          this,
+                                          Messages.ASSEMBLY_VALIDATION,
+                                          "PromotedCallbackServiceNotFound",
+                                          component.getName(),
+                                          reference.getName(),
+                                          ((CompositeReference)implReference).getPromotedComponents().get(0).getName(),
+                                          serviceName);
+                        }
                     }
                     
                     implService = implCompService;
