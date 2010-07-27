@@ -497,6 +497,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                                       " " +
                                       epIntent.toString() +
                                       " ");
+                    matchAudit.appendSeperator();
                     return false;
                 }
             }
@@ -550,6 +551,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             (noEndpointReferencePolicies) &&
             (noEndpointPolicies)) {
             matchAudit.append("Match because there are no intents or policies ");
+            matchAudit.appendSeperator();
             return true;
         }        
         
@@ -620,6 +622,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         // if there are unresolved intents the service and reference don't match
         if (eprIntents.size() > 0){
             matchAudit.append("No match because there are unresolved intents " + eprIntents.toString() + " ");
+            matchAudit.appendSeperator();
             return false;
         }   
         
@@ -627,6 +630,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         // they match
         if (noEndpointPolicies && noEndpointReferencePolicies){
             matchAudit.append("Match because the intents are resolved and there are no policy sets ");
+            matchAudit.appendSeperator();
             return true;
         }
         
@@ -634,11 +638,13 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         // the don't match
         if (noEndpointPolicies && !noEndpointReferencePolicies) {
             matchAudit.append("No match because there are policy sets at the endpoint reference but not at the endpoint ");
+            matchAudit.appendSeperator();
             return false;
         }
         
         if (!noEndpointPolicies && noEndpointReferencePolicies){
             matchAudit.append("No match because there are policy sets at the endpoint but not at the endpoint reference ");
+            matchAudit.appendSeperator();
             return false;
         }
         
@@ -648,6 +654,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         Set<PolicySet> servicePolicySet = new HashSet<PolicySet>(endpoint.getPolicySets());
         if(referencePolicySet.equals(servicePolicySet)){
             matchAudit.append("Match because the policy sets on both sides are eactly the same ");
+            matchAudit.appendSeperator();
             return true;
         }
         
@@ -680,6 +687,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                               " and " +
                               epLanguage +
                               " ");
+            matchAudit.appendSeperator();
             return false;
         }
         
@@ -702,10 +710,12 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                 
         if (!match){
             matchAudit.append("No match because the language specific matching failed ");
+            matchAudit.appendSeperator();
             endpointReference.getPolicySets().clear();
             endpointReference.getPolicySets().addAll(originalPolicySets);
         } else {
             matchAudit.append("Match because the language specific matching succeeded ");
+            matchAudit.appendSeperator();
         }
         
         return match;
@@ -768,6 +778,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         
         if (endpointReference.getReference().getInterfaceContract() == null){
             matchAudit.append("Match because there is no interface contract on the reference ");
+            matchAudit.appendSeperator();
             return true;
         }
         
@@ -779,6 +790,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             // live with this for the case where there is no central matching of references
             // to services. Any errors will be detected when the message flows.
             matchAudit.append("Match because the endpoint is remote and we don't have a copy of it's interface contract ");
+            matchAudit.appendSeperator();
             return true;
         }
              
@@ -791,6 +803,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         } else {
             matchAudit.append("Match because the interface contract mapper succeeded ");
         }
+        
+        matchAudit.appendSeperator();
         
         return match;
     }

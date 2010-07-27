@@ -216,6 +216,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
                              source.getName() + 
                              " target = " +
                              target.getName());
+                audit.appendSeperator();
             }
             return false;
         }
@@ -226,6 +227,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
                              source.getName() + 
                              " target = " +
                              target.getName());
+                audit.appendSeperator();
             }            
             return false;
         }
@@ -236,6 +238,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
                              source.isNonBlocking() + 
                              " target = " +
                              target.isNonBlocking());
+                audit.appendSeperator();
             }            
             return false;
         }
@@ -276,6 +279,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         if (!isCompatible(targetOutputType, sourceOutputType, passByValue, audit)) {
             if (audit != null){
                 audit.append(" output types");
+                audit.appendSeperator();
             } 
             return false;
         }
@@ -283,6 +287,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         if (sourceInputType.size() != targetInputType.size()) {
             if (audit != null){
                 audit.append("different number of input types");
+                audit.appendSeperator();
             } 
             return false;
         }
@@ -292,6 +297,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             if (!isCompatible(sourceInputType.get(i), targetInputType.get(i), passByValue, audit)) {
                 if (audit != null){
                     audit.append(" input types");
+                    audit.appendSeperator();
                 } 
                 return false;
             }
@@ -313,6 +319,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             if (!found) {
                 if (audit != null){
                     audit.append("Fault types incompatible");
+                    audit.appendSeperator();
                 } 
                 return false;
             }
@@ -377,8 +384,10 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 				.isRemotable()) {
 			if (!silent) {
 				audit.append("Remotable settings do not match: "+ source + "," + target); // TODO see if serialization is sufficient
+				audit.appendSeperator();
 				throw new IncompatibleInterfaceContractException(
 						"Remotable settings do not match", source, target);
+				
 			} else {
 				return false;
 			}
