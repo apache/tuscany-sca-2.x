@@ -96,7 +96,7 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
 
     		for (ComponentService componentService : component.getServices()) {
     			for (Endpoint ep : componentService.getEndpoints()) {
-    				checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep, ep.getPolicySets());
+    				checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getService(), ep.getPolicySets());
     				if (ep.getBinding() instanceof PolicySubject) {
     					checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getBinding(), ep.getPolicySets());
     				}
@@ -105,7 +105,7 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
 
     		for (ComponentReference componentReference : component.getReferences()) {
     			for (EndpointReference epr : componentReference.getEndpointReferences()) {
-    				checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr, epr.getPolicySets());
+    				checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getReference(), epr.getPolicySets());
     				if (epr.getBinding() instanceof PolicySubject) {
     					checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getBinding(), epr.getPolicySets());
     				}
