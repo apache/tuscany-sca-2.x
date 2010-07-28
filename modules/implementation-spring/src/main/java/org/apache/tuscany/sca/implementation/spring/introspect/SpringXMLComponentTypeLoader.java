@@ -329,7 +329,7 @@ public class SpringXMLComponentTypeLoader {
                                 // Read the context definition for the identified imported resource
                                 readContextDefinition(resolver,
                                                       ireader,
-                                                      contextPath,
+                                                      resourcePath, // The new context path
                                                       beans,
                                                       services,
                                                       references,
