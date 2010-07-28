@@ -34,4 +34,7 @@ public class HelloWorldClient implements HelloWorldService {
         return ref.sayHello2(firstName, lastName);
     }
 
+    public BeanA sayHello3(BeanA bean) {
+        return ref.sayHello3(bean);
+    }
 }

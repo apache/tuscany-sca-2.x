@@ -18,6 +18,7 @@
  */
 package test;
 
+import helloworld.BeanA;
 import helloworld.HelloWorldService;
 
 import java.io.BufferedReader;
@@ -33,6 +34,7 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class BindingTestCase {
@@ -55,7 +57,7 @@ public class BindingTestCase {
         String response = br.readLine();
         Assert.assertEquals("foo(\"Hello petra arnold\");", response);
 
-    }
+    } 
 
     @Test
     public void testReference() throws MalformedURLException, IOException {
@@ -64,8 +66,22 @@ public class BindingTestCase {
 
         Assert.assertEquals("Hello beate", client.sayHello("beate"));
         Assert.assertEquals("Hello beate arnold", client.sayHello2("beate", "arnold"));
-
     }
+    
+    @Test
+    @Ignore("TUSCANY-3635")
+    public void testComplexParams() throws MalformedURLException, IOException {
+        
+        HelloWorldService client = node.getService(HelloWorldService.class, "HelloWorldClient");
+
+        BeanA bean = new BeanA();
+        bean.setB(true);
+        bean.setS("Fred");
+        bean.setX(2);
+        bean.setX(5);
+
+        Assert.assertEquals("Fred", client.sayHello3(bean).getS());
+    }    
 
     @BeforeClass
     public static void init() throws Exception {
