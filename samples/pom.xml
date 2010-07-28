@@ -60,6 +60,7 @@
                 <module>webapps/helloworld-jsp</module>
                 <module>webapps/helloworld-stripes</module>
                 <module>webapps/helloworld-servlet</module>
+                <module>webapps/helloworld-spring</module>
 
                 <!-- contributions - SCA samples -->
 
