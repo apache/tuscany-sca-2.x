@@ -43,11 +43,11 @@ public class SpringContextStub {
     private Method getBeanMethod;
 
     public SpringContextStub(RuntimeComponent component,
-                               SpringImplementation implementation,
-                               ProxyFactory proxyService,
-                               JavaPropertyValueObjectFactory propertyValueObjectFactory) {
+                             SpringImplementation implementation,
+                             ProxyFactory proxyService,
+                             JavaPropertyValueObjectFactory propertyValueObjectFactory) {
 
-        initTie(component, implementation, propertyValueObjectFactory);        
+        initTie(component, implementation, propertyValueObjectFactory);
 
     }
 
@@ -60,14 +60,21 @@ public class SpringContextStub {
 
         try {
 
-            Class<?> stubClass = Class.forName("org.apache.tuscany.sca.implementation.spring.runtime.context.SpringImplementationStub", true, cl);
-            Constructor<?> stubConstructor = stubClass.getConstructor(new Class<?>[]{Object.class});
-            Object stub = stubConstructor.newInstance(new SpringImplementationTie(implementation, component, propertyValueObjectFactory));
+            Class<?> stubClass =
+                Class.forName("org.apache.tuscany.sca.implementation.spring.runtime.context.SpringImplementationStub",
+                              true,
+                              cl);
+            Constructor<?> stubConstructor = stubClass.getConstructor(new Class<?>[] {Object.class});
+            Object stub =
+                stubConstructor.newInstance(new SpringImplementationTie(implementation, component,
+                                                                        propertyValueObjectFactory));
 
-            Class<?> tieClass = Class.forName("org.apache.tuscany.sca.implementation.spring.runtime.context.SpringContextTie", true, cl);
-            Constructor<?> tieConstructor = tieClass.getConstructor(new Class<?>[]{stubClass, List.class});
+            Class<?> tieClass =
+                Class
+                    .forName("org.apache.tuscany.sca.implementation.spring.runtime.context.SpringContextTie", true, cl);
+            Constructor<?> tieConstructor = tieClass.getConstructor(new Class<?>[] {stubClass, List.class});
             this.tie = tieConstructor.newInstance(stub, implementation.getResource());
-            
+
             this.startMethod = tieClass.getMethod("start");
             this.closeMethod = tieClass.getMethod("close");
             this.getBeanMethod = tieClass.getMethod("getBean", String.class);
@@ -85,7 +92,7 @@ public class SpringContextStub {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -98,7 +105,7 @@ public class SpringContextStub {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -111,7 +118,7 @@ public class SpringContextStub {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -126,7 +133,7 @@ public class SpringContextStub {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

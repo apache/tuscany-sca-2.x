@@ -32,8 +32,8 @@ import org.apache.tuscany.sca.implementation.spring.processor.ReferenceAnnotatio
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.UrlResource;
@@ -48,11 +48,11 @@ public class SpringContextTie {
 
     private AbstractApplicationContext springContext;
     private SpringImplementationStub implementation;
-    
+
     public SpringContextTie(SpringImplementationStub implementation, List<URL> resource) {
         this.implementation = implementation;
         SCAParentApplicationContext scaParentContext = new SCAParentApplicationContext(implementation);
-        springContext = createApplicationContext(scaParentContext, resource);  
+        springContext = createApplicationContext(scaParentContext, resource);
     }
 
     public void start() {
@@ -71,30 +71,29 @@ public class SpringContextTie {
     /**
      * Include BeanPostProcessor to deal with SCA Annotations in Spring Bean
      */
-    private AbstractApplicationContext createApplicationContext(SCAParentApplicationContext scaParentContext, List<URL> resources) {
+    private AbstractApplicationContext createApplicationContext(SCAParentApplicationContext scaParentContext,
+                                                                List<URL> resources) {
 
-    	XmlBeanFactory beanFactory = null;
-    	AbstractApplicationContext appContext = null;
-    	
-    	if (resources.size() > 1) {
-    		GenericApplicationContext appCtx = 
-    			new SCAGenericApplicationContext(scaParentContext, implementation.getClassLoader());
-    		XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appCtx);
-    		for (URL resource : resources) {
-    			xmlReader.loadBeanDefinitions(new UrlResource(resource));
-    		}
-    		xmlReader.setBeanClassLoader(implementation.getClassLoader());    		
-           	includeAnnotationProcessors(appCtx.getBeanFactory());
-    		return appCtx;    		
-    	} 
-        
-    	// use the generic application context as default
-    	beanFactory = new XmlBeanFactory(new UrlResource(resources.get(0)));
+        XmlBeanFactory beanFactory = null;
+        AbstractApplicationContext appContext = null;
+
+        if (resources.size() > 1) {
+            GenericApplicationContext appCtx =
+                new SCAGenericApplicationContext(scaParentContext, implementation.getClassLoader());
+            XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appCtx);
+            for (URL resource : resources) {
+                xmlReader.loadBeanDefinitions(new UrlResource(resource));
+            }
+            xmlReader.setBeanClassLoader(implementation.getClassLoader());
+            includeAnnotationProcessors(appCtx.getBeanFactory());
+            return appCtx;
+        }
+
+        // use the generic application context as default
+        beanFactory = new XmlBeanFactory(new UrlResource(resources.get(0)));
         beanFactory.setBeanClassLoader(implementation.getClassLoader());
         includeAnnotationProcessors(beanFactory);
-        appContext = new SCAGenericApplicationContext(beanFactory, 
-                                                      scaParentContext,
-                                                      implementation.getClassLoader());
+        appContext = new SCAGenericApplicationContext(beanFactory, scaParentContext, implementation.getClassLoader());
         return appContext;
     }
 
@@ -106,7 +105,7 @@ public class SpringContextTie {
      * Include BeanPostProcessor to deal with SCA Annotations in Spring Bean
      */
     private void includeAnnotationProcessors(ConfigurableListableBeanFactory beanFactory) {
-        
+
         // Processor to deal with @Init and @Destroy SCA Annotations
         BeanPostProcessor initDestroyProcessor = new InitDestroyAnnotationProcessor();
         beanFactory.addBeanPostProcessor(initDestroyProcessor);
@@ -115,19 +114,20 @@ public class SpringContextTie {
         ComponentStub component = new ComponentStub(implementation.getComponentTie());
         BeanPostProcessor referenceProcessor = new ReferenceAnnotationProcessor(component);
         beanFactory.addBeanPostProcessor(referenceProcessor);
-        
+
         // Processor to deal with @Property SCA Annotations
         PropertyValueStub pvs = new PropertyValueStub(implementation.getPropertyValueTie());
         BeanPostProcessor propertyProcessor = new PropertyAnnotationProcessor(pvs);
         beanFactory.addBeanPostProcessor(propertyProcessor);
-        
+
         // Processor to deal with @ComponentName SCA Annotations
-        BeanPostProcessor componentNameProcessor = new ComponentNameAnnotationProcessor(implementation.getComponentName());
+        BeanPostProcessor componentNameProcessor =
+            new ComponentNameAnnotationProcessor(implementation.getComponentName());
         beanFactory.addBeanPostProcessor(componentNameProcessor);
-        
+
         // Processor to deal with @Constructor SCA Annotations
         BeanPostProcessor constructorProcessor = new ConstructorAnnotationProcessor();
-        beanFactory.addBeanPostProcessor(constructorProcessor);         
+        beanFactory.addBeanPostProcessor(constructorProcessor);
     }
 
 }

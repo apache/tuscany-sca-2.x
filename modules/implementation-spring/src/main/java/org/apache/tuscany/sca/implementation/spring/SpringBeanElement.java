@@ -37,7 +37,7 @@ public class SpringBeanElement {
     private boolean parentAttribute = false;
     private boolean factoryBeanAttribute = false;
     private boolean factoryMethodAttribute = false;
-    
+
     private List<SpringPropertyElement> properties = new ArrayList<SpringPropertyElement>();
     private List<SpringConstructorArgElement> constructorargs = new ArrayList<SpringConstructorArgElement>();
 
@@ -53,7 +53,7 @@ public class SpringBeanElement {
     public String getId() {
         return id;
     }
-    
+
     public void setId(String id) {
         this.id = id;
     }
@@ -65,7 +65,7 @@ public class SpringBeanElement {
     public void addProperty(SpringPropertyElement property) {
         properties.add(property);
     }
-    
+
     public List<SpringConstructorArgElement> getCustructorArgs() {
         return constructorargs;
     }
@@ -73,43 +73,43 @@ public class SpringBeanElement {
     public void addCustructorArgs(SpringConstructorArgElement args) {
         constructorargs.add(args);
     }
-    
+
     public boolean isInnerBean() {
         return innerBean;
     }
-    
+
     public void setInnerBean(boolean innerBean) {
         this.innerBean = innerBean;
     }
-    
+
     public boolean isAbstractBean() {
         return abstractBean;
     }
-    
+
     public void setAbstractBean(boolean abstractBean) {
         this.abstractBean = abstractBean;
     }
-    
+
     public boolean hasParentAttribute() {
         return parentAttribute;
     }
-    
+
     public void setParentAttribute(boolean parentAttribute) {
         this.parentAttribute = parentAttribute;
     }
-    
+
     public boolean hasFactoryBeanAttribute() {
         return factoryBeanAttribute;
     }
-    
+
     public void setFactoryBeanAttribute(boolean factoryBeanAttribute) {
         this.factoryBeanAttribute = factoryBeanAttribute;
     }
-    
+
     public boolean hasFactoryMethodAttribute() {
         return factoryMethodAttribute;
     }
-    
+
     public void setFactoryMethodAttribute(boolean factoryMethodAttribute) {
         this.factoryMethodAttribute = factoryMethodAttribute;
     }

@@ -70,14 +70,14 @@ public class SpringInvoker implements Invoker {
     } // end constructor SpringInvoker
 
     // Lazy-load the method to avoid timing problems with the Spring Context
-    private void setupMethod() throws SpringInvocationException{
+    private void setupMethod() throws SpringInvocationException {
         try {
             bean = springContext.getBean(beanElement.getId());
             Class<?> beanClass = bean.getClass();
             theMethod = JavaInterfaceUtil.findMethod(beanClass, operation);
             //System.out.println("SpringInvoker - found method " + theMethod.getName() );
         } catch (NoSuchMethodException e) {
-        	throw new SpringInvocationException(e);
+            throw new SpringInvocationException(e);
         }
     }
 
@@ -98,9 +98,10 @@ public class SpringInvoker implements Invoker {
             }
             return ret;
         } catch (InvocationTargetException e) {
-            throw new SpringInvocationException("Spring invoker invoke method '"+ theMethod.getName()+"' error.",e.getCause());
+            throw new SpringInvocationException("Spring invoker invoke method '" + theMethod.getName() + "' error.",
+                                                e.getCause());
         } catch (Exception e) {
-            throw new SpringInvocationException("Spring invoker invoke method '"+ theMethod.getName()+"' error.",e);
+            throw new SpringInvocationException("Spring invoker invoke method '" + theMethod.getName() + "' error.", e);
         }
 
     } // end method doInvoke
@@ -114,7 +115,7 @@ public class SpringInvoker implements Invoker {
             msg.setBody(resp);
         } catch (SpringInvocationException e) {
             msg.setFaultBody(e.getCause());
-        }catch (Throwable e) {
+        } catch (Throwable e) {
             msg.setFaultBody(e);
         }
         //System.out.println("Spring Invoker - invoke called");

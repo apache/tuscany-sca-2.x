@@ -31,12 +31,12 @@ public class PropertyValueStub {
 
     private Object tie;
     private Method getPropertyObj;
-    
+
     public PropertyValueStub(Object tie) {
         this.tie = tie;
         Class<?> tieClass = tie.getClass();
         try {
-            getPropertyObj = tieClass.getMethod("getPropertyObj", new Class<?>[]{Class.class, String.class});
+            getPropertyObj = tieClass.getMethod("getPropertyObj", new Class<?>[] {Class.class, String.class});
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

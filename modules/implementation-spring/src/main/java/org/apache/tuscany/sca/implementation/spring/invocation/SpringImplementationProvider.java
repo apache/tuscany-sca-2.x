@@ -33,12 +33,12 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class SpringImplementationProvider implements ImplementationProvider {
     private RuntimeComponent component;
-    
+
     // A Spring application context object
     private SpringContextStub springContext;
-    
+
     private SpringImplementation implementation;
-    
+
     private JavaPropertyValueObjectFactory propertyValueObjectFactory;
 
     /**
@@ -56,14 +56,14 @@ public class SpringImplementationProvider implements ImplementationProvider {
         this.component = component;
         this.propertyValueObjectFactory = propertyValueObjectFactory;
 
-        springContext = new SpringContextStub(component, implementation, proxyService, propertyValueObjectFactory);        
-        
+        springContext = new SpringContextStub(component, implementation, proxyService, propertyValueObjectFactory);
+
     } // end constructor
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
         return new SpringInvoker(component, springContext, service, operation);
     }
-    
+
     public boolean supportsOneWayInvocation() {
         return false;
     }
@@ -79,7 +79,7 @@ public class SpringImplementationProvider implements ImplementationProvider {
      * Stop this implementation instance
      */
     public void stop() {
-    	springContext.close();
+        springContext.close();
     }
 
 } // end class SpringImplementationProvider

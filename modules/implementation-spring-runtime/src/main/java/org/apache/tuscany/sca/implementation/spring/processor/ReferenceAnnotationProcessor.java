@@ -36,11 +36,11 @@ public class ReferenceAnnotationProcessor implements BeanPostProcessor {
 
     private Class<? extends Annotation> referenceAnnotationType = Reference.class;
     private ComponentStub component;
-    
-    public ReferenceAnnotationProcessor (ComponentStub component) {
+
+    public ReferenceAnnotationProcessor(ComponentStub component) {
         this.component = component;
     }
-    
+
     /**
      * Gets referece annotation type.
      */
@@ -61,8 +61,7 @@ public class ReferenceAnnotationProcessor implements BeanPostProcessor {
      * 
      * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessBeforeInitialization(java.lang.Object, java.lang.String)
      */
-    public Object postProcessBeforeInitialization(Object bean, String beanName) 
-    throws BeansException {
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         processAnnotation(bean);
         return bean;
     }
@@ -72,8 +71,7 @@ public class ReferenceAnnotationProcessor implements BeanPostProcessor {
      * 
      * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessAfterInitialization(java.lang.Object, java.lang.String)
      */
-    public Object postProcessAfterInitialization(Object bean, String beanName)
-    throws BeansException {
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         return bean;
     }
 
@@ -81,27 +79,28 @@ public class ReferenceAnnotationProcessor implements BeanPostProcessor {
      * <p>Processes a beans fields for injection if it has a {@link Reference} annotation.</p>
      */
     protected void processAnnotation(final Object bean) {
-        
-        final Class<?> clazz = bean.getClass();        
+
+        final Class<?> clazz = bean.getClass();
 
         ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
             public void doWith(Method method) {
 
-                Reference annotation = (Reference) method.getAnnotation(getReferenceAnnotationType());
-                
+                Reference annotation = (Reference)method.getAnnotation(getReferenceAnnotationType());
+
                 if (annotation != null) {
                     if (Modifier.isStatic(method.getModifiers())) {
                         throw new IllegalStateException("Reference annotation is not supported on static methods");
                     }
-                    
+
                     if (Modifier.isPrivate(method.getModifiers())) {
                         throw new IllegalStateException("Reference annotation is not supported on private methods");
                     }
 
                     if (method.getParameterTypes().length == 0) {
-                        throw new IllegalStateException("Reference annotation requires at least one argument: " + method);
+                        throw new IllegalStateException(
+                                                        "Reference annotation requires at least one argument: " + method);
                     }
-                    
+
                     PropertyDescriptor pd = BeanUtils.findPropertyForMethod(method);
                     if (pd != null) {
                         String refName = annotation.name();
@@ -114,31 +113,31 @@ public class ReferenceAnnotationProcessor implements BeanPostProcessor {
                 }
             }
         });
-        
+
         ReflectionUtils.doWithFields(clazz, new ReflectionUtils.FieldCallback() {
             public void doWith(Field field) {
 
-                Reference annotation = (Reference) field.getAnnotation(getReferenceAnnotationType());
-                
+                Reference annotation = (Reference)field.getAnnotation(getReferenceAnnotationType());
+
                 if (annotation != null) {
                     if (Modifier.isStatic(field.getModifiers())) {
                         throw new IllegalStateException("Reference annotation is not supported on static fields");
                     }
-                    
+
                     if (Modifier.isPrivate(field.getModifiers())) {
                         throw new IllegalStateException("Reference annotation is not supported on private fields");
                     }
 
                     ReflectionUtils.makeAccessible(field);
-                    
+
                     Object referenceObj = null;
                     String refName = annotation.name();
                     if ("".equals(refName)) {
                         referenceObj = component.getService(field.getType(), field.getName());
                     } else {
                         referenceObj = component.getService(field.getType(), refName);
-                    }                        
-                    
+                    }
+
                     if (referenceObj != null)
                         ReflectionUtils.setField(field, bean, referenceObj);
                 }
@@ -150,12 +149,12 @@ public class ReferenceAnnotationProcessor implements BeanPostProcessor {
      * Processes a property descriptor to inject a service.
      */
     public void injectReference(Object bean, PropertyDescriptor pd, String name) {
-               
+
         Object referenceObj = component.getService(pd.getPropertyType(), name);
-        
+
         if (referenceObj != null) {
-            try {                                                       
-                pd.getWriteMethod().invoke(bean, new Object[] { referenceObj });
+            try {
+                pd.getWriteMethod().invoke(bean, new Object[] {referenceObj});
             } catch (Throwable e) {
                 throw new FatalBeanException("Problem injecting reference:  " + e.getMessage(), e);
             }

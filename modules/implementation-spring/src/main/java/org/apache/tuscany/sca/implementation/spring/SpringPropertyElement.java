@@ -44,11 +44,11 @@ public class SpringPropertyElement {
     public List<String> getRefs() {
         return this.refs;
     }
-    
+
     public void addRef(String ref) {
         this.refs.add(ref);
     }
-    
+
     public List<String> getValues() {
         return this.values;
     }
@@ -56,5 +56,5 @@ public class SpringPropertyElement {
     public void addValue(String value) {
         this.values.add(value);
     }
-    
+
 } // end class SpringPropertyElement

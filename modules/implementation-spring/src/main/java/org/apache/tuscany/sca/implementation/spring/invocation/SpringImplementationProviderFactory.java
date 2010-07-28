@@ -44,8 +44,8 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
      */
     public SpringImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
         super();
-        
-        proxyFactory = ExtensibleProxyFactory.getInstance(extensionPoints); 
+
+        proxyFactory = ExtensibleProxyFactory.getInstance(extensionPoints);
 
         // TODO: could the runtime have a default PropertyValueObjectFactory?
         propertyFactory = new JavaPropertyValueObjectFactory(new MediatorImpl(extensionPoints));
@@ -60,10 +60,7 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
      */
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
                                                                SpringImplementation implementation) {
-        return new SpringImplementationProvider(component, 
-                                                implementation, 
-                                                proxyFactory, 
-                                                propertyFactory);
+        return new SpringImplementationProvider(component, implementation, proxyFactory, propertyFactory);
     }
 
     /**

@@ -31,12 +31,12 @@ public class ComponentStub {
 
     private Object tie;
     private Method getService;
-    
+
     public ComponentStub(Object tie) {
         this.tie = tie;
         Class<?> tieClass = tie.getClass();
         try {
-            getService = tieClass.getMethod("getService", new Class<?>[]{Class.class, String.class});
+            getService = tieClass.getMethod("getService", new Class<?>[] {Class.class, String.class});
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -28,8 +28,8 @@ import java.util.List;
  * @version $Rev$ $Date$
  */
 public class SpringConstructorArgElement {
-    
-	private String type;
+
+    private String type;
     private int autoIndex = -1;
     private int index = -1;
     private List<String> refs = new ArrayList<String>();
@@ -38,35 +38,35 @@ public class SpringConstructorArgElement {
     public SpringConstructorArgElement(String type) {
         this.type = type;
     }
-    
+
     public String getType() {
         return this.type;
     }
-    
+
     public List<String> getRefs() {
         return this.refs;
     }
-    
+
     public void addRef(String ref) {
         this.refs.add(ref);
     }
-    
+
     public int getIndex() {
         return this.index;
     }
-    
+
     public void setIndex(int index) {
         this.index = index;
     }
-    
+
     public int getAutoIndex() {
         return this.autoIndex;
     }
-    
+
     public void setAutoIndex(int index) {
         this.autoIndex = index;
     }
-    
+
     public List<String> getValues() {
         return this.values;
     }

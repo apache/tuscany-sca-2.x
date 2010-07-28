@@ -35,7 +35,7 @@ public class PropertyValueTie {
 
     private RuntimeComponent component;
     private JavaPropertyValueObjectFactory propertyFactory;
-    
+
     public PropertyValueTie(RuntimeComponent component, JavaPropertyValueObjectFactory propertyFactory) {
         this.component = component;
         this.propertyFactory = propertyFactory;
@@ -46,8 +46,8 @@ public class PropertyValueTie {
         for (ComponentProperty prop : props) {
             if (prop.getName().equals(name)) {
                 return propertyFactory.createValueFactory(prop, prop.getValue(), type).getInstance();
-            } 
-        }         
+            }
+        }
         return null; // property name not found
     }
 }

@@ -42,13 +42,15 @@ public class SpringImplementationTie {
     private SpringImplementation implementation;
     private RuntimeComponent component;
     private JavaPropertyValueObjectFactory propertyFactory;
-    
-    public SpringImplementationTie(SpringImplementation implementation, RuntimeComponent component, JavaPropertyValueObjectFactory propertyFactory) {
+
+    public SpringImplementationTie(SpringImplementation implementation,
+                                   RuntimeComponent component,
+                                   JavaPropertyValueObjectFactory propertyFactory) {
         this.implementation = implementation;
         this.component = component;
         this.propertyFactory = propertyFactory;
     }
-    
+
     public String getURI() {
         return implementation.getURI();
     }
@@ -56,6 +58,7 @@ public class SpringImplementationTie {
     public String getComponentName() {
         return component.getName();
     }
+
     /**
      * Method to create a Java Bean for a Property value
      * @param <B> the class type of the Bean
@@ -127,11 +130,11 @@ public class SpringImplementationTie {
                 return getPropertyBean(requiredType, property.getName());
             } // end if
         } // end for
-        // TODO: NoSuchBeanException
+          // TODO: NoSuchBeanException
         throw new RuntimeException("Unable to find Bean with name " + name);
 
     } // end method getBean( String, Class )
-    
+
     public Object getComponentTie() {
         return new ComponentTie(component);
     }
@@ -139,9 +142,9 @@ public class SpringImplementationTie {
     public Object getPropertyValueTie() {
         return new PropertyValueTie(component, propertyFactory);
     }
-    
+
     public ClassLoader getClassLoader() {
-    	return implementation.getClassLoader();
+        return implementation.getClassLoader();
     }
 
 }

@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 public class ComponentTie {
 
     private RuntimeComponent component;
-    
+
     public ComponentTie(RuntimeComponent component) {
         this.component = component;
     }

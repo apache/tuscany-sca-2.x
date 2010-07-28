@@ -35,7 +35,6 @@ import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
-
 /**
  * Represents a Spring implementation.
  *
@@ -168,7 +167,6 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
         return unresolvedBeanRef.get(refName);
     } // end method getUnresolvedBeanRef
 
-
     /**
      * Use preProcess to validate and map the references and properties dynamically
      */
@@ -176,22 +174,21 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
         if (!(component instanceof RuntimeComponent))
             return;
 
-        RuntimeComponent rtc = (RuntimeComponent) component;
+        RuntimeComponent rtc = (RuntimeComponent)component;
 
         for (Reference reference : rtc.getReferences()) {
             if (unresolvedBeanRef.containsKey(reference.getName())) {
-            	Reference ref = unresolvedBeanRef.get(reference.getName());
-            	componentType.getReferences().add(
-            			createReference(reference, ref.getInterfaceContract()));
-            	unresolvedBeanRef.remove(reference.getName());
+                Reference ref = unresolvedBeanRef.get(reference.getName());
+                componentType.getReferences().add(createReference(reference, ref.getInterfaceContract()));
+                unresolvedBeanRef.remove(reference.getName());
             }
         }
 
         for (Property property : rtc.getProperties()) {
-        	if (unresolvedBeanRef.containsKey(property.getName())) {
-        		componentType.getProperties().add(createProperty(property));
-        		this.setPropertyClass(property.getName(), property.getClass());
-        		unresolvedBeanRef.remove(property.getName());
+            if (unresolvedBeanRef.containsKey(property.getName())) {
+                componentType.getProperties().add(createProperty(property));
+                this.setPropertyClass(property.getName(), property.getClass());
+                unresolvedBeanRef.remove(property.getName());
             }
         }
     }
@@ -201,7 +198,7 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
         try {
             newReference = (Reference)reference.clone();
             if (newReference.getInterfaceContract() == null)
-            	newReference.setInterfaceContract(interfaze);
+                newReference.setInterfaceContract(interfaze);
         } catch (CloneNotSupportedException e) {
             throw new AssertionError(e); // should not ever happen
         }
@@ -217,13 +214,13 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
         }
         return newProperty;
     }
-    
+
     public ClassLoader getClassLoader() {
-    	return classLoader;
+        return classLoader;
     }
 
     public void setClassLoader(ClassLoader classLoader) {
-    	this.classLoader = classLoader;
+        this.classLoader = classLoader;
     }
 
     @Override

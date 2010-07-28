@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.implementation.spring;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
@@ -42,7 +43,7 @@ public class SpringSCAServiceElement {
         this.name = name;
         this.target = target;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
@@ -50,7 +51,7 @@ public class SpringSCAServiceElement {
     public String getName() {
         return name;
     }
-    
+
     public void setType(String type) {
         this.type = type;
     }
@@ -58,7 +59,7 @@ public class SpringSCAServiceElement {
     public String getType() {
         return type;
     }
-    
+
     public void setTarget(String target) {
         this.target = target;
     }
@@ -66,13 +67,13 @@ public class SpringSCAServiceElement {
     public String getTarget() {
         return target;
     }
-    
+
     public List<Intent> getRequiredIntents() {
         return intents;
     }
-    
-    public List<PolicySet> getPolicySets() {   	
-    	return policySets;
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
     }
 
 } // end class SpringSCAServiceElement

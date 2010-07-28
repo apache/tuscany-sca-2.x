@@ -51,7 +51,8 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  *
  * @version $Rev$ $Date$
  */
-public class SpringImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<SpringImplementation> {
+public class SpringImplementationProcessor extends BaseStAXArtifactProcessor implements
+    StAXArtifactProcessor<SpringImplementation> {
 
     private static final String LOCATION = "location";
     private static final String IMPLEMENTATION_SPRING = "implementation.spring";
@@ -61,7 +62,6 @@ public class SpringImplementationProcessor extends BaseStAXArtifactProcessor imp
     private ExtensionPointRegistry registry;
     private AssemblyFactory assemblyFactory;
     private PolicySubjectProcessor policyProcessor;
-    
 
     private FactoryExtensionPoint factories;
 
@@ -80,10 +80,16 @@ public class SpringImplementationProcessor extends BaseStAXArtifactProcessor imp
      * @param model
      */
     private void error(Monitor monitor, String message, Object model, Exception ex) {
-    	 if (monitor != null) {
-	        Problem problem = monitor.createProblem(this.getClass().getName(), "impl-spring-validation-messages", Severity.ERROR, model, message, ex);
-	        monitor.problem(problem);
-    	 }
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "impl-spring-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      ex);
+            monitor.problem(problem);
+        }
     }
 
     /**
@@ -94,10 +100,16 @@ public class SpringImplementationProcessor extends BaseStAXArtifactProcessor imp
      * @param model
      */
     private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
-    	 if (monitor != null) {
-	        Problem problem = monitor.createProblem(this.getClass().getName(), "impl-spring-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-	        monitor.problem(problem);
-    	 }
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "impl-spring-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
+            monitor.problem(problem);
+        }
     }
 
     /*
@@ -119,7 +131,8 @@ public class SpringImplementationProcessor extends BaseStAXArtifactProcessor imp
      * then the default behaviour is to build an application context using all the *.xml files
      * in the METAINF/spring directory.
      */
-    public SpringImplementation read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
+    public SpringImplementation read(XMLStreamReader reader, ProcessorContext context)
+        throws ContributionReadException, XMLStreamException {
 
         // Create the Spring implementation
         SpringImplementation springImplementation = null;
@@ -127,12 +140,12 @@ public class SpringImplementationProcessor extends BaseStAXArtifactProcessor imp
         // Read the location attribute for the spring implementation
         String springLocation = getURIString(reader, LOCATION);
         if (springLocation != null) {
-        	springImplementation = new SpringImplementation();
-        	springImplementation.setLocation(springLocation);
-        	springImplementation.setUnresolved(true);
+            springImplementation = new SpringImplementation();
+            springImplementation.setLocation(springLocation);
+            springImplementation.setUnresolved(true);
             processComponentType(springImplementation);
         } else {
-        	error(context.getMonitor(), "LocationAttributeMissing", reader);
+            error(context.getMonitor(), "LocationAttributeMissing", reader);
             //throw new ContributionReadException(MSG_LOCATION_MISSING);
         }
 
@@ -167,7 +180,8 @@ public class SpringImplementationProcessor extends BaseStAXArtifactProcessor imp
      * Write out the XML representation of the Spring implementation
      * <implementation.spring location="..." />
      */
-    public void write(SpringImplementation springImplementation, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
+    public void write(SpringImplementation springImplementation, XMLStreamWriter writer, ProcessorContext context)
+        throws ContributionWriteException, XMLStreamException {
 
         // Write <implementation.spring>
         writer.writeStartElement(Constants.SCA11_NS, IMPLEMENTATION_SPRING);
@@ -188,19 +202,18 @@ public class SpringImplementationProcessor extends BaseStAXArtifactProcessor imp
     public void resolve(SpringImplementation springImplementation, ModelResolver resolver, ProcessorContext context)
         throws ContributionResolveException {
 
-    	if (springImplementation == null)
-    		return;
+        if (springImplementation == null)
+            return;
 
-    	Monitor monitor = context.getMonitor();
+        Monitor monitor = context.getMonitor();
         /* Load the Spring component type by reading the Spring application context */
-        SpringXMLComponentTypeLoader springLoader =
-            new SpringXMLComponentTypeLoader(registry, monitor);
+        SpringXMLComponentTypeLoader springLoader = new SpringXMLComponentTypeLoader(registry, monitor);
         try {
             // Load the Spring Implementation information from its application context file...
             springLoader.load(springImplementation, resolver, context);
         } catch (ContributionReadException e) {
-        	ContributionResolveException ce = new ContributionResolveException(e);
-        	error(monitor, "ContributionResolveException", resolver, ce);
+            ContributionResolveException ce = new ContributionResolveException(e);
+            error(monitor, "ContributionResolveException", resolver, ce);
             throw ce;
         }
 
@@ -209,12 +222,12 @@ public class SpringImplementationProcessor extends BaseStAXArtifactProcessor imp
             // If the introspection fails to resolve, try to find a side file...
             ComponentType componentType = resolver.resolveModel(ComponentType.class, ct, context);
             if (componentType.isUnresolved()) {
-            	error(monitor, "UnableToResolveComponentType", resolver);
+                error(monitor, "UnableToResolveComponentType", resolver);
                 //throw new ContributionResolveException("SpringArtifactProcessor: unable to resolve componentType for Spring component");
             } else {
                 springImplementation.setComponentType(componentType);
                 springImplementation.setUnresolved(false);
-           }
+            }
 
         } // end if
 

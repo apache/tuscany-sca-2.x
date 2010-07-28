@@ -32,7 +32,7 @@ public class SpringSCAPropertyElement {
         this.name = name;
         this.type = type;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
@@ -40,7 +40,7 @@ public class SpringSCAPropertyElement {
     public String getName() {
         return name;
     }
-    
+
     public void setType(String type) {
         this.type = type;
     }

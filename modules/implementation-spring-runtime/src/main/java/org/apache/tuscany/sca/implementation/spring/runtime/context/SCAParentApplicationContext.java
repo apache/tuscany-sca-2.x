@@ -58,7 +58,7 @@ class SCAParentApplicationContext implements ApplicationContext {
     } // end constructor
 
     public Object getBean(String name) throws BeansException {
-        return getBean(name, (Class) null);
+        return getBean(name, (Class)null);
     }
 
     /**
@@ -73,7 +73,7 @@ class SCAParentApplicationContext implements ApplicationContext {
     } // end method getBean( String, Class )
 
     public Object getBean(String name, Object[] args) throws BeansException {
-         return getBean(name, ((Class)null));
+        return getBean(name, ((Class)null));
     }
 
     public <T> T getBean(Class<T> clazz) throws BeansException {
@@ -119,7 +119,7 @@ class SCAParentApplicationContext implements ApplicationContext {
     }
 
     public String getId() {
-          return this.toString();
+        return this.toString();
     }
 
     public String getDisplayName() {

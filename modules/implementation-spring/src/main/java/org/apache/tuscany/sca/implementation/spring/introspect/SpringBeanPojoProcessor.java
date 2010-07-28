@@ -83,12 +83,14 @@ import org.oasisopen.sca.annotation.Remotable;
 public class SpringBeanPojoProcessor extends BaseJavaClassVisitor {
     private List<SpringConstructorArgElement> conArgs;
 
-    public SpringBeanPojoProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory, List<SpringConstructorArgElement> conArgs) {
+    public SpringBeanPojoProcessor(AssemblyFactory assemblyFactory,
+                                   JavaInterfaceFactory javaFactory,
+                                   List<SpringConstructorArgElement> conArgs) {
         super(assemblyFactory);
         this.javaInterfaceFactory = javaFactory;
         this.conArgs = conArgs;
     }
-    
+
     public SpringBeanPojoProcessor(ExtensionPointRegistry registry) {
         super(registry);
     }
@@ -245,7 +247,7 @@ public class SpringBeanPojoProcessor extends BaseJavaClassVisitor {
                 }
             }
         }
-        
+
         // Private fields unless there is a public or protected
         // setter method for the same name
         Set<Field> privateFields = getPrivateFields(clazz);
@@ -287,7 +289,7 @@ public class SpringBeanPojoProcessor extends BaseJavaClassVisitor {
         // determine constructor if one is not annotated
         JavaConstructorImpl<?> definition = type.getConstructor();
         Map<String, JavaElementImpl> props = type.getPropertyMembers();
-        Map<String, JavaElementImpl> refs = type.getReferenceMembers();        
+        Map<String, JavaElementImpl> refs = type.getReferenceMembers();
         Constructor constructor;
         boolean explict = false;
         if (definition != null && definition.getConstructor()
@@ -307,24 +309,24 @@ public class SpringBeanPojoProcessor extends BaseJavaClassVisitor {
                 constructor = constructors[0];
             } else {
                 // multiple constructors scenario
-                Constructor<T> selected = null;                
+                Constructor<T> selected = null;
                 for (Constructor<T> ctor : constructors) {
                     if (ctor.getParameterTypes().length == 0) {
                         selected = ctor;
                     } else if (ctor.getParameterTypes().length == conArgs.size()) {
                         // we will find a constructor which has atleast one
-                    	// reference or property as its parameter types.
-                    	Class<?>[] parametersTypes = ctor.getParameterTypes();
-                		for (Class<?> pType: parametersTypes) {
-                			for (JavaElementImpl property : props.values()) {            				
-                				if (pType.equals(property.getType())) 
-                					selected = ctor;
-                			}
-                			for (JavaElementImpl reference : refs.values()) {
-                				if (pType.equals(reference.getType())) 
-                					selected = ctor;
-                			}               			           			
-                		}
+                        // reference or property as its parameter types.
+                        Class<?>[] parametersTypes = ctor.getParameterTypes();
+                        for (Class<?> pType : parametersTypes) {
+                            for (JavaElementImpl property : props.values()) {
+                                if (pType.equals(property.getType()))
+                                    selected = ctor;
+                            }
+                            for (JavaElementImpl reference : refs.values()) {
+                                if (pType.equals(reference.getType()))
+                                    selected = ctor;
+                            }
+                        }
                     }
                 }
                 if (selected == null) {
@@ -335,12 +337,12 @@ public class SpringBeanPojoProcessor extends BaseJavaClassVisitor {
             definition = type.getConstructors().get(constructor);
             type.setConstructor(definition);
         }
-        
+
         JavaParameterImpl[] parameters = definition.getParameters();
         if (parameters.length == 0) {
             return;
         }
-        
+
         Annotation[][] annotations = constructor.getParameterAnnotations();
         if (!explict) {
             // the constructor wasn't defined by an annotation, so check to see
@@ -592,7 +594,8 @@ public class SpringBeanPojoProcessor extends BaseJavaClassVisitor {
             JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(paramType);
             reference.getInterfaceContract().setInterface(callInterface);
             if (callInterface.getCallbackClass() != null) {
-                JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass());
+                JavaInterface callbackInterface =
+                    javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass());
                 reference.getInterfaceContract().setCallbackInterface(callbackInterface);
             }
             reference.setMultiplicity(Multiplicity.ZERO_ONE);
@@ -619,7 +622,8 @@ public class SpringBeanPojoProcessor extends BaseJavaClassVisitor {
         JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(interfaze);
         service.getInterfaceContract().setInterface(callInterface);
         if (callInterface.getCallbackClass() != null) {
-            JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass());
+            JavaInterface callbackInterface =
+                javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass());
             service.getInterfaceContract().setCallbackInterface(callbackInterface);
         }
 
@@ -638,7 +642,7 @@ public class SpringBeanPojoProcessor extends BaseJavaClassVisitor {
                 javaInterface = javaInterfaceFactory.createJavaInterface(callbackClass);
                 contract.getInterfaceContract().setCallbackInterface(javaInterface);
             } catch (InvalidInterfaceException e) {
-                throw new InvalidServiceTypeException("Invalid callback interface "+callbackClass, interfaze);
+                throw new InvalidServiceTypeException("Invalid callback interface " + callbackClass, interfaze);
             }
         } else if (callback != null && Void.class.equals(callback.value())) {
             throw new InvalidServiceTypeException("No callback interface specified on annotation", interfaze);
