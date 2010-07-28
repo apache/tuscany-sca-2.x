@@ -109,7 +109,7 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
             this.context = context;
             // Load the class and return a class reference for it
             String className = ((ClassReference)unresolved).getClassName();
-            Class<?> clazz = Class.forName(className, true, this);
+            Class<?> clazz = Class.forName(className, false, this);
             return modelClass.cast(new ClassReference(clazz));
 
         } catch (ClassNotFoundException e) {
