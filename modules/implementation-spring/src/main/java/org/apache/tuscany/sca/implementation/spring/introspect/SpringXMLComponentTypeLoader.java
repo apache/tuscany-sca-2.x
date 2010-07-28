@@ -97,10 +97,9 @@ public class SpringXMLComponentTypeLoader {
     private JavaInterfaceFactory javaFactory;
     private PolicyFactory policyFactory;
     private PolicySubjectProcessor policyProcessor;
-    private Monitor monitor;
     private SpringBeanIntrospector beanIntrospector;
 
-    public SpringXMLComponentTypeLoader(ExtensionPointRegistry registry, Monitor monitor) {
+    public SpringXMLComponentTypeLoader(ExtensionPointRegistry registry) {
         super();
         this.registry = registry;
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
@@ -110,7 +109,6 @@ public class SpringXMLComponentTypeLoader {
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
         this.contributionFactory = factories.getFactory(ContributionFactory.class);
         this.xmlInputFactory = factories.getFactory(XMLInputFactory.class);
-        this.monitor = monitor;
     }
 
     /**
@@ -120,7 +118,7 @@ public class SpringXMLComponentTypeLoader {
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -140,7 +138,7 @@ public class SpringXMLComponentTypeLoader {
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -234,7 +232,7 @@ public class SpringXMLComponentTypeLoader {
                                       appCxtProperties,
                                       context);
                 // Validate the beans from individual application context for uniqueness
-                validateBeans(appCxtBeans, appCxtServices, appCxtReferences, appCxtProperties);
+                validateBeans(appCxtBeans, appCxtServices, appCxtReferences, appCxtProperties, context.getMonitor());
                 // Add all the validated beans to the generic list
                 beans.addAll(appCxtBeans);
                 services.addAll(appCxtServices);
@@ -261,9 +259,18 @@ public class SpringXMLComponentTypeLoader {
         URL resource = null;
         URI uri = URI.create(contextPath);
         if (!uri.isAbsolute()) {
+            Artifact parent = context.getArtifact();
+            if (parent != null && parent.getURI() != null) {
+                URI base = URI.create("/" + parent.getURI());
+                uri = base.resolve(uri);
+                // Remove the leading / to make artifact resolver happy
+                if (uri.toString().startsWith("/")) {
+                    uri = URI.create(uri.toString().substring(1));
+                }
+            }
             Artifact artifact = contributionFactory.createArtifact();
             artifact.setUnresolved(true);
-            artifact.setURI(contextPath);
+            artifact.setURI(uri.toString());
             artifact = resolver.resolveModel(Artifact.class, artifact, context);
             if (!artifact.isUnresolved()) {
                 resource = new URL(artifact.getLocation());
@@ -340,7 +347,7 @@ public class SpringXMLComponentTypeLoader {
                             // The value of the @name attribute of an <sca:service/> subelement of a <beans/> 
                             // element MUST be unique amongst the <sca:service/> subelements of the <beans/> element.
                             if (!services.isEmpty() && (services.contains(reader.getAttributeValue(null, "name"))))
-                                error("ScaServiceNameNotUnique", resolver);
+                                error(context.getMonitor(), "ScaServiceNameNotUnique", resolver);
 
                             SpringSCAServiceElement service =
                                 new SpringSCAServiceElement(reader.getAttributeValue(null, "name"),
@@ -354,7 +361,7 @@ public class SpringXMLComponentTypeLoader {
                             // element MUST be unique amongst the @name attributes of the <sca:reference/> subelements, 
                             // of the <beans/> element.
                             if (!references.isEmpty() && (references.contains(reader.getAttributeValue(null, "name"))))
-                                error("ScaReferenceNameNotUnique", resolver);
+                                error(context.getMonitor(), "ScaReferenceNameNotUnique", resolver);
 
                             SpringSCAReferenceElement reference =
                                 new SpringSCAReferenceElement(reader.getAttributeValue(null, "name"),
@@ -369,7 +376,7 @@ public class SpringXMLComponentTypeLoader {
                             // of the <beans/> element.
                             if (!scaproperties.isEmpty() && (scaproperties.contains(reader.getAttributeValue(null,
                                                                                                              "name"))))
-                                error("ScaPropertyNameNotUnique", resolver);
+                                error(context.getMonitor(), "ScaPropertyNameNotUnique", resolver);
 
                             SpringSCAPropertyElement scaproperty =
                                 new SpringSCAPropertyElement(reader.getAttributeValue(null, "name"),
@@ -875,7 +882,8 @@ public class SpringXMLComponentTypeLoader {
     private void validateBeans(List<SpringBeanElement> beans,
                                List<SpringSCAServiceElement> services,
                                List<SpringSCAReferenceElement> references,
-                               List<SpringSCAPropertyElement> scaproperties) throws ContributionReadException {
+                               List<SpringSCAPropertyElement> scaproperties,
+                               Monitor monitor) throws ContributionReadException {
 
         // The @target attribute of a <service/> subelement of a <beans/> element 
         // MUST have the value of the @name attribute of one of the <bean/> 
@@ -891,7 +899,7 @@ public class SpringXMLComponentTypeLoader {
                     targetBeanExists = true;
             }
             if (!targetBeanExists)
-                error("TargetBeanDoesNotExist", beans);
+                error(monitor, "TargetBeanDoesNotExist", beans);
         } // end while
 
         // The value of the @name attribute of an <sca:reference/> subelement of a <beans/> 
@@ -922,9 +930,9 @@ public class SpringXMLComponentTypeLoader {
                     isUniqueReferenceName = false;
             }
             if (!defaultBeanExists)
-                error("DefaultBeanDoesNotExist", beans);
+                error(monitor, "DefaultBeanDoesNotExist", beans);
             if (!isUniqueReferenceName)
-                error("ScaReferenceNameNotUnique", beans);
+                error(monitor, "ScaReferenceNameNotUnique", beans);
         } // end while
 
         // The value of the @name attribute of an <sca:property/> subelement of a <beans/> 
@@ -947,7 +955,7 @@ public class SpringXMLComponentTypeLoader {
                     isUniquePropertyName = false;
             }
             if (!isUniquePropertyName)
-                error("ScaPropertyNameNotUnique", beans);
+                error(monitor, "ScaPropertyNameNotUnique", beans);
         } // end while
     }
 

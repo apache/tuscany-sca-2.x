@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.contribution.processor;
 
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -32,6 +33,7 @@ import org.apache.tuscany.sca.monitor.MonitorFactory;
  */
 public class ProcessorContext {
     protected Contribution contribution;
+    protected Artifact artifact;
     protected Monitor monitor;
     protected Object parentModel;
 
@@ -62,10 +64,19 @@ public class ProcessorContext {
         this.monitor = new DefaultMonitorFactory().createMonitor();
     }
 
+    /**
+     * Get the current contribution
+     * @return The current contribution
+     */
     public Contribution getContribution() {
         return contribution;
     }
 
+    /**
+     * Set the current contribution
+     * @param contribution
+     * @return
+     */
     public Contribution setContribution(Contribution contribution) {
         Contribution old = this.contribution;
         this.contribution = contribution;
@@ -89,6 +100,27 @@ public class ProcessorContext {
     public Object setParentModel(Object parentMObject) {
         Object old = this.parentModel;
         this.parentModel = parentMObject;
+        return old;
+    }
+
+    /**
+     * Get the current artifact
+     * @return The current artifact
+     */
+    public Artifact getArtifact() {
+        return artifact;
+    }
+
+    /**
+     * Set the current artifact. This should be called by URLArtifactProcessor to set the document
+     * context (such as the URI of the composite file).
+     * 
+     * @param artifact The new artifact
+     * @return The old artifact
+     */
+    public Artifact setArtifact(Artifact artifact) {
+        Artifact old = this.artifact;
+        this.artifact = artifact;
         return old;
     }
 

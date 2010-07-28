@@ -139,7 +139,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
                 
                 monitor.pushContext("Artifact: " + artifact.getURI());
     
-                old = context.setContribution(contribution);
+                Artifact oldArtifact = context.setArtifact(artifact);
                 try {
                     // Read each artifact
                     URL artifactLocationURL = null;
@@ -169,7 +169,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
                     }
                 } finally {
                     monitor.popContext();
-                    context.setContribution(old);
+                    context.setArtifact(oldArtifact);
                 }                    
             }
             
@@ -252,23 +252,32 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
 	        for (Artifact artifact : contribution.getArtifacts()) {
 	            Object model = artifact.getModel();
 	            if (model != null) {
+	                Artifact oldArtifact = context.setArtifact(artifact);
 	                try {
 	                   artifactProcessor.resolve(model, contributionResolver, context);
 	                } catch (Throwable e) {
 	                    throw new ContributionResolveException(e);
+	                } finally {
+	                    context.setArtifact(oldArtifact);
 	                }
 	            }
 	        }
 	
-	        // Resolve deployable composites
-	        List<Composite> deployables = contribution.getDeployables();
-	        for (int i = 0, n = deployables.size(); i < n; i++) {
-	            Composite deployable = deployables.get(i);
-	            Composite resolved = (Composite)contributionResolver.resolveModel(Composite.class, deployable, context);
-	            if (resolved != deployable) {
-	                deployables.set(i, resolved);
-	            }
-	        } // end for
+            // Resolve deployable composites
+            List<Composite> deployables = contribution.getDeployables();
+            Artifact oldArtifact = context.setArtifact(contribution);
+            try {
+                for (int i = 0, n = deployables.size(); i < n; i++) {
+                    Composite deployable = deployables.get(i);
+                    Composite resolved =
+                        (Composite)contributionResolver.resolveModel(Composite.class, deployable, context);
+                    if (resolved != deployable) {
+                        deployables.set(i, resolved);
+                    }
+                } // end for
+            } finally {
+                context.setArtifact(oldArtifact);
+            }
     	} finally {
     		monitor.popContext();
     		context.setContribution(old);

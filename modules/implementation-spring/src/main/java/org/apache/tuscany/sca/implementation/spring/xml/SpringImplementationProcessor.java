@@ -207,7 +207,7 @@ public class SpringImplementationProcessor extends BaseStAXArtifactProcessor imp
 
         Monitor monitor = context.getMonitor();
         /* Load the Spring component type by reading the Spring application context */
-        SpringXMLComponentTypeLoader springLoader = new SpringXMLComponentTypeLoader(registry, monitor);
+        SpringXMLComponentTypeLoader springLoader = new SpringXMLComponentTypeLoader(registry);
         try {
             // Load the Spring Implementation information from its application context file...
             springLoader.load(springImplementation, resolver, context);
