@@ -67,6 +67,7 @@
                 <module>binding-sca</module>
                 <module>contribution-binding-ws-calculator</module>
                 <module>contribution-implementation-java-calculator</module>
+                <module>implementation-script</module>
 
                 <!-- contributions - Tuscany samples -->
 
