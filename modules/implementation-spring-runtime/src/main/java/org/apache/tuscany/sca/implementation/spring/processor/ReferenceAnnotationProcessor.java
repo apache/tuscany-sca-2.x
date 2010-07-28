@@ -92,9 +92,11 @@ public class ReferenceAnnotationProcessor implements BeanPostProcessor {
                         throw new IllegalStateException("Reference annotation is not supported on static methods");
                     }
 
+                    /*
                     if (Modifier.isPrivate(method.getModifiers())) {
                         throw new IllegalStateException("Reference annotation is not supported on private methods");
                     }
+                    */
 
                     if (method.getParameterTypes().length == 0) {
                         throw new IllegalStateException(
@@ -124,9 +126,11 @@ public class ReferenceAnnotationProcessor implements BeanPostProcessor {
                         throw new IllegalStateException("Reference annotation is not supported on static fields");
                     }
 
+                    /*
                     if (Modifier.isPrivate(field.getModifiers())) {
                         throw new IllegalStateException("Reference annotation is not supported on private fields");
                     }
+                    */
 
                     ReflectionUtils.makeAccessible(field);
 

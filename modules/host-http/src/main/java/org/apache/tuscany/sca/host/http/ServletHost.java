@@ -22,6 +22,7 @@ import java.net.URL;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
 
 /**
  * Interface implemented by host environments that allow Servlets to be
@@ -34,6 +35,8 @@ import javax.servlet.Servlet;
  * @tuscany.spi.extension.inheritfrom
  */
 public interface ServletHost {
+    
+    ServletContext getServletContext();
     
     /**
      * Sets the default port for the server.

@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.implementation.spring.invocation;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentProperty;
-import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
+import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
@@ -34,9 +34,9 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 public class PropertyValueTie {
 
     private RuntimeComponent component;
-    private JavaPropertyValueObjectFactory propertyFactory;
+    private PropertyValueFactory propertyFactory;
 
-    public PropertyValueTie(RuntimeComponent component, JavaPropertyValueObjectFactory propertyFactory) {
+    public PropertyValueTie(RuntimeComponent component, PropertyValueFactory propertyFactory) {
         this.component = component;
         this.propertyFactory = propertyFactory;
     }
@@ -45,7 +45,7 @@ public class PropertyValueTie {
         List<ComponentProperty> props = component.getProperties();
         for (ComponentProperty prop : props) {
             if (prop.getName().equals(name)) {
-                return propertyFactory.createValueFactory(prop, prop.getValue(), type).getInstance();
+                return propertyFactory.createPropertyValue(prop, type);
             }
         }
         return null; // property name not found

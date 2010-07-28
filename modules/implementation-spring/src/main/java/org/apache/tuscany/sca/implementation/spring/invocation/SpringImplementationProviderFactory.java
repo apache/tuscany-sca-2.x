@@ -18,11 +18,11 @@
  */
 package org.apache.tuscany.sca.implementation.spring.invocation;
 
+import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
-import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.spring.SpringImplementation;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
@@ -34,21 +34,19 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  *
  */
 public class SpringImplementationProviderFactory implements ImplementationProviderFactory<SpringImplementation> {
-
     private ProxyFactory proxyFactory;
-    private JavaPropertyValueObjectFactory propertyFactory;
+    private PropertyValueFactory propertyFactory;
+    private SpringApplicationContextHelper contextHelper;
 
     /**
      * Simple constructor
      *
      */
-    public SpringImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
+    public SpringImplementationProviderFactory(ExtensionPointRegistry registry) {
         super();
-
-        proxyFactory = ExtensibleProxyFactory.getInstance(extensionPoints);
-
-        // TODO: could the runtime have a default PropertyValueObjectFactory?
-        propertyFactory = new JavaPropertyValueObjectFactory(new MediatorImpl(extensionPoints));
+        contextHelper = SpringApplicationContextHelper.getInstance(registry);
+        proxyFactory = ExtensibleProxyFactory.getInstance(registry);
+        propertyFactory = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(PropertyValueFactory.class);
     }
 
     /**
@@ -60,7 +58,8 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
      */
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
                                                                SpringImplementation implementation) {
-        return new SpringImplementationProvider(component, implementation, proxyFactory, propertyFactory);
+        Object parentApplicationContext = contextHelper.getParentApplicationContext();
+        return new SpringImplementationProvider(component, implementation, parentApplicationContext, proxyFactory, propertyFactory);
     }
 
     /**
@@ -69,4 +68,5 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
     public Class<SpringImplementation> getModelType() {
         return SpringImplementation.class;
     }
+
 } // end class SpringImplementationProviderFactory

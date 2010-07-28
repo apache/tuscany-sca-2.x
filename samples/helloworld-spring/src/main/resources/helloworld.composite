@@ -19,11 +19,14 @@
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
       targetNamespace="http://sample"
-      xmlns:hns="http://tuscany.apache.org/implementation/bpel/example/helloworld"
       name="helloworld">
     
     <component name="HelloworldComponent">
         <implementation.spring location="helloworld-context.xml"/>
+        <reference name="dateService" target="DateServiceComponent"/>
     </component>
-
+    
+    <component name="DateServiceComponent">
+        <implementation.java class="sample.DateServiceImpl"/>
+    </component>
 </composite>

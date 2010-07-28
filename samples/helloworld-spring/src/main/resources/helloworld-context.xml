@@ -24,7 +24,9 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/sca http://www.osoa.org/xmlns/sca/1.0/spring-sca.xsd">
 
-    <bean id="testBean" class="sample.HelloworldImpl" lazy-init="true">
+    <bean id="testBean" class="sample.HelloworldImpl">
     </bean>
+    
+    <sca:reference name="dateService" type="sample.DateService"/>
 
 </beans>

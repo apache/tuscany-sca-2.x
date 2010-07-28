@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.context.ApplicationContext;
 
 /**
  * This is the runtime side stub for the corresponding Tuscany-side stub class.
@@ -40,6 +41,7 @@ public class SpringImplementationStub {
     Method getComponentTie;
     Method getPropertyValueTie;
     Method getClassLoader;
+    Method getParentApplicationContext;
 
     public SpringImplementationStub(Object tie) {
         this.tie = tie;
@@ -51,6 +53,7 @@ public class SpringImplementationStub {
             getComponentTie = tieClass.getMethod("getComponentTie");
             getPropertyValueTie = tieClass.getMethod("getPropertyValueTie");
             getClassLoader = tieClass.getMethod("getClassLoader");
+            getParentApplicationContext = tieClass.getMethod("getParentApplicationContext");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -125,5 +128,20 @@ public class SpringImplementationStub {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    /**
+     * Get the parent Spring application context set by the Tuscany runtime
+     * @return
+     */
+    public ApplicationContext getParentApplicationContext() {
+        try {
+
+            return (ApplicationContext)getParentApplicationContext.invoke(tie);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

@@ -18,11 +18,17 @@
  */
 package sample;
 
+import org.oasisopen.sca.annotation.Reference;
 
 public class HelloworldImpl implements Helloworld {
+    @Reference(required = false)
+    private DateService dateService;
 
     public String sayHello(String name) {
-        return "Hello " + name;
+        if (dateService == null) {
+            return "Hello " + name;
+        }
+        return "[" + dateService.getDate() + "] Hello " + name;
     }
 
 }

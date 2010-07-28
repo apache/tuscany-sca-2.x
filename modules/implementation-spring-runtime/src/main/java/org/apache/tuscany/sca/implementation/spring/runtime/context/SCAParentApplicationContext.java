@@ -110,10 +110,6 @@ class SCAParentApplicationContext implements ApplicationContext {
         return EMPTY_ARRAY;
     }
 
-    public ApplicationContext getParent() {
-        return null;
-    }
-
     public AutowireCapableBeanFactory getAutowireCapableBeanFactory() throws IllegalStateException {
         return null;
     }
@@ -199,4 +195,10 @@ class SCAParentApplicationContext implements ApplicationContext {
         // resource loading mechanism is exposed right now.
         return this.getClass().getClassLoader();
     }
+
+    @Override
+    public ApplicationContext getParent() {
+        return implementation.getParentApplicationContext();
+    }
+
 }

@@ -335,4 +335,8 @@ public class WebAppServletHost implements ServletHost {
             tempAttributes.put(name, value);
         }
     }
+
+    public ServletContext getServletContext() {
+        return servletContext;
+    }
 }

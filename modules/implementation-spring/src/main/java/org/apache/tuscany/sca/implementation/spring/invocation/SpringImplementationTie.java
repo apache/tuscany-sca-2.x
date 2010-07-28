@@ -24,8 +24,7 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.core.factory.ObjectFactory;
-import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
+import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.implementation.spring.SpringImplementation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -40,15 +39,18 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 public class SpringImplementationTie {
 
     private SpringImplementation implementation;
+    private Object parentApplicationContext;
     private RuntimeComponent component;
-    private JavaPropertyValueObjectFactory propertyFactory;
+    private PropertyValueFactory propertyFactory;
 
     public SpringImplementationTie(SpringImplementation implementation,
+                                   Object parentApplicationContext,
                                    RuntimeComponent component,
-                                   JavaPropertyValueObjectFactory propertyFactory) {
+                                   PropertyValueFactory propertyFactory) {
         this.implementation = implementation;
         this.component = component;
         this.propertyFactory = propertyFactory;
+        this.parentApplicationContext = parentApplicationContext;
     }
 
     public String getURI() {
@@ -74,8 +76,7 @@ public class SpringImplementationTie {
             if (prop.getName().equals(name)) {
                 // On finding the property, create a factory for it and create a Bean using
                 // the factory
-                ObjectFactory<?> factory = propertyFactory.createValueFactory(prop, prop.getValue(), requiredType);
-                propertyObject = (B)factory.getInstance();
+                propertyObject = (B) propertyFactory.createPropertyValue(prop, requiredType);
             } // end if
         } // end for
 
@@ -145,6 +146,10 @@ public class SpringImplementationTie {
 
     public ClassLoader getClassLoader() {
         return implementation.getClassLoader();
+    }
+    
+    public Object getParentApplicationContext() {
+        return parentApplicationContext;
     }
 
 }

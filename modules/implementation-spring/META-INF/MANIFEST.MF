@@ -13,6 +13,7 @@ Import-Package: javax.jws,
  org.apache.tuscany.sca.assembly.builder;version="2.0.0",
  org.apache.tuscany.sca.assembly.impl;version="2.0.0",
  org.apache.tuscany.sca.assembly.xml;version="2.0.0",
+ org.apache.tuscany.sca.context;version="2.0.0",
  org.apache.tuscany.sca.contribution;version="2.0.0",
  org.apache.tuscany.sca.contribution.processor;version="2.0.0",
  org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
@@ -39,15 +40,23 @@ Import-Package: javax.jws,
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.spring
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
-Export-Package: org.apache.tuscany.sca.implementation.spring;version="2.0.0";
-  uses:="org.apache.tuscany.sca.assembly,
-   org.apache.tuscany.sca.assembly.impl,
-   org.apache.tuscany.sca.interfacedef,
-   javax.xml.namespace",
+Export-Package: org.apache.tuscany.sca.implementation.spring;version="2.0.0",
  org.apache.tuscany.sca.implementation.spring.introspect;version="2.0.0";
   uses:="org.apache.tuscany.sca.assembly,
+   org.apache.tuscany.sca.contribution.resolver,
    org.apache.tuscany.sca.implementation.java.introspect,
    org.apache.tuscany.sca.implementation.spring,
+   org.apache.tuscany.sca.contribution.processor,
    org.apache.tuscany.sca.implementation.java,
-   org.apache.tuscany.sca.policy,
-   org.apache.tuscany.sca.interfacedef.java"
+   org.apache.tuscany.sca.core,
+   org.apache.tuscany.sca.monitor,
+   org.apache.tuscany.sca.interfacedef.java",
+ org.apache.tuscany.sca.implementation.spring.invocation;version="2.0.0";
+  uses:="org.apache.tuscany.sca.invocation,
+   org.apache.tuscany.sca.runtime,
+   org.apache.tuscany.sca.context,
+   org.apache.tuscany.sca.provider,
+   org.apache.tuscany.sca.implementation.spring,
+   org.apache.tuscany.sca.core,
+   org.apache.tuscany.sca.core.invocation,
+   org.apache.tuscany.sca.interfacedef"

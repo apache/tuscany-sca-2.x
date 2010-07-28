@@ -129,7 +129,7 @@ public class SpringImplementationProcessor extends BaseStAXArtifactProcessor imp
      * specified in the header identify the context configuration files.
      * If there is no MANIFEST.MF file or no Spring-Context header within that file,
      * then the default behaviour is to build an application context using all the *.xml files
-     * in the METAINF/spring directory.
+     * in the META-INF/spring directory.
      */
     public SpringImplementation read(XMLStreamReader reader, ProcessorContext context)
         throws ContributionReadException, XMLStreamException {

@@ -24,8 +24,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.spring.SpringImplementation;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
@@ -44,16 +44,18 @@ public class SpringContextStub {
 
     public SpringContextStub(RuntimeComponent component,
                              SpringImplementation implementation,
+                             Object parentApplicationContext,
                              ProxyFactory proxyService,
-                             JavaPropertyValueObjectFactory propertyValueObjectFactory) {
+                             PropertyValueFactory propertyValueObjectFactory) {
 
-        initTie(component, implementation, propertyValueObjectFactory);
+        initTie(component, implementation, parentApplicationContext, propertyValueObjectFactory);
 
     }
 
     private void initTie(RuntimeComponent component,
                          SpringImplementation implementation,
-                         JavaPropertyValueObjectFactory propertyValueObjectFactory) {
+                         Object parentApplicationContext,
+                         PropertyValueFactory propertyValueObjectFactory) {
 
         // TODO: what class loader to use?
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -66,7 +68,7 @@ public class SpringContextStub {
                               cl);
             Constructor<?> stubConstructor = stubClass.getConstructor(new Class<?>[] {Object.class});
             Object stub =
-                stubConstructor.newInstance(new SpringImplementationTie(implementation, component,
+                stubConstructor.newInstance(new SpringImplementationTie(implementation, parentApplicationContext, component,
                                                                         propertyValueObjectFactory));
 
             Class<?> tieClass =

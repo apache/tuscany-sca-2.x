@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.spring.invocation;
 
+import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.spring.SpringImplementation;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -37,10 +37,6 @@ public class SpringImplementationProvider implements ImplementationProvider {
     // A Spring application context object
     private SpringContextStub springContext;
 
-    private SpringImplementation implementation;
-
-    private JavaPropertyValueObjectFactory propertyValueObjectFactory;
-
     /**
      * Constructor for the provider - takes a component definition and a Spring implementation
      * description
@@ -49,14 +45,13 @@ public class SpringImplementationProvider implements ImplementationProvider {
      */
     public SpringImplementationProvider(RuntimeComponent component,
                                         SpringImplementation implementation,
+                                        Object parentApplicationContext,
                                         ProxyFactory proxyService,
-                                        JavaPropertyValueObjectFactory propertyValueObjectFactory) {
+                                        PropertyValueFactory propertyValueObjectFactory) {
         super();
-        this.implementation = implementation;
         this.component = component;
-        this.propertyValueObjectFactory = propertyValueObjectFactory;
 
-        springContext = new SpringContextStub(component, implementation, proxyService, propertyValueObjectFactory);
+        springContext = new SpringContextStub(component, implementation, parentApplicationContext, proxyService, propertyValueObjectFactory);
 
     } // end constructor
 
