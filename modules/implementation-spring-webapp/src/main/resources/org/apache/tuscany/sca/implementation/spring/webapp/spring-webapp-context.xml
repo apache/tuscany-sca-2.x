@@ -22,7 +22,7 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean id="tuscanySpringApplicationContextAccessor"
-        class="org.apache.tuscany.sca.implementation.spring.webapp.ApplicationContextAccessor"
+        class="org.apache.tuscany.sca.implementation.spring.webapp.ApplicationContextAccessorBean"
         scope="singleton" factory-method="getInstance">
     </bean>
     

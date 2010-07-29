@@ -24,17 +24,18 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.host.http.ExtensibleServletHost;
-import org.apache.tuscany.sca.implementation.spring.invocation.SpringApplicationContextHelper;
+import org.apache.tuscany.sca.implementation.spring.invocation.SpringApplicationContextAccessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-public class SpringWebModuleActivator implements ModuleActivator {
-    private static Logger log = Logger.getLogger(SpringWebModuleActivator.class.getName());
+public class SpringWebApplicationContextAccessor implements SpringApplicationContextAccessor, LifeCycleListener {
+    private static Logger log = Logger.getLogger(SpringWebApplicationContextAccessor.class.getName());
     private ExtensionPointRegistry registry;
+    private ApplicationContext parentApplicationContext;
 
-    public SpringWebModuleActivator(ExtensionPointRegistry registry) {
+    public SpringWebApplicationContextAccessor(ExtensionPointRegistry registry) {
         super();
         this.registry = registry;
     }
@@ -42,21 +43,31 @@ public class SpringWebModuleActivator implements ModuleActivator {
     @Override
     public void start() {
         ExtensibleServletHost servletHost = ExtensibleServletHost.getInstance(registry);
-        SpringApplicationContextHelper contextHelper = SpringApplicationContextHelper.getInstance(registry);
 
         ServletContext servletContext = servletHost.getServletContext();
         if (servletContext != null) {
-            ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-            if (context != null) {
+            parentApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+            if (parentApplicationContext != null) {
                 log.info("Spring WebApplicationContext is now injected on Tuscany");
-                contextHelper.setParentApplicationContext(context);
             }
+        }
+
+        if (parentApplicationContext == null) {
+            parentApplicationContext = ApplicationContextAccessorBean.getInstance().getApplicationContext();
         }
     }
 
     @Override
     public void stop() {
-        // NO-OP
+        parentApplicationContext = null;
+    }
+
+    public Object getParentApplicationContext() {
+        return parentApplicationContext;
+    }
+
+    public void setParentApplicationContext(Object parentApplicationContext) {
+        this.parentApplicationContext = (ApplicationContext) parentApplicationContext;
     }
 
 }

@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 public class SpringImplementationProviderFactory implements ImplementationProviderFactory<SpringImplementation> {
     private ProxyFactory proxyFactory;
     private PropertyValueFactory propertyFactory;
-    private SpringApplicationContextHelper contextHelper;
+    private SpringApplicationContextAccessor contextAccessor;
 
     /**
      * Simple constructor
@@ -44,9 +44,10 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
      */
     public SpringImplementationProviderFactory(ExtensionPointRegistry registry) {
         super();
-        contextHelper = SpringApplicationContextHelper.getInstance(registry);
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        contextAccessor = utilities.getUtility(SpringApplicationContextAccessor.class);
         proxyFactory = ExtensibleProxyFactory.getInstance(registry);
-        propertyFactory = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(PropertyValueFactory.class);
+        propertyFactory = utilities.getUtility(PropertyValueFactory.class);
     }
 
     /**
@@ -58,8 +59,10 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
      */
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
                                                                SpringImplementation implementation) {
-        Object parentApplicationContext = contextHelper.getParentApplicationContext();
-        return new SpringImplementationProvider(component, implementation, parentApplicationContext, proxyFactory, propertyFactory);
+        Object parentApplicationContext =
+            (contextAccessor != null) ? contextAccessor.getParentApplicationContext() : null;
+        return new SpringImplementationProvider(component, implementation, parentApplicationContext, proxyFactory,
+                                                propertyFactory);
     }
 
     /**

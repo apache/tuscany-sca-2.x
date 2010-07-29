@@ -19,38 +19,21 @@
 
 package org.apache.tuscany.sca.implementation.spring.invocation;
 
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-
 /**
  * A utility to receive the parent Spring application context 
  */
-public class SpringApplicationContextHelper {
-    private Object parentApplicationContext;
-
-    public SpringApplicationContextHelper(ExtensionPointRegistry registry) {
-    }
-
-    public static SpringApplicationContextHelper getInstance(ExtensionPointRegistry registry) {
-        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        return utilities.getUtility(SpringApplicationContextHelper.class);
-    }
-
+public interface SpringApplicationContextAccessor {
     /**
      * Get the parent Spring application context for the hosting environment. This will be used as the parent 
      * application context for implementation.spring components
-     * @return
+     * @return The parent application context
      */
-    public Object getParentApplicationContext() {
-        return parentApplicationContext;
-    }
+    Object getParentApplicationContext();
 
     /**
      * Set the root Spring application context. This is particually useful for Spring web integration where Spring
      * creates WebApplicationContext and keeps it in the ServletContext
-     * @param parentApplicationContext
+     * @param parentApplicationContext The parent application context
      */
-    public void setParentApplicationContext(Object parentApplicationContext) {
-        this.parentApplicationContext = parentApplicationContext;
-    }
+    void setParentApplicationContext(Object parentApplicationContext);
 }

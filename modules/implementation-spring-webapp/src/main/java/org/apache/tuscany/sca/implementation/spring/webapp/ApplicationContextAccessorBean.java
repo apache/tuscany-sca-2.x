@@ -28,15 +28,15 @@ import org.springframework.context.support.ApplicationObjectSupport;
  * 
  * The Spring bean definition file is: org/apache/tuscany/sca/implementation/spring/webapp/spring-webapp-context.xml
  */
-public class ApplicationContextAccessor extends ApplicationObjectSupport implements ApplicationContextAware {
+public class ApplicationContextAccessorBean extends ApplicationObjectSupport implements ApplicationContextAware {
     public final static String BEAN_ID = "tuscanySpringApplicationContextAccessor";
-    private final static ApplicationContextAccessor INSTANCE = new ApplicationContextAccessor();
+    private final static ApplicationContextAccessorBean INSTANCE = new ApplicationContextAccessorBean();
 
-    private ApplicationContextAccessor() {
+    private ApplicationContextAccessorBean() {
     }
 
     // Spring static factory method to create the singleton instance
-    public static ApplicationContextAccessor getInstance() {
+    public static ApplicationContextAccessorBean getInstance() {
         return INSTANCE;
     }
 

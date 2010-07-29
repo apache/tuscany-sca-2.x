@@ -31,9 +31,9 @@ public class ApplicationContextAccessorTestCase {
         ApplicationContext context =
             new ClassPathXmlApplicationContext(
                                                new String[] {"org/apache/tuscany/sca/implementation/spring/webapp/spring-webapp-context.xml"});
-        Object accessor = context.getBean(ApplicationContextAccessor.BEAN_ID);
-        Assert.assertSame(ApplicationContextAccessor.getInstance(), accessor);
-        ApplicationContextAccessor contextAccessor = (ApplicationContextAccessor)accessor;
+        Object accessor = context.getBean(ApplicationContextAccessorBean.BEAN_ID);
+        Assert.assertSame(ApplicationContextAccessorBean.getInstance(), accessor);
+        ApplicationContextAccessorBean contextAccessor = (ApplicationContextAccessorBean)accessor;
         Assert.assertSame(context, contextAccessor.getApplicationContext());
 
     }
