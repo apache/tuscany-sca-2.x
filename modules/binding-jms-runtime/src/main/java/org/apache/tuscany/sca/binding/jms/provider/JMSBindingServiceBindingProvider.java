@@ -90,6 +90,10 @@ public class JMSBindingServiceBindingProvider implements EndpointProvider, JMSSe
         this.jmsResourceFactory = jmsResourceFactory;
         this.registry = registry;
 
+        if (jmsBinding.getResponseActivationSpecName() != null && jmsBinding.getResponseActivationSpecName().length() > 0) {
+            throw new JMSBindingException("[BJM30023] response/activationSpec element MUST NOT be present when the binding is being used for an SCA service");
+        }
+        
         // Set the default destination when using a connection factory.
         // If an activation spec is being used, do not set the destination
         // because the activation spec provides the destination.
