@@ -19,10 +19,14 @@
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
       targetNamespace="http://sample"
+      xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
       name="helloworld">
     
-    <component name="HelloworldComponent">
-        <implementation.spring location="helloworld-context.xml"/>
+    <component name="HelloworldClientComponent">
+        <implementation.spring location="helloworld-client-context.xml"/>
+        <service name="HelloworldClientBean">
+            <tuscany:binding.jsonrpc/>
+        </service>
         <reference name="dateService" target="DateServiceComponent"/>
     </component>
     

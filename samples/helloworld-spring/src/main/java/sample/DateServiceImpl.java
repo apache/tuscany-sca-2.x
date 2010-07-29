@@ -30,6 +30,7 @@ import org.oasisopen.sca.annotation.Service;
 public class DateServiceImpl implements DateService {
 
     public Date getDate() {
+        System.out.println("DateServiceImpl.getDate()");
         return new Date();
     }
 

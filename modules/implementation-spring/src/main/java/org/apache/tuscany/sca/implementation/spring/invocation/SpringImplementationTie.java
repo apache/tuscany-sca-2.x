@@ -132,7 +132,8 @@ public class SpringImplementationTie {
             } // end if
         } // end for
           // TODO: NoSuchBeanException
-        throw new RuntimeException("Unable to find Bean with name " + name);
+        // throw new RuntimeException("Unable to find Bean with name " + name);
+        return null;
 
     } // end method getBean( String, Class )
 

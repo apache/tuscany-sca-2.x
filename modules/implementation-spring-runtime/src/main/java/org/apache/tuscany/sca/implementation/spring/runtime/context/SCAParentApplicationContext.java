@@ -69,7 +69,15 @@ class SCAParentApplicationContext implements ApplicationContext {
      * @return Object - a Bean which matches the requested bean
      */
     public Object getBean(String name, Class requiredType) throws BeansException {
-        return implementation.getBean(name, requiredType);
+        Object bean = implementation.getBean(name, requiredType);
+        if (bean == null && getParent() != null) {
+            bean = getParent().getBean(name, requiredType);
+        }
+        if (bean == null) {
+            throw new NoSuchBeanDefinitionException("Unable to find Bean with name " + name);
+        } else {
+            return bean;
+        }
     } // end method getBean( String, Class )
 
     public Object getBean(String name, Object[] args) throws BeansException {
@@ -77,7 +85,7 @@ class SCAParentApplicationContext implements ApplicationContext {
     }
 
     public <T> T getBean(Class<T> clazz) throws BeansException {
-        return clazz.cast(implementation.getBean(clazz.getName(), clazz));
+        return clazz.cast(getBean(clazz.getName(), clazz));
     }
 
     public Map<String, Object> getBeansWithAnnotation(Class<? extends Annotation> clazz) throws BeansException {

@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.implementation.spring.runtime.context;
 import java.lang.reflect.Method;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -80,9 +79,9 @@ public class SpringImplementationStub {
         try {
 
             Object bean = getBean.invoke(tie, new Object[] {name, requiredType});
-            if (bean == null) {
-                throw new NoSuchBeanDefinitionException("Unable to find Bean with name " + name);
-            }
+//            if (bean == null) {
+//                throw new NoSuchBeanDefinitionException("Unable to find Bean with name " + name);
+//            }
             return bean;
 
         } catch (Exception e) {
