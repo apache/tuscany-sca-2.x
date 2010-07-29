@@ -346,14 +346,15 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
     }
 
     /*
-     * (non-Javadoc)
-     * @see org.apache.tuscany.sca.interfacedef.InterfaceContractMapper#checkCompatibility(org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.Compatibility, boolean, boolean, java.lang.StringBuffer)
      * this variant of the checkCompatibility method is intended to supersede the one without an audit argument
      * Presence of both method variants indicates a state of partial development
      */
     public boolean checkCompatibility(InterfaceContract source,
-			InterfaceContract target, Compatibility compatibility,
-			boolean ignoreCallback, boolean silent, Audit audit)
+			                          InterfaceContract target, 
+			                          Compatibility compatibility,
+			                          boolean ignoreCallback, 
+			                          boolean silent, 
+			                          Audit audit)
 			throws IncompatibleInterfaceContractException {
 
 		if (source == target) {
@@ -426,73 +427,27 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 		return ignoreCallback || isCallbackCompatible(source, target, silent);
 	}
 
+    /*
+     * The old checkCompatibility operation without auditing. This just delegates to the new one for the time
+     * being while there are still calls that don't provide and audit object. In the medium term when the calls have
+     * been converted to sue the new opetion directly this should be removed. 
+     */
     public boolean checkCompatibility(InterfaceContract source,
                                       InterfaceContract target,
                                       Compatibility compatibility,
                                       boolean ignoreCallback,
-                                      boolean silent) throws IncompatibleInterfaceContractException {
+                                      boolean silent) 
+        throws IncompatibleInterfaceContractException {
       
-        if (source == target) {
-            // Shortcut for performance
-            return true;
-        }
-
-        if (source == null || target == null) {
-            return false;
-        }
-
-        if (source.getInterface() == target.getInterface()) {
-            return ignoreCallback || isCallbackCompatible(source, target, silent);
-        }
-
-        if (source.getInterface() == null || target.getInterface() == null) {
-            return false;
-        }
-
-        if (source.getInterface().isDynamic() || target.getInterface().isDynamic()) {
-            return ignoreCallback || isCallbackCompatible(source, target, silent);
-        }
-
-        if (source.getInterface().isRemotable() != target.getInterface().isRemotable()) {
-            if (!silent) {
-                throw new IncompatibleInterfaceContractException("Remotable settings do not match", source, target);
-            } else {
-                return false;
-            }
-        }
-
-        for (Operation operation : source.getInterface().getOperations()) {
-            Operation targetOperation = map(target.getInterface(), operation);
-            if (targetOperation == null) {
-                if (!silent) {
-                    throw new IncompatibleInterfaceContractException("Operation " + 
-                                                                     operation.getName() +
-                                                                     " not found on target", 
-                                                                     source, 
-                                                                     target);
-                } else {
-                    return false;
-                }
-            }
-            
-            if (!silent) {
-                Audit audit = new Audit();
-                if (!isCompatible(operation, targetOperation, Compatibility.SUBSET, true, audit)){
-                    throw new IncompatibleInterfaceContractException("Operations called " +
-                                                                     operation.getName() +
-                                                                     " are not compatible " + 
-                                                                     audit,
-                                                                     source, 
-                                                                     target);
-                }
-            } else {
-                if (!isCompatible(operation, targetOperation, Compatibility.SUBSET)) {
-                    return false;
-                }
-            }
-        }
-
-        return ignoreCallback || isCallbackCompatible(source, target, silent);
+        // create dummy audit object.
+        Audit audit = new Audit();
+        
+        return checkCompatibility(source, 
+                                  target, 
+                                  compatibility, 
+                                  ignoreCallback, 
+                                  silent,
+                                  audit);
     }
 
     
@@ -611,30 +566,5 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             return null;
         }
     }
-    
-   
-    /**
-     * In various places in the process of an SCA application we match one interface against
-     * another. Sometimes the two interfaces can be presented using different IDLs, for example
-     * Java and WSDL. In this case interfaces are converted so that they are both WSDL1.1 interfaces
-     * and they are then compared. The generated WSDL is cached on the interface object for 
-     * any subsequent matching
-     * 
-     * @param interfaceA
-     * @param interfaceB
-     */
-/*    
-    public void normalizeContractsForComparison(InterfaceContract interfaceA, InterfaceContract interfaceB){
-        // normalize interfaces
-        if (interfaceA.getInterface().getClass() != interfaceB.getInterface().getClass()) {
-            this.contractBuilder = builders.getContractBuilder();
-            if (interfaceA.getInterface() instanceof Interface){
-                contractBuilder.build(interfaceA, null);
-            } else {
-                contractBuilder.build(interfaceB, null);
-            }            
-        }
-    }
-*/
 
 }
