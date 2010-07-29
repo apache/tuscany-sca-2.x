@@ -19,9 +19,14 @@
 
 package calculator;
 
+import javax.jws.WebMethod;
+import javax.jws.WebService;
+
 /**
  * @version $Rev$ $Date$
  */
+@WebService
 public interface AddService {
+    @WebMethod(operationName = "Add")
     double add(double n1, double n2);
 }
