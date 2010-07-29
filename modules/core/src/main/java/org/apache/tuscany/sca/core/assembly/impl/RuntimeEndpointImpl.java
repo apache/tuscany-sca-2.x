@@ -212,6 +212,12 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             bindingInvocationChain = new InvocationChainImpl(null, null, false, phaseManager);
             initServiceBindingInvocationChains();
         }
+        
+        // Init the operation invocation chains now. We know they will 
+        // be needed as well as the binding invocation chain and this
+        // makes the wire processors run
+        getInvocationChains();
+        
         return bindingInvocationChain;
     }
 
