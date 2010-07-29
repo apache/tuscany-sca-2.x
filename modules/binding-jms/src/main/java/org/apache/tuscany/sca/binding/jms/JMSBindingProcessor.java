@@ -437,11 +437,11 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     private void parseActivationSpec(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
-        String name = reader.getAttributeValue(null, "name");        
+        String name = reader.getAttributeValue(null, "jndiName");        
         if (name != null && name.length() > 0) {
             jmsBinding.setActivationSpecName(name);            
         } else {
-            warning(monitor, "MissingActivationSpecName", reader);
+            error(monitor, "MissingActivationSpecName", reader);
         }
         jmsBinding.getActivationSpecProperties().putAll(parseBindingProperties(reader, monitor));
     }
@@ -483,7 +483,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     private void parseResponseActivationSpec(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
-        String name = reader.getAttributeValue(null, "name");
+        String name = reader.getAttributeValue(null, "jndiName");
         if (name != null && name.length() > 0) {
             jmsBinding.setResponseActivationSpecName(name);            
         } else {
