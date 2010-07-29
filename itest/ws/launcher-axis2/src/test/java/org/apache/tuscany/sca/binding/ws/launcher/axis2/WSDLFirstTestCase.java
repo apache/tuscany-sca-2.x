@@ -115,6 +115,11 @@ public class WSDLFirstTestCase extends TestCase {
         assertTrue(f2.getBars().get(2).isB().booleanValue());
     }  
     
+    @Test
+    public void testGetGreetingsCaps() throws Exception {
+        assertEquals("Hello Fred", externalClient.getGreetingsCaps("Fred"));
+    }    
+    
     @After
     public void tearDown() throws Exception {
         node.stop();

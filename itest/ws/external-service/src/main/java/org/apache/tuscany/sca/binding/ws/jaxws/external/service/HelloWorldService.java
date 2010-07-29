@@ -52,6 +52,13 @@ public class HelloWorldService {
         response.getBars().add(b3);
         System.out.println("Leaving External Service HelloWorld.getGreetingsComplex: " + foo.getBars().get(0).getS());
         return response;
+    }  
+    
+    public String GetGreetingsCaps(String name) {
+        System.out.println("Entering External Service HelloWorld.GetGreetingsCaps: " + name);
+        String response = "Hello " + name;
+        System.out.println("Leaving External Service HelloWorld.GetGreetingsCaps: " + response);
+        return response;
     }    
 
 }

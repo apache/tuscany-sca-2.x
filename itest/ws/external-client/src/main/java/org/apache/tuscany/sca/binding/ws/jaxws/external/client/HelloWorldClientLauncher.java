@@ -72,6 +72,13 @@ public class HelloWorldClientLauncher {
         Foo response =  wsProxy.getGreetingsComplex(f);
         System.out.println("Leaving External Client HelloWorld.getGreetingsComplex: " + response.getBars().get(0).getS());
         return response;
+    }    
+    
+    public String getGreetingsCaps(String s) throws Exception_Exception {
+        System.out.println("Entering External Client HelloWorld.getGreetingsCaps: " + s);
+        String response =  wsProxy.getGreetingsCaps(s);
+        System.out.println("Leaving External Client HelloWorld.getGreetingsCaps: " + response);
+        return response;
     }     
     
     public static void main(String[] args) throws Exception {

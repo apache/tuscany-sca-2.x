@@ -20,12 +20,16 @@
 <xs:schema version="1.0" targetNamespace="http://helloworld/external" xmlns:tns="http://helloworld/external" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
   <xs:element name="getGreetings" type="tns:getGreetings"/>
+  
+  <xs:element name="getGreetingsResponse" type="tns:getGreetingsResponse"/>  
 
   <xs:element name="getGreetingsComplex" type="tns:getGreetingsComplex"/>
 
   <xs:element name="getGreetingsComplexResponse" type="tns:getGreetingsComplexResponse"/>
 
-  <xs:element name="getGreetingsResponse" type="tns:getGreetingsResponse"/>
+  <xs:element name="GetGreetingsCaps" type="tns:GetGreetingsCaps"/>
+
+  <xs:element name="GetGreetingsCapsResponse" type="tns:GetGreetingsCapsResponse"/>  
 
   <xs:complexType name="getGreetings">
     <xs:sequence>
@@ -65,6 +69,18 @@
       <xs:element name="return" type="tns:foo" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
+  
+  <xs:complexType name="GetGreetingsCaps">
+    <xs:sequence>
+      <xs:element name="arg0" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GetGreetingsCapsResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>  
 </xs:schema>
 
 

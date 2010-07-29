@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.binding.ws;
 
-import org.apache.tuscany.sca.binding.ws.jaxws.external.service.iface.HelloWorldService;
 import org.apache.tuscany.sca.binding.ws.jaxws.external.service.iface.Foo;
+import org.apache.tuscany.sca.binding.ws.jaxws.external.service.iface.HelloWorldService;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -49,5 +49,12 @@ public class HelloWorldImpl implements HelloWorld {
         System.out.println("Leaving SCA HelloWorld.getGreetingsComplex: " + foo.getBars().get(0).getS());
         return response;
     } 
+    
+    public String getGreetingsCaps(String s) {
+        System.out.println("Entering SCA HelloWorld.getGreetingsCaps: " + s);
+        String response = helloWorldExternal.getGreetingsCaps(s);
+        System.out.println("Leaving SCA HelloWorld.getGreetingsCaps: " + response);
+        return response;
+    }
    
 }

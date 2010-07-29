@@ -37,6 +37,10 @@
   <xs:element name="getGreetingsExceptionResponse" type="tns:getGreetingsExceptionResponse"/>
 
   <xs:element name="getGreetingsResponse" type="tns:getGreetingsResponse"/>
+  
+  <xs:element name="GetGreetingsCaps" type="tns:GetGreetingsCaps"/>
+
+  <xs:element name="GetGreetingsCapsResponse" type="tns:GetGreetingsCapsResponse"/>    
 
   <xs:complexType name="getGreetingsException">
     <xs:sequence>
@@ -79,5 +83,17 @@
       <xs:element name="return" type="tns2:foo" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
+  
+  <xs:complexType name="GetGreetingsCaps">
+    <xs:sequence>
+      <xs:element name="arg0" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GetGreetingsCapsResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>    
 </xs:schema>
 

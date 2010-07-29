@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.binding.ws;
 
+import javax.jws.WebMethod;
+
 import org.apache.tuscany.sca.binding.ws.jaxws.external.service.iface.Foo;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Remotable;
@@ -29,4 +31,7 @@ public interface HelloWorld {
     String getGreetings(String s);
     String getGreetingsException(String s) throws ServiceRuntimeException;
     Foo getGreetingsComplex(Foo foo);
+    
+    @WebMethod(operationName = "GetGreetingsCaps")
+    String getGreetingsCaps(String s);
 }

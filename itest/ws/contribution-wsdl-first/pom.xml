@@ -82,7 +82,7 @@
                     </dependency>
                 </dependencies>
                 <executions>
-                    <execution>
+                    <!-- execution>
                         <id>wsimport1</id>
                         <phase>process-resources</phase>
                         <goals>
@@ -96,7 +96,7 @@
                             </wsdlFiles>
                             <staleFile>${project.build.directory}/jaxws/stale/.wsimport1StaleFlag</staleFile>
                         </configuration>
-                    </execution>  
+                    </execution-->  
                     <execution>
                         <id>wsimport2</id>
                         <phase>process-resources</phase>
