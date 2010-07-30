@@ -146,7 +146,7 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
         // Validate that the WSDL is not using SOAP v1.2 if requires="SOAP.v1_1" has been specified
         if ( isSOAP11Required ) {
         	Definition def = wsBinding.getGeneratedWSDLDocument();
-        	Binding binding = def.getBinding(wsBinding.getBindingName());
+        	Binding binding = def.getBinding(wsBinding.getBinding().getQName());
         	for ( Object ext : binding.getExtensibilityElements() ) {
         		if ( ext instanceof SOAP12Binding )
         			throw new ServiceRuntimeException("WSDL document is using SOAP v1.2 but SOAP v1.1 " +
@@ -157,7 +157,7 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
         // Validate that the WSDL is not using SOAP v1.1 if requires="SOAP.v1_2" has been specified
         if ( isSOAP12Required ) {
         	Definition def = wsBinding.getGeneratedWSDLDocument();
-        	Binding binding = def.getBinding(wsBinding.getBindingName());
+        	Binding binding = def.getBinding(wsBinding.getBinding().getQName());
         	for ( Object ext : binding.getExtensibilityElements() ) {
         		if ( ext instanceof SOAPBinding )
         			throw new ServiceRuntimeException("WSDL document is using SOAP v1.1 but SOAP v1.2 " +
