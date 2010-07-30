@@ -25,7 +25,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -83,8 +85,10 @@ public class DirectoryContributionScanner implements ContributionScanner {
     private List<String> scanContributionArtifacts(Contribution contribution) throws ContributionReadException {
         File directory = directory(contribution);
         List<String> artifacts = new ArrayList<String>();
+        // [rfeng] There are cases that the folder contains symbolic links that point to the same physical directory
+        Set<File> visited = new HashSet<File>();
         try {
-            traverse(artifacts, directory, directory);
+            traverse(artifacts, directory, directory, visited);
         } catch (IOException e) {
             throw new ContributionReadException(e);
         }
@@ -98,22 +102,29 @@ public class DirectoryContributionScanner implements ContributionScanner {
      * @param fileList
      * @param file
      * @param root
+     * @param visited The visited directories
      * @throws IOException
      */
-    private static void traverse(List<String> fileList, File file, File root) throws IOException {
+    private static void traverse(List<String> fileList, File file, File root, Set<File> visited) throws IOException {
         if (file.isFile()) {
             fileList.add(root.toURI().relativize(file.toURI()).toString());
         } else if (file.isDirectory()) {
-            String uri = root.toURI().relativize(file.toURI()).toString();
-            if (uri.endsWith("/")) {
-                uri = uri.substring(0, uri.length() - 1);
-            }
-            fileList.add(uri);
+            File dir = file.getCanonicalFile();
+            if (!visited.contains(dir)) {
+                // [rfeng] Add the canonical file into the visited set to avoid duplicate navigation of directories
+                // following the symbolic links
+                visited.add(dir);
+                String uri = root.toURI().relativize(file.toURI()).toString();
+                if (uri.endsWith("/")) {
+                    uri = uri.substring(0, uri.length() - 1);
+                }
+                fileList.add(uri);
 
-            File[] files = file.listFiles();
-            for (File f: files) {
-                if (!f.getName().startsWith(".")) {
-                    traverse(fileList, f, root);
+                File[] files = file.listFiles();
+                for (File f : files) {
+                    if (!f.getName().startsWith(".")) {
+                        traverse(fileList, f, root, visited);
+                    }
                 }
             }
         }
