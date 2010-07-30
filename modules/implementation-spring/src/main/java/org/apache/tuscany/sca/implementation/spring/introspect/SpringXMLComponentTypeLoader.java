@@ -32,9 +32,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -738,13 +740,16 @@ public class SpringXMLComponentTypeLoader {
                 List<Reference> beanReferences = beanComponentType.getReferences();
                 List<Property> beanProperties = beanComponentType.getProperties();
 
+                Set<String> excludedNames = new HashSet<String>();
                 Iterator<SpringPropertyElement> itp = beanElement.getProperties().iterator();
                 while (itp.hasNext()) {
                     SpringPropertyElement propertyElement = itp.next();
+                    // Exclude the reference that is also known as a spring property
+                    excludedNames.add(propertyElement.getName()); 
                     for (String propertyRef : propertyElement.getRefs()) {
                         if (propertyRefUnresolved(propertyRef, beans, references, scaproperties)) {
                             // This means an unresolved reference from the spring bean...
-                            for (Reference reference : beanReferences) {
+                            for (Reference reference: beanReferences) {
                                 if (propertyElement.getName().equals(reference.getName())) {
                                     // The name of the reference in this case is the string in
                                     // the @ref attribute of the Spring property element, NOT the
@@ -784,11 +789,15 @@ public class SpringXMLComponentTypeLoader {
                                 // type attribute OR index attribute declared...
                                 if ((conArgElement.getType() != null && paramType.equals(conArgElement.getType())) || (conArgElement
                                     .getIndex() != -1 && (conArgElement.getIndex() == parameter.getIndex()))) {
-                                    if (parameter.getClassifer().getName().equals("org.osoa.sca.annotations.Reference")) {
+                                    // [rfeng] Commenting out the following code as the constructor parameter based SCA
+                                    // references are added already
+                                    /*
+                                    if (parameter.getClassifer() == org.oasisopen.sca.annotation.Reference.class) {
                                         Reference theReference = createReference(interfaze, constructorArgRef);
                                         componentType.getReferences().add(theReference);
                                     }
-                                    if (parameter.getClassifer().getName().equals("org.osoa.sca.annotations.Property")) {
+                                    */
+                                    if (parameter.getClassifer() == org.oasisopen.sca.annotation.Property.class) {
                                         // Store the unresolved references as unresolvedBeanRef in the Spring Implementation type
                                         // we might need to verify with the component definition later.
                                         Reference theReference = createReference(interfaze, constructorArgRef);
@@ -799,7 +808,15 @@ public class SpringXMLComponentTypeLoader {
                         } // end if
                     } // end for
                 } // end while
-
+                
+                // [rfeng] Add the remaining introspected references (w/ @Reference but without Spring property ref)
+                for (Reference ref : beanReferences) {
+                    if (!excludedNames.contains(ref.getName()) && componentType.getReference(ref.getName()) == null) {
+                        // Only add the ones that not listed by sca:reference
+                        componentType.getReferences().add(ref);
+                    }
+                }
+                
             } // end while
 
         } catch (ClassNotFoundException e) {

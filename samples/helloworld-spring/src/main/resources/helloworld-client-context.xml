@@ -30,6 +30,8 @@
         </property>
     </bean>
     
+    <!-- 
     <sca:reference name="dateService" type="sample.DateService"/>
+    -->
 
 </beans>
