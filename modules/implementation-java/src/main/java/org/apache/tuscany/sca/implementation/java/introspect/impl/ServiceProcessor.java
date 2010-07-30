@@ -78,7 +78,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
                     ) {
                     Service service;
                     try {
-                        service = createService(interfaze, null);
+                        service = createService(clazz, interfaze, null);
                     } catch (InvalidInterfaceException e) {
                         throw new IntrospectionException(e);
                     }
@@ -124,12 +124,13 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         for (int i=0; i < interfaces.length; i++) {
             try {
                 String name = (annotation.names().length > 0) ? annotation.names()[i] : null;
-                Service service = createService(interfaces[i], name);
+                Service service = createService(clazz, interfaces[i], name);
                 type.getServices().add(service);
             } catch (InvalidInterfaceException e) {
                 throw new IntrospectionException(e);
             }
         }
+        
     }
 
     protected boolean hasMethod(Method m1, Method[] ms) {
@@ -180,7 +181,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         createCallback(type, element);
     }
 
-    public Service createService(Class<?> interfaze, String name) throws InvalidInterfaceException {
+    public Service createService(Class<?> clazz, Class<?> interfaze, String name) throws InvalidInterfaceException {
         Service service = assemblyFactory.createService();
         JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         service.setInterfaceContract(interfaceContract);
@@ -192,9 +193,17 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         }
 
         JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(interfaze);
+        boolean remotable = clazz.getAnnotation(Remotable.class) != null;
+        if (remotable){
+            callInterface.setRemotable(true);
+        }
         service.getInterfaceContract().setInterface(callInterface);
+        
         if (callInterface.getCallbackClass() != null) {
             JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass());
+            if (remotable){
+                callbackInterface.setRemotable(true);
+            }
             service.getInterfaceContract().setCallbackInterface(callbackInterface);
         }
         return service;
