@@ -41,6 +41,8 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -57,7 +59,6 @@ import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
-import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -92,6 +93,8 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  * @version $Rev$ $Date$
  */
 public class SpringXMLComponentTypeLoader {
+    private final static Logger log = Logger.getLogger(SpringXMLComponentTypeLoader.class.getName());
+
     private ExtensionPointRegistry registry;
     private XMLInputFactory xmlInputFactory;
     private ContributionFactory contributionFactory;
@@ -111,26 +114,6 @@ public class SpringXMLComponentTypeLoader {
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
         this.contributionFactory = factories.getFactory(ContributionFactory.class);
         this.xmlInputFactory = factories.getFactory(XMLInputFactory.class);
-    }
-
-    /**
-     * Report a exception.
-     *
-     * @param problems
-     * @param message
-     * @param model
-     */
-    private void error(Monitor monitor, String message, Object model, Exception ex) {
-        if (monitor != null) {
-            Problem problem =
-                monitor.createProblem(this.getClass().getName(),
-                                      "impl-spring-validation-messages",
-                                      Severity.ERROR,
-                                      model,
-                                      message,
-                                      ex);
-            monitor.problem(problem);
-        }
     }
 
     /**
@@ -336,9 +319,7 @@ public class SpringXMLComponentTypeLoader {
                                     contextPath.substring(0, contextPath.lastIndexOf("/") + 1) + location;
                                 XMLStreamReader ireader = getApplicationContextReader(resolver, resourcePath, context);
                                 // Read the context definition for the identified imported resource
-                                readContextDefinition(resolver,
-                                                      ireader,
-                                                      resourcePath, // The new context path
+                                readContextDefinition(resolver, ireader, resourcePath, // The new context path
                                                       beans,
                                                       services,
                                                       references,
@@ -408,6 +389,9 @@ public class SpringXMLComponentTypeLoader {
                                 }
                             }
                             beans.add(bean);
+                            if (log.isLoggable(Level.FINE)) {
+                                log.log(Level.FINE, "Adding Spring bean ..." + bean.getId() + " from " + contextPath);
+                            }
                             // Read the <bean> element and its child elements
                             readBeanDefinition(reader, bean, beans);
                         } // end if
@@ -698,25 +682,34 @@ public class SpringXMLComponentTypeLoader {
                 // Loop through all the beans found
                 while (itb.hasNext()) {
                     SpringBeanElement beanElement = itb.next();
+
                     // If its not a valid bean for service, ignore it
-                    if (!isvalidBeanForService(beanElement))
+                    if (!isvalidBeanForService(beanElement)) {
                         continue;
-                    // Load the Spring bean class
-                    Class<?> beanClass = resolveClass(resolver, beanElement.getClassName(), context);
-                    // Introspect the bean
-                    beanIntrospector = new SpringBeanIntrospector(registry, beanElement.getCustructorArgs());
-                    ComponentType beanComponentType = assemblyFactory.createComponentType();
-                    javaImplementation = beanIntrospector.introspectBean(beanClass, beanComponentType);
-                    // Set the service name as bean name
-                    for (Service componentService : beanComponentType.getServices())
-                        componentService.setName(beanElement.getId());
-                    // Get the service interface defined by this Spring Bean and add to
-                    // the component type of the Spring Assembly
-                    List<Service> beanServices = beanComponentType.getServices();
-                    componentType.getServices().addAll(beanServices);
-                    // Add these services to the Service / Bean map
-                    for (Service beanService : beanServices) {
-                        implementation.setBeanForService(beanService, beanElement);
+                    }
+                    try {
+                        // Load the Spring bean class
+                        Class<?> beanClass = resolveClass(resolver, beanElement.getClassName(), context);
+                        // Introspect the bean
+                        beanIntrospector = new SpringBeanIntrospector(registry, beanElement.getCustructorArgs());
+                        ComponentType beanComponentType = assemblyFactory.createComponentType();
+                        javaImplementation = beanIntrospector.introspectBean(beanClass, beanComponentType);
+                        // Set the service name as bean name
+                        for (Service componentService : beanComponentType.getServices()) {
+                            componentService.setName(beanElement.getId());
+                        }
+                        // Get the service interface defined by this Spring Bean and add to
+                        // the component type of the Spring Assembly
+                        List<Service> beanServices = beanComponentType.getServices();
+                        componentType.getServices().addAll(beanServices);
+                        // Add these services to the Service / Bean map
+                        for (Service beanService : beanServices) {
+                            implementation.setBeanForService(beanService, beanElement);
+                        }
+                    } catch (Throwable e) {
+                        // [rfeng] FIXME: Some Spring beans have constructors that take pararemters injected by Spring and
+                        // Tuscany is not happy with that during the introspection
+                        log.log(Level.SEVERE, e.getMessage(), e);
                     }
                 } // end while
             } // end if
@@ -728,11 +721,19 @@ public class SpringXMLComponentTypeLoader {
                 if (beanElement.getProperties().isEmpty() && beanElement.getCustructorArgs().isEmpty())
                     continue;
 
-                Class<?> beanClass = resolveClass(resolver, beanElement.getClassName(), context);
-                // Introspect the bean
-                beanIntrospector = new SpringBeanIntrospector(registry, beanElement.getCustructorArgs());
                 ComponentType beanComponentType = assemblyFactory.createComponentType();
-                javaImplementation = beanIntrospector.introspectBean(beanClass, beanComponentType);
+
+                try {
+                    Class<?> beanClass = resolveClass(resolver, beanElement.getClassName(), context);
+                    // Introspect the bean
+                    beanIntrospector = new SpringBeanIntrospector(registry, beanElement.getCustructorArgs());
+                    javaImplementation = beanIntrospector.introspectBean(beanClass, beanComponentType);
+                } catch (Exception e) {
+                    // [rfeng] FIXME: Some Spring beans have constructors that take pararemters injected by Spring and
+                    // Tuscany is not happy with that during the introspection
+                    log.log(Level.SEVERE, e.getMessage(), e);
+                    continue;
+                }
                 Map<String, JavaElementImpl> propertyMap = javaImplementation.getPropertyMembers();
                 JavaConstructorImpl constructor = javaImplementation.getConstructor();
                 // Get the references by this Spring Bean and add the unresolved ones to
@@ -745,11 +746,11 @@ public class SpringXMLComponentTypeLoader {
                 while (itp.hasNext()) {
                     SpringPropertyElement propertyElement = itp.next();
                     // Exclude the reference that is also known as a spring property
-                    excludedNames.add(propertyElement.getName()); 
+                    excludedNames.add(propertyElement.getName());
                     for (String propertyRef : propertyElement.getRefs()) {
                         if (propertyRefUnresolved(propertyRef, beans, references, scaproperties)) {
                             // This means an unresolved reference from the spring bean...
-                            for (Reference reference: beanReferences) {
+                            for (Reference reference : beanReferences) {
                                 if (propertyElement.getName().equals(reference.getName())) {
                                     // The name of the reference in this case is the string in
                                     // the @ref attribute of the Spring property element, NOT the
@@ -808,7 +809,7 @@ public class SpringXMLComponentTypeLoader {
                         } // end if
                     } // end for
                 } // end while
-                
+
                 // [rfeng] Add the remaining introspected references (w/ @Reference but without Spring property ref)
                 for (Reference ref : beanReferences) {
                     if (!excludedNames.contains(ref.getName()) && componentType.getReference(ref.getName()) == null) {
@@ -816,7 +817,7 @@ public class SpringXMLComponentTypeLoader {
                         componentType.getReferences().add(ref);
                     }
                 }
-                
+
             } // end while
 
         } catch (ClassNotFoundException e) {
@@ -824,8 +825,6 @@ public class SpringXMLComponentTypeLoader {
             throw new ContributionReadException(e);
         } catch (InvalidInterfaceException e) {
             throw new ContributionReadException(e);
-        } catch (ContributionResolveException e) {
-
         } // end try
 
         // If we get here, the Spring assembly component type is resolved
