@@ -144,7 +144,13 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     
     private static boolean isAnnotatedWithSCA(AnnotatedElement element) {
         for (Annotation a : element.getAnnotations()) {
-            if (isSCAAnnotation(a)) {
+            // JCI_8023
+            // policy annotations can be added to reference fields that 
+            // don't have @Reference annotations so we need to allow 
+            // for the fields to be detected as references
+            if (isSCAPolicyAnnotation(a)){
+                continue;
+            } else if (isSCAAnnotation(a)) {
                 return true;
             }
         }
@@ -153,6 +159,16 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
 
     private static boolean isSCAAnnotation(Annotation a) {
         return a.annotationType().getName().startsWith("org.oasisopen.sca.annotation.");
+    }
+    
+    private static boolean isSCAPolicyAnnotation(Annotation a) {
+        if (a.annotationType().getName().startsWith("org.oasisopen.sca.annotation.PolicySets") ){
+            return true;
+        } else if (a.annotationType().getName().startsWith("org.oasisopen.sca.annotation.Intent") ){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private <T> void calcPropRefs(Set<Method> methods,
