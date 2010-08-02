@@ -46,12 +46,13 @@ public interface Node {
      *               root contribution and other dependent contributions. May be null.
      * @param runDeployables  true if the composites defined as deployable in the contributions sca-contribution.xml
      *               file or supplied metaData file should be run, false if they should not be. 
+     * @return the URI of the installed contribution
      * 
      * @throws ContributionReadException 
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    void installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException;
+    String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException;
 
     /**
      * Creates an installed contribution from a supplied Contribution object.
@@ -62,19 +63,20 @@ public interface Node {
      *               root contribution and other dependent contributions. May be null.
      * @param runDeployables  true if the composites defined as deployable in the contributions sca-contribution.xml
      *               file or supplied metaData file should be run, false if they should not be. 
+     * @return the URI of the installed contribution
      * 
      * @throws ContributionReadException 
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException;
+    String installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException;
 
     /**
      * Creates an installed contribution from a supplied root contribution.
      * See section 10.5.1 of the Assembly Specification.
      * 
      * @param contributionURL  the URL where the contribution is located
-     * @return the URI where the contribution was installed
+     * @return the URI of the installed contribution
      * 
      * @throws ContributionReadException 
      * @throws ActivationException 
