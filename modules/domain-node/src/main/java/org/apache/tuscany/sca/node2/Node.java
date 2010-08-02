@@ -181,21 +181,23 @@ public interface Node {
      * 4685 services and references in the supplied composite is not defined; since there is no composite scope
      * 4686 outside the domain composite, the usual idea of promotion has no utility.
      *  
+     * @param cotributionURI
      * @param compositeURI
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    void addToDomainLevelComposite(String compositeURI) throws ActivationException, ValidationException;
+    void addToDomainLevelComposite(String contributionURI, String compositeURI) throws ActivationException, ValidationException;
     
     /**
      * 4687 10.7.2 remove From Domain-Level Composite
      * 4688 Removes from the Domain Level composite the elements corresponding to the composite identified by a
      * 4689 supplied composite URI. This means that the removal of the components, wires, services and references
      * 4690 originally added to the domain level composite by the identified composite.     * 
+     * @param contributionURI
      * @param compositeURI
      * @throws ActivationException 
      */
-    void removeFromDomainLevelComposite(String compositeURI) throws ActivationException;
+    void removeFromDomainLevelComposite(String contributionURI, String compositeURI) throws ActivationException;
 
     /**
      * 10.7.3 get Domain-Level Composite

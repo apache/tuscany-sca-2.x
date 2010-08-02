@@ -65,7 +65,7 @@ public class NodeTestCase {
 //            // expected as there is no deployables
 //        }
 
-        node.addToDomainLevelComposite("helloworld" + "/helloworld.composite");
+        node.addToDomainLevelComposite("helloworld", "helloworld.composite");
 //        Helloworld helloworldService = scaClientFactory.getService(Helloworld.class, "HelloworldComponent");
 //        Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
     }
@@ -92,7 +92,7 @@ public class NodeTestCase {
     public void testRemoveComposte() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, MalformedURLException, ActivationException, ValidationException {
         Node node = NodeFactory.newInstance().createNode("default");
         node.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
-        node.removeFromDomainLevelComposite("foo/helloworld.composite");
+        node.removeFromDomainLevelComposite("foo", "helloworld.composite");
         List<String> dcs = node.getDeployedCompostes("foo");
         Assert.assertEquals(0, dcs.size());
     }

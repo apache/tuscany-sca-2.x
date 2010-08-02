@@ -161,15 +161,14 @@ public class NodeImpl implements Node {
         return compositeArtifcatURI;
     }
 
-    public void addToDomainLevelComposite(String compositeURI) throws ActivationException, ValidationException {
-        String contributionURI = getContributionUriForArtifact(compositeURI);
+    @Override
+    public void addToDomainLevelComposite(String contributionURI, String compositeURI) throws ActivationException, ValidationException {
         InstalledContribution ic = installedContributions.get(contributionURI);
         if (ic == null) {
             throw new IllegalArgumentException("Contribution not installed: " + contributionURI);
         }
-        String relativeURI = compositeURI.substring(contributionURI.endsWith("/") ? contributionURI.length() : contributionURI.length()+1);
         for (Artifact a : ic.getContribution().getArtifacts()) {
-            if (a.getURI().equals(relativeURI)) {
+            if (a.getURI().equals(compositeURI)) {
                 runComposite((Composite) a.getModel(), ic);
                 return;
             }
@@ -177,12 +176,14 @@ public class NodeImpl implements Node {
         throw new IllegalArgumentException("composite not found: " + compositeURI);
     }
 
-    public void removeFromDomainLevelComposite(String compositeURI) throws ActivationException {
-        String contributionURI = getContributionUriForArtifact(compositeURI);
+    @Override
+    public void removeFromDomainLevelComposite(String contributionURI, String compositeURI) throws ActivationException {
         InstalledContribution ic = installedContributions.get(contributionURI);
-        String relativeURI = compositeURI.substring(contributionURI.length()+1);
+        if (ic == null) {
+            throw new IllegalArgumentException("Contribution not installed: " + contributionURI);
+        }
         for (DeployedComposite dc : ic.getDeployedComposites()) {
-            if (relativeURI.equals(dc.getURI())) {
+            if (compositeURI.equals(dc.getURI())) {
                 ic.getDeployedComposites().remove(dc);
                 dc.unDeploy();
                 return;
@@ -353,5 +354,5 @@ public class NodeImpl implements Node {
         }
         return uri;
     }
-    
+
 }
