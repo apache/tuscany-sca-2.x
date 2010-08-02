@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
+import org.apache.tuscany.sca.core.assembly.impl.EndpointRegistryImpl;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.node2.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
@@ -44,50 +45,46 @@ public class NodeFactory {
     private ExtensibleDomainRegistryFactory domainRegistryFactory;
     private RuntimeAssemblyFactory assemblyFactory;
 
+    public static NodeFactory newInstance() {
+        return new NodeFactory(null);
+    }
+    public static NodeFactory newInstance(Properties config) {
+        return new NodeFactory(config);
+    }
+
     /**
-     * A helper method to simplify creating a Node with an installed contributions
-     * @param compositeURI  URI of a composite to run relative to the first contribution
-     *         if compositeURI is null then all deployable composites in the first contribution will be run 
-     * @param contributionURLs  URLs to contributions to install
+     * A helper method to simplify creating a standalone Node 
+     * @param compositeURI  URI within the contribution of a composite to run 
+     *         if compositeURI is null then all deployable composites in the contribution will be run 
+     * @param contributionURL  URL of the contribution
+     * @param dependentContributionURLs  optional URLs of dependent contributions
      * @return a Node with installed contributions
      */
-    public static Node createNode(String compositeURI, String... contributionURLs) {
+    public static Node createStandaloneNode(String compositeURI, String contributionURL, String... dependentContributionURLs) {
         try {
-            
-            Node node = newInstance().createOneoffNode();
-            String uri = "";
-            for (int i=contributionURLs.length-1; i>-1; i--) {
-                boolean runDeployables = (i==0) && (compositeURI == null);
-                int lastDot = contributionURLs[i].lastIndexOf('.');
-                int lastSep = contributionURLs[i].lastIndexOf("/");
-                if (lastDot > -1 && lastSep > -1 && lastDot > lastSep) {
-                    uri = contributionURLs[i].substring(lastSep+1, lastDot);
-                } else {
-                    uri = contributionURLs[i];
-                }
+            NodeFactory nodeFactory = newInstance();
+            EndpointRegistry endpointRegistry = new EndpointRegistryImpl(nodeFactory.extensionPointRegistry, null, null);
+            NodeImpl node = new NodeImpl("default", nodeFactory.deployer, nodeFactory.compositeActivator, endpointRegistry, nodeFactory.extensionPointRegistry, nodeFactory);
 
-                node.installContribution(uri, contributionURLs[i], null, null, runDeployables);
+            for (int i=dependentContributionURLs.length-1; i>-1; i--) {
+                node.installContribution(null, dependentContributionURLs[i], null, null, false);
             }
+
+            String curi = node.installContribution(null, contributionURL, null, null, compositeURI == null);
             if (compositeURI != null) {
-                if (uri.endsWith("/")) {
-                    uri = uri + compositeURI;
+                if (curi.endsWith("/")) {
+                    curi = curi + compositeURI;
                 } else {
-                    uri = uri + "/" + compositeURI;
+                    curi = curi + "/" + compositeURI;
                 }
-                node.addToDomainLevelComposite(uri);
+                // TODO: change addToDomainLevelComposite to take curi, compositeURI
+                node.addToDomainLevelComposite(curi);
             }
             return node;
             
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static NodeFactory newInstance() {
-        return new NodeFactory(null);
-    }
-    public static NodeFactory newInstance(Properties config) {
-        return new NodeFactory(config);
     }
 
     protected NodeFactory(Properties config) {
@@ -98,11 +95,6 @@ public class NodeFactory {
         String domainName = getDomainName(domainURI);
         EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, domainName);
         return new NodeImpl(domainName, deployer, compositeActivator, endpointRegistry, extensionPointRegistry, null);
-    }
-
-    protected Node createOneoffNode() {
-        EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry("default", "default");
-        return new NodeImpl("default", deployer, compositeActivator, endpointRegistry, extensionPointRegistry, this);
     }
 
     public void stop() {
