@@ -25,11 +25,8 @@ import junit.framework.Assert;
 
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
-import org.apache.tuscany.sca.node2.Node;
-import org.apache.tuscany.sca.node2.NodeFactory;
 import org.apache.tuscany.sca.node2.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.ActivationException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -45,7 +42,6 @@ public class NodeTestCase {
 //        Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
     }
 
-    @Ignore("TODO: fails with Sun JDK due to SCA properties issue")
     @Test
     public void testInstallWithDependent() throws NoSuchServiceException, ContributionReadException, ActivationException, ValidationException {
         Node node = NodeFactory.newInstance().createNode("default");
@@ -123,7 +119,7 @@ public class NodeTestCase {
 
     @Test
     public void testStaticCreate() {
-        Node node = NodeFactory.createNode("helloworld.composite", "src/test/resources/sample-helloworld.jar");
+        Node node = NodeFactory.createStandaloneNode("helloworld.composite", "src/test/resources/sample-helloworld.jar");
         List<String> cs = node.getInstalledContributions();
         Assert.assertEquals(1, cs.size());
         List<String> dcs = node.getDeployedCompostes(cs.get(0));
@@ -133,7 +129,7 @@ public class NodeTestCase {
 
     @Test
     public void testStaticCreateWithNullComposite() {
-        Node node = NodeFactory.createNode(null, "src/test/resources/sample-helloworld.jar");
+        Node node = NodeFactory.createStandaloneNode(null, "src/test/resources/sample-helloworld.jar");
         List<String> cs = node.getInstalledContributions();
         Assert.assertEquals(1, cs.size());
         List<String> dcs = node.getDeployedCompostes(cs.get(0));
