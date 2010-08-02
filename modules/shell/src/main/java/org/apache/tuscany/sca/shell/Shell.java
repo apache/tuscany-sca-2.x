@@ -23,7 +23,6 @@ import static java.lang.System.in;
 import static java.lang.System.out;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -121,11 +120,10 @@ public class Shell {
             curl = second;
         } else {
             curl = first;
-            curi = getDefaultURI(curl);
-            out.println("installing at: " + curi);
         }
 
-        node.installContribution(curi, curl, metaDataURL, duris, runDeployables);
+        String uri = node.installContribution(curi, curl, metaDataURL, duris, runDeployables);
+        out.println("installed at: " + uri);
         return true;
     }
 
@@ -158,29 +156,6 @@ public class Shell {
         return true;
     }
 
-
-    private String getDefaultURI(String contributionURL) {
-        String uri = null;
-        try {
-            File f = new File(contributionURL);
-            if ("classes".equals(f.getName()) && "target".equals(f.getParentFile().getName())) {
-                uri = f.getParentFile().getParentFile().getName();                   
-            } else {
-                uri = f.getName();
-            }
-        } catch (Exception e) {
-            // ignore
-        }
-        if (uri == null) {
-            uri = contributionURL;
-        }
-        int lastDot = uri.lastIndexOf('.');
-        if (lastDot > -1) {
-            uri = uri.substring(0, lastDot);
-        }
-        return uri;
-    }
-
     boolean printDomainLevelComposite() throws ContributionReadException, ActivationException, ValidationException {
         out.println("TODO");
         //out.println(node.getDomainLevelCompositeAsString());
@@ -205,10 +180,10 @@ public class Shell {
         }
         String curi = toks.get(1);
         if (toks.size() > 2) {
-            node.removeFromDomainLevelComposite(curi + "/" + toks.get(2));
+            node.removeFromDomainLevelComposite(curi, toks.get(2));
         } else {
             for (String compositeURI : node.getDeployedCompostes(curi)) {
-                node.removeFromDomainLevelComposite(curi + "/" + compositeURI);
+                node.removeFromDomainLevelComposite(curi, compositeURI);
             }
         }
 
@@ -216,7 +191,7 @@ public class Shell {
     }
 
     boolean start(String curi, String compositeURI) throws ActivationException, ValidationException {
-        node.addToDomainLevelComposite(curi + "/" + compositeURI);
+        node.addToDomainLevelComposite(curi, compositeURI);
         return true;
     }
     
