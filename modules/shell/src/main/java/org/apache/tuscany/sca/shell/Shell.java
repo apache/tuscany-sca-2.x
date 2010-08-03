@@ -26,14 +26,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
@@ -56,7 +53,7 @@ public class Shell {
     private boolean useJline;
     final List<String> history = new ArrayList<String>();
     private NodeFactory factory;
-    public static final String[] COMMANDS = new String[] {"addDeploymentComposite", "help",
+    public static final String[] COMMANDS = new String[] {"bye", "help",
                                                    "install", "installed", 
                                                    "printDomainLevelComposite", 
                                                    "remove", "start", "status", "stop"};
@@ -78,11 +75,6 @@ public class Shell {
         this.factory = NodeFactory.newInstance();
         this.node = factory.createNode(domainURI);
         this.useJline = useJLine;
-    }
-
-    boolean addDeploymentComposite(final String curi, String contentURL) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException, IOException {
-        node.addDeploymentComposite(curi, new StringReader(readContents(contentURL)));
-        return true;
     }
 
     boolean install(final List<String> toks) throws ContributionReadException, ActivationException, ValidationException {
@@ -173,11 +165,6 @@ public class Shell {
     }
 
     public boolean stop(List<String> toks) throws ActivationException {
-        if (toks == null || toks.size() < 2) {
-            node.stop();
-            factory.stop();
-            return false;
-        }
         String curi = toks.get(1);
         if (toks.size() > 2) {
             node.removeFromDomainLevelComposite(curi, toks.get(2));
@@ -186,12 +173,33 @@ public class Shell {
                 node.removeFromDomainLevelComposite(curi, compositeURI);
             }
         }
-
         return true;
     }
 
+    public boolean bye() {
+        node.stop();
+        factory.stop();
+        return false;
+    }
+
     boolean start(String curi, String compositeURI) throws ActivationException, ValidationException {
-        node.addToDomainLevelComposite(curi, compositeURI);
+        Contribution c = node.getInstalledContribution(curi);
+        for (Artifact a : c.getArtifacts()) {
+            if (compositeURI.equals(a.getURI())) {
+                node.addToDomainLevelComposite(curi, compositeURI);
+                return true;
+            }
+        }
+        // external composite file ('composite by value')
+        try {
+            URL url = IOHelper.getLocationAsURL(compositeURI);
+            InputStream is = IOHelper.openStream(url);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            node.addDeploymentComposite(curi, br);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
         return true;
     }
     
@@ -253,9 +261,6 @@ public class Shell {
     Callable<Boolean> eval(final List<String> toks) {
         final String op = toks.size() > 0 ? toks.get(0) : "";
 
-        if (op.equalsIgnoreCase("addDeploymentComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return addDeploymentComposite(toks.get(1), toks.get(2));
-        }};
         if (op.equalsIgnoreCase("install")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return install(toks);
         }};
@@ -278,7 +283,7 @@ public class Shell {
             return stop(toks);
         }};
         if (op.equalsIgnoreCase("bye")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return stop(null);
+            return bye();
         }};
         if (op.equalsIgnoreCase("start")) return new Callable<Boolean>() { public Boolean call() throws Exception {
             return start(toks.get(1), toks.get(2));
@@ -318,22 +323,6 @@ public class Shell {
         while(apply(eval(read(reader))));
     }
 
-    String readContents(String location) throws IOException {
-        URL url = IOHelper.getLocationAsURL(location);
-        InputStream is = IOHelper.openStream(url);
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-            StringBuilder builder = new StringBuilder(8192);
-            for(String line=br.readLine(); line!=null; line=br.readLine()) {
-                builder.append(line);
-                builder.append('\n');
-            }
-            return builder.toString();
-        } finally {
-            IOHelper.close(is);
-        }
-     }
-    
     boolean help(List<String> toks) {
         String command = (toks == null || toks.size() < 2) ? null : toks.get(1);
         if (command == null) {
@@ -346,8 +335,6 @@ public class Shell {
             helpInstalled();
         } else if ("remove".equalsIgnoreCase(command)) {
             helpRemove();
-        } else if ("addDeploymentComposite".equalsIgnoreCase(command)) {
-            helpAddDeploymentComposite();
         } else if ("printDomainLevelComposite".equalsIgnoreCase(command)) {
             helpPrintDomainLevelComposite();
         } else if ("start".equalsIgnoreCase(command)) {
@@ -358,6 +345,8 @@ public class Shell {
             helpStop();
         } else if ("startup".equalsIgnoreCase(command)){
             helpStartUp();
+        } else if ("bye".equalsIgnoreCase(command)){
+            helpBye();
         }
         return true;
     }
@@ -370,11 +359,11 @@ public class Shell {
         out.println("   install [<uri>] <contributionURL> [-norun -metadata <url> -duris <uri,uri,...>]");
         out.println("   installed [<contributionURI>]");
         out.println("   remove <contributionURI>");
-        out.println("   addDeploymentComposite <contributionURI> <contentURL>");
         out.println("   printDomainLevelComposite");
-        out.println("   start <curi> <compositeUri>");
+        out.println("   start <curi> <compositeUri>|<contentURL>");
         out.println("   status [<curi> <compositeUri>]");
         out.println("   stop [<curi> <compositeUri>]");
+        out.println("   bye");
         out.println();
         if (useJline) out.println("Use Tab key for command and argument completion");
         out.println("For detailed help on each command do 'help <command>', for help of startup options do 'help startup'");
@@ -392,23 +381,6 @@ public class Shell {
         out.println();
         out.println("   Arguments:");
         out.println("      <command> - (optional) the command to get detailed help on");
-    }
-
-    void helpAddDeploymentComposite() {
-        out.println("   addDeploymentComposite <contributionURI> <contentURL>");
-        out.println();
-        out.println("   Adds a deployment composite using a supplied composite ('composite by value' - a data");
-        out.println("   structure, not an existing resource in the Domain) to the contribution identified by a"); 
-        out.println("   supplied contribution URI. The added deployment composite is given a relative URI that");
-        out.println("   matches the @name attribute of the composite, with a '.composite' suffix. Since all composites"); 
-        out.println("   run within the context of an installed contribution (any component implementations or other");
-        out.println("   definitions are resolved within that contribution), this functionality makes it possible");
-        out.println("   for the deployer to create a composite with final configuration and wiring decisions and add");  
-        out.println("   it to an installed contribution without having to modify the contents of the root contribution.");
-        out.println();
-        out.println("   Arguments:");
-        out.println("      <contributionURI> - (required) the URI of an installed contribution");
-        out.println("      <contentURL> - (required) the location of the composite");
     }
 
     void helpInstall() {
@@ -458,7 +430,7 @@ public class Shell {
     }
 
     void helpStart() {
-        out.println("   start <curi> <compositeUri>");
+        out.println("   start <curi> <compositeUri>|<contentURL>");
         out.println();
         out.println("   Starts a composite.");
         out.println("   The composite is added to the domain composite with semantics that correspond to the domain-level");
@@ -468,7 +440,8 @@ public class Shell {
         out.println();
         out.println("   Arguments:");
         out.println("      curi - (required) the URI of an installed contribution");
-        out.println("      compositeUri - (required) the URI of a composite");
+        out.println("      compositeUri or contentURL - (required) either the URI of a composite within the contribution");
+        out.println("                                              or a URL to an external composite file.");
     }
 
     void helpStatus() {
@@ -483,7 +456,7 @@ public class Shell {
     }
 
     void helpStop() {
-        out.println("   stop [<curi> <compositeUri>]");
+        out.println("   stop <curi> [<compositeUri>]");
         out.println();
         out.println("   Stops this Node or individual composites and contributions in the Node.");
         out.println("   If a composite URI is specified then the composite is removed from the Domain Level composite");
@@ -495,6 +468,15 @@ public class Shell {
         out.println("   Arguments:");
         out.println("      curi - (optional) the URI of an installed contribution");
         out.println("      compositeUri - (optional) the URI of a composite");
+    }
+
+    void helpBye() {
+        out.println("   bye");
+        out.println();
+        out.println("   All deployed composites are stopped and the Shell exists.");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      none");
     }
 
     void helpStartUp() {
