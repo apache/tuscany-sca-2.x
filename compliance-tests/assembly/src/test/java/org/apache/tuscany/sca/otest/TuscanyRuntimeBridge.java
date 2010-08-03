@@ -87,7 +87,7 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
                 node.installContribution(contributionNames[i], contributionURIs[i], null, null, false);
             }
             
-            node.addToDomainLevelComposite(contributionNames[0] + "/" + testConfiguration.getComposite());
+            node.addToDomainLevelComposite(contributionNames[0], testConfiguration.getComposite());
 
 //            node = NodeFactory.createNode(testConfiguration.getComposite(), contributionURIs);
             // Start the node
