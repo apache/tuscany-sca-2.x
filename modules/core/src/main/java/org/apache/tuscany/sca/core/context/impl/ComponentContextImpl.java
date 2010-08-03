@@ -47,6 +47,7 @@ import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
@@ -58,6 +59,8 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.RequestContext;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
+
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 
 /**
  * Implementation of ComponentContext that delegates to a ComponentContextProvider.
@@ -75,6 +78,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     private final JavaInterfaceFactory javaInterfaceFactory;
     private final PropertyValueFactory propertyFactory;
     private final EndpointReferenceBinder eprBinder;
+    private final ExtensionPointRegistry registry;
 
     public ComponentContextImpl(ExtensionPointRegistry registry,
                                 CompositeContext compositeContext,
@@ -96,6 +100,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
 
         this.eprBinder = utilities.getUtility(EndpointReferenceBinder.class);
 
+        this.registry = registry;
     }
 
     public String getURI() {
@@ -106,12 +111,18 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         return proxyFactory.cast(target);
     }
 
-    public <B> B getService(Class<B> businessInterface, String referenceName) {
-        ServiceReference<B> serviceRef = getServiceReference(businessInterface, referenceName);
-        return serviceRef.getService();
+    public <B> B getService(Class<B> businessInterface, String referenceName) throws IllegalArgumentException {
+    	B service = null;
+    	
+     	ServiceReference<B> serviceRef = getServiceReference(businessInterface, referenceName);
+     	if(serviceRef != null) {
+            service = serviceRef.getService();
+     	}
+
+        return service;
     }
 
-    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) {
+    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) throws IllegalArgumentException {
 
         for (ComponentReference ref : component.getReferences()) {
             if (referenceName.equals(ref.getName())) {
@@ -121,10 +132,17 @@ public class ComponentContextImpl implements RuntimeComponentContext {
                         + " has multiplicity "
                         + multiplicity);
                 }
-                return getServiceReference(businessInterface, (RuntimeEndpointReference)getEndpointReference(ref));
+                if (ref.getEndpointReferences().size() < 1) {
+                    return null;
+                }
+                ServiceReference<B> sr = getServiceReference(businessInterface, (RuntimeEndpointReference)getEndpointReference(ref));
+                if (sr == null) {
+                    throw new IllegalArgumentException("Reference " + referenceName + " is null");
+                }
+                return sr;
             }
         }
-        throw new ServiceRuntimeException("Reference not found: " + referenceName);
+        throw new IllegalArgumentException("[JCA80011] Reference not found: " + referenceName);
 
     }
 
@@ -305,6 +323,8 @@ public class ComponentContextImpl implements RuntimeComponentContext {
      */
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface,
                                                        RuntimeEndpointReference endpointReference) {
+    	ServiceReference<B> result = null;
+    	
         try {
             InterfaceContract interfaceContract = endpointReference.getComponentTypeReferenceInterfaceContract();
             if (businessInterface == null) {
@@ -312,20 +332,24 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             }
             RuntimeComponentReference ref = (RuntimeComponentReference)endpointReference.getReference();
             InterfaceContract refInterfaceContract = getInterfaceContract(interfaceContract, businessInterface);
-            if (refInterfaceContract != interfaceContract) {
-                ref = (RuntimeComponentReference)ref.clone();
-                if (interfaceContract != null) {
-                    ref.setInterfaceContract(interfaceContract);
-                } else {
-                    ref.setInterfaceContract(refInterfaceContract);
-                }
+            if (refInterfaceContract != null) {
+	            if (refInterfaceContract != interfaceContract) {
+	                ref = (RuntimeComponentReference)ref.clone();
+	                if (interfaceContract != null) {
+	                    ref.setInterfaceContract(interfaceContract);
+	                } else {
+	                    ref.setInterfaceContract(refInterfaceContract);
+	                }
+	            }
+ 
+	            ref.setComponent(component);
+	            result = new ServiceReferenceImpl<B>(businessInterface, endpointReference, component.getComponentContext().getCompositeContext());
             }
-            ref.setComponent(component);
-            return new ServiceReferenceImpl<B>(businessInterface, endpointReference, component.getComponentContext()
-                .getCompositeContext());
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
+        
+        return result;
     }
 
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, RuntimeEndpoint endpoint) {
@@ -412,6 +436,11 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         if (businessInterface == null) {
             return interfaceContract;
         }
+        if (interfaceContract == null) {
+            JavaInterfaceContract ic = javaInterfaceFactory.createJavaInterfaceContract();
+            ic.setInterface(javaInterfaceFactory.createJavaInterface(businessInterface));
+            return ic;
+        }
         boolean compatible = false;
         if (interfaceContract != null && interfaceContract.getInterface() != null) {
             Interface interfaze = interfaceContract.getInterface();
@@ -420,18 +449,23 @@ public class ComponentContextImpl implements RuntimeComponentContext {
                 if (businessInterface.isAssignableFrom(cls)) {
                     compatible = true;
                 }
+                if(!compatible) {
+                    InterfaceContract biContract = javaInterfaceFactory.createJavaInterfaceContract();
+                    JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(businessInterface);
+                    biContract.setInterface(callInterface);
+                    if (callInterface.getCallbackClass() != null) {
+                        biContract.setCallbackInterface(javaInterfaceFactory.createJavaInterface(callInterface
+                            .getCallbackClass()));
+                    }
+                	InterfaceContractMapper ifcm = registry.getExtensionPoint(InterfaceContractMapper.class);
+                	compatible = ifcm.isCompatibleSubset(biContract , interfaceContract);
+                }
+
             }
         }
-
-        if (!compatible) {
-            // The interface is not assignable from the interface contract
-            interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
-            JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(businessInterface);
-            interfaceContract.setInterface(callInterface);
-            if (callInterface.getCallbackClass() != null) {
-                interfaceContract.setCallbackInterface(javaInterfaceFactory.createJavaInterface(callInterface
-                    .getCallbackClass()));
-            }
+        
+        if(!compatible) {
+        	interfaceContract = null;
         }
 
         return interfaceContract;
