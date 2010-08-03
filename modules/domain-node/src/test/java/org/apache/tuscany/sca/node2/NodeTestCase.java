@@ -47,8 +47,8 @@ public class NodeTestCase {
     @Ignore("Depdends on itest/T3558 which isn't in the build?")
     public void testInstallWithDependent() throws NoSuchServiceException, ContributionReadException, ActivationException, ValidationException {
         Node node = NodeFactory.newInstance().createNode("default");
-        node.installContribution("store", "/Tuscany/svn/2.x-trunk/itest/T3558/src/test/resources/sample-store.jar", null, null, true);
-        node.installContribution("store-client", "/Tuscany/svn/2.x-trunk/itest/T3558/src/test/resources/sample-store-client.jar", null, null, true);
+        node.installContribution("store", "../../itest/T3558/src/test/resources/sample-store.jar", null, null, true);
+        node.installContribution("store-client", "../../itest/T3558/src/test/resources/sample-store-client.jar", null, null, true);
 
 //        Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
 //        Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
@@ -121,7 +121,7 @@ public class NodeTestCase {
 
     @Test
     public void testStaticCreate() {
-        Node node = NodeFactory.createStandaloneNode("helloworld.composite", "src/test/resources/sample-helloworld.jar");
+        Node node = NodeFactory.newStandaloneNode("helloworld.composite", "src/test/resources/sample-helloworld.jar");
         List<String> cs = node.getInstalledContributions();
         Assert.assertEquals(1, cs.size());
         List<String> dcs = node.getDeployedCompostes(cs.get(0));
@@ -131,7 +131,7 @@ public class NodeTestCase {
 
     @Test
     public void testStaticCreateWithNullComposite() {
-        Node node = NodeFactory.createStandaloneNode(null, "src/test/resources/sample-helloworld.jar");
+        Node node = NodeFactory.newStandaloneNode(null, "src/test/resources/sample-helloworld.jar");
         List<String> cs = node.getInstalledContributions();
         Assert.assertEquals(1, cs.size());
         List<String> dcs = node.getDeployedCompostes(cs.get(0));

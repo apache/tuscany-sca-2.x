@@ -60,7 +60,7 @@ public class NodeFactory {
      * @param dependentContributionURLs  optional URLs of dependent contributions
      * @return a Node with installed contributions
      */
-    public static Node createStandaloneNode(String compositeURI, String contributionURL, String... dependentContributionURLs) {
+    public static Node newStandaloneNode(String compositeURI, String contributionURL, String... dependentContributionURLs) {
         try {
             NodeFactory nodeFactory = newInstance();
             EndpointRegistry endpointRegistry = new EndpointRegistryImpl(nodeFactory.extensionPointRegistry, null, null);
