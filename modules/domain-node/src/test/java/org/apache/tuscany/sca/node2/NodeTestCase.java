@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.node2.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.ActivationException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -43,6 +44,7 @@ public class NodeTestCase {
     }
 
     @Test
+    @Ignore("Depdends on itest/T3558 which isn't in the build?")
     public void testInstallWithDependent() throws NoSuchServiceException, ContributionReadException, ActivationException, ValidationException {
         Node node = NodeFactory.newInstance().createNode("default");
         node.installContribution("store", "/Tuscany/svn/2.x-trunk/itest/T3558/src/test/resources/sample-store.jar", null, null, true);
