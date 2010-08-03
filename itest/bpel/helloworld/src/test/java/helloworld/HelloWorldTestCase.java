@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -35,6 +36,7 @@ import org.junit.Test;
  * 
  * @version $Rev$ $Date$
  */
+@Ignore
 public class HelloWorldTestCase {
 
 	private static Node node;
