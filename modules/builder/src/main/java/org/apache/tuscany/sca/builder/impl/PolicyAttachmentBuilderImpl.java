@@ -182,6 +182,7 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
 		        String index = getStructuralURI(node);
 		        PolicySubject subject = lookup(composite, index);
 		        if (subject != null) {
+		        	ps.setIsExternalAttachment(true);
 		        	subject.getPolicySets().add(ps);
 		        } else {
 		        	// raise a warning that the XPath node didn't match a node in the 
@@ -270,6 +271,12 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
                     Element component = (Element)node.getParentNode();
                     String uri = component.getAttributeNS(null, "uri");
                     return uri + "#implementation()";
+                } else if (localName.startsWith("interface.")) {                
+                	Element contract = (Element)node.getParentNode();
+                	String contractName = contract.getAttributeNS(null, "name");
+                	Element component = (Element)node.getParentNode().getParentNode();
+                	String uri = component.getAttributeNS(null, "uri");
+                	return uri + "#" + contractName + "#interface()"; //(" + contractName + "/" + interfaceName + ")"
                 }
             }
         }
@@ -296,6 +303,7 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
         String service = null;
         String reference = null;
         String binding = null;
+        boolean isInterface = false;
         boolean impl = false;
 
         if (index != -1) {
@@ -323,6 +331,9 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
                         service = path;
                     } else if ("reference".equals(prefix)) {
                         reference = path;
+                    } else if ( prefix.indexOf("#interface") != -1 ) {
+                    	service = prefix.substring(0, prefix.indexOf("#interface"));
+                    	isInterface = true;
                     }
                 }
             }
@@ -331,7 +342,9 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
             if (component.getURI().equals(componentURI)) {
                 if (service != null) {
                     ComponentService componentService = component.getService(service);
-                    if (binding != null) {
+                    if ( isInterface ) {
+                    	return componentService.getInterfaceContract().getInterface();
+                    } else if (binding != null) {
                         Binding b = getBinding(componentService, binding);
                         if (b instanceof PolicySubject) {
                             return (PolicySubject)b;

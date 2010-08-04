@@ -365,14 +365,16 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
 			BuilderContext context) {
     	boolean foundExternalPolicySet = false;
 		for (PolicySet ps : subject.getPolicySets() ) {
-			if ( ps.getAttachTo() != null ) 
+			if ( ps.isExternalAttachment() ) {
 				foundExternalPolicySet = true;
+				break;
+			}
 		}
 		
 		if ( foundExternalPolicySet ) {
 			List<PolicySet> copy = new ArrayList<PolicySet>(subject.getPolicySets());
 			for ( PolicySet ps : copy ) {
-				if ( ps.getAttachTo() == null ) {
+				if ( !ps.isExternalAttachment() ) {
 					subject.getPolicySets().remove(ps);
 				}
 			}
