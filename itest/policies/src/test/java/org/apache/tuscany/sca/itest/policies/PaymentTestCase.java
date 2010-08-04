@@ -26,8 +26,10 @@ import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("TUSCANY-3644")
 public class PaymentTestCase {
     private static Node node;
 
