@@ -144,4 +144,16 @@ public interface PolicySet {
      */
     void setAppliesToXPathExpression(XPathExpression xpathExpression);
 
+    /**
+     * Returns true if this PolicySet was attached via external attachment
+     * For unattached and directly attached PolicySets, returns false
+     * @return
+     */
+    boolean isExternalAttachment();
+    
+    /**
+     * Sets whether this PolicySet has been attached via external attachment or not
+     * @param value
+     */
+    void setIsExternalAttachment(boolean value);
 }
