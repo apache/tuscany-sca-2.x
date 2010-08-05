@@ -68,7 +68,7 @@
     <policySet name="ClientAuthenticationTransportPolicy" 
                provides="sca:clientAuthentication.transport" 
                appliesTo="//binding.sca | //implementation.java"
-               attachTo="IntentRefs('sca:clientAuthentication.transport')"/>  
+               attachTo="IntentRefs('sca:clientAuthentication.transport') | //sca:service[@name='CreditCardPayment']"/>  
                
     <policySet name="IntegrityTransportPolicy" 
                provides="sca:integrity.transport" 
