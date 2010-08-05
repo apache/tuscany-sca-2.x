@@ -256,6 +256,8 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         ComponentService service = getSingleService(component);
         try {
             return createSelfReference(businessInterface, service);
+        } catch (IllegalArgumentException iae) {
+        	throw iae;
         } catch (Exception e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
@@ -301,6 +303,8 @@ public class ComponentContextImpl implements RuntimeComponentContext {
                 (RuntimeEndpointReference)createEndpointReference(component, service, null, businessInterface);
             ref.setComponent(component);
             return getServiceReference(businessInterface, ref);
+        } catch (IllegalArgumentException iae) {
+        	throw iae;
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -465,7 +469,8 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         }
         
         if(!compatible) {
-        	interfaceContract = null;
+        	// JCA-9011
+        	throw new IllegalArgumentException("Business interface " + businessInterface.getName() + " is not compatible with " + interfaceContract.getInterface().getClass().getName());
         }
 
         return interfaceContract;
