@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.builder.impl;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -183,6 +185,13 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
 		        PolicySubject subject = lookup(composite, index);
 		        if (subject != null) {
 		        	ps.setIsExternalAttachment(true);
+		        	// Remove any PolicySets with the same name that may have been added
+		        	List<PolicySet> subjectPSCopy = new ArrayList<PolicySet>(subject.getPolicySets());
+		        	for ( PolicySet existingPS : subjectPSCopy ) {
+		        		if ( existingPS.getName().equals(ps.getName()) ) {
+		        			subject.getPolicySets().remove(existingPS);
+		        		}
+		        	}
 		        	subject.getPolicySets().add(ps);
 		        } else {
 		        	// raise a warning that the XPath node didn't match a node in the 
