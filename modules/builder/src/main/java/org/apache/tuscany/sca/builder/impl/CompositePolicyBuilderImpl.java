@@ -105,10 +105,7 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                             }
 
                             for (Endpoint ep : componentService.getEndpoints()) {
-                                if (componentService.getInterfaceContract() != null) {
-                                    // Inherit from the component.service.interface
-                                    inherit(ep, null, true, componentService.getInterfaceContract().getInterface());
-                                }
+                              
                                 
                                 // Inherit from binding
                                 inherit(ep, null, true, ep.getBinding());
@@ -116,7 +113,12 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                                 // Inherit from composite/component/service
                                 inherit(ep, null, true, ep.getService(), ep.getComponent(), composite );
                                 
-
+                                if (componentService.getInterfaceContract() != null) {
+                                    // Inherit from the component.service.interface
+                                	// Do not check mutual exclusion here.. interfaces do not follow normal rules
+                                	// of the structural hierarchy (Policy spec 4.10)
+                                    inherit(ep, null, false, componentService.getInterfaceContract().getInterface());
+                                }
 
                                 // Replace profile intents with their required intents
                                 // Replace unqualified intents if there is a qualified intent in the list
@@ -159,19 +161,19 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                             }
 
                             for (EndpointReference epr : componentReference.getEndpointReferences()) {
-
-                                // Inherit from the component.reference.interface
-                                if (componentReference.getInterfaceContract() != null) {
-                                    inherit(epr, null, true, componentReference.getInterfaceContract().getInterface());
-                                }
-                                
+                                                             
                                 // Inherit from binding
                                 inherit(epr, null, true, epr.getBinding());
 
                                 // Inherit from composite/component/reference
                                 inherit(epr, null, true,  epr.getReference(), epr.getComponent(),  composite);
                                 
-                              
+                                // Inherit from the component.reference.interface
+                                if (componentReference.getInterfaceContract() != null) {
+                                	// Do not check mutual exclusion here.. interfaces do not follow normal rules
+                                	// of the structural hierarchy (Policy spec 4.10)
+                                    inherit(epr, null, true, componentReference.getInterfaceContract().getInterface());
+                                }  
 
                                 // Replace profile intents with their required intents
                                 // Replace unqualified intents if there is a qualified intent in the list
