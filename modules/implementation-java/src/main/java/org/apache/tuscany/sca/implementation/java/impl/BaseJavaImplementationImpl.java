@@ -89,4 +89,9 @@ abstract class BaseJavaImplementationImpl extends ImplementationImpl implements 
             return false;
         }
     }
+
+    @Override
+    public void setType(QName type) {
+       this.type = type;
+    }
 }

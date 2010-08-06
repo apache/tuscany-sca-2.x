@@ -133,6 +133,11 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         evaluateConstructor(type, clazz);
     }
 
+    // Check if the implementation is implementation.java
+    private boolean isImplementationJava(JavaImplementation type) {
+        return JavaImplementation.TYPE.equals(type.getType());
+    }
+
     private void addService(JavaImplementation type, Class<?> clazz) throws IntrospectionException {
         try {
             org.apache.tuscany.sca.assembly.Service service = createService(clazz);
@@ -287,6 +292,10 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             explict = true;
             constructor = definition.getConstructor();
         } else {
+            if (!isImplementationJava(type)) {
+                // FIXME: [rfeng] Don't process the constructors for non implementation.java types
+                return;
+            }
             // no definition, heuristically determine constructor
             Constructor[] constructors = clazz.getConstructors();
             if (constructors.length == 0) {

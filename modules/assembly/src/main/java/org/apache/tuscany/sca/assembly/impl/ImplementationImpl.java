@@ -36,9 +36,9 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @tuscany.spi.extension.inheritfrom
  */
 public abstract class ImplementationImpl extends ComponentTypeImpl implements Implementation, PolicySubject {
-    private QName type;
-    private ExtensionType extensionType;
-    private List<Operation> operations = new ArrayList<Operation>();
+    protected QName type;
+    protected ExtensionType extensionType;
+    protected List<Operation> operations = new ArrayList<Operation>();
 
     protected ImplementationImpl(QName type) {
         super();

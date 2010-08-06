@@ -208,9 +208,11 @@ public class SpringXMLComponentTypeLoader {
                 List<SpringSCAPropertyElement> appCxtProperties = new ArrayList<SpringSCAPropertyElement>();
                 reader = xmlInputFactory.createXMLStreamReader(contextResource.openStream());
                 // Read the beans, services, references and properties for individual application context
+                Set<String> visited = new HashSet<String>();
                 readContextDefinition(resolver,
                                       reader,
                                       contextPath,
+                                      visited,
                                       appCxtBeans,
                                       appCxtServices,
                                       appCxtReferences,
@@ -295,12 +297,18 @@ public class SpringXMLComponentTypeLoader {
     private void readContextDefinition(ModelResolver resolver,
                                        XMLStreamReader reader,
                                        String contextPath,
+                                       Set<String> visited,
                                        List<SpringBeanElement> beans,
                                        List<SpringSCAServiceElement> services,
                                        List<SpringSCAReferenceElement> references,
                                        List<SpringSCAPropertyElement> scaproperties,
                                        ProcessorContext context) throws ContributionReadException {
 
+        if (visited.contains(contextPath)) {
+            log.warning("Duplicate Spring bean definition file is skipped: " + contextPath);
+            return;
+        }
+        visited.add(contextPath);
         SpringBeanElement bean = null;
 
         try {
@@ -320,6 +328,7 @@ public class SpringXMLComponentTypeLoader {
                                 XMLStreamReader ireader = getApplicationContextReader(resolver, resourcePath, context);
                                 // Read the context definition for the identified imported resource
                                 readContextDefinition(resolver, ireader, resourcePath, // The new context path
+                                                      visited,
                                                       beans,
                                                       services,
                                                       references,
@@ -757,8 +766,10 @@ public class SpringXMLComponentTypeLoader {
                                     // name of the field in the Spring bean....
                                     reference.setName(propertyRef);
                                     componentType.getReferences().add(reference);
+                                    break;
                                 } // end if
                             } // end for
+                            
 
                             // Store the unresolved references as unresolvedBeanRef in the Spring Implementation type
                             for (Property scaproperty : beanProperties) {
@@ -772,6 +783,7 @@ public class SpringXMLComponentTypeLoader {
                                                      context);
                                     Reference theReference = createReference(interfaze, propertyRef);
                                     implementation.setUnresolvedBeanRef(propertyRef, theReference);
+                                    break;
                                 } // end if
                             } // end for
                         } // end if 

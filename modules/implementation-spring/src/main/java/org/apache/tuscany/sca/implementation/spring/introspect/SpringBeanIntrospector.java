@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.spring.SpringConstructorArgElement;
+import org.apache.tuscany.sca.implementation.spring.SpringImplementation;
 
 /**
  * Provides introspection functions for Spring beans
@@ -70,6 +71,8 @@ public class SpringBeanIntrospector {
 
         // Create a Java implementation ready for the introspection
         JavaImplementation javaImplementation = javaImplementationFactory.createJavaImplementation();
+        // Set the type to be implementation.spring to avoid heuristic introspection
+        javaImplementation.setType(SpringImplementation.TYPE);
 
         try {
             // Introspect the bean...the results of the introspection are placed into the Java implementation
