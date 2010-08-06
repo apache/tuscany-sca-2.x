@@ -25,8 +25,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.jws.soap.SOAPBinding;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -103,6 +105,13 @@ public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
                     policySets.add(policySet);
                 }
             }
+        }
+        
+        if ( clazz.getAnnotation(SOAPBinding.class) != null ) {
+        	// add soap intent        	
+            Intent intent = policyFactory.createIntent();
+            intent.setName(Constants.SOAP_INTENT);
+            requiredIntents.add(intent);
         }
     }
 
