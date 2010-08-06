@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.InvalidCallbackException;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
+import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.oasisopen.sca.ServiceReference;
@@ -54,7 +55,7 @@ public class JAXWSProcessorTestCase {
     @Before
     public void setUp() throws Exception {
         ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
-        processor = new JAXWSProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(registry));
+        processor = new JAXWSProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(registry), new DefaultPolicyFactory());
         javaImplementationFactory = new DefaultJavaImplementationFactory();
     }
 

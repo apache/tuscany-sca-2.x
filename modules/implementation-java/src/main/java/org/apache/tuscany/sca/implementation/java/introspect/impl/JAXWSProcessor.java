@@ -18,35 +18,25 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
-import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.getAllInterfaces;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.jws.WebService;
-import javax.xml.namespace.QName;
+import javax.xml.ws.ServiceMode;
+import javax.xml.ws.WebServiceProvider;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
-import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
-import org.oasisopen.sca.ServiceReference;
-import org.oasisopen.sca.annotation.Callback;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.oasisopen.sca.annotation.Remotable;
 
 /**
@@ -55,17 +45,33 @@ import org.oasisopen.sca.annotation.Remotable;
  */
 public class JAXWSProcessor extends BaseJavaClassVisitor {
     
-    public JAXWSProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory) {
+    private PolicyFactory policyFactory;
+
+	public JAXWSProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory, PolicyFactory policyFactory) {
         super(assemblyFactory);
-        this.javaInterfaceFactory = javaFactory;
+        this.javaInterfaceFactory = javaFactory;   
+        this.policyFactory = policyFactory;
     }
     
     public JAXWSProcessor(ExtensionPointRegistry registry) {
         super(registry);
+        this.policyFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(PolicyFactory.class);
     }
 
     @Override
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
+    	if ( clazz.getAnnotation(ServiceMode.class) != null ) {
+    		// Add soap intent - JCA 11013    	
+            Intent soapIntent = policyFactory.createIntent();
+            soapIntent.setName(Constants.SOAP_INTENT);         
+    		type.getRequiredIntents().add(soapIntent);
+    	}
+    	
+    	if ( clazz.getAnnotation(WebServiceProvider.class) != null ) {
+    		// TODO Apply @Remotable to interfaces here
+    		// JCA 11015
+    	}
+    	
         WebService webService = clazz.getAnnotation(WebService.class);
         String tns = JavaXMLMapper.getNamespace(clazz);
         String localName = clazz.getSimpleName();
