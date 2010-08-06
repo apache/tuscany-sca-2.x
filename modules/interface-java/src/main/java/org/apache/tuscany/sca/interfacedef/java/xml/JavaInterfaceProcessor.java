@@ -31,6 +31,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.ws.WebServiceClient;
 
 import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -279,6 +280,11 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                     error(monitor, "ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
                 }
             }
+            
+            if ( a.annotationType().equals(WebServiceClient.class) ) {
+            	error(monitor, "ForbiddenAnnotationJCA100018", javaInterfaceContract, a.annotationType(), ifc.getName());
+            }
+            	
         }
         for (Method m : ifc.getMethods()) {
             for (Annotation a : m.getAnnotations()) {
