@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Artifact;
@@ -191,6 +192,19 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
                 contribution.getImports().add(defaultImport);
                 DefaultExport defaultExport = contributionFactory.createDefaultExport();
                 contribution.getExports().add(defaultExport);
+            } else {
+                if (contribution.getDeployables().size() > 0) {
+                    // Update the deployable Composite objects with the correct Composite object for the artifact
+                    for (Artifact a : contribution.getArtifacts()) {
+                        if (a.getModel() instanceof Composite) {
+                            for (ListIterator<Composite> lit = contribution.getDeployables().listIterator(); lit.hasNext();) {
+                                if (lit.next().getName().equals(((Composite)a.getModel()).getName())) {
+                                    lit.set((Composite)a.getModel());
+                                }
+                            }
+                        }
+                    }
+                }
             }
         } finally {
             monitor.popContext();
