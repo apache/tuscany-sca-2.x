@@ -29,7 +29,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.apache.tuscany.sca.assembly.Composite;
@@ -48,19 +50,21 @@ import org.apache.tuscany.sca.shell.jline.JLine;
  * A little SCA command shell.
  */
 public class Shell {
-    
-    public Node node;
+
     private boolean useJline;
     final List<String> history = new ArrayList<String>();
     private NodeFactory factory;
-    public static final String[] COMMANDS = new String[] {"bye", "help",
-                                                   "install", "installed", 
-                                                   "printDomainLevelComposite", 
-                                                   "remove", "start", "status", "stop"};
+    private String currentDomain = "";
+    private Map<String, Node> standaloneNodes = new HashMap<String, Node>();
+    private Map<String, Node> nodes = new HashMap<String, Node>();
+
+    public static final String[] COMMANDS = new String[] {"bye", "domain", "help", "install", "installed",
+                                                          "printDomainLevelComposite", "remove", "start", "status",
+                                                          "stop"};
 
     public static void main(final String[] args) throws Exception {
         boolean useJline = true;
-        String domainURI = "default";
+        String domainURI = "";
         for (String s : args) {
             if ("-nojline".equals(s)) {
                 useJline = false;
@@ -73,28 +77,51 @@ public class Shell {
 
     public Shell(String domainURI, boolean useJLine) {
         this.factory = NodeFactory.newInstance();
-        this.node = factory.createNode(domainURI);
         this.useJline = useJLine;
+        if (domainURI != null) {
+            domain(domainURI);
+        }
+    }
+
+    boolean domain(final String domainURI) {
+        if (domainURI.length() < 1) {
+            currentDomain = "";
+        } else {
+            for (Node node : nodes.values()) {
+                if (domainURI.equals(node.getDomainName())) {
+                    currentDomain = node.getDomainName();
+                    return true;
+                }
+            }
+            Node node = factory.createNode(domainURI);
+            currentDomain = node.getDomainName();
+            nodes.put(currentDomain, node);
+        }
+        return true;
     }
 
     boolean install(final List<String> toks) throws ContributionReadException, ActivationException, ValidationException {
+        if (getNode() == null) {
+            out.println("not in domain, use domain command first");
+            return true;
+        }
         boolean runDeployables = !toks.contains("-norun");
         String metaDataURL = null;
         if (toks.contains("-metadata")) {
-            metaDataURL = toks.get(toks.indexOf("-metadata")+1);
+            metaDataURL = toks.get(toks.indexOf("-metadata") + 1);
         }
         List<String> duris = null;
         if (toks.contains("-duris")) {
-            duris = Arrays.asList(toks.get(toks.indexOf("-duris")+1).split(","));
+            duris = Arrays.asList(toks.get(toks.indexOf("-duris") + 1).split(","));
         }
 
         String first = null;
         String second = null;
-        for (int i=1; i<toks.size();i++) {
+        for (int i = 1; i < toks.size(); i++) {
             if (toks.get(i).startsWith("-")) {
-              if (!toks.get(i).equals("-norun")) {
-                  i++;
-              }
+                if (!toks.get(i).equals("-norun")) {
+                    i++;
+                }
             } else {
                 if (first == null) {
                     first = toks.get(i);
@@ -104,7 +131,7 @@ public class Shell {
                 }
             }
         }
-        
+
         String curi = null;
         String curl = null;
         if (second != null) {
@@ -114,7 +141,7 @@ public class Shell {
             curl = first;
         }
 
-        String uri = node.installContribution(curi, curl, metaDataURL, duris, runDeployables);
+        String uri = getNode().installContribution(curi, curl, metaDataURL, duris, runDeployables);
         out.println("installed at: " + uri);
         return true;
     }
@@ -122,24 +149,31 @@ public class Shell {
     boolean installed(final List<String> toks) {
         List<String> curis;
         if (toks.size() > 1) {
-            curis = Arrays.asList(new String[]{toks.get(1)});
+            curis = Arrays.asList(new String[] {toks.get(1)});
         } else {
-            curis =node.getInstalledContributions();
+            if (getNode() == null) {
+                return true;
+            }
+            curis = getNode().getInstalledContributions();
         }
         for (String curi : curis) {
-            out.println(curi + " " + node.getInstalledContribution(curi).getLocation());
-            Contribution c = node.getInstalledContribution(curi);
+            out.println(curi + " " + getNode().getInstalledContribution(curi).getLocation());
+            Contribution c = getNode().getInstalledContribution(curi);
             for (Artifact a : c.getArtifacts()) {
                 if (a.getModel() instanceof Composite) {
-                    Composite composite = (Composite) a.getModel();
+                    Composite composite = (Composite)a.getModel();
                     out.println("   " + composite.getURI() + " " + composite.getName());
                 }
             }
         }
         return true;
     }
+
     boolean listComposites(final String curi) {
-        Contribution c = node.getInstalledContribution(curi);
+        if (getNode() == null) {
+            return true;
+        }
+        Contribution c = getNode().getInstalledContribution(curi);
         for (Artifact a : c.getArtifacts()) {
             if (a.getModel() instanceof Composite) {
                 out.println(((Composite)a.getModel()).getName());
@@ -150,43 +184,59 @@ public class Shell {
 
     boolean printDomainLevelComposite() throws ContributionReadException, ActivationException, ValidationException {
         out.println("TODO");
-        //out.println(node.getDomainLevelCompositeAsString());
+        // out.println(node.getDomainLevelCompositeAsString());
         return true;
     }
-    
-    boolean getQNameDefinition(final String curi, String definintion, String symbolSpace) throws ContributionReadException, ActivationException, ValidationException {
+
+    boolean getQNameDefinition(final String curi, String definintion, String symbolSpace)
+        throws ContributionReadException, ActivationException, ValidationException {
         // TODO:
         return true;
     }
 
     boolean remove(final String curi) throws ContributionReadException, ActivationException, ValidationException {
-        node.removeContribution(curi);
+        if (getNode() == null) {
+            out.println("not in domain, use domain command first");
+            return true;
+        }
+        getNode().removeContribution(curi);
         return true;
     }
 
     public boolean stop(List<String> toks) throws ActivationException {
         String curi = toks.get(1);
         if (toks.size() > 2) {
-            node.removeFromDomainLevelComposite(curi, toks.get(2));
+            getNode().removeFromDomainLevelComposite(curi, toks.get(2));
         } else {
-            for (String compositeURI : node.getDeployedCompostes(curi)) {
-                node.removeFromDomainLevelComposite(curi, compositeURI);
+            if (standaloneNodes.containsKey(curi)) {
+                standaloneNodes.remove(curi).stop();
+            } else if (nodes.containsKey(curi)) {
+                nodes.remove(curi).stop();
+            } else {
+                for (String compositeURI : getNode().getDeployedCompostes(curi)) {
+                    getNode().removeFromDomainLevelComposite(curi, compositeURI);
+                }
             }
         }
         return true;
     }
 
     public boolean bye() {
-        node.stop();
+        for (Node node : nodes.values()) {
+            node.stop();
+        }
         factory.stop();
+        for (Node node : standaloneNodes.values()) {
+            node.stop();
+        }
         return false;
     }
 
     boolean start(String curi, String compositeURI) throws ActivationException, ValidationException {
-        Contribution c = node.getInstalledContribution(curi);
+        Contribution c = getNode().getInstalledContribution(curi);
         for (Artifact a : c.getArtifacts()) {
             if (compositeURI.equals(a.getURI())) {
-                node.addToDomainLevelComposite(curi, compositeURI);
+                getNode().addToDomainLevelComposite(curi, compositeURI);
                 return true;
             }
         }
@@ -195,37 +245,64 @@ public class Shell {
             URL url = IOHelper.getLocationAsURL(compositeURI);
             InputStream is = IOHelper.openStream(url);
             BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-            node.addDeploymentComposite(curi, br);
+            getNode().addDeploymentComposite(curi, br);
         } catch (Exception e) {
             System.out.println(e);
         }
 
         return true;
     }
-    
-    boolean status(final List<String> toks) {
-        out.println("Domain: " + node.getDomainName());
-        List<String> ics;
-        if (toks.size()>1) {
-            ics = new ArrayList<String>();
-            ics.add(toks.get(1));
-        } else {
-            ics = node.getInstalledContributions();
-        }
 
-        for (String curi : ics) {
-            Contribution c = node.getInstalledContribution(curi);
-            List<String> dcs = node.getDeployedCompostes(curi);
-            if (toks.size()>2) {
-                dcs = new ArrayList<String>();
-                dcs.add(toks.get(2));
-            } else {
-                dcs = node.getDeployedCompostes(curi);
+    boolean start(String nodeName, String compositeURI, String contributionURL, String... dependentContributionURLs)
+        throws ActivationException, ValidationException {
+        Node node = NodeFactory.newStandaloneNode(compositeURI, contributionURL, dependentContributionURLs);
+        standaloneNodes.put(nodeName, node);
+        return true;
+    }
+
+    boolean status(final List<String> toks) {
+        if (standaloneNodes.size() > 0) {
+            out.println("Standalone Nodes:");
+            for (String nodeName : standaloneNodes.keySet()) {
+                Node node = standaloneNodes.get(nodeName);
+                for (String curi : node.getInstalledContributions()) {
+                    for (String dc : node.getDeployedCompostes(curi)) {
+                        out.println("   " + nodeName + " " + dc);
+                    }
+                }
             }
-            for (String compositeUri : dcs) {
-                for (Artifact a : c.getArtifacts()) {
-                    if (compositeUri.equals(a.getURI())) {
-                        out.println("   " + curi + " " + compositeUri + " " + ((Composite)a.getModel()).getName());
+            out.println();
+        }
+        if (nodes.size() > 0) {
+            for (Node node : nodes.values()) {
+                out.println("Domain: " + node.getDomainName());
+                List<String> ics;
+                if (toks.size() > 1) {
+                    ics = new ArrayList<String>();
+                    ics.add(toks.get(1));
+                } else {
+                    ics = node.getInstalledContributions();
+                }
+
+                for (String curi : ics) {
+                    Contribution c = node.getInstalledContribution(curi);
+                    List<String> dcs = node.getDeployedCompostes(curi);
+                    if (toks.size() > 2) {
+                        dcs = new ArrayList<String>();
+                        dcs.add(toks.get(2));
+                    } else {
+                        dcs = node.getDeployedCompostes(curi);
+                    }
+                    for (String compositeUri : dcs) {
+                        for (Artifact a : c.getArtifacts()) {
+                            if (compositeUri.equals(a.getURI())) {
+                                out.println("   " + curi
+                                    + " "
+                                    + compositeUri
+                                    + " "
+                                    + ((Composite)a.getModel()).getName());
+                            }
+                        }
                     }
                 }
             }
@@ -234,13 +311,17 @@ public class Shell {
     }
 
     boolean history() {
-        for (String l: history)
+        for (String l : history)
             out.println(l);
         return true;
     }
-    
+
+    public Node getNode() {
+        return nodes.get(currentDomain);
+    }
+
     List<String> read(Object r) throws IOException {
-        out.print("=> ");
+        out.print(currentDomain + "> ");
         final String l;
         if (useJline) {
             l = JLine.readLine(r);
@@ -248,10 +329,10 @@ public class Shell {
             l = ((BufferedReader)r).readLine();
             history.add(l);
         }
-        String[] toks = l != null? l.trim().split(" ") : "stop".split(" ");
+        String[] toks = l != null ? l.trim().split(" ") : "bye".split(" ");
         List<String> toksList = new ArrayList<String>();
         for (String s : toks) {
-            if (s != null && s.trim().length()>0) {
+            if (s != null && s.trim().length() > 0) {
                 toksList.add(s);
             }
         }
@@ -261,46 +342,98 @@ public class Shell {
     Callable<Boolean> eval(final List<String> toks) {
         final String op = toks.size() > 0 ? toks.get(0) : "";
 
-        if (op.equalsIgnoreCase("install")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return install(toks);
-        }};
-        if (op.equalsIgnoreCase("installed")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return installed(toks);
-        }};
-        if (op.equalsIgnoreCase("printDomainLevelComposite")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return printDomainLevelComposite();
-        }};
-        if (op.equalsIgnoreCase("getQNameDefinition")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return getQNameDefinition(toks.get(1), toks.get(2), toks.get(3));
-        }};
-        if (op.equalsIgnoreCase("remove")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return remove(toks.get(1));
-        }};
-        if (op.equalsIgnoreCase("help")) return new Callable<Boolean>() { public Boolean call() {
-            return help(toks);
-        }};
-        if (op.equalsIgnoreCase("stop")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return stop(toks);
-        }};
-        if (op.equalsIgnoreCase("bye")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return bye();
-        }};
-        if (op.equalsIgnoreCase("start")) return new Callable<Boolean>() { public Boolean call() throws Exception {
-            return start(toks.get(1), toks.get(2));
-        }};
-        if (op.equalsIgnoreCase("status")) return new Callable<Boolean>() { public Boolean call() {
-            return status(toks);
-        }};
-        if (op.equalsIgnoreCase("history")) return new Callable<Boolean>() { public Boolean call() {
-            return history();
-        }};
-        if (op.equalsIgnoreCase("")) return new Callable<Boolean>() { public Boolean call() {
-            return true;
-        }};
-        return new Callable<Boolean>() { public Boolean call() {
-            out.println("unknown command");
-            return true;
-        }};
+        if (op.equalsIgnoreCase("domain"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return domain(toks.size() > 1 ? toks.get(1) : "");
+                }
+            };
+        if (op.equalsIgnoreCase("install"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return install(toks);
+                }
+            };
+        if (op.equalsIgnoreCase("installed"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return installed(toks);
+                }
+            };
+        if (op.equalsIgnoreCase("printDomainLevelComposite"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return printDomainLevelComposite();
+                }
+            };
+        if (op.equalsIgnoreCase("getQNameDefinition"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return getQNameDefinition(toks.get(1), toks.get(2), toks.get(3));
+                }
+            };
+        if (op.equalsIgnoreCase("remove"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return remove(toks.get(1));
+                }
+            };
+        if (op.equalsIgnoreCase("help"))
+            return new Callable<Boolean>() {
+                public Boolean call() {
+                    return help(toks);
+                }
+            };
+        if (op.equalsIgnoreCase("stop"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return stop(toks);
+                }
+            };
+        if (op.equalsIgnoreCase("bye"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return bye();
+                }
+            };
+        if (op.equalsIgnoreCase("start"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    if (currentDomain.length() < 1) {
+                        if (toks.size() == 4) {
+                            return start(toks.get(1), toks.get(2), toks.get(3));
+                        } else {
+                            return start(toks.get(1), null, toks.get(2));
+                        }
+                    } else {
+                        return start(toks.get(1), toks.get(2));
+                    }
+                }
+            };
+        if (op.equalsIgnoreCase("status"))
+            return new Callable<Boolean>() {
+                public Boolean call() {
+                    return status(toks);
+                }
+            };
+        if (op.equalsIgnoreCase("history"))
+            return new Callable<Boolean>() {
+                public Boolean call() {
+                    return history();
+                }
+            };
+        if (op.equalsIgnoreCase(""))
+            return new Callable<Boolean>() {
+                public Boolean call() {
+                    return true;
+                }
+            };
+        return new Callable<Boolean>() {
+            public Boolean call() {
+                out.println("unknown command");
+                return true;
+            }
+        };
     }
 
     boolean apply(final Callable<Boolean> func) {
@@ -320,14 +453,15 @@ public class Shell {
         } else {
             reader = new BufferedReader(new InputStreamReader(in));
         }
-        while(apply(eval(read(reader))));
+        while (apply(eval(read(reader))))
+            ;
     }
 
     boolean help(List<String> toks) {
         String command = (toks == null || toks.size() < 2) ? null : toks.get(1);
         if (command == null) {
             helpOverview();
-        } else if ("help".equalsIgnoreCase(command)){
+        } else if ("help".equalsIgnoreCase(command)) {
             helpHelp();
         } else if ("install".equalsIgnoreCase(command)) {
             helpInstall();
@@ -343,33 +477,42 @@ public class Shell {
             helpStatus();
         } else if ("stop".equalsIgnoreCase(command)) {
             helpStop();
-        } else if ("startup".equalsIgnoreCase(command)){
+        } else if ("startup".equalsIgnoreCase(command)) {
             helpStartUp();
-        } else if ("bye".equalsIgnoreCase(command)){
+        } else if ("bye".equalsIgnoreCase(command)) {
             helpBye();
         }
         return true;
     }
 
     boolean helpOverview() {
-        out.println("Apache Tuscany Shell (" + Version.getVersion() + " " + Version.getRevsion() + " " + Version.getBuildTime() + ")");
+        out.println("Apache Tuscany Shell (" + Version.getVersion()
+            + " "
+            + Version.getRevsion()
+            + " "
+            + Version.getBuildTime()
+            + ")");
         out.println("Commands:");
         out.println();
         out.println("   help");
+        out.println("   domain <domainURI>");
         out.println("   install [<uri>] <contributionURL> [-norun -metadata <url> -duris <uri,uri,...>]");
         out.println("   installed [<contributionURI>]");
         out.println("   remove <contributionURI>");
         out.println("   printDomainLevelComposite");
         out.println("   start <curi> <compositeUri>|<contentURL>");
+        out.println("   start <name> [<compositeUri>] <contributionURL> [<dependentContributionURLs>]");
         out.println("   status [<curi> <compositeUri>]");
         out.println("   stop [<curi> <compositeUri>]");
         out.println("   bye");
         out.println();
-        if (useJline) out.println("Use Tab key for command and argument completion");
+        if (useJline)
+            out.println("Use Tab key for command and argument completion");
         out.println("For detailed help on each command do 'help <command>', for help of startup options do 'help startup'");
         out.println();
         return true;
     }
+
     void helpHelp() {
         out.println("   help [<command>]");
         out.println();
@@ -381,6 +524,16 @@ public class Shell {
         out.println();
         out.println("   Arguments:");
         out.println("      <command> - (optional) the command to get detailed help on");
+    }
+
+    void helpDomain() {
+        out.println("   domain [<domainURI>]");
+        out.println();
+        out.println("   Starts or connects to a domain for the given domain URI.");
+        out.println("   If no domain URI is specified switch to standalone mode.");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      <domainURI> - (optional) the domain URI of the domain");
     }
 
     void helpInstall() {
@@ -431,6 +584,7 @@ public class Shell {
 
     void helpStart() {
         out.println("   start <curi> <compositeUri>|<contentURL>");
+        out.println("   start <name> [<compositeUri>] <contributionURL> [<dependentContributionURLs>]");
         out.println();
         out.println("   Starts a composite.");
         out.println("   The composite is added to the domain composite with semantics that correspond to the domain-level");
@@ -438,10 +592,17 @@ public class Shell {
         out.println("   components become top-level components and the component services become externally visible");
         out.println("   services (eg. they would be present in a WSDL description of the Domain).");
         out.println();
-        out.println("   Arguments:");
+        out.println("   The second form of the start command starts in standalone mode not part of any SCA domain.");
+        out.println();
+        out.println("   Arguments (form1):");
         out.println("      curi - (required) the URI of an installed contribution");
         out.println("      compositeUri or contentURL - (required) either the URI of a composite within the contribution");
         out.println("                                              or a URL to an external composite file.");
+        out.println("   Arguments (form2):");
+        out.println("      name - (required) a name for the started composite/contribution");
+        out.println("      compositeUri - (optional) the URI of a composite within the contribution");
+        out.println("      contributionURL - (required) the URL to the contribution");
+        out.println("      dependentContributionURLs - (optional) URLs to any dependents of the contribution");
     }
 
     void helpStatus() {
@@ -457,17 +618,18 @@ public class Shell {
 
     void helpStop() {
         out.println("   stop <curi> [<compositeUri>]");
+        out.println("   stop <name>");
         out.println();
-        out.println("   Stops this Node or individual composites and contributions in the Node.");
+        out.println("   Stops a domain or standalone node or individual composites and contributions in a Domain.");
         out.println("   If a composite URI is specified then the composite is removed from the Domain Level composite");
         out.println("   This means that the removal of the components, wires, services and references originally added");
         out.println("   to the domain level composite by the identified composite. If a contribution URI is specified");
         out.println("   without a composite URI then all deployed composites composites in the contribution are stopped.");
-        out.println("   If no contribution URI is specified then the entire Node is stopped and the Shell exits.");
         out.println();
         out.println("   Arguments:");
-        out.println("      curi - (optional) the URI of an installed contribution");
+        out.println("      curi - (required) the URI of an installed contribution");
         out.println("      compositeUri - (optional) the URI of a composite");
+        out.println("      name - (required) the name of a standalon node or domain to stop");
     }
 
     void helpBye() {

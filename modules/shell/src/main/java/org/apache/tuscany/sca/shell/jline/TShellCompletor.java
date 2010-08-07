@@ -31,7 +31,6 @@ import jline.FileNameCompletor;
 import jline.NullCompletor;
 import jline.SimpleCompletor;
 
-import org.apache.tuscany.sca.node2.Node;
 import org.apache.tuscany.sca.shell.Shell;
 
 /**
@@ -43,24 +42,24 @@ public class TShellCompletor extends ArgumentCompletor {
     Map<String, Completor[]> completors;
     final Completor commandCompletor = new SimpleCompletor(Shell.COMMANDS);
     final ArgumentDelimiter delim = new WhitespaceArgumentDelimiter();
-    final Node node;
+    final Shell shell;
     
     static String lastArg;
 
-    public TShellCompletor(Node node) {
+    public TShellCompletor(Shell shell) {
         super((Completor)null);
-        this.node = node;
+        this.shell = shell;
         completors = new HashMap<String, Completor[]>();
         completors.put("help", new Completor[]{commandCompletor, commandCompletor, new NullCompletor()});    
 //        completors.put("install", new Completor[]{commandCompletor, new InstallCompletor(), new NullCompletor()});    
         completors.put("install", new Completor[]{commandCompletor, new FileNameCompletor(), new FileNameCompletor(), new NullCompletor()});    
-        completors.put("installed", new Completor[]{commandCompletor, new ICURICompletor(node), new NullCompletor()});    
-        completors.put("remove", new Completor[]{commandCompletor, new ICURICompletor(node), new NullCompletor()});    
-        completors.put("addDeploymentComposite", new Completor[]{commandCompletor, new ICURICompletor(node), new FileNameCompletor(), new NullCompletor()});    
+        completors.put("installed", new Completor[]{commandCompletor, new ICURICompletor(shell), new NullCompletor()});    
+        completors.put("remove", new Completor[]{commandCompletor, new ICURICompletor(shell), new NullCompletor()});    
+        completors.put("addDeploymentComposite", new Completor[]{commandCompletor, new ICURICompletor(shell), new FileNameCompletor(), new NullCompletor()});    
         completors.put("printDomainLevelComposite", new Completor[]{commandCompletor, new NullCompletor()});    
-        completors.put("start", new Completor[]{commandCompletor, new ICURICompletor(node), new CompositeURICompletor(node), new NullCompletor()});    
-        completors.put("status", new Completor[]{commandCompletor, new ICURICompletor(node), new CompositeURICompletor(node), new NullCompletor()});    
-        completors.put("stop", new Completor[]{commandCompletor, new ICURICompletor(node), new CompositeURICompletor(node), new NullCompletor()});    
+        completors.put("start", new Completor[]{commandCompletor, new ICURICompletor(shell), new CompositeURICompletor(shell), new NullCompletor()});    
+        completors.put("status", new Completor[]{commandCompletor, new ICURICompletor(shell), new CompositeURICompletor(shell), new NullCompletor()});    
+        completors.put("stop", new Completor[]{commandCompletor, new ICURICompletor(shell), new CompositeURICompletor(shell), new NullCompletor()});    
     }
 
     @Override
