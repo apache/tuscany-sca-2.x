@@ -29,7 +29,6 @@ import java.util.List;
 import jline.Completor;
 import jline.ConsoleReader;
 
-import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.shell.Shell;
 
 /**
@@ -48,11 +47,7 @@ public class JLine {
         // Add a Ctrl-c listener
         reader.addTriggeredAction((char)3, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try {
-                    shell.stop(null);
-                } catch (ActivationException e1) {
-                    e1.printStackTrace();
-                }
+                shell.bye();
                 System.exit(0);
             }
         });
