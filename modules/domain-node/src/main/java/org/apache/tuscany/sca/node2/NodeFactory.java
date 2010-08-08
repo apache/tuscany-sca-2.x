@@ -66,8 +66,10 @@ public class NodeFactory {
             EndpointRegistry endpointRegistry = new EndpointRegistryImpl(nodeFactory.extensionPointRegistry, null, null);
             NodeImpl node = new NodeImpl("default", nodeFactory.deployer, nodeFactory.compositeActivator, endpointRegistry, nodeFactory.extensionPointRegistry, nodeFactory);
 
-            for (int i=dependentContributionURLs.length-1; i>-1; i--) {
-                node.installContribution(null, dependentContributionURLs[i], null, null, false);
+            if (dependentContributionURLs != null) {
+                for (int i=dependentContributionURLs.length-1; i>-1; i--) {
+                    node.installContribution(null, dependentContributionURLs[i], null, null, false);
+                }
             }
 
             String curi = node.installContribution(null, contributionURL, null, null, compositeURI == null);
