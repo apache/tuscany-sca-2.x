@@ -211,7 +211,11 @@ public class Shell {
             if (standaloneNodes.containsKey(curi)) {
                 standaloneNodes.remove(curi).stop();
             } else if (nodes.containsKey(curi)) {
-                nodes.remove(curi).stop();
+                Node n = nodes.remove(curi);
+                n.stop();
+                if (n.getDomainName().equals(currentDomain)) {
+                    currentDomain = "";
+                }
             } else {
                 for (String compositeURI : getNode().getDeployedCompostes(curi)) {
                     getNode().removeFromDomainLevelComposite(curi, compositeURI);
@@ -399,14 +403,26 @@ public class Shell {
         if (op.equalsIgnoreCase("start"))
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
-                    if (currentDomain.length() < 1) {
-                        if (toks.size() == 4) {
-                            return start(toks.get(1), toks.get(2), toks.get(3));
-                        } else {
-                            return start(toks.get(1), null, toks.get(2));
-                        }
-                    } else {
+                    if (currentDomain.length() > 0) {
                         return start(toks.get(1), toks.get(2));
+                    } else {
+                        String[] duris = null;
+                        if (toks.contains("-duris")) {
+                            int i = toks.indexOf("-duris");
+                            duris = toks.get(i + 1).split(",");
+                            toks.remove(i); toks.remove(i+1);
+                        }
+                        String name = toks.get(1);
+                        String contributionURL;
+                        String compositeURI;
+                        if (toks.size() > 3) {
+                            compositeURI = toks.get(2);
+                            contributionURL = toks.get(3);
+                        } else {
+                            compositeURI = null;
+                            contributionURL = toks.get(2);
+                        }
+                        return start(name, compositeURI, contributionURL, duris);
                     }
                 }
             };
@@ -501,7 +517,7 @@ public class Shell {
         out.println("   remove <contributionURI>");
         out.println("   printDomainLevelComposite");
         out.println("   start <curi> <compositeUri>|<contentURL>");
-        out.println("   start <name> [<compositeUri>] <contributionURL> [<dependentContributionURLs>]");
+        out.println("   start <name> [<compositeUri>] <contributionURL> [-duris <uri,uri,...>]");
         out.println("   status [<curi> <compositeUri>]");
         out.println("   stop [<curi> <compositeUri>]");
         out.println("   bye");
@@ -584,7 +600,7 @@ public class Shell {
 
     void helpStart() {
         out.println("   start <curi> <compositeUri>|<contentURL>");
-        out.println("   start <name> [<compositeUri>] <contributionURL> [<dependentContributionURLs>]");
+        out.println("   start <name> [<compositeUri>] <contributionURL> [-duris <uri,uri,...>]");
         out.println();
         out.println("   Starts a composite.");
         out.println("   The composite is added to the domain composite with semantics that correspond to the domain-level");
@@ -602,7 +618,8 @@ public class Shell {
         out.println("      name - (required) a name for the started composite/contribution");
         out.println("      compositeUri - (optional) the URI of a composite within the contribution");
         out.println("      contributionURL - (required) the URL to the contribution");
-        out.println("      dependentContributionURLs - (optional) URLs to any dependents of the contribution");
+        out.println("      -duris <uri,uri,...> - (optional) specifies the URIs of contributions that are used to resolve the");
+        out.println("               dependencies of the root contribution and other dependent contributions.");
     }
 
     void helpStatus() {
