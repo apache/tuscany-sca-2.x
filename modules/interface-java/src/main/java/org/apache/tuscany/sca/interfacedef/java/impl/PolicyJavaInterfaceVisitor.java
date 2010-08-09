@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.soap.SOAPBinding;
 import javax.xml.namespace.QName;
@@ -158,7 +159,8 @@ public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
         }
     }
 
-	public void readWebResult(Method m, Class<?> clazz, List<Intent> requiredIntents) {
+	public void readWebServicesAnnotations(Method m, Class<?> clazz, List<Intent> requiredIntents) {
+		
 		WebResult webResultAnnotation = m.getAnnotation(WebResult.class);
 		if (webResultAnnotation != null) {
 			if (webResultAnnotation.header()) {
@@ -166,8 +168,26 @@ public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
 				Intent intent = policyFactory.createIntent();
 				intent.setName(Constants.SOAP_INTENT);
 				requiredIntents.add(intent);
+				return;
 			}
 		}
+		
+		Annotation[][] parameterAnnotations = m.getParameterAnnotations();
+		for ( int i=0; i < parameterAnnotations.length; i++ ) {
+			for ( int j=0; j < parameterAnnotations[i].length; j++) {
+				if ( parameterAnnotations[i][j] instanceof WebParam ) {
+					WebParam webParam = (WebParam)parameterAnnotations[i][j];
+					if ( webParam.header() ) {
+						// Add SOAP intent
+						Intent intent = policyFactory.createIntent();
+						intent.setName(Constants.SOAP_INTENT);
+						requiredIntents.add(intent);
+						return;
+					}
+				}
+			}
+		}
+
 	}
     public void visitInterface(JavaInterface javaInterface) throws InvalidInterfaceException {
 
@@ -183,7 +203,7 @@ public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
                 readIntents(method.getAnnotation(Requires.class), op.getRequiredIntents());
                 readSpecificIntents(method.getAnnotations(), op.getRequiredIntents());
                 readPolicySets(method.getAnnotation(PolicySets.class), op.getPolicySets());
-                readWebResult(method, javaInterface.getJavaClass(), javaInterface.getRequiredIntents());
+                readWebServicesAnnotations(method, javaInterface.getJavaClass(), javaInterface.getRequiredIntents());
             }
         }
     }
