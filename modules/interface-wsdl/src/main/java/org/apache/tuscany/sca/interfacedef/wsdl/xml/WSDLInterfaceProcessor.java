@@ -21,6 +21,9 @@ package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
+import java.net.URI;
+import java.util.List;
+
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -28,6 +31,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -362,8 +366,73 @@ public class WSDLInterfaceProcessor extends BaseStAXArtifactProcessor implements
      */
     public void resolve(WSDLInterfaceContract wsdlInterfaceContract, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         Monitor monitor = context.getMonitor();
+        
+        WSDLInterface wsdlInterface = (WSDLInterface)wsdlInterfaceContract.getInterface();
+        
+        // if the contract has a location but no WSDL definition yet we need to read the WSDL
+        // from the specified location and create an interface based on the first port type
+        // this is required if the user uses the @WebService(wsdlLocatio="") annotation in a
+        // Java component implementation. 
+        if (wsdlInterfaceContract.getLocation() != null &&
+            wsdlInterface.getWsdlDefinition() == null){
+            
+            WSDLDefinition wsdlDefinition = null;
+ 
+            URI wsdlFileURI = null;
+            
+            try {
+                wsdlFileURI = new URI(wsdlInterfaceContract.getLocation());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                // TODO - raise error
+            }
+            
+            if (wsdlFileURI.isAbsolute()){
+                // use the wsdli:wsdlLocation mechanism in the WSDLModelResolver to 
+                // load the WSDL from an absolute location                
+                wsdlDefinition = wsdlFactory.createWSDLDefinition();
+                wsdlDefinition.setUnresolved(true);
+                wsdlDefinition.setNamespace("nonamespace"); 
+                wsdlDefinition.getWsdliLocations().put("nonamespace", wsdlInterfaceContract.getLocation());
+            } else {
+                // Find the wsdl in the contribution ready for further resolution
+                try {
+                    URI contributionLocation = new URI(context.getContribution().getLocation());
+                    URI wsdlLocation = contributionLocation.resolve(wsdlFileURI);
+                    for (Artifact artifact : context.getContribution().getArtifacts()) {
+                        // TODO - SL a hack while I work out if the bigger picture will hang together
+                        //        need more intelligence when applying a relative URI to an existing URI. 
+                        if (artifact.getLocation().endsWith(wsdlInterfaceContract.getLocation())){
+                            //URI artifactLocation = new URI(artifact.getLocation()).normalize();
+                            //if (artifactLocation.equals(wsdlLocation)){
+                                wsdlDefinition = artifact.getModel();
+                                break;
+                            //}
+                        }
+                    }
+                    
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                   // TODO - raise error
+                }
+            }
+            
+            if (wsdlDefinition == null){
+                // TODO raise an error
+            }
+            
+            wsdlInterface.setWsdlDefinition(wsdlDefinition);
+            PortType portType = (PortType)wsdlDefinition.getDefinition().getAllPortTypes().values().iterator().next();
+            if(portType != null){
+                wsdlInterface.setName(portType.getQName());
+            } else {
+                // raise an error
+            }
+                
+        }
+        
         // Resolve the interface and callback interface
-        WSDLInterface wsdlInterface = resolveWSDLInterface((WSDLInterface)wsdlInterfaceContract.getInterface(), resolver, context);
+        wsdlInterface = resolveWSDLInterface(wsdlInterface, resolver, context);
         wsdlInterfaceContract.setInterface(wsdlInterface);
         
         // The forward interface (portType) may have a callback interface declared on it using an sca:callback attribute

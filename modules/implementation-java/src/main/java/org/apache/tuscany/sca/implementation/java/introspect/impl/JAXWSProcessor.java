@@ -35,6 +35,9 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.oasisopen.sca.annotation.Remotable;
@@ -46,16 +49,15 @@ import org.oasisopen.sca.annotation.Remotable;
 public class JAXWSProcessor extends BaseJavaClassVisitor {
     
     private PolicyFactory policyFactory;
-
-	public JAXWSProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory, PolicyFactory policyFactory) {
-        super(assemblyFactory);
-        this.javaInterfaceFactory = javaFactory;   
-        this.policyFactory = policyFactory;
-    }
+    private WSDLFactory wsdlFactory;
     
     public JAXWSProcessor(ExtensionPointRegistry registry) {
         super(registry);
-        this.policyFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(PolicyFactory.class);
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.wsdlFactory = factories.getFactory(WSDLFactory.class);
+        this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        this.policyFactory = factories.getFactory(PolicyFactory.class);
+        this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
     }
 
     @Override
@@ -72,22 +74,22 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
     		// JCA 11015
     	}
     	
-        WebService webService = clazz.getAnnotation(WebService.class);
+        WebService webServiceAnnotation = clazz.getAnnotation(WebService.class);
+        org.oasisopen.sca.annotation.Service serviceAnnotation = clazz.getAnnotation(org.oasisopen.sca.annotation.Service.class);
         String tns = JavaXMLMapper.getNamespace(clazz);
         String localName = clazz.getSimpleName();
         Class<?> interfaze = clazz;
-        if (webService != null) {
-            tns = getValue(webService.targetNamespace(), tns);
-            localName = getValue(webService.name(), localName);
+        if (webServiceAnnotation != null &&
+            serviceAnnotation == null) {
+            tns = getValue(webServiceAnnotation.targetNamespace(), tns);
+            localName = getValue(webServiceAnnotation.name(), localName);
             
-            String serviceInterfaceName = webService.endpointInterface();
-            // TODO - how to resolve this interface name 
-            //        needs to be done higher up where we have 
-            //        access to the resolver. 
+            String serviceInterfaceName = webServiceAnnotation.endpointInterface();
+            String wsdlLocation = webServiceAnnotation.wsdlLocation();
 
             Service service;
             try {
-                service = createService(clazz, interfaze, localName);
+                service = createService(clazz, localName, serviceInterfaceName, wsdlLocation);
             } catch (InvalidInterfaceException e) {
                 throw new IntrospectionException(e);
             }
@@ -106,32 +108,48 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
         return "".equals(value) ? defaultValue : value;
     }
     
-    public Service createService(Class<?> clazz, Class<?> interfaze, String name) throws InvalidInterfaceException {
+    public Service createService(Class<?> clazz, String serviceName, String javaInterfaceName, String wsdlFileName)  throws InvalidInterfaceException, IntrospectionException {
         Service service = assemblyFactory.createService();
-        JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
-        service.setInterfaceContract(interfaceContract);
 
-        if (name == null) {
-            service.setName(interfaze.getSimpleName());
-        } else {
-            service.setName(name);
-        }
-
-        JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(interfaze);
-        boolean remotable = clazz.getAnnotation(Remotable.class) != null;
-        if (remotable){
-            callInterface.setRemotable(true);
-        }
-        service.getInterfaceContract().setInterface(callInterface);
+        if (serviceName != null) {
+            service.setName(serviceName);
+        } else if (javaInterfaceName != null){
+            service.setName(javaInterfaceName.substring(javaInterfaceName.lastIndexOf('.')));
+        } 
         
-        if (callInterface.getCallbackClass() != null) {
-            JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass());
-            if (remotable){
-                callbackInterface.setRemotable(true);
-            }
-            service.getInterfaceContract().setCallbackInterface(callbackInterface);
+        // create the physical Java interface contract
+        JavaInterfaceContract javaInterfaceContract = javaInterfaceFactory.createJavaInterfaceContract();;
+        service.setInterfaceContract(javaInterfaceContract);
+        
+        if (javaInterfaceName != null &&
+            javaInterfaceName.length() > 0){
+            JavaInterface callInterface = javaInterfaceFactory.createJavaInterface();
+            callInterface.setName(javaInterfaceName);
+            callInterface.setRemotable(true);
+            callInterface.setUnresolved(true);
+            javaInterfaceContract.setInterface(callInterface);
+        } else {
+            // we use the bean class as the service interface
+            JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(clazz);
+            callInterface.setRemotable(true);
+            callInterface.setUnresolved(false); // this will already be false but this makes it easy to follow the logic
+            javaInterfaceContract.setInterface(callInterface);
         }
-        return service;
+        
+        // create the logical WSDL interface if it's specified in 
+        // the @WebService annotation
+        if (wsdlFileName != null &&
+                wsdlFileName.length() > 0){         
+             WSDLInterface callInterface = wsdlFactory.createWSDLInterface();
+             callInterface.setUnresolved(true);
+             callInterface.setRemotable(true);
+            
+             WSDLInterfaceContract wsdlInterfaceContract = wsdlFactory.createWSDLInterfaceContract();
+             wsdlInterfaceContract.setInterface(callInterface);
+             wsdlInterfaceContract.setLocation(wsdlFileName);
+             javaInterfaceContract.setNormailizedWSDLContract(wsdlInterfaceContract);
+         }  
+         return service;
     }    
 
 }

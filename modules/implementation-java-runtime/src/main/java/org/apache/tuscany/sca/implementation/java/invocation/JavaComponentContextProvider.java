@@ -292,7 +292,8 @@ public class JavaComponentContextProvider {
         Class<?> implClass = instanceFactoryProvider.getImplementationClass();
 
         Method method = JavaInterfaceUtil.findMethod(implClass, operation);
-        if( ((JavaOperation) operation).isAsyncServer() ) {
+        if (operation instanceof JavaOperation &&
+            ((JavaOperation) operation).isAsyncServer() ) {
         	return new JavaAsyncImplementationInvoker(operation, method, component);
         } else {
         	return new JavaImplementationInvoker(operation, method, component);

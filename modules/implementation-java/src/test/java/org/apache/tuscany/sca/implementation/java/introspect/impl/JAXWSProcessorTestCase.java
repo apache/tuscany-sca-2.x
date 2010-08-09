@@ -55,9 +55,17 @@ public class JAXWSProcessorTestCase {
     @Before
     public void setUp() throws Exception {
         ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
-        processor = new JAXWSProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(registry), new DefaultPolicyFactory());
+        processor = new JAXWSProcessor(registry);
         javaImplementationFactory = new DefaultJavaImplementationFactory();
     }
+
+    @Test
+    public void testWebServiceNoName() throws Exception {
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        processor.visitClass(Foo0Impl.class, type);
+        org.apache.tuscany.sca.assembly.Service service = getService(type, "Foo0Impl");
+        assertNotNull(service);
+    }  
 
     @Test
     public void testWebServiceName() throws Exception {
@@ -75,6 +83,21 @@ public class JAXWSProcessorTestCase {
         assertNotNull(service);
     }    
 
+    @Test
+    public void testWebServiceWSDL() throws Exception {
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        processor.visitClass(Foo3Impl.class, type);
+        org.apache.tuscany.sca.assembly.Service service = getService(type, "Foo3");
+        assertNotNull(service);
+    } 
+
+    @WebService()
+    private static class Foo0Impl{
+        public String doSomething(String aParam){
+            return null;
+        }
+    }
+
     @WebService(name="Foo1")
     private static class Foo1Impl{
         public String doSomething(String aParam){
@@ -86,12 +109,19 @@ public class JAXWSProcessorTestCase {
         public String doSomething(String aParam);
     }
     
-    @WebService(name="Foo2", endpointInterface="Foo2")
+    @WebService(name="Foo2", endpointInterface="org.apache.tuscany.sca.implementation.java.introspect.impl.JAXWSProcessorTestCase.Foo2")
     private static class Foo2Impl{
         public String doSomething(String aParam){
             return null;
         }
-    }    
+    }   
+    
+    @WebService(name="Foo3", wsdlLocation="foo3.wsdl")
+    private static class Foo3Impl{
+        public String doSomething(String aParam){
+            return null;
+        }
+    }  
     
 
 }
