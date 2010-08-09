@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.jws.WebResult;
 import javax.jws.soap.SOAPBinding;
 import javax.xml.namespace.QName;
 
@@ -107,12 +108,14 @@ public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
             }
         }
         
-        if ( clazz.getAnnotation(SOAPBinding.class) != null ) {
+        if ( clazz.isAnnotationPresent(SOAPBinding.class) ) {
         	// add soap intent        	
             Intent intent = policyFactory.createIntent();
             intent.setName(Constants.SOAP_INTENT);
             requiredIntents.add(intent);
         }
+        
+       
     }
 
     private void readIntents(Requires intentAnnotation, List<Intent> requiredIntents) {
@@ -155,6 +158,17 @@ public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
         }
     }
 
+	public void readWebResult(Method m, Class<?> clazz, List<Intent> requiredIntents) {
+		WebResult webResultAnnotation = m.getAnnotation(WebResult.class);
+		if (webResultAnnotation != null) {
+			if (webResultAnnotation.header()) {
+				// Add SOAP intent
+				Intent intent = policyFactory.createIntent();
+				intent.setName(Constants.SOAP_INTENT);
+				requiredIntents.add(intent);
+			}
+		}
+	}
     public void visitInterface(JavaInterface javaInterface) throws InvalidInterfaceException {
 
         if (javaInterface.getJavaClass() != null) {
@@ -169,6 +183,7 @@ public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
                 readIntents(method.getAnnotation(Requires.class), op.getRequiredIntents());
                 readSpecificIntents(method.getAnnotations(), op.getRequiredIntents());
                 readPolicySets(method.getAnnotation(PolicySets.class), op.getPolicySets());
+                readWebResult(method, javaInterface.getJavaClass(), javaInterface.getRequiredIntents());
             }
         }
     }
