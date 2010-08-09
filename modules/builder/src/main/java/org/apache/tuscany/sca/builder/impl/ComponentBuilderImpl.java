@@ -1509,7 +1509,7 @@ public class ComponentBuilderImpl {
             }
             
             // TODO - there is an issue with the following code if the 
-            //        contracts of of different types. Need to use the 
+            //        contracts are of different types. Need to use the 
             //        normalized form
             
             // fix up the forward interface based on the promoted component
