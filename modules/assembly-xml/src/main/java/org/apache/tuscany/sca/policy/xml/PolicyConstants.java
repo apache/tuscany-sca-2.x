@@ -52,6 +52,7 @@ public interface PolicyConstants {
     String EXTERNAL_ATTACHMENT = "externalAttachment";
     String INTENTS = "intents";
     String POLICY_SETS = "policySets";
+    String MUTUALLY_EXCLUSIVE = "mutuallyExclusive";
     
     String ALWAYS_PROVIDES = "alwaysProvides";
     String MAY_PROVIDE = "mayProvide";

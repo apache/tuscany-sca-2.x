@@ -125,6 +125,14 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
         readExcludedIntents(intent, reader);
 
         readConstrainedTypes(intent, reader);
+        
+        String mutuallyExclusiveString = reader.getAttributeValue(null, MUTUALLY_EXCLUSIVE);
+        if (mutuallyExclusiveString != null &&
+            mutuallyExclusiveString.equals("true")){
+            intent.setMutuallyExclusive(true);
+        } else {
+            intent.setMutuallyExclusive(false);
+        }
 
         Intent current = intent;
         int event = reader.getEventType();
@@ -146,6 +154,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
                         boolean isDefault = defaultQ == null ? false : Boolean.parseBoolean(defaultQ);
                         String qualifiedIntentName = intentLocalName + QUALIFIER + qualifierName;
                         Intent qualified = policyFactory.createIntent();
+                        qualified.setUnresolved(false);
                         qualified.setType(intent.getType());
                         qualified.setName(new QName(qualifiedIntentName));
                         if (isDefault) {
@@ -198,6 +207,19 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
         if (intent.getQualifiedIntents().size() == 1) {
             intent.setDefaultQualifiedIntent(intent.getQualifiedIntents().get(0));
         }
+        
+        // set all qualified intents as excluding one another if the qualifiable
+        // intent is set to be mutually exclusive
+        if (intent.isMutuallyExclusive()){
+            for (Intent qualifiedIntent : intent.getQualifiedIntents()){
+                for (Intent excludedIntent : intent.getQualifiedIntents()){
+                    if (qualifiedIntent != excludedIntent){
+                        qualifiedIntent.getExcludedIntents().add(excludedIntent);
+                   }
+                }
+            }
+        }
+        
         return intent;
     }
 
