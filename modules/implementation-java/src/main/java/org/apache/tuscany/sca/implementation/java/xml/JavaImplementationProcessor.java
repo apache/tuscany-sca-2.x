@@ -328,30 +328,6 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         }
     }
     
-//    private void postJAXWSProcessorResolve(ModelResolver resolver, JavaImplementation impl, ProcessorContext context)
-//        throws ContributionResolveException {
-//        for(Service service : impl.getServices()){
-//            InterfaceContract interfaceContract = service.getInterfaceContract();
-//            
-//            // InterfaceContract not marked as resolved so have to look 
-//            // at each type and work it out
-//            if (interfaceContract instanceof JavaInterfaceContract){
-//                JavaInterfaceContract javaInterfaceContract = (JavaInterfaceContract)interfaceContract;
-//                JavaInterface javaInterface = (JavaInterface)javaInterfaceContract.getInterface();
-//                if (javaInterface.isUnresolved()){
-//                    extensionProcessor.resolve(javaInterfaceContract, resolver, context);
-//                }
-//            } else {
-//                WSDLInterfaceContract wsdlInterfaceContract = (WSDLInterfaceContract)interfaceContract;
-//                WSDLInterface wsdlInterface = (WSDLInterface)wsdlInterfaceContract.getInterface();
-//                if (wsdlInterface.isUnresolved()){
-//                    //WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlInterface.getWsdlDefinition(), context);
-//                    extensionProcessor.resolve(wsdlInterfaceContract, resolver, context);
-//                }
-//            }
-//        }
-//    }
-    
     private void postJAXWSProcessorResolve(ModelResolver resolver, JavaImplementation impl, ProcessorContext context)
         throws ContributionResolveException, IncompatibleInterfaceContractException {
         for(Service service : impl.getServices()){
@@ -359,7 +335,8 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
             
             JavaInterface javaInterface = (JavaInterface)javaInterfaceContract.getInterface();
             if (javaInterface.isUnresolved()){
-                extensionProcessor.resolve(javaInterfaceContract, resolver, context);
+// TODO - Causing JCAA tests to fail?????                
+//                extensionProcessor.resolve(javaInterfaceContract, resolver, context);
             }
             
             WSDLInterfaceContract wsdlInterfaceContract = (WSDLInterfaceContract)javaInterfaceContract.getNormalizedWSDLContract();
