@@ -40,7 +40,6 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Process JAXWS annotations and updates the component type accordingly
@@ -70,7 +69,11 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
     	}
     	
     	if ( clazz.getAnnotation(WebServiceProvider.class) != null ) {
-    		// TODO Apply @Remotable to interfaces here
+    		// If the implementation is annotated with @WebServiceProvider,
+    		// make all service interfaces remotable
+    		for ( Service s : type.getServices() ) {
+    			s.getInterfaceContract().getInterface().setRemotable(true);
+    		}
     		// JCA 11015
     	}
     	
