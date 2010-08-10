@@ -18,7 +18,14 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Iterator;
+
+import javax.jws.WebParam;
+import javax.jws.WebResult;
 import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
 import javax.xml.ws.ServiceMode;
 import javax.xml.ws.WebServiceProvider;
 
@@ -31,15 +38,18 @@ import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * Process JAXWS annotations and updates the component type accordingly
@@ -61,46 +71,103 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
 
     @Override
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
+        
+        // Process @ServiceMode annotation - JCA 11013
     	if ( clazz.getAnnotation(ServiceMode.class) != null ) {
-    		// Add soap intent - JCA 11013    	
-            Intent soapIntent = policyFactory.createIntent();
-            soapIntent.setName(Constants.SOAP_INTENT);         
-    		type.getRequiredIntents().add(soapIntent);
+    		addSOAPIntent(type);
     	}
     	
-    	if ( clazz.getAnnotation(WebServiceProvider.class) != null ) {
-    		// If the implementation is annotated with @WebServiceProvider,
-    		// make all service interfaces remotable
-    		for ( Service s : type.getServices() ) {
-    			s.getInterfaceContract().getInterface().setRemotable(true);
-    		}
-    		// JCA 11015
-    	}
-    	
+        // Process @WebService annotation - POJO_8029, POJO_8030
         WebService webServiceAnnotation = clazz.getAnnotation(WebService.class);
         org.oasisopen.sca.annotation.Service serviceAnnotation = clazz.getAnnotation(org.oasisopen.sca.annotation.Service.class);
-        String tns = JavaXMLMapper.getNamespace(clazz);
         String localName = clazz.getSimpleName();
         Class<?> interfaze = clazz;
+        
         if (webServiceAnnotation != null &&
             serviceAnnotation == null) {
-            tns = getValue(webServiceAnnotation.targetNamespace(), tns);
             localName = getValue(webServiceAnnotation.name(), localName);
-            
             String serviceInterfaceName = webServiceAnnotation.endpointInterface();
             String wsdlLocation = webServiceAnnotation.wsdlLocation();
-
-            Service service;
+            
             try {
-                service = createService(clazz, localName, serviceInterfaceName, wsdlLocation);
+                createService(type, clazz, localName, serviceInterfaceName, wsdlLocation);
+            } catch (InvalidInterfaceException e) {
+                throw new IntrospectionException(e);
+            }
+        }
+        
+        // Process @WebServiceProvider annotation - JCA_11015, POJO_8034
+        WebServiceProvider webServiceProviderAnnotation = clazz.getAnnotation(WebServiceProvider.class);
+        if (webServiceProviderAnnotation != null &&
+            serviceAnnotation == null) {
+            localName = clazz.getSimpleName();
+            localName = getValue(webServiceProviderAnnotation.serviceName(), localName);
+            
+            // Make sure that there is a service with an interface
+            // based on the implementation class
+            try {
+                createService(type, clazz, localName, null, null);
             } catch (InvalidInterfaceException e) {
                 throw new IntrospectionException(e);
             }
             
-            if (!type.getServices().contains(service)){
-                type.getServices().add(service);   
+            // Make sure all service references are remotable
+            for ( Service service : type.getServices() ) {
+                service.getInterfaceContract().getInterface().setRemotable(true);
+            }
+        }         
+        
+        // Process @WebParam and @WebResult annotations - POJO_8031, POJO_8032
+        Method[] implMethods = interfaze.getDeclaredMethods();
+        for ( Service service : type.getServices() ) {
+            JavaInterface javaInterface = (JavaInterface)service.getInterfaceContract().getInterface();
+            interfaze = javaInterface.getJavaClass();
+            
+            if (interfaze == null){
+                // this interface has come from an @WebService enpointInterface annotation
+                // so hasn't been resolved. Use the implementation class as the interface
+                interfaze = clazz;
+            }
+            
+            boolean hasHeaderParam = false;
+            for (Method method : interfaze.getDeclaredMethods()){
+                // find the impl method for this service method    
+                for (int i = 0; i < implMethods.length; i++){ 
+                    Method implMethod = implMethods[i];
+                    if (implMethod.getName().equals(method.getName())){
+                        for (int j = 0; j < implMethod.getParameterTypes().length; j++) {
+                            WebParam webParamAnnotation = getParameterAnnotation(implMethod, j, WebParam.class); 
+                            if (webParamAnnotation != null &&
+                                webParamAnnotation.header()) {
+                                hasHeaderParam = true;
+                                break;
+                            }
+                        }
+                        
+                        WebResult webResultAnnotation = implMethod.getAnnotation(WebResult.class);
+                        if (webResultAnnotation != null &&
+                            webResultAnnotation.header()){
+                            hasHeaderParam = true;
+                            break;
+                        }
+                    }
+                }
+            } 
+            
+            if (hasHeaderParam){                   
+                // Add a SOAP intent to the service
+                addSOAPIntent(service);
             }
         }
+        
+        // Process @SOAPBinding annotation - POJO_8033
+        if ( clazz.getAnnotation(SOAPBinding.class) != null ) {
+            // If the implementation is annotated with @SOAPBinding,
+            // give all services a SOAP intent
+            for ( Service service : type.getServices() ) {
+                addSOAPIntent(service);
+            }
+        }               
     }
     
     /**
@@ -111,7 +178,7 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
         return "".equals(value) ? defaultValue : value;
     }
     
-    public Service createService(Class<?> clazz, String serviceName, String javaInterfaceName, String wsdlFileName)  throws InvalidInterfaceException, IntrospectionException {
+    public Service createService(JavaImplementation type, Class<?> clazz, String serviceName, String javaInterfaceName, String wsdlFileName)  throws InvalidInterfaceException, IntrospectionException {
         Service service = assemblyFactory.createService();
 
         if (serviceName != null) {
@@ -143,16 +210,45 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
         // the @WebService annotation
         if (wsdlFileName != null &&
                 wsdlFileName.length() > 0){         
-             WSDLInterface callInterface = wsdlFactory.createWSDLInterface();
-             callInterface.setUnresolved(true);
-             callInterface.setRemotable(true);
+            WSDLInterface callInterface = wsdlFactory.createWSDLInterface();
+            callInterface.setUnresolved(true);
+            callInterface.setRemotable(true);
             
-             WSDLInterfaceContract wsdlInterfaceContract = wsdlFactory.createWSDLInterfaceContract();
-             wsdlInterfaceContract.setInterface(callInterface);
-             wsdlInterfaceContract.setLocation(wsdlFileName);
-             javaInterfaceContract.setNormailizedWSDLContract(wsdlInterfaceContract);
-         }  
+            WSDLInterfaceContract wsdlInterfaceContract = wsdlFactory.createWSDLInterfaceContract();
+            wsdlInterfaceContract.setInterface(callInterface);
+            wsdlInterfaceContract.setLocation(wsdlFileName);
+            javaInterfaceContract.setNormailizedWSDLContract(wsdlInterfaceContract);
+        }  
+        
+        // add the service model into the implementation type
+        boolean serviceAlreadyPresent = false;
+        for (Service typeService : type.getServices()){
+            if (typeService.getName().equals(service.getName())){
+                serviceAlreadyPresent = true;
+                break;
+            }
+        }
+        if (!serviceAlreadyPresent){
+            type.getServices().add(service);   
+        }
+        
          return service;
     }    
+    
+    private <T extends Annotation> T getParameterAnnotation(Method method, int index, Class<T> annotationType) {
+        Annotation[] annotations = method.getParameterAnnotations()[index];
+        for (Annotation annotation : annotations) {
+            if (annotation.annotationType() == annotationType) {
+                return annotationType.cast(annotation);
+            }
+        }
+        return null;
+    }
+    
+    private void addSOAPIntent(PolicySubject policySubject){
+        Intent soapIntent = policyFactory.createIntent();
+        soapIntent.setName(Constants.SOAP_INTENT);         
+        policySubject.getRequiredIntents().add(soapIntent);
+    }
 
 }
