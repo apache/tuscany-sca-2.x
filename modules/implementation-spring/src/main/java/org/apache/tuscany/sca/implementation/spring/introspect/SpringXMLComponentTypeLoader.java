@@ -20,6 +20,19 @@ package org.apache.tuscany.sca.implementation.spring.introspect;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.BEAN_ELEMENT;
+import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.CONSTRUCTORARG_ELEMENT;
+import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.ENTRY_ELEMENT;
+import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.IMPORT_ELEMENT;
+import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.LIST_ELEMENT;
+import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.MAP_ELEMENT;
+import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.PROPERTY_ELEMENT;
+import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.REF_ELEMENT;
+import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.SCA_PROPERTY_ELEMENT;
+import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.SCA_REFERENCE_ELEMENT;
+import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.SCA_SERVICE_ELEMENT;
+import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.SET_ELEMENT;
+import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.VALUE_ELEMENT;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -71,7 +84,6 @@ import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
 import org.apache.tuscany.sca.implementation.spring.SpringBeanElement;
 import org.apache.tuscany.sca.implementation.spring.SpringConstructorArgElement;
 import org.apache.tuscany.sca.implementation.spring.SpringImplementation;
-import org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants;
 import org.apache.tuscany.sca.implementation.spring.SpringPropertyElement;
 import org.apache.tuscany.sca.implementation.spring.SpringSCAPropertyElement;
 import org.apache.tuscany.sca.implementation.spring.SpringSCAReferenceElement;
@@ -288,6 +300,16 @@ public class SpringXMLComponentTypeLoader {
             throw new ContributionReadException(e);
         }
     }
+    
+    /**
+     * Spring 2.0 bean xml definitions use DTD and there is no namespace for the elements 
+     * @param expected
+     * @param actual
+     * @return
+     */
+    private static boolean matches(QName expected, QName actual) {
+        return expected.equals(actual) || ("".equals(actual.getNamespaceURI()) && expected.getLocalPart().equals(actual.getLocalPart()));
+    }
 
     /**
      * Method which reads the spring context definitions from Spring application-context.xml
@@ -312,13 +334,14 @@ public class SpringXMLComponentTypeLoader {
         SpringBeanElement bean = null;
 
         try {
-            boolean completed = false;
-            while (!completed) {
+            int level = 0;
+            while (level >= 0) {
                 switch (reader.next()) {
                     case START_ELEMENT:
+                        level++;
                         QName qname = reader.getName();
                         //System.out.println("Spring TypeLoader - found element with name: " + qname.toString());
-                        if (SpringImplementationConstants.IMPORT_ELEMENT.equals(qname)) {
+                        if (matches(IMPORT_ELEMENT, qname)) {
                             //FIXME - put the sequence of code below which gets the ireader into a subsidiary method
                             String location = reader.getAttributeValue(null, "resource");
                             if (location != null) {
@@ -335,7 +358,7 @@ public class SpringXMLComponentTypeLoader {
                                                       scaproperties,
                                                       context);
                             }
-                        } else if (SpringImplementationConstants.SCA_SERVICE_ELEMENT.equals(qname)) {
+                        } else if (SCA_SERVICE_ELEMENT.equals(qname)) {
                             // The value of the @name attribute of an <sca:service/> subelement of a <beans/> 
                             // element MUST be unique amongst the <sca:service/> subelements of the <beans/> element.
                             if (!services.isEmpty() && (services.contains(reader.getAttributeValue(null, "name"))))
@@ -348,7 +371,7 @@ public class SpringXMLComponentTypeLoader {
                                 service.setType(reader.getAttributeValue(null, "type"));
                             policyProcessor.readPolicies(service, reader);
                             services.add(service);
-                        } else if (SpringImplementationConstants.SCA_REFERENCE_ELEMENT.equals(qname)) {
+                        } else if (SCA_REFERENCE_ELEMENT.equals(qname)) {
                             // The value of the @name attribute of an <sca:reference/> subelement of a <beans/> 
                             // element MUST be unique amongst the @name attributes of the <sca:reference/> subelements, 
                             // of the <beans/> element.
@@ -362,7 +385,7 @@ public class SpringXMLComponentTypeLoader {
                                 reference.setDefaultBean(reader.getAttributeValue(null, "default"));
                             policyProcessor.readPolicies(reference, reader);
                             references.add(reference);
-                        } else if (SpringImplementationConstants.SCA_PROPERTY_ELEMENT.equals(qname)) {
+                        } else if (SCA_PROPERTY_ELEMENT.equals(qname)) {
                             // The value of the @name attribute of an <sca:property/> subelement of a <beans/> 
                             // element MUST be unique amongst the @name attributes of the <sca:property/> subelements, 
                             // of the <beans/> element.
@@ -374,7 +397,7 @@ public class SpringXMLComponentTypeLoader {
                                 new SpringSCAPropertyElement(reader.getAttributeValue(null, "name"),
                                                              reader.getAttributeValue(null, "type"));
                             scaproperties.add(scaproperty);
-                        } else if (SpringImplementationConstants.BEAN_ELEMENT.equals(qname)) {
+                        } else if (matches(BEAN_ELEMENT, qname)) {
                             bean =
                                 new SpringBeanElement(reader.getAttributeValue(null, "id"),
                                                       reader.getAttributeValue(null, "class"));
@@ -404,13 +427,18 @@ public class SpringXMLComponentTypeLoader {
                             // Read the <bean> element and its child elements
                             readBeanDefinition(reader, bean, beans);
                         } // end if
-                        break;
-                    case END_ELEMENT:
-                        if (SpringImplementationConstants.BEANS_ELEMENT.equals(reader.getName())) {
-                            //System.out.println("Spring TypeLoader - finished read of context file");
-                            completed = true;
+                        
+                        // [rfeng] If it reaches end-element, proceed to the case END_ELEMENT test
+                        if (reader.getEventType() != END_ELEMENT) {
                             break;
-                        } // end if
+                        }
+                    case END_ELEMENT:
+                        level--;
+                        if (level == 0) {
+                            // Now we are back the root element
+                            return;
+                        }
+                        break;
                 } // end switch
             } // end while
         } catch (XMLStreamException e) {
@@ -430,12 +458,13 @@ public class SpringXMLComponentTypeLoader {
         SpringConstructorArgElement constructorArg = null;
 
         try {
-            boolean completed = false;
-            while (!completed) {
+            int level = 0;
+            while (level >= 0) {
                 switch (reader.next()) {
                     case START_ELEMENT:
+                        level++;
                         QName qname = reader.getName();
-                        if (SpringImplementationConstants.BEAN_ELEMENT.equals(qname)) {
+                        if (matches(BEAN_ELEMENT, qname)) {
                             innerbean =
                                 new SpringBeanElement(reader.getAttributeValue(null, "id"),
                                                       reader.getAttributeValue(null, "class"));
@@ -449,12 +478,12 @@ public class SpringXMLComponentTypeLoader {
                             innerbean.setInnerBean(true);
                             beans.add(innerbean);
                             readBeanDefinition(reader, innerbean, beans);
-                        } else if (SpringImplementationConstants.PROPERTY_ELEMENT.equals(qname)) {
+                        } else if (matches(PROPERTY_ELEMENT, qname)) {
                             property = new SpringPropertyElement(reader.getAttributeValue(null, "name"));
                             if (reader.getAttributeValue(null, "ref") != null)
                                 property.addRef(reader.getAttributeValue(null, "ref"));
                             bean.addProperty(property);
-                        } else if (SpringImplementationConstants.CONSTRUCTORARG_ELEMENT.equals(qname)) {
+                        } else if (matches(CONSTRUCTORARG_ELEMENT, qname)) {
                             constructorArg = new SpringConstructorArgElement(reader.getAttributeValue(null, "type"));
                             if (reader.getAttributeValue(null, "ref") != null)
                                 constructorArg.addRef(reader.getAttributeValue(null, "ref"));
@@ -464,7 +493,7 @@ public class SpringXMLComponentTypeLoader {
                             if (reader.getAttributeValue(null, "value") != null)
                                 constructorArg.addValue(reader.getAttributeValue(null, "value"));
                             bean.addCustructorArgs(constructorArg);
-                        } else if (SpringImplementationConstants.REF_ELEMENT.equals(qname)) {
+                        } else if (matches(REF_ELEMENT, qname)) {
                             String ref = reader.getAttributeValue(null, "bean");
                             // Check if the parent element is a property
                             if (property != null)
@@ -472,28 +501,24 @@ public class SpringXMLComponentTypeLoader {
                             // Check if the parent element is a constructor-arg
                             if (constructorArg != null)
                                 constructorArg.addRef(ref);
-                        } else if (SpringImplementationConstants.VALUE_ELEMENT.equals(qname)) {
+                        } else if (matches(VALUE_ELEMENT, qname)) {
                             String value = reader.getElementText();
                             // Check if the parent element is a constructor-arg
                             if (constructorArg != null)
                                 constructorArg.addValue(value);
-                        } else if (SpringImplementationConstants.LIST_ELEMENT.equals(qname) || SpringImplementationConstants.SET_ELEMENT
-                            .equals(qname) || SpringImplementationConstants.MAP_ELEMENT.equals(qname)) {
+                        } else if (matches(LIST_ELEMENT, qname) || matches(SET_ELEMENT, qname) || matches(MAP_ELEMENT, qname)) {
                             if (property != null)
                                 readCollections(reader, bean, beans, property, null);
                             if (constructorArg != null)
                                 readCollections(reader, bean, beans, null, constructorArg);
                         } // end if
-                        break;
-                    case END_ELEMENT:
-                        if (SpringImplementationConstants.BEAN_ELEMENT.equals(reader.getName())) {
-                            completed = true;
+                        // [rfeng] If it reaches end-element, proceed to the case END_ELEMENT test
+                        if (reader.getEventType() != END_ELEMENT) {
                             break;
-                        } else if (SpringImplementationConstants.PROPERTY_ELEMENT.equals(reader.getName())) {
-                            property = null;
-                        } else if (SpringImplementationConstants.CONSTRUCTORARG_ELEMENT.equals(reader.getName())) {
-                            constructorArg = null;
-                        } // end if
+                        }
+                    case END_ELEMENT:
+                        level--;
+                        break;
                 } // end switch
             } // end while
         } catch (XMLStreamException e) {
@@ -514,12 +539,13 @@ public class SpringXMLComponentTypeLoader {
         SpringBeanElement innerbean = null;
 
         try {
-            boolean completed = false;
-            while (!completed) {
+            int level = 0;
+            while (level >= 0) {
                 switch (reader.next()) {
                     case START_ELEMENT:
+                        level++;
                         QName qname = reader.getName();
-                        if (SpringImplementationConstants.BEAN_ELEMENT.equals(qname)) {
+                        if (matches(BEAN_ELEMENT, qname)) {
                             innerbean =
                                 new SpringBeanElement(reader.getAttributeValue(null, "id"),
                                                       reader.getAttributeValue(null, "class"));
@@ -532,19 +558,18 @@ public class SpringXMLComponentTypeLoader {
                             innerbean.setInnerBean(true);
                             beans.add(innerbean);
                             readBeanDefinition(reader, innerbean, beans);
-                        } else if (SpringImplementationConstants.REF_ELEMENT.equals(qname)) {
+                        } else if (matches(REF_ELEMENT, qname)) {
                             String ref = reader.getAttributeValue(null, "bean");
                             if (property != null)
                                 property.addRef(ref);
                             if (constructorArg != null)
                                 constructorArg.addRef(ref);
-                        } else if (SpringImplementationConstants.LIST_ELEMENT.equals(qname) || SpringImplementationConstants.SET_ELEMENT
-                            .equals(qname) || SpringImplementationConstants.MAP_ELEMENT.equals(qname)) {
+                        } else if (matches(LIST_ELEMENT, qname) || matches(SET_ELEMENT, qname) || matches(MAP_ELEMENT, qname)) {
                             if (property != null)
                                 readCollections(reader, innerbean, beans, property, null);
                             if (constructorArg != null)
                                 readCollections(reader, innerbean, beans, null, constructorArg);
-                        } else if (SpringImplementationConstants.ENTRY_ELEMENT.equals(qname)) {
+                        } else if (matches(ENTRY_ELEMENT, qname)) {
                             String keyRef = reader.getAttributeValue(null, "key-ref");
                             String valueRef = reader.getAttributeValue(null, "value-ref");
                             if (property != null) {
@@ -556,18 +581,13 @@ public class SpringXMLComponentTypeLoader {
                                 constructorArg.addRef(valueRef);
                             }
                         } // end if
-                        break;
+                        // [rfeng] If it reaches end-element, proceed to the case END_ELEMENT test
+                        if (reader.getEventType() != END_ELEMENT) {
+                            break;
+                        }
                     case END_ELEMENT:
-                        if (SpringImplementationConstants.LIST_ELEMENT.equals(reader.getName())) {
-                            completed = true;
-                            break;
-                        } else if (SpringImplementationConstants.SET_ELEMENT.equals(reader.getName())) {
-                            completed = true;
-                            break;
-                        } else if (SpringImplementationConstants.MAP_ELEMENT.equals(reader.getName())) {
-                            completed = true;
-                            break;
-                        } // end if
+                        level--;
+                        break;
                 } // end switch
             } // end while
         } catch (XMLStreamException e) {
@@ -726,6 +746,11 @@ public class SpringXMLComponentTypeLoader {
             itb = beans.iterator();
             while (itb.hasNext()) {
                 SpringBeanElement beanElement = itb.next();
+                
+                // If its not a valid bean for service, ignore it
+                if (!isvalidBeanForService(beanElement)) {
+                    continue;
+                }
                 // Ignore if the bean has no properties and constructor arguments
                 if (beanElement.getProperties().isEmpty() && beanElement.getCustructorArgs().isEmpty())
                     continue;
