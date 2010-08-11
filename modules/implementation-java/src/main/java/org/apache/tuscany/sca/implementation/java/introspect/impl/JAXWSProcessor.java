@@ -80,17 +80,18 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
         // Process @WebService annotation - POJO_8029, POJO_8030
         WebService webServiceAnnotation = clazz.getAnnotation(WebService.class);
         org.oasisopen.sca.annotation.Service serviceAnnotation = clazz.getAnnotation(org.oasisopen.sca.annotation.Service.class);
-        String localName = clazz.getSimpleName();
-        Class<?> interfaze = clazz;
         
         if (webServiceAnnotation != null &&
             serviceAnnotation == null) {
-            localName = getValue(webServiceAnnotation.name(), localName);
-            String serviceInterfaceName = webServiceAnnotation.endpointInterface();
+            String serviceName = clazz.getSimpleName();
+            serviceName = getValue(webServiceAnnotation.name(), serviceName);
+            
+            String serviceInterfaceClassName = webServiceAnnotation.endpointInterface();
+            
             String wsdlLocation = webServiceAnnotation.wsdlLocation();
             
             try {
-                createService(type, clazz, localName, serviceInterfaceName, wsdlLocation);
+                createService(type, clazz, serviceName, serviceInterfaceClassName, wsdlLocation, false);
             } catch (InvalidInterfaceException e) {
                 throw new IntrospectionException(e);
             }
@@ -98,15 +99,26 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
         
         // Process @WebServiceProvider annotation - JCA_11015, POJO_8034
         WebServiceProvider webServiceProviderAnnotation = clazz.getAnnotation(WebServiceProvider.class);
-        if (webServiceProviderAnnotation != null &&
-            serviceAnnotation == null) {
-            localName = clazz.getSimpleName();
-            localName = getValue(webServiceProviderAnnotation.serviceName(), localName);
+        if (webServiceProviderAnnotation != null) {
+            // if the implmentation already has a service set, use it's name
+            // and the new service, which uses the implementation as an interface,
+            // will be replaced 
+            String serviceName = clazz.getSimpleName();
+            
+            if (type.getServices().size() > 0){
+                serviceName = ((Service)type.getServices().get(0)).getName();
+            } 
+            
+            // the annotation may specify a service name
+            serviceName = getValue(webServiceProviderAnnotation.serviceName(), serviceName);
+            
+            String wsdlLocation = webServiceProviderAnnotation.wsdlLocation();
             
             // Make sure that there is a service with an interface
-            // based on the implementation class
+            // based on the implementation class and have it replace 
+            // any service with the same name
             try {
-                createService(type, clazz, localName, null, null);
+                createService(type, clazz, serviceName, null, wsdlLocation, true);
             } catch (InvalidInterfaceException e) {
                 throw new IntrospectionException(e);
             }
@@ -118,6 +130,7 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
         }         
         
         // Process @WebParam and @WebResult annotations - POJO_8031, POJO_8032
+        Class<?> interfaze = clazz;
         Method[] implMethods = interfaze.getDeclaredMethods();
         for ( Service service : type.getServices() ) {
             JavaInterface javaInterface = (JavaInterface)service.getInterfaceContract().getInterface();
@@ -178,7 +191,7 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
         return "".equals(value) ? defaultValue : value;
     }
     
-    public Service createService(JavaImplementation type, Class<?> clazz, String serviceName, String javaInterfaceName, String wsdlFileName)  throws InvalidInterfaceException, IntrospectionException {
+    public Service createService(JavaImplementation type, Class<?> clazz, String serviceName, String javaInterfaceName, String wsdlFileName, boolean replace)  throws InvalidInterfaceException, IntrospectionException {
         Service service = assemblyFactory.createService();
 
         if (serviceName != null) {
@@ -221,15 +234,21 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
         }  
         
         // add the service model into the implementation type
-        boolean serviceAlreadyPresent = false;
+        Service serviceAlreadyPresent = null;
         for (Service typeService : type.getServices()){
             if (typeService.getName().equals(service.getName())){
-                serviceAlreadyPresent = true;
+                serviceAlreadyPresent = typeService;
                 break;
             }
         }
-        if (!serviceAlreadyPresent){
-            type.getServices().add(service);   
+        
+        if (replace == true){
+            type.getServices().remove(serviceAlreadyPresent); 
+            type.getServices().add(service);
+        } else {
+            if (serviceAlreadyPresent == null){
+                type.getServices().add(service);
+            }
         }
         
          return service;
