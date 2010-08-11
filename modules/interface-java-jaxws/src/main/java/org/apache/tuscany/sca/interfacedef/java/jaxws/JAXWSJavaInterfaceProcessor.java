@@ -38,6 +38,7 @@ import javax.jws.soap.SOAPBinding.Style;
 import javax.xml.namespace.QName;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
+import javax.xml.ws.WebServiceProvider;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -104,6 +105,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
 
         final Class<?> clazz = contract.getJavaClass();
         WebService webService = clazz.getAnnotation(WebService.class);
+        
         String tns = JavaXMLMapper.getNamespace(clazz);
         String localName = clazz.getSimpleName();
         if (webService != null) {
@@ -113,6 +115,16 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
             // Mark SEI as Remotable
             contract.setRemotable(true);
         }
+        
+        WebServiceProvider webServiceProvider = clazz.getAnnotation(WebServiceProvider.class);
+        if (webServiceProvider != null) {
+            tns = getValue(webServiceProvider.targetNamespace(), tns);
+            localName = getValue(webServiceProvider.serviceName(), localName);
+            contract.setQName(new QName(tns, localName));
+            // Mark SEI as Remotable
+            contract.setRemotable(true);
+        }
+        
         if (!contract.isRemotable()) {
             return;
         }
