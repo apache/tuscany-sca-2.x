@@ -27,15 +27,9 @@ public class LauncherTestCase {
 
     @Test
     public void testContributionBindingSCACalculator() throws Exception {
-        SampleJSELauncher.main(new String[] {"contribution-binding-sca-calculator"});
+        JSELauncherBindingSCACalculator.main(null);
     }
-    
-/* replaced by call to specific launcher
-    @Test
-    public void testContributionBindingWSCalculator() throws Exception {
-        SampleJSELauncher.main(new String[] {"contribution-binding-ws-calculator"});
-    } 
-*/    
+       
     
     @Test
     public void testContributionBindingWSCalculator() throws Exception {
@@ -44,11 +38,11 @@ public class LauncherTestCase {
     
     @Test
     public void testContributionBindingRMICalculator() throws Exception {
-        SampleJSELauncher.main(new String[] {"contribution-binding-rmi-calculator"});
+    	JSELauncherBindingRMICalculator.main(null);
     } 
     
     @Test
     public void testContributionImplementationJavaCalculator() throws Exception {
-        SampleJSELauncher.main(new String[] {"contribution-implementation-java-calculator"});
+    	JSELauncherImplementationJavaCalculator.main(null);
     }     
 }
