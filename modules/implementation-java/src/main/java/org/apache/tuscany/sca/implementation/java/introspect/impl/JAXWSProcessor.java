@@ -297,6 +297,7 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
     private void createWSBinding(JavaImplementation javaImplementation, Service service){
         if(service.getBindings().size() == 0){
             WebServiceBinding wsBinding = wsBindingFactory.createWebServiceBinding();
+            wsBinding.setName(service.getName());
             ExtensionType bindingType = policyFactory.createBindingType();
             bindingType.setType(WebServiceConstants.BINDING_WS_QNAME);
             bindingType.setUnresolved(true);
