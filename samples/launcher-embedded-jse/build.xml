@@ -19,7 +19,6 @@
 <project name="launcher-embedded-jse" default="run"> 
 	<property name="tuscany.home" value="../.."/>
     <property name="jar.name"   value="sample-launcher-embedded-jse.jar" />
-    <property name="main.class" value="launcher.SampleJSELauncher" />
 	<property name="wait.before.stopping" value="dontWaitBeforeStopping" />
 	
 	<echo>${tuscany.home}</echo>
@@ -45,9 +44,6 @@
          </classpath>
       </javac> 
       <jar destfile="target/${jar.name}" basedir="target/classes"> 
-         <manifest>
-            <attribute name="Main-Class" value="${main.class}" /> 
-         </manifest>
       </jar>    	
     </target>
 	
@@ -60,18 +56,16 @@
     </target>
 
     <target name="run-contribution-binding-sca-calculator" depends="compile">
-        <java classname="${main.class}"
+  	     <java classname="launcher.JSELauncherBindingSCACalculator"
               fork="true"
-        	  failonerror="true">
+              failonerror="true">
             <classpath>  
                 <pathelement location="target/${jar.name}"/>
                 <fileset dir="${tuscany.home}/features">
                    <include name="tuscany-sca-manifest.jar" />
                 </fileset>
             </classpath> 
-        	<arg value="contribution-binding-sca-calculator"/> 
-            <arg value="${wait.before.stopping}"/> 
-        </java>    	
+        </java>  
     </target>
 	
     <target name="run-contribution-binding-ws-calculator" depends="compile">
@@ -88,7 +82,7 @@
     </target>	
 	
     <target name="run-contribution-binding-rmi-calculator" depends="compile">
-        <java classname="${main.class}"
+        <java classname="launcher.JSELauncherBindingRMICalculator"
               fork="true"
               failonerror="true">
             <classpath>  
@@ -97,12 +91,11 @@
                    <include name="tuscany-sca-manifest.jar" />
                 </fileset>
             </classpath> 
-            <arg value="contribution-binding-rmi-calculator"/> 
-        </java>     
+        </java>       
     </target>	
 	
     <target name="run-contribution-implementation-java-calculator" depends="compile">
-        <java classname="${main.class}"
+        <java classname="launcher.JSELauncherImplementationJavaCalculator"
               fork="true"
               failonerror="true">
             <classpath>  
@@ -111,8 +104,7 @@
                    <include name="tuscany-sca-manifest.jar" />
                 </fileset>
             </classpath> 
-            <arg value="contribution-implementaton-java-calculator"/> 
-        </java>     
+        </java>       
     </target>	
 
 </project>
