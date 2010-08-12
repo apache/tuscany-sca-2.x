@@ -24,7 +24,7 @@
     <component name="Client1">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.ClientImpl"/>
         <reference name="serviceA">
-           <binding.jms uri="jms:MyService" />
+           <binding.jms uri="jms:jndi:MyService" />
         </reference>
     </component>
 

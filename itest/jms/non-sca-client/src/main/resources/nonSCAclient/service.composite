@@ -35,7 +35,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.OneWayServiceImpl"/>
         <service name="OneWayService">
             <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory" jndiURL="tcp://localhost:61623"
-                         uri="jms:TextDest">
+                         uri="jms:jndi:TextDest">
                 <tuscany:wireFormat.jmsText/>
             </binding.jms>
         </service>
@@ -45,7 +45,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.OneWayObjectServiceImpl"/>
         <service name="OneWayObjectService">
             <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory" jndiURL="tcp://localhost:61623"
-                         uri="jms:ObjectDest">
+                         uri="jms:jndi:ObjectDest">
                 <tuscany:wireFormat.jmsObject /> <!-- test that wrapSingle default works -->
             </binding.jms>
         </service>

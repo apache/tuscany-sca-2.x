@@ -24,7 +24,7 @@
     <component name="ExceptionServiceClient">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.ExceptionServiceClient"/>
         <reference name="service">
-            <binding.jms uri="jms:ExceptionService" />
+            <binding.jms uri="jms:jndi:ExceptionService" />
         </reference>
     </component>
 

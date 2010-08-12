@@ -24,7 +24,7 @@
     <component name="HelloWorldClient">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldClientImpl"/>
         <reference name="serviceA">
-            <binding.jms uri="jms:HelloWorldService" />
+            <binding.jms uri="jms:jndi:HelloWorldService" />
         </reference>
     </component>
 

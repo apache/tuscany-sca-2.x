@@ -25,7 +25,7 @@
     <component name="Client1">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.ClientImpl"/>
         <reference name="serviceA">
-           <binding.jms uri="jms:MyService" />
+           <binding.jms uri="jms:jndi:MyService" />
         </reference>
     </component>
 
@@ -39,7 +39,7 @@
     <component name="Client2">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.ClientImpl"/>
         <reference name="serviceA">
-           <binding.jms uri="jms:MyService2">
+           <binding.jms uri="jms:jndi:MyService2">
               <tuscany:wireFormat.jmsObject/>
            </binding.jms>
         </reference>
@@ -48,7 +48,7 @@
     <component name="Service2">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.ServiceImpl"/>
         <service name="MyService">
-            <binding.jms uri="jms:MyService2">
+            <binding.jms uri="jms:jndi:MyService2">
               <tuscany:wireFormat.jmsObject/>
            </binding.jms>
         </service> 

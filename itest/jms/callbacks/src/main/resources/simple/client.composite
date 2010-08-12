@@ -24,9 +24,9 @@
     <component name="ClientComponent">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.JMSClientImpl" />
         <reference name="myService">
-            <binding.jms uri="jms:ServiceQueue"/>
+            <binding.jms uri="jms:jndi:ServiceQueue"/>
             <callback>
-                <binding.jms uri="jms:CallbackQueue"/>
+                <binding.jms uri="jms:jndi:CallbackQueue"/>
             </callback>
         </reference>
     </component>
@@ -34,9 +34,9 @@
     <component name="ServiceComponent">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.JMSServiceImpl" />
         <service name="JMSService">
-            <binding.jms uri="jms:ServiceQueue"/>
+            <binding.jms uri="jms:jndi:ServiceQueue"/>
             <callback>
-                <binding.jms uri="jms:CallbackQueue"/>
+                <binding.jms uri="jms:jndi:CallbackQueue"/>
             </callback>
         </service>
     </component>

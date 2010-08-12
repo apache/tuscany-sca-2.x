@@ -24,7 +24,7 @@
     <component name="ClientComponent">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.MsgClientImpl" />
         <reference name="myService" requires="priority.medium">
-            <binding.jms uri="jms:ServiceQueue">
+            <binding.jms uri="jms:jndi:ServiceQueue">
                <headers type="myType"
                         deliveryMode="persistent"
                         timeToLive="4321"	
@@ -38,7 +38,7 @@
     <component name="ServiceComponent">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.MsgServiceImpl" />
         <service name="MsgService">
-            <binding.jms uri="jms:ServiceQueue"/>
+            <binding.jms uri="jms:jndi:ServiceQueue"/>
         </service>
     </component>
 
