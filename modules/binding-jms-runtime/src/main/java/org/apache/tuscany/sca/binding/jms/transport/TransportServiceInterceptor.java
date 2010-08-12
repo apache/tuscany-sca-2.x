@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.jms.transport;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
@@ -152,8 +153,21 @@ public class TransportServiceInterceptor implements Interceptor {
                 return msg;
             }
             
-            responseJMSMsg.setJMSDeliveryMode(requestJMSMsg.getJMSDeliveryMode());
-            responseJMSMsg.setJMSPriority(requestJMSMsg.getJMSPriority());
+            String operationName = msg.getOperation().getName();
+            if (jmsBinding.getOperationJMSPriority(operationName) != null) {
+                responseJMSMsg.setJMSPriority(jmsBinding.getOperationJMSPriority(operationName));
+            }
+    
+            if (jmsBinding.getOperationJMSType(operationName) != null) {
+                responseJMSMsg.setJMSType(jmsBinding.getOperationJMSType(operationName));
+            }
+            if (jmsBinding.getOperationJMSDeliveryMode(operationName) != null) {
+                if (jmsBinding.getOperationJMSDeliveryMode(operationName)) {
+                    responseJMSMsg.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
+                } else {
+                    responseJMSMsg.setJMSDeliveryMode(DeliveryMode.NON_PERSISTENT);
+                }
+            }
     
             if (correlationScheme == null || 
                 JMSBindingConstants.CORRELATE_MSG_ID.equalsIgnoreCase(correlationScheme)) {
