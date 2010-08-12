@@ -67,6 +67,7 @@
                 <module>binding-rmi</module>
                 <module>binding-sca</module>
                 <module>contribution-binding-ws-calculator</module>
+                <module>binding-jsonrpc</module>
                 <module>contribution-implementation-java-calculator</module>
                 <module>implementation-script</module>
 
