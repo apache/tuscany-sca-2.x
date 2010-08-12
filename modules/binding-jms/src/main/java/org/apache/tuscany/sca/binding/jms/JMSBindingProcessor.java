@@ -883,6 +883,14 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             }
         }
 
+        // If Connection factory specified then destination name must also be
+        if (( connectionFactoryName != null ) && ( connectionFactoryName.length() > 0 )) {
+            String destinationName = jmsBinding.getDestinationName();
+            if ((destinationName == null) || (destinationName.length() < 1 )) {
+                error(monitor, "ConnectionFactoryDestinationContradiction", jmsBinding, connectionFactoryName);                
+            }
+        }
+
         // Given a response connection name attribute, there must not be a response element.
         // 156  /binding.jms/@responseConnection - identifies a binding.jms element that is present in a
         // 157 definition document, whose response child element is used to define the values for this binding. In
