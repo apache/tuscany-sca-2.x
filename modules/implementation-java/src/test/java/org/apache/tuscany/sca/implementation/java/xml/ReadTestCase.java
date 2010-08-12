@@ -95,7 +95,8 @@ public class ReadTestCase {
         Composite composite = (Composite)staxProcessor.read(reader, context);
         assertNotNull(composite);
 
-        compositeBuilder.build(composite, builderContext);
+        // remove dependency on builder
+        //compositeBuilder.build(composite, builderContext);
 
     }
 

@@ -39,4 +39,21 @@ public interface Service extends AbstractService, Contract {
      * @return the endpoints implied by this service
      */
     List<Endpoint> getEndpoints();
+    
+    
+    /**
+     * Returns true if this service was defined based on JAXWS annotations 
+     * in a Java implementation
+     * 
+     * @return
+     */
+    boolean isJAXWSService();
+    
+    /**
+     * Allows the JAXWSService flag to be set. It should be set true if the service
+     * configuration has been affected by JAXWS annotations. 
+     * 
+     * @param isJAXWSService
+     */
+    void setJAXWSService(boolean isJAXWSService);
 }

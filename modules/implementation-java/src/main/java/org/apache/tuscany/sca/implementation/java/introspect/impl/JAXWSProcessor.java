@@ -32,6 +32,9 @@ import javax.xml.ws.WebServiceProvider;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.sca.binding.ws.xml.WebServiceConstants;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
@@ -47,6 +50,7 @@ import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySubject;
@@ -59,6 +63,7 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
     
     private PolicyFactory policyFactory;
     private WSDLFactory wsdlFactory;
+    private WebServiceBindingFactory wsBindingFactory;
     
     public JAXWSProcessor(ExtensionPointRegistry registry) {
         super(registry);
@@ -67,14 +72,18 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
         this.policyFactory = factories.getFactory(PolicyFactory.class);
         this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
+        this.wsBindingFactory = factories.getFactory(WebServiceBindingFactory.class);
     }
 
     @Override
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         
+        boolean hasJaxwsAnnotation = false;
+        
         // Process @ServiceMode annotation - JCA 11013
     	if ( clazz.getAnnotation(ServiceMode.class) != null ) {
     		addSOAPIntent(type);
+    		hasJaxwsAnnotation = true;
     	}
     	
         // Process @WebService annotation - POJO_8029, POJO_8030
@@ -95,6 +104,7 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
             } catch (InvalidInterfaceException e) {
                 throw new IntrospectionException(e);
             }
+            hasJaxwsAnnotation = true;
         }
         
         // Process @WebServiceProvider annotation - JCA_11015, POJO_8034
@@ -127,6 +137,8 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
             for ( Service service : type.getServices() ) {
                 service.getInterfaceContract().getInterface().setRemotable(true);
             }
+            
+            hasJaxwsAnnotation = true;
         }         
         
         // Process @WebParam and @WebResult annotations - POJO_8031, POJO_8032
@@ -170,6 +182,7 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
             if (hasHeaderParam){                   
                 // Add a SOAP intent to the service
                 addSOAPIntent(service);
+                hasJaxwsAnnotation = true;
             }
         }
         
@@ -180,7 +193,18 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
             for ( Service service : type.getServices() ) {
                 addSOAPIntent(service);
             }
+            hasJaxwsAnnotation = true;
         }               
+        
+        if (hasJaxwsAnnotation == true){
+            // Note that services are based on JAXWS annotations so 
+            // that during the build process a binding.ws can be added
+            // if required
+            for ( Service service : type.getServices() ) {
+                service.setJAXWSService(true);
+                createWSBinding(type, service);
+            }
+        }
     }
     
     /**
@@ -191,7 +215,7 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
         return "".equals(value) ? defaultValue : value;
     }
     
-    public Service createService(JavaImplementation type, Class<?> clazz, String serviceName, String javaInterfaceName, String wsdlFileName, boolean replace)  throws InvalidInterfaceException, IntrospectionException {
+    private Service createService(JavaImplementation type, Class<?> clazz, String serviceName, String javaInterfaceName, String wsdlFileName, boolean replace)  throws InvalidInterfaceException, IntrospectionException {
         Service service = assemblyFactory.createService();
 
         if (serviceName != null) {
@@ -268,6 +292,17 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
         Intent soapIntent = policyFactory.createIntent();
         soapIntent.setName(Constants.SOAP_INTENT);         
         policySubject.getRequiredIntents().add(soapIntent);
+    }
+    
+    private void createWSBinding(JavaImplementation javaImplementation, Service service){
+        if(service.getBindings().size() == 0){
+            WebServiceBinding wsBinding = wsBindingFactory.createWebServiceBinding();
+            ExtensionType bindingType = policyFactory.createBindingType();
+            bindingType.setType(WebServiceConstants.BINDING_WS_QNAME);
+            bindingType.setUnresolved(true);
+            ((PolicySubject)wsBinding).setExtensionType(bindingType);
+            service.getBindings().add(wsBinding);
+        }
     }
 
 }
