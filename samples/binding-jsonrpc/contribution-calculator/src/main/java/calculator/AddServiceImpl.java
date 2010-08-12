@@ -34,5 +34,10 @@ public class AddServiceImpl implements AddService {
         logger.log(Level.FINEST, "Adding " + n1 + " and " + n2);
         return n1 + n2;
     }
+    
+    public AddBean addComplexParam(AddBean aBean) {
+        aBean.setN3(aBean.getN1() + aBean.getN2());
+        return aBean;
+    }
 
 }

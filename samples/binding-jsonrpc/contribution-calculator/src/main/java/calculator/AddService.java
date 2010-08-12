@@ -24,5 +24,6 @@ package calculator;
 public interface AddService {
 
     double add(double n1, double n2);
+    AddBean addComplexParam(AddBean aBean);
 
 }

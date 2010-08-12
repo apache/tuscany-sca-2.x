@@ -54,7 +54,21 @@ public class CalculatorServiceImpl implements CalculatorService {
     }
 
     public double add(double n1, double n2) {
-        return addService.add(n1, n2);
+        AddBean aBean = new AddBean();
+        // So data to test different types
+        aBean.setB(true);
+        aBean.setS("Fred");
+        aBean.setX(27);
+        aBean.setY(58);
+        
+        // the numbers to be added
+        aBean.setN1(n1);
+        aBean.setN2(n2);
+        
+        aBean = addService.addComplexParam(aBean);
+        
+        return aBean.getN3();
+        //return addService.add(n1, n2);
     }
 
     public double subtract(double n1, double n2) {
