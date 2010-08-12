@@ -80,8 +80,24 @@ public class BindingTestCase {
         bean.setX(2);
         bean.setX(5);
 
-        Assert.assertEquals("Fred", client.sayHello3(bean).getS());
-    }    
+        Assert.assertEquals("XYZ", client.sayHello3(bean).getS());
+    }  
+    
+    /*
+     * Uncomment to keep the server running so you can ping it manually from a browser
+     * try:
+     *   http://localhost:8085/HelloWorldComponent/HelloWorldService/sayHello3?bean={%22b%22:%22true%22,%22s%22:%22a%20string%22,%22x%22:%2227%22,%22y%22:%2213%22}&callback=submitSucess
+     */
+    @Test
+    @Ignore
+    public void waitForInput(){
+        System.out.println("Press a key");
+        try {
+            System.in.read();
+        } catch (Exception ex){
+            // do nothing
+        }
+    }
 
     @BeforeClass
     public static void init() throws Exception {

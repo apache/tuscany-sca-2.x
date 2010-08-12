@@ -30,6 +30,7 @@ public class HelloWorldImpl implements HelloWorldService {
     }
     
     public BeanA sayHello3(BeanA bean) {
+        bean.setS("XYZ");
         return bean;
     }
     
