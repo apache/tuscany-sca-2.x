@@ -373,6 +373,15 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                         jmsBinding.setJMSPriority(Integer.parseInt(s.substring(9)));
                     } else if (s.startsWith("timeToLive=")) {
                         jmsBinding.setJMSTimeToLive(Long.parseLong(s.substring(11)));
+                    } else if (s.startsWith("selector='")) {
+                        String selector = s.substring(10);
+                        if (selector.startsWith("\"") || selector.startsWith("'")) {
+                            selector = selector.substring(1, selector.length());
+                        }
+                        if (selector.endsWith("\"") || selector.endsWith("'")) {
+                            selector = selector.substring(0, selector.length() - 1);
+                        }
+                        jmsBinding.setJMSSelector(selector);
         	    } else {
         	        error(monitor, "UnknownTokenInURI", jmsBinding, s, uri);
                  	return;
@@ -786,7 +795,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
     private void parseSubscriptionHeaders(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         String jmsSelector = reader.getAttributeValue(null, "selector");
-        if (jmsSelector != null && jmsSelector.length() > 0) {
+        if (jmsSelector != null && jmsSelector.length() > 0 && jmsBinding.getJMSSelector() == null) {
             jmsBinding.setJMSSelector(jmsSelector);
         }
         
