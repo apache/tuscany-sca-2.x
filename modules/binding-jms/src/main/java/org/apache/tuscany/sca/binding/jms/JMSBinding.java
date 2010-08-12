@@ -150,6 +150,7 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
     private WireFormat responseWireFormat;
     private OperationSelector operationSelector;
     private ExtensionType extensionType;
+    private String jmsURI;
     
     public JMSBinding() {
         super();
@@ -970,5 +971,12 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
 
     public void setExtensionType(ExtensionType intentAttachPointType) {
         this.extensionType = intentAttachPointType;
+    }
+
+    public String getJMSURI() {
+        return jmsURI;
+    }
+    public void setJMSURI(String jmsURI) {
+        this.jmsURI = jmsURI;
     }
 }

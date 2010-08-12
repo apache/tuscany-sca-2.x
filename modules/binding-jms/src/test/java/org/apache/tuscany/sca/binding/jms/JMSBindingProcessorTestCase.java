@@ -53,7 +53,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
-            + "          <binding.jms uri=\"jms:testQueue\" />"
+            + "          <binding.jms uri=\"jms:jndi:testQueue\" />"
             + "      </service>"
             + " </component>"
             + "</composite>";

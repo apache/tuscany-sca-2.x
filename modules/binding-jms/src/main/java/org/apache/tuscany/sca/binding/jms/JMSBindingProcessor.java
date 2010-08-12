@@ -356,9 +356,9 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     protected void parseURI(String uri, JMSBinding jmsBinding, Monitor monitor) {
-        if (!uri.startsWith("jms:")) {
-        	error(monitor, "MustStartWithSchema", jmsBinding, uri);
-        	return;
+        if (!(uri.startsWith("jms:jndi:") || uri.startsWith("jms:queue:") || uri.startsWith("jms:topic:"))) {
+            error(monitor, "MustStartWithSchema", jmsBinding, uri);
+            return;
         }
         int i = uri.indexOf('?');            
         if (i >= 0) {
@@ -378,10 +378,15 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                  	return;
         	     }
         	}
-        	jmsBinding.setDestinationName(uri.substring(4, i));
+        	int j=uri.indexOf(':', 4);
+        	jmsBinding.setDestinationName(uri.substring(j+1, i));
+        	jmsBinding.setDestinationType(uri.substring(4, j));
         } else {
-           jmsBinding.setDestinationName(uri.substring(4));
+           int j=uri.indexOf(':', 4);
+           jmsBinding.setDestinationName(uri.substring(j+1));
+           jmsBinding.setDestinationType(uri.substring(4, j));
         }
+        jmsBinding.setJMSURI(uri);
     }
 
     public void resolve(JMSBinding model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
@@ -922,8 +927,10 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             writer.writeAttribute("name", jmsBinding.getName());
         }
 
-        if (jmsBinding.getURI() != null) {
-            writer.writeAttribute("uri", jmsBinding.getURI());
+        if (jmsBinding.getJMSURI() != null) {
+            writer.writeAttribute("uri", jmsBinding.getJMSURI());
+            writeEnd(writer);
+            return;
         }
 
         //String dest = jmsBinding.getDestinationName();
