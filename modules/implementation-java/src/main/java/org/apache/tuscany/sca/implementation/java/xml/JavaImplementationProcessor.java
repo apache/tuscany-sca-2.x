@@ -334,9 +334,8 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
             JavaInterfaceContract javaInterfaceContract = (JavaInterfaceContract)service.getInterfaceContract();
             
             JavaInterface javaInterface = (JavaInterface)javaInterfaceContract.getInterface();
-            if (javaInterface.isUnresolved()){
-// TODO - Causing JCAA tests to fail?????                
-//                extensionProcessor.resolve(javaInterfaceContract, resolver, context);
+            if (javaInterface.isUnresolved()){             
+                extensionProcessor.resolve(javaInterfaceContract, resolver, context);
             }
             
             WSDLInterfaceContract wsdlInterfaceContract = (WSDLInterfaceContract)javaInterfaceContract.getNormalizedWSDLContract();
