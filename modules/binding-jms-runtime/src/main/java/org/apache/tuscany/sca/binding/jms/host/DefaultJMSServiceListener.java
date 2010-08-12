@@ -214,6 +214,23 @@ public class DefaultJMSServiceListener implements JMSServiceListener {
                 + " listener");
         }
 
+        // Make sure its the expected type (queue or topic)
+        String type = (destination instanceof Queue) ? JMSBindingConstants.DESTINATION_TYPE_QUEUE : JMSBindingConstants.DESTINATION_TYPE_TOPIC;
+        if ("jndi".equals(jmsBinding.getDestinationType())) {
+            jmsBinding.setDestinationType(type);            
+        } else {
+            if (!type.equals(jmsBinding.getDestinationType())) {
+                throw new JMSBindingException("JMS Destination " + jmsBinding.getDestinationName()
+                                              + " expecting type of " 
+                                              + jmsBinding.getDestinationType()
+                                              + " but found "
+                                              + type
+                                              + " while registering service "
+                                              + serviceName
+                                              + " listener");
+            }
+        }
+
         return destination;
     }
 
