@@ -73,6 +73,7 @@ public class DefaultJMSServiceListener implements JMSServiceListener {
         try {
             registerListerner();
         } catch (Exception e) {
+            if (e instanceof JMSBindingException) throw (JMSBindingException)e;
             throw new JMSBindingException("Error starting JMSServiceBinding", e);
         }
     }
@@ -188,7 +189,8 @@ public class DefaultJMSServiceListener implements JMSServiceListener {
 
         } else if (qCreateMode.equals(JMSBindingConstants.CREATE_IF_NOT_EXIST)) {
             // In this mode, the queue may nor may not exist. It will be created if it does not exist
-            if (destination == null) {
+            // but don't create when using jms:jndi uri format
+            if (destination == null && !"jndi".equals(jmsBinding.getDestinationType())) {
                 destination = jmsResourceFactory.createDestination(jmsBinding.getDestinationName());
             }
 

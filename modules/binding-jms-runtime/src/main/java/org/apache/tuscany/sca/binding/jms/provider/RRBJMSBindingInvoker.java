@@ -153,7 +153,8 @@ public class RRBJMSBindingInvoker implements Invoker {
 
         } else if (qCreateMode.equals(JMSBindingConstants.CREATE_IF_NOT_EXIST)) {
             // In this mode, the queue may nor may not exist. It will be created if it does not exist
-            if (dest == null) {
+            // but don't create when using jms:jndi uri format
+            if (dest == null && !"jndi".equals(jmsBinding.getDestinationType())) {
                 dest = jmsResourceFactory.createDestination(queueName);
             }
 

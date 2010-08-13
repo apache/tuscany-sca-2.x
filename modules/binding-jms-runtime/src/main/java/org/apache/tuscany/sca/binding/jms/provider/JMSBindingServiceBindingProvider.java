@@ -157,6 +157,7 @@ public class JMSBindingServiceBindingProvider implements EndpointProvider, JMSSe
             serviceListener.start();
             
         } catch (Exception e) {
+            if (e instanceof JMSBindingException) throw (JMSBindingException)e;
             throw new JMSBindingException("Error starting JMSServiceBinding", e);
         }
     }
@@ -165,6 +166,7 @@ public class JMSBindingServiceBindingProvider implements EndpointProvider, JMSSe
         try {
             serviceListener.stop();
         } catch (Exception e) {
+            if (e instanceof JMSBindingException) throw (JMSBindingException)e;
             throw new JMSBindingException("Error stopping JMSServiceBinding", e);
         }
     }
