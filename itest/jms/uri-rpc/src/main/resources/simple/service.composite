@@ -25,10 +25,10 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldServiceImpl"/>
         <service name="HelloWorldService">
             <binding.jms>
-               <destination jndiName="DestQueueA" create="always"> 
+               <destination jndiName="DestQueueA" > 
                </destination>
                <response>
-                  <destination jndiName="RespQueueA" create="always"/>
+                  <destination jndiName="RespQueueA"/>
                </response>
             </binding.jms>  
         </service> 
