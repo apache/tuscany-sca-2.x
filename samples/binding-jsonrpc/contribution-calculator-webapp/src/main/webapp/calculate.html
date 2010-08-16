@@ -1,0 +1,63 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<html>
+
+<head>
+   <title>Apache Tuscany binding-jsonrpc Calculator WebApp with DOJO Sample</title>
+
+   <script type="text/javascript" src="/dojo/dojo.js"></script>
+   <script type="text/javascript" src="org.oasisopen.sca.componentContext.js"></script>
+
+   <script language="JavaScript">
+   
+      var addService = new dojo.rpc.JsonService("AddServiceComponent/AddService?smd");
+   
+      function calculate() {
+         var addRequest = new Object();
+         addRequest.n1 = 1;
+         addRequest.n2 = 1;
+         addRequest.n3 = 0; 
+         addRequest.b = true;
+         addRequest.s = "fred";
+         addRequest.x = 2;
+         addRequest.y = 3;
+
+         addService.add(addRequest, calculateResponse);
+      }
+
+      function calculateResponse(reply) {
+         document.getElementById('result').innerHTML=reply;
+      }
+
+   </script>
+
+</head>
+
+<body>
+
+<h2>Apache Tuscany binding-jsonrpc Calculator WebApp with DOJO Sample</h2>
+
+    <input type="text" id="name" width="10">
+
+    <button name="submit" onclick="calculate()">Calculate</button>
+
+    <div id='result'></div>
+
+</body>
+</html>
