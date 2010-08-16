@@ -37,6 +37,7 @@ public class AddServiceImpl implements AddService {
     
     public AddBean addComplexParam(AddBean aBean) {
         aBean.setN3(aBean.getN1() + aBean.getN2());
+        System.out.println("Adding " + aBean.getN1() + " to " + aBean.getN1() + " gives " + aBean.getN3());
         return aBean;
     }
 

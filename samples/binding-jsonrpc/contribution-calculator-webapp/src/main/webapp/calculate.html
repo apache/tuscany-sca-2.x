@@ -21,10 +21,11 @@
 <head>
    <title>Apache Tuscany binding-jsonrpc Calculator WebApp with DOJO Sample</title>
 
-   <script type="text/javascript" src="/dojo/dojo.js"></script>
+   <script type="text/javascript" src="dojo/dojo/dojo.js"></script>
    <script type="text/javascript" src="org.oasisopen.sca.componentContext.js"></script>
 
    <script language="JavaScript">
+      dojo.require("dojo.rpc.JsonService"); 
    
       var addService = new dojo.rpc.JsonService("AddServiceComponent/AddService?smd");
    
@@ -38,11 +39,11 @@
          addRequest.x = 2;
          addRequest.y = 3;
 
-         addService.add(addRequest, calculateResponse);
+         addService.addComplexParam(addRequest).addCallback(calculateResponse);
       }
 
       function calculateResponse(reply) {
-         document.getElementById('result').innerHTML=reply;
+         document.getElementById('result').innerHTML=reply.n3;
       }
 
    </script>
@@ -53,11 +54,10 @@
 
 <h2>Apache Tuscany binding-jsonrpc Calculator WebApp with DOJO Sample</h2>
 
-    <input type="text" id="name" width="10">
-
+    1 + 1 = 
     <button name="submit" onclick="calculate()">Calculate</button>
 
-    <div id='result'></div>
+    <div id='result'/>
 
 </body>
 </html>
