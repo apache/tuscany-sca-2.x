@@ -41,6 +41,8 @@
                 <exclude>**/target/.felix/**/*</exclude>
                 <exclude>**/target/maven-archiver</exclude>
                 <exclude>**/target/maven-archiver/**/*</exclude>
+                <exclude>**/target/maven-shared-archive-resources</exclude>
+                <exclude>**/target/maven-shared-archive-resources/**/*</exclude>
                 <exclude>**/target/test-classes</exclude>
                 <exclude>**/target/test-classes/**/*</exclude>
                 <exclude>**/target/sdo-source</exclude>
