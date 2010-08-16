@@ -39,6 +39,8 @@
                 <exclude>**/target/dependency-maven-plugin-markers/**/*</exclude>
                 <exclude>**/target/.felix</exclude>
                 <exclude>**/target/.felix/**/*</exclude>
+                <exclude>**/target/generated-sources</exclude>
+                <exclude>**/target/generated-sources/**/*</exclude>
                 <exclude>**/target/maven-archiver</exclude>
                 <exclude>**/target/maven-archiver/**/*</exclude>
                 <exclude>**/target/maven-shared-archive-resources</exclude>
@@ -55,6 +57,8 @@
                 <exclude>**/target/war/**/*</exclude>
                 <exclude>webapps/*/target</exclude>
                 <exclude>webapps/*/target/**/*</exclude>
+                <exclude>helloworld-bpel/target/sample-helloworld-bpel</exclude>
+                <exclude>helloworld-bpel/target/sample-helloworld-bpel/**/*</exclude>
             </excludes>
         </fileSet>
     </fileSets>
