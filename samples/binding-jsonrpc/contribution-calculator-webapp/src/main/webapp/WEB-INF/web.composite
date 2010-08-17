@@ -24,7 +24,7 @@
            name="Calculator">
 
     <component name="CalculatorServiceComponent">
-		<implementation.java class="calculator.CalculatorServiceImpl"/>
+        <implementation.java class="calculator.CalculatorServiceImpl"/>
         <reference name="addService" target="AddServiceComponent"/>
         <reference name="subtractService" target="SubtractServiceComponent" />
         <reference name="multiplyService" target="MultiplyServiceComponent" />
@@ -34,7 +34,7 @@
     <component name="AddServiceComponent">
         <implementation.java class="calculator.AddServiceImpl"/>
         <service name="AddService">
-            <tuscany:binding.jsonrpc uri="http://localhost:8085/AddServiceComponent/AddService"/>
+            <tuscany:binding.jsonrpc />
         </service>
     </component>
 
