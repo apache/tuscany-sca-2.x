@@ -1,0 +1,29 @@
+To execute sample webapp based contributions (contributions that have webapp at the end of their name) you
+can build the contribution using maven and then copy the resulting war file to your container of choice
+
+For example, for binding-jsonrpc/contribution-calculator-webapp, do the following
+
+cd samples/binding-jsonrpc/contribution-calculator-webapp
+mvn 
+cp target/sample-contribution-binding-jsonrpc-calculator-webapp.war your_container_deployment-dir
+
+
+As an alternative sample webapp based contributions can be run within Jetty directly from Maven, look for 
+webapp contributions that have the following configuration in their pom.xml file:
+
+<plugin>
+    <groupId>org.mortbay.jetty</groupId>
+    <artifactId>maven-jetty-plugin</artifactId>
+    <version>6.1.18</version>
+</plugin>
+
+For contributions that have this, for example, binding-jsonrpc/contribution-calculator-webapp, do the following
+
+cd samples/binding-sca/contribution-calculator
+mvn jetty:run
+
+This will launch the contribution in the Jetty runtime and then wait. At this point you can use
+HTTP clients to send messages to services that the running SCA applcation exposes. For this 
+example try pointing your browser at:
+
+http://localhost:8080/sample-contribution-binding-jsonrpc-calculator-webapp/
