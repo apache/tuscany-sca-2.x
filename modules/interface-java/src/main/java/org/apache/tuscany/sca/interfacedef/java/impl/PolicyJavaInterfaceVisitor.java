@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.interfacedef.java.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -41,6 +42,7 @@ import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.oasisopen.sca.annotation.PolicySets;
 import org.oasisopen.sca.annotation.Qualifier;
 import org.oasisopen.sca.annotation.Requires;
@@ -78,7 +80,7 @@ public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
      * @param clazz
      * @param requiredIntents
      */
-    private void readIntentsAndPolicySets(Class<?> clazz, List<Intent> requiredIntents, List<PolicySet> policySets) {
+    private void readIntentsAndPolicySets(Class<?> clazz, PolicySubject subject) {
         Requires intentAnnotation = clazz.getAnnotation(Requires.class);
         if (intentAnnotation != null) {
             String[] intentNames = intentAnnotation.value();
@@ -88,12 +90,12 @@ public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
                     // Add each intent to the list
                     Intent intent = policyFactory.createIntent();
                     intent.setName(getQName(intentName));
-                    requiredIntents.add(intent);
+                    subject.getRequiredIntents().add(intent);
                 }
             }
         }
 
-        readSpecificIntents(clazz.getAnnotations(), requiredIntents);
+        readSpecificIntents(clazz.getAnnotations(), subject.getRequiredIntents());
         
         PolicySets policySetAnnotation = clazz.getAnnotation(PolicySets.class);
         if (policySetAnnotation != null) {
@@ -104,7 +106,7 @@ public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
                     // Add each intent to the list
                     PolicySet policySet = policyFactory.createPolicySet();
                     policySet.setName(getQName(policySetName));
-                    policySets.add(policySet);
+                    subject.getPolicySets().add(policySet);
                 }
             }
         }
@@ -113,7 +115,7 @@ public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
         	// add soap intent        	
             Intent intent = policyFactory.createIntent();
             intent.setName(Constants.SOAP_INTENT);
-            requiredIntents.add(intent);
+            subject.getRequiredIntents().add(intent);
         }
         
        
@@ -192,23 +194,45 @@ public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
     public void visitInterface(JavaInterface javaInterface) throws InvalidInterfaceException {
 
         if (javaInterface.getJavaClass() != null) {
-            readIntentsAndPolicySets(javaInterface.getJavaClass(), javaInterface.getRequiredIntents(), javaInterface
-                .getPolicySets());
+        	readIntentsAndPolicySets(javaInterface.getJavaClass(), javaInterface);
 
             // Read intents on the service interface methods 
             List<Operation> operations = javaInterface.getOperations();
             for (Operation op : operations) {
                 JavaOperation operation = (JavaOperation)op;
                 Method method = operation.getJavaMethod();
+              
                 readIntents(method.getAnnotation(Requires.class), op.getRequiredIntents());
                 readSpecificIntents(method.getAnnotations(), op.getRequiredIntents());
                 readPolicySets(method.getAnnotation(PolicySets.class), op.getPolicySets());
                 readWebServicesAnnotations(method, javaInterface.getJavaClass(), javaInterface.getRequiredIntents());
+                inherit(javaInterface, op);
             }
         }
+        
+        
+     
+       
     }
 
-    private void readSpecificIntents(Annotation[] annotations, List<Intent> requiredIntents) {
+    private void inherit(JavaInterface javaInterface, Operation op) {
+    	List<Intent> interfaceIntents = new ArrayList<Intent>(javaInterface.getRequiredIntents());
+		for ( Intent intent : javaInterface.getRequiredIntents() ) {
+			
+			for ( Intent operationIntent : op.getRequiredIntents() ) {
+				if ( intent.getExcludedIntents().contains(operationIntent) || 
+						operationIntent.getExcludedIntents().contains(intent) ) {
+					interfaceIntents.remove(intent);
+					continue;
+				}
+			}
+		}
+		op.getRequiredIntents().addAll(interfaceIntents);
+		
+		op.getPolicySets().addAll(javaInterface.getPolicySets());
+	}
+
+	private void readSpecificIntents(Annotation[] annotations, List<Intent> requiredIntents) {
         for (Annotation a : annotations) {
             org.oasisopen.sca.annotation.Intent intentAnnotation =
                 a.annotationType().getAnnotation(org.oasisopen.sca.annotation.Intent.class);
