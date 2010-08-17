@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.headers.HeaderServiceInterceptor;
 import org.apache.tuscany.sca.binding.jms.host.JMSServiceListener;
 import org.apache.tuscany.sca.binding.jms.host.JMSServiceListenerDetails;
 import org.apache.tuscany.sca.binding.jms.host.JMSServiceListenerFactory;
@@ -200,6 +201,8 @@ public class JMSBindingServiceBindingProvider implements EndpointProvider, JMSSe
         bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT,
                                     new CallbackDestinationInterceptor(endpoint));
 
+        bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT, new HeaderServiceInterceptor(jmsBinding));
+        
         // add request wire format
         bindingChain.addInterceptor(requestWireFormatProvider.getPhase(), 
                                     requestWireFormatProvider.createInterceptor());
@@ -209,6 +212,7 @@ public class JMSBindingServiceBindingProvider implements EndpointProvider, JMSSe
             bindingChain.addInterceptor(responseWireFormatProvider.getPhase(), 
                                         responseWireFormatProvider.createInterceptor());
         }
+        
     }
 
     public RuntimeComponent getComponent() {
