@@ -20,6 +20,8 @@
 package calculator;
 
 public class AddBean {
+    private static final String DEFAULT_S = "default string";
+    private static final Boolean DEFAULT_B = false;
 
     protected double n1;
     protected double n2;
