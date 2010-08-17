@@ -33,7 +33,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.UrlResource;
@@ -74,27 +73,20 @@ public class SpringContextTie {
     private AbstractApplicationContext createApplicationContext(SCAParentApplicationContext scaParentContext,
                                                                 List<URL> resources) {
 
-        XmlBeanFactory beanFactory = null;
-        AbstractApplicationContext appContext = null;
-
-        if (resources.size() > 1) {
-            GenericApplicationContext appCtx =
-                new SCAGenericApplicationContext(scaParentContext, implementation.getClassLoader());
-            XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appCtx);
-            for (URL resource : resources) {
-                xmlReader.loadBeanDefinitions(new UrlResource(resource));
-            }
-            xmlReader.setBeanClassLoader(implementation.getClassLoader());
-            includeAnnotationProcessors(appCtx.getBeanFactory());
-            return appCtx;
+        GenericApplicationContext appCtx =
+            new SCAGenericApplicationContext(scaParentContext, implementation.getClassLoader());
+        XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appCtx);
+        
+        // REVIEW: [rfeng] How do we control the schema validation 
+        xmlReader.setValidating(false);
+        
+        for (URL resource : resources) {
+            xmlReader.loadBeanDefinitions(new UrlResource(resource));
         }
+        xmlReader.setBeanClassLoader(implementation.getClassLoader());
+        includeAnnotationProcessors(appCtx.getBeanFactory());
+        return appCtx;
 
-        // use the generic application context as default
-        beanFactory = new XmlBeanFactory(new UrlResource(resources.get(0)));
-        beanFactory.setBeanClassLoader(implementation.getClassLoader());
-        includeAnnotationProcessors(beanFactory);
-        appContext = new SCAGenericApplicationContext(beanFactory, scaParentContext, implementation.getClassLoader());
-        return appContext;
     }
 
     public Object getBean(String id) throws BeansException {
