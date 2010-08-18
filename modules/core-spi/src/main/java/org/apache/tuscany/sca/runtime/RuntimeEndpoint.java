@@ -72,4 +72,12 @@ public interface RuntimeEndpoint extends Endpoint, Invocable, Serializable {
      */
     CompositeContext getCompositeContext();
     
+    /**
+     * Retrieve the normalized WSDL contract relating to the input WSDL contract
+     * 
+     * @param interfaceContract
+     * @return
+     */
+    public InterfaceContract getGeneratedWSDLContract(InterfaceContract interfaceContract);    
+    
 }

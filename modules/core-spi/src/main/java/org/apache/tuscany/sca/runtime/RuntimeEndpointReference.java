@@ -69,4 +69,12 @@ public interface RuntimeEndpointReference extends EndpointReference, Invocable, 
     boolean isOutOfDate();
     void rebuild();
     boolean isStarted();
+    
+    /**
+     * Retrieve the normalized WSDL contract relating to the input WSDL contract
+     * 
+     * @param interfaceContract
+     * @return
+     */
+    public InterfaceContract getGeneratedWSDLContract(InterfaceContract interfaceContract);
 }
