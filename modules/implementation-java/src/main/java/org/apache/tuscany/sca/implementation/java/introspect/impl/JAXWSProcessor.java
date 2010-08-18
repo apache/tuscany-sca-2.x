@@ -197,9 +197,9 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
         }               
         
         if (hasJaxwsAnnotation == true){
-            // Note that services are based on JAXWS annotations so 
-            // that during the build process a binding.ws can be added
-            // if required
+            // Note that services are based on JAXWS annotations in case 
+            // we need to know later. Add a ws binding and a JAXWS annotation
+            // implies a WS binding
             for ( Service service : type.getServices() ) {
                 service.setJAXWSService(true);
                 createWSBinding(type, service);
