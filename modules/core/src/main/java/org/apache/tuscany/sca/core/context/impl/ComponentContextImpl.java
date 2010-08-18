@@ -219,11 +219,10 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     public <B> B getProperty(Class<B> type, String propertyName) {
         for (ComponentProperty p : component.getProperties()) {
             if (propertyName.equals(p.getName())) {
-            	B o = propertyFactory.createPropertyValue(p, type);
-                return o;
+            	return propertyFactory.createPropertyValue(p, type);           
             }
         }
-        throw new ServiceRuntimeException("Property not found: " + propertyName);
+        throw new IllegalArgumentException("Property not found: " + propertyName);
     }
 
     /**
