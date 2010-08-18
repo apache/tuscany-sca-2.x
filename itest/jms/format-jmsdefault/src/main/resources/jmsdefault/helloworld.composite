@@ -32,19 +32,19 @@
         </reference>  
         <reference name="helloWorldService2" >
             <binding.jms>
-                <tuscany:wireFormat.jmsdefault/>
+                <wireFormat.jmsDefault/>
                 <destination jndiName="HelloWorldService2"/>
             </binding.jms>
         </reference>
         <reference name="helloWorldService3" >
             <binding.jms>
-                <tuscany:wireFormat.jmsdefault/>
+                <wireFormat.jmsDefault/>
                 <destination jndiName="HelloWorldService3"/>
             </binding.jms>
         </reference> 
         <reference name="helloWorldService4" >
             <binding.jms>
-                <tuscany:wireFormat.jmsdefault sendFormat="text"/>
+                <wireFormat.jmsDefault/>
                 <destination jndiName="HelloWorldService4"/>
             </binding.jms>
         </reference> 
@@ -74,7 +74,7 @@
 	    <service name="HelloWorldService">
 	        <!--interface.wsdl interface="http://helloworld/textxml#wsdl.interface(HelloWorld)" /-->
             <binding.jms>
-                <tuscany:wireFormat.jmsdefault />
+                <wireFormat.jmsDefault />
                 <destination jndiName="HelloWorldService3"/>
             </binding.jms>
 	    </service>
@@ -85,7 +85,7 @@
         <service name="HelloWorldService">
             <!--interface.wsdl interface="http://helloworld/textxml#wsdl.interface(HelloWorld)" /-->
             <binding.jms>
-                <tuscany:wireFormat.jmsdefault />
+                <wireFormat.jmsDefault />
                 <destination jndiName="HelloWorldService4"/>
             </binding.jms>
         </service>
