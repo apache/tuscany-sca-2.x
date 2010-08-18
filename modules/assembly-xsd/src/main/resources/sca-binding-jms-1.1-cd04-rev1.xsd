@@ -166,9 +166,21 @@
    <element name="binding.jms" type="sca:JMSBinding" 
             substitutionGroup="sca:binding"/>
 
-   <element name="wireFormat.jmsDefault" type="sca:WireFormatType" 
+   <complexType name="JMSDefaultWireFormatType">
+      <complexContent>
+         <extension base="sca:WireFormatType"/>
+      </complexContent>
+   </complexType>
+
+   <complexType name="JMSDefaultOperationSelectorType">
+      <complexContent>
+         <extension base="sca:OperationSelectorType"/>
+      </complexContent>
+   </complexType>
+
+   <element name="wireFormat.jmsDefault" type="sca:JMSDefaultWireFormatType" 
             substitutionGroup="sca:wireFormat"/>
 
-   <element name="operationSelector.jmsDefault" type="sca:OperationSelectorType" 
+   <element name="operationSelector.jmsDefault" type="sca:JMSDefaultOperationSelectorType" 
             substitutionGroup="sca:operationSelector"/>
 </schema>
