@@ -60,7 +60,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.HelloWorldServiceImpl" />
         <service name="HelloWorldService">
             <binding.jms>
-                <tuscany:operationSelector.jmsdefault/>
+                <operationSelector.jmsDefault/>
                 <destination jndiName="HelloWorldService2"/>
             </binding.jms>
         </service>
