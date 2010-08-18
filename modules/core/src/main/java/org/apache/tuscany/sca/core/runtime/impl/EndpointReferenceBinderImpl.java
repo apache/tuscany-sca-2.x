@@ -44,7 +44,10 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointReferenceImpl;
 import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.util.Audit;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
@@ -776,7 +779,10 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
     private boolean haveMatchingInterfaceContracts(EndpointReference endpointReference, Endpoint endpoint, Audit matchAudit){
         matchAudit.append("Match interface of " + endpointReference.toString() + " to " + endpoint.toString() + " ");
         
-        if (endpointReference.getReference().getInterfaceContract() == null){
+        InterfaceContract endpointReferenceContract = endpointReference.getReference().getInterfaceContract();
+        InterfaceContract endpointContract = endpoint.getComponentServiceInterfaceContract();
+        
+        if (endpointReferenceContract == null){
             matchAudit.append("Match because there is no interface contract on the reference ");
             matchAudit.appendSeperator();
             return true;
@@ -784,7 +790,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         
         // TODO - is there a better test for this. Would have to cast to the
         //        correct iface type to get to the resolved flag
-        if (endpoint.getComponentServiceInterfaceContract().getInterface().getOperations().size() == 0){
+        //        We need to rely on normailzed interfaces in this case!!
+        if (endpointContract.getInterface().getOperations().size() == 0){
             // the interface contract is likely remote but unresolved
             // we discussed this on the ML and decided that we could
             // live with this for the case where there is no central matching of references
@@ -793,13 +800,23 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             matchAudit.appendSeperator();
             return true;
         }
+        
+        // If the contracts are not of the same type or normalized interfaces are available
+        // use them
+        if (endpointReferenceContract.getClass() != endpointContract.getClass() ||
+            endpointReferenceContract.getNormalizedWSDLContract() != null ||
+             endpointContract.getNormalizedWSDLContract() != null) {
+            endpointReferenceContract = ((RuntimeEndpointReference)endpointReference).getGeneratedWSDLContract(endpointReferenceContract);
+            endpointContract = ((RuntimeEndpoint)endpoint).getGeneratedWSDLContract(endpointContract);
+        }        
              
         boolean match = false;
-        match = interfaceContractMapper.isCompatibleSubset(endpointReference.getReference().getInterfaceContract(), 
-                                                     endpoint.getComponentServiceInterfaceContract(), matchAudit);
+        match = interfaceContractMapper.isCompatibleSubset(endpointReferenceContract, 
+                                                           endpointContract, 
+                                                           matchAudit);
         
         if (!match){
-            matchAudit.append("Match failed because the linterface contract mapper failed ");
+            matchAudit.append("Match failed because the interface contract mapper failed ");
         } else {
             matchAudit.append("Match because the interface contract mapper succeeded ");
         }

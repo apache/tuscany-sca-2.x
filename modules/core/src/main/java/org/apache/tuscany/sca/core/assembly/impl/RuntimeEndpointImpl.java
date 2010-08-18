@@ -494,27 +494,39 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         
         InterfaceContract serviceContract = getComponentServiceInterfaceContract();
         InterfaceContract bindingContract = getBindingInterfaceContract();
-
+                
         if ((serviceContract != null) &&
             (bindingContract != null)){
            
             boolean bindingHasCallback = bindingContract.getCallbackInterface() != null;
             
             try {
-                if ((serviceContract.getClass() != bindingContract.getClass()) &&
-                    (serviceContract instanceof JavaInterfaceContract)) {
-                        interfaceContractMapper.checkCompatibility(getGeneratedWSDLContract(serviceContract), 
-                                                                   bindingContract, 
-                                                                   Compatibility.SUBSET, 
-                                                                   !bindingHasCallback, // ignore callbacks if binding doesn't have one 
-                                                                   false);
-                    } else {
-                        interfaceContractMapper.checkCompatibility(serviceContract, 
-                                                                   bindingContract, 
-                                                                   Compatibility.SUBSET, 
-                                                                   !bindingHasCallback, // ignore callbacks if binding doesn't have one 
-                                                                   false);                   
-                    }                 
+/*                
+                interfaceContractMapper.checkCompatibility(getGeneratedWSDLContract(serviceContract), 
+                                                           getGeneratedWSDLContract(bindingContract), 
+                                                           Compatibility.SUBSET, 
+                                                           !bindingHasCallback, // ignore callbacks if binding doesn't have one 
+                                                           false);
+*/                                                           
+               
+                // Use the normalized contract if the interface types are different or if 
+                // a normalized contract has been previously generate, for example, by virtue
+                // of finding a JAXWS annotation on a Java class that references a WSDL file
+                if (serviceContract.getClass() != bindingContract.getClass() ||
+                    serviceContract.getNormalizedWSDLContract() != null ||
+                    bindingContract.getNormalizedWSDLContract() != null) {
+                    interfaceContractMapper.checkCompatibility(getGeneratedWSDLContract(serviceContract), 
+                                                               getGeneratedWSDLContract(bindingContract), 
+                                                               Compatibility.SUBSET, 
+                                                               !bindingHasCallback, // ignore callbacks if binding doesn't have one 
+                                                               false);
+                } else {
+                    interfaceContractMapper.checkCompatibility(serviceContract, 
+                                                               bindingContract, 
+                                                               Compatibility.SUBSET, 
+                                                               !bindingHasCallback, // ignore callbacks if binding doesn't have one 
+                                                               false);                   
+                }  
             } catch (Exception ex){
                 throw new ServiceRuntimeException("Component " +
                                                   this.getComponent().getName() +
@@ -817,7 +829,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 if (contractBuilder == null){
                     throw new ServiceRuntimeException("Contract builder not found while calculating WSDL contract for " + this.toString());
                 }
-                contractBuilder.build(getComponentServiceInterfaceContract(), null);
+                contractBuilder.build(interfaceContract, null);
             }
         }
         

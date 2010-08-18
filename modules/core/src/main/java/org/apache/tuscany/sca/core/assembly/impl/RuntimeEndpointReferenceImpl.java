@@ -325,15 +325,25 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         
        if ((referenceContract != null) &&
            (bindingContract != null)){
-           
+                      
            boolean bindingHasCallback = bindingContract.getCallbackInterface() != null;
 
            try {
-               
-               if ((referenceContract.getClass() != bindingContract.getClass()) &&
-                   (referenceContract instanceof JavaInterfaceContract)) {
+/*               
+               interfaceContractMapper.checkCompatibility(getGeneratedWSDLContract(referenceContract), 
+                                                          getGeneratedWSDLContract(bindingContract), 
+                                                          Compatibility.SUBSET, 
+                                                          !bindingHasCallback, // ignore callbacks if binding doesn't have one 
+                                                          false);               
+*/
+               // Use the normalized contract if the interface types are different or if 
+               // a normalized contract has been previously generate, for example, by virtue
+               // of finding a JAXWS annotation on a Java class that references a WSDL file
+               if (referenceContract.getClass() != bindingContract.getClass() ||
+                   referenceContract.getNormalizedWSDLContract() != null ||
+                   bindingContract.getNormalizedWSDLContract() != null) {
                    interfaceContractMapper.checkCompatibility(getGeneratedWSDLContract(referenceContract), 
-                                                              bindingContract, 
+                                                              getGeneratedWSDLContract(bindingContract), 
                                                               Compatibility.SUBSET, 
                                                               !bindingHasCallback, // ignore callbacks if binding doesn't have one 
                                                               false);
@@ -344,7 +354,6 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
                                                               !bindingHasCallback, // ignore callbacks if binding doesn't have one 
                                                               false);                   
                }  
-
            } catch (Exception ex){
                throw new ServiceRuntimeException("Component " +
                                                  this.getComponent().getName() +
@@ -608,7 +617,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
                 if (contractBuilder == null){
                     throw new ServiceRuntimeException("Contract builder not found while calculating WSDL contract for " + this.toString());
                 }
-                contractBuilder.build(getComponentReferenceInterfaceContract(), null);
+                contractBuilder.build(interfaceContract, null);
             }
         }
         

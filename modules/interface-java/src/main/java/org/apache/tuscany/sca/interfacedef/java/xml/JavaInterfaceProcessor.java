@@ -43,10 +43,17 @@ import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.Compatibility;
+import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -77,13 +84,20 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
     private ExtensionPointRegistry extensionPoints;
     private PolicyFactory policyFactory;
     private PolicySubjectProcessor policyProcessor;
+    private WSDLFactory wsdlFactory;
+    private StAXArtifactProcessor<Object> extensionProcessor;
+    private transient InterfaceContractMapper interfaceContractMapper;
 
-    public JavaInterfaceProcessor(ExtensionPointRegistry extensionPoints) {
+    public JavaInterfaceProcessor(ExtensionPointRegistry extensionPoints,  StAXArtifactProcessor<?> staxProcessor) {
         this.extensionPoints = extensionPoints;
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
         this.javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+        this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
+        this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
     }
     
     /**
@@ -212,6 +226,10 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                     // Introspect the Java interface and populate the interface and
                     // operations
                     javaFactory.createJavaInterface(javaInterface, javaClass);
+                    
+                    // cache the contribution that was used to resolve the Java interface
+                    // in case we need it to reolve a referenced WSDL file
+                    javaInterface.setContributionContainingClass(classReference.getContributionContainingClass());
                 
                 } catch (InvalidInterfaceException e) {
                 	ContributionResolveException ce = new ContributionResolveException("Resolving Java interface " + javaInterface.getName(), e);
@@ -243,6 +261,8 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
             JavaInterface javaCallbackInterface =
                 resolveJavaInterface((JavaInterface)javaInterfaceContract.getCallbackInterface(), resolver, context);
             javaInterfaceContract.setCallbackInterface(javaCallbackInterface);
+            
+            postJAXWSProcessorResolve(javaInterfaceContract, resolver, context);
 	        
 	        checkForbiddenAnnotations(monitor, javaInterfaceContract);
 	        
@@ -367,4 +387,59 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
     public Class<JavaInterfaceContract> getModelType() {
         return JavaInterfaceContract.class;
     }
+    
+    private void postJAXWSProcessorResolve(JavaInterfaceContract javaInterfaceContract, ModelResolver resolver, ProcessorContext context)
+        throws ContributionResolveException, IncompatibleInterfaceContractException {
+        
+        JavaInterface javaInterface = (JavaInterface)javaInterfaceContract.getInterface();
+        
+        // the Java interface may now be marked as unresolved due to a new Java interface 
+        // name retrieved from JAXWS annotations. Resolve it again if it is.
+        if (javaInterface != null && javaInterface.isUnresolved()){
+            javaInterface = resolveJavaInterface(javaInterface, resolver, context);
+            javaInterfaceContract.setInterface(javaInterface);
+        }
+        
+        JavaInterface javaCallbackInterface = (JavaInterface)javaInterfaceContract.getCallbackInterface();
+        // the Java callback interface may now be marked as unresolved due to a new Java interface 
+        // name retrieved from JAXWS annotations. Resolve it again if it is.
+        if (javaCallbackInterface != null && javaCallbackInterface.isUnresolved()){
+            javaCallbackInterface = resolveJavaInterface(javaCallbackInterface, resolver, context);
+            javaInterfaceContract.setCallbackInterface(javaCallbackInterface);
+        }
+        
+        // the Java interface may be replaced by a WSDL contract picked up from JAXWS annotation
+        // if so we need to fluff up a WSDL contract and set it to be the normalized contract
+        // for the Java interface so it's used during contract mapping
+        if (javaInterface != null && javaInterface.getJAXWSWSDLLocation() != null){
+            WSDLInterface wsdlInterface = wsdlFactory.createWSDLInterface();
+            wsdlInterface.setUnresolved(true);
+            wsdlInterface.setRemotable(true);
+            
+            WSDLInterfaceContract wsdlInterfaceContract = wsdlFactory.createWSDLInterfaceContract();
+            wsdlInterfaceContract.setInterface(wsdlInterface);
+            wsdlInterfaceContract.setLocation(javaInterface.getJAXWSWSDLLocation());
+            javaInterfaceContract.setNormailizedWSDLContract(wsdlInterfaceContract);
+            
+            ProcessorContext wsdlContext = new ProcessorContext(javaInterface.getContributionContainingClass(), 
+                                                                context.getMonitor());
+            extensionProcessor.resolve(wsdlInterfaceContract, resolver, wsdlContext);
+            
+            // check that the Java and WSDL contracts are compatible
+            interfaceContractMapper.checkCompatibility(wsdlInterfaceContract,
+                                                       javaInterfaceContract, 
+                                                       Compatibility.SUBSET, 
+                                                       false, 
+                                                       false);
+            
+            // copy policy from the WSDL interface to the Java interface
+            javaInterface.getPolicySets().addAll(wsdlInterface.getPolicySets());
+            javaInterface.getRequiredIntents().addAll(wsdlInterface.getRequiredIntents());
+            
+           // TODO - is there anything else to be copied from the user specified WSDL?
+            
+        }
+        
+        // TODO - how to handle callbacks as the location is stored at the contract level?        
+    }      
 }

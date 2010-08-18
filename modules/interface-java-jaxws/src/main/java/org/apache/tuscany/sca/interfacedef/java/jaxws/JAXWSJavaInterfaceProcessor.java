@@ -41,6 +41,7 @@ import javax.xml.ws.ResponseWrapper;
 import javax.xml.ws.WebServiceProvider;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.javabeans.JavaExceptionDataBinding;
@@ -52,6 +53,8 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
@@ -59,6 +62,7 @@ import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 
 /**
  * Introspect the java class/interface with JSR-181 and JAXWS annotations
@@ -71,22 +75,18 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
     private DataBindingExtensionPoint dataBindingExtensionPoint;
     private FaultExceptionMapper faultExceptionMapper;
     private XMLAdapterExtensionPoint xmlAdapterExtensionPoint;
+    protected JavaInterfaceFactory javaInterfaceFactory;
+    private WSDLFactory wsdlFactory;
 
 
     public JAXWSJavaInterfaceProcessor(ExtensionPointRegistry registry) {
         dataBindingExtensionPoint = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         faultExceptionMapper = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(FaultExceptionMapper.class);
         xmlAdapterExtensionPoint = registry.getExtensionPoint(XMLAdapterExtensionPoint.class);
-    }
-    
-    
-    public JAXWSJavaInterfaceProcessor(DataBindingExtensionPoint dataBindingExtensionPoint,
-                                       FaultExceptionMapper faultExceptionMapper,
-                                       XMLAdapterExtensionPoint xmlAdapters) {
-        super();
-        this.dataBindingExtensionPoint = dataBindingExtensionPoint;
-        this.faultExceptionMapper = faultExceptionMapper;
-        this.xmlAdapterExtensionPoint = xmlAdapters;
+        
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
+        this.wsdlFactory = factories.getFactory(WSDLFactory.class);
     }
 
     public JAXWSJavaInterfaceProcessor() {
@@ -104,8 +104,17 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
     public void visitInterface(JavaInterface contract) throws InvalidInterfaceException {
 
         final Class<?> clazz = contract.getJavaClass();
-        WebService webService = clazz.getAnnotation(WebService.class);
         
+        contract = JAXWSUtils.configureJavaInterface(contract, clazz);
+        String tns = contract.getQName().getNamespaceURI();
+       
+        // TODO - the following code repeats the name determination code in the
+        // utils class. Do name determination separately from interface config.
+        // - determine service name
+        // - determine interface class name
+        // - determine wsdl file name
+/*       
+        WebService webService = clazz.getAnnotation(WebService.class);
         String tns = JavaXMLMapper.getNamespace(clazz);
         String localName = clazz.getSimpleName();
         if (webService != null) {
@@ -123,7 +132,8 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
             contract.setQName(new QName(tns, localName));
             // Mark SEI as Remotable
             contract.setRemotable(true);
-        }
+        }    
+*/        
         
         if (!contract.isRemotable()) {
             return;

@@ -33,10 +33,13 @@ import org.junit.Test;
  * Current required jars are:
  * 
  * activation-1.1.jar
+ * asm-3.1.jar
  * geronimo-stax-api_1.0_spec-1.0.1.jar
  * jaxb-api-2.1.jar
  * jaxb-impl-2.1.12.jar
+ * jaxws-api-2.1.jar
  * jsr181-api-1.0-MR1.jar
+ * jsr250-api-1.0.jar
  * junit-4.8.1.jar
  * tuscany-assembly-2.0-SNAPSHOT.jar
  * tuscany-assembly-xml-2.0-SNAPSHOT.jar
@@ -56,6 +59,7 @@ import org.junit.Test;
  * tuscany-extensibility-2.0-SNAPSHOT.jar
  * tuscany-implementation-java-2.0-SNAPSHOT.jar
  * tuscany-interface-java-2.0-SNAPSHOT.jar
+ * tuscany-interface-java-jaxws-2.0-SNAPSHOT.jar
  * tuscany-interface-wsdl-2.0-SNAPSHOT.jar
  * tuscany-monitor-2.0-SNAPSHOT.jar
  * tuscany-sca-api-2.0-SNAPSHOT.jar
@@ -75,6 +79,6 @@ public class ValidateDependenciesTestCase {
         Assert.assertTrue(dependenciesDir.exists());
         
         File[] dependencyFiles = dependenciesDir.listFiles();
-        Assert.assertEquals(31, dependencyFiles.length);
+        Assert.assertEquals(35, dependencyFiles.length);
     }
 }
