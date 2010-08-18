@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright(C) OASIS(R) 2005,2009. All Rights Reserved. 
-     OASIS trademark, IPR and other policies apply.  -->
-<schema xmlns="http://www.w3.org/2001/XMLSchema" 
-        targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
-        xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
-        elementFormDefault="qualified">
-        
-   <include schemaLocation="sca-core-1.1-cd05.xsd"/>
+<!-- Copyright(C) OASIS(R) 2005,2010. All Rights Reserved. 
+      OASIS trademark, IPR and other policies apply.  -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 	
+	targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+	xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" 	elementFormDefault="qualified">
+
+   <include schemaLocation="sca-core-1.1-cd05-rev1.xsd" />
 
    <complexType name="JCABinding">
       <complexContent>
@@ -21,11 +20,9 @@
                <element name="inboundInteraction" 
                         type="sca:JCAInboundInteraction" minOccurs="0" />
                <element name="property" type="sca:Property" minOccurs="0"
-                        maxOccurs="unbounded" />
-               <!-- any namespace="##other" processContents="lax" minOccurs="0"
-                    maxOccurs="unbounded" /-->
+                        maxOccurs="unbounded"/>
+               <element ref="sca:extensions" minOccurs="0" maxOccurs="1"/>
             </sequence>
-            <attribute name="connectionInfo" type="anyURI" use="optional" />
             <attribute name="initialContextFactory" type="anyURI" 
                        use="optional"/>
     	   <attribute name="jndiURL" type="anyURI" use="optional"/>
@@ -108,7 +105,7 @@
          <any namespace="##other" processContents="lax" minOccurs="0"
               maxOccurs="unbounded" />
       </sequence>
-      <attribute name="name" type="NMTOKEN" use="optional" />
+      <attribute name="jndiName" type="anyURI" use="optional" />
       <attribute name="type" type="NMTOKEN" use="required" />
       <attribute name="create" type="sca:JCACreateResource" use="optional"
                  default="ifNotExist" />
@@ -121,7 +118,7 @@
          <any namespace="##other" processContents="lax" minOccurs="0"
               maxOccurs="unbounded" />
       </sequence>
-      <attribute name="name" type="NMTOKEN" use="optional" />
+      <attribute name="jndiName" type="anyURI" use="optional" />
       <attribute name="type" type="NMTOKEN" use="required" />
       <attribute name="create" type="sca:JCACreateResource" use="optional"
                  default="ifNotExist"/>
@@ -143,7 +140,7 @@
               maxOccurs="unbounded" />
 		</sequence>
 		<attribute name="name" type="NMTOKEN" use="required" />
-		<attribute name="nativeOperation" type="string" use="required" />
+		<attribute name="selectedOperation" type="string" use="required" />
 		<anyAttribute namespace="##other" processContents="lax" />
 	</complexType>
 	<complexType name="ConnectionSpec">
@@ -169,5 +166,4 @@
 
    <element name="binding.jca" type="sca:JCABinding"
             substitutionGroup="sca:binding" />
-            
 </schema>

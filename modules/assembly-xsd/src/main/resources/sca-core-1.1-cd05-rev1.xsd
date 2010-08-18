@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright(C) OASIS(R) 2005,2009. All Rights Reserved. 
+<!-- Copyright(C) OASIS(R) 2005,2010. All Rights Reserved. 
      OASIS trademark, IPR and other policies apply.  -->
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
    targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
    elementFormDefault="qualified">
 
-   <include schemaLocation="sca-policy-1.1-cd03.xsd"/>	
+   <include schemaLocation="sca-policy-1.1-cd03-rev1.xsd"/>	
    <import namespace="http://www.w3.org/XML/1998/namespace" 
            schemaLocation="http://www.w3.org/2001/xml.xsd"/>
 
@@ -41,8 +41,7 @@
                      type="sca:ComponentTypeReference"/>
                   <element name="property" type="sca:Property"/>
                </choice>
-               <!-- any namespace="##other" processContents="lax" minOccurs="0" 
-                    maxOccurs="unbounded"/ -->
+               <element ref="sca:extensions" minOccurs="0" maxOccurs="1" />
             </sequence>
          </extension>
       </complexContent>
@@ -215,8 +214,8 @@
       <complexContent>
          <extension base="sca:CommonExtensionBase">
             <sequence>
-               <!-- any namespace="##other" processContents="lax" minOccurs="0" 
-                    maxOccurs="unbounded"/-->
+               <any namespace="##other" processContents="lax" minOccurs="0" 
+                    maxOccurs="unbounded"/>
             </sequence>
             <attribute name="type" type="QName" use="required"/>
             <attribute name="alwaysProvides" type="sca:listOfQNames" 
@@ -230,10 +229,6 @@
    <!-- WireFormat Type -->
    <element name="wireFormat" type="sca:WireFormatType" abstract="true"/>
    <complexType name="WireFormatType" abstract="true">
-      <sequence>
-         <any namespace="##other" processContents="lax" minOccurs="0" 
-              maxOccurs="unbounded" />
-      </sequence>
       <anyAttribute namespace="##other" processContents="lax"/>
    </complexType>
 
@@ -241,10 +236,6 @@
    <element name="operationSelector" type="sca:OperationSelectorType"
       abstract="true"/>
    <complexType name="OperationSelectorType" abstract="true">
-      <sequence>
-         <any namespace="##other" processContents="lax" minOccurs="0" 
-              maxOccurs="unbounded" />
-      </sequence>
       <anyAttribute namespace="##other" processContents="lax"/>
    </complexType>
    
@@ -257,7 +248,7 @@
                <element ref="sca:binding"/>
                <element ref="sca:requires"/>
                <element ref="sca:policySetAttachment"/>
-               <!-- any namespace="##other" processContents="lax"/ -->
+               <element ref="sca:extensions" minOccurs="0" maxOccurs="1" />
             </choice>
             <attribute name="requires" type="sca:listOfQNames" 
                        use="optional"/>
@@ -281,8 +272,7 @@
                   <element ref="sca:requires"/>
                   <element ref="sca:policySetAttachment"/>
                </choice>
-               <any namespace="##other" processContents="lax" minOccurs="0" 
-                    maxOccurs="unbounded"/>
+               <element ref="sca:extensions" minOccurs="0" maxOccurs="1" />
             </sequence>
             <attribute name="name" type="NCName" use="required"/>
             <attribute name="autowire" type="boolean" use="optional"/>

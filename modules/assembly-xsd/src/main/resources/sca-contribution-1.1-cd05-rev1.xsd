@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright(C) OASIS(R) 2005,2009. All Rights Reserved. 
+<!-- Copyright(C) OASIS(R) 2005,2010. All Rights Reserved. 
      OASIS trademark, IPR and other policies apply.  -->
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
    targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
    elementFormDefault="qualified">
 
-   <include schemaLocation="sca-core-1.1-cd05.xsd"/>
+   <include schemaLocation="sca-core-1.1-cd05-rev1.xsd"/>
 
    <!-- Contribution -->
    <element name="contribution" type="sca:ContributionType"/>
@@ -20,8 +20,7 @@
                         maxOccurs="unbounded"/>
                <element ref="sca:exportBase" minOccurs="0" 
                         maxOccurs="unbounded"/>
-               <any namespace="##other" processContents="lax" minOccurs="0" 
-                        maxOccurs="unbounded"/>
+               <element ref="sca:extensions" minOccurs="0" maxOccurs="1" />
             </sequence>
          </extension>
       </complexContent>

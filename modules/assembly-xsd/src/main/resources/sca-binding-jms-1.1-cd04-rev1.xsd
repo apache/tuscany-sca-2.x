@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
+<!-- Copyright(C) OASIS(R) 2005,2010. All Rights Reserved.
      OASIS trademark, IPR and other policies apply.  -->
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
         targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
         xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
         elementFormDefault="qualified">
 
-   <include schemaLocation="sca-core-1.1-cd05.xsd"/>
+   <include schemaLocation="sca-core-1.1-cd05-rev1.xsd"/>
 
    <complexType name="JMSBinding">
       <complexContent>
@@ -28,16 +28,12 @@
                <element name="operationProperties" 
                         type="sca:JMSOperationProperties" 
                         minOccurs="0" maxOccurs="unbounded"/>
-               <!-- any namespace="##other" processContents="lax" 
-                    minOccurs="0" maxOccurs="unbounded"/ -->
+               <element ref="sca:extensions" minOccurs="0" maxOccurs="1"/>
             </sequence>
             <attribute name="correlationScheme" type="QName"
-                       default="sca:messageId"/>
+                       default="sca:messageID"/>
             <attribute name="initialContextFactory" type="anyURI"/>
             <attribute name="jndiURL" type="anyURI"/>
-            <attribute name="requestConnection" type="QName"/>
-            <attribute name="responseConnection" type="QName"/>
-            <attribute name="operationProperties" type="QName"/>
          </extension>
       </complexContent>
    </complexType>
@@ -55,7 +51,7 @@
          <element name="property" type="sca:BindingProperty" 
                   minOccurs="0" maxOccurs="unbounded"/>
       </sequence>
-      <attribute name="jndiName" type="anyURI" use="required"/>
+      <attribute name="jndiName" type="anyURI"/>
       <attribute name="type" use="optional" default="queue">
          <simpleType>
             <restriction base="string">
@@ -69,11 +65,10 @@
    </complexType>
 
    <complexType name="JMSConnectionFactory">
-      <sequence>
-          <element name="property" type="sca:BindingProperty" 
-            minOccurs="0" maxOccurs="unbounded"/>
+      <sequence>          <element name="property" type="sca:BindingProperty" 
+                  minOccurs="0" maxOccurs="unbounded"/>
       </sequence>
-      <attribute name="jndiName" type="anyURI" use="required"/>
+      <attribute name="jndiName" type="anyURI"/>
       <attribute name="create" type="sca:JMSCreateResource" 
                  use="optional" default="ifNotExist"/>
    </complexType>
@@ -83,14 +78,14 @@
          <element name="property" type="sca:BindingProperty" 
                   minOccurs="0" maxOccurs="unbounded"/>
       </sequence>
-      <attribute name="jndiName" type="anyURI" use="required"/>
+      <attribute name="jndiName" type="anyURI"/>
       <attribute name="create" type="sca:JMSCreateResource"
                  use="optional" default="ifNotExist"/>
    </complexType>
 
    <complexType name="JMSResponse">
       <sequence>
-         <element ref="sca:wireFormat" minOccurs="0" />
+         <element name="wireFormat" type="sca:WireFormatType" minOccurs="0"/>
          <element name="destination" type="sca:JMSDestination" minOccurs="0"/>
          <choice minOccurs="0"> 
             <element name="connectionFactory" type="sca:JMSConnectionFactory"/> 
@@ -105,7 +100,7 @@
                   minOccurs="0" maxOccurs="unbounded"/>
       </sequence>
       <attribute name="type" type="string"/>
-      <attribute name="deliveryMode">
+      <attribute name="deliveryMode" default="persistent">
          <simpleType>
             <restriction base="string">
                <enumeration value="persistent"/>
@@ -113,8 +108,8 @@
             </restriction>
          </simpleType>
       </attribute>
-      <attribute name="timeToLive" type="long"/>
-      <attribute name="priority">
+      <attribute name="timeToLive" type="long" default="0"/>
+      <attribute name="priority" default="4">
          <simpleType>
             <restriction base="string">
                <enumeration value="0"/>
@@ -161,7 +156,7 @@
    <complexType name="BindingProperty">
       <simpleContent>
          <extension base="string">
-            <attribute name="name" type="NMTOKEN"/>
+            <attribute name="name" type="NMTOKEN" use="required"/>
             <attribute name="type" type="string" use="optional"
                        default="xs:string"/>
          </extension>

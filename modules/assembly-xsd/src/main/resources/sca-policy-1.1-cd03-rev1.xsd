@@ -7,7 +7,7 @@
 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
 	elementFormDefault="qualified">
 
-	<include schemaLocation="sca-core-1.1-cd05.xsd"/>	
+	<include schemaLocation="sca-core-1.1-cd06.xsd"/>	
 	<import namespace="http://www.w3.org/ns/ws-policy"
 		schemaLocation="http://www.w3.org/2007/02/ws-policy.xsd"/>
 
@@ -60,20 +60,15 @@
 
 	<element name="externalAttachment">
 		<complexType>
- 			<sequence minOccurs="0" maxOccurs="unbounded">
- 			<any namespace="##other"
- 				processContents="lax"/>
+			<sequence minOccurs="0" maxOccurs="unbounded">
+				<any namespace="##other" processContents="lax"/>
 			</sequence>
-			<attribute name="intents" type="sca:listOfQNames"
-				 use="optional"/>
- 			<attribute name="policySets" type="sca:listOfQNames"
-				 use="optional"/>
-			 <attribute name="attachTo" type="string"
-				 use="required"/>
-			 <anyAttribute namespace="##other"
- 				processContents="lax"/>
+			<attribute name="intents" type="sca:listOfQNames" use="optional"/>
+			<attribute name="policySets" type="sca:listOfQNames" use="optional"/>	
+			<attribute name="attachTo" type="string" use="required"/>
+			<anyAttribute namespace="##other" processContents="lax"/>
 		</complexType>
- 	</element>
+	</element>
 
 	<element name="policySet" type="sca:PolicySet"/>
 	<complexType name="PolicySet">
