@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.interfacedef.java;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Base;
+import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.interfacedef.Interface;
 
 /**
@@ -86,4 +87,48 @@ public interface JavaInterface extends Interface, Base {
      * @param callbackClass the callback class specified in an @Callback annotation
      */
     void setCallbackClass(Class<?> callbackClass);
+    
+    /**
+     * A Java interface may have JAXWS annotations that refer to a
+     * a WSDL document. The resulting WSDL location is stored here 
+     * so that is can be resolved after the Java interface itself
+     * has been resolved
+     * 
+     * @return WSDL interface
+     */
+    String getJAXWSWSDLLocation();
+    
+    /**
+     * A Java interface may have JAXWS annotations that refer to a
+     * a WSDL document. The resulting WSDL location is stored here 
+     * so that is can be resolved after the Java interface itself
+     * has been resolved
+     * 
+     * @param wsdlInterface
+     */
+    void setJAXWSWSDLLocation(String wsdlLocation);  
+    
+    /**
+     * A Java interface may have JAXWS annotations that refer to a
+     * a Java interface by name. The resulting class name is stored here 
+     * so that is can be resolved after this Java interface 
+     * has been resolved
+     * 
+     * @return
+     */
+    String getJAXWSJavaInterfaceName();
+    
+    /**
+     * A Java interface may have JAXWS annotations that refer to a
+     * a Java interface by name. The resulting class name is stored here 
+     * so that is can be resolved after this Java interface 
+     * has been resolved
+     * 
+     * @return
+     */    
+    void setJAXWSJavaInterfaceName(String javaInterfaceName);
+    
+    public Contribution getContributionContainingClass();
+    
+    public void setContributionContainingClass(Contribution contributionContainingClass);
 }
