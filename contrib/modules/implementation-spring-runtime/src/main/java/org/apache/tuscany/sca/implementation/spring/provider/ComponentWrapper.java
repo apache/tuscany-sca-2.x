@@ -17,34 +17,22 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.spring.invocation;
-
-import java.util.List;
-
-import org.apache.tuscany.sca.assembly.ComponentProperty;
-import org.apache.tuscany.sca.context.PropertyValueFactory;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
+package org.apache.tuscany.sca.implementation.spring.provider;
 
 /**
- * Wrapper for PropertyValue
+ * Wrapper for the Component
  */
-public class PropertyValueWrapper {
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+
+public class ComponentWrapper {
 
     private RuntimeComponent component;
-    private PropertyValueFactory propertyFactory;
 
-    public PropertyValueWrapper(RuntimeComponent component, PropertyValueFactory propertyFactory) {
+    public ComponentWrapper(RuntimeComponent component) {
         this.component = component;
-        this.propertyFactory = propertyFactory;
     }
 
-    public Object getPropertyObj(Class<?> type, String name) {
-        List<ComponentProperty> props = component.getProperties();
-        for (ComponentProperty prop : props) {
-            if (prop.getName().equals(name)) {
-                return propertyFactory.createPropertyValue(prop, type);
-            }
-        }
-        return null; // property name not found
+    public Object getService(Class<?> type, String name) {
+        return component.getComponentContext().getService(type, name);
     }
 }

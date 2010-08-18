@@ -22,14 +22,14 @@ package org.apache.tuscany.sca.implementation.spring.context;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.tuscany.sca.implementation.spring.invocation.ComponentWrapper;
-import org.apache.tuscany.sca.implementation.spring.invocation.PropertyValueWrapper;
-import org.apache.tuscany.sca.implementation.spring.invocation.SpringImplementationWrapper;
 import org.apache.tuscany.sca.implementation.spring.processor.ComponentNameAnnotationProcessor;
 import org.apache.tuscany.sca.implementation.spring.processor.ConstructorAnnotationProcessor;
 import org.apache.tuscany.sca.implementation.spring.processor.InitDestroyAnnotationProcessor;
 import org.apache.tuscany.sca.implementation.spring.processor.PropertyAnnotationProcessor;
 import org.apache.tuscany.sca.implementation.spring.processor.ReferenceAnnotationProcessor;
+import org.apache.tuscany.sca.implementation.spring.provider.ComponentWrapper;
+import org.apache.tuscany.sca.implementation.spring.provider.PropertyValueWrapper;
+import org.apache.tuscany.sca.implementation.spring.provider.SpringImplementationWrapper;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;

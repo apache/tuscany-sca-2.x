@@ -16,5 +16,5 @@
 # under the License. 
 
 # Implementation class for the implementation extension
-org.apache.tuscany.sca.implementation.spring.invocation.SpringImplementationProviderFactory;model=org.apache.tuscany.sca.implementation.spring.SpringImplementation
+org.apache.tuscany.sca.implementation.spring.provider.SpringImplementationProviderFactory;model=org.apache.tuscany.sca.implementation.spring.SpringImplementation;ranking=100
 

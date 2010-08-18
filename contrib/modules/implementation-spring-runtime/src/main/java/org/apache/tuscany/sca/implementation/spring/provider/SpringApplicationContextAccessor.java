@@ -17,22 +17,23 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.spring.invocation;
+package org.apache.tuscany.sca.implementation.spring.provider;
 
 /**
- * Wrapper for the Component
+ * A utility to receive the parent Spring application context 
  */
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
+public interface SpringApplicationContextAccessor {
+    /**
+     * Get the parent Spring application context for the hosting environment. This will be used as the parent 
+     * application context for implementation.spring components
+     * @return The parent application context
+     */
+    Object getParentApplicationContext();
 
-public class ComponentWrapper {
-
-    private RuntimeComponent component;
-
-    public ComponentWrapper(RuntimeComponent component) {
-        this.component = component;
-    }
-
-    public Object getService(Class<?> type, String name) {
-        return component.getComponentContext().getService(type, name);
-    }
+    /**
+     * Set the root Spring application context. This is particually useful for Spring web integration where Spring
+     * creates WebApplicationContext and keeps it in the ServletContext
+     * @param parentApplicationContext The parent application context
+     */
+    void setParentApplicationContext(Object parentApplicationContext);
 }

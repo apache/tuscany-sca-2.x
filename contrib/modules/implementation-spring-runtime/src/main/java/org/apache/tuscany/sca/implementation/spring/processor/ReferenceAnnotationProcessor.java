@@ -24,7 +24,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import org.apache.tuscany.sca.implementation.spring.invocation.ComponentWrapper;
+import org.apache.tuscany.sca.implementation.spring.provider.ComponentWrapper;
 import org.oasisopen.sca.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;

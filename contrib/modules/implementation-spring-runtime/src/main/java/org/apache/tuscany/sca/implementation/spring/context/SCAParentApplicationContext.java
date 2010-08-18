@@ -23,7 +23,7 @@ import java.lang.annotation.Annotation;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.tuscany.sca.implementation.spring.invocation.SpringImplementationWrapper;
+import org.apache.tuscany.sca.implementation.spring.provider.SpringImplementationWrapper;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;

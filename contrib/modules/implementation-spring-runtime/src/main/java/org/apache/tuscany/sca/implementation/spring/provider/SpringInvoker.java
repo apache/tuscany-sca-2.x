@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.implementation.spring.invocation;
+package org.apache.tuscany.sca.implementation.spring.provider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

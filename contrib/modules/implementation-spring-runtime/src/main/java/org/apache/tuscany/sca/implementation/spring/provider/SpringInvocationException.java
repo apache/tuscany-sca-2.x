@@ -16,24 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-package org.apache.tuscany.sca.implementation.spring.invocation;
+package org.apache.tuscany.sca.implementation.spring.provider;
 
 /**
- * A utility to receive the parent Spring application context 
+ * @version $Rev$ $Date$
  */
-public interface SpringApplicationContextAccessor {
-    /**
-     * Get the parent Spring application context for the hosting environment. This will be used as the parent 
-     * application context for implementation.spring components
-     * @return The parent application context
-     */
-    Object getParentApplicationContext();
+public class SpringInvocationException extends Exception {
 
-    /**
-     * Set the root Spring application context. This is particually useful for Spring web integration where Spring
-     * creates WebApplicationContext and keeps it in the ServletContext
-     * @param parentApplicationContext The parent application context
-     */
-    void setParentApplicationContext(Object parentApplicationContext);
+    private static final long serialVersionUID = -1157790036638157513L;
+
+    public SpringInvocationException(String msg) {
+        super(msg);
+    }
+
+    public SpringInvocationException(Throwable e) {
+        super(e);
+    }
+
+    public SpringInvocationException(String msg, Throwable e) {
+        super(msg, e);
+    }
+
 }

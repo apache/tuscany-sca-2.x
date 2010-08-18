@@ -51,7 +51,7 @@ Import-Package: org.oasisopen.sca;version="2.0.0",
  org.springframework.core;version="3.0.2.RELEASE",
  org.springframework.core.io;version="3.0.2.RELEASE",
  org.springframework.util;version="3.0.2.RELEASE"
-Export-Package: org.apache.tuscany.sca.implementation.spring.invocation;version="2.0.0";
+Export-Package: org.apache.tuscany.sca.implementation.spring.provider;version="2.0.0";
   uses:="org.apache.tuscany.sca.invocation,
    org.apache.tuscany.sca.runtime,
    org.apache.tuscany.sca.context,

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.spring.invocation;
+package org.apache.tuscany.sca.implementation.spring.provider;
 
 import java.net.URL;
 import java.util.List;
