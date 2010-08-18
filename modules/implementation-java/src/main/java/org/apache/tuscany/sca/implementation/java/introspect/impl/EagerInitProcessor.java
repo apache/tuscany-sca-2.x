@@ -47,7 +47,7 @@ public class EagerInitProcessor extends BaseJavaClassVisitor {
         EagerInit annotation = clazz.getAnnotation(EagerInit.class);
         if (annotation == null) {
             Class<?> superClass = clazz.getSuperclass();
-            while (!Object.class.equals(superClass)) {
+            while (superClass != null && !Object.class.equals(superClass)) {
                 annotation = superClass.getAnnotation(EagerInit.class);
                 if (annotation != null) {
                     break;
