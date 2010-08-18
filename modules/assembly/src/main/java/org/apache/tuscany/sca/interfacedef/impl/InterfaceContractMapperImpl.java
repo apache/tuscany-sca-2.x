@@ -398,6 +398,8 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 			Operation targetOperation = map(target.getInterface(), operation);
 			if (targetOperation == null) {
 				if (!silent) {
+	                audit.append("Operation " + operation.getName()+ " not found on target"); 
+	                audit.appendSeperator();
 					throw new IncompatibleInterfaceContractException(
 							"Operation " + operation.getName()
 									+ " not found on target", source, target);
@@ -411,6 +413,8 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 					audit = new Audit();
 				if (!isCompatible(operation, targetOperation,
 						Compatibility.SUBSET, true, audit)) {
+                    audit.append("Operations called " + operation.getName()+ " are not compatible"); 
+                    audit.appendSeperator();
 					throw new IncompatibleInterfaceContractException(
 							"Operations called " + operation.getName()
 									+ " are not compatible " + audit, source,
