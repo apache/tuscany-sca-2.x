@@ -104,7 +104,7 @@ public class ExceptionsTestCase {
         // FIXME: what should the response message be for unchecked exceptions with wireFormat.textXML???
         Object o = ((ObjectMessage)m).getObject();
         assertTrue(o instanceof RuntimeException);
-        assertTrue("java.lang.RuntimeException".equals(o.getClass().getName()));
+        assertTrue("org.oasisopen.sca.ServiceRuntimeException".equals(o.getClass().getName()));
         assertEquals("bla", ((RuntimeException)o).getMessage());
     }
 
@@ -150,7 +150,7 @@ public class ExceptionsTestCase {
         Message m = receiveJMSResponse();
         Object o = ((ObjectMessage)m).getObject();
         assertTrue(o instanceof RuntimeException);
-        assertTrue("java.lang.RuntimeException".equals(o.getClass().getName()));
+        assertTrue("org.oasisopen.sca.ServiceRuntimeException".equals(o.getClass().getName()));
         assertEquals("bla", ((RuntimeException)o).getMessage());
     }
 
