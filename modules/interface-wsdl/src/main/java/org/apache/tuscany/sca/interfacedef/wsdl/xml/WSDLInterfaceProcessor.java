@@ -411,14 +411,24 @@ public class WSDLInterfaceProcessor extends BaseStAXArtifactProcessor implements
                         }
                     }
                     
+                    if (wsdlDefinition == null){
+                        Monitor.error(context.getMonitor(), 
+                                WSDLInterfaceProcessor.class.getName(), 
+                                "interface-wsdlxml-validation-messages", 
+                                "wsdliLocationException", 
+                                "WSDL not found inside contribution at relative URI " + wsdlFileURI );
+                        return;
+                    }
+                    
                 } catch (Exception ex) {
-                    ex.printStackTrace();
-                   // TODO - raise error
+                    Monitor.error(context.getMonitor(), 
+                                  WSDLInterfaceProcessor.class.getName(), 
+                                  "interface-wsdlxml-validation-messages", 
+                                  "wsdliLocationException", 
+                                  ex.getMessage() );
+                    return;
+                    
                 }
-            }
-            
-            if (wsdlDefinition == null){
-                // TODO raise an error
             }
             
             wsdlInterface.setWsdlDefinition(wsdlDefinition);
