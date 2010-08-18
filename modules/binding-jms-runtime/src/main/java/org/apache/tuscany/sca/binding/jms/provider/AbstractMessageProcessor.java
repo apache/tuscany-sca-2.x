@@ -116,7 +116,7 @@ public abstract class AbstractMessageProcessor implements JMSMessageProcessor {
             ObjectMessage message = session.createObjectMessage();
             String causeMsg;
             if (o instanceof RuntimeException) {
-                message.setObject(new RuntimeException(o.getMessage()));
+                message.setObject(new ServiceRuntimeException(o.getMessage()));
             } else {
                 // for a checked exception return the checked exception
                 message.setObject(o);

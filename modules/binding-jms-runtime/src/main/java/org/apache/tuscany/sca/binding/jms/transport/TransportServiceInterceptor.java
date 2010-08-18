@@ -152,20 +152,22 @@ public class TransportServiceInterceptor implements Interceptor {
                 }
                 return msg;
             }
-            
-            String operationName = msg.getOperation().getName();
-            if (jmsBinding.getOperationJMSPriority(operationName) != null) {
-                responseJMSMsg.setJMSPriority(jmsBinding.getOperationJMSPriority(operationName));
-            }
-    
-            if (jmsBinding.getOperationJMSType(operationName) != null) {
-                responseJMSMsg.setJMSType(jmsBinding.getOperationJMSType(operationName));
-            }
-            if (jmsBinding.getOperationJMSDeliveryMode(operationName) != null) {
-                if (jmsBinding.getOperationJMSDeliveryMode(operationName)) {
-                    responseJMSMsg.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
-                } else {
-                    responseJMSMsg.setJMSDeliveryMode(DeliveryMode.NON_PERSISTENT);
+
+            if (msg.getOperation() != null) {
+                String operationName = msg.getOperation().getName();
+                if (jmsBinding.getOperationJMSPriority(operationName) != null) {
+                    responseJMSMsg.setJMSPriority(jmsBinding.getOperationJMSPriority(operationName));
+                }
+        
+                if (jmsBinding.getOperationJMSType(operationName) != null) {
+                    responseJMSMsg.setJMSType(jmsBinding.getOperationJMSType(operationName));
+                }
+                if (jmsBinding.getOperationJMSDeliveryMode(operationName) != null) {
+                    if (jmsBinding.getOperationJMSDeliveryMode(operationName)) {
+                        responseJMSMsg.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
+                    } else {
+                        responseJMSMsg.setJMSDeliveryMode(DeliveryMode.NON_PERSISTENT);
+                    }
                 }
             }
     

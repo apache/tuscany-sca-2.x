@@ -175,7 +175,7 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
         }
         
         if (operation == null) {
-            throw new JMSBindingException("Can't find operation " + (operationName != null ? operationName : ON_MESSAGE_METHOD_NAME));
+            throw new JMSBindingException("Cannot determine service operation");
         }
 
         return operation;
