@@ -22,17 +22,23 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
+import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.context.ReflectiveInstanceWrapper;
+import org.apache.tuscany.sca.implementation.java.injection.Injector;
+import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -48,19 +54,22 @@ public class JavaImplementationInvoker implements Invoker {
 
     @SuppressWarnings("unchecked")
     protected final ScopeContainer scopeContainer;
+	private final InterfaceContract interfaze;
 
-    public JavaImplementationInvoker(Operation operation, Method method, RuntimeComponent component) {
+    public JavaImplementationInvoker(Operation operation, Method method, RuntimeComponent component, InterfaceContract intf) {
         assert method != null : "Operation method cannot be null";
         this.method = method;
         this.operation = operation;
         this.scopeContainer = ((ScopedRuntimeComponent)component).getScopeContainer();
         this.allowsPBR = ((JavaImplementation)component.getImplementation()).isAllowsPassByReference(method);
+        this.interfaze = intf;
     }
 
-    public JavaImplementationInvoker(Operation operation, RuntimeComponent component) {
+    public JavaImplementationInvoker(Operation operation, RuntimeComponent component, InterfaceContract intf) {
         // used if the method can't be computed statically in advance 
         this.operation = operation;
         this.scopeContainer = ((ScopedRuntimeComponent)component).getScopeContainer();
+        this.interfaze = intf;
     }
 
     @SuppressWarnings("unchecked")
@@ -83,8 +92,14 @@ public class JavaImplementationInvoker implements Invoker {
         try {
             // The following call might create a new conversation, as a result, the msg.getConversationID() might 
             // return a new value
-            InstanceWrapper wrapper = scopeContainer.getWrapper(contextId);
-
+            ReflectiveInstanceWrapper wrapper = (ReflectiveInstanceWrapper) scopeContainer.getWrapper(contextId);
+            
+            // If there is a callback interface and the implementation is stateless, we need to
+            // inject callbacks at invocation time. For Composite scope, this has already been done. 
+            if (( interfaze.getCallbackInterface() != null )  && (scopeContainer.getScope().equals(Scope.STATELESS))){
+            	injectCallbacks(wrapper, (JavaInterface)interfaze.getCallbackInterface());
+            }
+            
             Object instance = wrapper.getInstance();
 
             // If the method couldn't be computed statically, or the instance being
@@ -148,5 +163,30 @@ public class JavaImplementationInvoker implements Invoker {
         }
         return msg;
     }
+
+	private void injectCallbacks(ReflectiveInstanceWrapper wrapper,
+			JavaInterface callbackInterface) {
+	
+		for (Injector injector : wrapper.getCallbackInjectors()) {
+			if (injector != null) {
+				try {       
+					if (ServiceReference.class.isAssignableFrom(injector.getType())) {
+						Class<?> intf = JavaIntrospectionHelper.getBusinessInterface(injector.getType(), injector.getGenericType());
+						if ( intf.isAssignableFrom(callbackInterface.getJavaClass())) {              		                		                		
+							injector.inject(wrapper.getInstance());         
+						}
+					} else if (injector.getType().isAssignableFrom(callbackInterface.getJavaClass())) {
+						injector.inject(wrapper.getInstance());
+					} else {
+						injector.injectNull(wrapper.getInstance());
+					}
+				} catch (Exception e) {	                   
+					throw new ObjectCreationException("Exception invoking injector - " + e.getMessage(), e);
+				}
+			}
+		}
+		
+	}
+			
 
 }
