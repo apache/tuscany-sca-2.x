@@ -69,7 +69,7 @@ public class JAXWSUtils {
         if (webServiceProviderAnnotation != null) {
             servineNamespace = getValue(webServiceProviderAnnotation.targetNamespace(), servineNamespace);
             serviceName = getValue(webServiceProviderAnnotation.serviceName(), serviceName);
-            wsdlFileName = webServiceAnnotation.wsdlLocation();
+            wsdlFileName = webServiceProviderAnnotation.wsdlLocation();
             javaInterface.setRemotable(true);
         }  
         
