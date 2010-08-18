@@ -26,10 +26,10 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 public class ScaNamespaceHandler extends NamespaceHandlerSupport {
 
     public ScaNamespaceHandler() {
-        init();
     }
 
-    public final void init() {
+    @Override
+    public void init() {
         registerBeanDefinitionParser("reference", new ScaReferenceBeanDefinitionParser());
         registerBeanDefinitionParser("service", new ScaServiceBeanDefinitionParser());
         registerBeanDefinitionParser("property", new ScaPropertyBeanDefinitionParser());
