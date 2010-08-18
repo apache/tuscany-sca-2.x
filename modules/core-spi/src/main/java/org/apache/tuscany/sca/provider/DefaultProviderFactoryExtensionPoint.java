@@ -65,7 +65,10 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         if(providerFactory instanceof PolicyProviderFactory) {
             policyProviderFactories.add((PolicyProviderFactory)providerFactory);
         } 
-        providerFactories.put(providerFactory.getModelType(), providerFactory);
+        // Only add the 1st instance so that the ones with higher ranking with prevail
+        if (!providerFactories.containsKey(providerFactory.getModelType())) {
+            providerFactories.put(providerFactory.getModelType(), providerFactory);
+        }
     }
 
     /**
@@ -148,9 +151,6 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
             throw new IllegalStateException(e);
         }
 
-        // Get the target extension point
-        ProviderFactoryExtensionPoint factoryExtensionPoint =
-            registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         List<ProviderFactory> factories = new ArrayList<ProviderFactory>();
 
         for (ServiceDeclaration factoryDeclaration : factoryDeclarations) {
@@ -163,7 +163,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
                 // Create a provider factory wrapper and register it
                 ImplementationProviderFactory factory =
                     new LazyImplementationProviderFactory(registry, modelTypeName, factoryDeclaration);
-                factoryExtensionPoint.addProviderFactory(factory);
+                addProviderFactory(factory);
                 factories.add(factory);
 
             } else if (factoryClass == BindingProviderFactory.class) {
@@ -174,7 +174,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
                 // Create a provider factory wrapper and register it
                 BindingProviderFactory factory =
                     new LazyBindingProviderFactory(registry, modelTypeName, factoryDeclaration);
-                factoryExtensionPoint.addProviderFactory(factory);
+                addProviderFactory(factory);
                 factories.add(factory);
             } else if (factoryClass == PolicyProviderFactory.class) {
                 // Load a policy provider factory
@@ -183,7 +183,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
                 // Create a provider factory wrapper and register it
                 PolicyProviderFactory factory =
                     new LazyPolicyProviderFactory(registry, modelTypeName, factoryDeclaration);
-                factoryExtensionPoint.addProviderFactory(factory);
+                addProviderFactory(factory);
                 factories.add(factory);
             } else if (factoryClass == WireFormatProviderFactory.class) {
 
@@ -193,7 +193,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
                 // Create a provider factory wrapper and register it
                 WireFormatProviderFactory factory =
                     new LazyWireFormatProviderFactory(registry, modelTypeName, factoryDeclaration);
-                factoryExtensionPoint.addProviderFactory(factory);
+                addProviderFactory(factory);
                 factories.add(factory);
             } else if (factoryClass == OperationSelectorProviderFactory.class) {
 
@@ -203,7 +203,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
                 // Create a provider factory wrapper and register it
                 OperationSelectorProviderFactory factory =
                     new LazyOperationSelectorProviderFactory(registry, modelTypeName, factoryDeclaration);
-                factoryExtensionPoint.addProviderFactory(factory);
+                addProviderFactory(factory);
                 factories.add(factory);
             }
         }
