@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.assembly.xml.Constants;
  * @version $Rev$ $Date$
  */
 public class WireFormatJMSDefault implements WireFormat {
-    public static final QName WIRE_FORMAT_JMS_DEFAULT_QNAME = new QName(Constants.SCA11_TUSCANY_NS, "wireFormat.jmsdefault");
+    public static final QName WIRE_FORMAT_JMS_DEFAULT_QNAME = new QName(Constants.SCA11_NS, "wireFormat.jmsDefault");
     
     public static final String WIRE_FORMAT_JMS_DEFAULT_FORMAT_ATTR = "sendFormat";
     
