@@ -106,34 +106,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
         final Class<?> clazz = contract.getJavaClass();
         
         contract = JAXWSUtils.configureJavaInterface(contract, clazz);
-        String tns = contract.getQName().getNamespaceURI();
-       
-        // TODO - the following code repeats the name determination code in the
-        // utils class. Do name determination separately from interface config.
-        // - determine service name
-        // - determine interface class name
-        // - determine wsdl file name
-/*       
-        WebService webService = clazz.getAnnotation(WebService.class);
-        String tns = JavaXMLMapper.getNamespace(clazz);
-        String localName = clazz.getSimpleName();
-        if (webService != null) {
-            tns = getValue(webService.targetNamespace(), tns);
-            localName = getValue(webService.name(), localName);
-            contract.setQName(new QName(tns, localName));
-            // Mark SEI as Remotable
-            contract.setRemotable(true);
-        }
-        
-        WebServiceProvider webServiceProvider = clazz.getAnnotation(WebServiceProvider.class);
-        if (webServiceProvider != null) {
-            tns = getValue(webServiceProvider.targetNamespace(), tns);
-            localName = getValue(webServiceProvider.serviceName(), localName);
-            contract.setQName(new QName(tns, localName));
-            // Mark SEI as Remotable
-            contract.setRemotable(true);
-        }    
-*/        
+        String tns = contract.getQName().getNamespaceURI();      
         
         if (!contract.isRemotable()) {
             return;

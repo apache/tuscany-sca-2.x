@@ -500,14 +500,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
            
             boolean bindingHasCallback = bindingContract.getCallbackInterface() != null;
             
-            try {
-/*                
-                interfaceContractMapper.checkCompatibility(getGeneratedWSDLContract(serviceContract), 
-                                                           getGeneratedWSDLContract(bindingContract), 
-                                                           Compatibility.SUBSET, 
-                                                           !bindingHasCallback, // ignore callbacks if binding doesn't have one 
-                                                           false);
-*/                                                           
+            try {                                                         
                
                 // Use the normalized contract if the interface types are different or if 
                 // a normalized contract has been previously generate, for example, by virtue

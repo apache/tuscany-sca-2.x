@@ -329,13 +329,6 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
            boolean bindingHasCallback = bindingContract.getCallbackInterface() != null;
 
            try {
-/*               
-               interfaceContractMapper.checkCompatibility(getGeneratedWSDLContract(referenceContract), 
-                                                          getGeneratedWSDLContract(bindingContract), 
-                                                          Compatibility.SUBSET, 
-                                                          !bindingHasCallback, // ignore callbacks if binding doesn't have one 
-                                                          false);               
-*/
                // Use the normalized contract if the interface types are different or if 
                // a normalized contract has been previously generate, for example, by virtue
                // of finding a JAXWS annotation on a Java class that references a WSDL file
