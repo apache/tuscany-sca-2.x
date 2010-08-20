@@ -348,9 +348,9 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
                     extensionProcessor.resolve(wsdlInterfaceContract, resolver, context);
                     
                     // check that the Java and WSDL contracts are compatible
-                    interfaceContractMapper.checkCompatibility(javaInterfaceContract, 
-                                                               wsdlInterfaceContract, 
-                                                               Compatibility.MUTUAL, 
+                    interfaceContractMapper.checkCompatibility(wsdlInterfaceContract,
+                                                               javaInterfaceContract,
+                                                               Compatibility.SUBSET, 
                                                                false, 
                                                                false);
                     
