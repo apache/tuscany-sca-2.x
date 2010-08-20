@@ -39,6 +39,10 @@ public class SpringSCAReferenceElement {
     private List<Intent> intents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
 
+    public SpringSCAReferenceElement() {
+
+    }
+
     public SpringSCAReferenceElement(String name, String type) {
         this.name = name;
         this.type = type;
@@ -74,6 +78,15 @@ public class SpringSCAReferenceElement {
 
     public List<PolicySet> getPolicySets() {
         return policySets;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SpringSCAReferenceElement [name=").append(name).append(", type=").append(type)
+            .append(", defaultBean=").append(defaultBean).append(", intents=").append(intents).append(", policySets=")
+            .append(policySets).append("]");
+        return builder.toString();
     }
 
 } // end class SpringSCAReferenceElement

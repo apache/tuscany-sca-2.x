@@ -41,6 +41,9 @@ public class SpringBeanElement {
     private List<SpringPropertyElement> properties = new ArrayList<SpringPropertyElement>();
     private List<SpringConstructorArgElement> constructorargs = new ArrayList<SpringConstructorArgElement>();
 
+    public SpringBeanElement() {
+    }
+    
     public SpringBeanElement(String id, String className) {
         this.id = id;
         this.className = className;
@@ -112,6 +115,18 @@ public class SpringBeanElement {
 
     public void setFactoryMethodAttribute(boolean factoryMethodAttribute) {
         this.factoryMethodAttribute = factoryMethodAttribute;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SpringBeanElement [id=").append(id).append(", className=").append(className)
+            .append(", innerBean=").append(innerBean).append(", abstractBean=").append(abstractBean)
+            .append(", parentAttribute=").append(parentAttribute).append(", factoryBeanAttribute=")
+            .append(factoryBeanAttribute).append(", factoryMethodAttribute=").append(factoryMethodAttribute)
+            .append(", properties=").append(properties).append(", constructorargs=").append(constructorargs)
+            .append("]");
+        return builder.toString();
     }
 
 } // end class SpringBeanElement

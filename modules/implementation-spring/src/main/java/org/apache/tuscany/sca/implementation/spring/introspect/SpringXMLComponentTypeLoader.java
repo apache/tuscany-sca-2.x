@@ -18,22 +18,6 @@
  */
 package org.apache.tuscany.sca.implementation.spring.introspect;
 
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.BEAN_ELEMENT;
-import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.CONSTRUCTORARG_ELEMENT;
-import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.ENTRY_ELEMENT;
-import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.IMPORT_ELEMENT;
-import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.LIST_ELEMENT;
-import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.MAP_ELEMENT;
-import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.PROPERTY_ELEMENT;
-import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.REF_ELEMENT;
-import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.SCA_PROPERTY_ELEMENT;
-import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.SCA_REFERENCE_ELEMENT;
-import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.SCA_SERVICE_ELEMENT;
-import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.SET_ELEMENT;
-import static org.apache.tuscany.sca.implementation.spring.SpringImplementationConstants.VALUE_ELEMENT;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -57,18 +41,12 @@ import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -77,6 +55,7 @@ import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
@@ -88,6 +67,7 @@ import org.apache.tuscany.sca.implementation.spring.SpringPropertyElement;
 import org.apache.tuscany.sca.implementation.spring.SpringSCAPropertyElement;
 import org.apache.tuscany.sca.implementation.spring.SpringSCAReferenceElement;
 import org.apache.tuscany.sca.implementation.spring.SpringSCAServiceElement;
+import org.apache.tuscany.sca.implementation.spring.xml.SpringXMLBeanDefinitionLoader;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
@@ -96,7 +76,6 @@ import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
  * Introspects a Spring XML application-context configuration file to create <implementation-spring../>
@@ -108,13 +87,12 @@ public class SpringXMLComponentTypeLoader {
     private final static Logger log = Logger.getLogger(SpringXMLComponentTypeLoader.class.getName());
 
     private ExtensionPointRegistry registry;
-    private XMLInputFactory xmlInputFactory;
     private ContributionFactory contributionFactory;
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
-    private PolicyFactory policyFactory;
-    private PolicySubjectProcessor policyProcessor;
     private SpringBeanIntrospector beanIntrospector;
+
+    private SpringXMLBeanDefinitionLoader xmlBeanDefinitionLoader;
 
     public SpringXMLComponentTypeLoader(ExtensionPointRegistry registry) {
         super();
@@ -122,10 +100,9 @@ public class SpringXMLComponentTypeLoader {
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
         this.javaFactory = factories.getFactory(JavaInterfaceFactory.class);
-        this.policyFactory = factories.getFactory(PolicyFactory.class);
-        this.policyProcessor = new PolicySubjectProcessor(policyFactory);
         this.contributionFactory = factories.getFactory(ContributionFactory.class);
-        this.xmlInputFactory = factories.getFactory(XMLInputFactory.class);
+        this.xmlBeanDefinitionLoader =
+            registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(SpringXMLBeanDefinitionLoader.class);
     }
 
     /**
@@ -194,7 +171,6 @@ public class SpringXMLComponentTypeLoader {
      */
     private void loadFromXML(SpringImplementation implementation, ModelResolver resolver, ProcessorContext context)
         throws ContributionReadException {
-        XMLStreamReader reader;
         List<SpringBeanElement> beans = new ArrayList<SpringBeanElement>();
         List<SpringSCAServiceElement> services = new ArrayList<SpringSCAServiceElement>();
         List<SpringSCAReferenceElement> references = new ArrayList<SpringSCAReferenceElement>();
@@ -213,35 +189,27 @@ public class SpringXMLComponentTypeLoader {
             // The URI is used to uniquely identify the Implementation
             implementation.setURI(resource.toString());
 
-            for (URL contextResource : contextResources) {
-                List<SpringBeanElement> appCxtBeans = new ArrayList<SpringBeanElement>();
-                List<SpringSCAServiceElement> appCxtServices = new ArrayList<SpringSCAServiceElement>();
-                List<SpringSCAReferenceElement> appCxtReferences = new ArrayList<SpringSCAReferenceElement>();
-                List<SpringSCAPropertyElement> appCxtProperties = new ArrayList<SpringSCAPropertyElement>();
-                reader = xmlInputFactory.createXMLStreamReader(contextResource.openStream());
-                // Read the beans, services, references and properties for individual application context
-                Set<String> visited = new HashSet<String>();
-                readContextDefinition(resolver,
-                                      reader,
-                                      contextPath,
-                                      visited,
-                                      appCxtBeans,
-                                      appCxtServices,
-                                      appCxtReferences,
-                                      appCxtProperties,
-                                      context);
-                // Validate the beans from individual application context for uniqueness
-                validateBeans(appCxtBeans, appCxtServices, appCxtReferences, appCxtProperties, context.getMonitor());
-                // Add all the validated beans to the generic list
-                beans.addAll(appCxtBeans);
-                services.addAll(appCxtServices);
-                references.addAll(appCxtReferences);
-                scaproperties.addAll(appCxtProperties);
-                reader.close();
+            List<SpringBeanElement> appCxtBeans = new ArrayList<SpringBeanElement>();
+            List<SpringSCAServiceElement> appCxtServices = new ArrayList<SpringSCAServiceElement>();
+            List<SpringSCAReferenceElement> appCxtReferences = new ArrayList<SpringSCAReferenceElement>();
+            List<SpringSCAPropertyElement> appCxtProperties = new ArrayList<SpringSCAPropertyElement>();
+
+            if (xmlBeanDefinitionLoader != null) {
+                xmlBeanDefinitionLoader.load(contextResources,
+                                                   appCxtServices,
+                                                   appCxtReferences,
+                                                   appCxtProperties,
+                                                   appCxtBeans,
+                                                   context);
             }
-        } catch (IOException e) {
-            throw new ContributionReadException(e);
-        } catch (XMLStreamException e) {
+            // Validate the beans from individual application context for uniqueness
+            validateBeans(appCxtBeans, appCxtServices, appCxtReferences, appCxtProperties, context.getMonitor());
+            // Add all the validated beans to the generic list
+            beans.addAll(appCxtBeans);
+            services.addAll(appCxtServices);
+            references.addAll(appCxtReferences);
+            scaproperties.addAll(appCxtProperties);
+        } catch (Throwable e) {
             throw new ContributionReadException(e);
         }
 
@@ -280,319 +248,6 @@ public class SpringXMLComponentTypeLoader {
             resource = new URL(contextPath);
         }
         return resource;
-    }
-
-    /**
-     * Method which returns the XMLStreamReader for the Spring application-context.xml file
-     * specified in the location attribute
-     */
-    private XMLStreamReader getApplicationContextReader(ModelResolver resolver,
-                                                        String location,
-                                                        ProcessorContext context) throws ContributionReadException {
-
-        try {
-            URL resource = getApplicationContextResource(resolveLocation(resolver, location, context)).get(0);
-            XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(resource.openStream());
-            return reader;
-        } catch (IOException e) {
-            throw new ContributionReadException(e);
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
-        }
-    }
-    
-    /**
-     * Spring 2.0 bean xml definitions use DTD and there is no namespace for the elements 
-     * @param expected
-     * @param actual
-     * @return
-     */
-    private static boolean matches(QName expected, QName actual) {
-        return expected.equals(actual) || ("".equals(actual.getNamespaceURI()) && expected.getLocalPart().equals(actual.getLocalPart()));
-    }
-
-    /**
-     * Method which reads the spring context definitions from Spring application-context.xml
-     * file and identifies the defined beans, properties, services and references
-     * @param context 
-     */
-    private void readContextDefinition(ModelResolver resolver,
-                                       XMLStreamReader reader,
-                                       String contextPath,
-                                       Set<String> visited,
-                                       List<SpringBeanElement> beans,
-                                       List<SpringSCAServiceElement> services,
-                                       List<SpringSCAReferenceElement> references,
-                                       List<SpringSCAPropertyElement> scaproperties,
-                                       ProcessorContext context) throws ContributionReadException {
-
-        if (visited.contains(contextPath)) {
-            log.warning("Duplicate Spring bean definition file is skipped: " + contextPath);
-            return;
-        }
-        visited.add(contextPath);
-        SpringBeanElement bean = null;
-
-        try {
-            int level = 0;
-            while (level >= 0) {
-                switch (reader.next()) {
-                    case START_ELEMENT:
-                        level++;
-                        QName qname = reader.getName();
-                        //System.out.println("Spring TypeLoader - found element with name: " + qname.toString());
-                        if (matches(IMPORT_ELEMENT, qname)) {
-                            //FIXME - put the sequence of code below which gets the ireader into a subsidiary method
-                            String location = reader.getAttributeValue(null, "resource");
-                            if (location != null) {
-                                // FIXME - need to find a right way of generating this path
-                                String resourcePath =
-                                    contextPath.substring(0, contextPath.lastIndexOf("/") + 1) + location;
-                                XMLStreamReader ireader = getApplicationContextReader(resolver, resourcePath, context);
-                                // Read the context definition for the identified imported resource
-                                readContextDefinition(resolver, ireader, resourcePath, // The new context path
-                                                      visited,
-                                                      beans,
-                                                      services,
-                                                      references,
-                                                      scaproperties,
-                                                      context);
-                            }
-                        } else if (SCA_SERVICE_ELEMENT.equals(qname)) {
-                            // The value of the @name attribute of an <sca:service/> subelement of a <beans/> 
-                            // element MUST be unique amongst the <sca:service/> subelements of the <beans/> element.
-                            if (!services.isEmpty() && (services.contains(reader.getAttributeValue(null, "name"))))
-                                error(context.getMonitor(), "ScaServiceNameNotUnique", resolver);
-
-                            SpringSCAServiceElement service =
-                                new SpringSCAServiceElement(reader.getAttributeValue(null, "name"),
-                                                            reader.getAttributeValue(null, "target"));
-                            if (reader.getAttributeValue(null, "type") != null)
-                                service.setType(reader.getAttributeValue(null, "type"));
-                            policyProcessor.readPolicies(service, reader);
-                            services.add(service);
-                        } else if (SCA_REFERENCE_ELEMENT.equals(qname)) {
-                            // The value of the @name attribute of an <sca:reference/> subelement of a <beans/> 
-                            // element MUST be unique amongst the @name attributes of the <sca:reference/> subelements, 
-                            // of the <beans/> element.
-                            if (!references.isEmpty() && (references.contains(reader.getAttributeValue(null, "name"))))
-                                error(context.getMonitor(), "ScaReferenceNameNotUnique", resolver);
-
-                            SpringSCAReferenceElement reference =
-                                new SpringSCAReferenceElement(reader.getAttributeValue(null, "name"),
-                                                              reader.getAttributeValue(null, "type"));
-                            if (reader.getAttributeValue(null, "default") != null)
-                                reference.setDefaultBean(reader.getAttributeValue(null, "default"));
-                            policyProcessor.readPolicies(reference, reader);
-                            references.add(reference);
-                        } else if (SCA_PROPERTY_ELEMENT.equals(qname)) {
-                            // The value of the @name attribute of an <sca:property/> subelement of a <beans/> 
-                            // element MUST be unique amongst the @name attributes of the <sca:property/> subelements, 
-                            // of the <beans/> element.
-                            if (!scaproperties.isEmpty() && (scaproperties.contains(reader.getAttributeValue(null,
-                                                                                                             "name"))))
-                                error(context.getMonitor(), "ScaPropertyNameNotUnique", resolver);
-
-                            SpringSCAPropertyElement scaproperty =
-                                new SpringSCAPropertyElement(reader.getAttributeValue(null, "name"),
-                                                             reader.getAttributeValue(null, "type"));
-                            scaproperties.add(scaproperty);
-                        } else if (matches(BEAN_ELEMENT, qname)) {
-                            bean =
-                                new SpringBeanElement(reader.getAttributeValue(null, "id"),
-                                                      reader.getAttributeValue(null, "class"));
-                            if (reader.getAttributeValue(null, "abstract") != null)
-                                if (reader.getAttributeValue(null, "abstract").equals("true"))
-                                    bean.setAbstractBean(true);
-                            if (reader.getAttributeValue(null, "parent") != null)
-                                if (!reader.getAttributeValue(null, "parent").equals(""))
-                                    bean.setParentAttribute(true);
-                            if (reader.getAttributeValue(null, "factory-bean") != null)
-                                if (!reader.getAttributeValue(null, "factory-bean").equals(""))
-                                    bean.setFactoryBeanAttribute(true);
-                            if (reader.getAttributeValue(null, "factory-method") != null)
-                                if (!reader.getAttributeValue(null, "factory-method").equals(""))
-                                    bean.setFactoryMethodAttribute(true);
-                            // Set the first name as bean name, when the @id attribute is absent.
-                            if (reader.getAttributeValue(null, "id") == null) {
-                                if (reader.getAttributeValue(null, "name") != null) {
-                                    String[] names = (reader.getAttributeValue(null, "name")).split(",");
-                                    bean.setId(names[0]);
-                                }
-                            }
-                            beans.add(bean);
-                            if (log.isLoggable(Level.FINE)) {
-                                log.log(Level.FINE, "Adding Spring bean ..." + bean.getId() + " from " + contextPath);
-                            }
-                            // Read the <bean> element and its child elements
-                            readBeanDefinition(reader, bean, beans);
-                        } // end if
-                        
-                        // [rfeng] If it reaches end-element, proceed to the case END_ELEMENT test
-                        if (reader.getEventType() != END_ELEMENT) {
-                            break;
-                        }
-                    case END_ELEMENT:
-                        level--;
-                        if (level == 0) {
-                            // Now we are back the root element
-                            return;
-                        }
-                        break;
-                } // end switch
-            } // end while
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
-        }
-    }
-
-    /**
-     * Method which reads the bean definitions from Spring application-context.xml file and identifies
-     * the defined beans, properties, services and references
-     */
-    private void readBeanDefinition(XMLStreamReader reader, SpringBeanElement bean, List<SpringBeanElement> beans)
-        throws ContributionReadException {
-
-        SpringBeanElement innerbean = null;
-        SpringPropertyElement property = null;
-        SpringConstructorArgElement constructorArg = null;
-
-        try {
-            int level = 0;
-            while (level >= 0) {
-                switch (reader.next()) {
-                    case START_ELEMENT:
-                        level++;
-                        QName qname = reader.getName();
-                        if (matches(BEAN_ELEMENT, qname)) {
-                            innerbean =
-                                new SpringBeanElement(reader.getAttributeValue(null, "id"),
-                                                      reader.getAttributeValue(null, "class"));
-                            // Set the first name as bean name, when the @id attribute is absent.
-                            if (reader.getAttributeValue(null, "id") == null) {
-                                if (reader.getAttributeValue(null, "name") != null) {
-                                    String[] names = (reader.getAttributeValue(null, "name")).split(",");
-                                    innerbean.setId(names[0]);
-                                }
-                            }
-                            innerbean.setInnerBean(true);
-                            beans.add(innerbean);
-                            readBeanDefinition(reader, innerbean, beans);
-                        } else if (matches(PROPERTY_ELEMENT, qname)) {
-                            property = new SpringPropertyElement(reader.getAttributeValue(null, "name"));
-                            if (reader.getAttributeValue(null, "ref") != null)
-                                property.addRef(reader.getAttributeValue(null, "ref"));
-                            bean.addProperty(property);
-                        } else if (matches(CONSTRUCTORARG_ELEMENT, qname)) {
-                            constructorArg = new SpringConstructorArgElement(reader.getAttributeValue(null, "type"));
-                            if (reader.getAttributeValue(null, "ref") != null)
-                                constructorArg.addRef(reader.getAttributeValue(null, "ref"));
-                            if (reader.getAttributeValue(null, "index") != null)
-                                constructorArg.setIndex((new Integer(reader.getAttributeValue(null, "index")))
-                                    .intValue());
-                            if (reader.getAttributeValue(null, "value") != null)
-                                constructorArg.addValue(reader.getAttributeValue(null, "value"));
-                            bean.addCustructorArgs(constructorArg);
-                        } else if (matches(REF_ELEMENT, qname)) {
-                            String ref = reader.getAttributeValue(null, "bean");
-                            // Check if the parent element is a property
-                            if (property != null)
-                                property.addRef(ref);
-                            // Check if the parent element is a constructor-arg
-                            if (constructorArg != null)
-                                constructorArg.addRef(ref);
-                        } else if (matches(VALUE_ELEMENT, qname)) {
-                            String value = reader.getElementText();
-                            // Check if the parent element is a constructor-arg
-                            if (constructorArg != null)
-                                constructorArg.addValue(value);
-                        } else if (matches(LIST_ELEMENT, qname) || matches(SET_ELEMENT, qname) || matches(MAP_ELEMENT, qname)) {
-                            if (property != null)
-                                readCollections(reader, bean, beans, property, null);
-                            if (constructorArg != null)
-                                readCollections(reader, bean, beans, null, constructorArg);
-                        } // end if
-                        // [rfeng] If it reaches end-element, proceed to the case END_ELEMENT test
-                        if (reader.getEventType() != END_ELEMENT) {
-                            break;
-                        }
-                    case END_ELEMENT:
-                        level--;
-                        break;
-                } // end switch
-            } // end while
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
-        }
-    }
-
-    /**
-     * Method which reads the collection elements from Spring application-context.xml file and identifies
-     * the defined beans, list, maps and sets
-     */
-    private void readCollections(XMLStreamReader reader,
-                                 SpringBeanElement bean,
-                                 List<SpringBeanElement> beans,
-                                 SpringPropertyElement property,
-                                 SpringConstructorArgElement constructorArg) throws ContributionReadException {
-
-        SpringBeanElement innerbean = null;
-
-        try {
-            int level = 0;
-            while (level >= 0) {
-                switch (reader.next()) {
-                    case START_ELEMENT:
-                        level++;
-                        QName qname = reader.getName();
-                        if (matches(BEAN_ELEMENT, qname)) {
-                            innerbean =
-                                new SpringBeanElement(reader.getAttributeValue(null, "id"),
-                                                      reader.getAttributeValue(null, "class"));
-                            // Set the first name as bean name, when the @id attribute is absent.
-                            if (reader.getAttributeValue(null, "id") == null)
-                                if (reader.getAttributeValue(null, "name") != null) {
-                                    String[] names = (reader.getAttributeValue(null, "name")).split(",");
-                                    innerbean.setId(names[0]);
-                                }
-                            innerbean.setInnerBean(true);
-                            beans.add(innerbean);
-                            readBeanDefinition(reader, innerbean, beans);
-                        } else if (matches(REF_ELEMENT, qname)) {
-                            String ref = reader.getAttributeValue(null, "bean");
-                            if (property != null)
-                                property.addRef(ref);
-                            if (constructorArg != null)
-                                constructorArg.addRef(ref);
-                        } else if (matches(LIST_ELEMENT, qname) || matches(SET_ELEMENT, qname) || matches(MAP_ELEMENT, qname)) {
-                            if (property != null)
-                                readCollections(reader, innerbean, beans, property, null);
-                            if (constructorArg != null)
-                                readCollections(reader, innerbean, beans, null, constructorArg);
-                        } else if (matches(ENTRY_ELEMENT, qname)) {
-                            String keyRef = reader.getAttributeValue(null, "key-ref");
-                            String valueRef = reader.getAttributeValue(null, "value-ref");
-                            if (property != null) {
-                                property.addRef(keyRef);
-                                property.addRef(valueRef);
-                            }
-                            if (constructorArg != null) {
-                                constructorArg.addRef(keyRef);
-                                constructorArg.addRef(valueRef);
-                            }
-                        } // end if
-                        // [rfeng] If it reaches end-element, proceed to the case END_ELEMENT test
-                        if (reader.getEventType() != END_ELEMENT) {
-                            break;
-                        }
-                    case END_ELEMENT:
-                        level--;
-                        break;
-                } // end switch
-            } // end while
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
-        }
     }
 
     /**
@@ -643,7 +298,7 @@ public class SpringXMLComponentTypeLoader {
                 String beanName = serviceElement.getTarget();
                 for (SpringBeanElement beanElement : beans) {
                     if (beanName.equals(beanElement.getId())) {
-                        if (isvalidBeanForService(beanElement)) {
+                        if (isValidBeanForService(beanElement)) {
                             // add the required intents and policySets for the service
                             theService.getRequiredIntents().addAll(serviceElement.getRequiredIntents());
                             theService.getPolicySets().addAll(serviceElement.getPolicySets());
@@ -713,7 +368,7 @@ public class SpringXMLComponentTypeLoader {
                     SpringBeanElement beanElement = itb.next();
 
                     // If its not a valid bean for service, ignore it
-                    if (!isvalidBeanForService(beanElement)) {
+                    if (!isValidBeanForService(beanElement)) {
                         continue;
                     }
                     try {
@@ -746,9 +401,9 @@ public class SpringXMLComponentTypeLoader {
             itb = beans.iterator();
             while (itb.hasNext()) {
                 SpringBeanElement beanElement = itb.next();
-                
+
                 // If its not a valid bean for service, ignore it
-                if (!isvalidBeanForService(beanElement)) {
+                if (!isValidBeanForService(beanElement)) {
                     continue;
                 }
                 // Ignore if the bean has no properties and constructor arguments
@@ -794,7 +449,6 @@ public class SpringXMLComponentTypeLoader {
                                     break;
                                 } // end if
                             } // end for
-                            
 
                             // Store the unresolved references as unresolvedBeanRef in the Spring Implementation type
                             for (Property scaproperty : beanProperties) {
@@ -1015,7 +669,7 @@ public class SpringXMLComponentTypeLoader {
     /**
      * Validates whether a bean definition is valid for exposing as service.
      */
-    private boolean isvalidBeanForService(SpringBeanElement beanElement) {
+    private boolean isValidBeanForService(SpringBeanElement beanElement) {
 
         if (beanElement.isInnerBean())
             return false;

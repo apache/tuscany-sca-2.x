@@ -39,6 +39,10 @@ public class SpringSCAServiceElement {
     private List<Intent> intents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
 
+    public SpringSCAServiceElement() {
+
+    }
+
     public SpringSCAServiceElement(String name, String target) {
         this.name = name;
         this.target = target;
@@ -74,6 +78,15 @@ public class SpringSCAServiceElement {
 
     public List<PolicySet> getPolicySets() {
         return policySets;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SpringSCAServiceElement [name=").append(name).append(", type=").append(type)
+            .append(", target=").append(target).append(", intents=").append(intents).append(", policySets=")
+            .append(policySets).append("]");
+        return builder.toString();
     }
 
 } // end class SpringSCAServiceElement

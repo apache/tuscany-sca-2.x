@@ -19,8 +19,9 @@
 package org.apache.tuscany.sca.implementation.spring;
 
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -33,7 +34,6 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * Represents a Spring implementation.
@@ -48,11 +48,11 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
     private List<URL> resource;
     private ComponentType componentType;
     // Mapping of Services to Beans
-    private Hashtable<String, SpringBeanElement> serviceMap;
+    private Map<String, SpringBeanElement> serviceMap;
     // Mapping of property names to Java class
-    private Hashtable<String, Class<?>> propertyMap;
+    private Map<String, Class<?>> propertyMap;
     // List of unresolved bean property references
-    private Hashtable<String, Reference> unresolvedBeanRef;
+    private Map<String, Reference> unresolvedBeanRef;
     private ClassLoader classLoader;
 
     public SpringImplementation() {
@@ -60,9 +60,9 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
         this.location = null;
         this.resource = null;
         setUnresolved(true);
-        serviceMap = new Hashtable<String, SpringBeanElement>();
-        propertyMap = new Hashtable<String, Class<?>>();
-        unresolvedBeanRef = new Hashtable<String, Reference>();
+        serviceMap = new HashMap<String, SpringBeanElement>();
+        propertyMap = new HashMap<String, Class<?>>();
+        unresolvedBeanRef = new HashMap<String, Reference>();
     } // end method SpringImplementation
 
     /* Returns the location attribute for this Spring implementation */
@@ -171,12 +171,8 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
      * Use preProcess to validate and map the references and properties dynamically
      */
     public void build(Component component) {
-        if (!(component instanceof RuntimeComponent))
-            return;
 
-        RuntimeComponent rtc = (RuntimeComponent)component;
-
-        for (Reference reference : rtc.getReferences()) {
+        for (Reference reference : component.getReferences()) {
             if (unresolvedBeanRef.containsKey(reference.getName())) {
                 Reference ref = unresolvedBeanRef.get(reference.getName());
                 componentType.getReferences().add(createReference(reference, ref.getInterfaceContract()));
@@ -184,7 +180,7 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
             }
         }
 
-        for (Property property : rtc.getProperties()) {
+        for (Property property : component.getProperties()) {
             if (unresolvedBeanRef.containsKey(property.getName())) {
                 componentType.getProperties().add(createProperty(property));
                 this.setPropertyClass(property.getName(), property.getClass());
@@ -251,5 +247,13 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SpringImplementation [location=").append(location).append(", resource=").append(resource)
+            .append("]");
+        return builder.toString();
     }
 }

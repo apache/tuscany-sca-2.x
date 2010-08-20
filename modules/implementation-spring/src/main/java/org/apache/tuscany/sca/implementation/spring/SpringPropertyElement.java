@@ -33,6 +33,9 @@ public class SpringPropertyElement {
     private List<String> refs = new ArrayList<String>();
     private List<String> values = new ArrayList<String>();
 
+    public SpringPropertyElement() {
+    }
+
     public SpringPropertyElement(String name) {
         this.name = name;
     }
@@ -55,6 +58,14 @@ public class SpringPropertyElement {
 
     public void addValue(String value) {
         this.values.add(value);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SpringPropertyElement [name=").append(name).append(", refs=").append(refs).append(", values=")
+            .append(values).append("]");
+        return builder.toString();
     }
 
 } // end class SpringPropertyElement

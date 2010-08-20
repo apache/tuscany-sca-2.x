@@ -24,6 +24,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import org.apache.tuscany.sca.implementation.spring.provider.ComponentWrapper;
 import org.oasisopen.sca.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
@@ -35,9 +36,9 @@ import org.springframework.util.ReflectionUtils;
 public class ReferenceAnnotationProcessor implements BeanPostProcessor {
 
     private Class<? extends Annotation> referenceAnnotationType = Reference.class;
-    private ComponentStub component;
+    private ComponentWrapper component;
 
-    public ReferenceAnnotationProcessor(ComponentStub component) {
+    public ReferenceAnnotationProcessor(ComponentWrapper component) {
         this.component = component;
     }
 

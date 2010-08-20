@@ -30,23 +30,34 @@
 
     <dependencies>
 
-        <!-- **************************************** -->
-        <!-- *                                      * -->
-        <!-- * DONT ADD ANY TUSCANY DEPENDENCIES!!! * -->
-        <!-- *                                      * -->
-        <!-- * See the README for details why not   * -->
-        <!-- *                                      * -->
-        <!-- *                                      * -->
-        <!-- **************************************** -->
-
-        <!-- SCA API dependency -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-sca-api</artifactId>
+            <artifactId>tuscany-implementation-spring</artifactId>
             <version>2.0-SNAPSHOT</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-spi</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        
         <!-- Spring dependencies... -->
         <dependency>
             <groupId>org.springframework</groupId>

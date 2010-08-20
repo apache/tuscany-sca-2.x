@@ -35,6 +35,10 @@ public class SpringConstructorArgElement {
     private List<String> refs = new ArrayList<String>();
     private List<String> values = new ArrayList<String>();
 
+    public SpringConstructorArgElement() {
+        
+    }
+    
     public SpringConstructorArgElement(String type) {
         this.type = type;
     }
@@ -73,5 +77,14 @@ public class SpringConstructorArgElement {
 
     public void addValue(String value) {
         this.values.add(value);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SpringConstructorArgElement [type=").append(type).append(", autoIndex=").append(autoIndex)
+            .append(", index=").append(index).append(", refs=").append(refs).append(", values=").append(values)
+            .append("]");
+        return builder.toString();
     }
 }

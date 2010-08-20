@@ -16,7 +16,10 @@
  */
 package org.apache.tuscany.sca.implementation.spring.namespace;
 
+import org.apache.tuscany.sca.implementation.spring.SpringSCAReferenceElement;
+import org.apache.tuscany.sca.implementation.spring.context.SCAGenericApplicationContext;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
@@ -29,6 +32,16 @@ import org.w3c.dom.Element;
 public class ScaReferenceBeanDefinitionParser implements BeanDefinitionParser {
 
     public BeanDefinition parse(Element element, ParserContext parserContext) {
+        BeanDefinitionRegistry registry = parserContext.getRegistry();
+        if (registry instanceof SCAGenericApplicationContext) {
+            SCAGenericApplicationContext context = (SCAGenericApplicationContext)registry;
+            SpringSCAReferenceElement referenceElement =
+                new SpringSCAReferenceElement(element.getAttributeNS(null, "name"),
+                                              element.getAttributeNS(null, "type"));
+            referenceElement.setDefaultBean(element.getAttributeNS(null, "default"));
+            context.addSCAReferenceElement(referenceElement);
+        }
+
         // do nothing, this is handled by Tuscany
         return null;
     }

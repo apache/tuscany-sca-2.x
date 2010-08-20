@@ -28,6 +28,10 @@ public class SpringSCAPropertyElement {
     private String name;
     private String type;
 
+    public SpringSCAPropertyElement() {
+        super();
+    }
+
     public SpringSCAPropertyElement(String name, String type) {
         this.name = name;
         this.type = type;
@@ -47,6 +51,13 @@ public class SpringSCAPropertyElement {
 
     public String getType() {
         return type;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SpringSCAPropertyElement [name=").append(name).append(", type=").append(type).append("]");
+        return builder.toString();
     }
 
 } // end class SpringPropertyElement
