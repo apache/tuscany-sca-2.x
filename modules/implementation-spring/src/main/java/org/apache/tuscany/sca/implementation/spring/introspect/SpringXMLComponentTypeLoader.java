@@ -124,7 +124,25 @@ public class SpringXMLComponentTypeLoader {
             monitor.problem(problem);
         }
     }
-
+    /**
+     * Report a error.
+     *
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "impl-spring-validation-messages",
+                                      Severity.WARNING,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
+            monitor.problem(problem);
+        }
+    }
     protected Class<SpringImplementation> getImplementationClass() {
         return SpringImplementation.class;
     }
@@ -605,8 +623,11 @@ public class SpringXMLComponentTypeLoader {
                 if (serviceElement.getTarget().equals(beanElement.getId()))
                     targetBeanExists = true;
             }
-            if (!targetBeanExists)
-                error(monitor, "TargetBeanDoesNotExist", beans);
+            if (!targetBeanExists) {
+                // REVIEW: [rfeng] The target bean can exist in the parent Spring application context which we don't know
+                // until runtime
+                warning(monitor, "TargetBeanDoesNotExist", beans);
+            }
         } // end while
 
         // The value of the @name attribute of an <sca:reference/> subelement of a <beans/> 
