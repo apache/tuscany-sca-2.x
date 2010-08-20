@@ -314,6 +314,7 @@ public class SpringXMLComponentTypeLoader {
                 componentType.getServices().add(theService);
                 // Add this service to the Service / Bean map
                 String beanName = serviceElement.getTarget();
+                boolean found = false;
                 for (SpringBeanElement beanElement : beans) {
                     if (beanName.equals(beanElement.getId())) {
                         if (isValidBeanForService(beanElement)) {
@@ -321,9 +322,18 @@ public class SpringXMLComponentTypeLoader {
                             theService.getRequiredIntents().addAll(serviceElement.getRequiredIntents());
                             theService.getPolicySets().addAll(serviceElement.getPolicySets());
                             implementation.setBeanForService(theService, beanElement);
+                            found = true;
+                            break;
                         }
                     }
                 } // end for
+                
+                if (!found) {
+                    // REVIEW: Adding a SpringBeanElement "proxy" so that the bean id can be used at runtime to look
+                    // up the bean instance from the parent context
+                    implementation.setBeanForService(theService,
+                                                     new SpringBeanElement(serviceElement.getTarget(), null));
+                }
             } // end while
 
             // Next handle the references
