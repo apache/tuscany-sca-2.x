@@ -25,6 +25,7 @@ import java.net.URI;
 import java.util.List;
 
 import javax.wsdl.PortType;
+import javax.wsdl.WSDLElement;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -371,8 +372,8 @@ public class WSDLInterfaceProcessor extends BaseStAXArtifactProcessor implements
         
         // if the contract has a location but no WSDL definition yet we need to read the WSDL
         // from the specified location and create an interface based on the first port type
-        // this is required if the user uses the @WebService(wsdlLocatio="") annotation in a
-        // Java component implementation. 
+        // this is required if the user uses the @WebService(wsdlLocation="") or 
+        // @WebServiceProvider(wsdlLocation="") annotation in a Java component implementation. 
         if (wsdlInterfaceContract.getLocation() != null &&
             wsdlInterface.getWsdlDefinition() == null){
             
@@ -383,31 +384,40 @@ public class WSDLInterfaceProcessor extends BaseStAXArtifactProcessor implements
             try {
                 wsdlFileURI = new URI(wsdlInterfaceContract.getLocation());
             } catch (Exception ex) {
-                ex.printStackTrace();
-                // TODO - raise error
+                Monitor.error(context.getMonitor(), 
+                        WSDLInterfaceProcessor.class.getName(), 
+                        "interface-wsdlxml-validation-messages", 
+                        "wsdliLocationException", 
+                        ex.getMessage() );
+                return;
             }
             
-            if (wsdlFileURI.isAbsolute()){
-                // use the wsdli:wsdlLocation mechanism in the WSDLModelResolver to 
-                // load the WSDL from an absolute location                
-                wsdlDefinition = wsdlFactory.createWSDLDefinition();
-                wsdlDefinition.setUnresolved(true);
-                wsdlDefinition.setNamespace("nonamespace"); 
-                wsdlDefinition.getWsdliLocations().put("nonamespace", wsdlInterfaceContract.getLocation());
-            } else {
-                // Find the wsdl in the contribution ready for further resolution
-                try {
-                    URI contributionLocation = new URI(context.getContribution().getLocation());
-                    URI wsdlLocation = contributionLocation.resolve(wsdlFileURI);
+            // We need to find a portType from the user specified WSDL (the first one?) from which to defined
+            // the service interface. We can't just use the Tuscany resolution mechanism to find the WSDL file
+            // as that lumps together all WSDL in the same namespace. That's fine if you already know what portType
+            // your after. In this case we don't so we have to get the WSDL specified, find out what it's first portType
+            // is and then go from there with the usual Tuscany resolution mechanism
+            try {
+                if (wsdlFileURI.isAbsolute()){
+                    // use the wsdli:wsdlLocation mechanism in the WSDLModelResolver to 
+                    // load the WSDL from an absolute location                
+                    wsdlDefinition = wsdlFactory.createWSDLDefinition();
+                    wsdlDefinition.setUnresolved(true);
+                    wsdlDefinition.setNamespace("nonamespace"); 
+                    wsdlDefinition.getWsdliLocations().put("nonamespace", wsdlInterfaceContract.getLocation());
+                    wsdlDefinition.setLocation(new URI(wsdlInterfaceContract.getLocation()));
+                } else {
+                    // Find the wsdl in the contribution ready for further resolution
                     for (Artifact artifact : context.getContribution().getArtifacts()) {
-                        // TODO - SL a hack while I work out if the bigger picture will hang together
-                        //        need more intelligence when applying a relative URI to an existing URI. 
                         if (artifact.getLocation().endsWith(wsdlInterfaceContract.getLocation())){
-                            //URI artifactLocation = new URI(artifact.getLocation()).normalize();
-                            //if (artifactLocation.equals(wsdlLocation)){
-                                wsdlDefinition = artifact.getModel();
-                                break;
-                            //}
+                            WSDLDefinition artifactWSDLDefinition = artifact.getModel();
+                            wsdlDefinition = wsdlFactory.createWSDLDefinition();
+                            wsdlDefinition.setUnresolved(true);
+                            wsdlDefinition.setNamespace(artifactWSDLDefinition.getNamespace()); 
+                            wsdlDefinition.getWsdliLocations().put(artifactWSDLDefinition.getNamespace(), 
+                                                                   artifact.getLocation());
+                            wsdlDefinition.setLocation(new URI(artifact.getLocation()));
+                            break;
                         }
                     }
                     
@@ -419,26 +429,33 @@ public class WSDLInterfaceProcessor extends BaseStAXArtifactProcessor implements
                                 "WSDL not found inside contribution at relative URI " + wsdlFileURI );
                         return;
                     }
-                    
-                } catch (Exception ex) {
-                    Monitor.error(context.getMonitor(), 
-                                  WSDLInterfaceProcessor.class.getName(), 
-                                  "interface-wsdlxml-validation-messages", 
-                                  "wsdliLocationException", 
-                                  ex.getMessage() );
-                    return;
-                    
                 }
+            } catch (Exception ex) {
+                Monitor.error(context.getMonitor(), 
+                              WSDLInterfaceProcessor.class.getName(), 
+                              "interface-wsdlxml-validation-messages", 
+                              "wsdliLocationException", 
+                              ex.getMessage() );
+                return;
             }
             
-            wsdlInterface.setWsdlDefinition(wsdlDefinition);
+            wsdlDefinition.setUnresolved(true);
+            wsdlDefinition = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition, context);
+            // create the interface based on the first port type
             PortType portType = (PortType)wsdlDefinition.getDefinition().getAllPortTypes().values().iterator().next();
-            if(portType != null){
-                wsdlInterface.setName(portType.getQName());
-            } else {
-                // raise an error
-            }
-                
+            try {
+                WSDLInterface newWSDLInterface = wsdlFactory.createWSDLInterface(portType, wsdlDefinition, resolver, monitor);
+                newWSDLInterface.getRequiredIntents().addAll(wsdlInterface.getRequiredIntents());
+                newWSDLInterface.getPolicySets().addAll(wsdlInterface.getPolicySets());
+                wsdlInterface = newWSDLInterface;
+            } catch (InvalidInterfaceException e) {
+                ContributionResolveException ce = new ContributionResolveException("Invalid interface when resolving " + 
+                                                                                    portType.toString(), e);
+                error(monitor, "ContributionResolveException", wsdlFactory, ce);
+            }    
+            
+            wsdlInterface.setWsdlDefinition(wsdlDefinition);
+            wsdlInterfaceContract.setInterface(wsdlInterface);
         }
         
         // Resolve the interface and callback interface
