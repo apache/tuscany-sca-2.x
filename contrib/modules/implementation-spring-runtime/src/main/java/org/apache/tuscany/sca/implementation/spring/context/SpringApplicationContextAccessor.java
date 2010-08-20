@@ -17,7 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.spring.provider;
+package org.apache.tuscany.sca.implementation.spring.context;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * A utility to receive the parent Spring application context 
@@ -28,12 +30,12 @@ public interface SpringApplicationContextAccessor {
      * application context for implementation.spring components
      * @return The parent application context
      */
-    Object getParentApplicationContext();
+    ApplicationContext getParentApplicationContext();
 
     /**
      * Set the root Spring application context. This is particually useful for Spring web integration where Spring
      * creates WebApplicationContext and keeps it in the ServletContext
      * @param parentApplicationContext The parent application context
      */
-    void setParentApplicationContext(Object parentApplicationContext);
+    void setParentApplicationContext(ApplicationContext parentApplicationContext);
 }

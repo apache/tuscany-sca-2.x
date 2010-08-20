@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.implementation.spring.SpringImplementation;
+import org.apache.tuscany.sca.implementation.spring.context.SpringApplicationContextAccessor;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -61,7 +62,7 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
                                                                SpringImplementation implementation) {
         ApplicationContext parentApplicationContext =
-            (contextAccessor != null) ? (ApplicationContext)contextAccessor.getParentApplicationContext() : null;
+            (contextAccessor != null) ? contextAccessor.getParentApplicationContext() : null;
         SpringImplementationWrapper tie =
             new SpringImplementationWrapper(implementation, parentApplicationContext, component, propertyFactory);
         return new SpringImplementationProvider(component, tie, parentApplicationContext, proxyFactory, propertyFactory);

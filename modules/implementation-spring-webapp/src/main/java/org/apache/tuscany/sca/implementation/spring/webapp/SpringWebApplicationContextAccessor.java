@@ -26,7 +26,7 @@ import javax.servlet.ServletContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.host.http.ExtensibleServletHost;
-import org.apache.tuscany.sca.implementation.spring.invocation.SpringApplicationContextAccessor;
+import org.apache.tuscany.sca.implementation.spring.context.SpringApplicationContextAccessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -62,12 +62,12 @@ public class SpringWebApplicationContextAccessor implements SpringApplicationCon
         parentApplicationContext = null;
     }
 
-    public Object getParentApplicationContext() {
+    public ApplicationContext getParentApplicationContext() {
         return parentApplicationContext;
     }
 
-    public void setParentApplicationContext(Object parentApplicationContext) {
-        this.parentApplicationContext = (ApplicationContext) parentApplicationContext;
+    public void setParentApplicationContext(ApplicationContext parentApplicationContext) {
+        this.parentApplicationContext = parentApplicationContext;
     }
 
 }

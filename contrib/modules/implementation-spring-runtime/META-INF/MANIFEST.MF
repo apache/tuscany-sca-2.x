@@ -51,13 +51,13 @@ Import-Package: org.oasisopen.sca;version="2.0.0",
  org.springframework.core;version="3.0.2.RELEASE",
  org.springframework.core.io;version="3.0.2.RELEASE",
  org.springframework.util;version="3.0.2.RELEASE"
-Export-Package: org.apache.tuscany.sca.implementation.spring.provider;version="2.0.0";
-  uses:="org.apache.tuscany.sca.invocation,
-   org.apache.tuscany.sca.runtime,
-   org.apache.tuscany.sca.context,
-   org.apache.tuscany.sca.provider,
+Export-Package: org.apache.tuscany.sca.implementation.spring.context;version="2.0.0";
+  uses:="org.springframework.beans.factory.support,
+   org.springframework.context.support,
+   org.springframework.core.io,
    org.apache.tuscany.sca.implementation.spring,
-   org.apache.tuscany.sca.core,
-   org.apache.tuscany.sca.core.invocation,
-   org.apache.tuscany.sca.interfacedef"
+   org.springframework.context,
+   org.apache.tuscany.sca.implementation.spring.provider,
+   org.springframework.beans.factory.config,
+   org.springframework.beans.factory"
 
