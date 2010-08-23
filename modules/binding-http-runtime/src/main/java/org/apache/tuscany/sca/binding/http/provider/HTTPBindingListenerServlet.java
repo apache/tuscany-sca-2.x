@@ -75,13 +75,14 @@ public class HTTPBindingListenerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get the request path
-        String path = URLDecoder.decode(request.getPathInfo(), "UTF-8");
-        if (path.length() ==0) {            
+        String pathInfo = request.getPathInfo();
+        if (pathInfo == null || pathInfo.length() == 0) {            
             // Redirect to a URL ending with / to make relative hrefs work
             // relative to the served resource.
             response.sendRedirect(request.getRequestURL().append('/').toString());
             return;
         }
+        String path = URLDecoder.decode(pathInfo, "UTF-8");
 
         // Invoke the get operation on the service implementation
         Message requestMessage = messageFactory.createMessage();
