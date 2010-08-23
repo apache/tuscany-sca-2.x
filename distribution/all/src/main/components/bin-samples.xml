@@ -59,6 +59,9 @@
                 <exclude>webapps/*/target/**/*</exclude>
                 <exclude>helloworld-bpel/target/sample-helloworld-bpel</exclude>
                 <exclude>helloworld-bpel/target/sample-helloworld-bpel/**/*</exclude>
+                <exclude>binding-jsonrpc/contribution-calculator-webapp/target/**/*</exclude>
+                <exclude>binding-jsonrpc/contribution-calculator-webapp/target</exclude>
+                <exclude>binding-jsonrpc/contribution-calculator-webapp/src/main/webapp/dojo/**/*</exclude>
             </excludes>
         </fileSet>
     </fileSets>
