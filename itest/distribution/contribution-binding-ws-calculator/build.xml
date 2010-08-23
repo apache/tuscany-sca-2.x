@@ -33,7 +33,7 @@
     <target name="run"> 
     	
         <ant antfile="build.xml"
-             dir="${distro.root}/samples/contribution-binding-ws-calculator"/>
+             dir="${distro.root}/samples/binding-ws/contribution-calculator"/>
 
     </target>
 

@@ -73,7 +73,7 @@ public class SampleJSELauncher extends RuntimeIntegration {
      * Using a Tuscany specific mechanism for getting at local service proxies
      */
     public void launchBindingWSCalculator() throws NoSuchDomainException, NoSuchServiceException{
-        Node node = startNode(new Contribution("c1", "../contribution-binding-ws-calculator/target/sample-contribution-binding-ws-calculator.jar"));
+        Node node = startNode(new Contribution("c1", "../binding-ws/contribution-calculator/target/sample-contribution-binding-ws-calculator.jar"));
         
         CalculatorService calculator = node.getService(CalculatorService.class, "CalculatorServiceComponent");
                

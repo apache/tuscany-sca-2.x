@@ -49,9 +49,7 @@
      ********* -->
      
                 <module>helloworld-bpel</module>
-                <module>helloworld-spring</module>
-                <module>store</module>
-                <module>store-webapp</module>                
+                <module>helloworld-spring</module>               
                 <module>webapps/helloworld</module>
                 <module>webapps/helloworld-bpel</module>
                 <module>webapps/helloworld-jaxrs</module>
@@ -66,9 +64,9 @@
 
                 <module>binding-rmi</module>
                 <module>binding-sca</module>
-                <module>contribution-binding-ws-calculator</module>
+                <module>binding-ws</module>
                 <module>binding-jsonrpc</module>
-                <module>contribution-implementation-java-calculator</module>
+                <module>implementation-java</module>
                 <module>implementation-script</module>
 
                 <!-- contributions - Tuscany samples -->
@@ -80,6 +78,7 @@
                 <!-- don't need to process these as they just contain README files
                 <module>launcher-command-line</module>
                 <module>launcher-maven</module>
+                <module>launcher-webapp</module>
                 -->
                 <module>launcher-embedded-jse</module>
                 <module>launcher-embedded-osgi</module>
@@ -87,7 +86,8 @@
 
                 <!-- Application samples -->
 
-                <!-- TODO -->
+                <module>store</module>
+                <module>store-webapp</module> 
 
             </modules>
 

@@ -41,7 +41,7 @@ public class JSELauncherBindingWSCalculator {
      * Using the Tuscany Node API to get a local service proxy
      */
     public void launchBindingWSCalculator(){
-        Node node = NodeFactory.newInstance().createNode(new Contribution("c1", "../contribution-binding-ws-calculator/target/sample-contribution-binding-ws-calculator.jar"));
+        Node node = NodeFactory.newInstance().createNode(new Contribution("c1", "../binding-ws/contribution-calculator/target/sample-contribution-binding-ws-calculator.jar"));
         node.start();
         
         CalculatorService calculator = node.getService(CalculatorService.class, "CalculatorServiceComponent");
