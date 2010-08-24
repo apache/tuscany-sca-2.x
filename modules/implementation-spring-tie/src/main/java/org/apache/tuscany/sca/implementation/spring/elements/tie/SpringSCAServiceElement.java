@@ -18,6 +18,11 @@
  */
 package org.apache.tuscany.sca.implementation.spring.elements.tie;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 
 /**
  * Represents a <sca:service> element in a Spring application-context
@@ -31,6 +36,9 @@ public class SpringSCAServiceElement {
     private String name;
     private String type;
     private String target;
+
+    private List<QName> intentNames = new ArrayList<QName>();
+    private List<QName> policySetNames = new ArrayList<QName>();
 
 
     public SpringSCAServiceElement(String name, String target) {
@@ -61,12 +69,22 @@ public class SpringSCAServiceElement {
     public String getTarget() {
         return target;
     }
+    
+    public List<QName> getIntentNames() {
+        return intentNames;
+    }
+
+    public List<QName> getPolicySetNames() {
+        return policySetNames;
+    }
+
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("SpringSCAServiceElement [name=").append(name).append(", type=").append(type)
-            .append(", target=").append(target).append("]");
+            .append(", target=").append(target).append(", intentNames=").append(intentNames)
+            .append(", policySetNames=").append(policySetNames).append("]");
         return builder.toString();
     }
 

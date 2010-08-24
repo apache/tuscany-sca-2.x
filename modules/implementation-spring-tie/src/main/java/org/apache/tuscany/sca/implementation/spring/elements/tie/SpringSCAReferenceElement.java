@@ -18,6 +18,11 @@
  */
 package org.apache.tuscany.sca.implementation.spring.elements.tie;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 
 /**
  * Represents a <sca:reference> element in a Spring application-context
@@ -31,6 +36,10 @@ public class SpringSCAReferenceElement {
     private String name;
     private String type;
     private String defaultBean;
+    
+    private List<QName> intentNames = new ArrayList<QName>();
+    private List<QName> policySetNames = new ArrayList<QName>();
+
 
     public SpringSCAReferenceElement(String name, String type) {
         this.name = name;
@@ -60,12 +69,21 @@ public class SpringSCAReferenceElement {
     public String getDefaultBean() {
         return defaultBean;
     }
+    
+    public List<QName> getIntentNames() {
+        return intentNames;
+    }
+
+    public List<QName> getPolicySetNames() {
+        return policySetNames;
+    }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("SpringSCAReferenceElement [name=").append(name).append(", type=").append(type)
-            .append(", defaultBean=").append(defaultBean).append("]");
+            .append(", defaultBean=").append(defaultBean).append(", intentNames=").append(intentNames)
+            .append(", policySetNames=").append(policySetNames).append("]");
         return builder.toString();
     }
 

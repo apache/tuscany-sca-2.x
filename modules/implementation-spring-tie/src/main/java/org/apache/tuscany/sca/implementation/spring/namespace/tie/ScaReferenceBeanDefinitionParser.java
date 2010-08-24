@@ -16,6 +16,12 @@
  */
 package org.apache.tuscany.sca.implementation.spring.namespace.tie;
 
+import static org.apache.tuscany.sca.implementation.spring.namespace.tie.ScaNamespaceHandler.getAttribute;
+
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.implementation.spring.context.tie.SCAGenericApplicationContext;
 import org.apache.tuscany.sca.implementation.spring.elements.tie.SpringSCAReferenceElement;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -36,9 +42,21 @@ public class ScaReferenceBeanDefinitionParser implements BeanDefinitionParser {
         if (registry instanceof SCAGenericApplicationContext) {
             SCAGenericApplicationContext context = (SCAGenericApplicationContext)registry;
             SpringSCAReferenceElement referenceElement =
-                new SpringSCAReferenceElement(element.getAttributeNS(null, "name"),
-                                              element.getAttributeNS(null, "type"));
-            referenceElement.setDefaultBean(element.getAttributeNS(null, "default"));
+                new SpringSCAReferenceElement(getAttribute(element, "name"), getAttribute(element, "type"));
+            referenceElement.setDefaultBean(getAttribute(element, "default"));
+
+            String requires = getAttribute(element, "requires");
+            if (requires != null) {
+                List<QName> qnames = ScaNamespaceHandler.resolve(element, requires);
+                referenceElement.getIntentNames().addAll(qnames);
+            }
+
+            String policySets = getAttribute(element, "policySets");
+            if (policySets != null) {
+                List<QName> qnames = ScaNamespaceHandler.resolve(element, policySets);
+                referenceElement.getPolicySetNames().addAll(qnames);
+            }
+
             context.addSCAReferenceElement(referenceElement);
         }
 
