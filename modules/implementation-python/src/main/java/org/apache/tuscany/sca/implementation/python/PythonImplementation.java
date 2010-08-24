@@ -20,12 +20,16 @@ package org.apache.tuscany.sca.implementation.python;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
+import org.apache.tuscany.sca.assembly.impl.PropertyImpl;
 import org.apache.tuscany.sca.assembly.impl.ReferenceImpl;
 import org.apache.tuscany.sca.assembly.impl.ServiceImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * The model representing a Python implementation in an SCA assembly.
@@ -79,5 +83,21 @@ public class PythonImplementation extends ImplementationImpl {
     	final Reference nr = new DynReference();
     	getReferences().add(nr);
     	return nr;
-    }    
+    }
+    
+    public Property getProperty(final String n) {
+    	final Property p = super.getProperty(n);
+    	if (p != null)
+    		return p;
+    	class DynProperty extends PropertyImpl {
+    		public DynProperty() {
+    	    	setName(n);
+    	    	setDataType(new DataTypeImpl<XMLType>(null, String.class, String.class, XMLType.UNKNOWN));
+    	    	setXSDType(new QName("http://www.w3.org/2001/XMLSchema", "string"));
+			}
+    	}
+    	final Property np = new DynProperty();
+    	getProperties().add(np);
+    	return np;
+    }
 }

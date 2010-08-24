@@ -22,10 +22,12 @@ package org.apache.tuscany.sca.implementation.python.provider;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.implementation.python.PythonEval;
 import org.apache.tuscany.sca.implementation.python.PythonImplementation;
+import org.apache.tuscany.sca.implementation.python.PythonProperty;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
@@ -65,7 +67,7 @@ class PythonImplementationProvider implements ImplementationProvider {
     	python.exec("from invoker import *");
     	
     	final List<PyObject> px = new ArrayList<PyObject>();
-    	for (ComponentReference r: component.getReferences()) {
+    	for (final ComponentReference r: component.getReferences()) {
     		final PythonEval pe = pxFactory.createProxy(PythonEval.class, (RuntimeEndpointReference)r.getEndpointReferences().get(0));
             px.add(Py.java2py(new PythonEval() {
             	@Override
@@ -75,9 +77,19 @@ class PythonImplementationProvider implements ImplementationProvider {
             	}
             }));
     	}
+    	final List<PyObject> pr = new ArrayList<PyObject>();
+    	for (final ComponentProperty p: component.getProperties()) {
+    		final String v = String.valueOf(p.getValue()); 
+            pr.add(Py.java2py(new PythonProperty() {
+				@Override
+				public String eval() {
+            		return v;
+				}
+			}));
+    	}
 
     	PyObject mkc = python.get("mkcomponent");
-    	callable = mkc.__call__(new PyString(component.getName()), new PyString(implementation.getScript()), new PyTuple(px.toArray(new PyObject[0])));
+    	callable = mkc.__call__(new PyString(component.getName()), new PyString(implementation.getScript()), new PyTuple(px.toArray(new PyObject[0])), new PyTuple(pr.toArray(new PyObject[0])));
     }
 
     public void stop() {

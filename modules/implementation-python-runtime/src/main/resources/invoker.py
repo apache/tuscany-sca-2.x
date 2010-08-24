@@ -52,19 +52,37 @@ def mkproxies(jpx):
         return ()
     return cons(proxy(car(jpx)), mkproxies(cdr(jpx)))
 
+class prop:
+    def __init__(self, jpy):
+        self.jpy = jpy
+
+    def __call__(self):
+        # Eval the property
+        res = self.jpy.eval()
+        return res
+
+def __repr__(self):
+    return repr((jpy,))
+
+def mkprops(jpy):
+    if isNil(jpy):
+        return ()
+    return cons(prop(car(jpy)), mkprops(cdr(jpy)))
+
 # Make a callable component
 class component:
-    def __init__(self, name, impl, jpx):
+    def __init__(self, name, impl, jpx, jpy):
         self.name = name
         self.impl = impl[0:len(impl) - 3]
         self.mod = __import__(self.impl)
         self.proxies = mkproxies(jpx)
+        self.props = mkprops(jpy)
 
     def __call__(self, func, *args):
-        return self.mod.__getattribute__(func)(*(args + self.proxies))
+        return self.mod.__getattribute__(func)(*(args + self.proxies + self.props))
 
     def __repr__(self):
-        return repr((self.name, self.impl, self.mod, self.svcs, self.refs, self.props, self.proxies))
+        return repr((self.name, self.impl, self.mod, self.props, self.proxies))
 
 # Converts the args received in a JSON request to a list of key value pairs
 def jsonArgs(a):
@@ -84,6 +102,7 @@ def apply(jsreq, comp):
     return jsonResult(jid, v)[0]
 
 # Make a component that can be called with a JSON function request
-def mkcomponent(name, impl, jpx):
-    comp = component(name, impl, jpx)
+def mkcomponent(name, impl, jpx, jpy):
+    comp = component(name, impl, jpx, jpy)
     return lambda jsreq: apply(jsreq, comp)
+

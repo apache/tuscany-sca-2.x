@@ -61,8 +61,9 @@ public class JSONRPCBindingInvoker implements Invoker {
             String requestId = "1";
             post = new HttpPost(uri);
 
-            String req; 
-            if (!msg.getOperation().getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
+            final String db = msg.getOperation().getWrapper().getDataBinding();
+            String req;
+            if (!db.equals(JSONDataBinding.NAME)) {
             	
 
                 JSONObject jsonRequest = null;;
@@ -97,7 +98,7 @@ public class JSONRPCBindingInvoker implements Invoker {
                 //success 
                 try {
                 	String entityResponse = EntityUtils.toString(response.getEntity());                	
-                    if (!msg.getOperation().getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
+                    if (!db.equals(JSONDataBinding.NAME)) {
                         JSONObject jsonResponse = new JSONObject(entityResponse);
 
 	                    //check requestId
