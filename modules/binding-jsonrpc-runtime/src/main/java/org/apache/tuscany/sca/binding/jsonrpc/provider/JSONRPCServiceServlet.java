@@ -37,6 +37,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -99,6 +100,8 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
                 if (re.getCause() instanceof javax.security.auth.login.LoginException) {
                     response.setHeader("WWW-Authenticate", "BASIC realm=\"" + "ldap-realm" + "\"");
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                } else {
+                	re.printStackTrace();
                 }
             } finally {
                 HttpSession session = request.getSession(false);
@@ -299,7 +302,10 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
 
         requestMessage.getHeaders().put("RequestMessage", request);
 
-        requestMessage.setBody(args);
+        if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME))
+        	requestMessage.setBody(new Object[]{jsonReq.toString()});
+        else
+        	requestMessage.setBody(args);
 
         //result = wire.invoke(jsonOperation, args);
         Message responseMessage = null;
@@ -317,15 +323,20 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
 
         if (!responseMessage.isFault()) {
             //successful execution of the invocation
-            try {
+            if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
                 result = responseMessage.getBody();
-                JSONObject jsonResponse = new JSONObject();
-                jsonResponse.put("result", result);
-                jsonResponse.putOpt("id", id);
-                //get response to send to client
-                return jsonResponse.toString().getBytes("UTF-8");
-            } catch (Exception e) {
-                throw new ServiceRuntimeException("Unable to create JSON response", e);
+            	return result.toString().getBytes("UTF-8");
+            } else {
+	            try {
+	                result = responseMessage.getBody();
+	                JSONObject jsonResponse = new JSONObject();
+	                jsonResponse.put("result", result);
+	                jsonResponse.putOpt("id", id);
+	                //get response to send to client
+	                return jsonResponse.toString().getBytes("UTF-8");
+	            } catch (Exception e) {
+	                throw new ServiceRuntimeException("Unable to create JSON response", e);
+	            }
             }
         } else {
             //exception thrown while executing the invocation
@@ -354,6 +365,8 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         
         Operation result = null;
         for (Operation o : operations) {
+        	if (o.isDynamic())
+        		return o;
             if (o.getName().equalsIgnoreCase(method)) {
                 result = o;
                 break;

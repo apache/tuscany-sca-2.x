@@ -27,6 +27,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
+import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -57,48 +58,58 @@ public class JSONRPCBindingInvoker implements Invoker {
         HttpPost post = null;
         HttpResponse response = null;
         try {
-
-            JSONObject jsonRequest = null;;
             String requestId = "1";
-            Object[] args = null;
-            try {
-                // Extract the method
-                jsonRequest = new JSONObject();
-                jsonRequest.putOpt("method", "Service" + "." + msg.getOperation().getName());
-
-                // Extract the arguments
-                args = msg.getBody();
-                JSONArray array = new JSONArray();
-                for (int i = 0; i < args.length; i++) {
-                    array.put(args[i]);
-                }
-                jsonRequest.putOpt("params", array);
-                jsonRequest.put("id", requestId);
-
-            } catch (Exception e) {
-                throw new RuntimeException("Unable to parse JSON parameter", e);
-            }
-
             post = new HttpPost(uri);
-            String req = jsonRequest.toString();
-            StringEntity entity = new StringEntity(req, "application/json; charset\"UTF-8\"");
+
+            String req; 
+            if (!msg.getOperation().getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
+            	
+
+                JSONObject jsonRequest = null;;
+                Object[] args = null;
+                try {
+                    // Extract the method
+                    jsonRequest = new JSONObject();
+                    jsonRequest.putOpt("method", "Service" + "." + msg.getOperation().getName());
+
+                    // Extract the arguments
+                    args = msg.getBody();
+                    JSONArray array = new JSONArray();
+                    for (int i = 0; i < args.length; i++) {
+                        array.put(args[i]);
+                    }
+                    jsonRequest.putOpt("params", array);
+                    jsonRequest.put("id", requestId);
+
+                } catch (Exception e) {
+                    throw new RuntimeException("Unable to parse JSON parameter", e);
+                }
+                req = jsonRequest.toString();
+            } else {
+            	req = (String)((Object[])msg.getBody())[0];
+            }
+            StringEntity entity = new StringEntity(req, "UTF-8");
             post.setEntity(entity);
 
             response = httpClient.execute(post);
 
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 //success 
-                JSONObject jsonResponse = null;
                 try {
+                	String entityResponse = EntityUtils.toString(response.getEntity());                	
+                    if (!msg.getOperation().getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
+                        JSONObject jsonResponse = new JSONObject(entityResponse);
 
-                    jsonResponse = new JSONObject(EntityUtils.toString(response.getEntity()));
+	                    //check requestId
+	                    if (! jsonResponse.getString("id").equalsIgnoreCase(requestId)) {
+	                        throw new RuntimeException("Invalid response id:" + requestId );
+	                    }
 
-                    //check requestId
-                    if (! jsonResponse.getString("id").equalsIgnoreCase(requestId)) {
-                        throw new RuntimeException("Invalid response id:" + requestId );
+	                    msg.setBody(jsonResponse.get("result"));
+                    } else {
+	                    msg.setBody(entityResponse);
                     }
-
-                    msg.setBody(jsonResponse.get("result"));
+                    
                 } catch (Exception e) {
                     //FIXME Exceptions are not handled correctly here
                     // They should be reported to the client JavaScript as proper
