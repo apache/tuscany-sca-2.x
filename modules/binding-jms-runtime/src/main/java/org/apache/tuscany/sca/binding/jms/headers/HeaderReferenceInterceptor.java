@@ -24,7 +24,9 @@ package org.apache.tuscany.sca.binding.jms.headers;
 import java.util.Map;
 
 import javax.jms.DeliveryMode;
+import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.naming.NamingException;
 
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
@@ -114,7 +116,11 @@ public class HeaderReferenceInterceptor implements Interceptor {
     
                 String callbackDestName = getCallbackDestinationName(reference);
                 if (callbackDestName != null) {
-                    jmsMsg.setStringProperty(JMSBindingConstants.CALLBACK_Q_PROPERTY, callbackDestName);
+                    jmsMsg.setStringProperty(JMSBindingConstants.CALLBACK_Q_PROPERTY, "jms:jndi:" + callbackDestName);
+                    if (operation.isNonBlocking()) {
+                    	Destination dest = context.getJmsResourceFactory().lookupDestination(callbackDestName);
+						jmsMsg.setJMSReplyTo(dest);
+                    }
                 }
             }
             
@@ -140,7 +146,9 @@ public class HeaderReferenceInterceptor implements Interceptor {
             return tuscanyMsg;
         } catch (JMSException e) {
             throw new JMSBindingException(e);
-        } 
+        } catch (NamingException e) {
+            throw new JMSBindingException(e);
+		} 
     }
  
     
