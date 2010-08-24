@@ -41,6 +41,8 @@ import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Multiplicity;
@@ -76,6 +78,9 @@ import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Introspects a Spring XML application-context configuration file to create <implementation-spring../>
@@ -89,6 +94,7 @@ public class SpringXMLComponentTypeLoader {
     private ExtensionPointRegistry registry;
     private ContributionFactory contributionFactory;
     private AssemblyFactory assemblyFactory;
+    private PolicyFactory policyFactory;
     private JavaInterfaceFactory javaFactory;
     private SpringBeanIntrospector beanIntrospector;
 
@@ -99,6 +105,7 @@ public class SpringXMLComponentTypeLoader {
         this.registry = registry;
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        this.policyFactory = factories.getFactory(PolicyFactory.class);
         this.javaFactory = factories.getFactory(JavaInterfaceFactory.class);
         this.contributionFactory = factories.getFactory(ContributionFactory.class);
         this.xmlBeanDefinitionLoader =
@@ -219,6 +226,7 @@ public class SpringXMLComponentTypeLoader {
                                                    appCxtProperties,
                                                    appCxtBeans,
                                                    context);
+                populatePolicies(appCxtServices, appCxtReferences);
             }
             // Validate the beans from individual application context for uniqueness
             validateBeans(appCxtBeans, appCxtServices, appCxtReferences, appCxtProperties, context.getMonitor());
@@ -238,6 +246,35 @@ public class SpringXMLComponentTypeLoader {
 
         return;
     } // end method loadFromXML
+
+    public void populatePolicies(List<SpringSCAServiceElement> appCxtServices,
+                                 List<SpringSCAReferenceElement> appCxtReferences) {
+        for (SpringSCAReferenceElement e : appCxtReferences) {
+            for (QName qn : e.getIntentNames()) {
+                Intent intent = policyFactory.createIntent();
+                intent.setName(qn);
+                e.getRequiredIntents().add(intent);
+            }
+            for (QName qn : e.getPolicySetNames()) {
+                PolicySet ps = policyFactory.createPolicySet();
+                ps.setName(qn);
+                e.getPolicySets().add(ps);
+            }
+        }
+        
+        for (SpringSCAServiceElement e : appCxtServices) {
+            for (QName qn : e.getIntentNames()) {
+                Intent intent = policyFactory.createIntent();
+                intent.setName(qn);
+                e.getRequiredIntents().add(intent);
+            }
+            for (QName qn : e.getPolicySetNames()) {
+                PolicySet ps = policyFactory.createPolicySet();
+                ps.setName(qn);
+                e.getPolicySets().add(ps);
+            }
+        }
+    }
 
     private URL resolveLocation(ModelResolver resolver, String contextPath, ProcessorContext context)
         throws MalformedURLException, ContributionReadException {

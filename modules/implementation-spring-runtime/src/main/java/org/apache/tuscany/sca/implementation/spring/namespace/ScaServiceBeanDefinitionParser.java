@@ -16,6 +16,12 @@
  */
 package org.apache.tuscany.sca.implementation.spring.namespace;
 
+import static org.apache.tuscany.sca.implementation.spring.namespace.ScaNamespaceHandler.getAttribute;
+
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.implementation.spring.SpringSCAServiceElement;
 import org.apache.tuscany.sca.implementation.spring.context.SCAGenericApplicationContext;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -36,9 +42,21 @@ public class ScaServiceBeanDefinitionParser implements BeanDefinitionParser {
         if (registry instanceof SCAGenericApplicationContext) {
             SCAGenericApplicationContext context = (SCAGenericApplicationContext)registry;
             SpringSCAServiceElement serviceElement =
-                new SpringSCAServiceElement(element.getAttributeNS(null, "name"),
-                                            element.getAttributeNS(null, "target"));
-            serviceElement.setType(element.getAttributeNS(null, "type"));
+                new SpringSCAServiceElement(getAttribute(element, "name"), getAttribute(element, "target"));
+            serviceElement.setType(getAttribute(element, "type"));
+
+            String requires = getAttribute(element, "requires");
+            if (requires != null) {
+                List<QName> qnames = ScaNamespaceHandler.resolve(element, requires);
+                serviceElement.getIntentNames().addAll(qnames);
+            }
+
+            String policySets = getAttribute(element, "policySets");
+            if (policySets != null) {
+                List<QName> qnames = ScaNamespaceHandler.resolve(element, policySets);
+                serviceElement.getPolicySetNames().addAll(qnames);
+            }
+
             context.addSCAServiceElement(serviceElement);
         }
         // do nothing, handled by Tuscany

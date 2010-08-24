@@ -67,6 +67,7 @@ public class SpringXMLBeanDefinitionLoaderImpl implements SpringXMLBeanDefinitio
                        List<SpringSCAPropertyElement> propertyElements,
                        List<SpringBeanElement> beanElements,
                        ProcessorContext context) {
+        // FIXME: [rfeng] We should try to avoid parsing the Spring xml twice for the deployment and runtime
         SCAGenericApplicationContext applicationContext = createApplicationContext(null, null, resources);
         serviceElements.addAll(applicationContext.getServiceElements());
         referenceElements.addAll(applicationContext.getReferenceElements());

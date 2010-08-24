@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.implementation.spring;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
@@ -38,6 +40,8 @@ public class SpringSCAServiceElement {
     private String target;
     private List<Intent> intents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<QName> intentNames = new ArrayList<QName>();
+    private List<QName> policySetNames = new ArrayList<QName>();
 
     public SpringSCAServiceElement() {
 
@@ -80,12 +84,21 @@ public class SpringSCAServiceElement {
         return policySets;
     }
 
+    public List<QName> getIntentNames() {
+        return intentNames;
+    }
+
+    public List<QName> getPolicySetNames() {
+        return policySetNames;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("SpringSCAServiceElement [name=").append(name).append(", type=").append(type)
             .append(", target=").append(target).append(", intents=").append(intents).append(", policySets=")
-            .append(policySets).append("]");
+            .append(policySets).append(", intentNames=").append(intentNames).append(", policySetNames=")
+            .append(policySetNames).append("]");
         return builder.toString();
     }
 

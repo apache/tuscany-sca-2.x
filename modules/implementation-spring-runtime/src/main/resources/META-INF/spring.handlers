@@ -1,1 +1,2 @@
 http\://www.springframework.org/schema/sca=org.apache.tuscany.sca.implementation.spring.namespace.ScaNamespaceHandler
+http\://docs.oasis-open.org/ns/opencsa/sca-j/spring/200810=org.apache.tuscany.sca.implementation.spring.namespace.ScaNamespaceHandler
