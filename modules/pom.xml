@@ -91,6 +91,12 @@
         <module>implementation-bpel-runtime</module>
         <module>implementation-java</module>
         <module>implementation-java-runtime</module>
+        <module>implementation-jaxrs</module>
+        <module>implementation-jaxrs-runtime</module>		
+        <module>implementation-python</module>
+        <module>implementation-python-runtime</module>
+        <module>implementation-script</module>
+        <module>implementation-script-runtime</module>		
         <module>implementation-spring</module>
         <module>implementation-spring-runtime</module>
         <module>implementation-spring-webapp</module>
@@ -142,15 +148,6 @@
         <module>host-corba-jse-tns</module>
         <module>binding-corba</module>
         <module>binding-corba-runtime</module>
-
-        <module>implementation-python</module>
-        <module>implementation-python-runtime</module>
-
-        <module>implementation-script</module>
-        <module>implementation-script-runtime</module>
-        <module>implementation-jaxrs</module>
-        <module>implementation-jaxrs-runtime</module>
-
     </modules>
 
     <profiles>
