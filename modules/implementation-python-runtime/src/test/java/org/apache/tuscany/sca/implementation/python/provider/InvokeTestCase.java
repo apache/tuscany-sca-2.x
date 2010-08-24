@@ -48,6 +48,7 @@ public class InvokeTestCase {
 	        node.start();
     	} catch (Exception e) {
     		e.printStackTrace();
+    		throw e;
     	}
     }
 
@@ -58,32 +59,35 @@ public class InvokeTestCase {
 
     @Test
     public void testService() throws Exception {
-        final Session s = TransportRegistry.i().createSession("http://localhost:8085/python");
+        final Session s = TransportRegistry.i().createSession("http://localhost:8080/python");
         final Client c = new Client(s);
         final Object px = c.openProxy("", EchoTest.class);
-        final Object r = c.invoke(px, EchoTest.class.getMethod("echo", String.class), new Object[]{"Hey"});
+        final Object r = c.invoke(px, EchoTest.class.getMethod("echo", String.class, String.class), new Object[]{"Hey", "There"});
         c.closeProxy(px);
         s.close();
-        assertEquals("Hey", r);
+        assertEquals("Hey There", r);
     }
 
     @Test
     public void testReference() throws Exception {
-        final Session s = TransportRegistry.i().createSession("http://localhost:8085/client");
+        final Session s = TransportRegistry.i().createSession("http://localhost:8080/client");
         final Client c = new Client(s);
         final Object px = c.openProxy("", EchoTest.class);
-        final Object r = c.invoke(px, EchoTest.class.getMethod("echo", String.class), new Object[]{"Hey"});
+        final Object r = c.invoke(px, EchoTest.class.getMethod("echo", String.class, String.class), new Object[]{"Hey", "There"});
         c.closeProxy(px);
         s.close();
-        assertEquals("Hey", r);
+        assertEquals("Hey There", r);
     }
 
-    //@Test Disabled for now as Java / JSON databinding transform doesn't seem
-    // to produce the right JSON
+    @Test
     public void testLocal() throws Exception {
-    	final EchoTest s = node.getService(EchoTest.class, "java-client-test");
-    	final String r = s.echo("Hey");
-        assertEquals("Hey", r);
+        final Session s = TransportRegistry.i().createSession("http://localhost:8080/java-client");
+        final Client c = new Client(s);
+        final Object px = c.openProxy("", EchoTest.class);
+        final Object r = c.invoke(px, EchoTest.class.getMethod("echo", String.class, String.class), new Object[]{"Hey", "There"});
+        c.closeProxy(px);
+        s.close();
+        assertEquals("Hey There", r);
     }
 
 }

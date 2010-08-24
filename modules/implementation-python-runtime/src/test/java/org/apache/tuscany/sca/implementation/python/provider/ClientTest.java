@@ -31,7 +31,7 @@ public class ClientTest implements EchoTest {
 	@Reference
 	public EchoTest ref;
 
-	public String echo(final String s) {
-		return ref.echo(s);
+	public String echo(final String s1, final String s2) {
+		return ref.echo(s1, s2);
 	}
 }

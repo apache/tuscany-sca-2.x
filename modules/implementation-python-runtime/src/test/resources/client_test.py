@@ -17,8 +17,8 @@
 
 # JSON-RPC test case
 
-def echo(x, ref):
-    return ref("echo", x)
+def echo(x, y, ref):
+    return ref("echo", x, y)
 
 # ATOMPub test case
 

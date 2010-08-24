@@ -26,7 +26,7 @@ package org.apache.tuscany.sca.implementation.python.provider;
  */
 public class ServerTest implements EchoTest {
 
-	public String echo(final String s) {
-		return s;
+	public String echo(final String s1, final String s2) {
+		return s1 + " " + s2;
 	}
 }

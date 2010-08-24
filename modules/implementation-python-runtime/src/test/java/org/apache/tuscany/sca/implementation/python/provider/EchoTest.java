@@ -29,5 +29,5 @@ import org.oasisopen.sca.annotation.Remotable;
 @Remotable
 public interface EchoTest {
 
-	public String echo(String s);
+	public String echo(String s1, String s2);
 }

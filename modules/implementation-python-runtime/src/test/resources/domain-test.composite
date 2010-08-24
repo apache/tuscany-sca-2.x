@@ -25,33 +25,40 @@
     <component name="python-test">
         <t:implementation.python script="server_test.py"/>
         <service name="test">
-            <t:binding.jsonrpc uri="http://localhost:8085/python"/>
+            <t:binding.jsonrpc uri="http://localhost:8080/python"/>
         </service>
     </component>     
 
     <component name="client-test">
         <t:implementation.python script="client_test.py"/>
         <service name="client">
-            <t:binding.jsonrpc uri="http://localhost:8085/client"/>
+            <t:binding.jsonrpc uri="http://localhost:8080/client"/>
         </service>
         <reference name="ref" target="python-test">
         </reference>
     </component>
 
-    <component name="local-java-test">
+    <component name="java-test">
         <implementation.java class="org.apache.tuscany.sca.implementation.python.provider.ServerTest"/>
+        <service name="EchoTest">
+            <t:binding.jsonrpc uri="http://localhost:8080/java"/>
+        </service>
     </component>
 
-    <component name="local-client-test">
+    <component name="python-to-java-test">
         <t:implementation.python script="client_test.py"/>
-        <reference name="ref" target="local-java-test">
-        </reference>
+        <service name="client">
+            <t:binding.jsonrpc uri="http://localhost:8080/python-to-java"/>
+        </service>
+        <reference name="ref" target="java-test"/>
     </component>
 
     <component name="java-client-test">
         <implementation.java class="org.apache.tuscany.sca.implementation.python.provider.ClientTest"/>
-        <reference name="ref" target="local-client-test">
-        </reference>
+        <service name="EchoTest">
+            <t:binding.jsonrpc uri="http://localhost:8080/java-client"/>
+        </service>
+        <reference name="ref" target="python-to-java-test"/>
     </component>
 
 </composite>
