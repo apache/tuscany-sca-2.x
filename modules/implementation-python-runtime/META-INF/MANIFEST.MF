@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany Python Implementation Runtime
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Python Implementation Runtime
+Bundle-SymbolicName: org.apache.tuscany.sca.implementation.python.runtime
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
