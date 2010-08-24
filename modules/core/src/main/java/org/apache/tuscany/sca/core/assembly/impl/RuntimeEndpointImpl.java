@@ -241,6 +241,10 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                         invocationChainMap.put(operation, chain);
                         return chain;
                     }
+                    if (interfaceContractMapper.isCompatible(operation, op, Compatibility.SUBSET)) {
+                        invocationChainMap.put(operation, chain);
+                        return chain;
+                    }
                 } else {
                     // [rfeng] We need to run the compatibility check for local operations as they 
                     // can be overloaded
