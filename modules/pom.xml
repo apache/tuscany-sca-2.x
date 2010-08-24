@@ -143,10 +143,8 @@
         <module>binding-corba</module>
         <module>binding-corba-runtime</module>
 
-        <!--
         <module>implementation-python</module>
         <module>implementation-python-runtime</module>
-        -->
 
         <module>implementation-script</module>
         <module>implementation-script-runtime</module>
