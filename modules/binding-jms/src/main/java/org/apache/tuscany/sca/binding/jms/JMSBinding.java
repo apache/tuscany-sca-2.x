@@ -88,14 +88,14 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
     private Map<String, BindingProperty> connectionFactoryProperties = new HashMap<String, BindingProperty>();
 
     private String activationSpecName = null;
-    private String activationSpecCreate = null;
+    private String activationSpecCreate = JMSBindingConstants.CREATE_IF_NOT_EXIST;
     private Map<String, BindingProperty> activationSpecProperties = new HashMap<String, BindingProperty>();
 
     private String resourceAdapterName;;
     private Map<String, BindingProperty> resourceAdapterProperties = new HashMap<String, BindingProperty>();
     
     private String responseActivationSpecName = null;
-    private String responseActivationSpecCreate = null;
+    private String responseActivationSpecCreate = JMSBindingConstants.CREATE_IF_NOT_EXIST;
     private Map<String, BindingProperty> responseActivationSpecProperties = new HashMap<String, BindingProperty>();
 
     private String responseDestinationName = null;
