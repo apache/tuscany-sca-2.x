@@ -26,6 +26,7 @@ import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -57,6 +58,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.invocation.AsyncFaultWrapper;
+import org.apache.tuscany.sca.core.invocation.AsyncResponseException;
 import org.apache.tuscany.sca.core.invocation.AsyncResponseHandler;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
@@ -118,6 +120,11 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
      */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        
+        // force the bind of the reference so that we can look at the 
+        // target contract to see if it's asynchronous 
+        source.getInvocationChains();
+        
         if (isAsyncCallback(method)) {
             return doInvokeAsyncCallback(proxy, method, args);            
         } else if (isAsyncPoll(method)) {
@@ -189,7 +196,13 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
             // Wait for some maximum time for the result - 1000 seconds here
             // Really, if the service is async, the client should use async client methods to invoke the service
             // - and be prepared to wait a *really* long time
-            return future.get(1000, TimeUnit.SECONDS);
+            Object response = null;
+            try {
+                response = future.get(1000, TimeUnit.SECONDS);
+            } catch(ExecutionException ex) {
+                throw ex.getCause();
+            }
+            return response;
     	} else {
     		// Target service is not asynchronous, so perform sync invocation
     		return super.invoke(proxy, method, args);
@@ -308,6 +321,8 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
 						future.setFault( new AsyncFaultWrapper( s ) );
 					} // end if 
 				} // end if
+            } catch ( AsyncResponseException ar ) {
+                // do nothing			
 			} catch ( Throwable t ) {
 				System.out.println("Async invoke got exception: " + t.toString());
 				future.setFault( new AsyncFaultWrapper( t ) );

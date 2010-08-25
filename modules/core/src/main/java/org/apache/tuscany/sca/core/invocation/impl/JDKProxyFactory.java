@@ -66,11 +66,13 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
     public <T> T createProxy(final Class<T> interfaze, Invocable invocable) throws ProxyCreationException {
         if (invocable instanceof RuntimeEndpoint) {
             InvocationHandler handler;
-            if (isAsync(interfaze)) {
+// TUSCANY-3659 - Always install a asynch handler regardless of whether ref is sync or async  
+//                needs tidying         
+//            if (isAsync(interfaze)) {
                 handler = new AsyncJDKInvocationHandler(messageFactory, interfaze, invocable);
-            } else {
-                handler = new JDKInvocationHandler(messageFactory, interfaze, invocable);
-            }
+//            } else {
+//                handler = new JDKInvocationHandler(messageFactory, interfaze, invocable);
+//            }
             // Allow privileged access to class loader. Requires RuntimePermission in security policy.
             ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
                 public ClassLoader run() {
@@ -88,11 +90,13 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
         assert callableReference != null;
         final Class<T> interfaze = callableReference.getBusinessInterface();
         InvocationHandler handler;
-        if (isAsync(interfaze)) {
+// TUSCANY-3659 - Always install a asynch handler regardless of whether ref is sync or async
+//                needs tidying
+//        if (isAsync(interfaze)) {
             handler = new AsyncJDKInvocationHandler(messageFactory, callableReference);
-        } else {
-            handler = new JDKInvocationHandler(messageFactory, callableReference);
-        }
+//        } else {
+//            handler = new JDKInvocationHandler(messageFactory, callableReference);
+//        }
         // Allow privileged access to class loader. Requires RuntimePermission in security policy.
         ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
             public ClassLoader run() {
