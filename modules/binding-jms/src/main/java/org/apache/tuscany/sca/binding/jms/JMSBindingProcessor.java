@@ -440,10 +440,17 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
         String create = reader.getAttributeValue(null, "create");
         if (create != null && create.length() > 0) {
+        	validateCreate(create, reader, monitor);
             jmsBinding.setDestinationCreate(create);
         }
 
         jmsBinding.getDestinationProperties().putAll(parseBindingProperties(reader, monitor));
+        
+        if (jmsBinding.getDestinationCreate().equals(JMSBindingConstants.CREATE_IF_NOT_EXIST)) {
+            if (name == null || name.length() < 1) {
+                error(monitor, "MissingNameForCreate", reader);
+            }
+        }
     }
 
     private void parseConnectionFactory(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
@@ -486,13 +493,27 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
         String create = reader.getAttributeValue(null, "create");
         if (create != null && create.length() > 0) {
+        	validateCreate(create, reader, monitor);
             jmsBinding.setResponseDestinationCreate(create);
         }
 
         jmsBinding.getResponseDestinationProperties().putAll(parseBindingProperties(reader, monitor));
     }
 
-    private void parseResponseConnectionFactory(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
+    private void validateCreate(String create, XMLStreamReader reader, Monitor monitor) {
+    	if (JMSBindingConstants.CREATE_ALWAYS.equals(create)) {
+    		return;
+    	}
+    	if (JMSBindingConstants.CREATE_NEVER.equals(create)) {
+    		return;
+    	}
+    	if (JMSBindingConstants.CREATE_IF_NOT_EXIST.equals(create)) {
+    		return;
+    	}
+    	error(monitor, "InvalidCreate", reader, create);
+	}
+
+	private void parseResponseConnectionFactory(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
         String name = getURIString(reader, "jndiName");
         if (name != null && name.length() > 0) {
             jmsBinding.setResponseConnectionFactoryName(name);            
