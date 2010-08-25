@@ -489,8 +489,6 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         String name = reader.getAttributeValue(null, "jndiName");        
         if (name != null && name.length() > 0) {
             jmsBinding.setActivationSpecName(name);            
-        } else {
-            error(monitor, "MissingActivationSpecName", reader);
         }
 
         String create = reader.getAttributeValue(null, "create");
@@ -578,8 +576,6 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         String name = reader.getAttributeValue(null, "jndiName");
         if (name != null && name.length() > 0) {
             jmsBinding.setResponseActivationSpecName(name);            
-        } else {
-            warning(monitor, "MissingResponseActivationSpec", reader);
         }
         String create = reader.getAttributeValue(null, "create");
         if (create != null && create.length() > 0) {
