@@ -987,6 +987,14 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                 error(monitor, "ConnectionFactoryActivationSpecContradiction", jmsBinding, connectionFactoryName, activationSpecName );                
             }
         }
+        
+        // If activation spec and destination are both specified, they have to match
+        if ( ( jmsBinding.getActivationSpecName() != null ) && (jmsBinding.getActivationSpecName().length() > 0 ) &&
+        		(jmsBinding.getDestinationName() != null) && (jmsBinding.getDestinationName().length() > 0 ) ) {
+        	if ( !jmsBinding.getActivationSpecName().equals(jmsBinding.getDestinationName())) {
+        		error(monitor, "ActivationSpecAndDestinationMismatch", jmsBinding, jmsBinding.getActivationSpecName(), jmsBinding.getDestinationName());
+        	}
+        }
 
         // If Connection factory specified then destination name must also be
         if (( connectionFactoryName != null ) && ( connectionFactoryName.length() > 0 )) {
