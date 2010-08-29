@@ -18,9 +18,8 @@
  */
 package sample;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
@@ -35,19 +34,15 @@ public class ShellServlet extends HttpServlet {
 
     Shell shell;
 
-    //@Override
     public void init() {
         shell = new Shell(WebAppHelper.getNodeFactory());
     }
 
-    //@Override
     public void destroy() {
         shell.stop();
     }
 
-    //@Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
         shell.run(new BufferedReader(new InputStreamReader(new URL(req.getParameter("conf")).openStream())), resp.getWriter());
     }
 }
-

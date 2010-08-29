@@ -24,22 +24,21 @@ import static java.lang.System.out;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.concurrent.Callable;
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-
 
 /**
  * A little SCA command shell.
@@ -71,9 +70,9 @@ public class Shell {
     public Shell(NodeFactory nf) {
         this.nodeFactory = nf;
     }
-    
+
     List<?> start(final String name, final String curi, final String cloc) {
-        if (nodes.containsKey(name))
+        if(nodes.containsKey(name))
             return emptyList();
         final Node node = nodeFactory.createNode(new Contribution(curi, cloc));
         nodes.put(name, new NodeInfo(name, curi, cloc, node));
@@ -83,7 +82,7 @@ public class Shell {
 
     List<?> stop(final String name) {
         final NodeInfo ninfo = nodes.get(name);
-        if (ninfo == null)
+        if(ninfo == null)
             return emptyList();
         ninfo.node.stop();
         nodes.remove(name);
@@ -91,7 +90,7 @@ public class Shell {
     }
 
     List<?> stop() {
-        for (NodeInfo ninfo: nodes.values())
+        for(NodeInfo ninfo: nodes.values())
             ninfo.node.stop();
         nodes.clear();
         return emptyList();
@@ -103,7 +102,7 @@ public class Shell {
     }
 
     List<?> status() {
-        return new ArrayList(nodes.values());
+        return new ArrayList<Object>(nodes.values());
     }
 
     List<?> history() {
@@ -117,40 +116,60 @@ public class Shell {
     List<String> read(final BufferedReader r) throws IOException {
         final String l = r.readLine();
         history.add(l);
-        return l != null? Arrays.asList(l.split(" ")) : singletonList("bye");
+        return l != null ? Arrays.asList(l.split(" ")) : singletonList("bye");
     }
-       
+
     Callable<List<?>> eval(final List<String> toks) {
         final String op = toks.get(0);
-        if(op.equals("start")) return new Callable<List<?>>() { public List<?> call() {
-            return start(toks.get(1), toks.get(2), toks.get(3));
-        }};
-        if(op.equals("stop")) return new Callable<List<?>>() { public List<?> call() {
-            if (toks.size() == 1)
-                return stop();
-            return stop(toks.get(1));
-        }};
-        if(op.equals("restart")) return new Callable<List<?>>() { public List<?> call() {
-            return restart(toks.get(1), toks.get(2), toks.get(3));
-        }};
-        if(op.equals("status")) return new Callable<List<?>>() { public List<?> call() {
-            return status();
-        }};
-        if(op.equals("history")) return new Callable<List<?>>() { public List<?> call() {
-            return history();
-        }};
-        if(op.equals("bye")) return new Callable<List<?>>() { public List<?> call() {
-            return bye();
-        }};
-        return new Callable<List<?>>() { public List<?> call() {
-            return emptyList();
-        }};
+        if(op.equals("start"))
+            return new Callable<List<?>>() {
+                public List<?> call() {
+                    return start(toks.get(1), toks.get(2), toks.get(3));
+                }
+            };
+        if(op.equals("stop"))
+            return new Callable<List<?>>() {
+                public List<?> call() {
+                    if(toks.size() == 1)
+                        return stop();
+                    return stop(toks.get(1));
+                }
+            };
+        if(op.equals("restart"))
+            return new Callable<List<?>>() {
+                public List<?> call() {
+                    return restart(toks.get(1), toks.get(2), toks.get(3));
+                }
+            };
+        if(op.equals("status"))
+            return new Callable<List<?>>() {
+                public List<?> call() {
+                    return status();
+                }
+            };
+        if(op.equals("history"))
+            return new Callable<List<?>>() {
+                public List<?> call() {
+                    return history();
+                }
+            };
+        if(op.equals("bye"))
+            return new Callable<List<?>>() {
+                public List<?> call() {
+                    return bye();
+                }
+            };
+        return new Callable<List<?>>() {
+            public List<?> call() {
+                return emptyList();
+            }
+        };
     }
 
     List<?> apply(final Callable<List<?>> func) {
         try {
             return func.call();
-        } catch (Exception e) {
+        } catch(Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             return singletonList(sw);
@@ -166,7 +185,8 @@ public class Shell {
     }
 
     public Map<String, NodeInfo> run(final BufferedReader r, final PrintWriter w) throws IOException {
-        while(print(apply(eval(read(r))), w));
+        while(print(apply(eval(read(r))), w))
+            ;
         r.close();
         return nodes;
     }
