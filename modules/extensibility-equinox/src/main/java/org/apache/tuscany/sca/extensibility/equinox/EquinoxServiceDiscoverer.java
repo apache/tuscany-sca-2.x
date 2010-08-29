@@ -64,7 +64,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         bundleTracker = new ActiveBundleTracker(context);
         bundleTracker.open();
     }
-    
+
     public void stop() {
         bundleTracker.close();
     }
@@ -73,7 +73,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         String header = (String)bundle.getHeaders().get("SCA-Version");
         return Version.parseVersion(header);
     }
-    
+
     public static class ActiveBundleTracker extends BundleTracker {
 
         /**
@@ -162,7 +162,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             try {
                 loadClass();
             } catch (ClassNotFoundException e) {
-                // Ignore 
+                // Ignore
             }
             return (javaClass != null && serviceType.isAssignableFrom(javaClass));
         }
@@ -210,13 +210,13 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             return declarations.iterator().next();
         }
     }
-    
+
     private boolean isProviderBundle(Bundle bundle, boolean isTuscanyService) {
         if (bundle.getBundleId() == 0 || bundle.getSymbolicName().startsWith("1.x-osgi-bundle")
             || bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null) {
             // Skip system bundle as it has access to the application classloader
             // Skip the 1.x runtime bundle as this has 1.x services in it
-            //    For testing running 1.x and 2.x in same VM. 
+            //    For testing running 1.x and 2.x in same VM.
             //    Don't know what final form will be yet.
             // Skip bundle fragments too
             return false;
@@ -231,7 +231,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
         return true;
     }
-    
+
     protected Collection<Bundle> getBundles(boolean isTuscanyService) {
         // return bundles.keySet();
         Set<Bundle> set = new HashSet<Bundle>();
@@ -256,8 +256,8 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
 
         // http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/xpath/XPathFactory.html
         boolean isPropertyFile = "javax.xml.xpath.XPathFactory".equals(serviceName);
-        boolean isTuscanyService = serviceName.startsWith("org.apache.tuscany.sca.");
-        serviceName = "META-INF/services/" + serviceName;
+        boolean isTuscanyService = serviceName.startsWith("org.apache.tuscany.sca.") ||
+                                   serviceName.startsWith("META-INF/services/org.apache.tuscany.sca.");
 
         Set<URL> visited = new HashSet<URL>();
         //System.out.println(">>>> getServiceDeclarations()");
@@ -291,6 +291,10 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
             if (urls == null) {
+                if(! serviceName.startsWith("META-INF/services/")) {
+                    return getServiceDeclarations("META-INF/services/" + serviceName);
+                }
+
                 continue;
             }
             while (urls.hasMoreElements()) {
@@ -317,7 +321,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
         return descriptors;
     }
-    
+
     public ClassLoader getContextClassLoader() {
         // Get the bundle classloader for the extensibility bundle that has DynamicImport-Package *
         return getClass().getClassLoader();
