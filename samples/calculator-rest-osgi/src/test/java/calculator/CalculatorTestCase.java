@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -38,7 +37,6 @@ import com.meterware.httpunit.WebResponse;
 /**
  * This shows how to test the Calculator composition.
  */
-@Ignore
 public class CalculatorTestCase {
     private final static String SERVICE_URL = "http://localhost:8085/calculator/";
 
