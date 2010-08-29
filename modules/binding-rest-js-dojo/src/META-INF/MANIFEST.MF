@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.binding.jsonrpc.js.dojo;uses:="
+ org.apache.tuscany.sca.binding.jsonrpc,org.apache.tuscany.sca.assembl
+ y,org.apache.tuscany.sca.web.javascript,javax.xml.namespace";version=
+ "2.0.0"
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA REST Binding JavaScript using Dojo
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA REST Binding JavaScript usi
+ ng Dojo
+Import-Package: javax.xml.namespace,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.xml;version="2.0.0",
+ org.apache.tuscany.sca.binding.rest;version="2.0.0",
+ org.apache.tuscany.sca.binding.rest.js.dojo;version="2.0.0",
+ org.apache.tuscany.sca.web.javascript;version="2.0.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.rest-js.dojo
+Bundle-DocURL: http://www.apache.org/
+
