@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.extensibility;
@@ -108,10 +108,10 @@ public class ClassLoaderContext {
 
     /**
      * Set the thread context classloader (TCCL) to a classloader that delegates to a collection
-     * of classloaders 
+     * of classloaders
      * @param parent The parent classloader
      * @param delegates A list of classloaders to try
-     * @return The existing TCCL 
+     * @return The existing TCCL
      */
     public static ClassLoader setContextClassLoader(ClassLoader parent, ClassLoader... delegates) {
         ClassLoaderContext context = new ClassLoaderContext(parent, delegates);
@@ -195,7 +195,7 @@ public class ClassLoaderContext {
         List<ClassLoader> loaders = new ArrayList<ClassLoader>();
         for (Class<?> serviceType : serviceTypes) {
             ClassLoader classLoader = getClassLoader(discovery, serviceType);
-            if (classLoader != null && loaders.contains(classLoader)) {
+            if (classLoader != null && !loaders.contains(classLoader)) {
                 loaders.add(classLoader);
             }
         }
