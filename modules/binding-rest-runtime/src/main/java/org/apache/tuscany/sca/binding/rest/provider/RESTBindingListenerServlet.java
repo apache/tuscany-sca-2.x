@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.binding.rest.provider;
@@ -66,7 +66,7 @@ public class RESTBindingListenerServlet extends HttpServlet {
     private Invoker conditionalPostInvoker;
     private Invoker deleteInvoker;
     private Invoker conditionalDeleteInvoker;
-    
+
     /**
      * Constructs a new RESTServiceListenerServlet.
      */
@@ -92,7 +92,7 @@ public class RESTBindingListenerServlet extends HttpServlet {
             Message responseMessage = bindingInvoker.invoke(requestMessage);
 
             // return response to client
-            if (responseMessage.isFault()) {            
+            if (responseMessage.isFault()) {
                 // Turn a fault into an exception
                 Throwable e = (Throwable)responseMessage.getBody();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
@@ -117,20 +117,20 @@ public class RESTBindingListenerServlet extends HttpServlet {
                 //handle void operations
                 write(response.getOutputStream(), responseMessage.getBody());
                 response.getOutputStream().flush();
-                response.getOutputStream().close();                  
-            } 
+                response.getOutputStream().close();
+            }
         } else {
             super.service(request, response);
         }
 
 
-    }    
-    
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get the request path
-        String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
-        if (path.length() ==0) {            
+        String path = URLDecoder.decode(request.getPathInfo(), "UTF-8");
+        if (path.length() ==0) {
             // Redirect to a URL ending with / to make relative hrefs work
             // relative to the served resource.
             response.sendRedirect(request.getRequestURL().append('/').toString());
@@ -144,9 +144,9 @@ public class RESTBindingListenerServlet extends HttpServlet {
 
         Message responseMessage = null;
         HTTPCacheContext cacheContext = null;
-        try { 
+        try {
             cacheContext = HTTPCacheContext.createCacheContextFromRequest(request);
-        } catch (ParseException e) { 
+        } catch (ParseException e) {
 
         }
 
@@ -185,12 +185,12 @@ public class RESTBindingListenerServlet extends HttpServlet {
                 }
                 return;
             } else if ( -1 < (index = body.getClass().getName().indexOf( "PreconditionFailedException")) ) {
-                if ( index > -1 ) { 
+                if ( index > -1 ) {
                     response.sendError( HttpServletResponse.SC_PRECONDITION_FAILED, body.toString().substring( index ));
                 } else {
                     response.sendError( HttpServletResponse.SC_PRECONDITION_FAILED );
                 }
-                return;            		
+                return;
             }
 
             throw new ServletException((Throwable)responseMessage.getBody());
@@ -207,7 +207,7 @@ public class RESTBindingListenerServlet extends HttpServlet {
         // Write the response from the service implementation to the response
         // output stream
         InputStream is = (InputStream)responseMessage.getBody();
-        OutputStream os = response.getOutputStream(); 
+        OutputStream os = response.getOutputStream();
         byte[] buffer = new byte[2048];
         for (;;) {
             int n = is.read(buffer);
@@ -216,14 +216,14 @@ public class RESTBindingListenerServlet extends HttpServlet {
             os.write(buffer, 0, n);
         }
         os.flush();
-        os.close();        
+        os.close();
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
-        if (path.length() ==0) {            
+        if (path.length() ==0) {
             // Redirect to a URL ending with / to make relative hrefs work
             // relative to the served resource.
             response.sendRedirect(request.getRequestURL().append('/').toString());
@@ -236,13 +236,13 @@ public class RESTBindingListenerServlet extends HttpServlet {
 
         Message responseMessage = null;
         HTTPCacheContext cacheContext = null;
-        try { 
+        try {
             cacheContext = HTTPCacheContext.createCacheContextFromRequest(request);
-        } catch (ParseException e) {        	
+        } catch (ParseException e) {
         }
 
         // Route message based on availability of cache info and cache methods
-        if (( cacheContext != null ) && (cacheContext.isEnabled()) && (conditionalDeleteInvoker != null )) {        
+        if (( cacheContext != null ) && (cacheContext.isEnabled()) && (conditionalDeleteInvoker != null )) {
             requestMessage.setBody(new Object[] {id, cacheContext});
             responseMessage = conditionalDeleteInvoker.invoke(requestMessage);
         } else {
@@ -266,8 +266,8 @@ public class RESTBindingListenerServlet extends HttpServlet {
                 } else {
                     response.sendError( HttpServletResponse.SC_PRECONDITION_FAILED );
                 }
-                return;            		
-            }        		
+                return;
+            }
 
             throw new ServletException((Throwable)responseMessage.getBody());
         }
@@ -275,7 +275,7 @@ public class RESTBindingListenerServlet extends HttpServlet {
         // Write the response from the service implementation to the response
         // output stream
         InputStream is = (InputStream)responseMessage.getBody();
-        OutputStream os = response.getOutputStream(); 
+        OutputStream os = response.getOutputStream();
         byte[] buffer = new byte[2048];
         for (;;) {
             int n = is.read(buffer);
@@ -284,14 +284,14 @@ public class RESTBindingListenerServlet extends HttpServlet {
             os.write(buffer, 0, n);
         }
         os.flush();
-        os.close();        
+        os.close();
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
-        if (path.length() ==0) {            
+        if (path.length() ==0) {
             // Redirect to a URL ending with / to make relative hrefs work
             // relative to the served resource.
             response.sendRedirect(request.getRequestURL().append('/').toString());
@@ -304,13 +304,13 @@ public class RESTBindingListenerServlet extends HttpServlet {
 
         Message responseMessage = null;
         HTTPCacheContext cacheContext = null;
-        try { 
+        try {
             cacheContext = HTTPCacheContext.createCacheContextFromRequest(request);
-        } catch (ParseException e) {        	
+        } catch (ParseException e) {
         }
 
         // Route message based on availability of cache info and cache methods
-        if (( cacheContext != null ) && (cacheContext.isEnabled()) && (conditionalPutInvoker != null )) {        
+        if (( cacheContext != null ) && (cacheContext.isEnabled()) && (conditionalPutInvoker != null )) {
             requestMessage.setBody(new Object[] {id, cacheContext});
             responseMessage = conditionalPutInvoker.invoke(requestMessage);
         } else {
@@ -329,13 +329,13 @@ public class RESTBindingListenerServlet extends HttpServlet {
                 }
                 return;
             } else if ( -1 < (index = body.getClass().getName().indexOf( "PreconditionFailedException")) ) {
-                if ( index > -1 ) { 
+                if ( index > -1 ) {
                     response.sendError( HttpServletResponse.SC_PRECONDITION_FAILED, body.toString().substring( index ));
                 } else {
                     response.sendError( HttpServletResponse.SC_PRECONDITION_FAILED );
                 }
-                return;            		
-            }        		
+                return;
+            }
 
             throw new ServletException((Throwable)responseMessage.getBody());
         }
@@ -343,7 +343,7 @@ public class RESTBindingListenerServlet extends HttpServlet {
         // Write the response from the service implementation to the response
         // output stream
         InputStream is = (InputStream)responseMessage.getBody();
-        OutputStream os = response.getOutputStream(); 
+        OutputStream os = response.getOutputStream();
         byte[] buffer = new byte[2048];
         for (;;) {
             int n = is.read(buffer);
@@ -352,14 +352,14 @@ public class RESTBindingListenerServlet extends HttpServlet {
             os.write(buffer, 0, n);
         }
         os.flush();
-        os.close();        
+        os.close();
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
-        if (path.length() ==0) {            
+        if (path.length() ==0) {
             // Redirect to a URL ending with / to make relative hrefs work
             // relative to the served resource.
             response.sendRedirect(request.getRequestURL().append('/').toString());
@@ -369,16 +369,16 @@ public class RESTBindingListenerServlet extends HttpServlet {
         // Invoke the get operation on the service implementation
         Message requestMessage = messageFactory.createMessage();
         // String id = path.substring(1);
-        
+
         Message responseMessage = null;
         HTTPCacheContext cacheContext = null;
-        try { 
+        try {
            cacheContext = HTTPCacheContext.createCacheContextFromRequest(request);
-        } catch (ParseException e) {        	
+        } catch (ParseException e) {
         }
-        
+
         // Route message based on availability of cache info and cache methods
-        if (( cacheContext != null ) && (cacheContext.isEnabled()) && (conditionalPostInvoker != null )) {        
+        if (( cacheContext != null ) && (cacheContext.isEnabled()) && (conditionalPostInvoker != null )) {
         	requestMessage.setBody(new Object[] {cacheContext});
         	responseMessage = conditionalPostInvoker.invoke(requestMessage);
         } else {
@@ -387,22 +387,22 @@ public class RESTBindingListenerServlet extends HttpServlet {
         }
         if (responseMessage.isFault()) {
         	Object body = responseMessage.getBody();
-        	
+
         	int index = -1;
         	if ( -1 < (index = body.getClass().getName().indexOf( "NotModifiedException")) ) {
-        		if ( index > -1 ) 
+        		if ( index > -1 )
             		response.sendError( HttpServletResponse.SC_NOT_MODIFIED, body.toString().substring( index ));
         		else
             		response.sendError( HttpServletResponse.SC_NOT_MODIFIED );
         		return;
         	} else if ( -1 < (index = body.getClass().getName().indexOf( "PreconditionFailedException")) ) {
-        		if ( index > -1 ) 
+        		if ( index > -1 )
             		response.sendError( HttpServletResponse.SC_PRECONDITION_FAILED, body.toString().substring( index ));
         		else
             		response.sendError( HttpServletResponse.SC_PRECONDITION_FAILED );
-        		return;            		
-            }        		
-        	
+        		return;
+            }
+
             throw new ServletException((Throwable)responseMessage.getBody());
         }
 
@@ -425,15 +425,15 @@ public class RESTBindingListenerServlet extends HttpServlet {
     	}
     }
 
-    
+
     public void setInvoker(Invoker invoker) {
         this.invoker = invoker;
     }
-    
+
     public Invoker getInvoker() {
         return invoker;
     }
-    
+
 
     /**
      * @return the getInvoker
@@ -548,13 +548,13 @@ public class RESTBindingListenerServlet extends HttpServlet {
     }
 
     /**
-     * 
+     *
      * Utility methods
-     * 
+     *
      */
-    
-    
-    
+
+
+
     private void write(OutputStream out, Object obj) throws IOException {
         if (obj == null) {
             return;
@@ -577,6 +577,6 @@ public class RESTBindingListenerServlet extends HttpServlet {
             out.write(obj.toString().getBytes("UTF-8"));
         }
     }
-    
+
 
 }
