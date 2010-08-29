@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.binding.rest.provider;
@@ -26,8 +26,13 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.MediaType;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.validation.SchemaFactory;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
 import org.apache.wink.common.internal.registry.ProvidersRegistry;
 import org.apache.wink.common.internal.registry.metadata.MethodMetadata;
 import org.apache.wink.server.internal.DeploymentConfiguration;
@@ -36,7 +41,7 @@ import org.apache.wink.server.internal.registry.ResourceRecord;
 import org.apache.wink.server.internal.servlet.RestServlet;
 
 /**
- * 
+ *
  */
 public class TuscanyRESTServlet extends RestServlet {
     private static final long serialVersionUID = 89997233133964915L;
@@ -53,7 +58,25 @@ public class TuscanyRESTServlet extends RestServlet {
     @Override
     public DeploymentConfiguration getDeploymentConfiguration() throws ClassNotFoundException, InstantiationException,
         IllegalAccessException, IOException {
-        DeploymentConfiguration config = super.getDeploymentConfiguration();
+
+
+        // setup proper classLoader to work on OSGi environment
+        ClassLoader cl =
+            ClassLoaderContext.setContextClassLoader(Thread.currentThread().getContextClassLoader(),
+                                                     registry.getServiceDiscovery(),
+                                                     "javax.ws.rs.ext.RuntimeDelegate",
+                                                     "META-INF/wink-alternate-shortcuts.properties",
+                                                     "META-INF/server/wink-providers");
+
+        DeploymentConfiguration config = null;
+        try {
+            config = super.getDeploymentConfiguration();
+        } finally {
+            if (cl != null) {
+                // return previous classLoader
+                Thread.currentThread().setContextClassLoader(cl);
+            }
+        }
 
         // [rfeng] FIXME: This is a hack to fool Apache wink to not remove the servlet path
         config.setFilterConfig(new FilterConfig() {
