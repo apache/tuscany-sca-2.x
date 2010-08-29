@@ -38,4 +38,23 @@
             </extension>
         </complexContent>
     </complexType>
+
+   <complexType name="HTTPDefaultWireFormatType">
+      <complexContent>
+         <extension base="sca:WireFormatType"/>
+      </complexContent>
+   </complexType>
+
+   <complexType name="HTTPDefaultOperationSelectorType">
+      <complexContent>
+         <extension base="sca:OperationSelectorType"/>
+      </complexContent>
+   </complexType>
+
+   <element name="wireFormat.httpDefault" type="t:HTTPDefaultWireFormatType" 
+            substitutionGroup="sca:wireFormat"/>
+
+   <element name="operationSelector.httpDefault" type="t:HTTPDefaultOperationSelectorType" 
+            substitutionGroup="sca:operationSelector"/>
+
 </schema>
