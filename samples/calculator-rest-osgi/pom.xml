@@ -28,56 +28,63 @@
     <artifactId>sample-calculator-rest-osgi</artifactId>
     <name>Apache Tuscany SCA Sample Calculator REST OSGi</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-api</artifactId>
-            <version>2.0-SNAPSHOT</version>
-            <type>pom</type>
-        </dependency>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-feature-api</artifactId>
+			<version>2.0-SNAPSHOT</version>
+			<type>pom</type>
+		</dependency>
 
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-core</artifactId>
-            <version>2.0-SNAPSHOT</version>
-            <type>pom</type>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-feature-core</artifactId>
+			<version>2.0-SNAPSHOT</version>
+			<type>pom</type>
+		</dependency>
 
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-rest-runtime</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-binding-rest-runtime</artifactId>
+			<version>2.0-SNAPSHOT</version>
+		</dependency>
 
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
 
-        <!-- Explicitly add slf4j so that jabsorb uses the latest versions -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.5.11</version>
-            <scope>test</scope>
-        </dependency>
+		<!-- Explicitly add slf4j so that jabsorb uses the latest versions -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.5.11</version>
+			<scope>test</scope>
+		</dependency>
 
-        <dependency>
-	        <groupId>httpunit</groupId>
-	        <artifactId>httpunit</artifactId>
-	        <version>1.6.1</version>
-	        <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-host-jetty</artifactId>
+			<version>2.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>httpunit</groupId>
+			<artifactId>httpunit</artifactId>
+			<version>1.6.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
     <build>
         <finalName>${artifactId}</finalName>
