@@ -55,29 +55,29 @@ public class PythonImplementationProcessor extends BaseStAXArtifactProcessor imp
 
     final InterfaceContract contract;
 
-    public PythonImplementationProcessor(final ExtensionPointRegistry ep) throws InvalidInterfaceException, NoSuchMethodException {
+    public PythonImplementationProcessor(final ExtensionPointRegistry ep) throws InvalidInterfaceException {
         final FactoryExtensionPoint fep = ep.getExtensionPoint(FactoryExtensionPoint.class);
         final JavaInterfaceFactory jf = fep.getFactory(JavaInterfaceFactory.class);
         final JavaInterface eval = jf.createJavaInterface(PythonEval.class);
-        
+
         class DynamicInterface extends JavaInterfaceImpl {
-        	DynamicInterface() throws NoSuchMethodException {
-        		setJavaClass(eval.getJavaClass());
-        		setName(eval.getName());
-        		setRemotable(eval.isRemotable());
-        		Operation op = eval.getOperations().get(0);
-        		op.setDynamic(true);
-        		getOperations().add(op);
+            DynamicInterface() {
+                setJavaClass(eval.getJavaClass());
+                setName(eval.getName());
+                setRemotable(eval.isRemotable());
+                Operation op = eval.getOperations().get(0);
+                op.setDynamic(true);
+                getOperations().add(op);
                 resetDataBinding(JSONDataBinding.NAME);
                 setUnresolved(false);
-			}
-        	
-        	@Override
-        	public boolean isDynamic() {
-        		return true;
-        	}
+            }
+
+            @Override
+            public boolean isDynamic() {
+                return true;
+            }
         }
-        
+
         contract = jf.createJavaInterfaceContract();
         contract.setInterface(new DynamicInterface());
     }
@@ -92,7 +92,8 @@ public class PythonImplementationProcessor extends BaseStAXArtifactProcessor imp
 
     public PythonImplementation read(final XMLStreamReader r, final ProcessorContext ctx) throws ContributionReadException, XMLStreamException {
         final String scr = r.getAttributeValue(null, "script");
-        while (r.hasNext() && !(r.next() == END_ELEMENT && QN.equals(r.getName())));
+        while(r.hasNext() && !(r.next() == END_ELEMENT && QN.equals(r.getName())))
+            ;
         return new PythonImplementation(QN, scr, URI.create(ctx.getContribution().getLocation()).getPath(), contract);
     }
 
@@ -100,10 +101,7 @@ public class PythonImplementationProcessor extends BaseStAXArtifactProcessor imp
     }
 
     public void write(final PythonImplementation impl, final XMLStreamWriter w, final ProcessorContext ctx) throws ContributionWriteException, XMLStreamException {
-        writeStart(w,
-                   QN.getNamespaceURI(),
-                   QN.getLocalPart(),
-                   new XAttr("script", impl.getScript()));
+        writeStart(w, QN.getNamespaceURI(), QN.getLocalPart(), new XAttr("script", impl.getScript()));
         writeEnd(w);
     }
 }

@@ -28,7 +28,7 @@ import org.python.util.PythonInterpreter;
 
 /**
  * An invoker for Python components.
- *
+ * 
  * @version $Rev$ $Date$
  */
 class PythonInvoker implements Invoker {
@@ -43,15 +43,15 @@ class PythonInvoker implements Invoker {
     }
 
     String apply(final String req) {
-    	PyObject r = callable.__call__(new PyString(req));
-    	return r.toString();
+        PyObject r = callable.__call__(new PyString(req));
+        return r.toString();
     }
 
     public Message invoke(final Message msg) {
         try {
             msg.setBody(apply((String)((Object[])msg.getBody())[0]));
-        } catch (Exception e) {
-        	e.printStackTrace();
+        } catch(Exception e) {
+            e.printStackTrace();
             msg.setFaultBody(e.getCause());
         }
         return msg;

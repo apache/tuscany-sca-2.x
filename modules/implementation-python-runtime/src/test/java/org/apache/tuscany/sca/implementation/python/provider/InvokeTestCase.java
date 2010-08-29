@@ -38,23 +38,23 @@ import org.junit.Test;
  * @version $Rev$ $Date$
  */
 public class InvokeTestCase {
-	static Node node;
-    
+    static Node node;
+
     @BeforeClass
     public static void setUp() throws Exception {
-    	try {
-	    	final String loc = getContributionLocation("domain-test.composite");
-			node = NodeFactory.newInstance().createNode("domain-test.composite", new Contribution("c", loc));
-	        node.start();
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    		throw e;
-    	}
+        try {
+            final String loc = getContributionLocation("domain-test.composite");
+            node = NodeFactory.newInstance().createNode("domain-test.composite", new Contribution("c", loc));
+            node.start();
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-    	node.stop();
+        node.stop();
     }
 
     @Test
@@ -62,7 +62,7 @@ public class InvokeTestCase {
         final Session s = TransportRegistry.i().createSession("http://localhost:8080/python");
         final Client c = new Client(s);
         final Object px = c.openProxy("", EchoTest.class);
-        final Object r = c.invoke(px, EchoTest.class.getMethod("echo", String.class, String.class), new Object[]{"Hey", "There"});
+        final Object r = c.invoke(px, EchoTest.class.getMethod("echo", String.class, String.class), new Object[] {"Hey", "There"});
         c.closeProxy(px);
         s.close();
         assertEquals("Hey There", r);
@@ -73,7 +73,7 @@ public class InvokeTestCase {
         final Session s = TransportRegistry.i().createSession("http://localhost:8080/client");
         final Client c = new Client(s);
         final Object px = c.openProxy("", EchoTest.class);
-        final Object r = c.invoke(px, EchoTest.class.getMethod("echo", String.class, String.class), new Object[]{"Hey", "There"});
+        final Object r = c.invoke(px, EchoTest.class.getMethod("echo", String.class, String.class), new Object[] {"Hey", "There"});
         c.closeProxy(px);
         s.close();
         assertEquals("Hey There", r);
@@ -84,7 +84,7 @@ public class InvokeTestCase {
         final Session s = TransportRegistry.i().createSession("http://localhost:8080/java-client");
         final Client c = new Client(s);
         final Object px = c.openProxy("", EchoTest.class);
-        final Object r = c.invoke(px, EchoTest.class.getMethod("echo", String.class, String.class), new Object[]{"Hey", "There"});
+        final Object r = c.invoke(px, EchoTest.class.getMethod("echo", String.class, String.class), new Object[] {"Hey", "There"});
         c.closeProxy(px);
         s.close();
         assertEquals("Hey There", r);

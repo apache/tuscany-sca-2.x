@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.implementation.python;
 
 import org.oasisopen.sca.annotation.Remotable;
 
-
 /**
  * Python component property evaluation interface.
  * 
@@ -29,5 +28,5 @@ import org.oasisopen.sca.annotation.Remotable;
 @Remotable
 public interface PythonProperty {
 
-	public String eval();
+    public String eval();
 }

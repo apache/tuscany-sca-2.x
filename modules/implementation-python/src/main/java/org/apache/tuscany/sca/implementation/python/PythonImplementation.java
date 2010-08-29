@@ -49,11 +49,12 @@ public class PythonImplementation extends ImplementationImpl {
         contract = c;
 
         class DynService extends ServiceImpl {
-        	public DynService() {
-        		setName("default");
-        		setInterfaceContract(contract);
-			}
-        };
+            public DynService() {
+                setName("default");
+                setInterfaceContract(contract);
+            }
+        }
+        ;
         service = new DynService();
         getServices().add(service);
     }
@@ -61,43 +62,43 @@ public class PythonImplementation extends ImplementationImpl {
     public String getScript() {
         return script;
     }
-    
+
     public String getLocation() {
-		return location;
-	}
+        return location;
+    }
 
     public Service getService(final String n) {
-    	return service;
-    }  
+        return service;
+    }
 
     public Reference getReference(final String n) {
-    	final Reference r = super.getReference(n);
-    	if (r != null)
-    		return r;
-    	class DynReference extends ReferenceImpl {
-    		public DynReference() {
-    	    	setName(n);
-    	    	setInterfaceContract(contract);
-			}
-    	}
-    	final Reference nr = new DynReference();
-    	getReferences().add(nr);
-    	return nr;
+        final Reference r = super.getReference(n);
+        if(r != null)
+            return r;
+        class DynReference extends ReferenceImpl {
+            public DynReference() {
+                setName(n);
+                setInterfaceContract(contract);
+            }
+        }
+        final Reference nr = new DynReference();
+        getReferences().add(nr);
+        return nr;
     }
-    
+
     public Property getProperty(final String n) {
-    	final Property p = super.getProperty(n);
-    	if (p != null)
-    		return p;
-    	class DynProperty extends PropertyImpl {
-    		public DynProperty() {
-    	    	setName(n);
-    	    	setDataType(new DataTypeImpl<XMLType>(null, String.class, String.class, XMLType.UNKNOWN));
-    	    	setXSDType(new QName("http://www.w3.org/2001/XMLSchema", "string"));
-			}
-    	}
-    	final Property np = new DynProperty();
-    	getProperties().add(np);
-    	return np;
+        final Property p = super.getProperty(n);
+        if(p != null)
+            return p;
+        class DynProperty extends PropertyImpl {
+            public DynProperty() {
+                setName(n);
+                setDataType(new DataTypeImpl<XMLType>(null, String.class, String.class, XMLType.UNKNOWN));
+                setXSDType(new QName("http://www.w3.org/2001/XMLSchema", "string"));
+            }
+        }
+        final Property np = new DynProperty();
+        getProperties().add(np);
+        return np;
     }
 }

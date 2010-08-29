@@ -29,20 +29,20 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * A factory for Python implementation providers.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class PythonImplementationProviderFactory implements ImplementationProviderFactory<PythonImplementation> {
-	final ProxyFactory pxFactory;
-    
+    final ProxyFactory pxFactory;
+
     public PythonImplementationProviderFactory(final ExtensionPointRegistry ep) {
-    	pxFactory = ExtensibleProxyFactory.getInstance(ep);
+        pxFactory = ExtensibleProxyFactory.getInstance(ep);
     }
 
     public ImplementationProvider createImplementationProvider(final RuntimeComponent comp, final PythonImplementation impl) {
         return new PythonImplementationProvider(comp, impl, pxFactory);
     }
-    
+
     public Class<PythonImplementation> getModelType() {
         return PythonImplementation.class;
     }

@@ -43,7 +43,6 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
 /**
  * Test reading/writing Python implementations.
  * 
@@ -71,7 +70,7 @@ public class ReadWriteTestCase {
     @Test
     public void testRead() throws Exception {
         final InputStream is = getClass().getClassLoader().getResourceAsStream("domain-test.composite");
-        final Composite c = (Composite) xproc.read(xif.createXMLStreamReader(is), ctx);
+        final Composite c = (Composite)xproc.read(xif.createXMLStreamReader(is), ctx);
         assertNotNull(c);
         assertEquals("server_test.py", ((PythonImplementation)c.getComponents().get(0).getImplementation()).getScript());
     }
@@ -79,7 +78,7 @@ public class ReadWriteTestCase {
     @Test
     public void testReadWrite() throws Exception {
         final InputStream is = getClass().getClassLoader().getResourceAsStream("domain-test.composite");
-        final Composite c = (Composite) xproc.read(xif.createXMLStreamReader(is), ctx);
+        final Composite c = (Composite)xproc.read(xif.createXMLStreamReader(is), ctx);
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         xproc.write(c, xof.createXMLStreamWriter(bos), ctx);
         assertTrue(bos.toString().contains("script=\"server_test.py\""));

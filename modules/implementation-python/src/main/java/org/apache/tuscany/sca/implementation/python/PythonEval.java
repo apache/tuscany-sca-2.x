@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.implementation.python;
 
 import org.oasisopen.sca.annotation.Remotable;
 
-
 /**
  * Python component generic evaluation interface.
  * 
@@ -29,5 +28,5 @@ import org.oasisopen.sca.annotation.Remotable;
 @Remotable
 public interface PythonEval {
 
-	public String eval(String args) throws Exception;
+    public String eval(String args) throws Exception;
 }

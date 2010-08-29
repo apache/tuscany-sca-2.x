@@ -43,7 +43,7 @@ import org.python.util.PythonInterpreter;
 
 /**
  * Implementation provider for Python component implementations.
- *
+ * 
  * @version $Rev$ $Date$
  */
 class PythonImplementationProvider implements ImplementationProvider {
@@ -52,7 +52,7 @@ class PythonImplementationProvider implements ImplementationProvider {
     PythonInterpreter python;
     PyObject callable;
     ProxyFactory pxFactory;
-    
+
     PythonImplementationProvider(final RuntimeComponent comp, final PythonImplementation impl, ProxyFactory pxf) {
         component = comp;
         implementation = impl;
@@ -60,40 +60,40 @@ class PythonImplementationProvider implements ImplementationProvider {
     }
 
     public void start() {
-    	final PySystemState pss = new PySystemState();
-    	pss.path.insert(0, new PyString(implementation.getLocation()));
-    	pss.path.insert(0, new PyString(getClass().getProtectionDomain().getCodeSource().getLocation().getFile()));
-    	python = new PythonInterpreter(null, pss);
-    	python.exec("from invoker import *");
-    	
-    	final List<PyObject> px = new ArrayList<PyObject>();
-    	for (final ComponentReference r: component.getReferences()) {
-    		final PythonEval pe = pxFactory.createProxy(PythonEval.class, (RuntimeEndpointReference)r.getEndpointReferences().get(0));
-            px.add(Py.java2py(new PythonEval() {
-            	@Override
-            	public String eval(final String args) throws Exception {
-            		final String v = pe.eval(args); 
-            		return v;
-            	}
-            }));
-    	}
-    	final List<PyObject> pr = new ArrayList<PyObject>();
-    	for (final ComponentProperty p: component.getProperties()) {
-    		final String v = String.valueOf(p.getValue()); 
-            pr.add(Py.java2py(new PythonProperty() {
-				@Override
-				public String eval() {
-            		return v;
-				}
-			}));
-    	}
+        final PySystemState pss = new PySystemState();
+        pss.path.insert(0, new PyString(implementation.getLocation()));
+        pss.path.insert(0, new PyString(getClass().getProtectionDomain().getCodeSource().getLocation().getFile()));
+        python = new PythonInterpreter(null, pss);
+        python.exec("from invoker import *");
 
-    	PyObject mkc = python.get("mkcomponent");
-    	callable = mkc.__call__(new PyString(component.getName()), new PyString(implementation.getScript()), new PyTuple(px.toArray(new PyObject[0])), new PyTuple(pr.toArray(new PyObject[0])));
+        final List<PyObject> px = new ArrayList<PyObject>();
+        for(final ComponentReference r: component.getReferences()) {
+            final PythonEval pe = pxFactory.createProxy(PythonEval.class, (RuntimeEndpointReference)r.getEndpointReferences().get(0));
+            px.add(Py.java2py(new PythonEval() {
+                @Override
+                public String eval(final String args) throws Exception {
+                    final String v = pe.eval(args);
+                    return v;
+                }
+            }));
+        }
+        final List<PyObject> pr = new ArrayList<PyObject>();
+        for(final ComponentProperty p: component.getProperties()) {
+            final String v = String.valueOf(p.getValue());
+            pr.add(Py.java2py(new PythonProperty() {
+                @Override
+                public String eval() {
+                    return v;
+                }
+            }));
+        }
+
+        PyObject mkc = python.get("mkcomponent");
+        callable = mkc.__call__(new PyString(component.getName()), new PyString(implementation.getScript()), new PyTuple(px.toArray(new PyObject[0])), new PyTuple(pr.toArray(new PyObject[0])));
     }
 
     public void stop() {
-    	python.cleanup();
+        python.cleanup();
     }
 
     public boolean supportsOneWayInvocation() {

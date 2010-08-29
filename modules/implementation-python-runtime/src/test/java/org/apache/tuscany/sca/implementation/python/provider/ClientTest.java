@@ -20,18 +20,17 @@ package org.apache.tuscany.sca.implementation.python.provider;
 
 import org.oasisopen.sca.annotation.Reference;
 
-
 /**
  * Test Java component.
  * 
  * @version $Rev$ $Date$
  */
 public class ClientTest implements EchoTest {
-	
-	@Reference
-	public EchoTest ref;
 
-	public String echo(final String s1, final String s2) {
-		return ref.echo(s1, s2);
-	}
+    @Reference
+    public EchoTest ref;
+
+    public String echo(final String s1, final String s2) {
+        return ref.echo(s1, s2);
+    }
 }

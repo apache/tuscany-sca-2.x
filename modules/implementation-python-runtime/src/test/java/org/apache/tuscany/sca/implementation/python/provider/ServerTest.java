@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.implementation.python.provider;
 
-
 /**
  * Test Java component.
  * 
@@ -26,7 +25,7 @@ package org.apache.tuscany.sca.implementation.python.provider;
  */
 public class ServerTest implements EchoTest {
 
-	public String echo(final String s1, final String s2) {
-		return s1 + " " + s2;
-	}
+    public String echo(final String s1, final String s2) {
+        return s1 + " " + s2;
+    }
 }
