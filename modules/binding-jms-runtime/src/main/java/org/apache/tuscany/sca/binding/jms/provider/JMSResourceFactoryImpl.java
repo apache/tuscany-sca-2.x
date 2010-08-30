@@ -128,10 +128,14 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
     }
 
     protected void createConnection() throws NamingException, JMSException {
-        ConnectionFactory connectionFactory = (ConnectionFactory)jndiLookUp(connectionFactoryName);
-        if (connectionFactory == null) {
+        Object o  = jndiLookUp(connectionFactoryName);
+        if (o == null) {
             throw new JMSBindingException("connection factory not found: " + connectionFactoryName);
         }
+    	if (!(o instanceof ConnectionFactory)) { 
+    		throw new JMSBindingException("JNDI resource '" + connectionFactoryName +"' is not a JMS ConnectionFactory");
+    	}
+        ConnectionFactory connectionFactory = (ConnectionFactory)o;
         connection = connectionFactory.createConnection();
     }
 
