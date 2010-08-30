@@ -218,6 +218,9 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
      * @see org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory#createDestination(java.lang.String)
      */
     public Destination createDestination(String jndiName) throws NamingException {
+    	if ( jndiName == null ) 
+    		return null;
+    	
         return lookupDestination("dynamicQueues/" + jndiName);
     }
 
