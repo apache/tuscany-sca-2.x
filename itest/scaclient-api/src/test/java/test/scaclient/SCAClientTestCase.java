@@ -100,15 +100,11 @@ public class SCAClientTestCase extends TestCase {
         node = NodeFactory.getInstance().createNode(URI.create("myFooDomain"), new String[] {"target/classes"});
         node.start();
 
-        SCAClientFactory clientFactory = SCAClientFactory.newInstance(URI.create("someBadDomainName"));
         try {
-            HelloworldService service = clientFactory.getService(HelloworldService.class, "HelloworldComponent/foo");
-            service.sayHello("petra");
+            SCAClientFactory clientFactory = SCAClientFactory.newInstance(URI.create("someBadDomainName"));
             fail();
-        } catch (Exception e) {
-            if (!(e.getCause() instanceof NoSuchDomainException)) {
-                throw e;
-            }
+        } catch (NoSuchDomainException e) {
+            // expected
         }
     }
     
