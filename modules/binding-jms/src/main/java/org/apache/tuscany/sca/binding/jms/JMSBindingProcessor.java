@@ -996,6 +996,11 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         	}
         }
 
+        // If activation spec exists with create=always, a jndiName must be specified
+        if (JMSBindingConstants.CREATE_ALWAYS.equals(jmsBinding.getActivationSpecCreate()) &&
+        		(jmsBinding.getActivationSpecName() == null)) {
+        	error(monitor, "ActivationSpecNameRequiredForCreateAlways", jmsBinding);
+        }
         // If Connection factory specified then destination name must also be
         if (( connectionFactoryName != null ) && ( connectionFactoryName.length() > 0 )) {
             String destinationName = jmsBinding.getDestinationName();
