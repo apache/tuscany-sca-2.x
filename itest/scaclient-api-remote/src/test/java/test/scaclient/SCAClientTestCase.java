@@ -73,10 +73,8 @@ public class SCAClientTestCase {
             service = SCAClientFactory.newInstance(URI.create("nosuchdomain")).getService(HelloworldService.class, "HelloworldComponent");
             service.sayHello("petra");
             fail();
-        } catch (Exception e) {
-            if (!(e.getCause() instanceof NoSuchDomainException)) {
-                throw e;
-            }
+        } catch (NoSuchDomainException e) {
+            //expected
         }
     }
 
