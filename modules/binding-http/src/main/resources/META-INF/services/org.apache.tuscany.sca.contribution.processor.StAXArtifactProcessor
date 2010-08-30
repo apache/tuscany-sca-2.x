@@ -18,4 +18,5 @@
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.binding.http.xml.HTTPBindingProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#binding.http,model=org.apache.tuscany.sca.binding.http.HTTPBinding,factory=org.apache.tuscany.sca.binding.http.HTTPBindingFactory
 org.apache.tuscany.sca.binding.http.xml.HTTPDefaultWireFormatProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#wireFormat.httpDefault,model=org.apache.tuscany.sca.binding.http.HTTPDefaultWireFormat
+org.apache.tuscany.sca.binding.http.xml.HTTPXMLWireFormatProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#wireFormat.httpXml,model=org.apache.tuscany.sca.binding.http.HTTPXMLWireFormat
 org.apache.tuscany.sca.binding.http.xml.HTTPDefaultOperationSelectorProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#operationSelector.httpDefault,model=org.apache.tuscany.sca.binding.http.HTTPDefaultOperationSelector
