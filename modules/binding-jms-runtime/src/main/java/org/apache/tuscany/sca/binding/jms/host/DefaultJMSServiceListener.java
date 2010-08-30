@@ -31,6 +31,7 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
 import javax.naming.NamingException;
+import javax.resource.spi.ActivationSpec;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
@@ -71,7 +72,7 @@ public class DefaultJMSServiceListener implements JMSServiceListener {
         this.running = true;
 
         try {
-            registerListerner();
+            registerListener();
         } catch (Exception e) {
             if (e instanceof JMSBindingException) throw (JMSBindingException)e;
             throw new JMSBindingException("Error starting JMSServiceBinding", e);
@@ -94,9 +95,10 @@ public class DefaultJMSServiceListener implements JMSServiceListener {
         }
     }
 
-    private void registerListerner() throws NamingException, JMSException {
+    private void registerListener() throws NamingException, JMSException {
 
         Session session = jmsResourceFactory.createSession();
+        lookupActivationSpec();
         destination = lookupDestinationQueue();
         if (destination == null) {
             destination = session.createTemporaryQueue();
@@ -146,7 +148,33 @@ public class DefaultJMSServiceListener implements JMSServiceListener {
             + ((destination instanceof Queue) ? ((Queue)destination).getQueueName() : ((Topic)destination).getTopicName()));
     }
 
-    /**
+    // Stub code for ActivationSpec support that throws appropriate errors
+    private void lookupActivationSpec() {        
+        if ( jmsBinding.getActivationSpecName() != null )  {
+        	String createMode = jmsBinding.getActivationSpecCreate();
+        	if ( JMSBindingConstants.CREATE_ALWAYS.equals(createMode) ) {
+        		ActivationSpec spec = jmsResourceFactory.lookupActivationSpec(jmsBinding.getActivationSpecName());
+        		if ( spec != null ) {
+        			throw new JMSBindingException("ActivationSpec specifies create mode of \"always\" but resource already exists.");
+        		}
+        		throw new JMSBindingException("Can not create ActivationSpec");
+        	} else if ( JMSBindingConstants.CREATE_IF_NOT_EXIST.equals(createMode)) {
+        		ActivationSpec spec = jmsResourceFactory.lookupActivationSpec(jmsBinding.getActivationSpecName());
+        		if ( spec == null ) {
+        			throw new JMSBindingException("Can not create ActivationSpec");
+        		}
+        	} else if ( JMSBindingConstants.CREATE_NEVER.equals(createMode)) {
+        		ActivationSpec spec = jmsResourceFactory.lookupActivationSpec(jmsBinding.getActivationSpecName());
+        		if ( spec == null )
+        			throw new JMSBindingException("ActivationSpec specifies create mode of \"never\" but resource does not exist at jndiName " + jmsBinding.getActivationSpecName());
+        			
+        	}
+        	        
+        	
+        }
+	}
+
+	/**
      * Looks up the Destination Queue for the JMS Binding.
      * <p>
      * What happens in the look up will depend on the create mode specified for the JMS Binding:
@@ -168,8 +196,8 @@ public class DefaultJMSServiceListener implements JMSServiceListener {
         if (isCallbackService && (jmsBinding.getDestinationName() == null)) {
             // if its a callback service returning null indicates to use a temporary queue
             return null;
-        }
-
+        }    
+        
         Destination destination = jmsResourceFactory.lookupDestination(jmsBinding.getDestinationName());
 
         String qCreateMode = jmsBinding.getDestinationCreate();
@@ -236,7 +264,9 @@ public class DefaultJMSServiceListener implements JMSServiceListener {
         return destination;
     }
 
-    public String getDestinationName() {
+
+
+	public String getDestinationName() {
         try {
             if (destination instanceof Queue) {
                 return ((Queue)destination).getQueueName();

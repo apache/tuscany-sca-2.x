@@ -28,6 +28,7 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.resource.spi.ActivationSpec;
 
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 
@@ -285,5 +286,15 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
         // where the connection can be held for the life of the binding.
         return false;
     }
+
+	public ActivationSpec lookupActivationSpec(String activationSpecName) {
+		Object o = jndiLookUp(activationSpecName);
+		if ( o == null ) 
+			return null;
+		else if (o instanceof ActivationSpec) 
+			return (ActivationSpec) o;
+		
+		throw new JMSBindingException("Incorrect resource type for ActivationSpec: " + o.getClass().getName());
+	}
 
 }
