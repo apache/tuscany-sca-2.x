@@ -65,6 +65,14 @@ public class HelloworldTestCase {
         InputStream is = url.openStream();
         Assert.assertEquals("\"Hello Petra\"", read(is));
     }
+
+    @Test
+    public void testXml() throws Exception {
+        URL url = new URL("http://localhost:8080/HelloworldXmlComponent/Helloworld/sayHello?arg0=Petra");
+        InputStream is = url.openStream();
+        Assert.assertTrue(read(is).endsWith(">Hello null</return>"));
+    }
+
     private static String read(InputStream is) throws IOException {
         BufferedReader reader = null;
         try {

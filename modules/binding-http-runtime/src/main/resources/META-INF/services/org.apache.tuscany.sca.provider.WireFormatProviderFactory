@@ -16,3 +16,4 @@
 # under the License. 
 
 org.apache.tuscany.sca.binding.http.format.HTTPDefaultWireFormatProviderFactory;model=org.apache.tuscany.sca.binding.http.HTTPDefaultWireFormat
+org.apache.tuscany.sca.binding.http.format.HTTPXMLWireFormatProviderFactory;model=org.apache.tuscany.sca.binding.http.HTTPXMLWireFormat

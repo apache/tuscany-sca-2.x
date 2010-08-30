@@ -29,4 +29,13 @@
     	</service>
     </component>
 
+    <component name="HelloworldXmlComponent">
+        <implementation.java class="org.apache.tuscany.sca.binding.http.HelloworldImpl"/>
+        <service name="Helloworld">
+    		<tuscany:binding.http>
+        		<tuscany:wireFormat.httpXml />
+    		</tuscany:binding.http>
+    	</service>
+    </component>
+
 </composite>
