@@ -154,7 +154,7 @@ public class HTTPDefaultWireFormatServiceInterceptor implements Interceptor {
         for (String name : getOrderedParameterNames(servletRequest)) {
             String jsonRequest = "";
             // quote string parameters so clients work in the usual javascript way               
-            if (typesIndex < types.size() && String.class.equals(types.get(typesIndex).getGenericType())) {
+            if (typesIndex < types.size() && String.class.equals(types.get(typesIndex++).getGenericType())) {
                 String x = servletRequest.getParameter(name);
                 if (x.startsWith("\"") || x.startsWith("'")) {
                     jsonRequest += x;
@@ -219,7 +219,7 @@ public class HTTPDefaultWireFormatServiceInterceptor implements Interceptor {
      * add wrap it for return.
      */
     protected String getResponseAsString(HttpServletRequest servletRequest, HttpServletResponse servletResponse, Object response) {
-        String jsonResponse = response.toString();
+        String jsonResponse = response == null ? "" : response.toString();
 
         if ("GET".equals(servletRequest.getMethod())) {
             // handle JSONP callback name padding
