@@ -22,6 +22,7 @@ package sample.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static sample.impl.TestUtil.here;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -56,7 +57,7 @@ public class ReadWriteTestCase {
     public static void setUp() throws Exception {
         final DefaultExtensionPointRegistry ep = new DefaultExtensionPointRegistry();
         final Contribution contrib = new DefaultContributionFactory().createContribution();
-        contrib.setLocation(ReadWriteTestCase.class.getProtectionDomain().getCodeSource().getLocation().toString());
+        contrib.setLocation(here());
         ctx = new ProcessorContext(contrib, null);
         xif = XMLInputFactory.newInstance();
         xof = XMLOutputFactory.newInstance();

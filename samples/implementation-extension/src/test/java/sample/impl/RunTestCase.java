@@ -20,6 +20,8 @@
 package sample.impl;
 
 import static java.lang.System.out;
+import static org.junit.Assert.assertEquals;
+import static sample.impl.TestUtil.here;
 
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
@@ -41,8 +43,7 @@ public class RunTestCase {
     @BeforeClass
     public static void setUp() throws Exception {
         final NodeFactory nf = NodeFactory.newInstance();
-        final String here = RunTestCase.class.getProtectionDomain().getCodeSource().getLocation().toString();
-        node = nf.createNode(new Contribution("test", here));
+        node = nf.createNode(new Contribution("test", here()));
         node.start();
     }
 
@@ -51,20 +52,23 @@ public class RunTestCase {
         node.stop();
     }
 
-    Client client() {
-        return node.getService(Client.class, "client-test/Client");
-    }
-
     @Test
     public void jello() {
         out.println("RunTestCase.jello");
-        out.println(client().jello("Java"));
+        final String r = client().jello("Java"); 
+        out.println(r);
+        assertEquals("HELLO JAVA", r);
     }
 
     @Test
     public void wello() {
         out.println("RunTestCase.wello");
-        out.println(client().wello("WSDL"));
+        final String r = client().wello("WSDL");
+        out.println(r);
+        assertEquals("HELLO WSDL", r);
     }
 
+    static Client client() {
+        return node.getService(Client.class, "client-test/Client");
+    }
 }

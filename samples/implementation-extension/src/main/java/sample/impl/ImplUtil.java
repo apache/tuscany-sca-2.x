@@ -38,9 +38,9 @@ import sample.api.Java;
 import sample.api.WSDL;
 
 /**
- * Utility functions.
+ * Utility functions to help develop a component implementation extension.
  */
-class SampleUtil {
+class ImplUtil {
 
     /**
      * Return a Sample implementation with the given name.

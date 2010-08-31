@@ -20,13 +20,13 @@ package sample.impl;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static sample.impl.SampleImplementation.QN;
-import static sample.impl.SampleUtil.clazz;
-import static sample.impl.SampleUtil.definition;
-import static sample.impl.SampleUtil.implementation;
-import static sample.impl.SampleUtil.interfaze;
-import static sample.impl.SampleUtil.qname;
-import static sample.impl.SampleUtil.reference;
-import static sample.impl.SampleUtil.service;
+import static sample.impl.ImplUtil.clazz;
+import static sample.impl.ImplUtil.definition;
+import static sample.impl.ImplUtil.implementation;
+import static sample.impl.ImplUtil.interfaze;
+import static sample.impl.ImplUtil.qname;
+import static sample.impl.ImplUtil.reference;
+import static sample.impl.ImplUtil.service;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
