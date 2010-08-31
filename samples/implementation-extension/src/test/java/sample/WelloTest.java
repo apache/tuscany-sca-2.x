@@ -20,10 +20,15 @@
 package sample;
 
 import static java.lang.System.out;
-import static sample.Xutil.dom;
 import static sample.Xutil.elem;
+import static sample.Xutil.elems;
+import static sample.Xutil.print;
+import static sample.Xutil.select;
 import static sample.Xutil.text;
-import static sample.Xutil.xpath;
+import static sample.Xutil.xdom;
+import static sample.Xutil.xfilter;
+import static sample.Xutil.xml;
+import static sample.Xutil.xreduce;
 
 import org.w3c.dom.Element;
 
@@ -42,9 +47,13 @@ public class WelloTest {
     WSDLReference upper;
 
     public Element call(String op, Element e) {
-        out.println("WelloTest." + op + "(" + Xutil.xml(e) + ")");
-        final Element ureq = dom("http://sample", "upper", elem("s", text("Hello " + xpath("//name", e))));
+        out.println("WelloTest." + op + "(" + xml(e) + ")");
+        final String name = xreduce(print, "", xfilter(select("name"), elems(e)));
+
+        final Element ureq = xdom("http://sample", "upper", elem("s", text("Hello " + name)));
         final Element ures = upper.call("upper", ureq);
-        return dom("http://sample", "helloResponse", elem("result", text(xpath("//*", ures))));
+        
+        final String s = xreduce(print, "", xfilter(select("result"), elems(ures))); 
+        return xdom("http://sample", "helloResponse", elem("result", text(s)));
     }
 }

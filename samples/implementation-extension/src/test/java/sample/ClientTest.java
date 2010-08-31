@@ -20,10 +20,14 @@
 package sample;
 
 import static java.lang.System.out;
-import static sample.Xutil.dom;
 import static sample.Xutil.elem;
+import static sample.Xutil.elems;
+import static sample.Xutil.print;
+import static sample.Xutil.select;
 import static sample.Xutil.text;
-import static sample.Xutil.xpath;
+import static sample.Xutil.xdom;
+import static sample.Xutil.xfilter;
+import static sample.Xutil.xreduce;
 
 import org.w3c.dom.Element;
 
@@ -52,8 +56,10 @@ public class ClientTest {
 
     public String wello(String s) {
         out.println("ClientTest.wello(" + s + ")");
-        final Element hreq = dom("http://sample", "hello", elem("name", text(s)));
+        final Element hreq = xdom("http://sample", "hello", elem("name", text(s)));
+        
         final Element hres = wello.call("hello", hreq);
-        return xpath("//*", hres);
+        
+        return xreduce(print, "", xfilter(select("result"), elems(hres))); 
     }
 }

@@ -20,6 +20,9 @@
 package sample;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,9 +39,10 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
- * A little bit of magic code and utility functions to help work with DOM.
+ * Just for fun, a little bit of magic code and utility functions to help work with XML DOM.
  */
 class Xutil {
     static class NodeBuilder {
@@ -51,7 +55,7 @@ class Xutil {
     /**
      * Convert a name and a list of children to a document element.
      */
-    static Element dom(String ns, String name, final NodeBuilder... nodes) {
+    static Element xdom(String ns, String name, final NodeBuilder... nodes) {
         return (Element)node(elem(ns, name, nodes), db.newDocument());
     }
 
@@ -139,4 +143,102 @@ class Xutil {
         }
     }
 
+    /**
+     * A pure Java FP-style alternative to xpath.
+     */
+    interface Mapper<T> {
+        T map(final Element e);
+    }
+    
+    static Mapper<Element> identity = new Mapper<Element>() {
+        public Element map(Element e) {
+            return e;
+        };
+    };
+    
+    interface Reducer<T> {
+        T reduce(final T accum, final Element e);
+    }
+    
+    static Reducer<String> print = new Reducer<String>() {
+        public String reduce(String accum, Element e) {
+            return accum + e.getTextContent();
+        }
+    };
+
+    /**
+     * Apply a mapper to a list of elements.
+     */
+    static <T> List<T> xmap(final Mapper<T> f, final Iterable<Element> l) {
+        final List<T> v = new ArrayList<T>();
+        for(Element e: l)
+            v.add(f.map(e));
+        return v;
+    }
+
+    /**
+     * Apply a filter to a list of elements.
+     */
+    static List<Element> xfilter(final Mapper<Boolean> f, final Iterable<Element> l) {
+        final List<Element> v = new ArrayList<Element>();
+        for(Element e: l)
+            if(f.map(e))
+                v.add(e);
+        return v;
+    }
+
+    /**
+     * Perform a reduction over a list of elements.
+     */
+    static <T> T xreduce(final Reducer<T> f, final T initial, final Iterable<Element> l) {
+        T accum = initial;
+        for(Element e: l)
+            accum = f.reduce(accum, e);
+        return accum;
+    }
+
+    /**
+     * Return a filter that selects elements by name.
+     */
+    static Mapper<Boolean> select(final String name) {
+        return new Mapper<Boolean>() {
+            public Boolean map(Element e) {
+                return name.equals(e.getLocalName());
+            }
+        };
+    }
+
+    /**
+     * Return the child elements of a node.
+     */
+    static Iterable<Element> elems(final Node parent) {
+        final List<Element> l = new ArrayList<Element>();
+        for (Node n: children(parent))
+            if (n instanceof Element)
+                l.add((Element)n);
+        return l;
+    }
+
+    /**
+     * An iterable over the children of a node.
+     */
+    private static Iterable<Node> children(Node parent) {
+        final NodeList l = parent.getChildNodes();
+        final int n = l.getLength();
+        return new Iterable<Node>() {
+            public Iterator<Node> iterator() {
+                return new Iterator<Node>() {
+                    int i = 0;
+                    public boolean hasNext() {
+                        return i < n;
+                    }
+                    public Node next() {
+                        return l.item(i++);
+                    }
+                    public void remove() {
+                    }
+                };
+            }  
+        };
+    }
 }
