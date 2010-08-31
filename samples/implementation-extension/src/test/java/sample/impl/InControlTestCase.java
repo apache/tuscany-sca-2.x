@@ -25,8 +25,10 @@ import static sample.impl.EmbedUtil.component;
 import static sample.impl.EmbedUtil.composite;
 import static sample.impl.EmbedUtil.contrib;
 import static sample.impl.EmbedUtil.deploy;
+import static sample.impl.EmbedUtil.extensionPoints;
 import static sample.impl.EmbedUtil.implementation;
 import static sample.impl.EmbedUtil.node;
+import static sample.impl.EmbedUtil.providerFactories;
 import static sample.impl.EmbedUtil.reference;
 import static sample.impl.EmbedUtil.service;
 import static sample.impl.EmbedUtil.wsdli;
@@ -36,6 +38,9 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.provider.ImplementationProvider;
+import org.apache.tuscany.sca.provider.ProviderFactory;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -50,11 +55,13 @@ import sample.WelloTest;
 
 /**
  * Test how to assemble a contribution, a SCDL composite and run it on an embedded
- * Tuscany runtime node.
+ * Tuscany runtime node. Same as EmbedTestCase but shows how stay in control and
+ * pass in a ProviderFactory instead of having it loaded and constructed by the
+ * runtime node.
  * 
  * @version $Rev$ $Date$
  */
-public class EmbedTestCase {
+public class InControlTestCase {
     static Node node;
 
     @BeforeClass
@@ -91,11 +98,26 @@ public class EmbedTestCase {
                reference("upper", "upper-test")),
            component("upper-test",
                implementation(UpperTest.class,
-                   service(Upper.class)))); 
+                   service(Upper.class))));
+        
+        // Register a test instance of our sample implementation ProviderFactory
+        providerFactories().addProviderFactory(testProviderFactory());
 
         // Run with it
         node = node(deploy(contrib, comp));
         node.start();
+    }
+    
+    static ProviderFactory<SampleImplementation> testProviderFactory() {
+        // This shows that the embedder can take control and get called
+        // when a provider is created, and return whatever provider, then
+        // invoker, implementation instance etc
+        return new SampleProviderFactory(extensionPoints()) {
+            public ImplementationProvider createImplementationProvider(RuntimeComponent comp, SampleImplementation impl) {
+                out.println("Creating a provider for component " + comp.getName());
+                return super.createImplementationProvider(comp, impl);
+            }
+        };
     }
 
     @AfterClass

@@ -36,7 +36,7 @@ import sample.api.WSDL;
 import sample.api.WSDLReference;
 
 /**
- * Sample component implementation.
+ * Sample component implementation that uses WSDL interfaces.
  * 
  * @version $Rev$ $Date$
  */

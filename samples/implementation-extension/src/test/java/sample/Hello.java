@@ -21,6 +21,11 @@ package sample;
 
 import org.oasisopen.sca.annotation.Remotable;
 
+/**
+ * Sample service interface.
+ * 
+ * @version $Rev$ $Date$
+ */
 @Remotable
 public interface Hello {
 

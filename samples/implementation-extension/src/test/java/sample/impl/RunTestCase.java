@@ -33,7 +33,8 @@ import org.junit.Test;
 import sample.Client;
 
 /**
- * Test run.
+ * Test how to run an SCA contribution containing a test composite on a
+ * Tuscany runtime node.
  * 
  * @version $Rev$ $Date$
  */

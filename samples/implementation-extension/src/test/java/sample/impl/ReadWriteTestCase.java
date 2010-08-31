@@ -43,7 +43,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test reading/writing Sample implementations.
+ * Test read/write Sample SCDL implementation elements.
  * 
  * @version $Rev$ $Date$
  */

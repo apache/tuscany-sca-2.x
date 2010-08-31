@@ -23,7 +23,7 @@ import static java.lang.System.out;
 import sample.api.Java;
 
 /**
- * Sample component implementation.
+ * Sample component implementation that uses Java interfaces.
  * 
  * @version $Rev$ $Date$
  */

@@ -57,17 +57,20 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
 import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
-import org.apache.tuscany.sca.node.configuration.impl.NodeConfigurationImpl;
-import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
-import org.apache.tuscany.sca.node.impl.NodeImpl;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 /**
- * Simple DSL functions to help assemble and run SCDL.
+ * A few utility functions to help embed a Tuscany runtime, and a simple DSL
+ * to help assemble and run SCDL.
  */
 public class EmbedUtil {
 
-    static final NodeFactoryImpl nf;
+    /**
+     * Initialize a Node factory and get the various registries, factories and
+     * extension points we need.
+     */
+    static final NodeFactory nf;
     static final ExtensionPointRegistry epr;
     static final FactoryExtensionPoint fep;
     static final ContributionFactory cf;
@@ -77,8 +80,9 @@ public class EmbedUtil {
     static final URLArtifactProcessorExtensionPoint apep;
     static final ExtensibleURLArtifactProcessor aproc;
     static final ModelResolverExtensionPoint mrep;
+    static final ProviderFactoryExtensionPoint pfep;
     static {
-        nf = new NodeFactoryImpl();
+        nf = NodeFactory.newInstance();
         epr = nf.getExtensionPointRegistry();
         fep = epr.getExtensionPoint(FactoryExtensionPoint.class);
         cf = fep.getFactory(ContributionFactory.class);
@@ -88,8 +92,12 @@ public class EmbedUtil {
         apep = epr.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         aproc = new ExtensibleURLArtifactProcessor(apep);
         mrep = epr.getExtensionPoint(ModelResolverExtensionPoint.class);
+        pfep = epr.getExtensionPoint(ProviderFactoryExtensionPoint.class);
     }
 
+    /**
+     * A mini DSL to help build and assemble contributions and SCDL composites.
+     */
     static Contribution contrib(final String uri, final String loc, final Artifact... artifacts) {
         final Contribution c = cf.createContribution();
         c.setURI(uri);
@@ -137,20 +145,6 @@ public class EmbedUtil {
         return impl;
     }
 
-    static WSDLInterface wsdli(final String uri, final String ns, final String name, final Contribution c) throws InvalidInterfaceException, ContributionException, IOException, URISyntaxException {
-        final ProcessorContext ctx = new ProcessorContext();
-        final WSDLDefinition wd = aproc.read(null, new URI(uri), new URL(new URL(c.getLocation()), uri), ctx, WSDLDefinition.class);
-        c.getModelResolver().addModel(wd, ctx);
-        c.getModelResolver().resolveModel(WSDLDefinition.class, wd, ctx);
-        final WSDLObject<PortType> pt = wd.getWSDLObject(PortType.class, new QName(ns, name));
-        if(pt == null)
-            throw new ContributionResolveException("Couldn't find " + name);
-        final WSDLInterface nwi = wif.createWSDLInterface(pt.getElement(), wd, c.getModelResolver(), null);
-        nwi.setWsdlDefinition(wd);
-        nwi.resetDataBinding(DOMDataBinding.NAME);
-        return nwi;
-    }
-
     static Reference reference(final String name, final Class<?> c) throws InvalidInterfaceException {
         return ImplUtil.reference(name, c, jif, af);
     }
@@ -178,6 +172,37 @@ public class EmbedUtil {
     }
 
     /**
+     * Load a WSDL into a contribution.
+     */
+    static WSDLInterface wsdli(final String uri, final String ns, final String name, final Contribution c) throws InvalidInterfaceException, ContributionException, IOException, URISyntaxException {
+        final ProcessorContext ctx = new ProcessorContext();
+        final WSDLDefinition wd = aproc.read(null, new URI(uri), new URL(new URL(c.getLocation()), uri), ctx, WSDLDefinition.class);
+        c.getModelResolver().addModel(wd, ctx);
+        c.getModelResolver().resolveModel(WSDLDefinition.class, wd, ctx);
+        final WSDLObject<PortType> pt = wd.getWSDLObject(PortType.class, new QName(ns, name));
+        if(pt == null)
+            throw new ContributionResolveException("Couldn't find " + name);
+        final WSDLInterface nwi = wif.createWSDLInterface(pt.getElement(), wd, c.getModelResolver(), null);
+        nwi.setWsdlDefinition(wd);
+        nwi.resetDataBinding(DOMDataBinding.NAME);
+        return nwi;
+    }
+
+    /**
+     * Return the extension point registry used by our nodes.
+     */
+    static ExtensionPointRegistry extensionPoints() {
+        return epr;
+    }
+    
+    /**
+     * Return the provider factory extension point used by our nodes.
+     */
+    static ProviderFactoryExtensionPoint providerFactories() {
+        return pfep;
+    }
+
+    /**
      * Add a deployable composite to a contribution.
      */
     static Contribution deploy(final Contribution contrib, final Composite... comps) {
@@ -185,14 +210,12 @@ public class EmbedUtil {
             contrib.getDeployables().add(c);
         return contrib;
     }
-
+    
     /**
      * Configure a node with a list of contributions.
      */
-    static Node node(final String uri, final Contribution... contributions) {
-        final NodeConfiguration cfg = new NodeConfigurationImpl();
-        cfg.setURI(uri);
-        return new NodeImpl(nf, cfg, Arrays.asList(contributions));
+    static Node node(final Contribution... contributions) {
+        return nf.createNode(Arrays.asList(contributions));
     }
 
 }

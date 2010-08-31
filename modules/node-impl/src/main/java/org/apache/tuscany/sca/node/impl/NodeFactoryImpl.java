@@ -33,6 +33,7 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +78,7 @@ import org.apache.tuscany.sca.node.configuration.BindingConfiguration;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
+import org.apache.tuscany.sca.node.configuration.impl.NodeConfigurationImpl;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
@@ -121,6 +123,12 @@ public class NodeFactoryImpl extends NodeFactory {
             destroy();
         }
         return node;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Node createNode(List<?> contributions) {
+        return new NodeImpl(this, new NodeConfigurationImpl(), new ArrayList<Contribution>((List<Contribution>)contributions));
     }
 
     protected void addNode(NodeConfiguration configuration, Node node) {
