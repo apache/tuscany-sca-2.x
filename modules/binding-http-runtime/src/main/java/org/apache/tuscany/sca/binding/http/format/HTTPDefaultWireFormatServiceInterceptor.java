@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import javax.servlet.ServletRequest;
@@ -90,9 +91,31 @@ public class HTTPDefaultWireFormatServiceInterceptor implements Interceptor {
         if ("GET".equals(servletRequest.getMethod())) {
             msg.setBody(getRequestFromQueryString(msg.getOperation(), servletRequest));
         } else {
-            msg.setBody(read(servletRequest));
+            msg.setBody(getRequestFromPost(msg.getOperation(), servletRequest));
         }
         return msg;
+    }
+    
+    /**
+     * The data binding seems to be expecting an Object array of json strings so if the
+     * post data is a json array convert that to an array of strings
+     * TODO: should this be being done by the data binding framework? 
+     */
+    private Object[] getRequestFromPost(Operation operation, HttpServletRequest servletRequest) throws IOException {
+        List<Object> os = new ArrayList<Object>();
+        String data = read(servletRequest);
+        if (data.length() > 0) {
+            if (data.startsWith("[") && data.endsWith("]")) {
+                data = data.substring(1, data.length()-1);
+                StringTokenizer st = new StringTokenizer(data, ",");
+                while (st.hasMoreElements()) {
+                    os.add(st.nextElement());
+                }
+            } else {
+                os.add(data);
+            }
+        }
+        return os.toArray();
     }
 
     private Message invokeResponse(Message msg) throws IOException {
@@ -219,7 +242,7 @@ public class HTTPDefaultWireFormatServiceInterceptor implements Interceptor {
             while ((str = reader.readLine()) != null) {
                 sb.append(str);
             }
-            return sb.toString();
+            return sb.toString().trim();
         } finally {
             if (reader != null) {
                 reader.close();
