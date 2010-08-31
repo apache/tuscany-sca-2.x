@@ -76,9 +76,10 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.BindingConfiguration;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
+import org.apache.tuscany.sca.node.configuration.DefaultNodeConfigurationFactory;
 import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
-import org.apache.tuscany.sca.node.configuration.impl.NodeConfigurationImpl;
+import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
@@ -128,7 +129,8 @@ public class NodeFactoryImpl extends NodeFactory {
     @SuppressWarnings("unchecked")
     @Override
     public Node createNode(List<?> contributions) {
-        return new NodeImpl(this, new NodeConfigurationImpl(), new ArrayList<Contribution>((List<Contribution>)contributions));
+        NodeConfigurationFactory nodeConfigurationFactory = new DefaultNodeConfigurationFactory();
+        return new NodeImpl(this, nodeConfigurationFactory.createNodeConfiguration(), new ArrayList<Contribution>((List<Contribution>)contributions));
     }
 
     protected void addNode(NodeConfiguration configuration, Node node) {
