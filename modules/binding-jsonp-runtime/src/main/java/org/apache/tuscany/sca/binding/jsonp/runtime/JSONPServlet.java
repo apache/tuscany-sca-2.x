@@ -120,7 +120,7 @@ public class JSONPServlet extends GenericServlet {
             if (!name.startsWith("_") && !"callback".equals(name)) {
 
                 // automatically quote string parameters so clients work in the usual javascript way               
-                if (typesIndex < types.size() && String.class.equals(types.get(typesIndex).getGenericType())) {
+                if (typesIndex < types.size() && String.class.equals(types.get(typesIndex++).getGenericType())) {
                     String x = servletRequest.getParameter(name);
                     // TODO: do this more properly
                     if (!x.startsWith("\"")) {
