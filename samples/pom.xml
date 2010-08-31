@@ -69,6 +69,7 @@
                 <module>binding-jsonrpc</module>
                 <module>implementation-java</module>
                 <module>implementation-script</module>
+                <module>implementation-extension</module>
 
                 <!-- contributions - Tuscany samples -->
 
