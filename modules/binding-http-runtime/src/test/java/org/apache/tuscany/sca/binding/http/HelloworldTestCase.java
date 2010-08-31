@@ -70,7 +70,7 @@ public class HelloworldTestCase {
     public void testXml() throws Exception {
         URL url = new URL("http://localhost:8080/HelloworldXmlComponent/Helloworld/sayHello?arg0=Petra");
         InputStream is = url.openStream();
-        Assert.assertTrue(read(is).endsWith(">Hello null</return>"));
+        Assert.assertTrue(read(is).endsWith(">Hello Petra</return>"));
     }
 
     private static String read(InputStream is) throws IOException {

@@ -26,6 +26,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.http.HelloworldImpl"/>
         <service name="Helloworld">
     		<tuscany:binding.http />
+    		<binding.ws name="ws" />
     	</service>
     </component>
 

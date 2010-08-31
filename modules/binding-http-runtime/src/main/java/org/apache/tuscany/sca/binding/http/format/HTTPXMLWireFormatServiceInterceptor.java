@@ -45,25 +45,14 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  * Handles the xml wire format for the http binding
- *
- * 1- determine the request and response format (xml, json, etc) from the
- *    binding config or content type header and accept headers
- *    - TODO: need a way to configure the databinding framework based on that format
- * 2- get the request contents from the HttpServletRequest
- *    - for a post its just the request body
- *    - for a get need to convert the query string into a body based on the format (xml, json, etc)
- * 3- send the request on down the wire
- * 4- set the response contents in the HttpServletResponse
- *    (the databinding should already have put it in the correct format)
- *
  */
 public class HTTPXMLWireFormatServiceInterceptor implements Interceptor {
 
     private Invoker next;
-    private String jsonpCallbackName = "callback";
     private DOMHelper domHelper;
 
     public HTTPXMLWireFormatServiceInterceptor(RuntimeEndpoint endpoint, DOMHelper domHelper) {
@@ -84,27 +73,28 @@ public class HTTPXMLWireFormatServiceInterceptor implements Interceptor {
     public Message invoke(Message msg) {
         try {
             return invokeResponse(getNext().invoke(invokeRequest(msg)));
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }
 
-    private Message invokeRequest(Message msg) throws IOException {
+    private Message invokeRequest(Message msg) throws IOException, SAXException {
         HTTPContext context = msg.getBindingContext();
         HttpServletRequest servletRequest = context.getRequest();
         if ("GET".equals(servletRequest.getMethod())) {
             msg.setBody(getRequestFromQueryString(msg.getOperation(), servletRequest));
         } else {
-            msg.setBody(read(servletRequest));
+            msg.setBody(new Object[]{domHelper.load(read(servletRequest))});
         }
         return msg;
     }
 
     private Message invokeResponse(Message msg) throws IOException {
         HTTPContext context = msg.getBindingContext();
-        HttpServletRequest servletRequest = context.getRequest();
         HttpServletResponse servletResponse = context.getResponse();
 
+        servletResponse.setContentType("text/xml");
+        
         Object o = msg.getBody();
         if (msg.isFault()) {
             String xml = domHelper.saveAsString((Node)((FaultException)o).getFaultInfo());
@@ -126,42 +116,13 @@ public class HTTPXMLWireFormatServiceInterceptor implements Interceptor {
 
     /**
      * Turn the query request into XML.
-     *
-     * From ML thread: http://apache.markmail.org/message/ix3vvyomronellmi
-     * 1- if the binding configuration contains a mapping from query parameter name to operation parameter then use that.
-     * 2- if the service interface or impl uses jaxrs annotations to name the parameters then use that mapping
-     * 3- if the query parameters are name arg0, arg1 etc than use those names for the mapping,
-     * 4- otherwise use the order in the query string.
      */
-    protected Object[] getRequestFromQueryString(Operation operation, ServletRequest servletRequest) {
-
-//        List<DataType> types = operation.getInputType().getLogical();
-//        int typesIndex = 0;
-//
-//        List<String> jsonRequestArray = new ArrayList<String>();
-//
-//        for (String name : getOrderedParameterNames(servletRequest)) {
-//            String jsonRequest = "";
-//            // quote string parameters so clients work in the usual javascript way
-//            if (typesIndex < types.size() && String.class.equals(types.get(typesIndex).getGenericType())) {
-//                String x = servletRequest.getParameter(name);
-//                if (x.startsWith("\"") || x.startsWith("'")) {
-//                    jsonRequest += x;
-//                } else {
-//                    if (x.contains("\"")) {
-//                        jsonRequest += "'" + x + "'";
-//                    } else {
-//                        jsonRequest += "\"" + x + "\"";
-//                    }
-//                }
-//            } else {
-//                jsonRequest += servletRequest.getParameter(name);
-//            }
-//            jsonRequestArray.add(jsonRequest);
-//        }
-//
-//        return jsonRequestArray.toArray();
-        return new Object[operation.getInputType().getLogical().size()];
+    protected Object[] getRequestFromQueryString(Operation operation, ServletRequest servletRequest) throws IOException, SAXException {
+        List<Object> xmlRequestArray = new ArrayList<Object>();
+        for (String name : getOrderedParameterNames(servletRequest)) {
+            xmlRequestArray.add(domHelper.load("<" + name + ">" + servletRequest.getParameter(name) + "</" + name + ">"));
+        }
+        return xmlRequestArray.toArray();
     }
 
     /**
@@ -194,10 +155,7 @@ public class HTTPXMLWireFormatServiceInterceptor implements Interceptor {
                     return i - j;
                 }});
             for (String name : parameterNames) {
-                // ignore system and jsonpCallbackName parameters
-                if (!name.startsWith("_") && !name.equals(jsonpCallbackName)) {
-                    sortedNames.add(name);
-                }
+                sortedNames.add(name);    
             }
             orderedNames.addAll(sortedNames);
         }
