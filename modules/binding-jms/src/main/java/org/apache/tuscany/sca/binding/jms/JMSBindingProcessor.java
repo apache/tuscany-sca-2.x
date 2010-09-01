@@ -769,7 +769,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         
         String opName = reader.getAttributeValue(null, "name");
         if (opName == null || opName.length() < 1) {
-            warning(monitor, "MissingJMSOperationPropertyName", jmsBinding);
+            error(monitor, "MissingJMSOperationPropertyName", jmsBinding);
             return;
         }
         // Since nativeOpName, headers, and property elements are optional, must add opName.
