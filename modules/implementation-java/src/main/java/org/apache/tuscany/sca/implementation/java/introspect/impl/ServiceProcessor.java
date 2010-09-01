@@ -185,14 +185,25 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         Service service = assemblyFactory.createService();
         JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         service.setInterfaceContract(interfaceContract);
+        
+        JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(interfaze);
 
         if (name == null) {
-            service.setName(interfaze.getSimpleName());
+            String serviceName = interfaze.getSimpleName();
+            // If the interface has @WebService annotation then take the 
+            // service name from the @name attribute if present         
+            if (interfaze.isAnnotationPresent(WebService.class)){
+                if (callInterface.getQName() != null){
+                    serviceName = callInterface.getQName().getLocalPart();
+                }
+            }
+            
+            service.setName(serviceName);
         } else {
             service.setName(name);
         }
 
-        JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(interfaze);
+        
         boolean remotable = clazz.getAnnotation(Remotable.class) != null;
         if (remotable){
             callInterface.setRemotable(true);
