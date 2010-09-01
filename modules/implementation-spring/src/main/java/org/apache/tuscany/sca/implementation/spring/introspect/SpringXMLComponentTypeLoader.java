@@ -297,6 +297,11 @@ public class SpringXMLComponentTypeLoader {
             if (!artifact.isUnresolved()) {
                 resource = new URL(artifact.getLocation());
             } else {
+                // The resource can be out of scope of the contribution root
+                if (parent != null && parent.getLocation() != null) {
+                    resource = new URL(new URL(parent.getLocation()), contextPath);
+                    return resource;
+                }
                 throw new ContributionReadException("Location cannot be resloved: " + contextPath);
             }
         } else {
