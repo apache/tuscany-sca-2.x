@@ -96,19 +96,19 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
 
     		for (ComponentService componentService : component.getServices()) {
     			for (Endpoint ep : componentService.getEndpoints()) {
-    				checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getService(), ep.getPolicySets());
+    				checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getService(), ep.getService().getPolicySets());
     				if (ep.getBinding() instanceof PolicySubject) {
-    					checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getBinding(), ep.getPolicySets());
+    					checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getBinding(), ((PolicySubject)ep.getBinding()).getPolicySets());
     				}
     			}
     		}
 
     		for (ComponentReference componentReference : component.getReferences()) {
     			for (EndpointReference epr : componentReference.getEndpointReferences()) {
-    				checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getReference(), epr.getPolicySets());
+    				checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getReference(), epr.getReference().getPolicySets());
     				if (epr.getBinding() instanceof PolicySubject) {
-    					checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getBinding(), epr.getPolicySets());
-    				}
+    					checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getBinding(), ((PolicySubject)epr.getBinding()).getPolicySets());    				
+    				} 
     			}
     		}
 
