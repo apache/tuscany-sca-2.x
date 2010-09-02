@@ -19,5 +19,5 @@
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:sample="http://sample">
-   <deployable composite="sample:Calculator"/>
+   <deployable composite="sample:Add"/>
 </contribution>
