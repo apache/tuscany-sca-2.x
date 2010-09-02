@@ -368,11 +368,13 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         	    if (s.startsWith("connectionFactoryName=")) {
         	        jmsBinding.setConnectionFactoryName(s.substring(22));
                     } else if (s.startsWith("deliveryMode=")) {
-                        jmsBinding.setJMSDeliveryMode("persistent".equals(s.substring(14)));
+                        jmsBinding.setJMSDeliveryMode("persistent".equals(s.substring(13)));
                     } else if (s.startsWith("priority=")) {
                         jmsBinding.setJMSPriority(Integer.parseInt(s.substring(9)));
                     } else if (s.startsWith("timeToLive=")) {
                         jmsBinding.setJMSTimeToLive(Long.parseLong(s.substring(11)));
+                    } else if (s.startsWith("type=")) {
+                        jmsBinding.setJMSType((s.substring(5)));
                     } else if (s.startsWith("selector='")) {
                         String selector = s.substring(10);
                         if (selector.startsWith("\"") || selector.startsWith("'")) {
