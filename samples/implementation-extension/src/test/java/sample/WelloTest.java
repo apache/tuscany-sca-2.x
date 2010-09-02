@@ -40,20 +40,20 @@ import sample.api.WSDLReference;
  * 
  * @version $Rev$ $Date$
  */
-@WSDL("http://sample#Hello")
+@WSDL("http://sample/hello#Hello")
 public class WelloTest {
 
-    @WSDL("http://sample#Upper")
+    @WSDL("http://sample/upper#Upper")
     WSDLReference upper;
 
     public Element call(String op, Element e) {
         out.println("WelloTest." + op + "(" + xml(e) + ")");
         final String name = xreduce(print, "", xfilter(select("name"), elems(e)));
 
-        final Element ureq = xdom("http://sample", "upper", elem("s", text("Hello " + name)));
+        final Element ureq = xdom("http://sample/upper", "upper", elem("s", text("Hello " + name)));
         final Element ures = upper.call("upper", ureq);
         
-        final String s = xreduce(print, "", xfilter(select("result"), elems(ures))); 
-        return xdom("http://sample", "helloResponse", elem("result", text(s)));
+        final String s = xreduce(print, "", xfilter(select("result"), elems(ures)));
+        return xdom("http://sample/hello", "helloResponse", elem("result", text(s)));
     }
 }

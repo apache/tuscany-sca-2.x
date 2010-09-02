@@ -140,7 +140,7 @@ public class SampleImplementationProcessor extends BaseStAXArtifactProcessor imp
     static WSDLInterface resolve(final QName name, final ModelResolver res, final ProcessorContext ctx, final WSDLFactory wif) throws ContributionResolveException {
         final WSDLInterface wi = res.resolveModel(WSDLInterface.class, interfaze(name, wif), ctx);
         if(!wi.isUnresolved())
-            return wi;
+            return domBound(wi);
 
         final WSDLDefinition wd = res.resolveModel(WSDLDefinition.class, definition(wi.getName(), wif), ctx);
         if(wd.isUnresolved())
@@ -152,10 +152,22 @@ public class SampleImplementationProcessor extends BaseStAXArtifactProcessor imp
         try {
             final WSDLInterface nwi = wif.createWSDLInterface(pt.getElement(), wd, res, ctx.getMonitor());
             nwi.setWsdlDefinition(wd);
-            nwi.resetDataBinding(DOMDataBinding.NAME);
             res.addModel(nwi, ctx);
-            return nwi;
+            return domBound(nwi);
         } catch(InvalidInterfaceException e) {
+            throw new ContributionResolveException(e);
+        }
+    }
+
+    /**
+     * Return a WSDL interface configured to use a DOM databinding. 
+     */
+    static WSDLInterface domBound(WSDLInterface wi) throws ContributionResolveException {
+        try {
+            final WSDLInterface domwi = (WSDLInterface)wi.clone();
+            domwi.resetDataBinding(DOMDataBinding.NAME);
+            return domwi;
+        } catch(CloneNotSupportedException e) {
             throw new ContributionResolveException(e);
         }
     }

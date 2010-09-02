@@ -17,13 +17,13 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<wsdl:definitions targetNamespace="http://sample" xmlns:tns="http://sample"
+<wsdl:definitions targetNamespace="http://sample/upper" xmlns:tns="http://sample/upper"
     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	name="Upper">
 
     <wsdl:types>
-        <schema elementFormDefault="qualified" targetNamespace="http://sample"
+        <schema elementFormDefault="qualified" targetNamespace="http://sample/upper"
             xmlns="http://www.w3.org/2001/XMLSchema">
             <element name="upper">
                 <complexType>

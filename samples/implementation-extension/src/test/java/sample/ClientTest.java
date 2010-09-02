@@ -46,7 +46,7 @@ public class ClientTest {
     @Java(Hello.class)
     Hello jello;
 
-    @WSDL("http://sample#Hello")
+    @WSDL("http://sample/hello#Hello")
     WSDLReference wello;
 
     public String jello(String s) {
@@ -56,7 +56,7 @@ public class ClientTest {
 
     public String wello(String s) {
         out.println("ClientTest.wello(" + s + ")");
-        final Element hreq = xdom("http://sample", "hello", elem("name", text(s)));
+        final Element hreq = xdom("http://sample/hello", "hello", elem("name", text(s)));
         
         final Element hres = wello.call("hello", hreq);
         

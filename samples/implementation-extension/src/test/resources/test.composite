@@ -20,24 +20,39 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
   xmlns:t="http://tuscany.apache.org/xmlns/sca/1.1"
   targetNamespace="http://test"
-  name="test">
-        
+  name="wstest">
+    
+    <!-- Client test component used by the JUnit tests -->    
     <component name="client-test">
         <t:implementation.sample class="sample.ClientTest"/>
         <reference name="wello" target="wello-test"/>
         <reference name="jello" target="jello-test"/>
     </component>
 
+    <!-- HelloWorld test component that uses WSDL interfaces -->
     <component name="wello-test">
         <t:implementation.sample class="sample.WelloTest"/>
         <reference name="upper" target="upper-test"/>
     </component>
 
+    <!-- HelloWorld test component that uses Java interfaces -->
     <component name="jello-test">
         <t:implementation.sample class="sample.JelloTest"/>
         <reference name="upper" target="upper-test"/>
     </component>
 
+    <!-- HelloWorld test component that uses WSDL interfaces and SOAP Web Services -->
+    <component name="Wsello-test">
+        <t:implementation.sample class="sample.WelloTest"/>
+        <service name="Hello">
+            <binding.ws uri="http://localhost:8085/wsello"/>
+        </service>
+        <reference name="upper">
+            <binding.ws uri="http://localhost:8086/wsupper"/>
+        </reference>
+    </component>
+
+    <!-- Test component converts a string to uppercase -->
     <component name="upper-test">
         <t:implementation.sample class="sample.UpperTest"/>
     </component>     
