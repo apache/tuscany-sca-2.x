@@ -35,17 +35,17 @@ public class CalculatorServiceImpl implements CalculatorService {
         this.addService = addService;
     }
 
-    @Reference
+   // @Reference
     public void setSubtractService(SubtractService subtractService) {
         this.subtractService = subtractService;
     }
 
-    @Reference
+   // @Reference
     public void setDivideService(DivideService divideService) {
         this.divideService = divideService;
     }
 
-    @Reference
+   // @Reference
     public void setMultiplyService(MultiplyService multiplyService) {
         this.multiplyService = multiplyService;
     }
