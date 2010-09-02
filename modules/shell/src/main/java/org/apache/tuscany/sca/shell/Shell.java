@@ -58,13 +58,13 @@ public class Shell {
     private Map<String, Node> standaloneNodes = new HashMap<String, Node>();
     private Map<String, Node> nodes = new HashMap<String, Node>();
 
-    public static final String[] COMMANDS = new String[] {"bye", "domain", "help", "install", "installed",
+    public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "help", "install", "installed",
                                                           "printDomainLevelComposite", "remove", "start", "status",
                                                           "stop"};
 
     public static void main(final String[] args) throws Exception {
         boolean useJline = true;
-        String domainURI = "";
+        String domainURI = "default";
         for (String s : args) {
             if ("-nojline".equals(s)) {
                 useJline = false;
@@ -100,12 +100,19 @@ public class Shell {
         return true;
     }
 
+    boolean domains() {
+        for (Node node : nodes.values()) {
+            System.out.println(node.getDomainName());
+        }
+        return true;
+    }
+
     boolean install(final List<String> toks) throws ContributionReadException, ActivationException, ValidationException {
         if (getNode() == null) {
             out.println("not in domain, use domain command first");
             return true;
         }
-        boolean runDeployables = !toks.contains("-norun");
+        boolean startDeployables = toks.contains("-start");
         String metaDataURL = null;
         if (toks.contains("-metadata")) {
             metaDataURL = toks.get(toks.indexOf("-metadata") + 1);
@@ -119,7 +126,7 @@ public class Shell {
         String second = null;
         for (int i = 1; i < toks.size(); i++) {
             if (toks.get(i).startsWith("-")) {
-                if (!toks.get(i).equals("-norun")) {
+                if (!toks.get(i).equals("-start")) {
                     i++;
                 }
             } else {
@@ -141,7 +148,7 @@ public class Shell {
             curl = first;
         }
 
-        String uri = getNode().installContribution(curi, curl, metaDataURL, duris, runDeployables);
+        String uri = getNode().installContribution(curi, curl, metaDataURL, duris, startDeployables);
         out.println("installed at: " + uri);
         return true;
     }
@@ -352,6 +359,12 @@ public class Shell {
                     return domain(toks.size() > 1 ? toks.get(1) : "");
                 }
             };
+            if (op.equalsIgnoreCase("domains"))
+                return new Callable<Boolean>() {
+                    public Boolean call() throws Exception {
+                        return domains();
+                    }
+                };
         if (op.equalsIgnoreCase("install"))
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
@@ -512,7 +525,8 @@ public class Shell {
         out.println();
         out.println("   help");
         out.println("   domain <domainURI>");
-        out.println("   install [<uri>] <contributionURL> [-norun -metadata <url> -duris <uri,uri,...>]");
+        out.println("   domains");
+        out.println("   install [<uri>] <contributionURL> [-start -metadata <url> -duris <uri,uri,...>]");
         out.println("   installed [<contributionURI>]");
         out.println("   remove <contributionURI>");
         out.println("   printDomainLevelComposite");
@@ -552,8 +566,17 @@ public class Shell {
         out.println("      <domainURI> - (optional) the domain URI of the domain");
     }
 
+    void helpDomains() {
+        out.println("   domains");
+        out.println();
+        out.println("   Shows the currently defined domain URIs");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      none");
+    }
+
     void helpInstall() {
-        out.println("   install [<uri>] <contributionURL> [-norun -metadata <url> -duris <uri,uri,...>]");
+        out.println("   install [<uri>] <contributionURL> [-start -metadata <url> -duris <uri,uri,...>]");
         out.println();
         out.println("   Creates an installed contribution with a supplied root contribution, installed at abase URI.");
         out.println();
@@ -561,7 +584,7 @@ public class Shell {
         out.println("      uri - (optional) the URI (name) to use for the contribution. When no uri is specified");
         out.println("               a default URI is used derived from the contribution URL");
         out.println("      contributionURL - (required) the URL to the contribution to install");
-        out.println("      -norun - (optional) do not start any composites listed as deployable in the sca-contribution.xml file");
+        out.println("      -start - (optional) start any composites listed as deployable in the sca-contribution.xml file");
         out.println("      -metadata <url> - (optional) the URL to an external contribution meta data document that should be");
         out.println("               merged into any existing sca-contributions.xml file within the contribution.");
         out.println("      -duris <uri,uri,...> - (optional) specifies the URIs of contributions that are used to resolve the");
