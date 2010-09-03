@@ -224,7 +224,7 @@ public class Shell {
                     currentDomain = "";
                 }
             } else {
-                for (String compositeURI : getNode().getDeployedCompostes(curi)) {
+                for (String compositeURI : getNode().getDeployedComposites(curi)) {
                     getNode().removeFromDomainLevelComposite(curi, compositeURI);
                 }
             }
@@ -277,7 +277,7 @@ public class Shell {
             for (String nodeName : standaloneNodes.keySet()) {
                 Node node = standaloneNodes.get(nodeName);
                 for (String curi : node.getInstalledContributions()) {
-                    for (String dc : node.getDeployedCompostes(curi)) {
+                    for (String dc : node.getDeployedComposites(curi)) {
                         out.println("   " + nodeName + " " + dc);
                     }
                 }
@@ -297,12 +297,12 @@ public class Shell {
 
                 for (String curi : ics) {
                     Contribution c = node.getInstalledContribution(curi);
-                    List<String> dcs = node.getDeployedCompostes(curi);
+                    List<String> dcs = node.getDeployedComposites(curi);
                     if (toks.size() > 2) {
                         dcs = new ArrayList<String>();
                         dcs.add(toks.get(2));
                     } else {
-                        dcs = node.getDeployedCompostes(curi);
+                        dcs = node.getDeployedComposites(curi);
                     }
                     for (String compositeUri : dcs) {
                         for (Artifact a : c.getArtifacts()) {

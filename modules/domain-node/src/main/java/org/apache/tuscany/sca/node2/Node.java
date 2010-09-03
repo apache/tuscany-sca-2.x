@@ -72,8 +72,9 @@ public interface Node {
     String installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException;
 
     /**
-     * Creates an installed contribution from a supplied root contribution.
-     * See section 10.5.1 of the Assembly Specification.
+     * Creates an installed contribution from a supplied root contribution URL.
+     * See section 10.5.1 of the Assembly Specification. This version of 
+     * installContribution automatically runs deployable composites
      * 
      * @param contributionURL  the URL where the contribution is located
      * @return the URI of the installed contribution
@@ -244,7 +245,7 @@ public interface Node {
      * @param contributionURI  the contribution URI
      * @return the List of deployed composites
      */
-    List<String> getDeployedCompostes(String contributionURI);
+    List<String> getDeployedComposites(String contributionURI);
 
     /**
      * Get the URIs of all the contributions installed on this Node

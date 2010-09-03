@@ -86,9 +86,16 @@ public class NodeFactory {
     protected NodeFactory(Properties config) {
         init(config);
     }
+    
+    public Node createNode() {
+        return createNode(null);
+    }
 
     public Node createNode(String domainURI) {
-        String domainName = getDomainName(domainURI);
+        String domainName = "default";
+        if (domainURI != null){
+            domainName = getDomainName(domainURI);
+        }
         EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, domainName);
         return new NodeImpl(domainName, deployer, compositeActivator, endpointRegistry, extensionPointRegistry, null);
     }

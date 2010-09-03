@@ -270,7 +270,7 @@ public class NodeImpl implements Node {
         return domainName;
     }
 
-    public List<String> getDeployedCompostes(String contributionURI) {
+    public List<String> getDeployedComposites(String contributionURI) {
         ArrayList<String> compositeURIs = new ArrayList<String>();
         InstalledContribution ic = installedContributions.get(contributionURI);
         if (ic == null) {
