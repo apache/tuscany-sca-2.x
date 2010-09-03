@@ -21,14 +21,20 @@ package reporting;
 
 import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
@@ -36,8 +42,13 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointImpl;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointReferenceImpl;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.deployment.Deployer;
+import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
@@ -52,6 +63,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sun.jmx.remote.util.Service;
 import com.sun.xml.internal.txw2.output.IndentingXMLStreamWriter;
 
 import calculator.CalculatorService;
@@ -70,9 +82,16 @@ public class JSELauncherReportingTestCase {
     public static void main(String[] args) throws Exception {
         JSELauncherReportingTestCase launcher = new JSELauncherReportingTestCase ();
         launcher.setUp();
-        //launcher.callCalulator();
-        //launcher.listNodeConfigurations();
+       
+        launcher.callCalulator();
+/*         
+        launcher.listNodes();
+        launcher.listNodeConfigurations();
+        launcher.listContributions();
+        launcher.listDomainDefinitions();        
         launcher.listEndpoints();
+*/        
+        launcher.listWires();
         launcher.tearDown();
     }
     
@@ -187,9 +206,63 @@ public class JSELauncherReportingTestCase {
             System.out.println(endpoint);
             printEndpointXML(endpoint);
         }
-    }      
+    }  
+    
+    @Test
+    public void listWires(){  
+        printTestName("listWires");
+        Map<Object, Node> nodes = ((NodeFactoryImpl)nodeFactory).getNodes();
+        for (Node node : nodes.values()){
+            System.out.println("Node: " + ((NodeImpl)node).getURI());
+            listComponentWires(((NodeImpl)node).getDomainComposite());
+        }
+    }     
     
     // utils
+    
+    private void listComponentWires(Composite composite){
+        for(Component component : composite.getComponents()){
+            if (component.getImplementation() instanceof Composite){
+                listComponentWires((Composite)component.getImplementation());
+            }
+            System.out.println("  Component: " + component.getName());
+            
+            for(ComponentService service : component.getServices()){
+                System.out.println("    Service: " + service.getName());
+                for(Endpoint endpoint : service.getEndpoints()){
+                    System.out.println("      Endpoint: " + endpoint);
+                    System.out.println("      Binding: " + endpoint.getBinding().getType());
+                    printInvocationChains(((RuntimeEndpointImpl)endpoint).getInvocationChains());                   
+                }
+            }
+            for(ComponentReference reference : component.getReferences()){
+                System.out.println("    Reference: " + reference.getName());
+                for(EndpointReference endpointReference : reference.getEndpointReferences()){
+                    System.out.println("      EndpointReference: " + endpointReference);
+                    Binding binding = endpointReference.getBinding();
+                    if (binding != null){
+                        System.out.println("      Binding: " + binding.getType());
+                        printInvocationChains(((RuntimeEndpointReferenceImpl)endpointReference).getInvocationChains());
+                    }
+                }
+            }            
+        }
+    }
+    
+    private void printInvocationChains(List<InvocationChain> chains){  
+        for(InvocationChain chain : chains){
+            System.out.println("        Operation: " + chain.getTargetOperation().getName());
+            Invoker invoker = chain.getHeadInvoker();
+            while(invoker != null){
+                System.out.println("          Invoker: " + invoker.getClass().getName());
+                if (invoker instanceof Interceptor){
+                    invoker = ((Interceptor)invoker).getNext();
+                } else {
+                    invoker = null;
+                }
+            }
+        }
+    }
     
     private void printTestName(String name){
         System.out.println("=====================================================================");
