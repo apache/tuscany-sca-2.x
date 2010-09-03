@@ -375,7 +375,7 @@ public class NodeImpl implements Node {
         return result;
     }
     
-    List<Contribution> getContributions() {
+    public List<Contribution> getContributions() {
         return contributions;
     }
 
