@@ -16,5 +16,6 @@
 # under the License. 
 
 # Implementation class for model factory
-org.apache.tuscany.sca.binding.jsonp.impl.JSONPBindingFactoryImpl
+org.apache.tuscany.sca.binding.jsonp.JSONPBindingFactory
+
 
