@@ -16,5 +16,5 @@
 # under the License. 
 
 # Implementation class for the binding extension
-{package}.runtime.${bindingName}BindingProviderFactory;model={package}.${bindingName}Binding
+${package}.runtime.${bindingName}BindingProviderFactory;model=${package}.${bindingName}Binding
 

@@ -19,84 +19,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ${package}.binding.foo;
+package ${package};
 
 import javax.xml.namespace.QName;
 
-import ${package}.assembly.Binding;
-import ${package}.assembly.OperationSelector;
-import ${package}.assembly.WireFormat;
+import org.apache.tuscany.sca.provider.BaseBindingImpl;
 
 /**
- * Represents a binding to an Foo service.
+ * Represents a binding to a ${bindingName} service.
  */
-public class FooBinding implements Binding {
+public class ${bindingName}Binding extends BaseBindingImpl {
 
-    QName TYPE = new QName(SCA11_TUSCANY_NS, "binding.foo");
+    public static final QName TYPE = new QName(SCA11_TUSCANY_NS, "binding.${artifactId}");
 
-    private String name;
-    private String uri;
-    private String bindingType;
+    private String someAttr;
 
-    public String getBindingType() {
-        return bindingType;
-    }
-
-    public void setBindingType(String bindingType) {
-        this.bindingType = bindingType;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getURI() {
-        return uri;
-    }
-
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    public boolean isUnresolved() {
-        return false;
-    }
-
-    public void setUnresolved(boolean arg0) {
+    public ${bindingName}Binding() {
     }
 
     public QName getType() {
         return TYPE;
     }
     
-    public WireFormat getRequestWireFormat() {
-        return null;
+    public String getSomeAttr() {
+        return someAttr;
     }
-    
-    public void setRequestWireFormat(WireFormat wireFormat) {  
+
+    public void setSomeAttr(String someAttr) {
+        this.someAttr = someAttr;
     }
-    
-    public WireFormat getResponseWireFormat() {
-        return null;
-    }
-    
-    public void setResponseWireFormat(WireFormat wireFormat) {
-    }
-    
-    public OperationSelector getOperationSelector() {
-        return null;
-    }
-    
-    public void setOperationSelector(OperationSelector operationSelector) {
-    }    
 
 }

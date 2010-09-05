@@ -20,31 +20,31 @@
  * under the License.    
  */
 
-package ${package}.binding.foo.runtime;
+package ${package}.runtime;
 
-import ${package}.binding.foo.FooBinding;
-import ${package}.core.ExtensionPointRegistry;
-import ${package}.provider.BindingProviderFactory;
-import ${package}.provider.ReferenceBindingProvider;
-import ${package}.provider.ServiceBindingProvider;
-import ${package}.runtime.RuntimeEndpoint;
-import ${package}.runtime.RuntimeEndpointReference;
+import ${package}.${bindingName}Binding;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
-public class FooBindingProviderFactory implements BindingProviderFactory<FooBinding> {
+public class ${bindingName}BindingProviderFactory implements BindingProviderFactory<${bindingName}Binding> {
 
-    public FooBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
+    public ${bindingName}BindingProviderFactory(ExtensionPointRegistry extensionPoints) {
     }
 
-    public Class<FooBinding> getModelType() {
-        return FooBinding.class;
+    public Class<${bindingName}Binding> getModelType() {
+        return ${bindingName}Binding.class;
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpoint) {
-        return new FooReferenceBindingProvider(endpoint);
+        return new ${bindingName}ReferenceBindingProvider(endpoint);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {
-        return new FooServiceBindingProvider(endpoint);
+        return new ${bindingName}ServiceBindingProvider(endpoint);
     }
 
 }

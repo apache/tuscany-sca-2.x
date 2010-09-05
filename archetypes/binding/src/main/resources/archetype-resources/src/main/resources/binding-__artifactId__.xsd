@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+#set( $bindingNameLC = ${bindingName} )<?xml version="1.0" encoding="UTF-8"?>
 <!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -25,17 +25,12 @@
 
     <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" />
 
-    <element name="binding.foo" type="t:FooBinding" substitutionGroup="sca:binding"/>
+    <element name="binding.${artifactId}" type="t:${bindingName}Binding" substitutionGroup="sca:binding"/>
     
-    <complexType name="FooBinding">
+    <complexType name="${bindingName}Binding">
         <complexContent>
             <extension base="sca:Binding">
-                <!-- sequence>
-                    <any namespace="##targetNamespace" processContents="lax" minOccurs="0"
-                         maxOccurs="unbounded"/>
-                </sequence -->
-                <!-- anyAttribute namespace="##other" processContents="lax"/-->
-                <attribute name="bindingType" type="string" use="optional"/>
+                <attribute name="someAttr" type="string" use="optional"/>
             </extension>
         </complexContent>
     </complexType>

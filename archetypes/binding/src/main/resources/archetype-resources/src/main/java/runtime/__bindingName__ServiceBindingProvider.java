@@ -20,19 +20,19 @@
  * under the License.    
  */
 
-package ${package}.binding.foo.runtime;
+package ${package}.runtime;
 
-import ${package}.binding.foo.FooBinding;
-import ${package}.interfacedef.InterfaceContract;
-import ${package}.provider.ServiceBindingProvider;
-import ${package}.runtime.RuntimeEndpoint;
+import ${package}.${bindingName}Binding;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
-public class FooServiceBindingProvider implements ServiceBindingProvider {
+public class ${bindingName}ServiceBindingProvider implements ServiceBindingProvider {
 
     private RuntimeEndpoint endpoint;
     private InterfaceContract contract;
 
-    public FooServiceBindingProvider(RuntimeEndpoint endpoint) {
+    public ${bindingName}ServiceBindingProvider(RuntimeEndpoint endpoint) {
         this.endpoint = endpoint;
     }
 
@@ -40,13 +40,13 @@ public class FooServiceBindingProvider implements ServiceBindingProvider {
         // add some code here to start the service
 
         // For this sample we'll just share it in a static
-        FooStash.addService(endpoint.getBinding().getURI(), new FooServiceInvoker(endpoint));
+        ${bindingName}Stash.addService(endpoint.getBinding().getURI(), new ${bindingName}ServiceInvoker(endpoint));
         
-        System.out.println("bindingType=" + ((FooBinding)endpoint.getBinding()).getBindingType());
+        System.out.println("someAttr=" + ((${bindingName}Binding)endpoint.getBinding()).getSomeAttr());
     }
 
     public void stop() {
-        FooStash.removeService(endpoint.getBinding().getURI());
+        ${bindingName}Stash.removeService(endpoint.getBinding().getURI());
     }
 
     public InterfaceContract getBindingInterfaceContract() {

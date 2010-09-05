@@ -20,7 +20,7 @@
  * under the License.    
  */
 
-package ${package}.binding.foo.runtime;
+package ${package}.runtime;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,15 +28,15 @@ import java.util.Map;
 /**
  * Simplistic static Map to share service endpoints with references
  */
-public class FooStash {
+public class ${bindingName}Stash {
     
-    private static Map<String, FooServiceInvoker> services = new HashMap<String, FooServiceInvoker>();
+    private static Map<String, ${bindingName}ServiceInvoker> services = new HashMap<String, ${bindingName}ServiceInvoker>();
     
-    public static void addService(String uri, FooServiceInvoker fooServiceInvoker) {
-        services.put(uri, fooServiceInvoker);
+    public static void addService(String uri, ${bindingName}ServiceInvoker ${bindingName}ServiceInvoker) {
+        services.put(uri, ${bindingName}ServiceInvoker);
     }
 
-    public static FooServiceInvoker getService(String uri) {
+    public static ${bindingName}ServiceInvoker getService(String uri) {
         return services.get(uri);
     }
 

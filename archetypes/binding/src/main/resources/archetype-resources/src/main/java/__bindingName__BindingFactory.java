@@ -20,16 +20,16 @@
  * under the License.    
  */
 
-package ${package}.binding.foo;
+package ${package};
 
 
 /**
- * Factory implementation to create Foo Models
+ * Factory implementation to create ${bindingName} Models
  */
-public class FooBindingFactory {
+public class ${bindingName}BindingFactory {
 
-    public FooBinding createFooBinding() {
-        return new FooBinding();
+    public ${bindingName}Binding create${bindingName}Binding() {
+        return new ${bindingName}Binding();
     }
 
 }

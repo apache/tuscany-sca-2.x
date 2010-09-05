@@ -20,25 +20,25 @@
  * under the License.    
  */
 
-package ${package}.binding.foo.runtime;
+package ${package}.runtime;
 
-import ${package}.assembly.EndpointReference;
-import ${package}.interfacedef.InterfaceContract;
-import ${package}.interfacedef.Operation;
-import ${package}.invocation.Invoker;
-import ${package}.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 
-public class FooReferenceBindingProvider implements ReferenceBindingProvider {
+public class ${bindingName}ReferenceBindingProvider implements ReferenceBindingProvider {
 
     private EndpointReference endpoint;
     private InterfaceContract contract;
 
-    public FooReferenceBindingProvider(EndpointReference endpoint) {
+    public ${bindingName}ReferenceBindingProvider(EndpointReference endpoint) {
         this.endpoint = endpoint;
     }
     
     public Invoker createInvoker(Operation operation) {
-        return new FooReferenceInvoker(operation, endpoint);
+        return new ${bindingName}ReferenceInvoker(operation, endpoint);
     }
 
     public void start() {

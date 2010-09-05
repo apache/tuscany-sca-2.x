@@ -20,16 +20,16 @@
  * under the License.    
  */
 
-package ${package}.binding.foo.runtime;
+package ${package}.runtime;
 
-import ${package}.invocation.Message;
-import ${package}.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
-public class FooServiceInvoker {
+public class ${bindingName}ServiceInvoker {
 
     private RuntimeEndpoint wire;
     
-    public FooServiceInvoker(RuntimeEndpoint wire) {
+    public ${bindingName}ServiceInvoker(RuntimeEndpoint wire) {
         this.wire = wire;
     }
 

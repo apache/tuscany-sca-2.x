@@ -25,14 +25,14 @@
     <component name="HelloWorldComponent">
         <implementation.java class="helloworld.HelloWorldImpl"/>
         <service name="HelloWorldService" >
-            <tuscany:binding.${bindingName} bindingType="ws" />
+            <tuscany:binding.${artifactId} someAttr="bla" />
         </service>
     </component>   
   
     <component name="HelloWorldClient">
         <implementation.java class="helloworld.HelloWorldClient"/>
         <reference name="ref" >
-            <tuscany:binding.${bindingName} uri="HelloWorldComponent/HelloWorldService"/>
+            <tuscany:binding.${artifactId} uri="HelloWorldComponent/HelloWorldService"/>
         </reference>
     </component>   
 

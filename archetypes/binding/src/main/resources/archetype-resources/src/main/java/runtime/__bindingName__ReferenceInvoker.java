@@ -20,19 +20,19 @@
  * under the License.    
  */
 
-package ${package}.binding.foo.runtime;
+package ${package}.runtime;
 
-import ${package}.assembly.EndpointReference;
-import ${package}.interfacedef.Operation;
-import ${package}.invocation.Invoker;
-import ${package}.invocation.Message;
+import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 
-public class FooReferenceInvoker implements Invoker {
+public class ${bindingName}ReferenceInvoker implements Invoker {
     
     protected Operation operation;
     protected EndpointReference endpoint;
 
-    public FooReferenceInvoker(Operation operation, EndpointReference endpoint) {
+    public ${bindingName}ReferenceInvoker(Operation operation, EndpointReference endpoint) {
         this.operation = operation;
         this.endpoint = endpoint;
     }
@@ -50,7 +50,7 @@ public class FooReferenceInvoker implements Invoker {
     public Message doInvoke(Message msg) {
         // Add some code here to make an invocation over the foo binding protocol
         // For this sample we'll just get it from the static stash
-        FooServiceInvoker fi = FooStash.getService(endpoint.getBinding().getURI());
+        ${bindingName}ServiceInvoker fi = ${bindingName}Stash.getService(endpoint.getBinding().getURI());
         return fi.invokeService(msg);
     }
 }

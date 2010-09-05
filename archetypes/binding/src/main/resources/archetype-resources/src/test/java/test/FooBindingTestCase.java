@@ -24,9 +24,8 @@ package test;
 import helloworld.HelloWorldService;
 import junit.framework.Assert;
 
-import ${package}.http.jetty.JettyServer;
-import ${package}.node.Node;
-import ${package}.node.NodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,7 +42,6 @@ public class FooBindingTestCase {
 
     @BeforeClass
     public static void init() throws Exception {
-        JettyServer.portDefault = 8085;
         node = NodeFactory.newInstance().createNode("helloworld.composite").start();
     }
     
