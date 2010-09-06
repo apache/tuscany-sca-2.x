@@ -64,6 +64,7 @@
         <module>common-java</module>
         <module>common-xml</module>
         <module>contribution</module>
+        <module>contribution-resource</module>
         <module>core</module>
         <module>core-databinding</module>
         <module>core-spi</module>

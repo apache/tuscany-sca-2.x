@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.contribution.resource.impl;
@@ -25,7 +25,7 @@ import java.util.Map;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resource.ResourceImport;
 
@@ -37,34 +37,34 @@ import org.apache.tuscany.sca.contribution.resource.ResourceImport;
 public class ArtifactModelResolver implements ModelResolver {
     private Contribution contribution;
     private Map<String, Artifact> map = new HashMap<String, Artifact>();
-    
-    public ArtifactModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
+
+    public ArtifactModelResolver(Contribution contribution) {
     	this.contribution = contribution;
     }
 
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved,  ProcessorContext context) {
     	Artifact artifact = (Artifact)resolved;
-        map.put(artifact.getURI(), artifact);
+    	map.put(artifact.getURI(), artifact);
     }
-    
-    public Object removeModel(Object resolved) {
-        return map.remove(((Artifact)resolved).getURI());
+
+    public Object removeModel(Object resolved,  ProcessorContext context) {
+    	return map.remove(((Artifact)resolved).getURI());
     }
-    
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+
+    public <T> T resolveModel(Class<T> modelClass, T unresolved,  ProcessorContext context) {
 
     	// Get the artifact URI
         String uri = ((Artifact)unresolved).getURI();
         if (uri == null) {
         	return (T)unresolved;
         }
-        
+
         // Lookup the artifact
         Artifact resolved = (Artifact) map.get(uri);
         if (resolved != null) {
             return modelClass.cast(resolved);
-        } 
-        
+        }
+
         // If not found, delegate the resolution to the imports (in this case based on the resource imports)
         for (Import import_ : this.contribution.getImports()) {
             if (import_ instanceof ResourceImport) {
@@ -73,7 +73,7 @@ public class ArtifactModelResolver implements ModelResolver {
                 if ((resourceImport.getURI().equals(uri)) &&
                     (resourceImport.getModelResolver() != null)){
                     // Delegate the resolution to the import resolver
-                    resolved = resourceImport.getModelResolver().resolveModel(Artifact.class, (Artifact)unresolved);
+                    resolved = resourceImport.getModelResolver().resolveModel(Artifact.class, (Artifact)unresolved, context);
                     if (!resolved.isUnresolved()) {
                         return modelClass.cast(resolved);
                     }
@@ -83,5 +83,5 @@ public class ArtifactModelResolver implements ModelResolver {
 
         return (T)unresolved;
     }
-    
+
 }

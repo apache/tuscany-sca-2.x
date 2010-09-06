@@ -26,13 +26,17 @@
     <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" schemaLocation="sca-1.1-cd05-rev1.xsd"/>
 
 
-    <include schemaLocation="tuscany-sca-1.1-binding-atom.xsd"/>    
+    <include schemaLocation="tuscany-sca-1.1-binding-atom.xsd"/>
     <include schemaLocation="tuscany-sca-1.1-binding-jms.xsd"/>
     <include schemaLocation="tuscany-sca-1.1-binding-http.xsd"/>
     <include schemaLocation="tuscany-sca-1.1-binding-jsonrpc.xsd"/>
     <include schemaLocation="tuscany-sca-1.1-binding-rest.xsd"/>
     <include schemaLocation="tuscany-sca-1.1-binding-rmi.xsd"/>
+    <!--
     <include schemaLocation="tuscany-sca-1.1-binding-rss.xsd"/>
+     -->
+
+    <include schemaLocation="tuscany-sca-1.1-contribution-resource.xsd"/>
 
     <include schemaLocation="tuscany-sca-1.1-implementation-osgi.xsd"/>
     <include schemaLocation="tuscany-sca-1.1-implementation-widget.xsd"/>

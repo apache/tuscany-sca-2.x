@@ -1,0 +1,34 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.contribution.resource
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA Resource Import/Export Model
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Resource Import/Export Model
+Import-Package: javax.xml.namespace,
+ javax.xml.parsers,
+ javax.xml.stream,
+ javax.xml.stream.events,
+ javax.xml.stream.util,
+ javax.xml.transform,
+ javax.xml.transform.sax,
+ javax.xml.transform.stream,
+ javax.xml.validation,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.xsd;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.common.java.io;version="2.0.0",
+ org.apache.tuscany.sca.common.xml;version="2.0.0",
+ org.apache.tuscany.sca.common.xml.stax;version="2.0.0",
+ org.apache.tuscany.sca.contribution;version="2.0.0",
+ org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.monitor;version="2.0.0",
+ org.w3c.dom,
+ org.w3c.dom.ls,
+ org.xml.sax,
+ org.xml.sax.helpers
+Bundle-SymbolicName: org.apache.tuscany.sca.contribution.resource
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
