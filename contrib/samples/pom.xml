@@ -25,15 +25,12 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-contrib-modules</artifactId>
+    <artifactId>tuscany-contrib-samples</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Contributed Modules</name>
+    <name>Apache Tuscany SCA Contributed Samples</name>
 
     <modules>
-        <module>binding-comet</module>
-        <module>binding-comet-runtime</module>        
-        <module>databinding-protobuf</module>
-        <module>host-tomcat</module>
+        <module>comet-webapp</module>
     </modules>
 
     <profiles>
