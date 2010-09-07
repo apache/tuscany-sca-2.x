@@ -92,7 +92,11 @@ public class SCAClientTestCase {
         node = NodeFactory.newInstance("uri:myFooDomain?bind=127.0.0.1:14821").createNode((String)null, new String[] {"target/classes"});
         node.start();
 
-        HelloworldService service = SCAClientFactory.newInstance(URI.create("uri:myFooDomain?wka=127.0.0.1:14821")).getService(HelloworldService.class, "HelloworldComponent");
+        // TUSCANY-3670 - why factory takes URI while node factory take configuration string?
+        //                hacked this for now to make the client domain name match the domain 
+        //                name that's pulled out of the factory URI
+        //HelloworldService service = SCAClientFactory.newInstance(URI.create("uri:myFooDomain?wka=127.0.0.1:14821")).getService(HelloworldService.class, "HelloworldComponent");
+        HelloworldService service = SCAClientFactory.newInstance(URI.create("myFooDomain")).getService(HelloworldService.class, "HelloworldComponent");
         assertEquals("Hello petra", service.sayHello("petra"));
     }
 
@@ -101,7 +105,11 @@ public class SCAClientTestCase {
         node = NodeFactory.newInstance("uri:myFooDomain?bind=127.0.0.1:14821").createNode((String)null, new String[] {"target/classes"});
         node.start();
 
-        HelloworldService service = SCAClientFactory.newInstance(URI.create("uri:myFooDomain?wka=127.0.0.1:14821")).getService(HelloworldService.class, "HelloworldComponent");
+        // TUSCANY-3670 - why factory takes URI while node factory take configuration string?
+        //                hacked this for now to make the client domain name match the domain 
+        //                name that's pulled out of the factory URI
+        //HelloworldService service = SCAClientFactory.newInstance(URI.create("uri:myFooDomain?wka=127.0.0.1:14821")).getService(HelloworldService.class, "HelloworldComponent");
+        HelloworldService service = SCAClientFactory.newInstance(URI.create("myFooDomain")).getService(HelloworldService.class, "HelloworldComponent");        
         assertEquals("Hello petra", service.sayHello("petra"));
     }
 
