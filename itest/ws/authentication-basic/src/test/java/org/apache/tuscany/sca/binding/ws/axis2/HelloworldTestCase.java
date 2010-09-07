@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.Ignore;
 
+@Ignore("TUSCANY-3631")
 public class HelloworldTestCase extends TestCase {
 
     private Node node;
