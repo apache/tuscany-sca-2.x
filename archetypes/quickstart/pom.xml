@@ -29,6 +29,7 @@
     <artifactId>tuscany-quickstart</artifactId>
     <packaging>maven-archetype</packaging>
     <name>Create a simple Apache Tuscany SCA webapp project</name>
+    <description>Create a simple Apache Tuscany SCA webapp project</description>
 
     <build>
     <extensions>

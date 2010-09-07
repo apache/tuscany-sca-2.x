@@ -29,6 +29,7 @@
     <artifactId>tuscany-contribution-zip</artifactId>
     <packaging>maven-archetype</packaging>
     <name>Create an SCA ZIP contribution project</name>
+    <description>Create an SCA ZIP contribution project</description>
 
     <build>
     <extensions>

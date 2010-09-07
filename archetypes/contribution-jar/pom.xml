@@ -29,6 +29,7 @@
     <artifactId>tuscany-contribution-jar</artifactId>
     <packaging>maven-archetype</packaging>
     <name>Create an SCA JAR contribution project</name>
+    <description>Create an SCA JAR contribution project</description>
 
     <build>
     <extensions>

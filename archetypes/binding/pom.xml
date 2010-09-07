@@ -29,6 +29,7 @@
     <artifactId>tuscany-binding-archetype</artifactId>
     <packaging>maven-archetype</packaging>
     <name>Create a Tuscany binding extension project</name>
+    <description>Create a Tuscany binding extension project</description>
 
     <build>
        <extensions>

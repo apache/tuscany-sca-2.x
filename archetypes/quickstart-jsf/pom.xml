@@ -29,6 +29,7 @@
     <artifactId>tuscany-quickstart-jsf</artifactId>
     <packaging>maven-archetype</packaging>
     <name>Create a Tuscany SCA and JSF project</name>
+    <description>Create a Tuscany SCA and JSF project</description>
 
     <build>
        <extensions>

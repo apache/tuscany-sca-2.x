@@ -29,6 +29,7 @@
     <artifactId>tuscany-quickstart-bpel</artifactId>
     <packaging>maven-archetype</packaging>
     <name>Create an SCA Webapp project using BPEL</name>
+    <description>Create an SCA Webapp project using BPEL</description>
 
     <build>
     <extensions>

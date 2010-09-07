@@ -29,6 +29,7 @@
     <artifactId>tuscany-quickstart-jsonp</artifactId>
     <packaging>maven-archetype</packaging>
     <name>Create a Tuscany SCA webapp project using the JSONP binding</name>
+    <description>Create a Tuscany SCA webapp project using the JSONP binding</description>
 
     <build>
     <extensions>
