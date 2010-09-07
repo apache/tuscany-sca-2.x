@@ -25,7 +25,7 @@
 
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
-		<reference name="addService" target="AddServiceComponent/AddServiceImpl"/>
+		<reference name="addService" target="AddServiceComponent/AddService"/>
     </component>
     
 </composite>
