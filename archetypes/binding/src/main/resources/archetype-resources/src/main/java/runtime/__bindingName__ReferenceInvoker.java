@@ -48,7 +48,7 @@ public class ${bindingName}ReferenceInvoker implements Invoker {
     }
 
     public Message doInvoke(Message msg) {
-        // Add some code here to make an invocation over the foo binding protocol
+        // Add some code here to make an invocation over the ${bindingName} binding protocol
         // For this sample we'll just get it from the static stash
         ${bindingName}ServiceInvoker fi = ${bindingName}Stash.getService(endpoint.getBinding().getURI());
         return fi.invokeService(msg);

@@ -30,7 +30,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class FooBindingTestCase {
+public class ${bindingName}BindingTestCase {
 
     private static Node node;
     
