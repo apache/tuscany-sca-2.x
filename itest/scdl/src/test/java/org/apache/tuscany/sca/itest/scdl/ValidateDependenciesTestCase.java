@@ -44,6 +44,7 @@ import org.junit.Test;
  * tuscany-assembly-2.0-SNAPSHOT.jar
  * tuscany-assembly-xml-2.0-SNAPSHOT.jar
  * tuscany-assembly-xsd-2.0-SNAPSHOT.jar
+ * tuscany-binding-http-2.0-SNAPSHOT.jar
  * tuscany-binding-jms-2.0-SNAPSHOT.jar
  * tuscany-binding-jsonp-2.0-SNAPSHOT.jar
  * tuscany-binding-rmi-2.0-SNAPSHOT.jar
@@ -79,6 +80,6 @@ public class ValidateDependenciesTestCase {
         Assert.assertTrue(dependenciesDir.exists());
         
         File[] dependencyFiles = dependenciesDir.listFiles();
-        Assert.assertEquals(35, dependencyFiles.length);
+        Assert.assertEquals(36, dependencyFiles.length);
     }
 }
