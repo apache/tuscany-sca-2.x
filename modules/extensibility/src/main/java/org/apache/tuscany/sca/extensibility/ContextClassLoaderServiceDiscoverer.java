@@ -28,6 +28,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -106,6 +107,11 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
             }
             return (javaClass != null && serviceType.isAssignableFrom(javaClass));
         }
+
+        @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+            return Collections.enumeration(ContextClassLoaderServiceDiscoverer.this.getResources(name));
+        }
     }
 
     private WeakReference<ClassLoader> classLoaderReference;
@@ -155,7 +161,16 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
 
         // http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/xpath/XPathFactory.html
         boolean isPropertyFile = "javax.xml.xpath.XPathFactory".equals(serviceName);
-        String name = "META-INF/services/" + serviceName;
+        
+        String name = serviceName;
+        if (serviceName.startsWith("/")) {
+            // If the service name starts with /, treat it as the entry name
+            name = serviceName.substring(1);
+        } else {
+            // Use JDK SPI pattern
+            name = "META-INF/services/" + serviceName;
+        }
+        
         boolean debug = logger.isLoggable(Level.FINE);
         try {
             for (final URL url : getResources(name)) {

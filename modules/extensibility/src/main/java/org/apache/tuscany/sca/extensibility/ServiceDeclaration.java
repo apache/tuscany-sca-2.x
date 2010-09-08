@@ -19,7 +19,9 @@
 
 package org.apache.tuscany.sca.extensibility;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.Map;
 
 /**
@@ -67,6 +69,7 @@ public interface ServiceDeclaration {
     String getClassName();
     
     URL getResource(String name);
+    Enumeration<URL> getResources(String name) throws IOException;
     
     /**
      * The service descriptor might be hashed

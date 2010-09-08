@@ -19,11 +19,14 @@
 
 package org.apache.tuscany.sca.extensibility;
 
+import java.io.IOException;
+import java.net.URL;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.tuscany.sca.extensibility.impl.ClassLoaderDelegate;
@@ -124,7 +127,9 @@ public class ClassLoaderContext {
      * @param serviceNames A list of service provider names
      * @return The old TCCL if a new one is set, otherwise null
      */
-    public static ClassLoader setContextClassLoader(ClassLoader parent, ServiceDiscovery discovery, String... serviceNames) {
+    public static ClassLoader setContextClassLoader(ClassLoader parent,
+                                                    ServiceDiscovery discovery,
+                                                    String... serviceNames) {
         ClassLoaderContext context = new ClassLoaderContext(parent, discovery, serviceNames);
         return context.setContextClassLoader();
     }
@@ -135,7 +140,9 @@ public class ClassLoaderContext {
      * @param serviceNames A list of service provider names
      * @return The old TCCL if a new one is set, otherwise null
      */
-    public static ClassLoader setContextClassLoader(ClassLoader parent, ServiceDiscovery discovery, Class<?>... serviceTypes) {
+    public static ClassLoader setContextClassLoader(ClassLoader parent,
+                                                    ServiceDiscovery discovery,
+                                                    Class<?>... serviceTypes) {
         ClassLoaderContext context = new ClassLoaderContext(parent, discovery, serviceTypes);
         return context.setContextClassLoader();
     }
@@ -154,7 +161,15 @@ public class ClassLoaderContext {
         try {
             ServiceDeclaration sd = discovery.getServiceDeclaration(serviceProvider);
             if (sd != null) {
-                return sd.loadClass().getClassLoader();
+                try {
+                    if (sd.loadClass() != null) {
+                        return sd.loadClass().getClassLoader();
+                    } else {
+                        return new ClassLoaderImpl(sd);
+                    }
+                } catch (ClassNotFoundException e) {
+                    return new ClassLoaderImpl(sd);
+                }
             }
         } catch (Exception e) {
             // Ignore
@@ -208,6 +223,31 @@ public class ClassLoaderContext {
 
     public ClassLoader getClassLoader() {
         return classLoader;
+    }
+
+    private static class ClassLoaderImpl extends ClassLoader {
+        private final ServiceDeclaration sd;
+
+        public ClassLoaderImpl(ServiceDeclaration sd) {
+            super();
+            this.sd = sd;
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            return sd.loadClass(name);
+        }
+
+        @Override
+        protected URL findResource(String name) {
+            return sd.getResource(name);
+        }
+
+        @Override
+        protected Enumeration<URL> findResources(String name) throws IOException {
+            return sd.getResources(name);
+        }
+
     }
 
 }

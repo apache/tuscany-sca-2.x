@@ -95,7 +95,6 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
 
     }
 
-
     public static class ServiceDeclarationImpl implements ServiceDeclaration {
         private Bundle bundle;
         private URL url;
@@ -167,6 +166,11 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             return (javaClass != null && serviceType.isAssignableFrom(javaClass));
         }
 
+        @Override
+        public Enumeration<URL> getResources(final String name) throws IOException {
+            return (Enumeration<URL>) bundle.getResources(name);
+        }
+
     }
 
     /**
@@ -200,7 +204,6 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         return sb.toString();
 
     }
-
 
     public ServiceDeclaration getServiceDeclaration(String name) throws IOException {
         Collection<ServiceDeclaration> declarations = getServiceDeclarations(name);
@@ -256,15 +259,22 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
 
         // http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/xpath/XPathFactory.html
         boolean isPropertyFile = "javax.xml.xpath.XPathFactory".equals(serviceName);
-        boolean isTuscanyService = serviceName.startsWith("org.apache.tuscany.sca.") ||
-                                   serviceName.startsWith("META-INF/services/org.apache.tuscany.sca.");
+        boolean isTuscanyService = serviceName.startsWith("org.apache.tuscany.sca.");
+
+        if (serviceName.startsWith("/")) {
+            // If the service name starts with /, treat it as the entry name
+            serviceName = serviceName.substring(1);
+        } else {
+            // Use JDK SPI pattern
+            serviceName = "META-INF/services/" + serviceName;
+        }
 
         Set<URL> visited = new HashSet<URL>();
         //System.out.println(">>>> getServiceDeclarations()");
         for (Bundle bundle : getBundles(isTuscanyService)) {
-//            if (!isProviderBundle(bundle)) {
-//                continue;
-//            }
+            //            if (!isProviderBundle(bundle)) {
+            //                continue;
+            //            }
             Enumeration<URL> urls = null;
             try {
                 // Use getResources to find resources on the classpath of the bundle
@@ -291,10 +301,6 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
             if (urls == null) {
-                if(! serviceName.startsWith("META-INF/services/")) {
-                    return getServiceDeclarations("META-INF/services/" + serviceName);
-                }
-
                 continue;
             }
             while (urls.hasMoreElements()) {
@@ -311,7 +317,8 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
                 try {
                     for (Map<String, String> attributes : ServiceDeclarationParser.load(url, isPropertyFile)) {
                         String className = attributes.get("class");
-                        ServiceDeclarationImpl descriptor = new ServiceDeclarationImpl(bundle, url, className, attributes);
+                        ServiceDeclarationImpl descriptor =
+                            new ServiceDeclarationImpl(bundle, url, className, attributes);
                         descriptors.add(descriptor);
                     }
                 } catch (IOException e) {

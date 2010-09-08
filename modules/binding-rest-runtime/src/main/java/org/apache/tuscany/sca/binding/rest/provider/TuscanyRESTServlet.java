@@ -24,6 +24,7 @@ import java.util.Enumeration;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.MediaType;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -54,6 +55,21 @@ public class TuscanyRESTServlet extends RestServlet {
         this.registry = registry;
         this.resourceClass = resourceClass;
     }
+    
+    public void init() throws ServletException {
+        ClassLoader cl =
+            ClassLoaderContext.setContextClassLoader(Thread.currentThread().getContextClassLoader(),
+                                                     registry.getServiceDiscovery(),
+                                                     "/META-INF/server/wink-providers");
+        try {
+            super.init();
+        } finally {
+            if (cl != null) {
+                // return previous classLoader
+                Thread.currentThread().setContextClassLoader(cl);
+            }
+        }
+    }
 
     @Override
     public DeploymentConfiguration getDeploymentConfiguration() throws ClassNotFoundException, InstantiationException,
@@ -65,8 +81,8 @@ public class TuscanyRESTServlet extends RestServlet {
             ClassLoaderContext.setContextClassLoader(Thread.currentThread().getContextClassLoader(),
                                                      registry.getServiceDiscovery(),
                                                      "javax.ws.rs.ext.RuntimeDelegate",
-                                                     "META-INF/wink-alternate-shortcuts.properties",
-                                                     "META-INF/server/wink-providers");
+                                                     "/META-INF/wink-alternate-shortcuts.properties",
+                                                     "/META-INF/server/wink-providers");
 
         DeploymentConfiguration config = null;
         try {
