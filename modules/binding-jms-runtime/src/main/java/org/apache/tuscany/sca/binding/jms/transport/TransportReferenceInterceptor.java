@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.binding.jms.transport;
 
+import javax.jms.DeliveryMode;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
@@ -41,15 +42,13 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
  */
 public class TransportReferenceInterceptor implements Interceptor {
       
-    private Invoker next;
-    private RuntimeEndpointReference runtimeWire;
+    private Invoker next;    
     private JMSResourceFactory jmsResourceFactory;
     private JMSBinding jmsBinding;
 
     public TransportReferenceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeEndpointReference runtimeWire) {
         super();
-        this.jmsBinding = jmsBinding;
-        this.runtimeWire = runtimeWire;
+        this.jmsBinding = jmsBinding;        
         this.jmsResourceFactory = jmsResourceFactory;
     }
     
@@ -78,20 +77,20 @@ public class TransportReferenceInterceptor implements Interceptor {
     
             // Set JMS header attributes in producer, not message.
             String opName = msg.getOperation().getName();
-            if (jmsBinding.getOperationJMSTimeToLive(msg.getOperation().getName()) != null) {
-                producer.setTimeToLive(jmsBinding.getOperationJMSTimeToLive(msg.getOperation().getName()));
-            }
-            Integer priority = jmsBinding.getOperationJMSPriority( opName );
+            if (jmsBinding.getEffectiveJMSTimeToLive(opName) != null) {
+                producer.setTimeToLive(jmsBinding.getEffectiveJMSTimeToLive(msg.getOperation().getName()).longValue());
+            } 
+            
+            Integer priority = jmsBinding.getEffectiveJMSPriority(opName);
             if (priority != null) {
-               producer.setPriority(priority.intValue());
+            	producer.setPriority(priority.intValue());
             }  
-            Boolean deliveryModePersistent = jmsBinding.getOperationJMSDeliveryMode(opName);
+            
+            Boolean deliveryModePersistent = jmsBinding.getEffectiveJMSDeliveryMode(opName);
             if (deliveryModePersistent != null) {
-                if (deliveryModePersistent.booleanValue())
-                    producer.setDeliveryMode(javax.jms.DeliveryMode.PERSISTENT);
-                else
-                    producer.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
-            }
+            	producer.setDeliveryMode( deliveryModePersistent ? DeliveryMode.PERSISTENT : DeliveryMode.NON_PERSISTENT);               
+            } 
+                       
             
             try {
                 producer.send((javax.jms.Message)msg.getBody());

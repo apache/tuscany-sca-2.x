@@ -122,11 +122,7 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
 
     private boolean containsHeaders = false;
     private String replyTo;
-    private String jmsType;
     private String jmsCorrelationId;
-    private Boolean deliveryModePersistent;
-    private Long timeToLive;
-    private Integer jmsPriority;
 
     private Map<String, Object> properties = new HashMap<String, Object>();
     private Map<String, Map<String, Object>> operationProperties = new HashMap<String, Map<String,Object>>();
@@ -151,6 +147,20 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
     private OperationSelector operationSelector;
     private ExtensionType extensionType;
     private String jmsURI;
+	
+	private String uriType;
+	private Boolean uriDeliveryMode;
+	private Integer uriJMSPriority;
+	private Long uriJMSTimeToLive;
+
+	private String headerType;
+	private Boolean headerDeliveryMode;
+	private Integer headerPriority;
+	private Long headerTimeToLive;
+
+	private final Integer defaultPriority = Integer.valueOf(4);
+	private final Boolean defaultDeliveryMode = true;
+	private final Long defaultJMSTimeToLive =Long.valueOf(0);
     
     public JMSBinding() {
         super();
@@ -468,14 +478,74 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
         this.replyTo = replyTo;
     }
 
-    public String getJMSType() {
-        return jmsType;
+    // getEffective...() will return values based on the following priority
+    // 1. The value specified in the URI attribute
+    // 2. The value specified in the operationProperties/headers
+    // 3. The value specified in the headers element
+    // 4. The default value from the headers element
+    public String getEffectiveJMSType(String opName) {
+    	if ( getJMSURIType() != null ) return getJMSURIType();
+    	else if ( getOperationJMSType(opName) != null ) return getOperationJMSType(opName);
+    	else if ( getJMSHeaderType() != null ) return getJMSHeaderType();
+    	else return null;
     }
-    public void setJMSType(String jmsType) {
-        setHeaders( true );
-        this.jmsType = jmsType;
+    
+    public Boolean getEffectiveJMSDeliveryMode(String opName) {
+    	if ( getURIJMSDeliveryMode() != null ) return getURIJMSDeliveryMode();
+    	else if ( getOperationJMSDeliveryMode(opName) != null) return getOperationJMSDeliveryMode(opName);
+    	else if ( getHeaderJMSDeliveryMode() != null) return getHeaderJMSDeliveryMode();
+    	else return getDefaultDeliveryMode();
+    }
+    
+    public Long getEffectiveJMSTimeToLive(String opName) {
+    	if ( getURIJMSTimeToLive() != null ) return getURIJMSTimeToLive();
+    	else if ( getOperationJMSTimeToLive(opName) != null) return getOperationJMSTimeToLive(opName);
+    	else if ( getHeaderJMSTimeToLive() != null) return getHeaderJMSTimeToLive();
+    	else return getDefaultJMSTimeToLive();
     }
 
+    public Integer getEffectiveJMSPriority(String operationName) {
+    	if ( getURIJMSPriority() != null ) return getURIJMSPriority();
+    	else if ( getOperationJMSPriority(operationName)!= null) return getOperationJMSPriority(operationName);
+    	else if ( getJMSHeaderPriority() != null ) return getJMSHeaderPriority();
+    	else return getDefaultJMSPriority();
+    }
+
+
+    private Long getHeaderJMSTimeToLive() {
+		return this.headerTimeToLive;
+	}
+
+	private Long getDefaultJMSTimeToLive() {
+		return this.defaultJMSTimeToLive;
+	}
+
+	private Boolean getDefaultDeliveryMode() {
+		return this.defaultDeliveryMode;
+	}
+
+	private Boolean getHeaderJMSDeliveryMode() {
+		return headerDeliveryMode;
+	}
+
+	private Boolean getURIJMSDeliveryMode() {
+		return this.uriDeliveryMode;
+	}
+    
+    public String getJMSURIType() {
+    	return uriType;
+    }
+    public void setJMSURIType(String type) {
+    	this.uriType = type;
+    }
+    public String getJMSHeaderType() {
+    	return headerType;
+    }
+    
+    public void setJMSHeaderType(String type) {
+    	this.headerType = type;
+    } 
+  
     public String getJMSCorrelationId() {
         return jmsCorrelationId;
     }
@@ -483,32 +553,6 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
     public void setJMSCorrelationId(String jmsCorrelationId) {
         setHeaders( true );
         this.jmsCorrelationId = jmsCorrelationId;
-    }
-
-    public Boolean isdeliveryModePersistent() {
-        return deliveryModePersistent;
-    }
-    public void setJMSDeliveryMode(boolean persistent) {
-        setHeaders( true );
-        this.deliveryModePersistent = Boolean.valueOf(persistent);
-    }
-
-    public Integer getJMSPriority() {
-        return jmsPriority;
-    }
-
-    public void setJMSPriority(int jmsPriority) {
-        setHeaders( true );
-        this.jmsPriority = Integer.valueOf(jmsPriority);
-    }
-
-    public Long getJMSTimeToLive() {
-        return timeToLive;
-    }
-
-    public void setJMSTimeToLive(long timeToLive) {
-        setHeaders( true );
-        this.timeToLive = Long.valueOf(timeToLive);
     }
 
     public Set<String> getPropertyNames() {
@@ -621,7 +665,7 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
             if (operationJMSTypes.containsKey(opName)) {
                 return operationJMSTypes.get(opName);
             } else {
-                return jmsType;
+                return null;
             }
         }
     }
@@ -653,13 +697,13 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
             if (operationPropertiesBinding.getOperationJMSDeliveryMode(opName) != null) {
                 return operationPropertiesBinding.getOperationJMSDeliveryMode(opName);
             } else {
-                return deliveryModePersistent;
+                return null;
             }
         } else {
             if (operationJMSDeliveryModes.containsKey(opName)) {
                 return operationJMSDeliveryModes.get(opName);
             } else {
-                return deliveryModePersistent;
+                return null;
             }
         }
     }
@@ -672,13 +716,13 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
             if (operationPropertiesBinding.getOperationJMSTimeToLive(opName) != null) {
                 return operationPropertiesBinding.getOperationJMSTimeToLive(opName);
             } else {
-                return timeToLive;
+                return null;
             }
         } else {
             if (operationJMSTimeToLives.containsKey(opName)) {
                 return operationJMSTimeToLives.get(opName);
             } else {
-                return timeToLive;
+                return null;
             }
         }
     }
@@ -691,13 +735,13 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
             if (operationPropertiesBinding.getOperationJMSPriority(opName) != null) {
                 return operationPropertiesBinding.getOperationJMSPriority(opName);
             } else {
-                return jmsPriority;
+                return null;
             }
         } else {
             if (operationJMSPriorities.containsKey(opName)) {
                 return operationJMSPriorities.get(opName);
             } else {
-                return jmsPriority;
+                return null;
             }
         }
     }
@@ -979,4 +1023,50 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
     public void setJMSURI(String jmsURI) {
         this.jmsURI = jmsURI;
     }
+
+    
+	public void setURIJMSDeliveryMode(boolean equals) {
+		this.uriDeliveryMode = Boolean.valueOf(equals);		
+	}
+
+	public Integer getURIJMSPriority() {
+		return this.uriJMSPriority;
+	}
+	
+	public void setURIJMSPriority(int parseInt) {
+		this.uriJMSPriority = Integer.valueOf(parseInt);		
+	}
+
+	public Long getURIJMSTimeToLive() {
+		return this.uriJMSTimeToLive;
+	}
+	public void setURIJMSTimeToLive(long parseLong) {
+		this.uriJMSTimeToLive = Long.valueOf(parseLong);
+	}
+
+	public Boolean isHeaderDeliveryModePersistent() {
+		return this.headerDeliveryMode;
+	}
+	public void setJMSHeaderDeliveryMode(boolean b) {
+		this.headerDeliveryMode = Boolean.valueOf(b);		
+	}
+
+	public Long getJMSHeaderTimeToLive() {
+		return this.headerTimeToLive;
+	}
+	public void setJMSHeaderTimeToLive(long parseLong) {
+		this.headerTimeToLive = Long.valueOf(parseLong);		
+	}
+
+	public Integer getJMSHeaderPriority() {
+		return this.headerPriority;
+	}
+	public void setJMSHeaderPriority(int p) {
+		this.headerPriority = Integer.valueOf(p);		
+	}
+	
+	public Integer getDefaultJMSPriority() {
+		return this.defaultPriority;
+	}
+	
 }

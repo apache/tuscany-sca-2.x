@@ -368,13 +368,11 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         	    if (s.startsWith("connectionFactoryName=")) {
         	        jmsBinding.setConnectionFactoryName(s.substring(22));
                     } else if (s.startsWith("deliveryMode=")) {
-                        jmsBinding.setJMSDeliveryMode("persistent".equals(s.substring(13)));
+                        jmsBinding.setURIJMSDeliveryMode("persistent".equals(s.substring(13)));
                     } else if (s.startsWith("priority=")) {
-                        jmsBinding.setJMSPriority(Integer.parseInt(s.substring(9)));
+                        jmsBinding.setURIJMSPriority(Integer.parseInt(s.substring(9)));
                     } else if (s.startsWith("timeToLive=")) {
-                        jmsBinding.setJMSTimeToLive(Long.parseLong(s.substring(11)));
-                    } else if (s.startsWith("type=")) {
-                        jmsBinding.setJMSType((s.substring(5)));
+                        jmsBinding.setURIJMSTimeToLive(Long.parseLong(s.substring(11)));
                     } else if (s.startsWith("selector='")) {
                         String selector = s.substring(10);
                         if (selector.startsWith("\"") || selector.startsWith("'")) {
@@ -384,11 +382,14 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                             selector = selector.substring(0, selector.length() - 1);
                         }
                         jmsBinding.setJMSSelector(selector);
-        	    } else {
-        	        error(monitor, "UnknownTokenInURI", jmsBinding, s, uri);
-                 	return;
-        	     }
-        	}
+                    } else if (s.startsWith("type")) {
+                    	String type = s.substring(5);
+                    	jmsBinding.setJMSURIType(type);                    	
+                    } else {
+                    	error(monitor, "UnknownTokenInURI", jmsBinding, s, uri);
+                    	return;
+                    }
+        		}
         	int j=uri.indexOf(':', 4);
         	jmsBinding.setDestinationName(uri.substring(j+1, i));
         	jmsBinding.setDestinationType(uri.substring(4, j));
@@ -673,15 +674,15 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     private void parseHeaders(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
         String jmsType = reader.getAttributeValue(null, "type");
         if (jmsType != null && jmsType.length() > 0) {
-            jmsBinding.setJMSType(jmsType);
+            jmsBinding.setJMSHeaderType(jmsType);
         }
 
         String jmsDeliveryMode = reader.getAttributeValue(null, "deliveryMode");
         if (jmsDeliveryMode != null && jmsDeliveryMode.length() > 0) {
             if ("persistent".equalsIgnoreCase(jmsDeliveryMode)) {
-                jmsBinding.setJMSDeliveryMode(true);
+                jmsBinding.setJMSHeaderDeliveryMode(true);
             } else if ("nonpersistent".equalsIgnoreCase(jmsDeliveryMode)) {
-                jmsBinding.setJMSDeliveryMode(false);
+                jmsBinding.setJMSHeaderDeliveryMode(false);
             } else {
                 error(monitor, "InvalidJMSDeliveryMode", jmsBinding, jmsDeliveryMode);
             }
@@ -689,7 +690,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
         String jmsTimeToLive = reader.getAttributeValue(null, "timeToLive");
         if (jmsTimeToLive != null && jmsTimeToLive.length() > 0) {
-            jmsBinding.setJMSTimeToLive(Long.parseLong(jmsTimeToLive));
+            jmsBinding.setJMSHeaderTimeToLive(Long.parseLong(jmsTimeToLive));
         }
 
         String jmsPriority = reader.getAttributeValue(null, "priority");
@@ -697,7 +698,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             try {
                 int p = Integer.parseInt(jmsPriority);
                 if (p >= 0 && p <= 9) {
-                    jmsBinding.setJMSPriority(p);
+                    jmsBinding.setJMSHeaderPriority(p);
                 } else {
                     warning(monitor, "InvalidJMSPriority", jmsBinding, jmsPriority);
                 }
@@ -1151,12 +1152,12 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
         writer.writeStartElement(Constants.SCA11_NS, JMSBindingConstants.HEADERS);
 
-        String jmsType = jmsBinding.getJMSType();
+        String jmsType = jmsBinding.getJMSHeaderType();
         if (jmsType != null && jmsType.length() > 0) {
             writer.writeAttribute("type", jmsType);
         }
 
-        Boolean jmsDeliveryMode = jmsBinding.isdeliveryModePersistent();
+        Boolean jmsDeliveryMode = jmsBinding.isHeaderDeliveryModePersistent();
         if (jmsDeliveryMode != null) {
             if ( jmsDeliveryMode.booleanValue() )
                writer.writeAttribute("deliveryMode", "persistent");
@@ -1164,12 +1165,12 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                writer.writeAttribute("deliveryMode", "nonpersistent");
         }
 
-        Long jmsTimeToLive = jmsBinding.getJMSTimeToLive();
+        Long jmsTimeToLive = jmsBinding.getJMSHeaderTimeToLive();
         if (jmsTimeToLive != null) {
             writer.writeAttribute("timeToLive", jmsTimeToLive.toString());
         }
 
-        Integer jmsPriority = jmsBinding.getJMSPriority();
+        Integer jmsPriority = jmsBinding.getJMSHeaderPriority();
         if (jmsPriority != null) {
             writer.writeAttribute("priority", jmsPriority.toString());
         }

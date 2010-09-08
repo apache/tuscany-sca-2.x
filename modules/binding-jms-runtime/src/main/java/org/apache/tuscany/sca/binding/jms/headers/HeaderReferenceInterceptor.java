@@ -28,7 +28,6 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.naming.NamingException;
 
-import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
@@ -53,22 +52,15 @@ public class HeaderReferenceInterceptor implements Interceptor {
 
     private Invoker next;
     private RuntimeEndpointReference runtimeWire;
-    private JMSResourceFactory jmsResourceFactory;
     private JMSBinding jmsBinding;
     private JMSMessageProcessor requestMessageProcessor;
-    private JMSMessageProcessor responseMessageProcessor;
-    private String correlationScheme;
-    private WireFormat requestWireFormat;
-    private WireFormat responseWireFormat;
+
 
     public HeaderReferenceInterceptor(ExtensionPointRegistry extensions, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeEndpointReference runtimeWire) {
         super();
         this.jmsBinding = jmsBinding;
-        this.runtimeWire = runtimeWire;
-        this.jmsResourceFactory = jmsResourceFactory;
-        this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(extensions, jmsBinding);
-        this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(extensions, jmsBinding);
-        this.correlationScheme = jmsBinding.getCorrelationScheme();
+        this.runtimeWire = runtimeWire;      
+        this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(extensions, jmsBinding);       
         
     }
 
@@ -92,25 +84,31 @@ public class HeaderReferenceInterceptor implements Interceptor {
             // @nativeOperation here on the reference side.
             requestMessageProcessor.setOperationName(operationName, jmsMsg);
     
-            if (jmsBinding.getOperationJMSDeliveryMode(operationName) != null) {
-                if (jmsBinding.getOperationJMSDeliveryMode(operationName)) {
-                    jmsMsg.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
-                } else {
-                    jmsMsg.setJMSDeliveryMode(DeliveryMode.NON_PERSISTENT);
-                }
-            }
+          
+            
+            if (jmsBinding.getEffectiveJMSDeliveryMode(operationName) != null) {
+            	if (jmsBinding.getEffectiveJMSDeliveryMode(operationName)) {
+            		jmsMsg.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
+            	} else {
+            		jmsMsg.setJMSDeliveryMode(DeliveryMode.NON_PERSISTENT);
+            	}
+            } 
     
-            if (jmsBinding.getOperationJMSCorrelationId(operationName) != null) {
-                jmsMsg.setJMSCorrelationID(jmsBinding.getOperationJMSCorrelationId(operationName));
-            }
+            if (jmsBinding.getEffectiveJMSPriority(operationName) != null) {
+            	jmsMsg.setJMSPriority(jmsBinding.getEffectiveJMSPriority(operationName));
+            } 
     
-            if (jmsBinding.getOperationJMSPriority(operationName) != null) {
-                jmsMsg.setJMSPriority(jmsBinding.getOperationJMSPriority(operationName));
+            if ( jmsBinding.getEffectiveJMSType(operationName) != null ) {         
+            	jmsMsg.setJMSType(jmsBinding.getEffectiveJMSType(operationName));
+            } 
+            
+            if ( jmsBinding.getEffectiveJMSTimeToLive(operationName) != null ) {
+            	jmsMsg.setJMSExpiration(jmsBinding.getEffectiveJMSTimeToLive(operationName));
             }
-    
-            if (jmsBinding.getOperationJMSType(operationName) != null) {
-                jmsMsg.setJMSType(jmsBinding.getOperationJMSType(operationName));
-            }
+            
+        	if (jmsBinding.getOperationJMSCorrelationId(operationName) != null) {
+        		jmsMsg.setJMSCorrelationID(jmsBinding.getOperationJMSCorrelationId(operationName));
+        	}
     
             if (tuscanyMsg.getFrom().getCallbackEndpoint() != null) {
     
@@ -137,11 +135,11 @@ public class HeaderReferenceInterceptor implements Interceptor {
                 }
             }
             
-            if (jmsBinding.getOperationJMSTimeToLive(operationName) != null) {
-                context.setTimeToLive(jmsBinding.getOperationJMSTimeToLive(operationName) * 2);        
+            if (jmsBinding.getEffectiveJMSTimeToLive(operationName) != null) {
+                context.setTimeToLive(jmsBinding.getEffectiveJMSTimeToLive(operationName) * 2);        
             } else {   
             	context.setTimeToLive(JMSBindingConstants.DEFAULT_TIME_TO_LIVE);        
-            }             
+            }
             
             return tuscanyMsg;
         } catch (JMSException e) {

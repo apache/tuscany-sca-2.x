@@ -54,11 +54,9 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 public class TransportServiceInterceptor implements Interceptor {
     private static final Logger logger = Logger.getLogger(TransportServiceInterceptor.class.getName());
       
-    private Invoker next;
-    private RuntimeEndpoint endpoint;
+    private Invoker next;    
     private JMSResourceFactory jmsResourceFactory;
-    private JMSBinding jmsBinding;
-    private JMSMessageProcessor requestMessageProcessor;
+    private JMSBinding jmsBinding;   
     private JMSMessageProcessor responseMessageProcessor;
     private RuntimeComponentService service;
     private String correlationScheme;
@@ -67,10 +65,8 @@ public class TransportServiceInterceptor implements Interceptor {
 
     public TransportServiceInterceptor(ExtensionPointRegistry registry, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeEndpoint endpoint) {
         super();
-        this.jmsBinding = jmsBinding;
-        this.endpoint = endpoint;
-        this.jmsResourceFactory = jmsResourceFactory;
-        this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(registry, jmsBinding);
+        this.jmsBinding = jmsBinding;      
+        this.jmsResourceFactory = jmsResourceFactory;     
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(registry, jmsBinding);
         this.service = (RuntimeComponentService)endpoint.getService();
         this.correlationScheme = jmsBinding.getCorrelationScheme();
@@ -100,9 +96,7 @@ public class TransportServiceInterceptor implements Interceptor {
     }    
     
     public Message invokeRequest(Message msg) { 
-//        try {
-            JMSBindingContext context = msg.getBindingContext();
-            javax.jms.Message requestJMSMsg = context.getJmsMsg();
+//        try {                  
 
             EndpointReference from = assemblyFactory.createEndpointReference();
             Endpoint fromEndpoint = assemblyFactory.createEndpoint();
@@ -153,21 +147,22 @@ public class TransportServiceInterceptor implements Interceptor {
                 return msg;
             }
 
-            if (msg.getOperation() != null) {
+            if ((msg.getOperation() != null)) {
                 String operationName = msg.getOperation().getName();
-                if (jmsBinding.getOperationJMSPriority(operationName) != null) {
-                    responseJMSMsg.setJMSPriority(jmsBinding.getOperationJMSPriority(operationName));
+                if (jmsBinding.getEffectiveJMSPriority(operationName) != null) {
+                    responseJMSMsg.setJMSPriority(jmsBinding.getEffectiveJMSPriority(operationName));
                 }
         
-                if (jmsBinding.getOperationJMSType(operationName) != null) {
-                    responseJMSMsg.setJMSType(jmsBinding.getOperationJMSType(operationName));
+                if ( jmsBinding.getEffectiveJMSType(operationName) != null) {
+                    responseJMSMsg.setJMSType(jmsBinding.getEffectiveJMSType(operationName));
                 }
-                if (jmsBinding.getOperationJMSDeliveryMode(operationName) != null) {
-                    if (jmsBinding.getOperationJMSDeliveryMode(operationName)) {
-                        responseJMSMsg.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
-                    } else {
-                        responseJMSMsg.setJMSDeliveryMode(DeliveryMode.NON_PERSISTENT);
-                    }
+                
+                if ((jmsBinding.getEffectiveJMSDeliveryMode(operationName) != null)) {
+                    responseJMSMsg.setJMSDeliveryMode(jmsBinding.getEffectiveJMSDeliveryMode(operationName) ? DeliveryMode.PERSISTENT : DeliveryMode.NON_PERSISTENT);                   
+                } 
+                
+                if ((jmsBinding.getEffectiveJMSTimeToLive(operationName) != null)) {
+                	responseJMSMsg.setJMSExpiration(jmsBinding.getEffectiveJMSTimeToLive(operationName).longValue());
                 }
             }
     
@@ -185,6 +180,8 @@ public class TransportServiceInterceptor implements Interceptor {
             producer.setDeliveryMode(deliveryMode);
             int deliveryPriority = requestJMSMsg.getJMSPriority();
             producer.setPriority(deliveryPriority);
+            long timeToLive = requestJMSMsg.getJMSExpiration();
+            producer.setTimeToLive(timeToLive);
     
             producer.send((javax.jms.Message)msg.getBody());
     
