@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
@@ -45,14 +46,16 @@ public class JSONRPCDatabindingHelper {
             if (inputType != null) {
                 List<DataType> logical = inputType.getLogical();
                 for (DataType inArg : logical) {
-                    if (!SimpleJavaDataBinding.NAME.equals(inArg.getDataBinding())) {
+                    if (!SimpleJavaDataBinding.NAME.equals(inArg.getDataBinding()) ||
+                        inArg.getPhysical() == BigDecimal.class) {
                         inArg.setDataBinding(JSONDataBinding.NAME);
                     } 
                 }
             }
             DataType outputType = operation.getOutputType();
             if (outputType != null) {
-                if (!SimpleJavaDataBinding.NAME.equals(outputType.getDataBinding())) {
+                if (!SimpleJavaDataBinding.NAME.equals(outputType.getDataBinding()) ||
+                    outputType.getPhysical() == BigDecimal.class   ) {
                     outputType.setDataBinding(JSONDataBinding.NAME);
                 }
             }

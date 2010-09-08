@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
+import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -80,7 +81,8 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     
     public void start() {
         // Set default databinding to json
-        // serviceContract.getInterface().resetDataBinding(JSONDataBinding.NAME);
+        // replaced by JSONRPCDatabindingHelper.setDataBinding(serviceContract.getInterface()); above
+        //serviceContract.getInterface().resetDataBinding(JSONDataBinding.NAME);
 
         // Determine the service business interface
         Class<?> serviceInterface = getTargetJavaClass(serviceContract.getInterface());

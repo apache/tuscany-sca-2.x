@@ -19,6 +19,7 @@
 
 package echo;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,5 +82,9 @@ public class EchoClientImpl implements Echo {
     public void get\u03a9\u03bb\u03c0() {
         throw new UnsupportedOperationException("UNsupported !");
     }
+    
+    public BigDecimal echoBigDecimal(BigDecimal param) {
+        throw new UnsupportedOperationException("UNsupported !");
+    }    
 
 }

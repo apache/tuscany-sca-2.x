@@ -18,6 +18,7 @@
  */
 package echo;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -61,4 +62,5 @@ public interface Echo {
 
     void get\u03a9\u03bb\u03c0();
 
+    BigDecimal echoBigDecimal(BigDecimal param);
 }

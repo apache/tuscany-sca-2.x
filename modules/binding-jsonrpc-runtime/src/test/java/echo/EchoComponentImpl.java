@@ -18,6 +18,7 @@
  */
 package echo;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -96,8 +97,11 @@ public class EchoComponentImpl implements Echo {
 
     }
 
-
     public void get\u03a9\u03bb\u03c0() {
 
     }
+    
+    public BigDecimal echoBigDecimal(BigDecimal param) {
+        return param;
+    }    
 }
