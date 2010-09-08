@@ -28,5 +28,7 @@ public interface HelloWorldService {
     String sayHello2(String firstName, String lastName);
     
     BeanA sayHello3(BeanA bean);
+    
+    int sayHello4(boolean flag);
 
 }

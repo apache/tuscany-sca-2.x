@@ -33,5 +33,9 @@ public class HelloWorldImpl implements HelloWorldService {
         bean.setS("XYZ");
         return bean;
     }
+
+    public int sayHello4(boolean flag) {
+        return 0;
+    }
     
 }

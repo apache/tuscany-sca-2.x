@@ -53,6 +53,9 @@ public class Object2JSON implements PullTransformer<Object, Object> {
             targetType = String.class;
         }
         try {
+            if (targetType != null && targetType.isPrimitive()) {
+                return source;
+            }
             String value = mapper.writeValueAsString(source);
             if (targetType == String.class || targetType == Object.class || targetType.isPrimitive()) {
                 return value;

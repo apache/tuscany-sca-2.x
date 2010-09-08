@@ -37,4 +37,8 @@ public class HelloWorldClient implements HelloWorldService {
     public BeanA sayHello3(BeanA bean) {
         return ref.sayHello3(bean);
     }
+    
+    public int sayHello4(boolean flag) {
+        return ref.sayHello4(flag);
+    }
 }

@@ -66,6 +66,7 @@ public class BindingTestCase {
 
         Assert.assertEquals("Hello beate", client.sayHello("beate"));
         Assert.assertEquals("Hello beate arnold", client.sayHello2("beate", "arnold"));
+        Assert.assertEquals(0, client.sayHello4(true));
     }
     
     @Test
