@@ -38,7 +38,6 @@ import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
-import org.apache.tuscany.sca.assembly.builder.ContractBuilder;
 import org.apache.tuscany.sca.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -53,7 +52,6 @@ import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
@@ -61,7 +59,6 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
@@ -541,7 +538,10 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         if (bindingInterfaceContract != null) {
             return bindingInterfaceContract;
         }
-        bindingInterfaceContract = getBindingProvider().getBindingInterfaceContract();
+        ReferenceBindingProvider provider = getBindingProvider();
+        if (provider != null) {
+            bindingInterfaceContract = provider.getBindingInterfaceContract();
+        }
         if (bindingInterfaceContract == null) {
             bindingInterfaceContract = getComponentReferenceInterfaceContract();
         }
