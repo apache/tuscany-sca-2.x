@@ -991,6 +991,12 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             }
         }
         
+        // If URI is specified, destination should not be present
+        if ( ( jmsBinding.getJMSURI() != null ) && ( jmsBinding.getJMSURI().length() > 0) &&
+        		(jmsBinding.getDestinationName() != null) && (jmsBinding.getDestinationName().length() > 0)) {
+        	error(monitor, "DestinationURIContradiction", jmsBinding, jmsBinding.getJMSURI(), jmsBinding.getDestinationName());
+        }
+        
         // If activation spec and destination are both specified, they have to match
         if ( ( jmsBinding.getActivationSpecName() != null ) && (jmsBinding.getActivationSpecName().length() > 0 ) &&
         		(jmsBinding.getDestinationName() != null) && (jmsBinding.getDestinationName().length() > 0 ) ) {
