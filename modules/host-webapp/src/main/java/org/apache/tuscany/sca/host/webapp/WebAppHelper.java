@@ -31,6 +31,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.node.Node;
@@ -72,6 +73,13 @@ public class WebAppHelper {
             }
         }
     }
+    
+    private static String[] parse(String listOfValues) {
+        if (listOfValues == null) {
+            return null;
+        }
+        return listOfValues.split("(\\s|,)+");
+    }
 
     @SuppressWarnings("unchecked")
     private static NodeConfiguration getNodeConfiguration(ServletContext servletContext) throws IOException,
@@ -88,21 +96,31 @@ public class WebAppHelper {
                 String name = names.nextElement();
                 if (name.equals(CONTRIBUTION) || name.startsWith(CONTRIBUTION + ".")) {
                     // We need to have a way to select one or more folders within the webapp as the contributions
-                    String contrib = (String)servletContext.getAttribute(name);
-                    if (contrib != null) {
-                        File f = new File(getResource(servletContext, contrib).toURI());
-                        configuration.addContribution(f.toURI().toURL());
+                    String listOfValues = (String)servletContext.getAttribute(name);
+                    if (listOfValues != null) {
+                        for (String path : parse(listOfValues)) {
+                            if ("".equals(path)) {
+                                continue;
+                            }
+                            File f = new File(getResource(servletContext, path).toURI());
+                            configuration.addContribution(f.toURI().toURL());
+                        }
                     }
                 } else if (name.equals(CONTRIBUTIONS) || name.startsWith(CONTRIBUTIONS + ".")) {
-                    String contrib = (String)servletContext.getAttribute(name);
-                    if (contrib != null) {
-                        File f = new File(getResource(servletContext, contrib).toURI());
-                        if (f.isDirectory()) {
-                            for (File n : f.listFiles()) {
-                                configuration.addContribution(n.toURI().toURL());
+                    String listOfValues = (String)servletContext.getAttribute(name);
+                    if (listOfValues != null) {
+                        for (String path : parse(listOfValues)) {
+                            if ("".equals(path)) {
+                                continue;
                             }
-                        } else {
-                            configuration.addContribution(f.toURI().toURL());
+                            File f = new File(getResource(servletContext, path).toURI());
+                            if (f.isDirectory()) {
+                                for (File n : f.listFiles()) {
+                                    configuration.addContribution(n.toURI().toURL());
+                                }
+                            } else {
+                                configuration.addContribution(f.toURI().toURL());
+                            }
                         }
                     }
                 }
@@ -163,7 +181,12 @@ public class WebAppHelper {
                 } else {
                     factory = NodeFactory.newInstance();
                 }
+                
+                // Add ServletContext as a utility
                 ExtensionPointRegistry registry = factory.getExtensionPointRegistry();
+                UtilityExtensionPoint utilityExtensionPoint = registry.getExtensionPoint(UtilityExtensionPoint.class);
+                utilityExtensionPoint.addUtility(ServletContext.class, servletContext);
+                
                 ServletHostExtensionPoint servletHosts = registry.getExtensionPoint(ServletHostExtensionPoint.class);
                 servletHosts.setWebApp(true);
 

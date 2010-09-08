@@ -110,7 +110,7 @@ public class WebAppServletHost implements ServletHost {
         // as they are fixed by the Web container
         servlets.put(suri, servlet);
 
-        URL url = getURLMapping(suri, securityContext);
+        URL url = getURLMapping(pathURI.toString(), securityContext);
         logger.info("Added Servlet mapping: " + url);
         return url.toString();
     }
@@ -162,7 +162,8 @@ public class WebAppServletHost implements ServletHost {
             scheme = "http";
         }
         int portNumber = uri.getPort();
-        if (portNumber == -1) {
+        if (portNumber == -1 && uri.getScheme() == null) {
+            // Only set the default port number if the scheme is not present
             portNumber = defaultPortNumber;
         }
 
