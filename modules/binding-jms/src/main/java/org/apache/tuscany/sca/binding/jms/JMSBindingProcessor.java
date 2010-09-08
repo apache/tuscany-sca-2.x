@@ -999,6 +999,12 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         	}
         }
 
+        if ( ( jmsBinding.getResponseActivationSpecName() != null ) && (jmsBinding.getResponseActivationSpecName().length() > 0 ) &&
+        		(jmsBinding.getResponseDestinationName() != null ) && (jmsBinding.getResponseDestinationName().length() > 0 ) ) {
+        	if ( !jmsBinding.getResponseActivationSpecName().equals(jmsBinding.getResponseDestinationName())) {
+        		error(monitor, "ActivationSpecAndDestinationMismatch", jmsBinding, jmsBinding.getResponseActivationSpecName(), jmsBinding.getResponseDestinationName());
+        	}
+        }
         // If activation spec exists with create=always, a jndiName must be specified
         if (JMSBindingConstants.CREATE_ALWAYS.equals(jmsBinding.getActivationSpecCreate()) &&
         		(jmsBinding.getActivationSpecName() == null)) {
