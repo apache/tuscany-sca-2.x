@@ -161,6 +161,7 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
 	private final Integer defaultPriority = Integer.valueOf(4);
 	private final Boolean defaultDeliveryMode = true;
 	private final Long defaultJMSTimeToLive =Long.valueOf(0);
+	private boolean isDestinationSpecified = false;
     
     public JMSBinding() {
         super();
@@ -1067,6 +1068,14 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
 	
 	public Integer getDefaultJMSPriority() {
 		return this.defaultPriority;
+	}
+
+	public void setIsDestinationSpecified(boolean b) {
+		this.isDestinationSpecified = b;		
+	}
+	
+	public boolean isDestinationSpecified() {
+		return this.isDestinationSpecified ;
 	}
 	
 }

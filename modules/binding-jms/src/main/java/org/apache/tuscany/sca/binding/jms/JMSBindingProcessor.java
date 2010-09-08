@@ -425,6 +425,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     private void parseDestination(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
+    	jmsBinding.setIsDestinationSpecified(true);
         String name = getURIString(reader, "jndiName");
         if (name != null && name.length() > 0) {
             jmsBinding.setDestinationName(name);
@@ -993,7 +994,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         
         // If URI is specified, destination should not be present
         if ( ( jmsBinding.getJMSURI() != null ) && ( jmsBinding.getJMSURI().length() > 0) &&
-        		(jmsBinding.getDestinationName() != null) && (jmsBinding.getDestinationName().length() > 0)) {
+        		(jmsBinding.isDestinationSpecified())) {
         	error(monitor, "DestinationURIContradiction", jmsBinding, jmsBinding.getJMSURI(), jmsBinding.getDestinationName());
         }
         
