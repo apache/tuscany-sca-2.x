@@ -20,9 +20,12 @@
 package reporting;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.StringWriter;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -71,7 +74,7 @@ import calculator.CalculatorService;
 /**
  * This client program shows how to extract useful(?) information from the Tuscany SCA runtime
  */
-public class JSELauncherReportingTestCase {
+public class JSELauncheCalculator {
     
     private static NodeFactory nodeFactory;
     private static Node node1;
@@ -80,18 +83,19 @@ public class JSELauncherReportingTestCase {
     
     
     public static void main(String[] args) throws Exception {
-        JSELauncherReportingTestCase launcher = new JSELauncherReportingTestCase();
+        JSELauncheCalculator launcher = new JSELauncheCalculator();
         launcher.setUp();
        
-        launcher.callCalulator();
-/*         
+        launcher.callCalulator();   
+        launcher.listExtensions();
         launcher.listNodes();
         launcher.listNodeConfigurations();
         launcher.listContributions();
+        launcher.listDomainComposite();
         launcher.listDomainDefinitions();        
-        launcher.listEndpoints();
-*/        
+        launcher.listEndpoints();        
         launcher.listWires();
+        
         launcher.tearDown();
     }
     
@@ -100,8 +104,6 @@ public class JSELauncherReportingTestCase {
         try {
 /* new      
             org.apache.tuscany.sca.node2.NodeFactory nodeFactoryNew = org.apache.tuscany.sca.node2.NodeFactory.newInstance();
-            org.apache.tuscany.sca.node2.Node node1New = nodeFactoryNew.createNode();
-            node1New.installContribution("../domain/distributed-calculator/contribution-add/target/classes");
             
             org.apache.tuscany.sca.node2.Node node2New = nodeFactoryNew.createNode();
             node2New.installContribution("../domain/distributed-calculator/contribution-calculator/target/classes");
@@ -110,11 +112,17 @@ public class JSELauncherReportingTestCase {
 */
 
 /* old */
-            nodeFactory = NodeFactory.newInstance();
-            node1 = nodeFactory.createNode(new Contribution("c1", "../domain/distributed-calculator/contribution-add/target/classes"));
-            node1.start();
+            // TUSCANY-3675 - push hazelcast config into factory as adding it to URI doesn't work
+            Properties properties = new Properties();
+            properties.setProperty("bind", "192.168.0.2");
+            nodeFactory = NodeFactory.newInstance(properties); 
+
+            // TUSCANY-3675 - push hazelcast config into factory as adding it to URI doesn't work
+            //node2 = nodeFactory.createNode(new Contribution("c1", "../domain/distributed-calculator/contribution-calculator/target/classes"));
+            //node2 = nodeFactory.createNode(URI.create("tuscany:default?listen=127.0.0.1:14820"), "../domain/distributed-calculator/contribution-calculator/target/classes");
+            //node2 = nodeFactory.createNode(URI.create("tuscany:default"), "../domain/distributed-calculator/contribution-calculator/target/classes");
+            node2 = nodeFactory.createNode(new File("./target/classes/node-calculator.xml").toURL());
             
-            node2 = nodeFactory.createNode(new Contribution("c1", "../domain/distributed-calculator/contribution-calculator/target/classes"));
             node2.start();
             
             calculator = node2.getService(CalculatorService.class, "CalculatorServiceComponent");
@@ -126,7 +134,6 @@ public class JSELauncherReportingTestCase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-         node1.stop();
          node2.stop();
     }
 
@@ -136,6 +143,12 @@ public class JSELauncherReportingTestCase {
         double result = calculator.add(3, 2);
         System.out.println("3 + 2 = " + result);
     }
+    
+    @Test
+    public void listExtensions(){ 
+        printTestName("listExtensions");
+        // TODO
+    }    
         
     @Test
     public void listNodes(){ 
