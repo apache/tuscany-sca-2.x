@@ -381,7 +381,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                         if (selector.endsWith("\"") || selector.endsWith("'")) {
                             selector = selector.substring(0, selector.length() - 1);
                         }
-                        jmsBinding.setJMSSelector(selector);
+                        jmsBinding.setURIJMSSelector(selector);
                     } else if (s.startsWith("type")) {
                     	String type = s.substring(5);
                     	jmsBinding.setJMSURIType(type);                    	

@@ -134,7 +134,8 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
     private Map<String, Integer> operationJMSPriorities = new HashMap<String, Integer>();
     private Map<String, Map<String, BindingProperty>> operationPropertiesProperties = new HashMap<String, Map<String,BindingProperty>>();
 
-    private String jmsSelector;
+    private String jmsSelector = null;
+    private String uriJmsSelector = null;
     private QName requestConnectionName;
     private QName responseConnectionName;
     private QName operationPropertiesName;
@@ -161,7 +162,7 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
 	private final Integer defaultPriority = Integer.valueOf(4);
 	private final Boolean defaultDeliveryMode = true;
 	private final Long defaultJMSTimeToLive =Long.valueOf(0);
-	private boolean isDestinationSpecified = false;
+	private boolean isDestinationSpecified = false;	
     
     public JMSBinding() {
         super();
@@ -751,8 +752,12 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
     }
 
     public String getJMSSelector() {
-        return jmsSelector;
+    	if ( this.uriJmsSelector != null )
+    		return this.uriJmsSelector;
+    	else 
+      	  return jmsSelector;
     }
+    
     public void setJMSSelector(String jmsSelector) {
         this.jmsSelector = jmsSelector;
     }
@@ -1076,6 +1081,10 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
 	
 	public boolean isDestinationSpecified() {
 		return this.isDestinationSpecified ;
+	}
+
+	public void setURIJMSSelector(String selector) {
+		this.uriJmsSelector = selector;		
 	}
 	
 }
