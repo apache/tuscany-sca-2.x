@@ -46,8 +46,6 @@ import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointReferenceImpl;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.util.Audit;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
@@ -331,7 +329,11 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         
         if (endpointReference.getReference().getName().startsWith("$self$.")){
             // just select the first one and don't do any policy matching
-            matchedEndpoint = endpoints.get(0);
+            if (endpointReference.getTargetEndpoint() != null && !endpointReference.getTargetEndpoint().isUnresolved()) {
+                matchedEndpoint = endpointReference.getTargetEndpoint();
+            } else {
+                matchedEndpoint = endpoints.get(0);
+            }
         } else {
             // find the first endpoint that matches this endpoint reference
             for (Endpoint endpoint : endpoints){

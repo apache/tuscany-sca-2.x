@@ -62,7 +62,7 @@ public class BindingTestCase {
     @Test
     public void testReference() throws MalformedURLException, IOException {
         
-        HelloWorldService client = node.getService(HelloWorldService.class, "HelloWorldClient");
+        HelloWorldService client = node.getService(HelloWorldService.class, "HelloWorldClient/HelloWorldService/sca");
 
         Assert.assertEquals("Hello beate", client.sayHello("beate"));
         Assert.assertEquals("Hello beate arnold", client.sayHello2("beate", "arnold"));
@@ -73,7 +73,7 @@ public class BindingTestCase {
     //@Ignore("TUSCANY-3635")
     public void testComplexParams() throws MalformedURLException, IOException {
         
-        HelloWorldService client = node.getService(HelloWorldService.class, "HelloWorldClient");
+        HelloWorldService client = node.getService(HelloWorldService.class, "HelloWorldClient/HelloWorldService/sca");
 
         BeanA bean = new BeanA();
         bean.setB(true);
@@ -103,7 +103,7 @@ public class BindingTestCase {
     @BeforeClass
     public static void init() throws Exception {
         JettyServer.portDefault = 8085;
-        node = NodeFactory.newInstance().createNode("helloworld.composite").start();
+        node = NodeFactory.newInstance().createNode("jsonp/helloworld.composite").start();
     }
     
     @AfterClass

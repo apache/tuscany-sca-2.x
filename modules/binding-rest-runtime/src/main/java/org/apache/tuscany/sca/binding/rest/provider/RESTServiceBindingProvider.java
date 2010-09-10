@@ -211,9 +211,13 @@ public class RESTServiceBindingProvider implements EndpointProvider {
             throw new IllegalStateException("No get or service method found on the service");
         }
 
+        servletMapping = registerServlet(servlet);
+    }
+
+    public String registerServlet(Servlet servlet) {
         // Create our HTTP service listener Servlet and register it with the
         // Servlet host
-        servletMapping = binding.getURI();
+        String servletMapping = binding.getURI();
         if (!servletMapping.endsWith("/")) {
             servletMapping += "/";
         }
@@ -221,7 +225,13 @@ public class RESTServiceBindingProvider implements EndpointProvider {
             servletMapping += "*";
         }
 
-        servletHost.addServletMapping(servletMapping, servlet);
+        String mappedURI = servletHost.addServletMapping(servletMapping, servlet);
+        String deployedURI = mappedURI;
+        if (deployedURI.endsWith("*")) {
+            deployedURI = deployedURI.substring(0, deployedURI.length() - 1);
+        }
+        binding.setURI(deployedURI);
+        return mappedURI;
     }
 
     public void stop() {
@@ -258,17 +268,8 @@ public class RESTServiceBindingProvider implements EndpointProvider {
 
                 TuscanyRESTServlet restServlet = new TuscanyRESTServlet(extensionPoints, application.resourceClass);
 
-                // Create our HTTP service listener Servlet and register it with the
-                // Servlet host
-                servletMapping = binding.getURI();
-                if (!servletMapping.endsWith("/")) {
-                    servletMapping += "/";
-                }
-                if (!servletMapping.endsWith("*")) {
-                    servletMapping += "*";
-                }
-
-                servletHost.addServletMapping(servletMapping, restServlet);
+                servletMapping = registerServlet(restServlet);
+                
                 RegistrationUtils.registerApplication(application, restServlet.getServletContext());
                 return application;
             } else {
