@@ -19,9 +19,7 @@
 
 package sample.impl;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 
@@ -40,7 +38,6 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.processor.ContributionException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
@@ -67,139 +64,232 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 public class EmbedUtil {
 
     /**
-     * Initialize a Node factory and get the various registries, factories and
-     * extension points we need.
+     * A runtime embedder context, which conveniently initializes a Node factory
+     * and gets the various registries, factories and extension points we need.
      */
-    static final NodeFactory nf;
-    static final ExtensionPointRegistry epr;
-    static final FactoryExtensionPoint fep;
-    static final ContributionFactory cf;
-    static final AssemblyFactory af;
-    static final JavaInterfaceFactory jif;
-    static final WSDLFactory wif;
-    static final URLArtifactProcessorExtensionPoint apep;
-    static final ExtensibleURLArtifactProcessor aproc;
-    static final ModelResolverExtensionPoint mrep;
-    static final ProviderFactoryExtensionPoint pfep;
-    static {
-        nf = NodeFactory.newInstance();
-        epr = nf.getExtensionPointRegistry();
-        fep = epr.getExtensionPoint(FactoryExtensionPoint.class);
-        cf = fep.getFactory(ContributionFactory.class);
-        af = fep.getFactory(AssemblyFactory.class);
-        jif = fep.getFactory(JavaInterfaceFactory.class);
-        wif = fep.getFactory(WSDLFactory.class);
-        apep = epr.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        aproc = new ExtensibleURLArtifactProcessor(apep);
-        mrep = epr.getExtensionPoint(ModelResolverExtensionPoint.class);
-        pfep = epr.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+    static class Context {
+        final NodeFactory nf;
+        final ExtensionPointRegistry epr;
+        final FactoryExtensionPoint fep;
+        final ContributionFactory cf;
+        final AssemblyFactory af;
+        final JavaInterfaceFactory jif;
+        final WSDLFactory wif;
+        final URLArtifactProcessorExtensionPoint apep;
+        final ExtensibleURLArtifactProcessor aproc;
+        final ModelResolverExtensionPoint mrep;
+        final ProviderFactoryExtensionPoint pfep;
+        
+        Context(final NodeFactory nf) {
+            this.nf = nf;
+            epr = nf.getExtensionPointRegistry();
+            fep = epr.getExtensionPoint(FactoryExtensionPoint.class);
+            cf = fep.getFactory(ContributionFactory.class);
+            af = fep.getFactory(AssemblyFactory.class);
+            jif = fep.getFactory(JavaInterfaceFactory.class);
+            wif = fep.getFactory(WSDLFactory.class);
+            apep = epr.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+            aproc = new ExtensibleURLArtifactProcessor(apep);
+            mrep = epr.getExtensionPoint(ModelResolverExtensionPoint.class);
+            pfep = epr.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        }
     }
-
+    
+    static Context embedContext(NodeFactory nf) {
+        return new Context(nf);
+    }
+    
     /**
      * A mini DSL to help build and assemble contributions and SCDL composites.
      */
-    static Contribution contrib(final String uri, final String loc, final Artifact... artifacts) {
-        final Contribution c = cf.createContribution();
-        c.setURI(uri);
-        c.setLocation(loc);
-        c.setModelResolver(new ExtensibleModelResolver(c, mrep, fep));
-        for(Artifact a: artifacts)
-            c.getArtifacts().add(a);
-        return c;
+    interface Builder<T> {
+        T build(Context ec);
     }
 
-    static Artifact artifact(final String uri, final Object model) {
-        final Artifact a = cf.createArtifact();
-        a.setURI(uri);
-        a.setModel(model);
-        return a;
-    }
-
-    static Composite composite(final String ns, final String name, final Component... components) {
-        final Composite compos = af.createComposite();
-        compos.setName(new QName(ns, name));
-        for(final Component c: components)
-            compos.getComponents().add(c);
-        return compos;
-    }
-
-    static Component component(final String name, final Implementation impl, final ComponentReference... references) {
-        final Component c = af.createComponent();
-        c.setName(name);
-        c.setImplementation(impl);
-        for(ComponentReference r: references)
-            c.getReferences().add(r);
-        return c;
-    }
-
-    static SampleImplementation implementation(final Class<?> clazz, final Contract... contracts) {
-        final SampleImplementation impl = ImplUtil.implementation(clazz.getName());
-        impl.clazz = clazz;
-        impl.setUnresolved(false);
-        for(final Contract c: contracts) {
-            if(c instanceof Service)
-                impl.getServices().add((Service)c);
-            else
-                impl.getReferences().add((Reference)c);
-        }
-        return impl;
-    }
-
-    static Reference reference(final String name, final Class<?> c) throws InvalidInterfaceException {
-        return ImplUtil.reference(name, c, jif, af);
-    }
-
-    static Reference reference(final String name, final WSDLInterface c) {
-        return ImplUtil.reference(name, c, wif, af);
-    }
-
-    static ComponentReference reference(final String name, final String target) {
-        final ComponentReference r = af.createComponentReference();
-        r.setName(name);
-        final ComponentService s = af.createComponentService();
-        s.setUnresolved(true);
-        s.setName(target);
-        r.getTargets().add(s);
-        return r;
-    }
-
-    static Service service(final Class<?> c) throws InvalidInterfaceException {
-        return ImplUtil.service(c, jif, af);
-    }
-
-    static Service service(final WSDLInterface c) {
-        return ImplUtil.service(c, wif, af);
+    static <T> T build(final Builder<T> builder, final Context ec) {
+        return builder.build(ec);
     }
 
     /**
-     * Load a WSDL into a contribution.
+     * Return a contribution builder.
      */
-    static WSDLInterface wsdli(final String uri, final String ns, final String name, final Contribution c) throws InvalidInterfaceException, ContributionException, IOException, URISyntaxException {
-        final ProcessorContext ctx = new ProcessorContext();
-        final WSDLDefinition wd = aproc.read(null, new URI(uri), new URL(new URL(c.getLocation()), uri), ctx, WSDLDefinition.class);
-        c.getModelResolver().addModel(wd, ctx);
-        c.getModelResolver().resolveModel(WSDLDefinition.class, wd, ctx);
-        final WSDLObject<PortType> pt = wd.getWSDLObject(PortType.class, new QName(ns, name));
-        if(pt == null)
-            throw new ContributionResolveException("Couldn't find " + name);
-        final WSDLInterface nwi = wif.createWSDLInterface(pt.getElement(), wd, c.getModelResolver(), null);
-        nwi.setWsdlDefinition(wd);
-        nwi.resetDataBinding(DOMDataBinding.NAME);
-        return nwi;
+    static Builder<Contribution> contrib(final String uri, final String loc, final Builder<Artifact>... artifacts) {
+        return new Builder<Contribution>() {
+            public Contribution build(final Context ec) {
+                final Contribution c = ec.cf.createContribution();
+                c.setURI(uri);
+                c.setLocation(loc);
+                c.setModelResolver(new ExtensibleModelResolver(c, ec.mrep, ec.fep));
+                for(Builder<Artifact> a: artifacts)
+                    c.getArtifacts().add(a.build(ec));
+                return c;
+            }
+        };
+    }
+    
+    /**
+     * Return an artifact builder.
+     */
+    static Builder<Artifact> artifact(final String uri, final Object model) {
+        return new Builder<Artifact>() {
+            public Artifact build(final Context ec) {
+                final Artifact a = ec.cf.createArtifact();
+                a.setURI(uri);
+                a.setModel(model);
+                return a;
+            }
+        };
     }
 
+    /**
+     * Return a composite builder.
+     */
+    static Builder<Composite> composite(final String ns, final String name, final Builder<Component>... components) {
+        return new Builder<Composite>() {
+            public Composite build(final Context ec) {
+                final Composite compos = ec.af.createComposite();
+                compos.setName(new QName(ns, name));
+                for(final Builder<Component> c: components)
+                    compos.getComponents().add(c.build(ec));
+                return compos;
+            }
+        };
+    }
+
+    /**
+     * Return a component builder.
+     */
+    static Builder<Component> component(final String name, final Builder<Implementation> impl, final Builder<ComponentReference>... references) {
+        return new Builder<Component>() {
+            public Component build(final Context ec) {
+                final Component c = ec.af.createComponent();
+                c.setName(name);
+                c.setImplementation(impl.build(ec));
+                for(Builder<ComponentReference> r: references)
+                    c.getReferences().add(r.build(ec));
+                return c;
+            }
+        };
+    }
+
+    /**
+     * Return an implementation builder.
+     */
+    static Builder<Implementation> implementation(final Class<?> clazz, final Builder<Contract>... contracts) {
+        return new Builder<Implementation>() {
+            public SampleImplementation build(final Context ec) {
+                final SampleImplementation impl = ImplUtil.implementation(clazz.getName());
+                impl.clazz = clazz;
+                impl.setUnresolved(false);
+                for(final Builder<Contract> b: contracts) {
+                    Contract c = b.build(ec);
+                    if(c instanceof Service)
+                        impl.getServices().add((Service)c);
+                    else
+                        impl.getReferences().add((Reference)c);
+                }
+                return impl;
+            }
+        };
+    }
+
+    /**
+     * Return a reference builder.
+     */
+    static Builder<Contract> reference(final String name, final Class<?> c) {
+        return new Builder<Contract>() {
+            public Reference build(final Context ec) {
+                try {
+                    return ImplUtil.reference(name, c, ec.jif, ec.af);
+                } catch(InvalidInterfaceException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+    }
+
+    static Builder<Contract> reference(final String name, final WSDLInterface c) {
+        return new Builder<Contract>() {
+            public Reference build(final Context ec) {
+                return ImplUtil.reference(name, c, ec.wif, ec.af);
+            }
+        };
+    }
+
+    static Builder<ComponentReference> reference(final String name, final String target) {
+        return new Builder<ComponentReference>() {
+            public ComponentReference build(final Context ec) {
+                final ComponentReference r = ec.af.createComponentReference();
+                r.setName(name);
+                final ComponentService s = ec.af.createComponentService();
+                s.setUnresolved(true);
+                s.setName(target);
+                r.getTargets().add(s);
+                return r;
+            }
+        };
+    }
+
+    /**
+     * Return a service builder.
+     */
+    static Builder<Contract> service(final Class<?> c) {
+        return new Builder<Contract>() {
+            public Service build(final Context ec) {
+                try {
+                    return ImplUtil.service(c, ec.jif, ec.af);
+                } catch(InvalidInterfaceException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+    }
+
+    static Builder<Contract> service(final WSDLInterface c) {
+        return new Builder<Contract>() {
+            public Service build(final Context ec) {
+                return ImplUtil.service(c, ec.wif, ec.af);
+            }
+        };
+    }
+
+    /**
+     * Return a WSDLInterface builder which loads a WSDL into a contribution.
+     */
+    static Builder<WSDLInterface> wsdli(final String uri, final String ns, final String name, final Contribution c) {
+        return new Builder<WSDLInterface>() {
+            public WSDLInterface build(final Context ec) {
+                try {
+                    final ProcessorContext ctx = new ProcessorContext();
+                    final WSDLDefinition wd = ec.aproc.read(null, new URI(uri), new URL(new URL(c.getLocation()), uri), ctx, WSDLDefinition.class);
+                    c.getModelResolver().addModel(wd, ctx);
+                    c.getModelResolver().resolveModel(WSDLDefinition.class, wd, ctx);
+                    final WSDLObject<PortType> pt = wd.getWSDLObject(PortType.class, new QName(ns, name));
+                    if(pt == null)
+                        throw new ContributionResolveException("Couldn't find " + name);
+                    final WSDLInterface nwi = ec.wif.createWSDLInterface(pt.getElement(), wd, c.getModelResolver(), null);
+                    nwi.setWsdlDefinition(wd);
+                    nwi.resetDataBinding(DOMDataBinding.NAME);
+                    return nwi;
+                } catch(Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+    }
+    
     /**
      * Return the extension point registry used by our nodes.
      */
-    static ExtensionPointRegistry extensionPoints() {
-        return epr;
+    static ExtensionPointRegistry extensionPoints(final Context ec) {
+        return ec.epr;
     }
     
     /**
      * Return the provider factory extension point used by our nodes.
      */
-    static ProviderFactoryExtensionPoint providerFactories() {
-        return pfep;
+    static ProviderFactoryExtensionPoint providerFactories(final Context ec) {
+        return ec.pfep;
     }
 
     /**
@@ -214,7 +304,7 @@ public class EmbedUtil {
     /**
      * Configure a node with a list of contributions.
      */
-    static Node node(final Contribution... contributions) {
+    static Node node(final NodeFactory nf, final Contribution... contributions) {
         return nf.createNode(Arrays.asList(contributions));
     }
 

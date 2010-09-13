@@ -21,10 +21,12 @@ package sample.impl;
 
 import static java.lang.System.out;
 import static org.junit.Assert.assertEquals;
+import static sample.impl.EmbedUtil.build;
 import static sample.impl.EmbedUtil.component;
 import static sample.impl.EmbedUtil.composite;
 import static sample.impl.EmbedUtil.contrib;
 import static sample.impl.EmbedUtil.deploy;
+import static sample.impl.EmbedUtil.embedContext;
 import static sample.impl.EmbedUtil.extensionPoints;
 import static sample.impl.EmbedUtil.implementation;
 import static sample.impl.EmbedUtil.node;
@@ -38,6 +40,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -61,23 +64,28 @@ import sample.WelloTest;
  * @version $Rev$ $Date$
  */
 public class EmbedTestCase {
+    static NodeFactory nf;
+    static EmbedUtil.Context ec;
     static Node node;
 
+    @SuppressWarnings("unchecked")
     @BeforeClass
     public static void setUp() throws Exception {
+        nf = NodeFactory.newInstance();
+        ec = embedContext(nf);
         
         // Load the test WSDL definitions (could also construct the WSDL
         // and XSD models in code but that'd be quite painful, so just
         // load them from XML for now)
-        final Contribution contrib = contrib("test", here());
-        WSDLInterface Hello_wsdl = wsdli("Hello.wsdl", "http://sample/hello", "Hello", contrib);
-        WSDLInterface Upper_wsdl = wsdli("Upper.wsdl", "http://sample/upper", "Upper", contrib);
+        final Contribution contrib = build(contrib("test", here()), ec);
+        WSDLInterface Hello_wsdl = build(wsdli("Hello.wsdl", "http://sample/hello", "Hello", contrib), ec);
+        WSDLInterface Upper_wsdl = build(wsdli("Upper.wsdl", "http://sample/upper", "Upper", contrib), ec);
 
         // Assemble a test composite model (see EmbedUtil
         // for the little DSL used here, much more concise
         // than using the assembly model interfaces)
         final Composite comp =
-        composite("http://sample", "test",
+           build(composite("http://sample", "test",
            component("client-test",
                implementation(ClientTest.class,
                    service(Client.class),
@@ -97,19 +105,19 @@ public class EmbedTestCase {
                reference("upper", "upper-test")),
            component("upper-test",
                implementation(UpperTest.class,
-                   service(Upper.class))));
+                   service(Upper.class)))), ec);
         
         // Register a test instance of our sample implementation ProviderFactory
-        providerFactories().addProviderFactory(testProviderFactory());
+        providerFactories(ec).addProviderFactory(testProviderFactory());
 
         // Run with it
-        node = node(deploy(contrib, comp));
+        node = node(nf, deploy(contrib, comp));
         node.start();
     }
     
     static ProviderFactory<SampleImplementation> testProviderFactory() {
         // This shows how to get called when a provider is created
-        return new SampleProviderFactory(extensionPoints()) {
+        return new SampleProviderFactory(extensionPoints(ec)) {
             public ImplementationProvider createImplementationProvider(RuntimeComponent comp, SampleImplementation impl) {
                 out.println("Creating a provider for component " + comp.getName());
                 return super.createImplementationProvider(comp, impl);

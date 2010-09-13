@@ -45,18 +45,15 @@ import org.w3c.dom.NodeList;
  * Just for fun, a little bit of magic code and utility functions to help work with XML DOM.
  */
 class Xutil {
-    static class NodeBuilder {
-        String ns;
-        String name;
-        NodeBuilder[] children;
-        String text;
+    interface NodeBuilder {
+        Node build(Document doc);
     }
 
     /**
      * Convert a name and a list of children to a document element.
      */
     static Element xdom(String ns, String name, final NodeBuilder... nodes) {
-        return (Element)node(elem(ns, name, nodes), db.newDocument());
+        return (Element)elem(ns, name, nodes).build(db.newDocument());
     }
 
     /**
@@ -64,21 +61,17 @@ class Xutil {
      */
     static NodeBuilder elem(final String uri, final String n, final NodeBuilder... nodes) {
         return new NodeBuilder() {
-            {
-                this.ns = uri;
-                this.name = n;
-                this.children = nodes;
+            public Node build(Document doc) {
+                final Element e = doc.createElementNS(uri, n);
+                for(final NodeBuilder n: nodes)
+                    e.appendChild(n.build(doc));
+                return e;
             }
         };
     }
 
     static NodeBuilder elem(final String n, final NodeBuilder... nodes) {
-        return new NodeBuilder() {
-            {
-                this.name = n;
-                this.children = nodes;
-            }
-        };
+        return elem(null, n, nodes);
     }
 
     /**
@@ -86,8 +79,8 @@ class Xutil {
      */
     static NodeBuilder text(final String t) {
         return new NodeBuilder() {
-            {
-                this.text = t;
+            public Node build(final Document doc) {
+                return doc.createTextNode(t);
             }
         };
     }
@@ -100,18 +93,6 @@ class Xutil {
         } catch(ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static Element link(final Element e, final Document doc, final NodeBuilder... nodes) {
-        for(final NodeBuilder c: nodes)
-            e.appendChild(node(c, doc));
-        return e;
-    }
-
-    private static Node node(NodeBuilder node, Document doc) {
-        if(node.text != null)
-            return doc.createTextNode(node.text);
-        return link(doc.createElementNS(node.ns, node.name), doc, node.children);
     }
 
     /**
@@ -144,7 +125,7 @@ class Xutil {
     }
 
     /**
-     * A pure Java FP-style alternative to xpath.
+     * A pure Java FP-style alternative to xpath for DOM.
      */
     interface Mapper<T> {
         T map(final Element e);
