@@ -36,6 +36,15 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+
+                <!-- don't need to process these as they just contain README files
+                <module>launcher-command-line</module>
+                <module>launcher-maven</module>
+                <module>launcher-webapp</module>
+                -->
+                <module>launcher-embedded-jse</module>
+                <module>launcher-embedded-osgi</module>
+                <module>launcher-embedded-osgi-base</module>
             </modules>
         </profile>
     </profiles>    
