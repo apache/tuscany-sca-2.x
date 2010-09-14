@@ -32,6 +32,7 @@
             <modules>
                 <module>getting-started</module>
                 <module>sca-features</module>
+                <module>running-tuscany</module>
                 <module>applications</module>
 
                 <module>calculator-osgi</module>
