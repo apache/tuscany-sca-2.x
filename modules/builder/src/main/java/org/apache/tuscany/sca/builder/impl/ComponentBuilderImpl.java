@@ -182,6 +182,8 @@ public class ComponentBuilderImpl {
             configureReferences(component, context);
             
             // NOTE: configureServices/configureReferences may add callback references and services
+            
+            // inherit the intents and policy sets from the component type
             policyBuilder.configure(component, context);
             
         } finally {
