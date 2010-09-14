@@ -85,8 +85,7 @@
 
                 <!-- Application samples -->
 
-                <module>store</module>
-                <module>store-webapp</module> 
+                  <module>store-webapp</module> 
 
             </modules>
 

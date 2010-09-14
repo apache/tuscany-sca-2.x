@@ -25,9 +25,9 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-samples-sca-features</artifactId>
+    <artifactId>tuscany-samples-running-tuscany</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany Samples Demonstrating Tuscany Features</name>
+    <name>Apache Tuscany Samples Demonstrating Running Tuscany</name>
 
     <profiles>
         <profile>
