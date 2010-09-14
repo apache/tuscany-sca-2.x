@@ -20,7 +20,10 @@ package org.apache.tuscany.sca.binding.jms.wire;
 
 import java.util.List;
 
+import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.Queue;
+import javax.jms.Topic;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
@@ -62,10 +65,17 @@ public class CallbackDestinationInterceptor implements Interceptor {
             JMSBindingContext context = msg.getBindingContext();
             javax.jms.Message jmsMsg = context.getJmsMsg();             
          
+           
             if (service.getInterfaceContract().getCallbackInterface() != null) {
 
                 String callbackdestName = jmsMsg.getStringProperty(JMSBindingConstants.CALLBACK_Q_PROPERTY);
-
+                if (( callbackdestName == null) && ( jmsMsg.getJMSReplyTo() != null ) ) {
+                	Destination replyTo = jmsMsg.getJMSReplyTo();
+                	if (replyTo != null) {
+                		callbackdestName = (replyTo instanceof Queue) ? ((Queue) replyTo).getQueueName() : ((Topic) replyTo).getTopicName();
+               	   	}
+                }
+                
                 if (callbackdestName != null) {
                 	List<EndpointReference> refs = endpoint.getCallbackEndpointReferences();
                 	for (EndpointReference ref : refs ) {
@@ -74,7 +84,7 @@ public class CallbackDestinationInterceptor implements Interceptor {
                 			callbackBinding.setDestinationName(callbackdestName);
                 		}
                 	}
-                }
+               }  
 
                 String callbackID = jmsMsg.getStringProperty(JMSBindingConstants.CALLBACK_ID_PROPERTY);
                 if (callbackID != null) {
