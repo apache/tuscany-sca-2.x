@@ -36,6 +36,9 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>binding-rmi</module>
+                <module>binding-sca</module>
+                <module>binding-ws</module>
             </modules>
         </profile>
     </profiles>    

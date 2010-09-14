@@ -62,9 +62,7 @@
 
                 <!-- contributions - SCA samples -->
 
-                <module>binding-rmi</module>
-                <module>binding-sca</module>
-                <module>binding-ws</module>
+
                 <module>binding-jsonrpc</module>
                 <module>implementation-java</module>
                 <module>implementation-script</module>
