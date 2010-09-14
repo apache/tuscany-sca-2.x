@@ -70,7 +70,6 @@ public class BindingTestCase {
     }
     
     @Test
-    //@Ignore("TUSCANY-3635")
     public void testComplexParams() throws MalformedURLException, IOException {
         
         HelloWorldService client = node.getService(HelloWorldService.class, "HelloWorldClient/HelloWorldService/sca");

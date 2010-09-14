@@ -16,5 +16,5 @@
 # under the License. 
 
 # Implementation class for the binding extension
-org.apache.tuscany.sca.binding.jsonp.runtime.JSONPBindingProviderFactory;model=org.apache.tuscany.sca.binding.jsonp.JSONPBinding
+org.apache.tuscany.sca.binding.jsonp.runtime.JSONPBindingProviderFactory;model=org.apache.tuscany.sca.binding.jsonp.JSONPBinding,ranking=200
 
