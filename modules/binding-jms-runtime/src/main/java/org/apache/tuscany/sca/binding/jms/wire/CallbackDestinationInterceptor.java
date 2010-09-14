@@ -74,6 +74,14 @@ public class CallbackDestinationInterceptor implements Interceptor {
                 	if (replyTo != null) {
                 		callbackdestName = (replyTo instanceof Queue) ? ((Queue) replyTo).getQueueName() : ((Topic) replyTo).getTopicName();
                	   	}
+                } else {
+                    if (callbackdestName != null) {
+                        if (!callbackdestName.startsWith("jms:jndi:")) {
+                            throw new JMSBindingException("message property " + JMSBindingConstants.CALLBACK_Q_PROPERTY + " does not start with 'jms:jndi:' found: " + callbackdestName);
+                        } else {
+                            callbackdestName = callbackdestName.substring(9);
+                        }
+                    }
                 }
                 
                 if (callbackdestName != null) {
