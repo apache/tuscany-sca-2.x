@@ -96,18 +96,22 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
 
     		for (ComponentService componentService : component.getServices()) {
     			for (Endpoint ep : componentService.getEndpoints()) {
-    				checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getService(), ep.getService().getPolicySets());
+    			    List<PolicySet> policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getService(), ep.getService().getPolicySets());
+    			    ep.getPolicySets().removeAll(policySetsToRemove);
     				if (ep.getBinding() instanceof PolicySubject) {
-    					checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getBinding(), ((PolicySubject)ep.getBinding()).getPolicySets());
+    				    policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getBinding(), ((PolicySubject)ep.getBinding()).getPolicySets());
+    				    ep.getPolicySets().removeAll(policySetsToRemove);
     				}
     			}
     		}
 
     		for (ComponentReference componentReference : component.getReferences()) {
     			for (EndpointReference epr : componentReference.getEndpointReferences()) {
-    				checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getReference(), epr.getReference().getPolicySets());
+    			    List<PolicySet> policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getReference(), epr.getReference().getPolicySets());
+    			    epr.getPolicySets().removeAll(policySetsToRemove);
     				if (epr.getBinding() instanceof PolicySubject) {
-    					checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getBinding(), ((PolicySubject)epr.getBinding()).getPolicySets());    				
+    				    policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getBinding(), ((PolicySubject)epr.getBinding()).getPolicySets());
+    				    epr.getPolicySets().removeAll(policySetsToRemove);
     				} 
     			}
     		}
@@ -133,7 +137,7 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
      * @return
      * @throws Exception
      */
-    private void checkAppliesToSubject(Document document, Map<PolicySet, List<PolicySubject>> appliesToSubjects, Composite composite, PolicySubject policySubject, List<PolicySet> policySets) throws Exception {
+    private List<PolicySet> checkAppliesToSubject(Document document, Map<PolicySet, List<PolicySubject>> appliesToSubjects, Composite composite, PolicySubject policySubject, List<PolicySet> policySets) throws Exception {
         List<PolicySet> policySetsToRemove = new ArrayList<PolicySet>();
         
         for (PolicySet policySet : policySets){
@@ -170,6 +174,7 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
 
         }
         
-        policySets.removeAll(policySetsToRemove);      
+        policySets.removeAll(policySetsToRemove); 
+        return policySetsToRemove;
     }    
 }
