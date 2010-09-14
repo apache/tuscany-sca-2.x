@@ -106,6 +106,9 @@ public class JMSBindingReferenceBindingProvider implements EndpointReferenceProv
 //            }
         }
 
+        if ( jmsBinding.getActivationSpecName() != null ) {
+        	throw new JMSBindingException("Activation spec can not be specified on an SCA reference binding.");
+        }
         Invoker invoker = null;
         invoker = new RRBJMSBindingInvoker(operation, jmsResourceFactory, endpointReference);
        
