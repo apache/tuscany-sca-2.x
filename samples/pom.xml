@@ -31,6 +31,8 @@
 
             <modules>
                 <module>getting-started</module>
+                <module>sca-features</module>
+                <module>applications</module>
 
                 <module>calculator-osgi</module>
                 <module>calculator-rest-osgi</module>                
