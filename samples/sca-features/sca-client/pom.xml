@@ -25,9 +25,9 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-samples-sca-features</artifactId>
+    <artifactId>tuscany-samples-sca-client</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany Samples Demonstrating SCA Features</name>
+    <name>Apache Tuscany Samples Demonstrating Tuscany Clients</name>
 
     <profiles>
         <profile>
@@ -36,16 +36,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>binding-rmi</module>
-                <module>binding-sca</module>
-                <module>binding-ws</module>
-                <module>binding-comet</module>
-                <module>binding-jsonrpc</module>
-                <module>implementation-extension</module>
-                <module>implementation-java</module>
-                <module>implementation-script</module>
-                <module>distributed-osgi</module>
-                <module>sca-client></module>
+                <module>calculator-scaclient</module>
             </modules>
         </profile>
     </profiles>    

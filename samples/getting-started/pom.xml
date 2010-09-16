@@ -37,6 +37,7 @@
             </activation>
             <modules>
                 <module>contributions</module>
+                <module>webapps</module>
             </modules>
         </profile>
     </profiles>    
