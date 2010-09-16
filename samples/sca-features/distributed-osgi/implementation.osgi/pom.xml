@@ -25,9 +25,9 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-samples-sca-features</artifactId>
+    <artifactId>tuscany-samples-distributed-osgi-static</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany Samples Demonstrating Tuscany Features</name>
+    <name>Apache Tuscany Samples Distributed OSGI Statically Configured</name>
 
     <profiles>
         <profile>
@@ -36,10 +36,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>binding-rmi</module>
-                <module>binding-sca</module>
-                <module>binding-ws</module>
-                <module>distributed-osgi</module>
+                <module>dosgi-calculator</module>
+                <module>dosgi-calculator-operations</module>
             </modules>
         </profile>
     </profiles>    

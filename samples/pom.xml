@@ -37,10 +37,6 @@
 
                 <module>calculator-osgi</module>
                 <module>calculator-rest-osgi</module>                
-                <module>dosgi-calculator</module>
-                <module>dosgi-calculator-operations</module>
-                <module>dosgi-dynamic-calculator</module>
-                <module>dosgi-dynamic-calculator-operations</module>
                 <module>calculator-scaclient</module>
 
 <!-- *********
