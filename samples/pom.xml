@@ -32,12 +32,9 @@
             <modules>
                 <module>getting-started</module>
                 <module>sca-features</module>
+                <module>tuscany-features</module>
                 <module>running-tuscany</module>
                 <module>applications</module>
-
-                <module>calculator-osgi</module>
-                <module>calculator-rest-osgi</module>                
-                <module>calculator-scaclient</module>
 
 <!-- *********
     IF YOU ADD ANY SAMPLES THEN ALSO ADD THEM TO 
@@ -48,29 +45,6 @@
     ALSO SAMPLES SHOULD HAVE A TEST IN itest/distribution TO 
     ENSURE THAT THEY WORK PROPERLY OUT OF A DISTRIBUTION
      ********* -->
-            
-                <module>webapps/helloworld-jms</module>
-                <module>webapps/helloworld-js-client</module>
-                <module>webapps/helloworld-jsp</module>
-                <module>webapps/helloworld-stripes</module>
-                <module>webapps/helloworld-servlet</module>
-                <module>webapps/helloworld-spring</module>
-
-                <!-- contributions - SCA samples -->
-
-
-                <module>binding-jsonrpc</module>
-                <module>implementation-java</module>
-                <module>implementation-script</module>
-                <module>implementation-extension</module>
-
-                <!-- contributions - Tuscany samples -->
-
-
-                <!-- Application samples -->
-
-                  <module>store-webapp</module> 
-
             </modules>
 
           <build>

@@ -37,6 +37,7 @@
             </activation>
             <modules>
                 <module>store</module>
+                <module>store-webapp</module>
             </modules>
         </profile>
     </profiles>    
