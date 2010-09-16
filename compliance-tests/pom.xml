@@ -32,17 +32,21 @@
 
     <repositories>
         <repository>
-            <!-- OASIS will eventually publish these themselves but for now they're at my people place -->
+            <!-- OASIS will eventually publish these themselves but for now they're in the Tuscany svn -->
             <id>oasis.contributions</id>
-            <url>http://people.apache.org/~antelder/tuscany/otests/maven</url>
+            <url>http://svn.apache.org/repos/asf/tuscany/maven</url>
         </repository>
     </repositories>
 
     <modules>
        <module>assembly</module>
-       <!-- module>policy</module -->
+<!--
        <module>java-caa</module>
        <module>java-ci</module>
+       <module>policy</module>
+       <module>binding-ws</module>
+       <module>binding-jms</module>
+-->
     </modules>
 
 </project>

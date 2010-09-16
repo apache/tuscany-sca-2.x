@@ -34,18 +34,20 @@
             <!-- This is only needed to get the module working in Eclipse which doesn't pick it up from the dependency plugin unpack -->
             <!-- The dependency plugin unpack is needed as presently the surefire plugin wont run tests in a dependency jar -->
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>oasis-assembly-test-runner</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>tuscany-otests-asm-tests</artifactId>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca.shades</groupId>
-            <artifactId>tuscany-base</artifactId>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-feature-base</artifactId>
+            <type>pom</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
         <!-- This is need when running with Sun JDK which gets an unsupported operation exception creating an XMLStreamReader from a DOMSource
              when Tuscany is writing a property value  -->
+
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
@@ -77,27 +79,7 @@
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
            <excludes>
-              <!-- Real otest/Tuscany problems -->
-              <exclude>**/ASM_10002_TestCase.java</exclude><!--  see TUSCANY-3503 -->
-
-              <exclude>**/ASM_12006_TestCase.java</exclude><!--  see TUSCANY-xxx -->
-              <exclude>**/ASM_12007_TestCase.java</exclude><!--  see TUSCANY-xxx -->
-              <exclude>**/ASM_5016_TestCase.java</exclude><!--  see TUSCANY-xxx -->
-              <exclude>**/ASM_6004_TestCase.java</exclude><!--  see TUSCANY-xxx -->
-              <exclude>**/ASM_6007_TestCase.java</exclude><!--  see TUSCANY-xxx -->
-              <exclude>**/ASM_12008_TestCase.java</exclude><!--  see TUSCANY-xxx -->
-              <exclude>**/ASM_6014_TestCase.java</exclude><!--  see TUSCANY-xxx -->
-              <exclude>**/ASM_8014_TestCase.java</exclude><!--  see TUSCANY-xxx -->
-              <exclude>**/ASM_6008_TestCase.java</exclude><!--  see TUSCANY-xxx -->
-              <exclude>**/ASM_6034_TestCase.java</exclude><!--  see TUSCANY-xxx -->
-              <exclude>**/ASM_8017_TestCase.java</exclude><!--  see TUSCANY-xxx -->
-              <exclude>**/ASM_8018_TestCase.java</exclude><!--  see TUSCANY-xxx -->
-              <exclude>**/ASM_10003_TestCase.java</exclude><!--  see TUSCANY-xxx -->
-
-              <!-- actually is working but the err msgs come out in a different order so the msg text test fails -->
-              <exclude>**/ASM_13004_TestCase.java</exclude>
-
-
+              <!-- all tests are passing -->
            </excludes>
          </configuration>
       </plugin>
@@ -117,14 +99,14 @@
                  <artifactItem>
                    <groupId>org.apache.tuscany.sca</groupId>
                    <artifactId>oasis-assembly-contributions</artifactId>
-                   <version>1.0-SNAPSHOT</version>
+                   <version>2.0-SNAPSHOT</version>
                    <type>zip</type>
                    <outputDirectory>${project.build.directory}/oasis-contributions</outputDirectory>
                  </artifactItem>
                  <artifactItem>
                    <groupId>org.apache.tuscany.sca</groupId>
-                   <artifactId>oasis-assembly-test-runner</artifactId>
-                   <version>1.0-SNAPSHOT</version>
+                   <artifactId>tuscany-otests-asm-tests</artifactId>
+                   <version>2.0-SNAPSHOT</version>
                    <type>jar</type>
                    <excludes>commons-logging.properties,oasis-sca-tests.properties</excludes>
                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
