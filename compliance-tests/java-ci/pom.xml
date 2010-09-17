@@ -78,9 +78,6 @@
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
            <excludes>
-              <exclude>**/POJO_8003_TestCase.java</exclude><!--  see TUSCANY-xxx -->
-              <exclude>**/POJO_8008_TestCase.java</exclude><!--  see TUSCANY-xxx -->
-              <exclude>**/POJO_8012_TestCase.java</exclude><!--  see TUSCANY-xxx -->
            </excludes>
          </configuration>
       </plugin>
