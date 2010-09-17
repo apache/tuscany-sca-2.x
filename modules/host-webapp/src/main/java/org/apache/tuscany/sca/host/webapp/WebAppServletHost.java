@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.host.webapp;
 
 import java.lang.reflect.Method;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -49,8 +50,6 @@ import org.apache.tuscany.sca.node.Node;
  */
 public class WebAppServletHost implements ServletHost {
     private static final Logger logger = Logger.getLogger(WebAppServletHost.class.getName());
-
-    private static final String INETADDRESS = "java.net.InetAddress";
 
     public static final String SCA_NODE_ATTRIBUTE = Node.class.getName();
 
@@ -172,10 +171,7 @@ public class WebAppServletHost implements ServletHost {
         if (host == null) {
             try {
             	//TUSCANY-3667 - InetAddress is not allowed in GoogleAppEngine
-            	//host = InetAddress.getLocalHost().getHostName();
-            	Class<?> clazz = Class.forName(INETADDRESS);
-            	Object inetAddress = clazz.getMethod("getLocalHost").invoke(null);
-            	host = (String) clazz.getMethod("getHostName").invoke(inetAddress);
+            	host = InetAddress.getLocalHost().getHostName();
             } catch (Throwable t) {
             	logger.log(Level.WARNING, "Error retrieving host information : " + t.getMessage());
                 host = "localhost";
