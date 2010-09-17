@@ -22,19 +22,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
+import testClient.TestException_Exception;
 import client.RuntimeBridge;
-import client.TestConfiguration;
 
 /**
  * An implementation of the Runtime Bridge for the Apache Tuscany SCA runtime (version 2.x)
@@ -47,8 +45,6 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
     protected NodeFactory launcher;
     protected Node node;
     protected Properties expectedErrorMessages;
-    
-    TestConfiguration testConfiguration = null;
 
     public TuscanyRuntimeBridge() {
         // read test error mapping
@@ -61,36 +57,18 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
         } 
     }
 
-    public TestConfiguration getTestConfiguration() {
-        return testConfiguration;
-    }
-
-    public void setTestConfiguration(TestConfiguration testConfiguration) {
-        this.testConfiguration = testConfiguration;
-    }
-
-	public boolean startContribution(String compositeName,
-			String contributionLocation, String[] contributionNames)
-			throws Exception {
-		//TODO:
-		return startContribution(contributionLocation, contributionNames);
-	}
-	
-    public boolean startContribution(String contributionLocation, String[] contributionNames) throws Exception {
+    public boolean startContribution(String compositeName, String contributionLocation, String[] contributionNames) throws Exception {
         try {
             // Tuscany specific code which starts the contribution(s) holding the test
-            Properties ps = new Properties();
-            ps.setProperty("defaultScheme", "vm");
-            ps.setProperty("org.apache.tuscany.sca.binding.ws.jaxws.ri.JAXWSBindingProviderFactory.defaultPort", "8080");
-            launcher = NodeFactory.newInstance(ps);
+            launcher = NodeFactory.newInstance();
 
             Contribution[] contributions = new Contribution[contributionNames.length];
-            String[] contributionURIs = getContributionURIs(contributionLocation);
+            String[] contributionURIs = getContributionURIs(contributionLocation, contributionNames);
             for (int i = 0; i < contributions.length; i++) {
                 contributions[i] = new Contribution(contributionNames[i], contributionURIs[i]);
             } // end for
 
-            node = launcher.createNode(testConfiguration.getComposite(), contributions);
+            node = launcher.createNode(compositeName, contributions);
             // Start the node
             node.start();
             
@@ -113,21 +91,14 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
      * the contribution
      * @return the contribution locations as an array of Strings
      */
-    protected String[] getContributionURIs(String contributionLocation) throws Exception {
-        String[] locations;
-        locations = testConfiguration.getContributionNames();
+    protected String[] getContributionURIs(String contributionLocation, String[] contributionNames) throws Exception {
+        String[] locations = new String[contributionNames.length];
 
         if (locations != null && contributionLocation != null) {
 
             for (int i = 0; i < locations.length; i++) {
-                String aLocation = contributionLocation.replaceAll("%1", locations[i]);
-                // Looks like bugs in the oasis code that sometimes still uses jars for some
-                if (aLocation.endsWith("_POJO.zip") && !aLocation.endsWith("ASM_8005_Java-1.0.zip")) {
-                    aLocation = aLocation.substring(0, aLocation.length()-3) + "jar";                	
-                }
-                if (!(new File(aLocation)).exists()) {
-                	aLocation = aLocation.replace(".zip", ".jar");
-                }
+                String aLocation = contributionLocation.replaceAll("%1", contributionNames[i]);
+
                 locations[i] = aLocation;
             } // end for    	  	
         } else {
@@ -151,15 +122,11 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
             launcher.destroy();
         } // end if
     } // end method stopContribution
-
-    public String getContributionLocation(Class<?> testClass) {
-        return ContributionLocationHelper.getContributionLocation(testConfiguration.getTestClass());
-    } // end method getContributionLocation
     
     public void checkError(String testName, Throwable ex) throws Throwable { 
               
         String expectedMessage = expectedErrorMessages.getProperty(testName);
-        String receivedMessage = ex.getMessage();
+        String receivedMessage = getErrorMessage(ex);//ex.getMessage();
         
         if (expectedMessage == null){
             writeMissingMessage(testName, ex);
@@ -178,7 +145,7 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
         }
         
         // Deal with the case where the message has variable parts within it
-        // marked with the characters ***. Here we tokenize the epected string 
+        // marked with the characters ***. Here we tokenize the expected string 
         // and make sure all the individual parts are present in the results string
         String expectedMessageParts[] = expectedMessage.split("\\*\\*\\*");
         
@@ -235,4 +202,16 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
         } 
     }
 
+    protected String getErrorMessage(Throwable ex) {
+        String errorMessage = null;
+        
+        if (ex instanceof TestException_Exception) {
+            TestException_Exception te = (TestException_Exception) ex;
+            errorMessage = te.getFaultInfo().getMessage();
+        } else {
+            errorMessage = ex.getMessage();
+        }
+        
+        return errorMessage;
+    }
 } // end class TuscanyRuntimeBridge
