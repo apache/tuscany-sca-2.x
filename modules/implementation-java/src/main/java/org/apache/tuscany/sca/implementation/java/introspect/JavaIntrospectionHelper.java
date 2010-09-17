@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.implementation.java.introspect;
 
@@ -39,13 +39,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.oasisopen.sca.ServiceReference;
 
 /**
  * Implements various reflection-related operations
- * 
+ *
  * @version $Rev$ $Date$
  */
 public final class JavaIntrospectionHelper {
@@ -83,70 +84,95 @@ public final class JavaIntrospectionHelper {
             return fields;
         }
         fields = getAllPublicAndProtectedFields(clazz.getSuperclass(), fields, validating);
-        Field[] declaredFields = clazz.getDeclaredFields();
-        for (final Field field : declaredFields) {
-            int modifiers = field.getModifiers();
-            // The field should be non-final and non-static
-            if ((Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) && !Modifier.isStatic(modifiers) && !Modifier.isFinal(modifiers)) {
-                // Allow privileged access to set accessibility. Requires ReflectPermission
-                // in security policy.
-                AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                    public Object run() {
-                        field.setAccessible(true); // ignore Java accessibility
-                        return null;
+
+        Field[] declaredFields = null;
+
+        try {
+        	declaredFields = clazz.getDeclaredFields();
+        } catch(Throwable t) {
+        	//TUSCANY-3667 - clazz.getDeclaredFields might fail in GAE environment (log and ignore)
+        	logger.log(Level.WARNING, "Error retrieving declared fields from class : " + t.getMessage());
+        }
+
+        if( declaredFields != null ) {
+            for (final Field field : declaredFields) {
+                int modifiers = field.getModifiers();
+                // The field should be non-final and non-static
+                if ((Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) && !Modifier.isStatic(modifiers) && !Modifier.isFinal(modifiers)) {
+                    // Allow privileged access to set accessibility. Requires ReflectPermission
+                    // in security policy.
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            field.setAccessible(true); // ignore Java accessibility
+                            return null;
+                        }
+                    });
+                    fields.add(field);
+                } /*else {
+                    if (validating) {
+                        checkInvalidAnnotations(field);
                     }
-                });
-                fields.add(field);
-            } /*else {
-                if (validating) {
-                    checkInvalidAnnotations(field);
-                }
-            }*/
+                }*/
+            }
         }
         return fields;
     }
-    
+
     /**
      * Returns a collection of injectable fields declared by a class
      * or one of its supertypes
-     * 
-     * For now we will include final or static fields so that validation problems can be reported 
+     *
+     * For now we will include final or static fields so that validation problems can be reported
      */
     public static Set<Field> getInjectableFields(Class<?> clazz, boolean validating) {
         return getInjectableFields(clazz, new HashSet<Field>(), validating);
     }
-    
+
     /**
-     * Recursively evaluates the type hierarchy to return all fields 
+     * Recursively evaluates the type hierarchy to return all fields
      */
     private static Set<Field> getInjectableFields(Class<?> clazz, Set<Field> fields, boolean validating) {
         if (clazz == null || clazz.isArray() || Object.class.equals(clazz)) {
             return fields;
         }
+
         fields = getInjectableFields(clazz.getSuperclass(), fields, validating);
-        Field[] declaredFields = clazz.getDeclaredFields();
-        for (final Field field : declaredFields) {
-            int modifiers = field.getModifiers();
-            // The field should be non-final and non-static
-            if (!Modifier.isStatic(modifiers) 
-                // && !Modifier.isFinal(modifiers)
-                ) {
-            
-                // Allow privileged access to set accessibility. Requires ReflectPermission
-                // in security policy.
-                AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                    public Object run() {
-                        field.setAccessible(true); // ignore Java accessibility
-                        return null;
+
+        Field[] declaredFields = null;
+
+        try {
+        	declaredFields = clazz.getDeclaredFields();
+        } catch(Throwable t) {
+        	//TUSCANY-3667 - clazz.getDeclaredFields might fail in GAE environment (log and ignore)
+        	logger.log(Level.WARNING, "Error retrieving declared fields from class : " + t.getMessage());
+        }
+
+        if( declaredFields != null ) {
+            for (final Field field : declaredFields) {
+                int modifiers = field.getModifiers();
+                // The field should be non-final and non-static
+                if (!Modifier.isStatic(modifiers)
+                    // && !Modifier.isFinal(modifiers)
+                    ) {
+
+                    // Allow privileged access to set accessibility. Requires ReflectPermission
+                    // in security policy.
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            field.setAccessible(true); // ignore Java accessibility
+                            return null;
+                        }
+                    });
+                    fields.add(field);
+                } else {
+                    if (validating) {
+                        checkInvalidAnnotations(field);
                     }
-                });
-                fields.add(field);
-            } else {
-                if (validating) {
-                    checkInvalidAnnotations(field);
                 }
             }
         }
+
+
         return fields;
     }
 
@@ -216,7 +242,7 @@ public final class JavaIntrospectionHelper {
     /**
      * Finds the closest matching field with the given name, that is, a field of
      * the exact specified type or, alternately, of a supertype.
-     * 
+     *
      * @param name the name of the field
      * @param type the field type
      * @param fields the collection of fields to search
@@ -252,7 +278,7 @@ public final class JavaIntrospectionHelper {
     /**
      * Finds the closest matching method with the given name, that is, a method
      * taking the exact parameter types or, alternately, parameter supertypes.
-     * 
+     *
      * @param name the name of the method
      * @param types the method parameter types
      * @param methods the collection of methods to search
@@ -325,7 +351,7 @@ public final class JavaIntrospectionHelper {
     /**
      * Returns the simple name of a class - i.e. the class name devoid of its
      * package qualifier
-     * 
+     *
      * @param implClass the implementation class
      */
     public static String getBaseName(Class<?> implClass) {
@@ -484,7 +510,7 @@ public final class JavaIntrospectionHelper {
      * JavaIntrospectionHelper.getGenerics(field.getGenericType());
      * <p/>
      * JavaIntrospectionHelper.getGenerics(m.getGenericParameterTypes()[0];); </code>
-     * 
+     *
      * @return the generic types in order of declaration or an empty array if
      *         the type is not genericized
      */
@@ -603,7 +629,7 @@ public final class JavaIntrospectionHelper {
                 methods.add(declaredMethod);
             }
         }
-        
+
         return methods;
     }
 
@@ -616,7 +642,7 @@ public final class JavaIntrospectionHelper {
                 fields.add(declaredField);
             }
         }
-        
+
         return fields;
     }
 }
