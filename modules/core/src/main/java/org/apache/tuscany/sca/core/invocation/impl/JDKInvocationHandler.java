@@ -27,6 +27,8 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.ws.Holder;
+
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.context.ThreadMessageContext;
 import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
@@ -103,12 +105,33 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         
         if (chain == null) {
             throw new IllegalArgumentException("No matching operation is found: " + method);
-        }
-        
-        // send the invocation down the source
-        Object result = invoke(chain, args, source);
+        }        
 
-        return result;
+        // Holder pattern. Items stored in a Holder<T> are promoted to T.
+        // After the invoke, the returned data <T> are placed back in Holder<T>.
+        Object [] promotedArgs = promoteHolderArgs( args );
+                
+        Object result = invoke(chain, promotedArgs, source);
+        
+        // Returned Holder data <T> are placed back in Holder<T>.
+        boolean holderPattern = false;
+        Class [] parameters = method.getParameterTypes();
+        if ( parameters != null ) {
+        	for ( int i = 0, resultIdx = 0; i < parameters.length; i++ ) {
+        		Class parameterType = parameters[ i ];              
+        		if ( isHolder( parameterType ) ) {
+        			holderPattern = true;
+        			// Pop results and place in holder (demote).
+        			Holder holder = (Holder) args[ i ]; 
+        			Object[] resultArray = (Object[])result;
+        			holder.value = resultArray[++resultIdx];
+        		}            
+        	}
+        }
+        if ( holderPattern ) 
+        	return ((Object[])result)[0];
+        else
+        	return result;
     }
 
     /**
@@ -307,5 +330,58 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     public void setCallableReference(ServiceReference<?> callableReference) {
         this.callableReference = (ServiceReferenceExt<?>)callableReference;
     }
-
+            
+    /**
+     * Creates a copy of arguments. Holder<T> values are promoted to T.
+     * Note. It is essential that arg Holders not be destroyed here.
+     * PromotedArgs should not destroy holders. They are used on response return.
+     * @param args containing Holders and other objects.
+     * @return Object [] 
+     */
+    protected static Object [] promoteHolderArgs( Object [] args ) {
+    	if ( args == null )
+    		return args;
+    	Object [] promotedArgs = new Object[ args.length ];
+    	
+    	for ( int i = 0; i < args.length; i++ ) {
+    		Object argument = args[ i ];
+    		if ( argument != null ) {
+    			if ( isHolder( argument ) ) {
+    				promotedArgs[ i ] = ((Holder)argument).value;      
+    			} else {
+    				promotedArgs[ i ] = args[ i ];
+    			}
+                  
+    		}
+    	}
+    	return promotedArgs;
+    }
+    
+    /**
+     * Given a Class, tells if it is a Holder by comparing to "javax.xml.ws.Holder"
+     * @param testClass
+     * @return boolean whether class is Holder type.
+     */
+    protected static boolean isHolder( Class testClass ) {
+    	if ( testClass.getName().startsWith( "javax.xml.ws.Holder" )) {
+    		return true;
+    	}
+    	return false;        
+    }
+    
+         
+    /**
+     * Given an Object, tells if it is a Holder by comparing to "javax.xml.ws.Holder"
+     * @param testClass
+     * @return boolean stating whether Object is a Holder type.
+     * @author DOB
+     */
+    protected static boolean isHolder( Object object ) {
+    	String objectName = object.getClass().getName();
+    	if ( object instanceof javax.xml.ws.Holder ) {
+    		return true;
+    	}
+    	return false;        
+    }
+        
 }

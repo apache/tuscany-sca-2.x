@@ -31,14 +31,13 @@ import java.util.List;
 import javax.jws.Oneway;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
+import javax.jws.WebParam.Mode;
 import javax.jws.WebResult;
-import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 import javax.xml.namespace.QName;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
-import javax.xml.ws.WebServiceProvider;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -51,14 +50,13 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.ParameterMode;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
-import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
@@ -89,10 +87,21 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
         this.wsdlFactory = factories.getFactory(WSDLFactory.class);
     }
 
+  
     public JAXWSJavaInterfaceProcessor() {
         super();
     }
 
+    private ParameterMode getParameterMode(WebParam.Mode mode) {
+    	if (mode == Mode.INOUT) {
+    		return ParameterMode.INOUT;
+    	} else if (mode == Mode.OUT) {
+    		return ParameterMode.OUT;
+    	} else {
+    		return ParameterMode.IN;
+    	}
+    }
+    
     private static String capitalize(String name) {
         if (name == null || name.length() == 0) {
             return name;
@@ -173,6 +182,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                         if (logical instanceof XMLType) {
                             ((XMLType)logical).setElementName(element);
                         }
+                        operation.getParameterModes().set(i, getParameterMode(param.mode()));
                     }
                 }
                 WebResult result = method.getAnnotation(WebResult.class);
@@ -282,6 +292,9 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                         type = ((XMLType)logical).getTypeName();
                     }
                     inputElements.add(new ElementInfo(element, new TypeInfo(type, false, null)));
+                    if (param != null) {
+                    	operation.getParameterModes().set(i, getParameterMode(param.mode()));
+                    }
                 }
 
                 List<ElementInfo> outputElements = new ArrayList<ElementInfo>();

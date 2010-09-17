@@ -20,6 +20,10 @@ package org.apache.tuscany.sca.implementation.java.invocation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.ws.Holder;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
@@ -33,6 +37,7 @@ import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHe
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.ParameterMode;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -74,6 +79,7 @@ public class JavaImplementationInvoker implements Invoker {
 
     @SuppressWarnings("unchecked")
     public Message invoke(Message msg) {
+    	
         Operation op = msg.getOperation();
         if (op == null) {
             op = this.operation;
@@ -121,6 +127,30 @@ public class JavaImplementationInvoker implements Invoker {
             
             Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
             
+            int argumentHolderCount = 0;
+
+            // Holder pattern. Any payload parameters <T> which are should be in holders are placed in Holder<T>.
+            // Only check Holder for remotable interfaces
+            if (imethod != null && op.getInterface().isRemotable()) {
+                List<DataType> inputTypes = op.getInputType().getLogical();
+                for (int i = 0, size = inputTypes.size(); i < size; i++) {
+                    if (ParameterMode.IN != op.getParameterModes().get(i)) {
+                        // Promote array params from [<T>] to [Holder<T>]
+                        Object[] payloadArray = (Object[])payload;
+                  
+                        if ( ParameterMode.INOUT == op.getParameterModes().get(i)) {
+                        	Object item = payloadArray[i];                           
+                        	payloadArray[i] = new Holder(item);
+                        } else {
+                        	// Create an empty Holder since we should not pass values for OUT parameters
+                        	payloadArray[i] = new Holder();
+                        }
+                        
+                        argumentHolderCount++;
+                    }
+                }
+            }
+
             Object ret;
             if (payload != null && !payload.getClass().isArray()) {
                 ret = imethod.invoke(instance, payload);
@@ -130,7 +160,29 @@ public class JavaImplementationInvoker implements Invoker {
 
             scopeContainer.returnWrapper(wrapper, contextId);
             
-            msg.setBody(ret);
+                        
+            if (argumentHolderCount > 0) {
+                // Holder pattern. Any payload Holder<T> types are returned as the message body.
+                List<Object> returnArgs = new ArrayList<Object>();
+                returnArgs.add(ret);
+                if (imethod != null) {
+                	Object[] payloadArray = (Object[])payload;
+                    for (int i = 0, size = op.getParameterModes().size(); i < size; i++) {
+                        // System.out.println( "JavaImplementationInvoker.invoke return parameter " + i + " type=" + parameter.getClass().getName() );
+                        if (ParameterMode.IN != op.getParameterModes().get(i)) {                        	
+                            // Demote array params from Holder<T> to <T>.                                                   
+                                Holder<Object> item = (Holder<Object>)payloadArray[i];
+                                payloadArray[i] = item.value;
+                                returnArgs.add(payloadArray[i]);
+                        }
+                    }
+                }
+
+                msg.setBody(returnArgs.toArray());
+
+            } else {
+                msg.setBody(ret);
+            }
         } catch (InvocationTargetException e) {
             Throwable cause = e.getTargetException();
             boolean isChecked = false;
@@ -140,8 +192,7 @@ public class JavaImplementationInvoker implements Invoker {
                     msg.setFaultBody(cause);
                     break;
                 }
-            } 
-            
+            }
             if (!isChecked) {
                 if (cause instanceof RuntimeException) {
                     throw (RuntimeException)cause;
@@ -186,7 +237,6 @@ public class JavaImplementationInvoker implements Invoker {
 			}
 		}
 		
-	}
-			
+	}		
 
 }

@@ -150,11 +150,18 @@ public class DataTypeImpl<L> implements DataType<L> {
         this.dataBinding = dataBinding;
     }
 
+        
     @Override
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append(physical).append(" ").append(dataBinding).append(" ").append(logical);
-        return sb.toString();
+    public String toString() {    	
+    	StringBuilder b = new StringBuilder( 256 );
+    	b.append( "DataType[" );
+    	b.append( "dataBinding=" + ((dataBinding==null) ? "null" : dataBinding) );
+    	b.append( ", genericType=" + ((genericType==null) ? "null" : genericType) ); 
+    	b.append( ", physical=" + ((physical==null) ? "null" : physical) ); 
+    	b.append( ", logical=" + ((logical==null) ? "null" : logical) );
+    	b.append( ", metaData size=" + ((metaDataMap==null) ? "0" : metaDataMap.size()) );
+    	b.append( "]" );
+    	return b.toString();
     }
 
     @SuppressWarnings("unchecked")

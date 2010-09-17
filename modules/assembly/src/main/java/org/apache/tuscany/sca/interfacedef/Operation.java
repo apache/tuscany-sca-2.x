@@ -201,4 +201,9 @@ public interface Operation extends Cloneable, PolicySubject {
      */
     Object clone() throws CloneNotSupportedException;
 
+    /**
+     * Returns the ParameterModes
+     * @return
+     */
+    List<ParameterMode> getParameterModes();
 }
