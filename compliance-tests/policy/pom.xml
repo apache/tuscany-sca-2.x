@@ -34,13 +34,14 @@
             <!-- This is only needed to get the module working in Eclipse which doesn't pick it up from the dependency plugin unpack -->
             <!-- The dependency plugin unpack is needed as presently the surefire plugin wont run tests in a dependency jar -->
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>oasis-policy-test-runner</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>tuscany-otests-policy-tests</artifactId>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca.shades</groupId>
-            <artifactId>tuscany-base</artifactId>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-feature-base</artifactId>
+            <type>pom</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
@@ -78,13 +79,10 @@
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
            <excludes>
-              <!-- 3002 is no longer part of the suite and 4015/4016 are tests for no optional support -->
+              <!-- 3002 is no longer part of the suite and 4015/4016 are tests for optional support that Tuscany doesn't provide -->
               <exclude>**/POL_3002_TestCase.java</exclude>
               <exclude>**/POL_4015_TestCase.java</exclude>
               <exclude>**/POL_4016_TestCase.java</exclude>
-              
-              <!-- 3001 fails due to a Tuscany bug in the RI based WS binding -->
-              <exclude>**/POL_3001_TestCase.java</exclude>
            </excludes>
          </configuration>
       </plugin>
@@ -104,14 +102,14 @@
                  <artifactItem>
                    <groupId>org.apache.tuscany.sca</groupId>
                    <artifactId>oasis-policy-contributions</artifactId>
-                   <version>1.0-SNAPSHOT</version>
+                   <version>2.0-SNAPSHOT</version>
                    <type>zip</type>
                    <outputDirectory>${project.build.directory}/oasis-contributions</outputDirectory>
                  </artifactItem>
                  <artifactItem>
                    <groupId>org.apache.tuscany.sca</groupId>
-                   <artifactId>oasis-policy-test-runner</artifactId>
-                   <version>1.0-SNAPSHOT</version>
+                   <artifactId>tuscany-otests-policy-tests</artifactId>
+                   <version>2.0-SNAPSHOT</version>
                    <type>jar</type>
                    <excludes>commons-logging.properties,oasis-sca-tests.properties,tuscany-oasis-sca-tests-errors.properties</excludes>
                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>

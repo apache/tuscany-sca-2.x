@@ -22,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,10 +60,7 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
     public boolean startContribution(String compositeName, String contributionLocation, String[] contributionNames) throws Exception {
         try {
             // Tuscany specific code which starts the contribution(s) holding the test
-            Properties ps = new Properties();
-            ps.setProperty("defaultScheme", "vm");
-            ps.setProperty("org.apache.tuscany.sca.binding.ws.jaxws.ri.JAXWSBindingProviderFactory.defaultPort", "8080");
-            launcher = NodeFactory.newInstance(ps);
+            launcher = NodeFactory.newInstance();
 
             Contribution[] contributions = new Contribution[contributionNames.length];
             String[] contributionURIs = getContributionURIs(contributionLocation, contributionNames);
@@ -102,10 +98,6 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
 
             for (int i = 0; i < locations.length; i++) {
                 String aLocation = contributionLocation.replaceAll("%1", contributionNames[i]);
-
-                if (!(new File(aLocation)).exists()) {
-                    aLocation = aLocation.replace(".zip", ".jar");
-                }
 
                 locations[i] = aLocation;
             } // end for    	  	
