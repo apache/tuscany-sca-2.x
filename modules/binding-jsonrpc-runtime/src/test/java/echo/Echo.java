@@ -45,6 +45,8 @@ public interface Echo {
     void echoBusinessException() throws EchoBusinessException;
 
     int echoInt(int param);
+    
+    double echoDouble(double param);
 
     boolean echoBoolean(boolean param);
 
