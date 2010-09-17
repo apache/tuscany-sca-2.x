@@ -136,6 +136,11 @@ public class RRBJMSBindingInvoker implements Invoker {
             qCreateMode = jmsBinding.getDestinationCreate();
         }
 
+        // FIXME: [rfeng] A hack to remove jms:jndi: prefix
+        if (queueName.startsWith("jms:jndi:")) {
+            queueName = queueName.substring("jms:jndi:".length());
+        }
+        
         Destination dest = jmsResourceFactory.lookupDestination(queueName);
 
         if (qCreateMode.equals(JMSBindingConstants.CREATE_ALWAYS)) {

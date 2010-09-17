@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.core.work.impl;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
@@ -200,5 +201,10 @@ public class DefaultWorkScheduler implements WorkScheduler, LifeCycleListener {
             return work;
         }
 
+    }
+
+    @Override
+    public ExecutorService getExecutorService() {
+        return getWorkManager().getExecutorService();
     }
 }

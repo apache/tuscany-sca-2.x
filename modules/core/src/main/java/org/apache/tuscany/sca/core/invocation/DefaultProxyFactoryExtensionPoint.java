@@ -39,21 +39,21 @@ public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionP
     private ProxyFactory interfaceFactory;
     private ProxyFactory classFactory;
 
-    public DefaultProxyFactoryExtensionPoint(ExtensionPointRegistry extensionPoints) {
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+    public DefaultProxyFactoryExtensionPoint(ExtensionPointRegistry registry) {
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
 
-        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.messageFactory = modelFactories.getFactory(MessageFactory.class);
 
-        interfaceFactory = new JDKProxyFactory(messageFactory, interfaceContractMapper);
+        interfaceFactory = new JDKProxyFactory(registry, messageFactory, interfaceContractMapper);
     }
 
-    public DefaultProxyFactoryExtensionPoint(MessageFactory messageFactory, InterfaceContractMapper mapper) {
-        this.interfaceContractMapper = mapper;
-        this.messageFactory = messageFactory;
-        interfaceFactory = new JDKProxyFactory(messageFactory, mapper);
-    }
+    //    public DefaultProxyFactoryExtensionPoint(MessageFactory messageFactory, InterfaceContractMapper mapper) {
+    //        this.interfaceContractMapper = mapper;
+    //        this.messageFactory = messageFactory;
+    //        interfaceFactory = new JDKProxyFactory(null, messageFactory, mapper);
+    //    }
 
     public ProxyFactory getClassProxyFactory() {
         return classFactory;

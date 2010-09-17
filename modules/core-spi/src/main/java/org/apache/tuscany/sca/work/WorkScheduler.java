@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.work;
 
+import java.util.concurrent.ExecutorService;
+
 /**
  * Defines the contract for scheduling asynchronous units of work.
  *
@@ -50,5 +52,11 @@ public interface WorkScheduler {
      * @param work The unit of work that needs to be asynchronously executed.
      */
     <T extends Runnable>void scheduleWork(T work);
+    
+    /**
+     * Get the underlying getExecutorService
+     * @return
+     */
+    ExecutorService getExecutorService();
 
 }

@@ -45,7 +45,7 @@ public class ThreadPoolWorkManager {
     private Map<WorkItem, WorkListener> workItems = new ConcurrentHashMap<WorkItem, WorkListener>();
 
     // Thread-pool
-    private ExecutorService executor;
+    protected ExecutorService executor;
 
     /**
      * Initializes the thread-pool.
@@ -222,6 +222,10 @@ public class ThreadPoolWorkManager {
 
     public void destroy() {
         executor.shutdown();
+    }
+
+    public ExecutorService getExecutorService() {
+        return executor;
     }
 
 }

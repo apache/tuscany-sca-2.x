@@ -213,11 +213,35 @@
                             <wsdlFiles>
                                 <wsdlFile>StockExceptionTest.wsdl</wsdlFile>
                             </wsdlFiles>
+                            <staleFile>${project.build.directory}/wsimport-sync.stale</staleFile>
                             <sourceDestDir>${project.build.directory}/jaxws-source</sourceDestDir>
                             <verbose>false</verbose>
                             <xnocompile>true</xnocompile>
                         </configuration>
                     </execution>
+                    
+                   <execution>
+                        <id>wsimport-async</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>com.example.stock.async</packageName>
+                            <wsdlDirectory>${basedir}/src/test/resources/wsdl</wsdlDirectory>
+                            <wsdlFiles>
+                                <wsdlFile>StockExceptionTest.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <bindingDirectory>${basedir}/src/test/resources/wsdl</bindingDirectory>
+                            <bindingFiles>
+                                <bindingFile>bindings.xml</bindingFile>
+                            </bindingFiles>
+                            <staleFile>${project.build.directory}/wsimport-async.stale</staleFile>
+                            <sourceDestDir>${project.build.directory}/jaxws-source</sourceDestDir>
+                            <verbose>false</verbose>
+                            <xnocompile>true</xnocompile>
+                        </configuration>
+                    </execution>                    
 
                     <!--
                     <execution>

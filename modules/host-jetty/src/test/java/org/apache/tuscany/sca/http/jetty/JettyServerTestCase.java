@@ -27,6 +27,8 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -70,17 +72,18 @@ public class JettyServerTestCase extends TestCase {
     private static final int HTTP_PORT = 8085;
 
     private WorkScheduler workScheduler = new WorkScheduler() {
-
+        private ExecutorService executorService = Executors.newCachedThreadPool();
+        
         public <T extends Runnable> void scheduleWork(T work) {
-            Thread thread = new Thread(work);
-            thread.start();
+            executorService.submit(work);
         }
 
         public <T extends Runnable> void scheduleWork(T work, NotificationListener<T> listener) {
             scheduleWork(work);
         }
 
-        public void destroy() {
+        public ExecutorService getExecutorService() {
+            return executorService;
         }
     };
 

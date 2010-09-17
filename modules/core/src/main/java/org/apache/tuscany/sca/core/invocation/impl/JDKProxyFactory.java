@@ -31,6 +31,7 @@ import javax.xml.ws.AsyncHandler;
 import javax.xml.ws.Response;
 
 import org.apache.tuscany.sca.common.java.collection.LRUCache;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
 import org.apache.tuscany.sca.core.context.impl.CallbackServiceReferenceImpl;
@@ -44,17 +45,20 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
-
 /**
  * the default implementation of a wire service that uses JDK dynamic proxies
  * 
  * @version $Rev$ $Date$
  */
 public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
+    protected ExtensionPointRegistry registry;
     protected InterfaceContractMapper contractMapper;
     private MessageFactory messageFactory;
 
-    public JDKProxyFactory(MessageFactory messageFactory, InterfaceContractMapper mapper) {
+    public JDKProxyFactory(ExtensionPointRegistry registry,
+                           MessageFactory messageFactory,
+                           InterfaceContractMapper mapper) {
+        this.registry = registry;
         this.contractMapper = mapper;
         this.messageFactory = messageFactory;
     }
@@ -66,17 +70,17 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
     public <T> T createProxy(final Class<T> interfaze, Invocable invocable) throws ProxyCreationException {
         if (invocable instanceof RuntimeEndpoint) {
             InvocationHandler handler;
-// TUSCANY-3659 - Always install a asynch handler regardless of whether ref is sync or async  
-//                needs tidying         
-//            if (isAsync(interfaze)) {
-                handler = new AsyncJDKInvocationHandler(messageFactory, interfaze, invocable);
-//            } else {
-//                handler = new JDKInvocationHandler(messageFactory, interfaze, invocable);
-//            }
+            // TUSCANY-3659 - Always install a asynch handler regardless of whether ref is sync or async  
+            //                needs tidying         
+            //            if (isAsync(interfaze)) {
+            handler = new AsyncJDKInvocationHandler(registry, messageFactory, interfaze, invocable);
+            //            } else {
+            //                handler = new JDKInvocationHandler(messageFactory, interfaze, invocable);
+            //            }
             // Allow privileged access to class loader. Requires RuntimePermission in security policy.
             ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
                 public ClassLoader run() {
-                   return interfaze.getClassLoader();
+                    return interfaze.getClassLoader();
                 }
             });
             T proxy = interfaze.cast(newProxyInstance(cl, new Class[] {interfaze}, handler));
@@ -85,35 +89,36 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
         ServiceReference<T> serviceReference = new ServiceReferenceImpl<T>(interfaze, invocable, null);
         return createProxy(serviceReference);
     }
-    
+
     public <T> T createProxy(ServiceReference<T> callableReference) throws ProxyCreationException {
         assert callableReference != null;
         final Class<T> interfaze = callableReference.getBusinessInterface();
         InvocationHandler handler;
-// TUSCANY-3659 - Always install a asynch handler regardless of whether ref is sync or async
-//                needs tidying
-//        if (isAsync(interfaze)) {
-            handler = new AsyncJDKInvocationHandler(messageFactory, callableReference);
-//        } else {
-//            handler = new JDKInvocationHandler(messageFactory, callableReference);
-//        }
+        // TUSCANY-3659 - Always install a asynch handler regardless of whether ref is sync or async
+        //                needs tidying
+        //        if (isAsync(interfaze)) {
+        handler = new AsyncJDKInvocationHandler(registry, messageFactory, callableReference);
+        //        } else {
+        //            handler = new JDKInvocationHandler(messageFactory, callableReference);
+        //        }
         // Allow privileged access to class loader. Requires RuntimePermission in security policy.
         ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
             public ClassLoader run() {
-               return interfaze.getClassLoader();
+                return interfaze.getClassLoader();
             }
         });
         T proxy = interfaze.cast(newProxyInstance(cl, new Class[] {interfaze}, handler));
         ((ServiceReferenceExt<T>)callableReference).setProxy(proxy);
         return proxy;
     }
-    
+
     private boolean isAsync(Class<?> interfaze) {
         for (Method method : interfaze.getMethods()) {
             if (method.getName().endsWith("Async")) {
                 if (method.getReturnType().isAssignableFrom(Future.class)) {
                     if (method.getParameterTypes().length > 0) {
-                        if (method.getParameterTypes()[method.getParameterTypes().length-1].isAssignableFrom(AsyncHandler.class)) {
+                        if (method.getParameterTypes()[method.getParameterTypes().length - 1]
+                            .isAssignableFrom(AsyncHandler.class)) {
                             return true;
                         }
                     }
@@ -143,7 +148,7 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
         InvocationHandler handler = new JDKCallbackInvocationHandler(messageFactory, callbackReference);
         ClassLoader cl = interfaze.getClassLoader();
         T proxy = interfaze.cast(newProxyInstance(cl, new Class[] {interfaze}, handler));
-        ((ServiceReferenceExt<T>) callbackReference).setProxy(proxy);
+        ((ServiceReferenceExt<T>)callbackReference).setProxy(proxy);
         return proxy;
     }
 
@@ -162,15 +167,14 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
     public boolean isProxyClass(Class<?> clazz) {
         return Proxy.isProxyClass(clazz);
     }
-    
+
     // This is a cache containing the proxy class constructor for each business interface.
     // This improves performance compared to calling Proxy.newProxyInstance()
     // every time that a proxy is needed.
     private final LRUCache<Class<?>, Constructor<?>> cache = new LRUCache<Class<?>, Constructor<?>>(512);
 
-    public Object newProxyInstance(ClassLoader classloader,
-                                          Class<?> interfaces[],
-                                          InvocationHandler invocationhandler) throws IllegalArgumentException {
+    public Object newProxyInstance(ClassLoader classloader, Class<?> interfaces[], InvocationHandler invocationhandler)
+        throws IllegalArgumentException {
         if (interfaces.length > 1) {
             // We only cache the proxy constructors with one single interface which the case in SCA where
             // one reference can have one interface
@@ -201,6 +205,6 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
     }
 
     public void stop() {
-       cache.clear(); 
-    }    
+        cache.clear();
+    }
 }
