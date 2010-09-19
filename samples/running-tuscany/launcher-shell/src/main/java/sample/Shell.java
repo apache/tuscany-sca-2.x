@@ -44,44 +44,44 @@ import org.apache.tuscany.sca.node.NodeFactory;
  * A little SCA command shell.
  */
 public class Shell {
-    final NodeFactory nodeFactory;
+    final NodeFactory nf;
 
-    public static class NodeInfo {
+    public static class Nodeconf {
         final String name;
-        final String curi;
         final String cloc;
+        final String dcuri;
         final Node node;
 
-        NodeInfo(final String name, final String curi, final String cloc, final Node node) {
+        Nodeconf(final String name, final String cloc, final String dcuri, final Node node) {
             this.name = name;
-            this.curi = curi;
             this.cloc = cloc;
+            this.dcuri = dcuri;
             this.node = node;
         }
 
         public String toString() {
-            return name + " " + curi + " " + cloc;
+            return name + " " + cloc + (dcuri != null? " " + dcuri : "");
         }
     }
 
-    final Map<String, NodeInfo> nodes = new HashMap<String, NodeInfo>();
+    final Map<String, Nodeconf> nodes = new HashMap<String, Nodeconf>();
     final List<String> history = new ArrayList<String>();
 
     public Shell(NodeFactory nf) {
-        this.nodeFactory = nf;
+        this.nf = nf;
     }
 
-    List<?> start(final String name, final String curi, final String cloc) {
+    List<?> start(final String name, final String cloc, final String dcuri) {
         if(nodes.containsKey(name))
             return emptyList();
-        final Node node = nodeFactory.createNode(new Contribution(curi, cloc));
-        nodes.put(name, new NodeInfo(name, curi, cloc, node));
+        final Node node = dcuri != null? nf.createNode(dcuri, new Contribution(cloc, cloc)) : nf.createNode(new Contribution(cloc, cloc));
+        nodes.put(name, new Nodeconf(name, cloc, dcuri, node));
         node.start();
         return emptyList();
     }
 
     List<?> stop(final String name) {
-        final NodeInfo ninfo = nodes.get(name);
+        final Nodeconf ninfo = nodes.get(name);
         if(ninfo == null)
             return emptyList();
         ninfo.node.stop();
@@ -90,15 +90,21 @@ public class Shell {
     }
 
     List<?> stop() {
-        for(NodeInfo ninfo: nodes.values())
+        for(Nodeconf ninfo: nodes.values())
             ninfo.node.stop();
         nodes.clear();
         return emptyList();
     }
 
-    List<?> restart(final String name, final String curi, final String cloc) {
-        stop(name);
-        return start(name, curi, cloc);
+    List<?> restart(final String name, final String cloc, final String dcuri) {
+        final Nodeconf ninfo = nodes.get(name);
+        if(ninfo == null)
+            return start(name, cloc, dcuri);
+        ninfo.node.stop();
+        nodes.remove(name);
+        if (cloc == null)
+            return start(ninfo.name, ninfo.cloc, ninfo.dcuri);
+        return start(name, cloc, dcuri);
     }
 
     List<?> status() {
@@ -124,7 +130,7 @@ public class Shell {
         if(op.equals("start"))
             return new Callable<List<?>>() {
                 public List<?> call() {
-                    return start(toks.get(1), toks.get(2), toks.get(3));
+                    return start(toks.get(1), toks.get(2), toks.size() >= 4? toks.get(3) : null);
                 }
             };
         if(op.equals("stop"))
@@ -138,7 +144,7 @@ public class Shell {
         if(op.equals("restart"))
             return new Callable<List<?>>() {
                 public List<?> call() {
-                    return restart(toks.get(1), toks.get(2), toks.get(3));
+                    return restart(toks.get(1), toks.size() >= 3? toks.get(2) : null, toks.size() >= 4? toks.get(3) : null);
                 }
             };
         if(op.equals("status"))
@@ -184,7 +190,7 @@ public class Shell {
         return true;
     }
 
-    public Map<String, NodeInfo> run(final BufferedReader r, final PrintWriter w) throws IOException {
+    public Map<String, Nodeconf> run(final BufferedReader r, final PrintWriter w) throws IOException {
         while(print(apply(eval(read(r))), w))
             ;
         r.close();

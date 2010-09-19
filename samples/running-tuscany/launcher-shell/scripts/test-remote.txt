@@ -14,23 +14,23 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 
-start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+start foo http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
 stop foo
-start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+start foo http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
 stop foo
-start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+start foo http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
 stop foo
-start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+start foo http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
 stop foo
-start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+start foo http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
 stop foo
-start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+start foo http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
 stop foo
-start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+start foo http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
 stop foo
-start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+start foo http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
 stop foo
-start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+start foo http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
 stop foo
-start foo c1 http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+start foo http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
 stop foo
