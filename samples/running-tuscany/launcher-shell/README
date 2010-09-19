@@ -11,10 +11,10 @@ To run it:
 ./sca
 
 at the prompt:
-start myNode mySampleContrib ../contribution-implementation-java-calculator/target/classes
+start myNode ../../applications/store/target/sample-store.jar
 
 or:
-start myNode mySampleContrib http://people.apache.org/~jsdelfino/tuscany/java/test/sample-contribution-binding-ws-calculator.jar
+start myNode http://people.apache.org/~jsdelfino/tuscany/java/test/sample-store.jar
 
 also try:
 status
@@ -22,7 +22,7 @@ stop myNode
 bye
 
 Starting and stopping composites is pretty fast. To see that, try the following
-two scripts, which start/stop a sample composite 10 times.
+two scripts, which start/stop the sample store composite 10 times.
 
 ./sca <scripts/test.txt
 or

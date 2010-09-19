@@ -14,23 +14,23 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 
-start foo ../contribution-implementation-java-calculator/target/classes
-stop foo
-start foo ../contribution-implementation-java-calculator/target/classes
-stop foo
-start foo ../contribution-implementation-java-calculator/target/classes
-stop foo
-start foo ../contribution-implementation-java-calculator/target/classes
-stop foo
-start foo ../contribution-implementation-java-calculator/target/classes
-stop foo
-start foo ../contribution-implementation-java-calculator/target/classes
-stop foo
-start foo ../contribution-implementation-java-calculator/target/classes
-stop foo
-start foo ../contribution-implementation-java-calculator/target/classes
-stop foo
-start foo ../contribution-implementation-java-calculator/target/classes
-stop foo
-start foo ../contribution-implementation-java-calculator/target/classes
-stop foo
+start testNode ../../applications/store/target/sample-store.jar
+stop testNode
+start testNode ../../applications/store/target/sample-store.jar
+stop testNode
+start testNode ../../applications/store/target/sample-store.jar
+stop testNode
+start testNode ../../applications/store/target/sample-store.jar
+stop testNode
+start testNode ../../applications/store/target/sample-store.jar
+stop testNode
+start testNode ../../applications/store/target/sample-store.jar
+stop testNode
+start testNode ../../applications/store/target/sample-store.jar
+stop testNode
+start testNode ../../applications/store/target/sample-store.jar
+stop testNode
+start testNode ../../applications/store/target/sample-store.jar
+stop testNode
+start testNode ../../applications/store/target/sample-store.jar
+stop testNode
