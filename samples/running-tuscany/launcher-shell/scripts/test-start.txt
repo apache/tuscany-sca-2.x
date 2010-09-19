@@ -14,5 +14,5 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 
-start testNode http://people.apache.org/~jsdelfino/tuscany/java/test/sample-store.jar
+restart testNode http://people.apache.org/~jsdelfino/tuscany/java/test/sample-store.jar
 status
