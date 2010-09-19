@@ -45,7 +45,7 @@
                 <module>implementation-java</module>
                 <module>implementation-script</module>
                 <module>distributed-osgi</module>
-                <module>sca-client></module>
+                <module>sca-client</module>
             </modules>
         </profile>
     </profiles>    
