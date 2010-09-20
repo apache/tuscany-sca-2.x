@@ -26,6 +26,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>sample-maven-osgi-junit</artifactId>
+    <groupId>org.apache.tuscany.sca</groupId>
+    <version>2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Apache Tuscany Samples Demonstrating the Maven OSGI Junit plugin</name>
 

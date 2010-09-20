@@ -36,7 +36,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>logging-scribe</module>
+                <!-- <module>logging-scribe</module> -->
                 <module>maven-osgi-junit</module>
             </modules>
         </profile>
