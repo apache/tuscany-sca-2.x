@@ -271,7 +271,7 @@
             <modules>
                 <module>maven/maven-tuscany-plugin</module>
                 <module>modules</module>
-                <!-- <module>samples</module> -->
+                <module>samples</module>
                 <module>itest</module>
                 <module>features</module>
                 <module>shades</module>
@@ -297,7 +297,7 @@
             <modules>
                 <module>maven/maven-tuscany-plugin</module>
                 <module>modules</module>
-               <!--  <module>samples</module> -->
+                <module>samples</module>
                 <module>itest</module>
                 <module>features</module>
                 <module>shades</module>
@@ -314,7 +314,7 @@
             <id>eclipse</id>
             <modules>
                 <module>modules</module>
-                <!-- <module>samples</module> -->
+                <module>samples</module>
                 <module>itest</module>
                 <module>features</module>
                 <module>distribution</module>
@@ -352,7 +352,7 @@
             </properties>
             <modules>
                 <module>modules</module>
-                <!-- <module>samples</module> -->
+                <module>samples</module>
                 <module>itest</module>
                 <module>features</module>
                 <module>distribution</module>
@@ -387,7 +387,7 @@
             <modules>
                 <module>maven/maven-tuscany-plugin</module>
                 <module>modules</module>
-                <!-- <module>samples</module> -->
+                <module>samples</module>
                 <module>itest</module>
                 <module>features</module>
                 <module>shades</module>
@@ -443,7 +443,7 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <modules>
-               <!-- <module>samples</module> -->
+               <module>samples</module>
             </modules>
             <build>
                 <pluginManagement>
@@ -480,9 +480,9 @@
             <id>dependencies</id>
             <modules>
                 <module>modules</module>
-                <!--module>samples</module>
+                <module>samples</module>
                 <module>tutorials</module>
-                <module>demos</module-->
+                <module>demos</module>
             </modules>
             <build>
                 <plugins>
@@ -739,7 +739,7 @@ org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apac
            <id>fast</id>
             <modules>
                 <module>modules</module>
-                <!-- <module>samples</module> -->
+                <module>samples</module>
                 <module>itest</module>
                 <module>features</module>
                 <module>shades</module>
