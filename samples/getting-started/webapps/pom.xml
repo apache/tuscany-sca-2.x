@@ -27,7 +27,7 @@
     </parent>
     <artifactId>tuscany-samples-getting-started-webapps</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany Getting Started Sample Web Applications</name>
+    <name>Apache Tuscany SCA Getting Started Sample Web Applications</name>
 
     <profiles>
         <profile>

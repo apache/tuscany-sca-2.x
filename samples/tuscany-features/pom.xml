@@ -27,7 +27,7 @@
     </parent>
     <artifactId>tuscany-samples-tuscany-features</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany Samples Demonstrating Tuscany Features</name>
+    <name>Apache Tuscany SCA Tuscany Feature Samples</name>
 
     <profiles>
         <profile>

@@ -29,7 +29,7 @@
     <version>2.0-SNAPSHOT</version>
     <artifactId>tuscany-samples-sca-client</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany Samples Demonstrating Tuscany Clients</name>
+    <name>Apache Tuscany SCA SCAClient Samples</name>
 
     <profiles>
         <profile>

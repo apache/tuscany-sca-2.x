@@ -27,7 +27,7 @@
     </parent>
     <artifactId>tuscany-samples-running-tuscany</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany Samples Demonstrating Running Tuscany</name>
+    <name>Apache Tuscany SCA Running Tuscany Samples</name>
 
     <profiles>
         <profile>

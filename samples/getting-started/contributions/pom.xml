@@ -27,7 +27,7 @@
     </parent>
     <artifactId>tuscany-samples-getting-started</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany Getting Started Samples</name>
+    <name>Apache Tuscany SCA Getting Started Samples</name>
 
     <profiles>
         <profile>

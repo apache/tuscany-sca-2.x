@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>sample-calculator-scaclient</artifactId>
-    <name>Apache Tuscany SCA Sample Calcualtor SCAClient</name>
+    <name>Apache Tuscany SCA Sample Calculator SCAClient</name>
 
     <dependencies>
 

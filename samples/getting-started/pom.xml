@@ -28,7 +28,7 @@
     <artifactId>tuscany-samples-getting-started-contributions</artifactId>
     <groupId>org.apache.tuscany.sca</groupId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany Getting Started Sample Contributions</name>
+    <name>Apache Tuscany SCA Getting Started Sample Contributions</name>
 
     <profiles>
         <profile>

@@ -27,7 +27,7 @@
     </parent>
     <artifactId>tuscany-samples-distributed-osgi</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany Samples Distributed OSGI</name>
+    <name>Apache Tuscany SCA Distributed OSGI Samples</name>
 
     <profiles>
         <profile>
