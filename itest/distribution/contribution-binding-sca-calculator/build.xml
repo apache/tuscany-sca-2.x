@@ -33,7 +33,7 @@
     <target name="run"> 
     	
         <ant antfile="build.xml"
-    	     dir="${distro.root}/samples/binding-sca/contribution-calculator"/>
+    	     dir="${distro.root}/samples/sca-features/binding-sca/contribution-calculator"/>
     	
     </target>
 
