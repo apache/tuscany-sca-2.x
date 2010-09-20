@@ -36,6 +36,8 @@
         <module>binding-atom</module>
         <module>binding-atom-js-dojo</module>        
         <module>binding-atom-runtime</module>
+        <module>binding-comet</module>
+        <module>binding-comet-runtime</module>
         <module>binding-ejb</module>
         <module>binding-ejb-runtime</module>
         <module>binding-hazelcast-runtime</module>
