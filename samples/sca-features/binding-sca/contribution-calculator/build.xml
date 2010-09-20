@@ -18,7 +18,7 @@
 -->
 
 <project name="calculator" default="compile">
-    <property name="tuscany.home" value="../../.."/>
+    <property name="tuscany.home" value="../../../.."/>
     <property name="jar.name"   value="sample-contribution-binding-sca-calculator.jar" />
     
     <echo>${tuscany.home}</echo>
