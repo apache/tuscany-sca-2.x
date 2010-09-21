@@ -27,13 +27,15 @@ import org.junit.Test;
  */
 public class LauncherTestCase {
 
+     
     @Test
-    public void testContributionBindingSCACalculator() throws Exception {
-        SampleJSELauncher.main(new String[] {"contribution-binding-sca-calculator"});
+    public void testContributionBindingSCACalculator2() throws Exception {
+        SampleOSGILauncherBindingSCA.main(null);
     }
     
+   
     @Test
     public void testContributionBindingWSCalculator() throws Exception {
-        SampleJSELauncher.main(new String[] {"contribution-binding-ws-calculator"});
-    }    
+        SampleOSGILauncherBindingWS.main(null);
+    }   
 }
