@@ -19,26 +19,22 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>${groupId}</groupId>
 	<artifactId>${artifactId}</artifactId>
-	<packaging>jar</packaging>
 	<version>${version}</version>
-	#literal()<!-- TODO project name  -->
-	<name>quickstart</name>
-	<description></description>
+	<name>${artifactId}</name>
 
 	<dependencies>
-		<!--  TUSCANY DEPENDENCIES -->
+
             <dependency>
-               <groupId>org.apache.tuscany.sca</groupId>
-               <artifactId>tuscany-sca-api</artifactId>
-               <version>${tuscany.version}</version>
+               <groupId>org.oasis-open.sca.j</groupId>
+               <artifactId>sca-caa-apis</artifactId>
+               <version>1.1-CD04</version>
                <scope>provided</scope>
             </dependency>
 
-		<!--  JUNIT DEPENDENCY FOR TESTING -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -47,54 +43,20 @@
 		</dependency>
 
 	</dependencies>
+
 	<build>
             <defaultGoal>install</defaultGoal>
             <finalName>${artifactId}</finalName>
-		<resources>
-			<resource>
-				<filtering>false</filtering>
-				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<filtering>false</filtering>
-				<directory>src/main/java</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<filtering>false</filtering>
-				<directory>src/test/java</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</testResource>
-		</testResources>
+
 		<plugins>
 			<plugin>
-				<inherited>true</inherited>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.6</source>
+					<target>1.6</target>
 					<optimise>true</optimise>
 					<debug>true</debug>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<downloadSources>true</downloadSources>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -102,9 +64,18 @@
 				<artifactId>maven-tuscany-plugin</artifactId>
 			</plugin>
 		</plugins>
+
 	</build>
-	<properties>
-		<tuscany.version>2.0-SNAPSHOT</tuscany.version>
-	</properties>
-	#end
+
+      <!-- OASIS SVN repo (for sca-api jar) -->
+      <repositories>
+         <repository>
+            <id>oasis.svn</id>
+            <url>http://tools.oasis-open.org/version-control/svn/sca-j/Release/</url>
+            <releases>
+               <enabled>true</enabled>
+            </releases>
+         </repository>
+      </repositories>
+
 </project>
