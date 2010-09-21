@@ -211,6 +211,7 @@
         </pluginRepository>
 
         <!-- Codehaus SNAPSHOT repository -->
+        <!--
         <pluginRepository>
             <id>codehaus-snapshot</id>
             <name>Codehaus Snapshot Repository</name>
@@ -219,6 +220,7 @@
                 <enabled>true</enabled>
             </snapshots>
         </pluginRepository>
+        -->
 
        <!-- Maven central repository -->
        <pluginRepository>
