@@ -27,7 +27,7 @@
     </parent>
     <artifactId>tuscany-sample-async</artifactId>
     <packaging>pom</packaging>
-    <name>MYYYYYYYYYYYYYYYYYYY  Apache Tuscany SCA Samples for  Synchronous/Asynchronous invocation</name>
+    <name>Apache Tuscany SCA Samples for  Synchronous/Asynchronous invocation</name>
 
     <profiles>
         <profile>

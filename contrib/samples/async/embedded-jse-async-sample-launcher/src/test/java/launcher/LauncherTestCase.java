@@ -18,6 +18,7 @@
  */
 package launcher;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -25,6 +26,7 @@ import org.junit.Test;
  */
 public class LauncherTestCase {
 
+	@Ignore
     @Test
     public void testContributionImplementationJavaCalculatorAsync() throws Exception {
         SampleJSELauncher.main(null);
