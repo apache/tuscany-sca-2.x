@@ -50,7 +50,7 @@
                 <module>sca-client</module>
                 <module>async</module>
                 <module>maven-osgi-junit</module>
-                <module>logging-scribe</module>
+                <!-- <module>logging-scribe</module> -->
             </modules>
         </profile>
     </profiles>    
