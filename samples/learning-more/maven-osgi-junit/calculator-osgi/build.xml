@@ -45,7 +45,7 @@
 
     <target name="run" depends="compile">
         <java jar="../../features/tuscany-sca-manifest.jar" fork="true">
-            <jvmarg value="-Djava.util.logging.config.file=../logging.properties"/>
+            <jvmarg value="-Djava.util.logging.config.file=logging.properties"/>
             <!-- optional to set the deployable composite -->
             <arg value="-composite"/>
             <arg value="Calculator.composite"/>
@@ -58,7 +58,7 @@
 
     <target name="run-equinox" depends="compile">
         <java jar="../../features/tuscany-sca-equinox-manifest.jar" fork="true">
-            <jvmarg value="-Djava.util.logging.config.file=../logging.properties"/>
+            <jvmarg value="-Djava.util.logging.config.file=logging.properties"/>
             <arg value="-composite"/>
             <arg value="Calculator.composite"/>
             <arg value="-config"/>
