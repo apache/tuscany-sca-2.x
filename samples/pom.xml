@@ -33,9 +33,8 @@
 
             <modules>
                 <module>getting-started</module>
-                <module>sca-features</module>
-                <module>tuscany-features</module>
                 <module>running-tuscany</module>
+                <module>learning-more</module>
                 <module>applications</module>
 
 <!-- *********
