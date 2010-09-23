@@ -41,7 +41,7 @@ public class JSELauncherBindingSCACalculator {
      * Using the Tuscany Node API to get a local service proxy
      */
     public void launchBindingSCACalculator(){
-        Node node = NodeFactory.newInstance().createNode(new Contribution("c1", "../../sca-features/binding-sca/contribution-calculator/target/sample-contribution-binding-sca-calculator.jar"));
+        Node node = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/binding-sca/contribution-calculator/target/sample-contribution-binding-sca-calculator.jar"));
         node.start();
         
         CalculatorService calculator = node.getService(CalculatorService.class, "CalculatorServiceComponent");

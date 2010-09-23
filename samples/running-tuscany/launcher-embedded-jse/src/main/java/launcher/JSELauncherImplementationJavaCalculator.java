@@ -37,7 +37,7 @@ public class JSELauncherImplementationJavaCalculator {
     }
     
     public void launchImplementationJavaCalculator(){
-        Node node = NodeFactory.newInstance().createNode(new Contribution("c1", "../../sca-features/implementation-java/contribution-calculator/target/classes"));
+        Node node = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/implementation-java/contribution-calculator/target/classes"));
         node.start();
         
         node.stop();

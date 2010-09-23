@@ -39,8 +39,8 @@ public class JSELauncherBindingRMICalculator {
 
     public void launchBindingRMICalculator(){
     	
-        Node node1 = NodeFactory.newInstance().createNode(new Contribution("c1", "../../sca-features//binding-rmi/contribution-calculator-service/target/classes"));       
-        Node node2 = NodeFactory.newInstance().createNode(new Contribution("c1", "../../sca-features//binding-rmi/contribution-calculator-reference/target/classes"));
+        Node node1 = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/binding-rmi/contribution-calculator-service/target/classes"));       
+        Node node2 = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/binding-rmi/contribution-calculator-reference/target/classes"));
         
         node1.start();
         node2.start();
