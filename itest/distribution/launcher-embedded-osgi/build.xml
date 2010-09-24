@@ -38,7 +38,7 @@
              target="run-contribution-binding-sca-calculator"/>
 -->
 
-        <ant dir="${distro.root}/samples/launcher-embedded-osgi"/>
+        <ant dir="${distro.root}/samples/running-tuscany/launcher-embedded-osgi"/>
 
     </target>
 
