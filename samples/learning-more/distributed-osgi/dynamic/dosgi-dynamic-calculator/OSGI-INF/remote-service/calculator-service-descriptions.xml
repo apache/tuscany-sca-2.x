@@ -27,35 +27,47 @@
         <property name="remote.configs.supported" value="org.osgi.sca"/>
         <property name="service.imported.configs" value="org.osgi.sca"/>
         <property name="sca.reference" value="addService"/>
+<!-- ##############################################################################################################-->
+<!-- Property org.osgi.sca.bindings can be removed when running with -Dorg.osgi.sca.domain.registry=tribes:default -->         
         <property name="org.osgi.sca.bindings">
             <list>
                 <value>{http://sample}Add</value>
             </list>
         </property>
+<!-- ##############################################################################################################-->
     </endpoint-description>
     <endpoint-description>
         <property name="objectClass" value="calculator.dosgi.operations.SubtractService" />
         <property name="service.imported.configs" value="org.osgi.sca"/>
         <property name="remote.configs.supported" value="org.osgi.sca"/>
         <property name="sca.reference" value="subtractService"/>
+<!-- ##############################################################################################################-->
+<!-- Property org.osgi.sca.bindings can be removed when running with -Dorg.osgi.sca.domain.registry=tribes:default -->         
         <property name="org.osgi.sca.bindings">
             <list>
                 <value>{http://sample}Subtract</value>
             </list>
         </property>
+<!-- ##############################################################################################################-->
     </endpoint-description>
     <endpoint-description>
         <property name="objectClass" value="calculator.dosgi.operations.MultiplyService" />
         <property name="service.imported.configs" value="org.osgi.sca"/>
         <property name="remote.configs.supported" value="org.osgi.sca"/>
         <property name="sca.reference" value="multiplyService"/>
+<!-- ##############################################################################################################-->
+<!-- Property org.osgi.sca.bindings can be removed when running with -Dorg.osgi.sca.domain.registry=tribes:default -->         
         <property name="org.osgi.sca.bindings" value="{http://sample}Multiply"/>
+<!-- ##############################################################################################################-->
     </endpoint-description>
     <endpoint-description>
         <property name="objectClass" value="calculator.dosgi.operations.DivideService" />
         <property name="service.imported.configs" value="org.osgi.sca"/>
         <property name="remote.configs.supported" value="org.osgi.sca"/>
         <property name="sca.reference" value="divideService"/>
+<!-- ##############################################################################################################-->
+<!-- Property org.osgi.sca.bindings can be removed when running with -Dorg.osgi.sca.domain.registry=tribes:default -->         
         <property name="org.osgi.sca.bindings" value="{http://sample}Divide"/>
+<!-- ##############################################################################################################-->
     </endpoint-description>
 </endpoint-descriptions>
