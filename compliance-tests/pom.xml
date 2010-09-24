@@ -39,12 +39,13 @@
     </repositories>
 
     <modules>
+
        <module>assembly</module>
        <module>java-caa</module>
-<!--
        <module>java-ci</module>
        <module>policy</module>
        <module>binding-ws</module>
+<!--   
        <module>binding-jms</module>
 -->
     </modules>
