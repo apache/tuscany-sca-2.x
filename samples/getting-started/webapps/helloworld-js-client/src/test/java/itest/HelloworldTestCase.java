@@ -30,11 +30,13 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Verfiy the serverside code is working, not sure how to easily itest the browser javascript code 
  */
+@Ignore("TUSCANY-3688")
 public class HelloworldTestCase {
 
     @Test
