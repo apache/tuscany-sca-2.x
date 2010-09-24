@@ -64,7 +64,7 @@ public class SampleJSELauncher extends RuntimeIntegration {
      * that calls the CalculatorServiceComponent from an operation marked by @Init. 
      */
     public void launchBindingSCACalculator(){
-        Node node = startNode(new Contribution("c1", "../../sca-features/binding-sca/contribution-calculator/target/sample-contribution-binding-sca-calculator.jar"));
+        Node node = startNode(new Contribution("c1", "../../learning-more/binding-sca/contribution-calculator/target/sample-contribution-binding-sca-calculator.jar"));
         
         stopNode(node);
     }    
@@ -73,7 +73,7 @@ public class SampleJSELauncher extends RuntimeIntegration {
      * Using a Tuscany specific mechanism for getting at local service proxies
      */
     public void launchBindingWSCalculator() throws NoSuchDomainException, NoSuchServiceException{
-        Node node = startNode(new Contribution("c1", "../../sca-features/binding-ws/contribution-calculator/target/sample-contribution-binding-ws-calculator.jar"));
+        Node node = startNode(new Contribution("c1", "../../learning-more/binding-ws/contribution-calculator/target/sample-contribution-binding-ws-calculator.jar"));
         
         CalculatorService calculator = node.getService(CalculatorService.class, "CalculatorServiceComponent");
                

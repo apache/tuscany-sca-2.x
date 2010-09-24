@@ -40,7 +40,7 @@ public class SampleOSGILauncherBindingSCA extends RuntimeIntegration {
         SampleOSGILauncherBindingSCA launcher = new SampleOSGILauncherBindingSCA();
  
         
-        Node node = launcher.startNode(new Contribution("c1", "../../sca-features/binding-sca/contribution-calculator/target/sample-contribution-binding-sca-calculator.jar"));
+        Node node = launcher.startNode(new Contribution("c1", "../../learning-more/binding-sca/contribution-calculator/target/sample-contribution-binding-sca-calculator.jar"));
         launcher.stopNode(node);
     }
     

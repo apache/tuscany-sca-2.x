@@ -1,15 +1,10 @@
-JSE Sample Launcher
-===================
+JSE Sample Launchers
+====================
 
-This directory contains a sample java launcher for the
+This directory contains sample java launchers for the
 tuscany sample contributions.   
 
-The README file in the <distribution-unpack-dir>/samples directory provides 
-general instructions about building and running sample contributions using the
-tuscany sample launchers ( where distribution-unpack-dir is the directory in which you
-unpacked the tuscany binary distribution archive)
-
-To use this sample JSE launcher with ant excute the command
+To use this sample JSE launcher with ant execute the command
 
 ant run-<contributionname>
 
