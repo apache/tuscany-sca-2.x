@@ -17,7 +17,7 @@
  * under the License.    
 -->
 <project name="launcher-embedded-jse" default="run"> 
-	<property name="tuscany.home" value="../.."/>
+	<property name="tuscany.home" value="../../.."/>
     <property name="jar.name"   value="sample-launcher-embedded-jse.jar" />
 	<property name="wait.before.stopping" value="dontWaitBeforeStopping" />
 	
@@ -61,7 +61,7 @@
               failonerror="true">
             <classpath>  
                 <pathelement location="target/${jar.name}"/>
-                <fileset dir="${tuscany.home}/features">
+                <fileset dir="${tuscany.home}/features/all">
                    <include name="tuscany-sca-manifest.jar" />
                 </fileset>
             </classpath> 
@@ -87,7 +87,7 @@
               failonerror="true">
             <classpath>  
                 <pathelement location="target/${jar.name}"/>
-                <fileset dir="${tuscany.home}/features">
+                <fileset dir="${tuscany.home}/features/all">
                    <include name="tuscany-sca-manifest.jar" />
                 </fileset>
             </classpath> 
@@ -100,7 +100,7 @@
               failonerror="true">
             <classpath>  
                 <pathelement location="target/${jar.name}"/>
-                <fileset dir="${tuscany.home}/features">
+                <fileset dir="${tuscany.home}/features/all">
                    <include name="tuscany-sca-manifest.jar" />
                 </fileset>
             </classpath> 

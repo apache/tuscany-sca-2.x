@@ -17,7 +17,7 @@
  * under the License.    
 -->
 <project name="launcher-embedded-osgi" default="run"> 
-	<property name="tuscany.home" value="../.."/>
+	<property name="tuscany.home" value="../../.."/>
     <property name="jar.name"   value="sample-launcher-embedded-osgi.jar" />
     <property name="main.class" value="launcher.SampleJSELauncher" />
 	

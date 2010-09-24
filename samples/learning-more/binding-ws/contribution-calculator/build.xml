@@ -17,7 +17,7 @@
  * under the License.    
 -->
 <project name="binding-ws-calculator" default="compile"> 
-	<property name="tuscany.home" value="../../.."/>
+	<property name="tuscany.home" value="../../../.."/>
     <property name="jar.name"   value="contribution-binding-ws-calculator.jar" />
 	
 	<echo>${tuscany.home}</echo>
