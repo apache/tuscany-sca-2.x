@@ -36,8 +36,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>implementation.osgi</module>
-                <module>dynamic</module>
+                <module>dosgi-dynamic-calculator</module>
+                <module>dosgi-dynamic-calculator-operations</module>
             </modules>
         </profile>
     </profiles>    

@@ -47,6 +47,7 @@
                 <module>implementation-java</module>
                 <module>implementation-script</module>
                 <module>distributed-osgi</module>
+                <module>implementation-osgi</module>
                 <module>sca-client</module>
                 <module>async</module>
                 <module>maven-osgi-junit</module>
