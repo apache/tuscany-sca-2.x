@@ -38,14 +38,14 @@
             <modules>
 
                 <!-- don't need to process these as they just contain README files
-                <module>launcher-command-line</module>
-                <module>launcher-maven</module>
-                <module>launcher-webapp</module>
+                <module>command-line</module>
+                <module>maven</module>
+                <module>webapp</module>
                 -->
-                <module>launcher-embedded-jse</module>
-                <module>launcher-embedded-osgi</module>
-                <module>launcher-embedded-osgi-base</module>
-                <module>launcher-shell</module>
+                <module>embedded-jse</module>
+                <module>embedded-osgi</module>
+                <module>embedded-osgi-base</module>
+                <module>shell</module>
 
             </modules>
         </profile>
