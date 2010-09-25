@@ -25,9 +25,9 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-samples-getting-started</artifactId>
+    <artifactId>tuscany-samples-implememtation-spring</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Getting Started Samples</name>
+    <name>Apache Tuscany SCA Implementation Spring Samples</name>
 
     <profiles>
         <profile>
@@ -36,10 +36,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>helloworld</module>
-                <module>helloworld-scaclient</module>    
-                <module>helloworld-bpel</module>
-                <module>helloworld-spring</module>   
+                <module>contribution-helloworld-spring</module>
+                <module>helloworld-spring-webapp</module>
             </modules>
         </profile>
     </profiles>    

@@ -43,11 +43,14 @@
                 <module>binding-ws</module>
                 <module>binding-comet</module>
                 <module>binding-jsonrpc</module>
+                <module>implementation-bpel</module>
+                <module>implementation-composite</module>
                 <module>implementation-extension</module>
                 <module>implementation-java</module>
                 <module>implementation-script</module>
-                <module>distributed-osgi</module>
+                <module>implementation-spring</module>
                 <module>implementation-osgi</module>
+                <module>implementation-webapp</module>
                 <module>sca-client</module>
                 <module>async</module>
                 <module>maven-osgi-junit</module>
