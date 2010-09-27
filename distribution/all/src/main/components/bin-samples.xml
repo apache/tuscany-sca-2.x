@@ -55,13 +55,17 @@
                 <exclude>**/target/surefire-osgi-reports/**/*</exclude>
                 <exclude>**/target/war</exclude>
                 <exclude>**/target/war/**/*</exclude>
-                <exclude>webapps/*/target</exclude>
-                <exclude>webapps/*/target/**/*</exclude>
-                <exclude>helloworld-bpel/target/sample-helloworld-bpel</exclude>
-                <exclude>helloworld-bpel/target/sample-helloworld-bpel/**/*</exclude>
-                <exclude>binding-jsonrpc/contribution-calculator-webapp/target/**/*</exclude>
-                <exclude>binding-jsonrpc/contribution-calculator-webapp/target</exclude>
-                <exclude>binding-jsonrpc/contribution-calculator-webapp/src/main/webapp/dojo/**/*</exclude>
+                <exclude>**/target/work</exclude>
+                <exclude>**/target/work/**/*</exclude>
+                <exclude>getting-started/helloworld-webapp/*/target</exclude>
+                <exclude>getting-started/helloworld-webapp/*/target/**/*</exclude>
+                <exclude>learning-more/implementation-webapp/*/target</exclude>
+                <exclude>learning-more/implementation-webapp/*/target/**/*</exclude>
+                <exclude>learning-more/implementation-bpel/helloworld-bpel-webapp/target</exclude>
+                <exclude>learning-more/implementation-bpel/helloworld-bpel-webapp/target/**/*</exclude>
+                <exclude>learning-more/binding-jsonrpc/contribution-calculator-webapp/target/**/*</exclude>
+                <exclude>learning-more/binding-jsonrpc/contribution-calculator-webapp/target</exclude>
+                <exclude>learning-more/binding-jsonrpc/contribution-calculator-webapp/src/main/webapp/dojo/**/*</exclude>
             </excludes>
         </fileSet>
     </fileSets>
