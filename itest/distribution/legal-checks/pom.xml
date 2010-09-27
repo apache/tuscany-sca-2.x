@@ -63,6 +63,7 @@
                               <exclude>**/MANIFEST.MF</exclude>
                               <exclude>**/DEPENDENCIES</exclude>
                               <exclude>**/target/**/*.log</exclude>
+                              <exclude>**/config.ini</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT/features/configuration/config.ini</exclude>
                            </excludes>
                         </configuration>
