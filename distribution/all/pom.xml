@@ -37,6 +37,18 @@
             <type>pom</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+
+<!-- TUSCANY-3674 
+     uncomment when using maven-bundle-plugin v1.0.7-SNAPSHOT
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-base-runtime</artifactId>
+            <type>pom</type>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+-->
+
+<!-- shouldn't these be in the all feature -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-domain-node</artifactId>
@@ -185,6 +197,9 @@
                 <groupId>org.apache.tuscany.maven.plugins</groupId> 
                 <artifactId>maven-bundle-plugin</artifactId> 
                 <version>1.0.6</version>
+<!-- TUSCANY-3674 
+                <version>1.0.7-SNAPSHOT</version>
+-->
                 <executions>
                     <execution>
                         <id>distribution-modules</id>
@@ -197,6 +212,7 @@
                              <useDistributionName>${useDistributionName}</useDistributionName>
                              <generateAggregatedBundle>${generateAggregatedBundle}</generateAggregatedBundle>
                              <generateManifestJar>true</generateManifestJar>
+                             <featuresName>features</featuresName>
                              <excludeGroupIds>
                                  <groupId>org.apache.tuscany.sca.shades</groupId>
                              </excludeGroupIds>
@@ -254,6 +270,140 @@
                               </artifactAggregations-->
                         </configuration>
                     </execution>
+<!-- TUSCANY-3674 
+     uncomment when using maven-bundle-plugin v1.0.7-SNAPSHOT
+                    <execution>
+                        <id>extensions-build</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                             <goal>generate-meta-data</goal>
+                        </goals>
+                        <configuration>
+                             <generateModules>false</generateModules>
+                             <useDistributionName>false</useDistributionName>
+                             <generateManifestJar>true</generateManifestJar>
+                             <generateConfig>true</generateConfig>
+                             <generateAntScript>true</generateAntScript> 
+                             <generateTargetPlatform>false</generateTargetPlatform>
+                             <generateAggregatedBundle>false</generateAggregatedBundle>
+                             <featuresName>features</featuresName>
+                             <features>
+                                 <feature>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-base-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </feature>
+                             </features>
+                             <extensions>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-binding-atom-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-binding-commet-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-binding-corba-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-binding-ejb-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-binding-hazelcase-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-binding-jms-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-binding-jsonp-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-binding-jsonrpc-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-binding-rest-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-binding-rmi-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-binding-rss-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-implementation-bpel-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-implementation-jaxes-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-implementation-osgi-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-implementation-python-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-implementation-script-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-implementation-spring-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-implementation-web-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+                                 <extension>
+                                     <groupId>org.apache.tuscany.sca</groupId>
+                                     <artifactId>tuscany-implementation-widget-runtime</artifactId>
+                                     <version>2.0-SNAPSHOT</version>
+                                 </extension>
+
+                             </extensions>
+                             <excludeGroupIds>
+                                 <groupId>org.apache.tuscany.sca.shades</groupId>
+                             </excludeGroupIds>
+                        </configuration>
+                    </execution>
+-->
 <!--
                     <execution>
                         <id>distribution-singlebundle</id>
