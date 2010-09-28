@@ -61,7 +61,7 @@
               failonerror="true">
             <classpath>  
                 <pathelement location="target/${jar.name}"/>
-                <fileset dir="${tuscany.home}/features/all">
+                <fileset dir="${tuscany.home}/features">
                    <include name="tuscany-sca-manifest.jar" />
                 </fileset>
             </classpath> 
@@ -87,7 +87,7 @@
               failonerror="true">
             <classpath>  
                 <pathelement location="target/${jar.name}"/>
-                <fileset dir="${tuscany.home}/features/all">
+                <fileset dir="${tuscany.home}/features">
                    <include name="tuscany-sca-manifest.jar" />
                 </fileset>
             </classpath> 
@@ -100,7 +100,7 @@
               failonerror="true">
             <classpath>  
                 <pathelement location="target/${jar.name}"/>
-                <fileset dir="${tuscany.home}/features/all">
+                <fileset dir="${tuscany.home}/features">
                    <include name="tuscany-sca-manifest.jar" />
                 </fileset>
             </classpath> 
