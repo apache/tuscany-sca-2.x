@@ -45,7 +45,6 @@
         <module>manager</module>
         <module>repository</module>
 -->
-        <module>binding-ws</module>
         <module>base</module>
     </modules>
 
