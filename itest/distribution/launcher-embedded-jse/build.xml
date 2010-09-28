@@ -32,7 +32,7 @@
 
     <target name="run"> 
     	
-        <ant dir="${distro.root}/samples/running-tuscany/launcher-embedded-jse"
+        <ant dir="${distro.root}/samples/running-tuscany/embedded-jse"
              target="run-contribution-binding-sca-calculator">
         </ant>
 
