@@ -116,8 +116,7 @@ public class NodeFactory {
         NodeConfiguration configuration = loadConfiguration(configURL);
         Node node = createNode(configuration.getDomainURI());
         for ( ContributionConfiguration c : configuration.getContributions()) {
-//            node.installContribution(c.getURI(), c.getLocation(), c.getMetaDataURL(), c.getDependentContributionURIs(), c.getRunDeployables());
-            node.installContribution(c.getURI(), c.getLocation(), null, null, true);
+            node.installContribution(c.getURI(), c.getLocation(), c.getMetaDataURL(), c.getDependentContributionURIs(), c.isStartDeployables());
         }
         return node;
     }
@@ -182,9 +181,10 @@ public class NodeFactory {
     }
 
     protected NodeConfiguration loadConfiguration(String configURL) {
+        InputStream xml =null;
         try {
             URL base = IOHelper.getLocationAsURL(configURL);
-            InputStream xml = IOHelper.openStream(base);
+            xml = IOHelper.openStream(base);
             InputStreamReader reader = new InputStreamReader(xml, "UTF-8");
             ProcessorContext context = deployer.createProcessorContext();
             NodeConfiguration config = deployer.loadXMLDocument(reader, context.getMonitor());
@@ -203,6 +203,12 @@ public class NodeFactory {
             return config;
         } catch (Throwable e) {
             throw new ServiceRuntimeException(e);
+        } finally {
+            try {
+                if (xml != null) xml.close();
+            } catch (IOException e) {
+                throw new ServiceRuntimeException(e);
+            }
         }
     }
 
