@@ -19,9 +19,16 @@
 
 package org.apache.tuscany.sca.node2;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Properties;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.common.java.io.IOHelper;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -30,12 +37,17 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.assembly.impl.EndpointRegistryImpl;
 import org.apache.tuscany.sca.deployment.Deployer;
+import org.apache.tuscany.sca.monitor.ValidationException;
+import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node2.impl.NodeImpl;
+import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.apache.tuscany.sca.work.WorkScheduler;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 public class NodeFactory {
 
@@ -100,6 +112,16 @@ public class NodeFactory {
         return new NodeImpl(domainName, deployer, compositeActivator, endpointRegistry, extensionPointRegistry, null);
     }
 
+    public Node createNodeFromXML(String configURL) throws ContributionReadException, ActivationException, ValidationException {
+        NodeConfiguration configuration = loadConfiguration(configURL);
+        Node node = createNode(configuration.getDomainURI());
+        for ( ContributionConfiguration c : configuration.getContributions()) {
+//            node.installContribution(c.getURI(), c.getLocation(), c.getMetaDataURL(), c.getDependentContributionURIs(), c.getRunDeployables());
+            node.installContribution(c.getURI(), c.getLocation(), null, null, true);
+        }
+        return node;
+    }
+
     public void stop() {
         deployer.stop();
         extensionPointRegistry.stop();
@@ -158,4 +180,30 @@ public class NodeFactory {
             return domainURI.substring(scheme+1, qm);
         }
     }
+
+    protected NodeConfiguration loadConfiguration(String configURL) {
+        try {
+            URL base = IOHelper.getLocationAsURL(configURL);
+            InputStream xml = IOHelper.openStream(base);
+            InputStreamReader reader = new InputStreamReader(xml, "UTF-8");
+            ProcessorContext context = deployer.createProcessorContext();
+            NodeConfiguration config = deployer.loadXMLDocument(reader, context.getMonitor());
+            if (base != null && config != null) {
+                // Resolve the contribution location against the node.xml
+                // TODO: absolute locations?
+                for (ContributionConfiguration c : config.getContributions()) {
+                    String location = c.getLocation();
+                    if (location != null) {
+                        URL url = new URL(base, location);
+                        url = IOHelper.normalize(url);
+                        c.setLocation(url.toString());
+                    }
+                }
+            }
+            return config;
+        } catch (Throwable e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
 }
