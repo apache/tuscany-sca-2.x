@@ -39,8 +39,8 @@ public class JSELauncherBindingRMICalculator {
 
     public void launchBindingRMICalculator(){
     	
-        Node node1 = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/binding-rmi/contribution-calculator-service/target/classes"));       
-        Node node2 = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/binding-rmi/contribution-calculator-reference/target/classes"));
+        Node node1 = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/binding-rmi/contribution-calculator-service/target/sample-contribution-binding-rmi-calculator-service.jar"));       
+        Node node2 = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/binding-rmi/contribution-calculator-reference/target/sample-contribution-binding-rmi-calculator-reference.jar"));
         
         node1.start();
         node2.start();
@@ -53,7 +53,6 @@ public class JSELauncherBindingRMICalculator {
             throw new SampleLauncherException();
         }
         
-               
         node1.stop();
         node2.stop();
     }
