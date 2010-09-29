@@ -59,7 +59,7 @@ public class Shell {
     private Map<String, Node> nodes = new HashMap<String, Node>();
 
     public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "help", "install", "installed",
-                                                          "printDomainLevelComposite", "remove", "start", "status",
+                                                          "load", "printDomainLevelComposite", "remove", "start", "status",
                                                           "stop"};
 
     public static void main(final String[] args) throws Exception {
@@ -186,6 +186,13 @@ public class Shell {
                 out.println(((Composite)a.getModel()).getName());
             }
         }
+        return true;
+    }
+
+    boolean load(final String configXmlUrl) throws ContributionReadException, ActivationException, ValidationException {
+        Node node = factory.createNodeFromXML(configXmlUrl);
+        currentDomain = node.getDomainName();
+        nodes.put(currentDomain, node);
         return true;
     }
 
@@ -377,6 +384,12 @@ public class Shell {
                     return installed(toks);
                 }
             };
+        if (op.equalsIgnoreCase("load"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return load(toks.get(1));
+                }
+            };
         if (op.equalsIgnoreCase("printDomainLevelComposite"))
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
@@ -496,6 +509,8 @@ public class Shell {
             helpInstall();
         } else if ("installed".equalsIgnoreCase(command)) {
             helpInstalled();
+        } else if ("load".equalsIgnoreCase(command)) {
+            helpLoad();
         } else if ("remove".equalsIgnoreCase(command)) {
             helpRemove();
         } else if ("printDomainLevelComposite".equalsIgnoreCase(command)) {
@@ -528,6 +543,7 @@ public class Shell {
         out.println("   domains");
         out.println("   install [<uri>] <contributionURL> [-start -metadata <url> -duris <uri,uri,...>]");
         out.println("   installed [<contributionURI>]");
+        out.println("   load <configXmlURL>");
         out.println("   remove <contributionURI>");
         out.println("   printDomainLevelComposite");
         out.println("   start <curi> <compositeUri>|<contentURL>");
@@ -601,6 +617,17 @@ public class Shell {
         out.println();
         out.println("   Arguments:");
         out.println("      contributionURI - (optional) the URI of an installed contribution");
+    }
+
+    void helpLoad() {
+        out.println("   load <configXmlUrl>");
+        out.println();
+        out.println("   Shows information about the contributions installed on this node,");
+        out.println("   including the contribution URI and location along with the URI");
+        out.println("   and QName of any composites within the contribution");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      configXmlUrl - (required) the URL of the config file to load");
     }
 
     void helpRemove() {
