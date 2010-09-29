@@ -166,10 +166,12 @@ public class Shell {
         for (String curi : curis) {
             out.println(curi + " " + getNode().getInstalledContribution(curi).getLocation());
             Contribution c = getNode().getInstalledContribution(curi);
+            List<String> deployeds = getNode().getDeployedComposites(curi);
             for (Artifact a : c.getArtifacts()) {
                 if (a.getModel() instanceof Composite) {
                     Composite composite = (Composite)a.getModel();
-                    out.println("   " + composite.getURI() + " " + composite.getName());
+                    String running = deployeds.contains(composite.getURI()) ? "***running***" : "";
+                    out.println("   " + composite.getURI() + " " + composite.getName() + " " + running);
                 }
             }
         }
