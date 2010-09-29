@@ -18,6 +18,11 @@
  */
 package sample;
 
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.EagerInit;
+
+@Scope("COMPOSITE") @EagerInit
 public class HelloworldImpl implements Helloworld {
 
     public String sayHello(String name) {
@@ -25,4 +30,8 @@ public class HelloworldImpl implements Helloworld {
         return "Hello " + name;
     }
 
+    @Init
+    public void init() {
+        System.out.println(sayHello("world"));
+    }
 }
