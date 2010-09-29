@@ -27,8 +27,8 @@
     </parent>
 
     <packaging>jar</packaging>
-    <artifactId>sample-helloworld</artifactId>
-    <name>Apache Tuscany SCA Sample Helloworld</name>
+    <artifactId>helloworld-contribution</artifactId>
+    <name>Apache Tuscany SCA Samples - Getting Started - helloworld-contribution</name>
 
     <dependencies>
         <dependency>
