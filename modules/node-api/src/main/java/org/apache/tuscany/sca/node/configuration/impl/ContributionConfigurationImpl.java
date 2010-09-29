@@ -39,6 +39,9 @@ public class ContributionConfigurationImpl implements ContributionConfiguration 
     private List<DeploymentComposite> deploymentComposites = new ArrayList<DeploymentComposite>();
     private String uri;
     private String location;
+    private boolean startDeployables;
+    private List<String> dependentContributionURIs;
+    private String metaDataURL;
 
     public ContributionConfigurationImpl() {
         super();
@@ -151,5 +154,35 @@ public class ContributionConfigurationImpl implements ContributionConfiguration 
         DeploymentComposite composite = new DeploymentCompositeImpl();
         composite.setLocation(location.toString());
         return addDeploymentComposite(composite);
+    }
+
+    @Override
+    public void setStartDeployables(boolean startDeployables) {
+        this.startDeployables = startDeployables;
+    }
+
+    @Override
+    public boolean isStartDeployables() {
+        return startDeployables;
+    }
+
+    @Override
+    public List<String> getDependentContributionURIs() {
+        return dependentContributionURIs;
+    }
+
+    @Override
+    public void setDependentContributionURIs(List<String> dependentContributionURIs) {
+        this.dependentContributionURIs = dependentContributionURIs;
+    }
+
+    @Override
+    public String getMetaDataURL() {
+        return metaDataURL;
+    }
+
+    @Override
+    public void setMetaDataURL(String metaDataURL) {
+        this.metaDataURL = metaDataURL;
     }
 }
