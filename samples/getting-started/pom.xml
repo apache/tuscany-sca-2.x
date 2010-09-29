@@ -37,7 +37,9 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>contribution-helloworld</module>
+                <module>helloworld-contribution</module>
+                <module>scdl-include-contribution</module>
+                <module>callback-api</module>
                 <module>helloworld-webapp</module>
             </modules>
         </profile>
