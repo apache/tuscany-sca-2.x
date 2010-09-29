@@ -22,6 +22,6 @@
     xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
     domain="helloworld">
 
-    <contribution location="helloworld-contribution/target/helloworld-contribution.jar" run="true"/>
+    <contribution location="helloworld-contribution/target/helloworld-contribution.jar" startDeployables="true"/>
 
 </node>
