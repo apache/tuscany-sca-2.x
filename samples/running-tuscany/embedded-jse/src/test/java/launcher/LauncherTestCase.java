@@ -24,25 +24,34 @@ import org.junit.Test;
  * Test sample contributions.
  */
 public class LauncherTestCase {
+    
+    @Test
+    public void testBindingJSONRPCCalculator() throws Exception {
+        JSELauncherBindingSCACalculator.main(null);
+    }    
 
     @Test
-    public void testContributionBindingSCACalculator() throws Exception {
+    public void testBindingSCACalculator() throws Exception {
         JSELauncherBindingSCACalculator.main(null);
     }
        
-    
     @Test
-    public void testContributionBindingWSCalculator() throws Exception {
+    public void testBindingWSCalculator() throws Exception {
         JSELauncherBindingWSCalculator.main(null);
     }     
     
     @Test
-    public void testContributionBindingRMICalculator() throws Exception {
+    public void testBindingRMICalculator() throws Exception {
     	JSELauncherBindingRMICalculator.main(null);
     } 
     
     @Test
-    public void testContributionImplementationJavaCalculator() throws Exception {
+    public void testImplementationJavaCalculator() throws Exception {
     	JSELauncherImplementationJavaCalculator.main(null);
+    }   
+    
+    @Test
+    public void testImplementationScriptCalculator() throws Exception {
+        JSELauncherImplementationScriptCalculator.main(null);
     }     
 }
