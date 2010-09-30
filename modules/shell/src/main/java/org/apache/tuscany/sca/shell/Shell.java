@@ -59,7 +59,7 @@ public class Shell {
     private Map<String, Node> nodes = new HashMap<String, Node>();
 
     public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "help", "install", "installed",
-                                                          "load", "printDomainLevelComposite", "remove", "start", "status",
+                                                          "load", "printDomainLevelComposite", "remove", "run", "start", "status",
                                                           "stop"};
 
     public static void main(final String[] args) throws Exception {
@@ -216,6 +216,27 @@ public class Shell {
             return true;
         }
         getNode().removeContribution(curi);
+        return true;
+    }
+
+    boolean run(final String commandsFileURL) throws IOException {
+        BufferedReader r = new BufferedReader(new InputStreamReader(IOHelper.getLocationAsURL(commandsFileURL).openStream()));
+        String l;
+        try {
+            while ((l = r.readLine()) != null) {
+                out.println(l);
+                String[] toks = l != null ? l.trim().split(" ") : "".split(" ");
+                List<String> toksList = new ArrayList<String>();
+                for (String s : toks) {
+                    if (s != null && s.trim().length() > 0) {
+                        toksList.add(s);
+                    }
+                }
+                apply(eval(toksList));
+            }
+        } finally {
+            r.close();
+        }
         return true;
     }
 
@@ -410,6 +431,12 @@ public class Shell {
                     return remove(toks.get(1));
                 }
             };
+        if (op.equalsIgnoreCase("run"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return run(toks.get(1));
+                }
+            };
         if (op.equalsIgnoreCase("help"))
             return new Callable<Boolean>() {
                 public Boolean call() {
@@ -466,7 +493,7 @@ public class Shell {
                     return history();
                 }
             };
-        if (op.equalsIgnoreCase(""))
+        if (op.equalsIgnoreCase("") || op.startsWith("#"))
             return new Callable<Boolean>() {
                 public Boolean call() {
                     return true;
@@ -515,6 +542,8 @@ public class Shell {
             helpLoad();
         } else if ("remove".equalsIgnoreCase(command)) {
             helpRemove();
+        } else if ("run".equalsIgnoreCase(command)) {
+            helpRun();
         } else if ("printDomainLevelComposite".equalsIgnoreCase(command)) {
             helpPrintDomainLevelComposite();
         } else if ("start".equalsIgnoreCase(command)) {
@@ -547,6 +576,7 @@ public class Shell {
         out.println("   installed [<contributionURI>]");
         out.println("   load <configXmlURL>");
         out.println("   remove <contributionURI>");
+        out.println("   run <commandsFileURL>");
         out.println("   printDomainLevelComposite");
         out.println("   start <curi> <compositeUri>|<contentURL>");
         out.println("   start <name> [<compositeUri>] <contributionURL> [-duris <uri,uri,...>]");
@@ -639,6 +669,17 @@ public class Shell {
         out.println();
         out.println("   Arguments:");
         out.println("      contributionURI - (required) the URI of an installed contribution");
+    }
+
+    void helpRun() {
+        out.println("   run <commandsFileURL>");
+        out.println();
+        out.println("   Runs shell commands stored in file.");
+        out.println("   The file should be a text file with one shell command per line. Blank lines and ");
+        out.println("   lines starting with # will be ignored.");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      commandsFileURL - (required) the URL of the commands file to run");
     }
 
     void helpPrintDomainLevelComposite() {
