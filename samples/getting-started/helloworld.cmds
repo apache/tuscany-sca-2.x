@@ -1,0 +1,2 @@
+# install the helloworld contribution and start its deployables
+install helloworld-contribution/target/helloworld-contribution.jar -start
