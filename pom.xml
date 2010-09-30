@@ -837,7 +837,8 @@ org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apac
                    <message>Best Practice is to always define released plugin versions!</message>
                    <banLatest>true</banLatest>
                    <banRelease>true</banRelease>
-                   <banSnapshots>true</banSnapshots>
+<!-- TUSCANY-3674 -->
+                   <banSnapshots>false</banSnapshots>
                    <phases>clean,deploy,site</phases>
                    <additionalPlugins>
                    </additionalPlugins>
