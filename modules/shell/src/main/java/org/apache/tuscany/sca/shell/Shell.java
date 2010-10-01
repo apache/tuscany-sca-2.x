@@ -559,7 +559,7 @@ public class Shell {
         out.println("   help");
         out.println("   domain <domainURI>");
         out.println("   domains");
-        out.println("   install [<uri>] <contributionURL> [-start -metadata <url> -duris <uri,uri,...>]");
+        out.println("   install [<uri>] <contributionURL> [-start] [-metadata <url>] [-duris <uri,uri,...>]");
         out.println("   installed [<contributionURI>]");
         out.println("   load <configXmlURL>");
         out.println("   remove <contributionURI>");
@@ -567,8 +567,8 @@ public class Shell {
         out.println("   save <directoryPath>");
         out.println("   start <curi> <compositeUri>|<contentURL>");
         out.println("   start <name> [<compositeUri>] <contributionURL> [-duris <uri,uri,...>]");
-        out.println("   status [<curi> <compositeUri>]");
-        out.println("   stop [<curi> <compositeUri>]");
+        out.println("   status [<curi> [<compositeUri>]]");
+        out.println("   stop [<curi> [<compositeUri>]]");
         out.println("   bye");
         out.println();
         if (useJline)
@@ -611,7 +611,7 @@ public class Shell {
     }
 
     void helpInstall() {
-        out.println("   install [<uri>] <contributionURL> [-start -metadata <url> -duris <uri,uri,...>]");
+        out.println("   install [<uri>] <contributionURL> [-start] [-metadata <url>] [-duris <uri,uri,...>]");
         out.println();
         out.println("   Creates an installed contribution with a supplied root contribution, installed at abase URI.");
         out.println();
@@ -705,7 +705,7 @@ public class Shell {
     }
 
     void helpStatus() {
-        out.println("   status [<curi> <compositeUri>]");
+        out.println("   status [<curi> [<compositeUri>]]");
         out.println();
         out.println("   Shows the status of the Node, listing for each deployed composite its");
         out.println("   contribution URI, the composite URI, and the composite QName.");
@@ -716,7 +716,7 @@ public class Shell {
     }
 
     void helpStop() {
-        out.println("   stop <curi> [<compositeUri>]");
+        out.println("   stop [<curi> [<compositeUri>]]");
         out.println("   stop <name>");
         out.println();
         out.println("   Stops a domain or standalone node or individual composites and contributions in a Domain.");
