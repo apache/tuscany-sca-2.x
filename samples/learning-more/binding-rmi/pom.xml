@@ -36,8 +36,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>contribution-calculator-reference</module>
-                <module>contribution-calculator-service</module>
+                <module>calculator-reference-contribution</module>
+                <module>calculator-service-contribution</module>
             </modules>
         </profile>
     </profiles>    

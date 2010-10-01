@@ -36,7 +36,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>contribution-helloworld-spring</module>
+                <module>helloworld-spring-contribution</module>
                 <module>helloworld-spring-webapp</module>
             </modules>
         </profile>

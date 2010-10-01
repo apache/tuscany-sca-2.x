@@ -37,7 +37,6 @@
             </activation>
             <modules>
                 <module>helloworld-jaxrs</module>
-                <module>helloworld-jms</module>
                 <module>helloworld-js-client</module>
                 <module>helloworld-jsf</module>
                 <module>helloworld-jsp</module>

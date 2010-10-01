@@ -36,7 +36,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>contribution-calculator</module>
+                <module>calculator-contribution</module>
             </modules>
         </profile>
     </profiles>    

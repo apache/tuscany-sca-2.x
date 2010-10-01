@@ -36,7 +36,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>contribution-helloworld-bpel</module>
+                <module>helloworld-bpel-contribution</module>
                 <module>helloworld-bpel-webapp</module>
             </modules>
         </profile>

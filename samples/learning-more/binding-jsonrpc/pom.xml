@@ -36,7 +36,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>contribution-calculator</module>
+                <module>calculator-contribution</module>
+                <module>calculator-webapp</module>
             </modules>
         </profile>
     </profiles>    
