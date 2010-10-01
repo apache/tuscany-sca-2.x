@@ -59,7 +59,7 @@ public class Shell {
     private Map<String, Node> nodes = new HashMap<String, Node>();
 
     public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "help", "install", "installed",
-                                                          "load", "printDomainLevelComposite", "remove", "run", "save", "start", "status",
+                                                          "load", "remove", "run", "save", "start", "status",
                                                           "stop"};
 
     public static void main(final String[] args) throws Exception {
@@ -195,18 +195,6 @@ public class Shell {
         Node node = factory.createNodeFromXML(configXmlUrl);
         currentDomain = node.getDomainName();
         nodes.put(currentDomain, node);
-        return true;
-    }
-
-    boolean printDomainLevelComposite() throws ContributionReadException, ActivationException, ValidationException {
-        out.println("TODO");
-        // out.println(node.getDomainLevelCompositeAsString());
-        return true;
-    }
-
-    boolean getQNameDefinition(final String curi, String definintion, String symbolSpace)
-        throws ContributionReadException, ActivationException, ValidationException {
-        // TODO:
         return true;
     }
 
@@ -418,18 +406,6 @@ public class Shell {
                     return load(toks.get(1));
                 }
             };
-        if (op.equalsIgnoreCase("printDomainLevelComposite"))
-            return new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    return printDomainLevelComposite();
-                }
-            };
-        if (op.equalsIgnoreCase("getQNameDefinition"))
-            return new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    return getQNameDefinition(toks.get(1), toks.get(2), toks.get(3));
-                }
-            };
         if (op.equalsIgnoreCase("remove"))
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
@@ -555,8 +531,6 @@ public class Shell {
             helpRemove();
         } else if ("run".equalsIgnoreCase(command)) {
             helpRun();
-        } else if ("printDomainLevelComposite".equalsIgnoreCase(command)) {
-            helpPrintDomainLevelComposite();
         } else if ("save".equalsIgnoreCase(command)) {
             helpSave();
         } else if ("start".equalsIgnoreCase(command)) {
@@ -590,7 +564,6 @@ public class Shell {
         out.println("   load <configXmlURL>");
         out.println("   remove <contributionURI>");
         out.println("   run <commandsFileURL>");
-        out.println("   printDomainLevelComposite");
         out.println("   save <directoryPath>");
         out.println("   start <curi> <compositeUri>|<contentURL>");
         out.println("   start <name> [<compositeUri>] <contributionURL> [-duris <uri,uri,...>]");
@@ -694,15 +667,6 @@ public class Shell {
         out.println();
         out.println("   Arguments:");
         out.println("      commandsFileURL - (required) the URL of the commands file to run");
-    }
-
-    void helpPrintDomainLevelComposite() {
-        out.println("   printDomainLevelComposite");
-        out.println();
-        out.println("   Not yet implemented");
-        out.println();
-        out.println("   Arguments:");
-        out.println("      none");
     }
 
     void helpSave() {
