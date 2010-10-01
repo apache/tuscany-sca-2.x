@@ -278,7 +278,7 @@
                 <module>features</module>
                 <module>shades</module>
                 <module>distribution</module>
-                <module>archetypes</module>
+                <module>maven/archetypes</module>
                 <module>compliance-tests</module>
             </modules>
         </profile>
@@ -304,7 +304,7 @@
                 <module>features</module>
                 <module>shades</module>
                 <module>distribution</module>
-                <module>archetypes</module>
+                <module>maven/archetypes</module>
                 <module>compliance-tests</module>
             </modules>
         </profile>
@@ -394,7 +394,7 @@
                 <module>features</module>
                 <module>shades</module>
                 <module>distribution</module>
-                <module>archetypes</module>
+                <module>maven/archetypes</module>
                 <module>compliance-tests</module>
             </modules>
            <build>
@@ -583,7 +583,7 @@
                 <module>shades</module>
                 <module>features</module>
                 <module>distribution</module>
-                <module>archetypes</module>
+                <module>maven/archetypes</module>
             </modules>
            <build>
               <defaultGoal>deploy</defaultGoal>
@@ -746,7 +746,7 @@ org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apac
                 <module>features</module>
                 <module>shades</module>
                 <module>distribution</module>
-                <module>archetypes</module>
+                <module>maven/archetypes</module>
                 <!-- module>compliance-tests</module -->
             </modules>
            <build>
