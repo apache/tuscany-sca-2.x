@@ -36,7 +36,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>helloworld-jms</module>
+                <module>helloworld-contribution</module>
             </modules>
         </profile>
     </profiles>    
