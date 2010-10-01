@@ -26,10 +26,10 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>org.apache.tuscany.sca</groupId>
-    <artifactId>tuscany-samples-sca-features</artifactId>
+    <artifactId>tuscany-samples-extending-tuscany</artifactId>
     <version>2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Feature Samples</name>
+    <name>Apache Tuscany SCA Extending Tuscany Samples</name>
 
     <profiles>
         <profile>
@@ -38,24 +38,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>binding-jms</module>
-                <module>binding-rmi</module>
-                <module>binding-sca</module>
-                <module>binding-ws</module>
-                <module>binding-comet</module>
-                <module>binding-jsonrpc</module>
-                <module>implementation-bpel</module>
-                <module>implementation-composite</module>
-                <module>implementation-java</module>
-                <module>implementation-script</module>
-                <module>implementation-spring</module>
-                <module>implementation-osgi</module>
-                <module>implementation-web</module>
-                <module>distributed-osgi</module>
-                <module>sca-client</module>
-                <module>async</module>
-                <module>maven-osgi-junit</module>
-                <module>logging-scribe</module>
+                <module>implementation-sample</module>
             </modules>
         </profile>
     </profiles>    
