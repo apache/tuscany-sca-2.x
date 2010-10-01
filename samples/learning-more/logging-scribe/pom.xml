@@ -36,7 +36,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>helloworld-scribe</module>
+                <!--module>helloworld-scribe</module-->
             </modules>
         </profile>
     </profiles>    

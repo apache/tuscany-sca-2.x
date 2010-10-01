@@ -37,7 +37,7 @@
             </activation>
             <modules>
                 <module>calculator-contribution</module>
-                <module>helloworld-ws-sdo-contribution</module>
+                <!--module>helloworld-ws-sdo-contribution</module-->
             </modules>
         </profile>
     </profiles>    
