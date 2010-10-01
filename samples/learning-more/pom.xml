@@ -38,6 +38,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>binding-jms</module>
                 <module>binding-rmi</module>
                 <module>binding-sca</module>
                 <module>binding-ws</module>
@@ -50,11 +51,12 @@
                 <module>implementation-script</module>
                 <module>implementation-spring</module>
                 <module>implementation-osgi</module>
-                <module>implementation-webapp</module>
+                <module>implementation-web</module>
+                <module>distributed-osgi</module>
                 <module>sca-client</module>
                 <module>async</module>
                 <module>maven-osgi-junit</module>
-                <!-- <module>logging-scribe</module> -->
+                <module>logging-scribe</module>
             </modules>
         </profile>
     </profiles>    
