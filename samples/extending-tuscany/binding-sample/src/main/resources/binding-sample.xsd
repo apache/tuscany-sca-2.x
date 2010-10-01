@@ -17,30 +17,21 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project>
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-samples</artifactId>
-        <version>2.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+    targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1" 
+    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+    xmlns:t="http://tuscany.apache.org/xmlns/sca/1.1" 
+    elementFormDefault="qualified">
 
-    <artifactId>tuscany-samples-extending-tuscany</artifactId>
-    <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Extending Tuscany Samples</name>
+    <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" />
 
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>binding-sample</module>
-                <module>implementation-sample</module>
-            </modules>
-        </profile>
-    </profiles>    
-
-</project>
+    <element name="binding.sample" type="t:SampleBinding" substitutionGroup="sca:binding"/>
+    
+    <complexType name="SampleBinding">
+        <complexContent>
+            <extension base="sca:Binding">
+                <attribute name="someAttr" type="string" use="optional"/>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>
