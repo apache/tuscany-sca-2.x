@@ -59,6 +59,7 @@ public class TShellCompletor extends ArgumentCompletor {
         completors.put("run", new Completor[]{commandCompletor, new FileNameCompletor(), new NullCompletor()});    
         completors.put("addDeploymentComposite", new Completor[]{commandCompletor, new ICURICompletor(shell), new FileNameCompletor(), new NullCompletor()});    
         completors.put("printDomainLevelComposite", new Completor[]{commandCompletor, new NullCompletor()});    
+        completors.put("save", new Completor[]{commandCompletor, new FileNameCompletor(), new NullCompletor()});    
         completors.put("start", new Completor[]{commandCompletor, new ICURICompletor(shell), new CompositeURICompletor(shell), new NullCompletor()});    
         completors.put("status", new Completor[]{commandCompletor, new ICURICompletor(shell), new CompositeURICompletor(shell), new NullCompletor()});    
         completors.put("stop", new Completor[]{commandCompletor, new ICURICompletor(shell), new CompositeURICompletor(shell), new NullCompletor()});    

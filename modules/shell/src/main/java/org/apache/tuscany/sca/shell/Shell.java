@@ -59,7 +59,7 @@ public class Shell {
     private Map<String, Node> nodes = new HashMap<String, Node>();
 
     public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "help", "install", "installed",
-                                                          "load", "printDomainLevelComposite", "remove", "run", "start", "status",
+                                                          "load", "printDomainLevelComposite", "remove", "run", "save", "start", "status",
                                                           "stop"};
 
     public static void main(final String[] args) throws Exception {
@@ -237,6 +237,11 @@ public class Shell {
         } finally {
             r.close();
         }
+        return true;
+    }
+
+    boolean save(final String directory) throws IOException {
+        out.println("TODO: not yet implemented");
         return true;
     }
 
@@ -443,6 +448,12 @@ public class Shell {
                     return help(toks);
                 }
             };
+        if (op.equalsIgnoreCase("save"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return save(toks.get(1));
+                }
+            };
         if (op.equalsIgnoreCase("stop"))
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
@@ -546,6 +557,8 @@ public class Shell {
             helpRun();
         } else if ("printDomainLevelComposite".equalsIgnoreCase(command)) {
             helpPrintDomainLevelComposite();
+        } else if ("save".equalsIgnoreCase(command)) {
+            helpSave();
         } else if ("start".equalsIgnoreCase(command)) {
             helpStart();
         } else if ("status".equalsIgnoreCase(command)) {
@@ -578,6 +591,7 @@ public class Shell {
         out.println("   remove <contributionURI>");
         out.println("   run <commandsFileURL>");
         out.println("   printDomainLevelComposite");
+        out.println("   save <directoryPath>");
         out.println("   start <curi> <compositeUri>|<contentURL>");
         out.println("   start <name> [<compositeUri>] <contributionURL> [-duris <uri,uri,...>]");
         out.println("   status [<curi> <compositeUri>]");
@@ -689,6 +703,17 @@ public class Shell {
         out.println();
         out.println("   Arguments:");
         out.println("      none");
+    }
+
+    void helpSave() {
+        out.println("   save <directoryPath>");
+        out.println();
+        out.println("   Saves the current Node state to directory.");
+        out.println("   This will include a node-config.xml file and copies of all artifacts");
+        out.println("   being used by the Node.");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      directoryPath - (required) the URL of a directory to be used to store the state.");
     }
 
     void helpStart() {
