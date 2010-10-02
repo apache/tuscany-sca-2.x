@@ -26,6 +26,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.AccessControlException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -89,8 +90,10 @@ public class DirectoryContributionScanner implements ContributionScanner {
     private List<String> scanContributionArtifacts(Contribution contribution) throws ContributionReadException {
         File directory = directory(contribution);
         List<String> artifacts = new ArrayList<String>();
+        // [rfeng] There are cases that the folder contains symbolic links that point to the same physical directory
+        Set<File> visited = new HashSet<File>();
         try {
-            traverse(artifacts, directory, directory);
+            traverse(artifacts, directory, directory, visited);
         } catch (IOException e) {
             throw new ContributionReadException(e);
         }
