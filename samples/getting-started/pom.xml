@@ -40,6 +40,7 @@
                 <module>helloworld-contribution</module>
                 <module>scdl-include-contribution</module>
                 <module>callback-api</module>
+                <module>sca-scopes</module>
                 <module>helloworld-webapp</module>
             </modules>
         </profile>
