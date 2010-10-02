@@ -135,7 +135,7 @@ public class DirectoryContributionScanner implements ContributionScanner {
             }
     	} catch (AccessControlException e) {
     		//TUSCANY-3667 - Log the AccessControlException error and continue without processing the file/directory
-    		logger.log(Level.SEVERE, "Error traversing file:" + file.getPath());
+    		logger.log(Level.WARNING, "Error traversing file:" + file.getPath());
     	}
 
     }
