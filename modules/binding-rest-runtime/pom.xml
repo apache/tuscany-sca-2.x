@@ -7,15 +7,15 @@
     * to you under the Apache License, Version 2.0 (the
     * "License"); you may not use this file except in compliance
     * with the License.  You may obtain a copy of the License at
-    * 
+    *
     *   http://www.apache.org/licenses/LICENSE-2.0
-    * 
+    *
     * Unless required by applicable law or agreed to in writing,
     * software distributed under the License is distributed on an
     * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
     * KIND, either express or implied.  See the License for the
     * specific language governing permissions and limitations
-    * under the License.    
+    * under the License.
 -->
 <project>
     <modelVersion>4.0.0</modelVersion>
@@ -35,26 +35,26 @@
             <artifactId>tuscany-binding-rest</artifactId>
             <version>2.0-M5-SNAPSHOT</version>
         </dependency>
-                
+
 
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>jsr311-api</artifactId>
             <version>1.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-data-api</artifactId>
             <version>2.0-M5-SNAPSHOT</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-common-http</artifactId>
             <version>2.0-M5-SNAPSHOT</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-core-spi</artifactId>
@@ -66,7 +66,7 @@
             <artifactId>tuscany-core</artifactId>
             <version>2.0-M5-SNAPSHOT</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding</artifactId>
@@ -78,7 +78,7 @@
             <artifactId>tuscany-databinding-jaxb</artifactId>
             <version>2.0-M5-SNAPSHOT</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-json</artifactId>
@@ -97,28 +97,28 @@
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-impl</artifactId>
             <version>2.0-M5-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
-                
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
             <version>2.0-M5-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-interface-java-jaxrs</artifactId>
             <version>2.0-M5-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-                        
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
@@ -129,22 +129,22 @@
         <dependency>
             <groupId>org.apache.wink</groupId>
             <artifactId>wink-server</artifactId>
-            <version>1.1-incubating</version>
-        </dependency>        
-        
+            <version>1.1.1-incubating</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.wink</groupId>
             <artifactId>wink-client</artifactId>
-            <version>1.1-incubating</version>
+            <version>1.1.1-incubating</version>
         </dependency>
-                        
+
         <dependency>
 	        <groupId>httpunit</groupId>
 	        <artifactId>httpunit</artifactId>
 	        <version>1.6.1</version>
 	        <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
