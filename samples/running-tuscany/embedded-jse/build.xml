@@ -17,11 +17,14 @@
  * under the License.    
 -->
 <project name="launcher-embedded-jse" default="run"> 
-	<property name="tuscany.home" value="../../.."/>
+    <property name="tuscany.home" value="../../.."/>
     <property name="jar.name"   value="sample-launcher-embedded-jse.jar" />
-	<property name="wait.before.stopping" value="dontWaitBeforeStopping" />
-	
-	<echo>${tuscany.home}</echo>
+
+    <echo>Root of Tuscany binary distribution is - ${tuscany.home}</echo>
+
+    <include file="${tuscany.home}/features/tuscany-base-runtime/build-path.xml"/>
+    <include file="${tuscany.home}/features/tuscany-binding-ws-runtime-axis2/build-path.xml"/>
+    <include file="${tuscany.home}/features/tuscany-binding-rmi-runtime/build-path.xml"/>
 
     <target name="init"> 
       <delete quiet="true" includeemptydirs="true"> 
@@ -47,15 +50,15 @@
       </jar>    	
     </target>
 	
-	<target name="run" depends="compile">
-		<echo>Please use 'ant run-name-of-sample-contribution-to-run' for example, try one of</echo>
-	    <echo>  'ant run-contribution-binding-sca-calculator' </echo>
-	    <echo>  'ant run-contribution-binding-ws-calculator'  </echo>
-		<echo>  'ant run-contribution-binding-rmi-calculator'  </echo>
-	    <echo>  'ant run-contribution-implementation-java-calculator'  </echo>
+    <target name="run" depends="compile">
+        <echo>Please use 'ant run-name-of-sample-contribution-to-run' for example, try one of</echo>
+	<echo>  'ant binding-sca-calculator' </echo>
+	<echo>  'ant binding-ws-calculator'  </echo>
+	<echo>  'ant binding-rmi-calculator'  </echo>
+	<echo>  'ant implementation-java-calculator'  </echo>
     </target>
 
-    <target name="run-contribution-binding-sca-calculator" depends="compile">
+    <target name="binding-sca-calculator" depends="compile">
   	     <java classname="launcher.JSELauncherBindingSCACalculator"
               fork="true"
               failonerror="true">
@@ -68,33 +71,36 @@
         </java>  
     </target>
 	
-    <target name="run-contribution-binding-ws-calculator" depends="compile">
+    <target name="binding-ws-calculator" depends="compile">
         <java classname="launcher.JSELauncherBindingWSCalculator"
               fork="true"
               failonerror="true">
             <classpath>  
                 <pathelement location="target/${jar.name}"/>
-                <fileset dir="${tuscany.home}/features">
-                   <include name="tuscany-sca-manifest.jar" />
-                </fileset>
+                <path refid="tuscany-base-runtime.path"/>
+                <path refid="tuscany-binding-ws-runtime-axis2.path"/>
             </classpath> 
         </java>     
     </target>	
 	
-    <target name="run-contribution-binding-rmi-calculator" depends="compile">
+    <target name="binding-rmi-calculator" depends="compile">
         <java classname="launcher.JSELauncherBindingRMICalculator"
               fork="true"
               failonerror="true">
             <classpath>  
                 <pathelement location="target/${jar.name}"/>
-                <fileset dir="${tuscany.home}/features">
-                   <include name="tuscany-sca-manifest.jar" />
+                <fileset dir="${tuscany.home}/features/tuscany-base-runtime">
+                   <include name="tuscany-base-runtime-manifest.jar" />
+                </fileset>
+                <fileset dir="${tuscany.home}/features/tuscany-binding-rmi-runtime">
+                   <include name="tuscany-binding-rmi-runtime-manifest.jar" />
                 </fileset>
             </classpath> 
         </java>       
     </target>	
 	
-    <target name="run-contribution-implementation-java-calculator" depends="compile">
+    <!-- TODO - I'd like this to be running with aggregate JARs -->
+    <target name="implementation-java-calculator" depends="compile">
         <java classname="launcher.JSELauncherImplementationJavaCalculator"
               fork="true"
               failonerror="true">
