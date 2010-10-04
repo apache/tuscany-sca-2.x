@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-sca</artifactId>
-        <version>2.0-M5-SNAPSHOT</version>
+        <version>2.0-M5.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-itest</artifactId>
