@@ -514,7 +514,7 @@ public class EquinoxHost {
             }
             bundle = bundleContext.installBundle(location);
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine("Bundle installed in " + (currentTimeMillis() - installStart)
+                logger.fine("Bundle " + bundleFile + " installed in " + (currentTimeMillis() - installStart)
                     + " ms: "
                     + string(bundle, false));
             }

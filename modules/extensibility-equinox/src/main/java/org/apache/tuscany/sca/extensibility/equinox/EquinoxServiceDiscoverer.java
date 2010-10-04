@@ -288,17 +288,17 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
                 if (urls == null) {
                     URL entry = bundle.getEntry(serviceName);
                     if (entry != null) {
-                        logger.warning("Unresolved resource " + serviceName + " found in " + toString(bundle));
+                        logger.warning("Unresolved resource " + serviceName + " found in bundle: " + toString(bundle));
                         try {
                             bundle.start();
                         } catch (BundleException e) {
-                            logger.log(Level.SEVERE, e.getMessage(), e);
+                            logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
                         }
                         // urls = Collections.enumeration(Arrays.asList(entry));
                     }
                 }
             } catch (IOException e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
+                logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
             }
             if (urls == null) {
                 continue;
@@ -322,7 +322,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
                         descriptors.add(descriptor);
                     }
                 } catch (IOException e) {
-                    logger.log(Level.SEVERE, e.getMessage(), e);
+                    logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
                 }
             }
         }
