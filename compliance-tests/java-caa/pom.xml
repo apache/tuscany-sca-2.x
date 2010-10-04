@@ -80,7 +80,6 @@
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
            <excludes>
-            <exclude>**/JCA_11017_TestCase.java</exclude><!-- ?????        -->
             <exclude>**/JCA_11021_TestCase.java</exclude><!-- TUSCANY-3664 -->
            </excludes>
          </configuration>
