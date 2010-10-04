@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.endpoint.tribes;
@@ -55,8 +55,8 @@ public class MultiRegTestCase implements EndpointListener {
     public void testReplication() throws Exception {
         RuntimeEndpoint ep1 = createEndpoint("ep1uri");
 
-        String host = InetAddress.getLocalHost().getHostAddress();
-        String bind = null; // "9.65.158.31";
+        //String host = InetAddress.getLocalHost().getHostAddress();
+        String bind = "127.0.0.1"; // "9.65.158.31";
         String port1 = "8085";
         String port2 = "8086";
         String port3 = "8087";
@@ -74,7 +74,7 @@ public class MultiRegTestCase implements EndpointListener {
 
         Map<String, String> attrs2 = new HashMap<String, String>();
         // attrs2.put("nomcast", "true");
-        attrs1.put("bind", bind);
+        attrs2.put("bind", bind);
         attrs2.put("receiverPort", port2);
         attrs2.put("receiverAutoBind", range);
         // attrs2.put("routes", host + ":"+port1);
@@ -84,7 +84,7 @@ public class MultiRegTestCase implements EndpointListener {
 
         Map<String, String> attrs3 = new HashMap<String, String>();
         // attrs3.put("nomcast", "true");
-        attrs1.put("bind", bind);
+        attrs3.put("bind", bind);
         attrs3.put("receiverPort", port3);
         attrs3.put("receiverAutoBind", range);
         // attrs3.put("routes", host + ":"+port1);
@@ -111,14 +111,14 @@ public class MultiRegTestCase implements EndpointListener {
         Assert.assertNull(reg3.getEndpoint("ep1uri"));
         assertExists(reg2, "ep2uri");
         assertExists(reg3, "ep2uri");
-        
+
         reg1.start();
         ep1.bind(extensionPoints, reg1);
         reg1.addEndpoint(ep1);
         assertExists(reg1, "ep1uri");
         assertExists(reg2, "ep1uri");
         assertExists(reg3, "ep1uri");
-        
+
         reg1.stop();
         reg2.stop();
         reg3.stop();
@@ -149,7 +149,7 @@ public class MultiRegTestCase implements EndpointListener {
         ep.setURI(uri);
         return ep;
     }
-    
+
     private void print(String prefix, Endpoint ep) {
         System.out.println(prefix + ": "+ep);
     }
