@@ -37,7 +37,7 @@
             </activation>
             <modules>
                 <module>dosgi-calculator</module>
-                <!--module>dosgi-calculator-operations</module-->
+                <module>dosgi-calculator-operations</module>
             </modules>
         </profile>
     </profiles>    

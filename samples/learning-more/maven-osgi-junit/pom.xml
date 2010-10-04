@@ -38,8 +38,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <!--module>calculator-osgi</module-->
-                <!--module>calculator-rest-osgi</module-->
+                <module>calculator-osgi</module>
+                <module>calculator-rest-osgi</module>
             </modules>
         </profile>
     </profiles>    
