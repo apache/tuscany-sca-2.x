@@ -100,7 +100,7 @@ public class JettyServerTestCase extends TestCase {
         service.stop();
         assertTrue(servlet.invoked);
     }
-    
+
     /**
      * Verifies requests are properly routed according to the Servlet mapping
      */
@@ -151,7 +151,7 @@ public class JettyServerTestCase extends TestCase {
 
         conn.connect();
         read(conn.getInputStream());
-        
+
         service.stop();
         assertTrue(servlet.invoked);
 
@@ -161,6 +161,7 @@ public class JettyServerTestCase extends TestCase {
      * Verifies that Servlets can be registered with multiple ports
      */
     public void testRegisterMultiplePorts() throws Exception {
+        Thread.sleep(1000);
         JettyServer service = new JettyServer(workScheduler);
         service.start();
         TestServlet servlet = new TestServlet();
