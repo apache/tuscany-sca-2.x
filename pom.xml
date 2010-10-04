@@ -278,7 +278,9 @@
                 <module>shades</module>
                 <module>distribution</module>
                 <module>archetypes</module>
+                <!--
                 <module>compliance-tests</module>
+                -->
             </modules>
         </profile>
         <!-- ====================================================================== -->
@@ -304,7 +306,9 @@
                 <module>shades</module>
                 <module>distribution</module>
                 <module>archetypes</module>
+                <!--
                 <module>compliance-tests</module>
+                -->
             </modules>
         </profile>
 
@@ -394,7 +398,9 @@
                 <module>shades</module>
                 <module>distribution</module>
                 <module>archetypes</module>
+                <!--
                 <module>compliance-tests</module>
+                -->
             </modules>
            <build>
               <plugins>
