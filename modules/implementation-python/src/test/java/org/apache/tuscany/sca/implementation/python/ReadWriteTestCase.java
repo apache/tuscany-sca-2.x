@@ -31,6 +31,7 @@ import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -57,7 +58,8 @@ public class ReadWriteTestCase {
     @BeforeClass
     public static void setUp() throws Exception {
         final DefaultExtensionPointRegistry ep = new DefaultExtensionPointRegistry();
-        final Contribution contrib = new DefaultContributionFactory().createContribution();
+        final ContributionFactory contribFactory = new DefaultContributionFactory();
+        final Contribution contrib = contribFactory.createContribution();
         contrib.setLocation(ReadWriteTestCase.class.getProtectionDomain().getCodeSource().getLocation().toString());
         final Monitor mon = new DefaultMonitorFactory().createMonitor();
         ctx = new ProcessorContext(contrib, mon);
