@@ -1,7 +1,13 @@
-Changes With Apache Tuscany SCA 2.0-M5 June 2010
+Changes With Apache Tuscany SCA 2.0-M5.1 October 2010
 ====================================================
 
 Highlights include:
+
+- Fixes support for deploying applications to Google AppEngine
+
+Changes With Apache Tuscany SCA 2.0-M5.1 June 2010
+==================================================
+
 - Passes the OASIS conformance test suite for the SCA Assembly, SCA-J CAA and SCA-J CI Specifications!
 - Passes OSGI remote service SCA config type conformance test suite
 - New Tuscany specific support for REST/JAXRS
