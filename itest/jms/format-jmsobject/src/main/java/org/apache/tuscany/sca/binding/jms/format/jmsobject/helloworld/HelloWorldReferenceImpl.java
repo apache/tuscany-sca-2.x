@@ -103,7 +103,7 @@ public class HelloWorldReferenceImpl implements HelloWorldReference {
         try {
             helloWorldServiceDontWrapSingle.throwUnChecked(person);
         } catch (Exception e) {
-            returnString += " " + e.getCause().getMessage();
+            returnString += " " + (e.getCause().getMessage().startsWith("Message = bla") ? "bla" : e.getCause().getMessage());
         }           
         
         return returnString;

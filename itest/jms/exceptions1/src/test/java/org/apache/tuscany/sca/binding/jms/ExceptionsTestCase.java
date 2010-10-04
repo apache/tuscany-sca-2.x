@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.binding.jms;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.apache.tuscany.sca.node.Node;
@@ -97,7 +98,7 @@ public class ExceptionsTestCase {
             service.throwUnChecked();
             fail();
         } catch (Exception e) {
-            assertEquals("bla", e.getCause().getMessage());
+            assertTrue(e.getCause().getMessage().startsWith("Message = bla"));
         }
     }
 
