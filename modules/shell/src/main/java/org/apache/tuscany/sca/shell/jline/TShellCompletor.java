@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.shell.jline;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,14 +46,14 @@ public class TShellCompletor extends ArgumentCompletor {
     final Shell shell;
     
     static String lastArg;
+    static List<String> allArgs;
 
     public TShellCompletor(Shell shell) {
         super((Completor)null);
         this.shell = shell;
         completors = new HashMap<String, Completor[]>();
         completors.put("help", new Completor[]{commandCompletor, commandCompletor, new NullCompletor()});    
-//        completors.put("install", new Completor[]{commandCompletor, new InstallCompletor(), new NullCompletor()});    
-        completors.put("install", new Completor[]{commandCompletor, new FileNameCompletor(), new FileNameCompletor(), new NullCompletor()});    
+        completors.put("install", new Completor[]{commandCompletor, new InstallCompletor(shell)});    
         completors.put("installed", new Completor[]{commandCompletor, new ICURICompletor(shell), new NullCompletor()});    
         completors.put("load", new Completor[]{commandCompletor, new FileNameCompletor(), new NullCompletor()});    
         completors.put("remove", new Completor[]{commandCompletor, new ICURICompletor(shell), new NullCompletor()});    
@@ -70,6 +71,7 @@ public class TShellCompletor extends ArgumentCompletor {
      */
     public int complete(final String buffer, final int cursor,
                         final List candidates) {
+        
         ArgumentList list = delim.delimit(buffer, cursor);
         int argpos = list.getArgumentPosition();
         int argIndex = list.getCursorArgumentIndex();
@@ -83,6 +85,7 @@ public class TShellCompletor extends ArgumentCompletor {
             lastArg = list.getArguments()[argIndex-1];
             if (lastArg != null) lastArg = lastArg.trim();
         }
+        allArgs = Arrays.asList(list.getArguments());
         
         final Completor comp;
         
