@@ -54,7 +54,8 @@ public class TransactionModuleActivator implements ModuleActivator {
         }
         try {
             wrapper = new TransactionManagerWrapper();
-            wrapper.start();
+// TUSCANY-3701 - prevent the transaction manager from starting under OSGi for the time being            
+//            wrapper.start();
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
