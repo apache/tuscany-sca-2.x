@@ -8,10 +8,10 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Wink
 Import-Package: javax.servlet,
  org.apache.tuscany.sca.implementation.web.runtime.utils;version="2.0",
- org.apache.wink.common,
- org.apache.wink.common.internal.registry,
- org.apache.wink.server.internal,
- org.apache.wink.server.internal.registry,
+ org.apache.wink.common;version="1.1.1.incubating",
+ org.apache.wink.common.internal.registry;version="1.1.1.incubating",
+ org.apache.wink.server.internal;version="1.1.1.incubating",
+ org.apache.wink.server.internal.registry;version="1.1.1.incubating",
  org.oasisopen.sca.annotation;version="2.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.wink
 Bundle-DocURL: http://www.apache.org/

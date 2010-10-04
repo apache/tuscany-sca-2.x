@@ -6,7 +6,7 @@ Bundle-Version: 2.0.0
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Implementation JAXRS Runtime
-Bundle-SymbolicName: org.apache.tuscany.sca.implementation.jaxrs.provider
+Bundle-SymbolicName: org.apache.tuscany.sca.implementation.jaxrs.runtime
 Bundle-DocURL: http://www.apache.org/
 Import-Package: javax.servlet,
  javax.servlet.http,
@@ -22,11 +22,11 @@ Import-Package: javax.servlet,
  org.apache.tuscany.sca.policy;version="2.0.0",
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
- org.apache.wink.server.internal,
- org.apache.wink.server.internal.handlers,
- org.apache.wink.server.internal.registry,
- org.apache.wink.server.internal.servlet,
- org.apache.wink.server.utils,
+ org.apache.wink.server.internal;version="1.1.1.incubating",
+ org.apache.wink.server.internal.handlers;version="1.1.1.incubating",
+ org.apache.wink.server.internal.registry;version="1.1.1.incubating",
+ org.apache.wink.server.internal.servlet;version="1.1.1.incubating",
+ org.apache.wink.server.utils;version="1.1.1.incubating",
  org.oasisopen.sca;version="2.0.0",
  org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
