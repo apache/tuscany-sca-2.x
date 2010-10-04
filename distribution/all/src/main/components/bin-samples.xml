@@ -63,9 +63,9 @@
                 <exclude>learning-more/implementation-webapp/*/target/**/*</exclude>
                 <exclude>learning-more/implementation-bpel/helloworld-bpel-webapp/target</exclude>
                 <exclude>learning-more/implementation-bpel/helloworld-bpel-webapp/target/**/*</exclude>
-                <exclude>learning-more/binding-jsonrpc/contribution-calculator-webapp/target/**/*</exclude>
-                <exclude>learning-more/binding-jsonrpc/contribution-calculator-webapp/target</exclude>
-                <exclude>learning-more/binding-jsonrpc/contribution-calculator-webapp/src/main/webapp/dojo/**/*</exclude>
+                <exclude>learning-more/binding-jsonrpc/calculator-webapp/target/**/*</exclude>
+                <exclude>learning-more/binding-jsonrpc/calculator-webapp/target</exclude>
+                <exclude>learning-more/binding-jsonrpc/calculator-webapp/src/main/webapp/dojo/**/*</exclude>
             </excludes>
         </fileSet>
     </fileSets>

@@ -31,9 +31,9 @@
 
     <target name="run"> 
         <ant antfile="build.xml"
-             dir="${distro.root}/samples/learning-more/binding-rmi/contribution-calculator-reference"/>
+             dir="${distro.root}/samples/learning-more/binding-rmi/calculator-reference-contribution"/>
         <ant antfile="build.xml"
-             dir="${distro.root}/samples/learning-more/binding-rmi/contribution-calculator-service"/>
+             dir="${distro.root}/samples/learning-more/binding-rmi/calculator-service-contribution"/>
     </target>
 
 </project>
