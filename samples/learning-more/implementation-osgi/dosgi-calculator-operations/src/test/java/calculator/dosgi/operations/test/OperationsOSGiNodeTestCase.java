@@ -61,6 +61,7 @@ public class OperationsOSGiNodeTestCase {
                             b.start();
                         }
                     } catch (Exception e) {
+                        System.out.println("Error for bundle: " + b.getSymbolicName());
                         e.printStackTrace();
                     }
                     System.out.println(bundleStatus(b, false));
