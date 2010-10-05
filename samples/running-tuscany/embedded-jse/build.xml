@@ -22,9 +22,9 @@
 
     <echo>Root of Tuscany binary distribution is - ${tuscany.home}</echo>
 
-    <include file="${tuscany.home}/features/tuscany-base-runtime/build-path.xml"/>
-    <include file="${tuscany.home}/features/tuscany-binding-ws-runtime-axis2/build-path.xml"/>
-    <include file="${tuscany.home}/features/tuscany-binding-rmi-runtime/build-path.xml"/>
+    <import file="${tuscany.home}/features/tuscany-base-runtime/build-path.xml"/>
+    <import file="${tuscany.home}/features/tuscany-binding-ws-runtime-axis2/build-path.xml"/>
+    <import file="${tuscany.home}/features/tuscany-binding-rmi-runtime/build-path.xml"/>
 
     <target name="init"> 
       <delete quiet="true" includeemptydirs="true"> 
