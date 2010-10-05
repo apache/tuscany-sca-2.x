@@ -34,6 +34,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
@@ -46,6 +47,7 @@ import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSObject;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSText;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextXML;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -113,7 +115,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  *         <property name="NMTOKEN" type="NMTOKEN">*
  *     </resourceAdapter>?
  * 
- *     <operationProperties name="string" nativeOperation="string"?>
+ *     <operationProperties name="string" selectedOperation="string"?>
  *         <property name="NMTOKEN" type="NMTOKEN">*
  *         <headers type="string"?
  *                  deliveryMode="string"?
@@ -205,10 +207,10 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         }
 
         // Read correlation scheme
-        String correlationScheme = reader.getAttributeValue(null, "correlationScheme");
-        if (correlationScheme != null && correlationScheme.length() > 0) {
-            if (JMSBindingConstants.VALID_CORRELATION_SCHEMES.contains(correlationScheme.toLowerCase())) {
-                jmsBinding.setCorrelationScheme(correlationScheme);
+        QName correlationScheme = StAXHelper.getAttributeAsQName(reader, "correlationScheme");
+        if (correlationScheme != null) {
+            if (Base.SCA11_NS.equals(correlationScheme.getNamespaceURI()) && JMSBindingConstants.VALID_CORRELATION_SCHEMES.contains(correlationScheme.getLocalPart())) {
+                jmsBinding.setCorrelationScheme(correlationScheme.getLocalPart());
             } else {
             	error(monitor, "InvalidCorrelationScheme", reader, correlationScheme);
             }
@@ -754,7 +756,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     /**
-     * <operationProperties name="string" nativeOperation="string"?>
+     * <operationProperties name="string" selectedOperation="string"?>
      *   <property name="NMTOKEN" type="NMTOKEN"?>*
      *   <headers JMSType="string"?
      *            JMSCorrelationID="string"?
@@ -778,7 +780,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         }
         // Since nativeOpName, headers, and property elements are optional, must add opName.
         jmsBinding.addOperationName(opName);
-        String nativeOpName = reader.getAttributeValue(null, "nativeOperation"); // optional
+        String nativeOpName = reader.getAttributeValue(null, "selectedOperation"); // optional
         if (nativeOpName != null && nativeOpName.length() > 0) {
             jmsBinding.setNativeOperationName(opName, nativeOpName);
         }
@@ -1259,7 +1261,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     /**
      * Writes operation properties if there are any.
      * 
-     *     <operationProperties name="string" nativeOperation="string"?>
+     *     <operationProperties name="string" selectedOperation="string"?>
      *         <property name="NMTOKEN" type="NMTOKEN">*
      *         <headers JMSType="string"?
      *                  JMSCorrelationID="string"?
@@ -1289,7 +1291,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             String nativeOperation = jmsBinding.getNativeOperationName(opName);
             if (nativeOperation != null && nativeOperation.length() > 0) {
                 if ( !nativeOperation.equals( opName )) {
-                   writer.writeAttribute("nativeOperation", nativeOperation);
+                   writer.writeAttribute("selectedOperation", nativeOperation);
                 }
             }
 
