@@ -23,6 +23,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -1039,6 +1040,13 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             }
         }
 
+        // [BJM30029] The value of the operationProperties/@selectedOperation attribute MUST be unique across the containing binding.jms element
+        Set<String> ops = new HashSet<String>(jmsBinding.getNativeOperationNames().values());
+        if (ops.size() != jmsBinding.getNativeOperationNames().values().size()) {
+            error(monitor, "BJM30029", jmsBinding);                               
+        }
+        
+        
         // Other jmsBinding model validation may be added here.
 
     }

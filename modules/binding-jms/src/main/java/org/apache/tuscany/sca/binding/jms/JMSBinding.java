@@ -659,6 +659,10 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
     public void setNativeOperationName(String opName, String nativeOpName) {
         this.nativeOperationNames .put(opName, nativeOpName);
     }
+    
+    public Map<String, String> getNativeOperationNames() {
+        return nativeOperationNames;
+    }
 
     public String getOperationJMSType(String opName) {
         if (operationPropertiesBinding != null && operationPropertiesBinding.getOperationJMSType(opName) != null) {
