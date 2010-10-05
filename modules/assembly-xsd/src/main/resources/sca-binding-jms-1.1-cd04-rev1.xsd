@@ -147,7 +147,7 @@
       <sequence>
          <element name="property" type="sca:BindingProperty" 
                   minOccurs="0" maxOccurs="unbounded"/>
-         <element name="headers" type="sca:JMSHeaders"/>
+         <element name="headers" type="sca:JMSHeaders" minOccurs="0"/>
       </sequence>
       <attribute name="name" type="string" use="required"/>
       <attribute name="nativeOperation" type="string"/>
