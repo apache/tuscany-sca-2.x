@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>sample-dosgi-dynamic-calculator-operations</artifactId>
-    <name>Apache Tuscany SCA OSGi Remote Services Dynamic Caculator Operations Sample</name>
+    <name>Apache Tuscany SCA OSGi Remote Services Dynamic Calculator Operations Sample</name>
 
     <dependencies>
        <dependency>
