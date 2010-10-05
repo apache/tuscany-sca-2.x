@@ -150,7 +150,7 @@
          <element name="headers" type="sca:JMSHeaders" minOccurs="0"/>
       </sequence>
       <attribute name="name" type="string" use="required"/>
-      <attribute name="nativeOperation" type="string"/>
+      <attribute name="seclectedOperation" type="string"/>
    </complexType>
 
    <complexType name="BindingProperty">
