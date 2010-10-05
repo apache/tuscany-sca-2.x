@@ -31,6 +31,27 @@
     <name>Apache Tuscany SCA Features</name>
 
     <modules>
+        <!-- 
+            Runtime collection features 
+
+            Non-overallapping groups of Tuscany modules that define the 
+            core runtime modules, containing the Tuscany extension SPI, 
+            and the base runtime that defines the minimal Tuscany runtime
+            to which other extensions can be added
+       
+            Extensions are included using maven dependencies on the *-runtime
+            modules in the /modules directory 
+        -->
+        <module>core-runtime</module>
+        <module>base-runtime</module>
+
+        <!-- 
+            Features 
+            
+            Some what arbitrary and necessarily overalapping collections of Tuscany
+            modules targetted at supporting specific types of application with 
+            appropriate groups of function
+        -->
         <module>all</module>
         <module>api</module>
         <module>core</module>
@@ -44,8 +65,7 @@
 <!--
         <module>manager</module>
         <module>repository</module>
--->
-        <module>base</module>
+-->     
     </modules>
 
 </project>
