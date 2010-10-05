@@ -302,10 +302,11 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
 
         requestMessage.getHeaders().put("RequestMessage", request);
 
-        if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME))
+        if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
         	requestMessage.setBody(new Object[]{jsonReq.toString()});
-        else
+        } else {
         	requestMessage.setBody(args);
+        }
 
         //result = wire.invoke(jsonOperation, args);
         Message responseMessage = null;
@@ -327,16 +328,30 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
                 result = responseMessage.getBody();
             	return result.toString().getBytes("UTF-8");
             } else {
-	            try {
-	                result = responseMessage.getBody();
-	                JSONObject jsonResponse = new JSONObject();
-	                jsonResponse.put("result", result);
-	                jsonResponse.putOpt("id", id);
-	                //get response to send to client
-	                return jsonResponse.toString().getBytes("UTF-8");
-	            } catch (Exception e) {
-	                throw new ServiceRuntimeException("Unable to create JSON response", e);
-	            }
+                if (jsonOperation.getOutputType() == null) {
+                    // void operation (json-rpc notification)
+                    try {
+                        JSONObject jsonResponse = new JSONObject();
+                        jsonResponse.put("result", "");
+                        //get response to send to client
+                        return jsonResponse.toString().getBytes("UTF-8");
+                    } catch (Exception e) {
+                        throw new ServiceRuntimeException("Unable to create JSON response", e);
+                    }                    
+
+                } else {
+                    // regular operation returning some value
+                    try {
+                        result = responseMessage.getBody();
+                        JSONObject jsonResponse = new JSONObject();
+                        jsonResponse.put("result", result);
+                        jsonResponse.putOpt("id", id);
+                        //get response to send to client
+                        return jsonResponse.toString().getBytes("UTF-8");
+                    } catch (Exception e) {
+                        throw new ServiceRuntimeException("Unable to create JSON response", e);
+                    }                    
+                }
             }
         } else {
             //exception thrown while executing the invocation
