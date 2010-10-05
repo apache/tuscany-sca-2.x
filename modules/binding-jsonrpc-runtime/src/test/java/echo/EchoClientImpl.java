@@ -38,6 +38,10 @@ public class EchoClientImpl implements Echo {
     public String echo(String msg) {
         return echoReference.echo(msg);
     }
+    
+    public void echoVoid() {
+        echoReference.echoVoid();
+    }
 
     public int[] echoArrayInt(int[] intArray) {
         throw new UnsupportedOperationException("UNsupported !");
@@ -90,5 +94,4 @@ public class EchoClientImpl implements Echo {
     public BigDecimal echoBigDecimal(BigDecimal param) {
         throw new UnsupportedOperationException("UNsupported !");
     }
-
 }

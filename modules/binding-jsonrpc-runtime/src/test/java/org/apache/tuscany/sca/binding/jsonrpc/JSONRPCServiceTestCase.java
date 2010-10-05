@@ -42,7 +42,7 @@ import com.meterware.httpunit.WebResponse;
 /**
  * @version $Rev$ $Date$
  */
-public class JSONRPCServiceTestCase{
+public class JSONRPCServiceTestCase {
 
     private static final String SERVICE_PATH = "/EchoService";
 
@@ -67,7 +67,7 @@ public class JSONRPCServiceTestCase{
     }
 
     @Test
-    public void testJSONRPCBinding() throws Exception {
+    public void testEchoWithJSONRPCBinding() throws Exception {
         JSONObject jsonRequest = new JSONObject("{ \"method\": \"echo\", \"params\": [\"Hello JSON-RPC\"], \"id\": 1}");
 
         WebConversation wc = new WebConversation();
@@ -79,7 +79,7 @@ public class JSONRPCServiceTestCase{
         JSONObject jsonResp = new JSONObject(response.getText());
         Assert.assertEquals("echo: Hello JSON-RPC", jsonResp.getString("result"));
     }
-    
+
     @Test
     public void testJSONRPCBindingGET() throws Exception {
         String params = Base64.encode("[\"Hello JSON-RPC\"]".getBytes());
@@ -95,7 +95,17 @@ public class JSONRPCServiceTestCase{
         Assert.assertEquals("echo: Hello JSON-RPC", jsonResp.getString("result"));
     }
     
-    
-    
-    
+    @Test
+    public void testEchoVoidWithJSONRPCBinding() throws Exception {
+        JSONObject jsonRequest = new JSONObject("{ \"method\": \"echoVoid\", \"params\": [], \"id\": 1}");
+
+        WebConversation wc = new WebConversation();
+        WebRequest request   = new PostMethodWebRequest( SERVICE_URL, new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")),"application/json");
+        WebResponse response = wc.getResource(request);
+
+        Assert.assertEquals(200, response.getResponseCode());
+        
+        JSONObject jsonResp = new JSONObject(response.getText());
+        Assert.assertEquals(0, jsonResp.getString("result").length());
+    }
 }

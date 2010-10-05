@@ -41,6 +41,11 @@ public class EchoComponentImpl implements Echo {
         return "echo: " + msg;
     }
 
+    
+    public void echoVoid() {
+        System.out.println("Echo: VOID");
+    }
+
     public void echoBusinessException() throws EchoBusinessException {
         throw new EchoBusinessException("Business Exception");
 

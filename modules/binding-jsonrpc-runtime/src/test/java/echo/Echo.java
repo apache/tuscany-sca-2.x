@@ -39,7 +39,9 @@ import bean.TestBean;
 public interface Echo {
 
     String echo(String msg);
-
+    
+    void echoVoid();
+    
     void echoRuntimeException() throws RuntimeException;
 
     void echoBusinessException() throws EchoBusinessException;
