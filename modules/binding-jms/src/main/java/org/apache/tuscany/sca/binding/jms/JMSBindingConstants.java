@@ -36,8 +36,8 @@ public interface JMSBindingConstants {
     // model and for setting up defaults
     String BINDING_JMS = "binding.jms";
     QName BINDING_JMS_QNAME = new QName(Constants.SCA11_NS, BINDING_JMS);
-    String CORRELATE_MSG_ID = "requestmsgidtocorrelid";
-    String CORRELATE_CORRELATION_ID = "requestcorrelidtocorrelid";
+    String CORRELATE_MSG_ID = "messageID";
+    String CORRELATE_CORRELATION_ID = "correlationID";
     String CORRELATE_NONE = "none";
     List<String> VALID_CORRELATION_SCHEMES =
         Arrays.asList(new String[] {CORRELATE_MSG_ID, CORRELATE_CORRELATION_ID, CORRELATE_NONE});
