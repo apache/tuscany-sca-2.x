@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>itest-distribution</artifactId>
+        <version>2.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>itest-distribution-src-dsitro-rat</artifactId>
+    <name>Apache Tuscany SCA iTest Distribution Src Distro RAT</name>
+
+    <profiles>
+        <profile>
+            <id>distribution</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>itest-src-distro-unzip</artifactId>
+                    <type>pom</type>
+                    <version>2.0-SNAPSHOT</version>
+                </dependency>        
+            </dependencies>
+        </profile>
+    </profiles>
+
+    <build>
+                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.rat</groupId>
+                        <artifactId>apache-rat-plugin</artifactId>
+                        <version>0.6</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                           <basedir>../../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT-src.dir</basedir>
+                           <excludeSubProjects>false</excludeSubProjects>
+                           <excludes> 
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/CHANGES</exclude>
+                              <exclude>**/*.MF</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/compliance-tests/binding-ws/sca_variables.dtd</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/itest/implementation-spring/src/main/resources/implementation/policies/CalculatorJass.config</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/binding-ws-runtime-axis2/src/main/resources/org/apache/tuscany/sca/binding/ws/axis2/engine/repository/modules/modules.list</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/binding-ws-runtime-axis2/src/main/resources/org/apache/tuscany/sca/binding/ws/axis2/engine/repository/services/services.list</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-spring-runtime/src/main/resources/META-INF/spring.handlers</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-spring-runtime/src/main/resources/META-INF/spring.schemas</exclude>
+
+                              <!-- these ones we need to implement RAT license processors to handle the non-AL headers, just exclude for now -->
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/assembly-xsd/**/*.*</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/sca-api/**/*.*</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-web-runtime/src/main/resources/META-INF/sca.tld</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/assembly-xml/src/main/resources/META-INF/sca-policy-1.1-intents-definitions-cd03.xml</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/sca-client-impl/src/main/java/org/apache/tuscany/sca/client/impl/SCAClientFactoryFinderImpl.java</exclude>
+                           </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+    </build>
+</project>

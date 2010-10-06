@@ -1,0 +1,135 @@
+
+Features/Tests
+==============
+
+General Patterns
+----------------
+For simple synchronous tests:
+
+Jaxws client -> (b.ws service) SCA Component (b.ws reference) -> Jaxws Service
+     /\                                 /\                              |
+     | use                              | use                           | gen 
+     |                                  |                               \/
+Java Interface<------------------Java Interface<---------gen----------WSDL
+
+
+For message format the external service don't get involved in the varying message formats,
+They are still doing doc/lit/wrapped: 
+
+TODO - we could extend testing to include JAXWS edpoints thatunderstand the different formats
+
+JUnit client -> SCA Component (b.ws reference) -> (b.ws service) SCA component -> Jaxws Service
+     /\                            /\                   /\             /\                  |
+      |                             | config             | config      |                   |
+      |  use                        |                    |             | use               | gen
+      |                             -----------WSDL-------             |                   | 
+      |                                                                |                  \/
+Java Interface<-------------------------------------------------Java Interface<----gen---WSDL
+
+For SCA callback or asynchronous tests the external services don't get involved in the 
+callback or aysnc request:
+
+JUnit client -> SCA Component (b.ws reference) -> (b.ws service) SCA component -> Jaxws Service
+
+  
+Java First
+----------
+implemenation.java 
+interface.java 
+  simple 
+  JAXB 
+  SDO - TODO
+?wsdl - gens wsdl
+    
+Java First with JAX-WS annotations
+----------------------------------
+WSDL -> wsimport -> implemenation.java
+interface.java
+?wsdl - re-gens wsdl
+
+WSDL first
+----------
+implemenation.java -> wsgen -> wsdl
+interface.wsdl
+?wsld - provided wsdl
+
+Callback 
+--------
+Various combinations of specified callback and default configuration
+WSCallback ws policy - TODO
+
+WSDL Styles
+-----------
+
+rpc-lit              - supported 
+                          WSDL configuration where 
+                          message parts use types       - <part name="s" type="xsd:string"/>
+                          binding style set to rpc      - <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
+                          body uses literal             - <soap:body use="literal" namespace="http://ws.binding.sca.tuscany.apache.org/rpclit/getGreetingsNamespace" />
+                             Note the use of a namespace on the body element to set the namespace of the wrapper child of the body element
+doc-lit(or bare)     - supported (however see note below)
+                          WS-I BP1.1 4.7.6 states that an operation signature is a 
+                          "fully qualified name of the child element of SOAP body of the SOAP input message"
+                          to make this true for doc-lit encoding you have to design the WSDL to wrap the parameters
+                          in an appropriate type. Hence doc-literal-wrapped is supported which encompasses this wrapping style. 
+                          For bare style interfaces you have to mark the Java service interface as follows
+                          SOAP binding is set to        - @SOAPBinding(parameterStyle = SOAPBinding.ParameterStyle.BARE)
+                          WSDL configuration where 
+                          message parts use elements    - <part name="parameters" element="tns:getGreetings"/>
+                          the elements are directly implemented by the operation parameter type
+                          binding style set to document - <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+                          body uses literal             - <soap:body use="literal"/>
+doc-lit-wrapped      - supported
+                          WSDL configuration where 
+                          message parts use elements       - <part name="parameters" element="tns:getGreetings"/>
+                          the elements are implemented by wrapper types following the name of the operation
+                          binding style set to document - <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+                          body uses literal             - <soap:body use="literal"/>
+rpc-encoded          - not supported
+                          not WS-I compliant
+doc-encoded          - not supported
+                          not WS-I compliant
+
+================================== TODO below =========================
+
+Policy
+------
+ws-policy (aac)
+
+Java First
+    WSpolicy from Policy set in definitions.xml
+    ?wsdl - gens wsdl + policy
+WSDL first
+    WSpolicy from WSDL
+    ?wsld - uses wsdl + policy 
+  Policy signing
+
+alternative bindings
+--------------------
+SOAP/HTTP
+SOAP/HTTPS
+SOAP/JMS
+  How to retrieve WSDL for non-http bindings (a SHOULD in the spec)
+
+asynchInvocation Intent
+-----------------------
+  Service
+  Client
+
+noListener Intent
+-----------------
+  ws-makeconnetion?
+
+
+SOAP1.1 intent
+--------------
+
+SOAP1.2 intent
+--------------
+
+MTOM intent
+--------------
+
+Streaming
+---------
+Do we need to support?

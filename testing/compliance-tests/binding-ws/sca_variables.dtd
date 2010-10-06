@@ -1,0 +1,28 @@
+<!--
+ *
+ * Copyright(C) OASIS(R) 2005,2010. All Rights Reserved.
+ * OASIS trademark, IPR and other policies apply.    
+ *   
+-->
+<!-- 
+ * This DTD forms part of the SCA Web Service Binding Test Suite.
+ * It declares a number of XML Entities which are used in Entity References in some of the
+ * composites that are artifacts used in the testcases.
+ *
+ * The values declared in the Entity References are intended to reflect SCA runtime specific
+ * values for certain aspects of the composites at runtime - in particular addresses of some
+ * services.
+ *
+ * It is permitted - indeed it is expected - that an SCA runtime provider will MODIFY the values
+ * declared for the Entity References to match the values which would be expected when running the
+ * SCA Web Service Binding test suite against a given SCA runtime.  The values held in the this file are
+ * examples, derived from running the test suite against the Apache Tuscany SCA runtime.   
+-->
+<!-- Address of the Web service provided by component "BWS_2004Component2" in Test_BWS_2004 composite -->
+<!ENTITY ws_addr_2004 "http://localhost:8080/TEST_BWS_2004Component2/Service1">
+<!-- Address of the Web service provided by component "BWS_2006Component2" in Test_BWS_2006 composite -->
+<!ENTITY ws_addr_2006_A "http://localhost:8080/TEST_BWS_2006Component2/Service1">
+<!-- Address of the Web service provided by component "BWS_2006Component3" in Test_BWS_2006 composite -->
+<!ENTITY ws_addr_2006_B "http://localhost:8080/TEST_BWS_2006Component3/Service1">
+<!-- Address of the Web service provided by the client for a range of BWS testcases -->
+<!ENTITY ws_addr_client_1 "http://localhost:9081/JAXWS/Service1">

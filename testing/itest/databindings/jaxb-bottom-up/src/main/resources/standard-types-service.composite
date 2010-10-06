@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    *
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
+           xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance"
+           targetNamespace="http://jaxb.databindings.itest.sca.tuscany.apache.org/"
+           name="StandardTypesService">
+           
+    <!-- Clients to test the service -->
+    <!-- A StandardTypesServiceClient component that uses WS binding to invoke StandardTypesService -->
+    <component name="StandardTypesServiceClientWSComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesServiceClientImpl" />
+        <reference name="standardTypesService">
+            <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesService"/>
+            <binding.ws uri="http://localhost:8085/sts-ep"/>
+        </reference>
+    </component>
+
+    <!-- A StandardTypesServiceClient component that uses SCA binding to invoke StandardTypesService service -->
+    <component name="StandardTypesServiceClientSCAComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesServiceClientImpl" />
+        <reference name="standardTypesService" target="StandardTypesServiceComponent/StandardTypesService">
+            <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesService"/>
+            <binding.sca/>
+        </reference>
+    </component>
+    
+    <!-- A StandardTypesLocalServiceClient component that uses SCA binding to invoke StandardTypesLocalService service -->
+    <component name="StandardTypesLocalServiceClientSCAComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesLocalServiceClientImpl" />
+        <reference name="standardTypesLocalService" target="StandardTypesServiceComponent/StandardTypesLocalService">
+            <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesLocalService"/>
+            <binding.sca/>
+        </reference>
+    </component>
+
+    <!-- Components used to implement the services -->
+    <!-- A StandardTypesService component. -->
+    <component name="StandardTypesServiceComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesServiceImpl"/>
+        <service name="StandardTypesService">
+            <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesService"/>
+            <binding.ws uri="http://localhost:8085/sts-ep"/>
+        </service>
+        <service name="StandardTypesLocalService">
+            <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesLocalService"/>
+            <binding.sca/>
+        </service>
+    </component>
+</composite>

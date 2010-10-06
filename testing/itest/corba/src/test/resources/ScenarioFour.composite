@@ -1,0 +1,56 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
+           targetNamespace="http://sample"
+           xmlns:sample="http://sample"
+           name="Corba4">
+    
+    <!-- note that some binding configuration (like port or host name) is also used in JUnit test class -->
+    
+    <component name="ScenarioFourService">
+        <implementation.java class="org.apache.tuscany.sca.test.corba.types.ScenarioFourImpl" />
+    </component>
+	<service name="ScenarioFour" promote="ScenarioFourService">
+    	<interface.java interface="org.apache.tuscany.sca.test.corba.types.ScenarioFour"/>
+        <binding.sca uri="corbaname::localhost:5080#ScenarioFour"/>
+    </service>
+    
+    <component name="ScenarioFour">
+        <implementation.java class="org.apache.tuscany.sca.test.corba.types.ScenarioFourComponent" />
+        <reference name="scenarioFour">
+			<binding.sca uri="corbaname::localhost:5080#ScenarioFour"/>        
+        </reference>
+    </component>
+    
+    <!-- doubled service and reference to test reuse of name server --> 
+    <service name="ScenarioFourDoubled" promote="ScenarioFourService">
+    	<interface.java interface="org.apache.tuscany.sca.test.corba.types.ScenarioFour"/>
+        <binding.sca uri="corbaname::localhost:5080#ScenarioFourReuse"/>
+    </service>
+    
+    <component name="ScenarioFourReuse">
+        <implementation.java class="org.apache.tuscany.sca.test.corba.types.ScenarioFourComponent" />
+        <reference name="scenarioFour">
+			<binding.sca uri="corbaname::localhost:5080#ScenarioFourReuse"/>        
+        </reference>
+    </component>
+    
+</composite>

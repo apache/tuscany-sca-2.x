@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * with the License.  You may obtain a copy of the License at
+    *
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
+           xmlns:foo="http://foo" 
+           targetNamespace="http://foo"
+           name="CompositeA" 
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <component name="AComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.serviceref.AComponentImpl" />
+        <service name="AComponent">
+            <binding.ws uri="http://localhost:8084/AComponent"/>
+        </service>
+        <reference name="bReference">
+            <binding.ws uri="http://localhost:8085/BComponent" />
+        </reference>
+        <reference name="cReference">
+            <binding.ws uri="http://localhost:8085/CComponent" />
+        </reference>        
+        <reference name="cServiceReference">
+            <binding.ws uri="http://localhost:8085/CComponent" />
+        </reference>        
+        <reference name="dReference1">
+            <binding.ws uri="http://localhost:8085/DComponent" />
+        </reference>
+    </component>
+
+</composite>

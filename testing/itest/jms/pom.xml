@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-itest</artifactId>
+        <version>2.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <packaging>pom</packaging>
+    <artifactId>itest-jms</artifactId>
+    <name>Apache Tuscany SCA iTest JMS</name>
+    
+  <modules>
+    <module>args</module>
+    <module>callbacks</module>
+    <module>defaults</module>
+    <module>DynamicReplyQ</module>
+    <module>exceptions</module>
+    <module>exceptions1</module>
+    <module>externalBroker</module>
+    <module>format-jmsbytes</module>
+    <module>format-jmsbytesxml</module>
+    <module>format-jmsdefault</module>
+    <module>format-jmsmessage</module>
+    <module>format-jmsobject</module>
+    <module>format-jmstext</module>
+    <module>format-jmstextxml</module>
+    <module>format-jmstextxmlinjmsobjectout</module>
+    <module>non-sca-client</module>
+    <module>noreplyto</module>
+    <module>nulls</module>
+    <module>oneway</module>
+    <module>oneway-nocf</module>
+    <module>policy-headers</module>
+    <module>properties</module>
+    <module>responsecf</module>
+    <module>rpc</module>
+    <module>selectors</module>
+    <module>topics</module>
+    <module>ttl</module>
+    <module>uri-rpc</module>
+
+<!-- still to bring up in 2.x
+    <module>definitions</module>
+-->
+
+  </modules>
+
+</project>

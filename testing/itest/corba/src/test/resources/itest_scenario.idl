@@ -1,0 +1,110 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ */
+
+/*
+ * compile by
+ * idlj -fall -oldImplBase itest_scenario.idl
+ */
+ 
+module org {
+	module apache {
+		module tuscany {
+			module sca {
+				module test {
+					module corba {
+						module generated { 
+						
+							// objects for ScenarioOne
+						
+							enum Color {red, yellow, green};
+							
+							typedef sequence<string> StringSequence;
+							typedef sequence<long> LongSequence;
+							typedef sequence<LongSequence> TwoDimLongSequence;
+							
+							struct InnerStruct {
+								TwoDimLongSequence twoDimLongSequence;
+								string stringField;
+								Color color;
+							};
+							
+							struct RichStruct {
+								InnerStruct innerStruct;
+								StringSequence stringSequence;
+								long longField;
+							};
+							
+							exception WrongColor { 
+								Color givenColor;
+								Color correctColor;
+							};
+							
+							exception UnexpectedException { 
+								string info;
+							};
+							
+							interface ScenarioOne {
+							
+								RichStruct setRichStruct(in RichStruct richStruct) raises (WrongColor, UnexpectedException);
+							
+							};
+							
+							// objects for ScenarioTwo
+							
+							interface ScenarioTwo {
+								
+								attribute string stringField;
+								
+							};
+							
+							typedef string StringArray[2][2];
+							
+							struct AnnotatedStruct {
+									StringArray stringArray;
+							};
+							
+                        	union InnerUnion switch (long) {	
+	                                case 1: long x;
+	                                case 2: float y;
+	                        };
+
+	                        union RichUnion switch (long) {
+	                            case 1: long x;
+	                                case 2: float y;
+	                            case 3: string z;
+	                            case 4: InnerUnion iu;
+	                            default: boolean a;
+	                        };
+							
+							interface ScenarioSix {
+								
+								StringArray passStringArray(in StringArray arg);
+								
+								AnnotatedStruct passAnnotatedStruct(in AnnotatedStruct arg);
+								
+								RichUnion passRichUnion(in RichUnion arg);
+								
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
