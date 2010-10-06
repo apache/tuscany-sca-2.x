@@ -54,6 +54,14 @@
             <version>${pom.version}</version>
         </dependency>
 
+        <!-- included because binding-ws-wsdlgen needs it -->
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+
+        <!-- included as the runtime normalizes interfaces to WSDL -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-wsdlgen</artifactId>
