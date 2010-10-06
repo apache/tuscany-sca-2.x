@@ -368,8 +368,8 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         	StringTokenizer st = new StringTokenizer(uri.substring(i+1),"&");
         	while (st.hasMoreTokens()) {
         	    String s = st.nextToken();
-        	    if (s.startsWith("connectionFactoryName=")) {
-        	        jmsBinding.setConnectionFactoryName(s.substring(22));
+        	    if (s.startsWith("jndiConnectionFactoryName=")) {
+        	        jmsBinding.setConnectionFactoryName(s.substring(26));
                     } else if (s.startsWith("deliveryMode=")) {
                         jmsBinding.setURIJMSDeliveryMode("persistent".equals(s.substring(13)));
                     } else if (s.startsWith("priority=")) {
