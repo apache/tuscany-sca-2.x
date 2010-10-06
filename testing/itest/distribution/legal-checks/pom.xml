@@ -56,7 +56,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                           <basedir>../../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT.dir</basedir>
+                           <basedir>../../../../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT.dir</basedir>
                            <excludeSubProjects>false</excludeSubProjects>
                            <excludes> 
                               <exclude>tuscany-sca-2.0-SNAPSHOT/CHANGES</exclude>

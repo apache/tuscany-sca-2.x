@@ -19,9 +19,9 @@
 <project name="itest-unzip" default="unzip"> 
 
     <target name="unzip">
-        <delete dir="../../../distribution/all/target/apache-tuscany-sca-all-${tuscany.version}-src.dir"/>
-        <unzip src="../../../distribution/all/target/apache-tuscany-sca-all-${tuscany.version}-src.zip" 
-               dest="../../../distribution/all/target/apache-tuscany-sca-all-${tuscany.version}-src.dir"/>
+        <delete dir="../../../../distribution/all/target/apache-tuscany-sca-all-${tuscany.version}-src.dir"/>
+        <unzip src="../../../../distribution/all/target/apache-tuscany-sca-all-${tuscany.version}-src.zip" 
+               dest="../../../../distribution/all/target/apache-tuscany-sca-all-${tuscany.version}-src.dir"/>
     </target>
 
 </project>
