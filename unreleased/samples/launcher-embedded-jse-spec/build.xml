@@ -1,0 +1,118 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<project name="launcher-embedded-jse" default="run"> 
+	<property name="tuscany.home" value="../.."/>
+    <property name="jar.name"   value="sample-launcher-embedded-jse.jar" />
+    <property name="main.class" value="launcher.SampleJSELauncher" />
+	<property name="wait.before.stopping" value="dontWaitBeforeStopping" />
+	
+	<echo>${tuscany.home}</echo>
+
+    <target name="init"> 
+      <delete quiet="true" includeemptydirs="true"> 
+         <fileset dir="target"/> 
+      </delete> 
+      <mkdir dir="target/classes"/> 
+    </target>
+	
+    <target name="compile" depends="init">
+      <javac srcdir="src/main/java" 
+      	     destdir="target/classes" 
+      	     debug="on"
+             source="1.5"
+             target="1.5"
+      	     failonerror="true"> 
+         <classpath>
+            <fileset dir="${tuscany.home}/lib">
+               <include name="tuscany-base-*.jar" />
+            </fileset>
+         </classpath>
+      </javac> 
+      <jar destfile="target/${jar.name}" basedir="target/classes"> 
+         <manifest>
+            <attribute name="Main-Class" value="${main.class}" /> 
+         </manifest>
+      </jar>    	
+    </target>
+	
+	<target name="run" depends="compile">
+		<echo>Please use 'ant run-name-of-sample-contribution-to-run' for example, try one of</echo>
+	    <echo>  'ant run-contribution-binding-sca-calculator' </echo>
+	    <echo>  'ant run-contribution-binding-ws-calculator'  </echo>
+		<echo>  'ant run-contribution-binding-rmi-calculator'  </echo>
+	    <echo>  'ant run-contribution-implementation-java-calculator'  </echo>
+    </target>
+
+    <target name="run-contribution-binding-sca-calculator" depends="compile">
+        <java classname="${main.class}"
+              fork="true"
+        	  failonerror="true">
+            <classpath>  
+                <pathelement location="target/${jar.name}"/>
+                <fileset dir="${tuscany.home}/features">
+                   <include name="tuscany-sca-manifest.jar" />
+                </fileset>
+            </classpath> 
+        	<arg value="contribution-binding-sca-calculator"/> 
+            <arg value="${wait.before.stopping}"/> 
+        </java>    	
+    </target>
+	
+    <target name="run-contribution-binding-ws-calculator" depends="compile">
+        <java classname="launcher.JSELauncherBindingWSCalculator"
+              fork="true"
+              failonerror="true">
+            <classpath>  
+                <pathelement location="target/${jar.name}"/>
+                <fileset dir="${tuscany.home}/features">
+                   <include name="tuscany-sca-manifest.jar" />
+                </fileset>
+            </classpath> 
+        </java>     
+    </target>	
+	
+    <target name="run-contribution-binding-rmi-calculator" depends="compile">
+        <java classname="${main.class}"
+              fork="true"
+              failonerror="true">
+            <classpath>  
+                <pathelement location="target/${jar.name}"/>
+                <fileset dir="${tuscany.home}/features">
+                   <include name="tuscany-sca-manifest.jar" />
+                </fileset>
+            </classpath> 
+            <arg value="contribution-binding-rmi-calculator"/> 
+        </java>     
+    </target>	
+	
+    <target name="run-contribution-implementation-java-calculator" depends="compile">
+        <java classname="${main.class}"
+              fork="true"
+              failonerror="true">
+            <classpath>  
+                <pathelement location="target/${jar.name}"/>
+                <fileset dir="${tuscany.home}/features">
+                   <include name="tuscany-sca-manifest.jar" />
+                </fileset>
+            </classpath> 
+            <arg value="contribution-implementaton-java-calculator"/> 
+        </java>     
+    </target>	
+
+</project>
