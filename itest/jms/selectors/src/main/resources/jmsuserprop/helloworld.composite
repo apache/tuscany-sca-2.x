@@ -53,7 +53,7 @@
             <binding.jms>
 				<tuscany:operationSelector.jmsUserProp propertyName="myProperty"/>
                 <destination jndiName="HelloWorldService4"/>
-                <operationProperties name="getGreetingsThree" nativeOperation="getGreetingsFour">
+                <operationProperties name="getGreetingsThree" selectedOperation="getGreetingsFour">
                   <headers>
                      <property name="blaNotUsed2">getGreetingsThree</property>
                   </headers>

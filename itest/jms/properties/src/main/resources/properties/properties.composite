@@ -31,7 +31,7 @@
                         priority="7">
                   <property name="headP1">myHeadP1</property>    
                </headers>
-               <operationProperties name="op2" nativeOperation="nativeOp2">
+               <operationProperties name="op2" selectedOperation="nativeOp2">
                   <headers type="op2Type"
                      deliveryMode="nonpersistent"
                      timeToLive="6000"
