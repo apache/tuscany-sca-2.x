@@ -274,12 +274,12 @@
                 <module>maven/maven-tuscany-plugin</module>
                 <module>modules</module>
                 <module>samples</module>
-                <module>itest</module>
+                <module>testing/itest</module>
                 <module>features</module>
                 <module>shades</module>
                 <module>distribution</module>
                 <module>maven/archetypes</module>
-                <module>compliance-tests</module>
+                <module>testing/compliance-tests</module>
             </modules>
         </profile>
         <!-- ====================================================================== -->
@@ -300,12 +300,12 @@
                 <module>maven/maven-tuscany-plugin</module>
                 <module>modules</module>
                 <module>samples</module>
-                <module>itest</module>
+                <module>testing/itest</module>
                 <module>features</module>
                 <module>shades</module>
                 <module>distribution</module>
                 <module>maven/archetypes</module>
-                <module>compliance-tests</module>
+                <module>testing/compliance-tests</module>
             </modules>
         </profile>
 
@@ -317,7 +317,7 @@
             <modules>
                 <module>modules</module>
                 <module>samples</module>
-                <module>itest</module>
+                <module>testing/itest</module>
                 <module>features</module>
                 <module>distribution</module>
             </modules>
@@ -355,7 +355,7 @@
             <modules>
                 <module>modules</module>
                 <module>samples</module>
-                <module>itest</module>
+                <module>testing/itest</module>
                 <module>features</module>
                 <module>distribution</module>
             </modules>
@@ -390,12 +390,12 @@
                 <module>maven/maven-tuscany-plugin</module>
                 <module>modules</module>
                 <module>samples</module>
-                <module>itest</module>
+                <module>testing/itest</module>
                 <module>features</module>
                 <module>shades</module>
                 <module>distribution</module>
                 <module>maven/archetypes</module>
-                <module>compliance-tests</module>
+                <module>testing/compliance-tests</module>
             </modules>
            <build>
               <plugins>
@@ -406,7 +406,7 @@
         <profile>
             <id>compliance</id>
             <modules>
-                <module>compliance-tests</module>
+                <module>testing/compliance-tests</module>
             </modules>
         </profile>
 
@@ -508,7 +508,7 @@
         <profile>
             <id>security</id>
             <modules>
-                <module>itest</module>
+                <module>testing/itest</module>
             </modules>
             <activation>
                 <property>
@@ -722,7 +722,7 @@ org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apac
                 <module>modules/xsd</module>
                 <module>shades/base</module>
                 <module>shades/base-nodep</module>
-                <module>compliance-tests</module>
+                <module>testing/compliance-tests</module>
             </modules>
         </profile>
         <profile>
@@ -731,7 +731,7 @@ org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apac
                 <module>modules/binding-jms</module>
                 <module>modules/binding-jms-runtime</module>
                 <module>samples/webapps/helloworld-jms</module>
-                <module>itest/jms</module>
+                <module>testing/itest/jms</module>
             </modules>
         </profile>
 
@@ -742,12 +742,12 @@ org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apac
             <modules>
                 <module>modules</module>
                 <module>samples</module>
-                <module>itest</module>
+                <module>testing/itest</module>
                 <module>features</module>
                 <module>shades</module>
                 <module>distribution</module>
                 <module>maven/archetypes</module>
-                <!-- module>compliance-tests</module -->
+                <!-- module>testing/compliance-tests</module -->
             </modules>
            <build>
               <plugins>
