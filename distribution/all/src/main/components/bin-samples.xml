@@ -59,6 +59,7 @@
                 <exclude>**/target/work/**/*</exclude>
                 <exclude>**/*-webapp/target</exclude>
                 <exclude>**/*-webapp/target/**/*</exclude>
+                <exclude>**/*-webapp/src/main/webapp/dojo/**/*</exclude>
             </excludes>
         </fileSet>
     </fileSets>
