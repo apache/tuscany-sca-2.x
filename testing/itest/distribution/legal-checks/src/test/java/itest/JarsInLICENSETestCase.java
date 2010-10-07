@@ -127,7 +127,7 @@ public class JarsInLICENSETestCase {
     }
 
     private File getUnzipedDistroRoot() {
-        File distroTarget = new File("../../../distribution/all/target");
+        File distroTarget = new File("../../../../distribution/all/target");
         File root = null;
         for (String f : distroTarget.list()) {
             if (f.endsWith(".dir")) {
