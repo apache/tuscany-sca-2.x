@@ -26,6 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <groupId>org.apache.tuscany.sca.aggregation</groupId>
     <artifactId>tuscany-binding-rmi-runtime-aggregation</artifactId>
     <name>Apache Tuscany SCA Binding RMI Runtime Aggregation</name>
 
