@@ -19,7 +19,6 @@
 <project name="launcher-embedded-osgi" default="run"> 
 	<property name="tuscany.home" value="../../.."/>
     <property name="jar.name"   value="sample-launcher-embedded-osgi.jar" />
-    <property name="main.class" value="launcher.SampleJSELauncher" />
 	
 	<echo>${tuscany.home}</echo>
 
@@ -41,6 +40,11 @@
             <fileset dir="${tuscany.home}/lib">
                <include name="tuscany-base-*.jar" />
             </fileset>
+                <fileset dir="${tuscany.home}/modules">
+                   <include name="tuscany-node-api-*.jar" />
+                   <include name="tuscany-sca-api-*.jar" />
+                   <include name="tuscany-node-launcher-equinox-*.jar" />
+                </fileset> 
          </classpath>
       </javac> 
       <jar destfile="target/${jar.name}" basedir="target/classes"> 
@@ -56,7 +60,7 @@
     </target>
 	
     <target name="run-contribution-binding-sca-calculator" depends="compile">
-        <java classname="${main.class}"
+        <java classname="launcher.SampleOSGILauncherBindingSCA"
               fork="true"
               failonerror="true">
             <classpath>  
