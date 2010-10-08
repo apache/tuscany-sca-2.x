@@ -50,17 +50,21 @@
             <version>${pom.version}</version>
         </dependency>
 
+<!-- separate tuscany-base-osgi-runtime? 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution-osgi</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+-->
+
+<!-- separate tuscany-base-osgi-runtime? 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-extensibility-equinox</artifactId>
             <version>${pom.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-jetty</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
+-->
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -75,11 +79,13 @@
         </dependency>
 
 <!-- This is dependency of node-impl-osgi but not sure why-->
+<!-- separate tuscany-base-osgi-runtime? 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-osgi</artifactId>
             <version>${pom.version}</version>
         </dependency>
+-->
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -87,11 +93,13 @@
             <version>${pom.version}</version>
         </dependency>
 
+<!-- separate tuscany-base-osgi-runtime? 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-impl-osgi</artifactId>
             <version>${pom.version}</version>
         </dependency>
+-->
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -99,18 +107,19 @@
             <version>${pom.version}</version>
         </dependency>
 
+<!-- separate tuscany-base-osgi-runtime? 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-launcher-equinox</artifactId>
             <version>${pom.version}</version>
         </dependency>
+-->
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-policy-security</artifactId>
             <version>${pom.version}</version>
         </dependency>
-
 
     </dependencies>
 
