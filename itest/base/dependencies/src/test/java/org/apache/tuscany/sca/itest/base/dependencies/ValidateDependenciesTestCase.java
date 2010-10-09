@@ -37,7 +37,7 @@ import org.junit.Test;
  *    cglib-2.2.jar
  *    hazelcast-1.8.3.jar
  *    hazelcast-client-1.8.3.jar
- *    tuscany-base-2.0-M5-SNAPSHOT.jar
+ *    tuscany-base-2.0-M5.1.jar
  *    wsdl4j-1.6.2.jar
  *    XmlSchema-1.4.3.jar  
  *

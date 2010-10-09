@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-feature</artifactId>
-        <version>2.0-M5-SNAPSHOT</version>
+        <version>2.0-M5.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -37,55 +37,55 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-feature-core</artifactId>
             <type>pom</type>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 
         <!-- Bindings -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-rmi-runtime</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 <!--
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ejb-runtime</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-jms-runtime</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-corba-runtime</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 
         <!-- Hosts -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-rmi</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-corba-jee</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-corba-jse</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-corba-jse-tns</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 
 
@@ -94,38 +94,38 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-ejb</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-spring</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-spring-sca</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 
         <!-- OSGi Remote Services SCA Configuration Type -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-osgi-runtime</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution-osgi</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-impl-osgi</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 
         <dependency>
@@ -137,38 +137,38 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-script-runtime</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-jaxrs-runtime</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 
         <!-- Policies -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-policy-transaction</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-policy-transaction-runtime-geronimo</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 
         <!-- Hazelcast registry -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-endpoint-hazelcast</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-endpoint-hazelcast-client</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5.1</version>
         </dependency>
 
     </dependencies>
