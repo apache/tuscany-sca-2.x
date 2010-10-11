@@ -39,7 +39,9 @@
                 <module>helloworld-jaxrs</module>
                 <module>helloworld-js-client</module>
                 <module>helloworld-jsf</module>
+<!-- failure due to lack of tag support?
                 <module>helloworld-jsp</module>
+-->
                 <module>helloworld-servlet</module>
                 <module>helloworld-stripes</module>
             </modules>
