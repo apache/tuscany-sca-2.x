@@ -17,8 +17,11 @@
  * under the License.    
 -->
 <project name="store" default="compile">
+    <property name="tuscany.home" value="../../.."/>
     <property name="test.class" value="launch.Launch" />
 	<property name="test.jar"   value="sample-store.jar" />
+
+    <import file="${tuscany.home}/features/tuscany-base-runtime/build-path.xml"/>
 	
     <target name="init">
         <mkdir dir="target/classes"/>
@@ -31,8 +34,9 @@
                source="1.5"
                target="1.5">
             <classpath>
-            	<pathelement location="../../features/tuscany-sca-manifest.jar"/>
-            	<fileset refid="3rdparty.jars"/>
+		<fileset dir="${tuscany.home}/lib">
+		    <include name="tuscany-base-*.jar"/>
+		</fileset>
             </classpath>
         </javac> 
         <copy todir="target/classes">
@@ -50,8 +54,9 @@
               fork="true">
             <classpath>
                 <pathelement path="target/classes"/>
-            	<pathelement location="../../features/tuscany-sca-manifest.jar"/>
-            	<fileset refid="3rdparty.jars"/>
+		<fileset dir="${tuscany.home}/features">
+		    <include name="tuscany-sca-manifest.jar"/>
+		</fileset>
             </classpath>
         </java>
     </target>
@@ -61,8 +66,9 @@
               fork="true">
             <classpath>
             	<pathelement path="target/${test.jar}"/>
-            	<pathelement location="../../features/tuscany-sca-manifest.jar"/>
-            	<fileset refid="3rdparty.jars"/>
+		<fileset dir="${tuscany.home}/features">
+		    <include name="tuscany-sca-manifest.jar"/>
+		</fileset>
             </classpath>
         </java>    	
     </target>	
@@ -73,7 +79,4 @@
         </delete>
     </target>
     
-    <fileset id="3rdparty.jars" dir="../../lib">
-        <include name="saxon-8.7.jar"/>
-    </fileset>
 </project>
