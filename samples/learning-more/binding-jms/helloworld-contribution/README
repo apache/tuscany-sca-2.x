@@ -3,7 +3,7 @@ JMS HelloWorld Sample
 This sample demonstrates a simple webapp containing a hello world  style client
 and service using the JMS binding for request-response style messaging. 
 
-The README in the samples directory (the directory above this) provides 
+The README in the samples directory (the directory three directories above this) provides 
 general instructions about building and running samples. Take a look there 
 first. 
 

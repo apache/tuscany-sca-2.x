@@ -30,7 +30,7 @@
     <component name="HelloWorldClientComponent">
         <implementation.java class="sample.HelloWorldClient"/>
         <reference name="helloWorldRef">
-            <binding.jms uri="jms:HelloWorldService"/>
+            <binding.jms uri="jms:queue:HelloWorldService"/>
         </reference>
     </component>
 
