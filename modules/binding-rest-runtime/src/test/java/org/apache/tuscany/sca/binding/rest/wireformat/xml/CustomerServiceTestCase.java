@@ -88,8 +88,8 @@ public class CustomerServiceTestCase {
         //System.out.println(">>>" + response.getText());
 
         Assert.assertEquals(200, response.getResponseCode());
-//        Assert.assertEquals("no-cache", response.getHeaderField("Cache-Control"));
-//        Assert.assertEquals("tuscany", response.getHeaderField("X-Tuscany"));
+        Assert.assertEquals("no-cache", response.getHeaderField("Cache-Control"));
+        Assert.assertEquals("tuscany", response.getHeaderField("X-Tuscany"));
         Assert.assertEquals(GET_RESPONSE, response.getText());
         
     }
