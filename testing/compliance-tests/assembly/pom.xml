@@ -106,14 +106,14 @@
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
            <excludes>
-              <exclude>**/JCA_5016_TestCase.java</exclude><!-- TUSCANY-3709 -->
-              <exclude>**/JCA_6004_TestCase.java</exclude><!-- TUSCANY-3709 -->
-              <exclude>**/JCA_6007_TestCase.java</exclude><!-- TUSCANY-3709 -->
-              <exclude>**/JCA_6008_TestCase.java</exclude><!-- TUSCANY-3709 -->
-              <exclude>**/JCA_6014_TestCase.java</exclude><!-- TUSCANY-3709 -->
-              <exclude>**/JCA_6034_TestCase.java</exclude><!-- TUSCANY-3709 -->
-              <exclude>**/JCA_12007_TestCase.java</exclude><!-- TUSCANY-3709 -->
-              <exclude>**/JCA_12008_TestCase.java</exclude><!-- TUSCANY-3709 -->
+              <exclude>**/ASM_5016_TestCase.java</exclude><!-- TUSCANY-3709 -->
+              <exclude>**/ASM_6004_TestCase.java</exclude><!-- TUSCANY-3709 -->
+              <exclude>**/ASM_6007_TestCase.java</exclude><!-- TUSCANY-3709 -->
+              <exclude>**/ASM_6008_TestCase.java</exclude><!-- TUSCANY-3709 -->
+              <exclude>**/ASM_6014_TestCase.java</exclude><!-- TUSCANY-3709 -->
+              <exclude>**/ASM_6034_TestCase.java</exclude><!-- TUSCANY-3709 -->
+              <exclude>**/ASM_12007_TestCase.java</exclude><!-- TUSCANY-3709 -->
+              <exclude>**/ASM_12008_TestCase.java</exclude><!-- TUSCANY-3709 -->
            </excludes>
          </configuration>
       </plugin>
