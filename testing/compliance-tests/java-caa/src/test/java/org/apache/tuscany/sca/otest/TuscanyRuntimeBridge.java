@@ -30,6 +30,8 @@ import java.util.Properties;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 import testClient.TestException_Exception;
 import client.RuntimeBridge;
@@ -69,6 +71,11 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
             } // end for
 
             node = launcher.createNode(compositeName, contributions);
+            
+            // Set the domain URI for the node as JCA_9016 tests for this domain name
+            NodeConfiguration nodeConfiguration = ((NodeImpl)node).getConfiguration();
+            nodeConfiguration.setDomainURI("http://Domain1");
+            
             // Start the node
             node.start();
             
