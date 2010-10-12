@@ -140,7 +140,7 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
         // Delegate to the processor associated with the attribute QName
         int event = source.getEventType();
         if (event == XMLStreamConstants.START_DOCUMENT) {
-            source.nextTag();
+            while (source.next() != XMLStreamReader.START_ELEMENT);
         }
 
         StAXAttributeProcessor<?> processor = null;
