@@ -100,6 +100,12 @@
             <groupId>org.apache.wink</groupId>
             <artifactId>wink-server</artifactId>
             <version>1.1.1-incubating</version>
+             <exclusions>
+                <exclusion>
+                    <groupId>com.sun.xml.bind</groupId>
+                    <artifactId>jaxb-impl</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
