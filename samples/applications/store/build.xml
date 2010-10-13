@@ -21,7 +21,7 @@
     <property name="test.class" value="launch.Launch" />
 	<property name="test.jar"   value="sample-store.jar" />
 
-    <import file="${tuscany.home}/features/tuscany-base-runtime/build-path.xml"/>
+    <import file="${tuscany.home}/features/tuscany-base-runtime-pom/build-path.xml"/>
 	
     <target name="init">
         <mkdir dir="target/classes"/>

@@ -44,7 +44,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-base-runtime</artifactId>
+            <artifactId>tuscany-base-runtime-pom</artifactId>
             <version>${pom.version}</version>
             <type>pom</type>
         </dependency>
