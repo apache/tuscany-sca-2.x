@@ -38,12 +38,31 @@
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
+       <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-base-runtime-pom</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency> 
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-base</artifactId>
+            <artifactId>tuscany-osgi-runtime</artifactId>
+            <version>2.0-SNAPSHOT</version>
             <type>pom</type>
+        </dependency> 
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-jetty</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency> 
 
          <!-- This is need when running with Sun JDK which gets an unsupported operation exception creating an XMLStreamReader from a DOMSource
              when Tuscany is writing a property value  -->
