@@ -38,7 +38,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 // Ignore so its not run in the build yet till its working
-@Ignore
+@Ignore("TUSCANY-3718")
 public class MultiRegTestCase implements EndpointListener {
     private static ExtensionPointRegistry extensionPoints;
     private static AssemblyFactory assemblyFactory;

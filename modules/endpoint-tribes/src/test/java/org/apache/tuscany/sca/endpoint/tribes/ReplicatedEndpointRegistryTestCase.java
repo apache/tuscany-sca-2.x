@@ -31,7 +31,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
+@Ignore("TUSCANY-3718")
 public class ReplicatedEndpointRegistryTestCase {
 
     @Test
