@@ -39,7 +39,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>sample-helloworld</artifactId>
+            <artifactId>helloworld-contribution</artifactId>
             <version>2.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
@@ -72,7 +72,7 @@
                 <contributions>
                    <!-- add the dependee contribution that this contribution uses -->
                    <param>..\helloworld-recursive\target\sample-helloworld-recursive.jar</param>
-                   <param>..\helloworld\target\sample-helloworld.jar</param>
+                   <param>..\..\..\getting-started\helloworld\target\helloworld-contribution.jar</param>
                 </contributions>
              </configuration>
          </plugin>
