@@ -35,6 +35,7 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-rmi-runtime</artifactId>
             <version>${pom.version}</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

@@ -47,6 +47,13 @@
             <artifactId>tuscany-base-runtime-pom</artifactId>
             <version>${pom.version}</version>
             <type>pom</type>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
