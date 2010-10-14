@@ -31,9 +31,9 @@
     <name>Apache Tuscany SCA Distributions</name>
 
     <modules>
-        <module>base-runtime-aggregation</module>
-        <module>binding-rmi-runtime-aggregation</module>
-        <module>binding-ws-runtime-axis2-aggregation</module>
+        <module>aggregations/base-runtime-aggregation</module>
+        <module>aggregations/binding-rmi-runtime-aggregation</module>
+        <module>aggregations/binding-ws-runtime-axis2-aggregation</module>
 
         <module>all</module>
         <module>tomcat</module>

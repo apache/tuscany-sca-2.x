@@ -23,17 +23,17 @@
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-distribution</artifactId>
         <version>2.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>org.apache.tuscany.sca.aggregation</groupId>
-    <artifactId>tuscany-binding-rmi-runtime-aggregation</artifactId>
-    <name>Apache Tuscany SCA Binding RMI Runtime Aggregation</name>
+    <artifactId>tuscany-binding-ws-runtime-axis2-aggregation</artifactId>
+    <name>Apache Tuscany SCA Binding WS Runtime Axis2 Aggregation</name>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-rmi-runtime</artifactId>
+            <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
             <version>${pom.version}</version>
         </dependency>
     </dependencies>
