@@ -29,15 +29,6 @@
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Running Tuscany Samples</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
     <profiles>
         <profile>
             <id>default</id>
@@ -45,7 +36,6 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-
                 <!-- don't need to process these as they just contain README files
                 <module>command-line</module>
                 <module>maven</module>
