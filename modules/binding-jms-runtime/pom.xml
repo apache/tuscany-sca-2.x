@@ -32,57 +32,18 @@
             
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-base-runtime-pom</artifactId>
+            <type>pom</type>
+            <version>2.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency> 
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-jms</artifactId>
             <version>2.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-sca-api</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>        
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core-spi</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-interface-java</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-		<dependency>
-			<groupId>org.apache.tuscany.sca</groupId>
-			<artifactId>tuscany-interface-wsdl</artifactId>
-			<version>2.0-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.tuscany.sca</groupId>
-			<artifactId>tuscany-databinding-jaxb</artifactId>
-			<version>2.0-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.tuscany.sca</groupId>
-			<artifactId>tuscany-binding-ws-wsdlgen</artifactId>
-			<version>2.0-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.tuscany.sca</groupId>
-			<artifactId>tuscany-policy-security</artifactId>
-			<version>2.0-SNAPSHOT</version>
-		</dependency>
 
         <dependency>
            <groupId>org.apache.geronimo.specs</groupId>
@@ -95,29 +56,15 @@
    	     <groupId>org.apache.geronimo.specs</groupId>
       	  <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
       	  <version>2.0.0</version>    
+           <scope>provided</scope>
    	   </dependency>
     
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>2.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-impl</artifactId>
-            <version>2.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
-        
     </dependencies>
 
 </project>

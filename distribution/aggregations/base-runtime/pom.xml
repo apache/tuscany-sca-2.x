@@ -212,6 +212,14 @@
             </exclusions>
         </dependency>
 
+<!-- All the scdl modules  -->
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-jms</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+
 <!-- these remaining dependencies are not required when using JDK6, so use a scope of provided  -->
 
         <dependency>

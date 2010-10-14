@@ -182,6 +182,12 @@
         </dependency>
 
         <dependency>
+            <!-- for now til the base contents is sorted -->
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-jms</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-jms-runtime</artifactId>
             <version>2.0-SNAPSHOT</version>
