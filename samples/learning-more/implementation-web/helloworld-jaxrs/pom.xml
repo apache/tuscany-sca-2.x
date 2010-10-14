@@ -34,8 +34,8 @@
 
         <!-- Tuscany dependency -->
         <dependency>
-            <groupId>org.apache.tuscany.sca.shades</groupId>
-            <artifactId>tuscany-base-nodep</artifactId>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-base-runtime-nodep</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
 

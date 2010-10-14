@@ -31,8 +31,6 @@
     <name>Apache Tuscany SCA Shaded Jars</name>
 
     <modules>
-        <module>base</module>
-        <module>base-nodep</module>
         <module>jms</module>
         <module>json</module>
         <module>json-nodep</module>

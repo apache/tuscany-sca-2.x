@@ -26,9 +26,9 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.apache.tuscany.sca.shades</groupId>
-    <artifactId>tuscany-base-nodep</artifactId>
-    <name>Apache Tuscany SCA Base Jar including dependencies</name>
+    <groupId>org.apache.tuscany.sca</groupId>
+    <artifactId>tuscany-base-runtime-nodep</artifactId>
+    <name>Apache Tuscany SCA Base Runtime Jar including dependencies</name>
 
     <dependencies>
         <dependency>

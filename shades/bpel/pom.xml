@@ -93,8 +93,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca.shades</groupId>
-            <artifactId>tuscany-base</artifactId>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-base-runtime</artifactId>
             <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>

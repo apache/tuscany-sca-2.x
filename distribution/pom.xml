@@ -31,6 +31,8 @@
     <name>Apache Tuscany SCA Distributions</name>
 
     <modules>
+        <module>aggregations/base-runtime</module>
+        <module>aggregations/base-runtime-nodep</module>
         <module>aggregations/base-runtime-aggregation</module>
         <module>aggregations/binding-rmi-runtime-aggregation</module>
         <module>aggregations/binding-ws-runtime-axis2-aggregation</module>
