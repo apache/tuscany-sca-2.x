@@ -43,7 +43,7 @@
                 -->
                 <module>embedded-jse</module>
                 <module>embedded-osgi</module>
-                <module>embedded-osgi-base</module>
+                <!-- module>embedded-osgi-base</module -->
                 <module>shell</module>
 
             </modules>
