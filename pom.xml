@@ -276,7 +276,6 @@
                 <module>samples</module>
                 <module>testing/itest</module>
                 <module>features</module>
-                <module>shades</module>
                 <module>distribution</module>
                 <module>maven/archetypes</module>
                 <module>testing/compliance-tests</module>
@@ -302,7 +301,6 @@
                 <module>samples</module>
                 <module>testing/itest</module>
                 <module>features</module>
-                <module>shades</module>
                 <module>distribution</module>
                 <module>maven/archetypes</module>
                 <module>testing/compliance-tests</module>
@@ -392,7 +390,6 @@
                 <module>samples</module>
                 <module>testing/itest</module>
                 <module>features</module>
-                <module>shades</module>
                 <module>distribution</module>
                 <module>maven/archetypes</module>
                 <module>testing/compliance-tests</module>
@@ -580,7 +577,6 @@
             <modules>
                 <module>maven/maven-tuscany-plugin</module>
                 <module>modules</module>
-                <module>shades</module>
                 <module>features</module>
                 <module>distribution</module>
                 <module>maven/archetypes</module>
@@ -720,8 +716,6 @@ org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apac
                 <module>modules/sca-client-impl</module>
                 <module>modules/wink</module>
                 <module>modules/xsd</module>
-                <module>shades/base</module>
-                <module>shades/base-nodep</module>
                 <module>testing/compliance-tests</module>
             </modules>
         </profile>
@@ -744,7 +738,6 @@ org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apac
                 <module>samples</module>
                 <module>testing/itest</module>
                 <module>features</module>
-                <module>shades</module>
                 <module>distribution</module>
                 <module>maven/archetypes</module>
                 <!-- module>testing/compliance-tests</module -->
