@@ -65,6 +65,11 @@ public class CalculatorServiceProxyImpl implements CalculatorServiceSync {
 		
 		while (!response.isDone()){
 			System.out.println("Waiting for poll");
+			try {
+			    Thread.sleep(500);
+			} catch (Exception ex) {
+			    // do nothing
+			}
 		}
 		
 		try {
@@ -84,6 +89,11 @@ public class CalculatorServiceProxyImpl implements CalculatorServiceSync {
 		
 		while (!future.isDone()){
 			System.out.println("Waiting for callback");
+	        try {
+                Thread.sleep(500);
+            } catch (Exception ex) {
+                // do nothing
+            }
 		}
 
 		return result;

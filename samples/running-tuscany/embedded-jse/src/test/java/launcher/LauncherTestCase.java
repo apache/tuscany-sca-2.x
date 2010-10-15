@@ -53,5 +53,10 @@ public class LauncherTestCase {
     @Test
     public void testImplementationScriptCalculator() throws Exception {
         JSELauncherImplementationScriptCalculator.main(null);
-    }     
+    }  
+    
+    @Test
+    public void testImplementationJavaCalculatorAsync() throws Exception {
+        JSELauncherImplementationJavaCalculatorAsync.main(null);
+    } 
 }
