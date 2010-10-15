@@ -35,14 +35,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>
-			<artifactId>tuscany-base-runtime-nodep</artifactId>
+			<artifactId>tuscany-base-runtime</artifactId>
 			<version>2.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>
 			<artifactId>tuscany-binding-comet-runtime</artifactId>
 			<version>2.0-SNAPSHOT</version>
-			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>javax</groupId>
