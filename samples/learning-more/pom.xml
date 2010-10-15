@@ -42,7 +42,7 @@
                 <module>binding-rmi</module>
                 <module>binding-sca</module>
                 <module>binding-ws</module>
-                <module>binding-comet</module>
+                <!-- module>binding-comet</module -->
                 <module>binding-jsonrpc</module>
                 <module>implementation-bpel</module>
                 <module>implementation-composite</module>
