@@ -31,11 +31,11 @@ import org.oasisopen.sca.annotation.Scope;
 @Scope("COMPOSITE") @EagerInit
 public class CalculatorClient {
     
-    private CalculatorService calculatorService;
+    private CalculatorServiceSync calculatorService;
 
 
     @Reference
-    public void setCalculatorService(CalculatorService calculatorService) {
+    public void setCalculatorService(CalculatorServiceSync calculatorService) {
         this.calculatorService = calculatorService;
     }
     

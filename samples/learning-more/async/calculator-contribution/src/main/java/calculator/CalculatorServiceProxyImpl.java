@@ -21,6 +21,8 @@ package calculator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import javax.xml.ws.Response;
+
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -28,13 +30,13 @@ import org.oasisopen.sca.annotation.Reference;
  * to sync and asyn versions of the calculator service. This proxy
  * exercises the various async interface alternatives
  */
-public class CalculatorServiceProxyImpl implements CalculatorService {
+public class CalculatorServiceProxyImpl implements CalculatorServiceSync {
 	
 	@Reference
-	protected CalculateViaAsyncRef calculatorServiceRefSync;
+	protected CalculateReferenceAsync calculatorServiceRefSync;
 	
 	@Reference
-	protected CalculateViaAsyncRef calculatorServiceRefAsync;
+	protected CalculateReferenceAsync calculatorServiceRefAsync;
 
 	@Override
 	public String calculate(Integer n1) {
@@ -52,21 +54,21 @@ public class CalculatorServiceProxyImpl implements CalculatorService {
 	}    
 	    
 	// exercise sync and async versions of a service interface method
-	private String calculate(CalculateViaAsyncRef calculatorRef, Integer n1) {	    
+	private String calculate(CalculateReferenceAsync calculatorRef, Integer n1) {	    
 		
 		// sync
 		String result = calculatorRef.calculate(1);
 		System.out.println("Sync client patern: result = " + result);
 		
 		// async poll
-		Future<String> future = calculatorRef.calculateAsync(20);
+		Response<String> response = calculatorRef.calculateAsync(20);
 		
-		while (!future.isDone()){
+		while (!response.isDone()){
 			System.out.println("Waiting for poll");
 		}
 		
 		try {
-			result = future.get();
+			result = response.get();
 			System.out.println("Async client poll patern: result = " + result);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -78,7 +80,7 @@ public class CalculatorServiceProxyImpl implements CalculatorService {
 		
 		// async callback 
 		CalculatorAsyncHandler handler = new CalculatorAsyncHandler();
-		future = calculatorRef.calculateAsync(3, handler);
+		Future<String> future = calculatorRef.calculateAsync(3, handler);
 		
 		while (!future.isDone()){
 			System.out.println("Waiting for callback");

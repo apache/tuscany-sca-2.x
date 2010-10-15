@@ -16,15 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package calculator;
+
+import java.util.concurrent.Future;
+
+import javax.xml.ws.AsyncHandler;
+import javax.xml.ws.Response;
 
 import org.oasisopen.sca.annotation.Remotable;
 
 /**
- * The sync Calculator service interface.
+ * Async client version of the CalculatorService interface
+ *
  */
 
 @Remotable
-public interface CalculatorService {
-    String calculate(Integer n1);
+public interface CalculateReferenceAsync {
+
+	//public Response<String> calculate( Integer i1);
+	
+	// Sync
+	public String calculate(Integer i1);
+	
+	// Aysnc Poll
+	public Response<String> calculateAsync(Integer i1);
+	
+	// Async Callback
+	public Future<String> calculateAsync(Integer i1, AsyncHandler<String> handler);
+	
 }
+

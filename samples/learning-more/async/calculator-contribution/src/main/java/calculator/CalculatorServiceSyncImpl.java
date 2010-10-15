@@ -19,7 +19,7 @@
 
 package calculator;
 
-public class CalculatorServiceSyncImpl implements CalculatorService {
+public class CalculatorServiceSyncImpl implements CalculatorServiceSync {
 
 	@Override
 	public String calculate(Integer n1) {
