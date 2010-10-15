@@ -309,7 +309,6 @@
                            <artifactSet>
                               <includes>
                                  <include>org.apache.tuscany.sca:*</include>
-                                 <include>org.apache.tuscany.sca.shades:*</include>
                               </includes>
                            </artifactSet>
                            <transformers>

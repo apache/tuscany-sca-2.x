@@ -400,9 +400,6 @@
                                      <version>*</version>
                                  </artifactManifest>
                              </artifactManifests>
-                             <excludeGroupIds>
-                                 <groupId>org.apache.tuscany.sca.shades</groupId>
-                             </excludeGroupIds>
                         </configuration>
                     </execution>
 
