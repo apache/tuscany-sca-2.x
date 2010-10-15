@@ -308,17 +308,15 @@ public class JavaInterfaceIntrospectorImpl {
 
     private boolean jaxwsAsyncMethod(Method method) {
         if (method.getName().endsWith("Async")) {
-            if (method.getName().endsWith("Async")) {
-                if (method.getReturnType().isAssignableFrom(Future.class)) {
-                    if (method.getParameterTypes().length > 0) {
-                        if (method.getParameterTypes()[method.getParameterTypes().length-1].isAssignableFrom(AsyncHandler.class)) {
-                            return true;
-                        }
+            if (method.getReturnType().isAssignableFrom(Future.class)) {
+                if (method.getParameterTypes().length > 0) {
+                    if (method.getParameterTypes()[method.getParameterTypes().length-1].isAssignableFrom(AsyncHandler.class)) {
+                        return true;
                     }
                 }
-                if (method.getReturnType().isAssignableFrom(Response.class)) {
-                    return true;
-                }
+            }
+            if (method.getReturnType().isAssignableFrom(Response.class)) {
+                return true;
             }
         }
         return false;
