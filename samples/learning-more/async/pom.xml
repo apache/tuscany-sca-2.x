@@ -36,8 +36,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>sample-contribution-implementation-java-calculator-async</module>
-                <module>embedded-jse-async-sample-launcher</module>
+                <module>calculator-contribution</module>
             </modules>
         </profile>
     </profiles>    
