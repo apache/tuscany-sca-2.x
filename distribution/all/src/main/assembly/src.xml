@@ -40,6 +40,8 @@
                 <exclude>**/maven-eclipse.xml</exclude>
                 <exclude>modules/web-javascript-dojo/src/main/resources/dojo/**</exclude>
                 <exclude>shades/**/dependency-reduced-pom.xml</exclude>
+                <exclude>unreleased</exclude>
+                <exclude>unreleased/**</exclude>
             </excludes>
         </fileSet>
     </fileSets>
