@@ -51,6 +51,7 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.w3c.dom.Element;
 
 /**
@@ -81,10 +82,16 @@ public class WSDLDefinitionGenerator {
     private QName soapBody;
     private QName soapFault;
     private QName soapOperation;
-
-    public WSDLDefinitionGenerator(boolean requiresSOAP12) {
+    private String wsBindingName;
+    
+    public WSDLDefinitionGenerator(WebServiceBinding wsBinding) {
+    	this(BindingWSDLGenerator.requiresSOAP12(wsBinding));
+    	wsBindingName = wsBinding.getName();
+    }
+    
+    public WSDLDefinitionGenerator(boolean isSOAP12) {
         super();
-        this.requiresSOAP12 = requiresSOAP12;
+        this.requiresSOAP12 = isSOAP12;
         soapAddress = requiresSOAP12 ? SOAP12_ADDRESS : SOAP_ADDRESS;
         soapBinding = requiresSOAP12 ? SOAP12_BINDING : SOAP_BINDING;
         soapBody = requiresSOAP12 ? SOAP12_BODY : SOAP_BODY;
@@ -127,6 +134,14 @@ public class WSDLDefinitionGenerator {
     }
 
     protected void configureBinding(Definition definition, Binding binding, PortType portType) throws WSDLException {
+    	if ( wsBindingName != null ) {
+    		QName name = new QName(definition.getTargetNamespace(), wsBindingName + getSOAPVersionString() + BINDING_SUFFIX);
+    		if ( definition.getBinding(name) == null ) {
+    			binding.setQName(name);
+    			return;
+    		}
+    	}
+    	
         QName portTypeName = portType.getQName();
         if (portTypeName != null) {
             // Choose <porttype>Binding if available.  If this name is in use, insert
@@ -235,11 +250,10 @@ public class WSDLDefinitionGenerator {
         }
     }
 
-    public Service createService(Definition definition, PortType portType) {
+    public Service createService(Definition definition, PortType portType, String serviceName) {
         try {
             Service service = definition.createService();
-            configureService(definition, service, portType);
-            // createPort(definition, binding, service);
+            configureService(definition, service, portType, serviceName);
             definition.addService(service);
             return service;
         } catch (WSDLException e) {
@@ -247,11 +261,10 @@ public class WSDLDefinitionGenerator {
         }
     }
 
-    public Service createService(Definition definition, Binding binding) {
+    public Service createService(Definition definition, Binding binding, String serviceName) {
         try {
             Service service = definition.createService();
-            configureService(definition, service, binding.getPortType());
-            // createPort(definition, binding, service);
+            configureService(definition, service, binding.getPortType(), serviceName);
             definition.addService(service);
             return service;
         } catch (WSDLException e) {
@@ -259,7 +272,17 @@ public class WSDLDefinitionGenerator {
         }
     }
 
-    protected void configureService(Definition definition, Service service, PortType portType) throws WSDLException {
+    protected void configureService(Definition definition, Service service, PortType portType, String serviceName) throws WSDLException {
+    	// TODO -- this is the recommended mapping in the ws binding spec, but for some reason it is causing ?wsdl to not be available
+    	// in binding-ws-runtime-jaxws-ri WSDLPortTestCase.testQuestionMarkWSDL(). 
+//    	if ( serviceName != null ) {
+//    		QName name = new QName(definition.getTargetNamespace(), serviceName);
+//    		if ( definition.getService(name) == null ) {
+//    			service.setQName(name);
+//    			return;
+//    		}
+//    	}
+    	
         QName portTypeName = portType.getQName();
         if (portTypeName != null) {
             // Choose <porttype>Service if available.  If this name is in use, insert
@@ -297,9 +320,19 @@ public class WSDLDefinitionGenerator {
     }
 
     protected void configurePort(Port port, Binding binding) throws WSDLException {
-        if (binding.getPortType() != null && binding.getPortType().getQName() != null) {
+    	if ( wsBindingName != null ) {
+    		port.setName(wsBindingName + getSOAPVersionString() + PORT_SUFFIX);
+    	} else if (binding.getPortType() != null && binding.getPortType().getQName() != null) {
             port.setName(binding.getPortType().getQName().getLocalPart() + PORT_SUFFIX);
         }
+    }
+    
+    private String getSOAPVersionString() {
+    	if ( requiresSOAP12 ) {
+    		return "SOAP12";
+    	} else {
+    		return "SOAP11";
+    	}
     }
 
 }

@@ -67,7 +67,7 @@ public class QuestionMarkWSDLImportTestCase extends TestCase {
         Definition definition = wsdlReader.readWSDL("http://localhost:8086/AccountService?wsdl");
         assertNotNull(definition);
         Service service = definition.getService(new QName("http://account2/AccountService/Account", "AccountService"));
-        Port port = service.getPort("AccountPort");
+        Port port = service.getPort("AccountSOAP11Port");
 
         String endpoint = getEndpoint(port);
        // String ip = HttpUtils.getIpAddress();

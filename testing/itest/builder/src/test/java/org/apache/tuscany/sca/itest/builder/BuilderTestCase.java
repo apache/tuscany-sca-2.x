@@ -205,7 +205,7 @@ public class BuilderTestCase {
         TestUtils.writeWSDL(def);
         
         javax.wsdl.Service svc = def.getService(new QName("http://builder.itest.sca.tuscany.apache.org/", "Service3Service")); 
-        Port port = svc.getPort("Service3Port");
+        Port port = svc.getPort("Service2SOAP11Port");
         Assert.assertEquals("/ComponentB/Service2",TestUtils.getPortAddress(port));
      
     }

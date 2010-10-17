@@ -68,7 +68,7 @@ public class QuestionMarkWSDLTestCase extends TestCase {
         assertNotNull(definition);
         Service service = definition.getService(new QName("http://helloworld/HelloWorldService/HelloWorld",
                                                  "HelloWorldService"));        
-        Port port = service.getPort("HelloWorldPort");
+        Port port = service.getPort("ep2SOAP11Port");
 
         String endpoint = getEndpoint(port);
         assertEquals("http://localhost:8085/services/HelloWorldWebService2", endpoint);
@@ -94,7 +94,7 @@ public class QuestionMarkWSDLTestCase extends TestCase {
         assertNotNull(definition);
         Service service = definition.getService(new QName("http://axis2.ws.binding.sca.tuscany.apache.org/",
                                                           "HelloWorldService"));
-        Port port = service.getPort("HelloWorldPort");
+        Port port = service.getPort("ep1SOAP11Port");
 
         String endpoint = getEndpoint(port);
         // TODO - used to get the real host here but WSDL seems to have localhost in it atm?
