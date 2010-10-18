@@ -20,12 +20,12 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Iterator;
 
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
+import javax.xml.ws.BindingType;
 import javax.xml.ws.ServiceMode;
 import javax.xml.ws.WebServiceProvider;
 
@@ -41,12 +41,9 @@ import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
-import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
@@ -194,20 +191,51 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
                 addSOAPIntent(service);
             }
             hasJaxwsAnnotation = true;
-        }               
+        }                           
         
-        if (hasJaxwsAnnotation == true){
+        
+   	  // Process @BindingType annotation - POJO_8037
+        BindingType bindingType = clazz.getAnnotation(BindingType.class);
+    	
+    	if ( bindingType != null ) {
+    		String bindingTypeValue = bindingType.value();    	
+    		for ( Service service : type.getServices() ) {
+    			addBindingTypeIntent(service, bindingTypeValue);
+    		}
+    		hasJaxwsAnnotation = true;
+    	}
+    	
+        if (hasJaxwsAnnotation == true){        
             // Note that services are based on JAXWS annotations in case 
             // we need to know later. Add a ws binding and a JAXWS annotation
             // implies a WS binding
             for ( Service service : type.getServices() ) {
                 service.setJAXWSService(true);
-                createWSBinding(type, service);
+                createWSBinding(type, service);                               
             }
         }
+        
+ 
+                              	
     }
     
-    /**
+    private void addBindingTypeIntent(PolicySubject subject,
+			String bindingTypeValue) {    
+    	
+    	 Intent soapIntent = policyFactory.createIntent();
+    	 if ( javax.xml.ws.soap.SOAPBinding.SOAP11HTTP_BINDING.equals(bindingTypeValue)) {
+    		 soapIntent.setName(Constants.SOAP11_INTENT);
+    	 } else if ( javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING.equals(bindingTypeValue)) {
+    		 soapIntent.setName(Constants.SOAP12_INTENT);
+    	 } else {
+    		 soapIntent.setName(Constants.SOAP11_INTENT);
+    	 }
+                
+         subject.getRequiredIntents().add(soapIntent);
+		
+	}
+
+	/**
      * Utility methods
      */    
 
