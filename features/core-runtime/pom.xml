@@ -82,6 +82,12 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-common-http</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-common-xml</artifactId>
             <version>${pom.version}</version>
         </dependency>
