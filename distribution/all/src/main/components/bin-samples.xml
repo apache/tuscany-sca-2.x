@@ -45,6 +45,8 @@
                 <exclude>**/target/surefire-reports/**/*</exclude>
                 <exclude>**/target/surefire-osgi-reports</exclude>
                 <exclude>**/target/surefire-osgi-reports/**/*</exclude>
+                <exclude>store-webapp/target</exclude>
+                <exclude>store-webapp/target/**/*</exclude>
                 <exclude>webapps/*/target</exclude>
                 <exclude>webapps/*/target/**/*</exclude>
             </excludes>
