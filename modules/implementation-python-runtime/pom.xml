@@ -33,28 +33,17 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-sca-api</artifactId>
+            <artifactId>tuscany-core-runtime</artifactId>
+            <type>pom</type>
             <version>2.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-python</artifactId>
             <version>2.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
         <dependency>
             <groupId>org.python</groupId>
             <artifactId>jython</artifactId>
