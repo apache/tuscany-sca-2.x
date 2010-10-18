@@ -273,15 +273,13 @@ public class WSDLDefinitionGenerator {
     }
 
     protected void configureService(Definition definition, Service service, PortType portType, String serviceName) throws WSDLException {
-    	// TODO -- this is the recommended mapping in the ws binding spec, but for some reason it is causing ?wsdl to not be available
-    	// in binding-ws-runtime-jaxws-ri WSDLPortTestCase.testQuestionMarkWSDL(). 
-//    	if ( serviceName != null ) {
-//    		QName name = new QName(definition.getTargetNamespace(), serviceName);
-//    		if ( definition.getService(name) == null ) {
-//    			service.setQName(name);
-//    			return;
-//    		}
-//    	}
+    	if ( serviceName != null ) {
+    		QName name = new QName(definition.getTargetNamespace(), serviceName);
+    		if ( definition.getService(name) == null ) {
+    			service.setQName(name);
+    			return;
+    		}
+    	}
     	
         QName portTypeName = portType.getQName();
         if (portTypeName != null) {
