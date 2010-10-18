@@ -29,10 +29,12 @@
     <param-value>/WEB-INF/sca-contributions</param-value>
   </context-param>
 
+<!-- TODO: need to sort out what to do about distributed domain
   <context-param>
     <param-name>org.apache.tuscany.sca.config</param-name>
     <param-value>uri:default</param-value>
   </context-param>
+-->
 
   <filter>
     <filter-name>tuscany</filter-name> 
