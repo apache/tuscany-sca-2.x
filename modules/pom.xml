@@ -150,6 +150,22 @@
         <module>host-corba-jse-tns</module>
         <module>binding-corba</module>
         <module>binding-corba-runtime</module>
+
+        <!-- 
+            Runtime collection features 
+
+            Non-overallapping groups of Tuscany modules that define the 
+            core runtime modules, containing the Tuscany extension SPI, 
+            and the base runtime that defines the minimal Tuscany runtime
+            to which other extensions can be added
+       
+            Extensions are included using maven dependencies on the *-runtime
+            modules in the /modules directory 
+        -->
+        <module>core-runtime</module>
+        <module>base-runtime</module>
+        <module>osgi-runtime</module>
+
     </modules>
 
     <profiles>
