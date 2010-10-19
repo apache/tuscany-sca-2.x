@@ -67,7 +67,7 @@ public class QuestionMarkWSDLTestCase extends TestCase {
         Definition definition = wsdlReader.readWSDL("http://localhost:8085/services/HelloWorldWebService2?wsdl");
         assertNotNull(definition);
         Service service = definition.getService(new QName("http://helloworld/HelloWorldService/HelloWorld",
-                                                 "HelloWorldService"));        
+                                                 "HelloWorld"));        
         Port port = service.getPort("ep2SOAP11Port");
 
         String endpoint = getEndpoint(port);
@@ -93,7 +93,7 @@ public class QuestionMarkWSDLTestCase extends TestCase {
         Definition definition = wsdlReader.readWSDL("http://localhost:8085/foo/bar?wsdl");
         assertNotNull(definition);
         Service service = definition.getService(new QName("http://axis2.ws.binding.sca.tuscany.apache.org/",
-                                                          "HelloWorldService"));
+                                                          "HelloWorld"));
         Port port = service.getPort("ep1SOAP11Port");
 
         String endpoint = getEndpoint(port);

@@ -66,7 +66,7 @@ public class QuestionMarkWSDLIncludeTestCase extends TestCase {
 
         Definition definition = wsdlReader.readWSDL("http://localhost:8085/AccountService?wsdl");
         assertNotNull(definition);
-        Service service = definition.getService(new QName("http://accounts/AccountService/Account", "AccountService"));
+        Service service = definition.getService(new QName("http://accounts/AccountService/Account", "Account"));
         Port port = service.getPort("AccountSOAP11Port");
 
         String endpoint = getEndpoint(port);
