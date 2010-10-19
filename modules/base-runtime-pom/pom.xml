@@ -31,10 +31,8 @@
     <packaging>pom</packaging>
 
     <!-- 
-         The dependencies required to run the Assembly otests minus the web service 
-         binding (which is only required by the otest framework). Provides a minimum
-         set of function for running composites using implementation.java and local 
-         wiring. Other extensions can be added to this base when required 
+         Provides a minimum set of function for running composites using implementation.java 
+         and local wiring. Other extensions can be added to this base when required 
     -->
     <dependencies>
         <dependency>
@@ -42,21 +40,25 @@
             <artifactId>tuscany-domain-node</artifactId>
             <version>${pom.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-web-runtime</artifactId>
             <version>${pom.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-launcher</artifactId>
             <version>${pom.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-sca-client-impl</artifactId>
             <version>${pom.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
@@ -85,18 +87,6 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-shell</artifactId>
             <version>${pom.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-stripes</artifactId>
-            <version>${pom.version}</version>
-            <exclusions>
-                <exclusion>
-                   <groupId>net.sourceforge.stripes</groupId>
-                   <artifactId>stripes</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
