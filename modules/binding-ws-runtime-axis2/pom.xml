@@ -35,7 +35,7 @@
     
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core-runtime</artifactId>
+            <artifactId>tuscany-core-runtime-pom</artifactId>
             <version>2.0-SNAPSHOT</version>
             <type>pom</type>
             <scope>provided</scope>
