@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-base-runtime-pom</artifactId>
-    <name>Apache Tuscany SCA Base Runtime</name>
+    <name>Apache Tuscany SCA Base Runtime POM</name>
     <packaging>pom</packaging>
 
     <!-- 

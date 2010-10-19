@@ -26,8 +26,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tuscany-core-runtime</artifactId>
-    <name>Apache Tuscany SCA Core Runtime</name>
+    <artifactId>tuscany-core-runtime-pom</artifactId>
+    <name>Apache Tuscany SCA Core Runtime POM</name>
     <packaging>pom</packaging>
 
     <!-- 

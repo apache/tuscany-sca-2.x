@@ -162,9 +162,9 @@
             Extensions are included using maven dependencies on the *-runtime
             modules in the /modules directory 
         -->
-        <module>core-runtime</module>
-        <module>base-runtime</module>
-        <module>osgi-runtime</module>
+        <module>core-runtime-pom</module>
+        <module>base-runtime-pom</module>
+        <module>osgi-runtime-pom</module>
 
     </modules>
 
