@@ -69,7 +69,7 @@ public class CallbackDestinationInterceptor implements Interceptor {
             if (service.getInterfaceContract().getCallbackInterface() != null) {
 
                 String callbackdestName = jmsMsg.getStringProperty(JMSBindingConstants.CALLBACK_Q_PROPERTY);
-                if (( callbackdestName == null) && ( jmsMsg.getJMSReplyTo() != null ) ) {
+                if (( callbackdestName == null) && ( jmsMsg.getJMSReplyTo() != null ) && msg.getOperation().isNonBlocking() ) {
                 	Destination replyTo = jmsMsg.getJMSReplyTo();
                 	if (replyTo != null) {
                 		callbackdestName = (replyTo instanceof Queue) ? ((Queue) replyTo).getQueueName() : ((Topic) replyTo).getTopicName();
