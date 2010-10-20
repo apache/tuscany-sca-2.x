@@ -67,6 +67,8 @@
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/binding-ws-runtime-axis2/src/main/resources/org/apache/tuscany/sca/binding/ws/axis2/engine/repository/services/services.list</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-spring-tie/src/main/resources/META-INF/spring.handlers</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-spring-tie/src/main/resources/META-INF/spring.schemas</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-spring-runtime/src/main/resources/META-INF/spring.handlers</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-spring-runtime/src/main/resources/META-INF/spring.schemas</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/maven/archetypes/binding/src/test/resources/projects/basic/goal.txt</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-python-runtime/src/main/resources/django/__init__.py</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-python-runtime/src/main/resources/django/utils/__init__.py</exclude>
