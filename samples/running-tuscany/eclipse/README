@@ -1,0 +1,9 @@
+To execute, and debug, sample contributions from Eclipse you first need to 
+import the Tuscany runtime into Eclipse. You then need to import the sample
+contribution into Eclipse as a project. Instructions for doing both of these
+things can be found here 
+
+http://tuscany.apache.org/import-existing-tuscany-sca-projects-into-eclipse.html
+
+Note. these instructions refer to our 1.x code base but it holds true for 
+our 2.x code base. 
