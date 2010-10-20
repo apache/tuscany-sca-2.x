@@ -26,6 +26,7 @@ import javax.jms.Session;
 import javax.naming.NamingException;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
@@ -110,10 +111,20 @@ public class TransportReferenceInterceptor implements Interceptor {
             
             javax.jms.Message requestMessage = (javax.jms.Message)msg.getBody();
                       
-            String msgSelector = "JMSCorrelationID = '" + 
-                                 requestMessage.getJMSMessageID() + 
-                                 "'";
-            MessageConsumer consumer = session.createConsumer(context.getReplyToDestination(), msgSelector);  
+            String msgSelector = null;
+            String correlationScheme = jmsBinding.getCorrelationScheme();
+            if (correlationScheme == null || JMSBindingConstants.CORRELATE_MSG_ID.equalsIgnoreCase(correlationScheme)) {
+                msgSelector = "JMSCorrelationID = '" + requestMessage.getJMSMessageID() + "'";
+            } else if (JMSBindingConstants.CORRELATE_CORRELATION_ID.equalsIgnoreCase(correlationScheme)) {
+                msgSelector = "JMSCorrelationID = '" + requestMessage.getJMSCorrelationID() + "'";
+            }                
+
+            MessageConsumer consumer;
+            if (msgSelector != null) {
+                consumer = session.createConsumer(context.getReplyToDestination(), msgSelector);  
+            } else {
+                consumer = session.createConsumer(context.getReplyToDestination());  
+            }
             
             javax.jms.Message replyMsg;
             try {
