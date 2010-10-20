@@ -107,6 +107,12 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
                 if (op.getName().equals(operationName)) {
                     operation = op;
                     break;
+                } else {
+                	String nativeName = jmsBinding.getNativeOperationName(op.getName());
+                	if (( nativeName != null ) && ( nativeName.equals(operationName)) ) {
+                		operation = op;
+                		break;
+                	}
                 }
             }
         } else if (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSDefault
