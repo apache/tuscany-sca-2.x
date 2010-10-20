@@ -1,202 +1,119 @@
 The Apache Tuscany SCA Samples
 ==============================
 
-New Samples Structure
----------------------
+Welcome to the Apache Tuscany SCA Java runtime. You can find more general 
+documentation about the runtime at:
 
-For the Milestone 5 release of Tuscany SCA Java 2.x we are beginning
-the process of moving to a new structure for samples. Milestone 5 is 
-delivered in a state of partial change over to this new emphasis, and hence
-this README reflects that hybrid state. 
+http://tuscany.apache.org/documentation-2x/. 
 
-There are primarily 3 types of sample; those which focus on pure SCA
-concepts, those which demonstrate features of Tuscany and the last group
-is of samples which give a flavour of more complete, realistic applications.
+Here we give a short overview of what you can find in the samples directory. 
+More detail on the individual sample contributions can be found at:
 
-The new structure primarily focusses separating contributions from the way that 
-contributions are launched. The samples demonstrate the way in which contributions are used by
-launchers to execute tuscany SCA applications.
+http://tuscany.apache.org/documentation-2x/samples-beta1
 
-In this way you can explore the samples by chosing which launcher you wish
-to invoke which contribution. In the old style of sample this distinction was not clear;
-any given sample contained both launcher and contribution, and the set of samples provided
-represented a small subset of the combinations possible by the new approach.
+There are several samples subdirectories in the distribution; 
+  
+getting-started
+===============
+     
+This is a good place to start if you've not tried Tuscany SCA Java before. This 
+directory contains a number of simple "SCA Contributions" that can be run using 
+the Tuscany SCA runtime. An SCA Contribution is the way that SCA composite
+applications are packaged so they can be run. For general information on SCA
+see http://tuscany.apache.org/documentation-2x/sca-introduction.html
 
-Within the SCA category of samples, most of the calculator samples, have been
-migrated to this new structure as follows.
+learning-more
+=============
 
-SCA Samples
-  binding-rmi-calculator
-    contribution-calculator-reference
-    contribution-calculator-service
-  binding-sca
-    contribution-calculator
-  contribution-binding-ws-calculator
-  contribution-implementation-java-calculator
-  calculator-sca-client
-  launcher-command-line 
-  launcher-embedded-jse
-  launcher-embedded-osgi
-  launcher-mvn
+This directory contains many more SCA Contributions that you can try with 
+the Tuscany SCA Java runtime. Some demonstrate particular features of the 
+runtime, or example, the contributions under the async directory demonstrate
+the asynchronous programming model that the runtime supports. 
 
-Please visit the 2.x documentation in our  website [1] to get a better understanding of SCA
-and Tuscany 2.x
+SCA is extensible. You can plug in extensions to support many different types
+of technology. The Tuscany SCA Java runtime comes with lots of extensions
+and the majority of contributions here demonstrate these extensions. They are
+organizes under directories following the name of the extension, for example, 
+contributions that demonstrate the web services binding in operation can
+be found in the binding-ws directory. 
 
-Running the New Style samples
------------------------------
+The contributions here can be run with using the approach that you find
+most convenient from the running-tuscany directory. 
 
-To run a new style sample there are 3 basic steps
+running-tuscany
+===============
 
-1) build the contribution: using either the command "mvn", "ant run" or your usual steps to build a
-   module in your IDE
-2) unit test the contribution: if you used mvn or ant in step 1 then you will already have done this;
-   if you used an IDE follow your usual steps to run the unit test in the contribution's module
-3) launch the contribution: go to one of the launcher* subdirectories of the samples root directory
-   and follow the instructions there to use a launcher to launch your chosen contribution 
+The Tuscany SCA Java runtime is designed to be both embedded in other programs
+and used as it directly. As such there are many different ways that you can
+start the Tuscany SCA runtime and deploy contributions to it. Each directory 
+here describes a different way of running Tuscany. In most cases these 
+different approaches can be used to run any of the contributions from the 
+getting-started or learning-more directories.
 
-I the case where you want to exercise the sample contribution with a separate client program, such as
-an application using the SCA client API then there is a 4th step of starting that client application
+applications
+============
 
-[1] http://tuscany.apache.org/documentation-2x/
+The contributions here demonstrate more fully formed applications when 
+compared to the contributions found the getting-started or 
+learning-more directories.
 
-Running the Old Style Samples
-------------------------------
-The Apache Tuscany SCA samples are built as part of the main Maven build and 
-run, using the provided JUnit test cases, as tests in the Maven build.
+extending-tuscany
+=================
 
-In the binary distribution of Apache Tuscany most samples can also 
-be run using the provided Ant build.xml files. These show the samples running 
-from a simple main() method without the need for a JUnit test case. 
+Once you're familiar with Tuscany and SCA you're likely to find that to 
+implement you're application you need particular bindings, implementation 
+types, policies or databindings. The examples in this directory show you
+how to extend the Tuscany runtime to include the technologies you need to use.
 
-In these notes text that appears in angled brackets like this <example> means 
-that you need to make a choice and provide your own text at that point. 
+Running samples
+---------------
 
-These simple samples have been created with the intention of illustrating the 
-usage of the SCA API and annotations and certainly not to levels of SCA component 
-abstraction.  In real life situations you should use SCA to assemble real and 
-usually bigger components, and when you do that you'll get all the benefits of 
-SCA, bindings, policies, integration in an SOA environment etc..
+Running a samples contribution involves 3 basic steps
 
-Sample Layout
--------------
-Generally sample directories are organized in the same way based on the default 
-project template provided by Maven. For example, take a look at the calculator 
-sample;
+1) build the contribution
 
-calculator/        
-  src/              - Holds all of the source files for the sample
-    main/           - Groups together the files that implement the sample 
-      java/         - Java source files
-      resources/    - Non java resource files such as composte files
-    test/           - Groups together files that provide sample tests
-      java          - Java test sources files. Usually JUnit test cases
-  target/           - Holds the files generated when the sample is built
-    classes/        - For example, Java class files
-    test-classes/   - classes from src/test and other test files
+Using ant, maven or eclipse (see below)
 
-Getting Ready To Build
-----------------------
-You will need to install the following software before you start. 
+2) launch the contribution
 
-J2SE Development Kit (JDK) 5.0
-Apache Ant 1.7.1                - if you are going to use Ant 
-Apache Maven 2.0.9              - if you are going to use Maven
+Using one of the approaches described in the running-tuscany directory
 
-Java and Ant and/or Maven binary directories must be present in your PATH so 
-that their executable programs are available in your environment. You may 
-find it useful to use a script to set up your environment, for example;
+3) send a test message to the a component service 
 
-For UNIX:
-  JAVA_HOME=/<installation_directory>
-  ANT_HOME=/<installation_directory>/apache-ant-1.7.0
-  MAVEN_HOME=/<installation_directory>/maven-2.0.6
-  export PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$MAVEN_HOME/bin:$PATH
+When you want to exercise an SCA composite application you have to send a 
+message to a component service. There are several ways of doing this depending
+on how the sample contribution has been configured. For example, you could
+send a SOAP message using the Web Services explorer in Eclipse, you could 
+use a separate client program that uses the SCA client API, the sample
+contribution itself may even include initialization code that sends a test
+message when the contribution is started. The documentation for each sample
+describes what to do to send a test message.  
 
-For Windows:
-  set JAVA_HOME=C:\<installation_directory>
-  set ANT_HOME=C:\<installation_directory>\apache-ant-1.7.0
-  set MAVEN_HOME=C:\<installation_directory>\maven-2.0.6
-  set PATH=%JAVA_HOME%\bin;%ANT_HOME%\bin;%MAVEN_HOME%\bin;%PATH%
+Building the sample contributions using Ant
+--------------------------------------------
+Most sample contributions are provided with a build.xml file. When you see one
+you can build it using Ant. 
 
-
-Building And Running The SCA Samples Using Ant
-----------------------------------------------
-The build.xml files provided with the Apache Tuscany SCA samples are designed 
-to work with the binary distribution. They rely on the tuscany-sca-manifest.jar
-to describe the class path and this jar is only provided as part of the 
-binary distribution.
-
-The binary distribution of SCA also includes precompiled versions of each sample. 
-If you look in the target directory of each sample you will see this jar file. To
-run a sample based on all of the precompiled artifacts all you have to do is:
+These build.xml files are designed to work with the Tuscany SCA Java binary
+distribution and build a classpath that, by various means, refers to the 
+jars that are shipped in the modules directory. For them to work properly
+they should be run from the directory in which you find the build.xml file. 
 
 cd <sampledir>
-ant run
+ant
 
-Check each <sampledir>/README file as some samples require that two progams are
-run to get the desired result, for example, the two samples that show how
-to build extensions are run from their associated application samples. 
-
-If you want to rebuild a sample, for example, if you have changed it, do the
-following:
-
-cd <sampledir>
-ant compile
+The result of this process will be the built contribution (a jar file) in the 
+target subdirectory of the sample contribution directory. 
 
 Once the sample is built you have the option of running the sample in whatever 
-way best suits you. Two alternatives are provided in the ant build files.
+way best suits you.  
 
-The compile target builds the class files and then builds the jar so you can use 
-the same command as before:
+Building SCA Samples Using Maven
+--------------------------------
+All sample contributions are provided with a pom.xml Maven build file. The 
+Maven build process will work from both source and binary distributions. 
 
-ant run
-
-This will use the generated jar to run the samples. The command line version of
-this is:
-
-on Windows
-
-java -cp ..\..\features\tuscany-sca-manifest.jar;target\<sample jar file> <sample runnable class>
-
-for example : java -cp ..\..\features\tuscany-sca-manifest.jar;target\sample-calculator.jar calculator.CalculatorClient
-
-on *nix 
-
-java -cp ../../features/tuscany-sca-manifest.jar:target/<sample jar file> <sample runnable class>
-
-for example : java -cp ../../features/tuscany-sca-manifest.jar:target/sample-calculator.jar calculator.CalculatorClient
-
-
-You can use the compiled classes directly using
-
-ant run-classes
-
-The command line version of this is:
-
-on Windows
-
-java -cp ..\..\features\tuscany-sca-manifest.jar;target\classes <sample runnable class>
-
-for example : java -cp ..\..\features\tuscany-sca-manifest.jar;target\classes calculator.CalculatorClient
-
-on *nix 
-
-java -cp ../../features/tuscany-sca-manifest.jar:target/classes <sample runnable class>
-
-for example : java -cp ../../features/tuscany-sca-manifest.jar:target/classes calculator.CalculatorClient
-
-The class specified on the command of course depends on which sample you want to 
-run. In the examples we have used we are running the CalculatorClient from the calculator sample. 
-
-
-Building And Running The SCA Samples Using Maven
-------------------------------------------------
-
-The Maven build process will work from both source and binary distributions. 
-To build and test all of the Apache Tuscany SCA sources, including the samples,
-do the following.
-
-cd sca
+cd <sampledir>
 mvn
 
 This will take a little while to complete. Experience with Maven tells us that 
@@ -204,66 +121,24 @@ sometimes there are problems downloading the dependencies that Apache Tuscany
 SCA requires. If Maven reports that it cannot download required dependencies 
 try running the Maven build again. 
 
-Once you have all of the source built you can build and run each sample 
-independently if required.
+When using Maven the samples are unit tested using JUnit test cases and so you 
+will sometimes see test output during the build process.  
 
-cd <sampledir>
-mvn
+The result of this process will be the built contribution (a jar file) in the 
+target subdirectory of the sample contribution directory. 
 
-When using Maven the samples are run within JUnit test cases and so you will 
-sometimes not see any test output. You will always see an indication of test 
-success or failure. 
+Once the sample is built you have the option of running the sample in whatever 
+way best suits you. 
 
-Using The Samples In An IDE
----------------------------------------------
+Building Samples In An IDE
+---------------------------
+
 The easiest way to use the samples in an IDE is to use Maven to generate all 
-of the IDE project files for you automatically. This works best if you 
-generate IDE projects for all of the Apache Tuscany modules. You can then 
-include the ones you are interested in working with in you IDE. 
+of the IDE project files for you automatically. You don't have to do this 
+though and can use a series of manual steps in order to import the Tuscany
+samples into an IDE. 
 
-To build IDE project files for all of the modules in Apache Tuscany SCA;
+Both approaches to imports SCA contribution projects into Eclipse are 
+documented at:
 
-cd sca 
-
-If you are an Eclipse user do the following
-
-mvn -Peclipse
-
-If you are an IDEA user do the following 
-
-mvn idea:idea
-
-These commands generate project files for each module in Apache Tuscany SCA. 
-The modules you are interested in can now be included in your IDE, for example,
-in Eclipse, if you create a new Java project and use the option to "create a 
-new project from existing source" you can specify an SCA module directory, 
-which includes the generated project files, and Eclipse will treat it like any
-other Java project. 
-
-Using The Samples In An IDE Without Maven
------------------------------------------
-We don't provide any IDE project files with our distributions so you will have to 
-import the sample files into your IDE manually. Here's an example of how it can be 
-done using Eclipse.
- 
-In a new or existing workspace
-    Create a new java project to represent the sample you want to work on, e.g.
-        launcher-embedded-jse
-    Import all of the sample code and resources into this project, e.g.
-        File, Import and then select tuscany-sca-1.0-incubating\samples\launcher-embedded-jse from the filesystem
-    Configure the source path to include
-        src/main/java
-        src/main/resources
-    Configure the output folder to be
-        target
-    Configure the build path to include the manifest jar tuscany-sca-manifiest.jar provided in
-        features
-     For here you have run;
-        the unit test  (loads a sequence of contributions and runs them)
-        SampleJSELauncher (you'll need to add the name of the contribution to run as a parameter)
-        build.xml (you'll need to set tuscany.home to point to distribution\all\target\apache-tuscany-sca-all-2.0-SNAPSHOT.dir\tuscany-sca-2.0-SNAPSHOT) 
-
-The details of how to do this for other development environments will
-vary but the process will be similar. 
-
-
+http://tuscany.apache.org/import-existing-tuscany-sca-projects-into-eclipse.html
