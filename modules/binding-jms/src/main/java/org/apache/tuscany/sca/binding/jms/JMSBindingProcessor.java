@@ -732,9 +732,12 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     private void parseProperty(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         jmsBinding.setHeaders( true );
         String name = reader.getAttributeValue(null, "name");
-        String type = reader.getAttributeValue(null, "type");        
+        QName typeName = StAXHelper.getAttributeAsQName(reader, "type");
+        String type = typeName == null ? null : typeName.getLocalPart(); 
+        
         if (name != null && name.length() > 0) {
             Object value = reader.getElementText();
+           
             if ("boolean".equalsIgnoreCase(type)) {
                 value = Boolean.parseBoolean((String)value);
             } else if ("byte".equalsIgnoreCase(type)) {
@@ -872,7 +875,8 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
     private void parseOperationPropertyProperties(XMLStreamReader reader, JMSBinding jmsBinding, String opName) throws XMLStreamException {
         String propName = reader.getAttributeValue(null, "name");
-        String type = reader.getAttributeValue(null, "type");
+        QName typeName = StAXHelper.getAttributeAsQName(reader, "type");
+        String type = typeName == null ? null : typeName.getLocalPart(); 
         if (propName != null && propName.length() > 0) {
             Object value = reader.getElementText();
             if ("boolean".equalsIgnoreCase(type)) {
