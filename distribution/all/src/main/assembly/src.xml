@@ -38,8 +38,9 @@
                 <exclude>**/target</exclude>
                 <exclude>**/target/**/*</exclude>
                 <exclude>**/maven-eclipse.xml</exclude>
+                <exclude>**/dependency-reduced-pom.xml</exclude>
                 <exclude>modules/web-javascript-dojo/src/main/resources/dojo/**</exclude>
-                <exclude>shades/**/dependency-reduced-pom.xml</exclude>
+                <exclude>samples/learning-more/binding-jsonrpc/calculator-webapp/src/main/webapp/dojo/**</exclude>
                 <exclude>unreleased</exclude>
                 <exclude>unreleased/**</exclude>
             </excludes>
