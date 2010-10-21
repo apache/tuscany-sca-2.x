@@ -252,7 +252,9 @@ public class RRBJMSBindingInvoker implements Invoker {
     
     protected Destination getReplyToDestination(Session session) throws JMSException, JMSBindingException, NamingException {
         Destination replyToDest;
-        if (operation.isNonBlocking()) {
+        // [rfeng] If the oneway operation is part of bi-directional interface, the JMSReplyTo should be set
+        if (operation.isNonBlocking() && endpointReference.getComponentReferenceInterfaceContract()
+            .getCallbackInterface() == null) {
             replyToDest = null;
         } else {
             if (bindingReplyDest != null) {

@@ -59,7 +59,8 @@ public class TransportReferenceInterceptor implements Interceptor {
         // get the jms context
         JMSBindingContext context = msg.getBindingContext();
         
-        if (context.getReplyToDestination() == null) {
+        // [rfeng] For oneway operation as part of the bi-directional interface, the JMSReplyTo is present
+        if (context.getReplyToDestination() == null || msg.getOperation().isNonBlocking()) {
             responseMsg.setBody(null);
         } else {
             responseMsg = invokeResponse(msg);
