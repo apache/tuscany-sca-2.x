@@ -1,9 +1,15 @@
-To execute, and debug, sample contributions from Eclipse you first need to 
-import the Tuscany runtime into Eclipse. You then need to import the sample
-contribution into Eclipse as a project. Instructions for doing both of these
-things can be found here 
+To import sample contributions into Eclipse you first need to import the 
+Tuscany runtime. You then need to import the sample contribution into Eclipse
+as a project. Instructions for doing both of these things can be found here 
 
 http://tuscany.apache.org/import-existing-tuscany-sca-projects-into-eclipse.html
 
 Note. these instructions refer to our 1.x code base but it holds true for 
 our 2.x code base. 
+
+Once you have a contribution imported into Eclipse and cleanly compiling
+against the Tuscany runtime jars you probably want to be able to run and 
+debug it. The easiest way to do this is with a simple Java launcher. If you 
+import the runnin-tuscany/embedded-jse project into Eclipse you'll see a 
+number of such launcher programs which you can copy to launch the 
+contribution(s) of your choice. 
