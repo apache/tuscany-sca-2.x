@@ -29,10 +29,8 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore("TUSCANY-3732")
 public class JavaFirstTestCase {
 
     private Node node;
