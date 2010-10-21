@@ -17,10 +17,10 @@
  * under the License.    
 -->
 
-<project name="contribution-binding-rmi-calculator-reference" default="compile">
+<project name="sample-binding-rmi-calculator-reference-contribution" default="compile">
 
     <property name="tuscany.home" value="../../../.."/>
-    <property name="jar.name"   value="contribution-calculator-reference.jar" />
+    <property name="jar.name"   value="sample-binding-rmi-calculator-reference-contribution.jar" />
     
     <echo>${tuscany.home}</echo>
 

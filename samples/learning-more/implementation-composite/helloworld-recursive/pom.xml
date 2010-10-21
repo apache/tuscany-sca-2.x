@@ -27,8 +27,8 @@
     </parent>
 
     <packaging>zip</packaging>
-    <artifactId>sample-helloworld-recursive</artifactId>
-    <name>Apache Tuscany SCA Sample Helloworld using recursive composition</name>
+    <artifactId>sample-implementation-composite-helloworld-contribution</artifactId>
+    <name>Apache Tuscany SCA Sample implementation.composite Helloworld Contribution</name>
 
     <dependencies>
         <dependency>

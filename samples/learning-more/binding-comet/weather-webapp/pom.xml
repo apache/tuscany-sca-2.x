@@ -27,10 +27,10 @@
 	</parent>
 
 	<groupId>org.apache.tuscany.sca</groupId>
-	<artifactId>sample-binding-comet</artifactId>
+	<artifactId>sample-binding-comet-weather-webapp</artifactId>
 	<packaging>war</packaging>
 	<version>1.0</version>
-	<name>Apache Tuscany SCA Sample binding.comet</name>
+	<name>Apache Tuscany SCA Sample binding.comet Weather Webapp</name>
 
 	<dependencies>
 		<dependency>

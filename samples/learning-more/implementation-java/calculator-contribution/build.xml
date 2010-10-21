@@ -17,10 +17,10 @@
  * under the License.    
 -->
 	
-<project name="implementation-java-calculator" default="compile"> 
+<project name="sample-implementation-java-calculator-contribution" default="compile"> 
     
     <property name="tuscany.home" value="../../../.."/>
-    <property name="jar.name"   value="contribution-implementation-java-calculator.jar" />
+    <property name="jar.name"   value="sample-implementation-java-calculator-contribution.jar" />
     
     <echo>${tuscany.home}</echo>
 

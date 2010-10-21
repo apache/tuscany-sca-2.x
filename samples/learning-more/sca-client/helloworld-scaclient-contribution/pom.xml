@@ -26,8 +26,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>sample-helloworld-scaclient</artifactId>
-    <name>Apache Tuscany SCA Sample Helloworld SCAClient</name>
+    <artifactId>sample-sca-client-helloworld</artifactId>
+    <name>Apache Tuscany SCA Sample SCA Client Helloworld </name>
 
     <dependencies>
 

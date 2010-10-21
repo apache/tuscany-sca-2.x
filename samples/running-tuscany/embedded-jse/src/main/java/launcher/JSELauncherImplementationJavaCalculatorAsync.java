@@ -35,7 +35,7 @@ public class JSELauncherImplementationJavaCalculatorAsync {
     }
     
     public void launchImplementationJavaCalculator(){
-        Node node = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/async/calculator-contribution/target/sample-contribution-implementation-java-calculator-async.jar"));
+        Node node = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/async/calculator-contribution/target/sample-implementation-java-calculator-async-contribution.jar"));
         node.start();
         
         node.stop();

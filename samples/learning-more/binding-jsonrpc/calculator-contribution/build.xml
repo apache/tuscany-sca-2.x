@@ -17,9 +17,9 @@
  * under the License.    
 -->
 
-<project name="calculator" default="compile">
+<project name="sample-binding-jsonrpc-calculator-contribution" default="compile">
     <property name="tuscany.home" value="../../.."/>
-    <property name="jar.name"   value="sample-contribution-binding-sca-calculator.jar" />
+    <property name="jar.name"   value="sample-binding-jsonrpc-calculator-contribution.jar" />
     
     <echo>${tuscany.home}</echo>
 

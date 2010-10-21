@@ -27,8 +27,8 @@
     </parent>
 
     <packaging>zip</packaging>
-    <artifactId>sample-helloworld-bpel</artifactId>
-    <name>Apache Tuscany SCA Sample HelloWorld BPEL</name>
+    <artifactId>sample-implementation-bpel-helloworld-contribution</artifactId>
+    <name>Apache Tuscany SCA Sample implementation.bpel HelloWorld Contribution</name>
 
     <dependencies>
         <dependency>

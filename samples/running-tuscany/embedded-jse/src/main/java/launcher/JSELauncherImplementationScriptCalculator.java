@@ -41,7 +41,7 @@ public class JSELauncherImplementationScriptCalculator {
      * Using the Tuscany Node API to get a local service proxy
      */
     public void launchImplementationScriptCalculator(){
-        Node node = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/implementation-script/calculator-contribution/target/sample-contribution-implementation-script-calculator.jar"));
+        Node node = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/implementation-script/calculator-contribution/target/sample-implementation-script-calculator-contribution.jar"));
         node.start();
         
         CalculatorService calculator = node.getService(CalculatorService.class, "CalculatorServiceComponent");

@@ -26,9 +26,9 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>sample-helloworld-jaxrs-webapp</artifactId>
+    <artifactId>sample-implementation-web-helloworld-jaxrs-webapp</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany SCA Sample Helloworld JAX-RS</name>
+    <name>Apache Tuscany SCA Sample implemenation.web Helloworld JAX-RS WebApp</name>
 
     <dependencies>
 

@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<project name="sample-helloworld-bpel" default="compile">
+<project name="sample-implementation-bpel-helloworld-contribution" default="compile">
     <property name="test.class"   value="helloworld.BPELClient" />
-    <property name="test.jar"     value="sample-helloworld-bpel.jar" />
+    <property name="test.jar"     value="sample-implementation-bpel-helloworld-contribution.jar" />
     <property name="manifest.jar" value="../../lib/tuscany-sca-manifest.jar" />
 
     <target name="init">

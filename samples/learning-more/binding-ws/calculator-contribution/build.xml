@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="binding-ws-calculator" default="compile"> 
+<project name="sample-binding-ws-calculator-contribution" default="compile"> 
 	<property name="tuscany.home" value="../../../.."/>
-    <property name="jar.name"   value="sample-contribution-binding-ws-calculator.jar" />
+    <property name="jar.name"   value="sample-binding-ws-calculator-contribution.jar" />
 	
 	<echo>${tuscany.home}</echo>
 

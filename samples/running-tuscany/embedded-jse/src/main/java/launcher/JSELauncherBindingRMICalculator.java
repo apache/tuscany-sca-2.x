@@ -39,8 +39,8 @@ public class JSELauncherBindingRMICalculator {
 
     public void launchBindingRMICalculator(){
     	
-        Node node1 = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/binding-rmi/calculator-service-contribution/target/sample-contribution-binding-rmi-calculator-service.jar"));       
-        Node node2 = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/binding-rmi/calculator-reference-contribution/target/sample-contribution-binding-rmi-calculator-reference.jar"));
+        Node node1 = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/binding-rmi/calculator-service-contribution/target/sample-binding-rmi-calculator-service-contribution.jar"));       
+        Node node2 = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/binding-rmi/calculator-reference-contribution/target/sample-binding-rmi-calculator-reference-contribution.jar"));
         
         node1.start();
         node2.start();

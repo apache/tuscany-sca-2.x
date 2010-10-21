@@ -27,8 +27,8 @@
     </parent>
 
     <packaging>zip</packaging>
-    <artifactId>scdl-include-contribution</artifactId>
-    <name>Apache Tuscany SCA Samples - Getting Started - scdl-include-contribution</name>
+    <artifactId>sample-scdl-include-contribution</artifactId>
+    <name>Apache Tuscany SCA Sample include Composite Contribution</name>
 
     <dependencies>
         <dependency>

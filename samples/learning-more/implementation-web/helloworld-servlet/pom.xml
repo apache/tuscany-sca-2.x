@@ -26,9 +26,9 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>sample-helloworld-servlet-webapp</artifactId>
+    <artifactId>sample-implementation-web-helloworld-servlet-webapp</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany SCA Sample Helloworld Servlet</name>
+    <name>Apache Tuscany SCA Sample implementation.web Helloworld Servlet WebApp</name>
 
     <dependencies>
 

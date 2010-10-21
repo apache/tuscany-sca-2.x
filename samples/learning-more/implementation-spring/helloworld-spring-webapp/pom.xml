@@ -26,8 +26,8 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>sample-helloworld-spring-webapp</artifactId>
-    <name>Apache Tuscany SCA Sample Spring Helloworld</name>
+    <artifactId>sample-implementation-spring-helloworld-webapp</artifactId>
+    <name>Apache Tuscany SCA Sample implementation.spring Helloworld WebApp</name>
     <packaging>war</packaging>
 
     <dependencies>

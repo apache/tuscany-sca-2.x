@@ -41,7 +41,7 @@ public class SampleOSGILauncherBindingWS extends RuntimeIntegration {
         
         // launcher.launchBindingWSCalculator();
         
-        Node node = launcher.startNode(new Contribution("c1", "../../learning-more/binding-ws/calculator-contribution/target/sample-contribution-binding-ws-calculator.jar"));
+        Node node = launcher.startNode(new Contribution("c1", "../../learning-more/binding-ws/calculator-contribution/target/sample-binding-ws-calculator-contribution.jar"));
         
         CalculatorService calculator = node.getService(CalculatorService.class, "CalculatorServiceComponent");
                

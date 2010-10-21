@@ -26,9 +26,9 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>sample-helloworld-jms-webapp</artifactId>
+    <artifactId>sample-binding-jms-helloworld-webapp</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany SCA Sample JMS HelloWorld in a WebApp</name>
+    <name>Apache Tuscany SCA Sample binding.jms HelloWorld WebApp</name>
 
     <dependencies>
 

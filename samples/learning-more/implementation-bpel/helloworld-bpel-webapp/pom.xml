@@ -28,9 +28,9 @@
         <relativePath>../../pom.xml</relativePath>
       </parent>
 
-      <artifactId>sample-helloworld-bpel-webapp</artifactId>
+      <artifactId>sample-implementation-bpel-helloworld-webapp</artifactId>
       <packaging>war</packaging>
-      <name>Apache Tuscany SCA Sample Helloworld BPEL</name>
+      <name>Apache Tuscany SCA Sample implementation.bpel Helloworld WebApp</name>
 
 	<properties>
 		<tuscany.version>2.0-SNAPSHOT</tuscany.version>

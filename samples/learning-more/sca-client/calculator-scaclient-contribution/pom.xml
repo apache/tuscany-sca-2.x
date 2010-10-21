@@ -26,8 +26,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>sample-calculator-scaclient</artifactId>
-    <name>Apache Tuscany SCA Sample Calculator SCAClient</name>
+    <artifactId>sample-sca-client-calculator</artifactId>
+    <name>Apache Tuscany SCA Sample SCA Client Calculator</name>
 
     <dependencies>
 

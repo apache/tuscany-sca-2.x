@@ -26,9 +26,9 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>sample-helloworld-js-client-webapp</artifactId>
+    <artifactId>sample-implementation-web-helloworld-js-client-webapp</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany SCA Sample Helloworld Javascript Client</name>
+    <name>Apache Tuscany SCA Sample implemenation.web Helloworld Javascript Client WebApp</name>
 
     <dependencies>
 
