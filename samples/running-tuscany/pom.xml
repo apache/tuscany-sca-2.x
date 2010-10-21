@@ -38,7 +38,11 @@
             <modules>
                 <!-- don't need to process these as they just contain README files
                 <module>command-line</module>
+                <module>eclipse</module>
                 <module>maven</module>
+                <module>maven-junit</module>
+                <module>maven-osgi-junit</module>
+                <module>osgi</module>
                 <module>webapp</module>
                 -->
                 <module>embedded-jse</module>
