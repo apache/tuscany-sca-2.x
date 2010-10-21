@@ -28,11 +28,12 @@ import test.client.CreditCardPaymentCallback;
 import com.example.test.jaxb.server.CreditCardDetailsType;
 
 /**
- * The bi-direction interface
+ * The bi-direction interface for the server side
  */
 @Remotable
 @Callback(CreditCardPaymentCallback.class)
 public interface CreditCardPaymentRequestServer {
+    // Send out the request
     @OneWay
-    void authorizeRequest(CreditCardDetailsType creditCard, float amount);
+    void authorizeRequestOneway(CreditCardDetailsType creditCard, float amount);
 }

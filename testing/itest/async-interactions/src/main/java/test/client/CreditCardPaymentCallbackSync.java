@@ -18,15 +18,13 @@
  */
 package test.client;
 
-import org.oasisopen.sca.annotation.OneWay;
 import org.oasisopen.sca.annotation.Remotable;
 
 /**
- * The oneway callback interface
+ * The synchronous callback interface
  */
 @Remotable
-public interface CreditCardPaymentCallback {
+public interface CreditCardPaymentCallbackSync {
     // Makes a callback
-    @OneWay
-    void authorizeResponseOneway(String creditCardNumber, String status);
+    String authorizeResponse(String creditCardNumber, String status);
 }

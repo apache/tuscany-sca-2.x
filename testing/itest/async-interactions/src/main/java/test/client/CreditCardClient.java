@@ -57,4 +57,13 @@ public interface CreditCardClient {
      * @return
      */
     String authorizeSCAAsyncWithCallback(String creditCardNumber, String holder, float amount);
+    
+    /**
+     * Invoke the service using request/response and the target component will make a callback upon the request has been processed
+     * @param creditCardNumber
+     * @param holder
+     * @param amount
+     * @return
+     */
+    String authorizeSCAWithCallback(String creditCardNumber, String holder, float amount);
 }

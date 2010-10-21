@@ -16,17 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package test.client;
 
-import org.oasisopen.sca.annotation.OneWay;
+package test.server;
+
+import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Remotable;
 
+import test.client.CreditCardPaymentCallbackSync;
+
+import com.example.test.jaxb.server.CreditCardDetailsType;
+
 /**
- * The oneway callback interface
+ * The synchronous bi-direction interface for the client side (we need separate classes for the client and server so that they can take different CreditCardDetailsType)
  */
 @Remotable
-public interface CreditCardPaymentCallback {
-    // Makes a callback
-    @OneWay
-    void authorizeResponseOneway(String creditCardNumber, String status);
+@Callback(CreditCardPaymentCallbackSync.class)
+public interface CreditCardPaymentRequestServerSync {
+    // Send out the request
+    String authorizeRequest(CreditCardDetailsType creditCard, float amount);
 }

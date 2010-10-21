@@ -26,11 +26,12 @@ import org.oasisopen.sca.annotation.Remotable;
 import com.example.test.jaxb.client.CreditCardDetailsType;
 
 /**
- * The bi-direction interface
+ * The bi-direction interface for the client side (we need separate classes for the client and server so that they can take different CreditCardDetailsType)
  */
 @Remotable
 @Callback(CreditCardPaymentCallback.class)
 public interface CreditCardPaymentRequestClient {
+    // Send out the request
     @OneWay
-    void authorizeRequest(CreditCardDetailsType creditCard, float amount);
+    void authorizeRequestOneway(CreditCardDetailsType creditCard, float amount);
 }

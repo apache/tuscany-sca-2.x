@@ -41,6 +41,7 @@
         <implementation.java class="test.client.CreditCardPaymentClientImpl" />
         <reference name="proxy" target="CreditCardPaymentComponent/CreditCardPayment" />
         <reference name="asyncProxy" target="CreditCardPaymentComponent/CreditCardPaymentRequestServer" />
+        <reference name="syncProxy" target="CreditCardPaymentComponent/CreditCardPaymentRequestServerSync" />
     </component>
 
 </composite>

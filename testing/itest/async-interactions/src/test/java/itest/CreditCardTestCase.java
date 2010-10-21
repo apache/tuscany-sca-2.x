@@ -80,4 +80,10 @@ public class CreditCardTestCase {
         String result = client.authorizeSCAAsyncWithCallback("888", "Jane", 110.0f);
         Assert.assertEquals("OK", result);
     }
+    
+    @Test
+    public void testCreditCardSCAWithCallback() throws InterruptedException, ExecutionException {
+        String result = client.authorizeSCAWithCallback("999", "Steve", 210.0f);
+        Assert.assertEquals("OK", result);
+    }
 }

@@ -39,13 +39,17 @@ import com.example.test.jaxws.client.CreditCardPayment;
  * Mocked implementation of CreditCardPaymentClient
  */
 @Service(CreditCardClient.class)
-public class CreditCardPaymentClientImpl implements CreditCardClient, CreditCardPaymentCallback {
+public class CreditCardPaymentClientImpl implements CreditCardClient, CreditCardPaymentCallback,
+    CreditCardPaymentCallbackSync {
 
     @Reference
     private CreditCardPayment proxy;
 
     @Reference
     private CreditCardPaymentRequestClient asyncProxy;
+
+    @Reference
+    private CreditCardPaymentRequestClientSync syncProxy;
 
     @Override
     public String authorize(String creditCardNumber, String holder, float amount) {
@@ -122,10 +126,10 @@ public class CreditCardPaymentClientImpl implements CreditCardClient, CreditCard
 
     public String authorizeSCAAsyncWithCallback(String creditCardNumber, String holder, float amount) {
         CreditCardDetailsType creditCard = createCreditCard(creditCardNumber, holder);
-        asyncProxy.authorizeRequest(creditCard, amount);
-        while (true) {
-            synchronized (statusMap) {
-                String status = statusMap.remove(creditCardNumber);
+        asyncProxy.authorizeRequestOneway(creditCard, amount);
+        synchronized (statusMap) {
+            while (true) {
+                String status = statusMap.remove("ASYNC:" + creditCardNumber);
                 if (status != null) {
                     System.out.println("Response found for " + creditCardNumber + " :" + status);
                     return status;
@@ -142,12 +146,43 @@ public class CreditCardPaymentClientImpl implements CreditCardClient, CreditCard
     }
 
     @Override
-    public void authorizeResponse(String creditCardNumber, String status) {
-        System.out.println("SCA Callback: CreditCard: " + creditCardNumber + " Status: " + status);
+    public void authorizeResponseOneway(String creditCardNumber, String status) {
+        System.out.println("SCA one callback: CreditCard: " + creditCardNumber + " Status: " + status);
         synchronized (statusMap) {
-            statusMap.put(creditCardNumber, status);
+            statusMap.put("ASYNC:" + creditCardNumber, status);
             statusMap.notifyAll();
         }
+    }
+
+    public String authorizeSCAWithCallback(String creditCardNumber, String holder, float amount) {
+        CreditCardDetailsType creditCard = createCreditCard(creditCardNumber, holder);
+        syncProxy.authorizeRequest(creditCard, amount);
+        synchronized (statusMap) {
+            while (true) {
+                String status = statusMap.remove("SYNC:" + creditCardNumber);
+                if (status != null) {
+                    System.out.println("Response found for " + creditCardNumber + " :" + status);
+                    return status;
+                } else {
+                    try {
+                        statusMap.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        return "FAIL: " + e.getMessage();
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public String authorizeResponse(String creditCardNumber, String status) {
+        System.out.println("SCA synchronous callback: CreditCard: " + creditCardNumber + " Status: " + status);
+        synchronized (statusMap) {
+            statusMap.put("SYNC:" + creditCardNumber, status);
+            statusMap.notifyAll();
+        }
+        return "ACK";
     }
 
 }
