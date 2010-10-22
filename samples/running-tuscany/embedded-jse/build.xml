@@ -53,14 +53,15 @@
 	
     <target name="run" depends="compile">
         <echo>Please use 'ant run-name-of-sample-contribution-to-run' for example, try one of</echo>
-	<echo>  'ant binding-sca-calculator' </echo>
-	<echo>  'ant binding-ws-calculator'  </echo>
-	<echo>  'ant binding-rmi-calculator'  </echo>
-	<echo>  'ant implementation-java-calculator'  </echo>
+	<echo>  'ant sample-binding-sca-calculator-contribution' </echo>
+	<echo>  'ant sample-binding-ws-calculator-contribution'  </echo>
+	<echo>  'ant sample-binding-rmi-calculator-contribution'  </echo>
+	<echo>  'ant sample-implementation-java-calculator-contribution'  </echo>
+    <echo>  'ant sample-implementation-java-calculator-async-contribution'  </echo>
     </target>
 
     <!-- Run using the "all" manifest jar -->
-    <target name="binding-sca-calculator" depends="compile">
+    <target name="sample-binding-sca-calculator-contribution" depends="compile">
   	     <java classname="launcher.JSELauncherBindingSCACalculator"
               fork="true"
               failonerror="true">
@@ -74,7 +75,7 @@
     </target>
 	
     <!-- Run using the base + extension ant paths -->
-    <target name="binding-ws-calculator" depends="compile">
+    <target name="sample-binding-ws-calculator-contribution" depends="compile">
         <java classname="launcher.JSELauncherBindingWSCalculator"
               fork="true"
               failonerror="true">
@@ -88,7 +89,7 @@
     </target>	
 	
     <!-- Run using the base + extension manifest -->
-    <target name="binding-rmi-calculator" depends="compile">
+    <target name="sample-binding-rmi-calculator-contribution" depends="compile">
         <java classname="launcher.JSELauncherBindingRMICalculator"
               fork="true"
               failonerror="true">
@@ -105,7 +106,7 @@
     </target>	
 	
     <!-- Run using the base + extension aggregations -->
-    <target name="implementation-java-calculator" depends="compile">
+    <target name="sample-implementation-java-calculator-contribution" depends="compile">
         <java classname="launcher.JSELauncherImplementationJavaCalculator"
               fork="true"
               failonerror="true">
@@ -115,6 +116,25 @@
                    <include name="tuscany-base-runtime-aggregation-2.0-SNAPSHOT.jar" />
                 </fileset>
             </classpath> 
+        </java>       
+    </target>	
+	
+    <target name="sample-implementation-java-calculator-async-contribution" depends="compile">
+        <java classname="launcher.JSELauncherImplementationJavaCalculatorAsync"
+              fork="true"
+              failonerror="true">
+            <classpath>  
+                <pathelement location="target/${jar.name}"/>
+                <fileset dir="${tuscany.home}/features/tuscany-base-runtime-pom">
+                   <include name="tuscany-base-runtime-pom-manifest.jar" />
+                </fileset>
+                <fileset dir="${tuscany.home}/features/tuscany-binding-ws-runtime-axis2">
+                   <include name="tuscany-binding-ws-runtime-axis2-manifest.jar" />
+                </fileset>
+                <fileset dir="${tuscany.home}/features/tuscany-host-jetty">
+                   <include name="tuscany-host-jetty-manifest.jar" />
+                </fileset>            	
+            </classpath>
         </java>       
     </target>	
 
