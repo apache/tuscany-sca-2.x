@@ -38,8 +38,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>helloworld-scaclient-contribution</module>
-                <module>calculator-scaclient-contribution</module>
+                <module>helloworld-scaclient</module>
+                <module>calculator-scaclient</module>
             </modules>
         </profile>
     </profiles>    
