@@ -55,6 +55,7 @@
                 <module>sca-client</module>
                 <module>async</module>
                 <module>maven-osgi-junit</module>
+                <module>maven-junit</module>
             </modules>
         </profile>
     </profiles>    
