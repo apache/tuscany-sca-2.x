@@ -33,8 +33,24 @@
     <target name="run"> 
     	
         <ant dir="${distro.root}/samples/running-tuscany/embedded-jse"
-             target="binding-sca-calculator">
+             target="sample-binding-sca-calculator-contribution">
         </ant>
+
+        <ant dir="${distro.root}/samples/running-tuscany/embedded-jse"
+             target="sample-binding-ws-calculator-contribution">
+        </ant>
+             	
+        <ant dir="${distro.root}/samples/running-tuscany/embedded-jse"
+             target="sample-binding-rmi-calculator-contribution">
+        </ant>
+             	
+        <ant dir="${distro.root}/samples/running-tuscany/embedded-jse"
+             target="sample-implementation-java-calculator-contribution">
+        </ant>
+    	
+        <ant dir="${distro.root}/samples/running-tuscany/embedded-jse"
+             target="sample-implementation-java-calculator-async-contribution">
+        </ant>    	  	
 
     </target>
 
