@@ -47,9 +47,10 @@
                 -->
                 <module>embedded-jse</module>
                 <module>embedded-osgi</module>
-                <!-- module>embedded-osgi-base</module -->
+                <!-- module>embedded-osgi-base</module -->                
+                <module>maven-osgi-junit</module>
+                <module>maven-junit</module>
                 <module>shell</module>
-
             </modules>
         </profile>
     </profiles>    
