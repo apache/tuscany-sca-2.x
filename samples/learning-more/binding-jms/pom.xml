@@ -36,7 +36,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>helloworld-contribution</module>
+                <module>helloworld-webapp</module>
             </modules>
         </profile>
     </profiles>    
