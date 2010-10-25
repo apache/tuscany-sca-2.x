@@ -12,9 +12,9 @@ binary distribution archive)
 
 To use this sample OSGI launcher with ant excute the command
 
-ant run-<contributionname>
+ant <contributionname>
 
-where run-<contributionname> is one of the targets in the build.xml file
+where <contributionname> is one of the targets in the provided build.xml file
 
 To use this sample launcher to run all of the contributions as junit test cases,
 execute the command "mvn" in the launcher directory.

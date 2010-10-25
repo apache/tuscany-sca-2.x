@@ -56,10 +56,10 @@
 	
 	<target name="run" depends="compile">
 		<echo>Please use 'ant run-name-of-sample-contribution-to-run' for example, try one of</echo>
-		<echo>  'ant run-contribution-binding-sca-calculator' </echo>
+		<echo>  'ant sample-binding-sca-calculator-contribution' </echo>
     </target>
 	
-    <target name="run-contribution-binding-sca-calculator" depends="compile">
+    <target name="sample-binding-sca-calculator-contribution" depends="compile">
         <java classname="launcher.SampleOSGILauncherBindingSCA"
               fork="true"
               failonerror="true">
@@ -78,7 +78,7 @@
 
 	<!-- TODO - this runs from mvn but not from ant so there is some issue with the 
 	            way the environment gets set up
-    <target name="run-contribution-binding-ws-calculator" depends="compile">
+    <target name="sample-binding-ws-calculator-contribution" depends="compile">
         <java classname="${main.class}"
               fork="true"
         	  failonerror="true">
