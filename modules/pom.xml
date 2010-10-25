@@ -79,6 +79,7 @@
         <module>databinding-sdo-axiom</module>
         <module>databinding-json</module>
         <module>deployment</module>
+        <module>domain-hazelcast</module>
         <module>domain-node</module>
         <module>endpoint-tribes</module>
         <module>endpoint-hazelcast</module>
