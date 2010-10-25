@@ -45,13 +45,14 @@
               <activeByDefault>true</activeByDefault>
           </activation>
           <modules>
-        <module>legal-checks</module>
-        <module>contribution-binding-sca-calculator</module>
-        <module>contribution-binding-ws-calculator</module>
-        <module>contribution-binding-rmi-calculator</module>
-        <module>contribution-implementation-java-calculator</module>
-        <module>launcher-embedded-jse</module>
-        <module>launcher-embedded-osgi</module>
+            <module>legal-checks</module>
+            <module>contribution-binding-sca-calculator</module>
+            <module>contribution-binding-ws-calculator</module>
+            <module>contribution-binding-rmi-calculator</module>
+            <module>contribution-binding-jsonrpc-calculator</module>
+            <module>contribution-implementation-java-calculator</module>
+            <module>launcher-embedded-jse</module>
+            <module>launcher-embedded-osgi</module>
           </modules>
       </profile>
 
@@ -71,6 +72,7 @@
               <module>contribution-binding-sca-calculator</module>
               <module>contribution-binding-ws-calculator</module>
               <module>contribution-binding-rmi-calculator</module>
+              <module>contribution-binding-jsonrpc-calculator</module>
               <module>contribution-implementation-java-calculator</module>
               <module>launcher-embedded-jse</module>
               <module>launcher-embedded-osgi</module>
