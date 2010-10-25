@@ -31,7 +31,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-sca-client-impl</artifactId>
+            <artifactId>tuscany-base-runtime</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -46,26 +46,10 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-hazelcast-runtime</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
             <version>2.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-impl</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
     <build>
             <plugins>
