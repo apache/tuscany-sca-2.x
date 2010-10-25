@@ -10,6 +10,6 @@ our 2.x code base.
 Once you have a contribution imported into Eclipse and cleanly compiling
 against the Tuscany runtime jars you probably want to be able to run and 
 debug it. The easiest way to do this is with a simple Java launcher. If you 
-import the runnin-tuscany/embedded-jse project into Eclipse you'll see a 
+import the running-tuscany/embedded-jse project into Eclipse you'll see a 
 number of such launcher programs which you can copy to launch the 
 contribution(s) of your choice. 
