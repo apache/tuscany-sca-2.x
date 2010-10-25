@@ -1,0 +1,36 @@
+Manifest-Version: 1.0
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA Hazelcast Based Domain
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany Domain Hazelcast
+Bundle-SymbolicName: org.apache.tuscany.sca.domain.hazelcast
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: com.hazelcast.config,
+ com.hazelcast.client,
+ com.hazelcast.core,
+ com.hazelcast.nio,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.impl;version="2.0.0",
+ org.apache.tuscany.sca.assembly.xml;version="2.0.0",
+ org.apache.tuscany.sca.binding.ws;version="2.0.0",
+ org.apache.tuscany.sca.binding.ws.wsdlgen;version="2.0.0",
+ org.apache.tuscany.sca.common.xml;version="2.0.0",
+ org.apache.tuscany.sca.context;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.databinding.xml;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.oasisopen.sca,
+ org.oasisopen.sca.annotation,
+ org.w3c.dom,
+ org.xml.sax
+Export-Package: org.apache.tuscany.sca.endpoint.hazelcast;version="2.0.0";
+ uses:="org.apache.tuscany.sca.runtime,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.core"
+
