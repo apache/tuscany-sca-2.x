@@ -33,9 +33,19 @@ the asynchronous programming model that the runtime supports.
 SCA is extensible. You can plug in extensions to support many different types
 of technology. The Tuscany SCA Java runtime comes with lots of extensions
 and the majority of contributions here demonstrate these extensions. They are
-organizes under directories following the name of the extension, for example, 
+organized under directories following the name of the extension, for example, 
 contributions that demonstrate the web services binding in operation can
-be found in the binding-ws directory. 
+be found in the binding-ws directory. When you want to use the web service
+binding with an SCA service a reference it appears in the composite XML in 
+the following way:
+
+<service>
+  <binding.ws/>
+</service> 
+
+Hence it should be easy to map between extensions, as they appear in 
+composite files and other samples that demonstrate various features of the 
+extension. 
 
 The contributions here can be run with using the approach that you find
 most convenient from the running-tuscany directory. 
@@ -43,10 +53,10 @@ most convenient from the running-tuscany directory.
 running-tuscany
 ===============
 
-The Tuscany SCA Java runtime is designed to be both embedded in other programs
-and used as it directly. As such there are many different ways that you can
-start the Tuscany SCA runtime and deploy contributions to it. Each directory 
-here describes a different way of running Tuscany. In most cases these 
+The Tuscany SCA Java runtime can be used directly from the command line. It can
+also be embedded in other programs. As such there are many different ways that 
+you can start the Tuscany SCA runtime and deploy contributions to it. Each 
+directory here describes a different way of running Tuscany. In most cases these 
 different approaches can be used to run any of the contributions from the 
 getting-started or learning-more directories.
 
@@ -54,8 +64,8 @@ applications
 ============
 
 The contributions here demonstrate more fully formed applications when 
-compared to the contributions found the getting-started or 
-learning-more directories.
+compared to the contributions found the getting-started or learning-more 
+directories.
 
 extending-tuscany
 =================
@@ -138,7 +148,7 @@ of the IDE project files for you automatically. You don't have to do this
 though and can use a series of manual steps in order to import the Tuscany
 samples into an IDE. 
 
-Both approaches to imports SCA contribution projects into Eclipse are 
+Both approaches to importing SCA contribution projects into Eclipse are 
 documented at:
 
 http://tuscany.apache.org/import-existing-tuscany-sca-projects-into-eclipse.html
