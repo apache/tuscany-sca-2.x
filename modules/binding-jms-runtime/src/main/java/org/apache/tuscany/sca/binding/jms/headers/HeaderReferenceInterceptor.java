@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.binding.jms.headers;
 
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
@@ -106,9 +107,11 @@ public class HeaderReferenceInterceptor implements Interceptor {
             	jmsMsg.setJMSExpiration(jmsBinding.getEffectiveJMSTimeToLive(operationName));
             }
             
-        	if (jmsBinding.getOperationJMSCorrelationId(operationName) != null) {
-        		jmsMsg.setJMSCorrelationID(jmsBinding.getOperationJMSCorrelationId(operationName));
-        	}
+            if (jmsBinding.getOperationJMSCorrelationId(operationName) != null) {
+                jmsMsg.setJMSCorrelationID(jmsBinding.getOperationJMSCorrelationId(operationName));
+            } else if (JMSBindingConstants.CORRELATE_CORRELATION_ID.equals(jmsBinding.getCorrelationScheme())) {
+                jmsMsg.setJMSCorrelationID(UUID.randomUUID().toString());
+            }
     
             if (tuscanyMsg.getFrom().getCallbackEndpoint() != null) {
     
