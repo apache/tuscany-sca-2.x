@@ -693,8 +693,7 @@ org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apac
                 <module>modules/databinding-jaxb</module>
                 <module>modules/deployment</module>
                 <module>modules/domain-node</module>
-                <module>modules/endpoint-hazelcast</module>
-                <module>modules/endpoint-hazelcast-client</module>
+                <module>modules/domain-hazelcast</module>
                 <module>modules/extensibility</module>
                 <module>modules/host-http</module>
                 <module>modules/host-jetty</module>
