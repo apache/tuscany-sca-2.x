@@ -40,7 +40,6 @@
         <module>binding-comet-runtime</module>
         <module>binding-ejb</module>
         <module>binding-ejb-runtime</module>
-        <module>binding-hazelcast-runtime</module>
         <module>binding-http</module>
         <module>binding-http-runtime</module>
         <module>binding-jms</module>
