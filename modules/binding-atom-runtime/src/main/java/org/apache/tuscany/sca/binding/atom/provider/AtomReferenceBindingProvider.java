@@ -49,7 +49,7 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
     private EndpointReference endpointReference;
     private RuntimeComponentReference reference;
     private AtomBinding binding;
-    private String authorizationHeader;
+    private String authorizationHeader = null;
     private HttpClient httpClient;
     private Mediator mediator;
     private DataType<?> itemClassType;
@@ -71,8 +71,10 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
         this.mediator = mediator;
 
         // Prepare authorization header
-        String authorization = "admin" + ":" + "admin";
-        authorizationHeader = "Basic " + new String(Base64.encodeBase64(authorization.getBytes()));
+        // TUSCANY-3735: Don't send authorization header by default as this can cause problems.
+        // Commented out the following two lines until we have a better way to control this.
+        //String authorization = "admin" + ":" + "admin";
+        //authorizationHeader = "Basic " + new String(Base64.encodeBase64(authorization.getBytes()));
 
         // Create an HTTP client
         HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
@@ -123,10 +125,12 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
     public void start() {
 
         // Configure the HTTP client credentials
-        Credentials credentials = new UsernamePasswordCredentials("admin", "admin");
-        httpClient.getParams().setAuthenticationPreemptive(true);
-        URI uri = URI.create(binding.getURI());
-        httpClient.getState().setCredentials(new AuthScope(uri.getHost(), uri.getPort()), credentials);
+        // TUSCANY-3735: Don't use authentication by default as this can cause problems.
+        // Commented out the following four lines until we have a better way to control this.
+        //Credentials credentials = new UsernamePasswordCredentials("admin", "admin");
+        //httpClient.getParams().setAuthenticationPreemptive(true);
+        //URI uri = URI.create(binding.getURI());
+        //httpClient.getState().setCredentials(new AuthScope(uri.getHost(), uri.getPort()), credentials);
 
         // Find the get operation on the reference interface
         if (true) {
