@@ -175,7 +175,7 @@ public class ProviderFeedEntityTagsTestCase {
         }
     }		
 
-    // @Test @Ignore Intermitently fails, see TUSCANY-3299
+    @Test
     public void testUnmodifiedGetIfUnModified() throws Exception {		
         //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfUnModified");
         // Feed request with predicates
@@ -187,8 +187,9 @@ public class ProviderFeedEntityTagsTestCase {
         ClientResponse res = client.get(providerURI, opts);
         Assert.assertNotNull(res);
         try {
-            // Should return 304 - Feed not provided since feed is modified since.
-            Assert.assertEquals(304, res.getStatus());
+            // Should return 200 - Feed provided since feed is unmodified since.
+            Assert.assertEquals(200, res.getStatus());
+            Assert.assertEquals(ResponseType.SUCCESS, res.getType());
         } finally {
             res.release();
         }
@@ -276,7 +277,7 @@ public class ProviderFeedEntityTagsTestCase {
             Date thisLastModified = res.getLastModified();
             Assert.assertNotNull( thisLastModified );
 
-            // Should return 200 - value since feed is changed
+            // Should return 200 - value since feed matches eTag
             Assert.assertEquals(200, res.getStatus());
             Assert.assertEquals(ResponseType.SUCCESS, res.getType());
 
@@ -290,12 +291,12 @@ public class ProviderFeedEntityTagsTestCase {
 
     @Test
     public void testModifiedGetIfUnModified() throws Exception {		
-        //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfUnModified");
+        //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedModifiedGetIfUnModified");
         // Feed request with predicates
         RequestOptions opts = new RequestOptions();
         final String contentType = "application/atom+xml"; 
         opts.setContentType(contentType);
-        opts.setHeader( "If-Unmodified-Since", dateFormat.format( new Date() ));
+        opts.setHeader( "If-Unmodified-Since", dateFormat.format( previousSecond(lastModified) ));
 
         ClientResponse res = client.get(providerURI, opts);
         Assert.assertNotNull(res);
@@ -309,12 +310,12 @@ public class ProviderFeedEntityTagsTestCase {
 
     @Test
     public void testModifiedGetIfModified() throws Exception {		
-        //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfModified");
+        //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedModifiedGetIfModified");
         // Feed request with predicates
         RequestOptions opts = new RequestOptions();
         final String contentType = "application/atom+xml"; 
         opts.setContentType(contentType);
-        opts.setHeader( "If-Modified-Since", dateFormat.format( lastModified ));
+        opts.setHeader( "If-Modified-Since", dateFormat.format( previousSecond(lastModified) ));
 
         ClientResponse res = client.get(providerURI, opts);
         Assert.assertNotNull(res);
@@ -382,5 +383,14 @@ public class ProviderFeedEntityTagsTestCase {
                 reader.close();
             }
         }
+    }
+
+    /**
+     * Subtract one second from a date
+     * @param date with millisecond precision
+     * @return date with one second subtracted
+     */
+    private Date previousSecond(Date date) {
+        return new Date(date.getTime() - 1000);
     }
 }
