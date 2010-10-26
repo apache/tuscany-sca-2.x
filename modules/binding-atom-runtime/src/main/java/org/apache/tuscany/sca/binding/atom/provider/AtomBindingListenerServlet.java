@@ -281,7 +281,7 @@ class AtomBindingListenerServlet extends HttpServlet {
                             Date predicateDate = dateFormat.parse( predicate ); 
                             if ( predicateDate.compareTo( exactSeconds(feedUpdated) ) < 0 ) {
                                 // Match, should short circuit
-                                response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
+                                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
                                 return;
                             }             		
                         } catch ( java.text.ParseException e ) {

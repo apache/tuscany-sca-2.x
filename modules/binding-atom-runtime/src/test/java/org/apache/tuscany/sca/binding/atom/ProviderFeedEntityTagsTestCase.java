@@ -301,8 +301,8 @@ public class ProviderFeedEntityTagsTestCase {
         ClientResponse res = client.get(providerURI, opts);
         Assert.assertNotNull(res);
         try {
-            // Should return 304 - Feed not provided since feed is modified since.			
-            Assert.assertEquals(304, res.getStatus());
+            // Should return 412 - Feed not provided since feed is modified since.          
+            Assert.assertEquals(412, res.getStatus());
         } finally {
             res.release();
         }
