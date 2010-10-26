@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-otests-asm-tests</artifactId>
-            <version>2.0-Beta1-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -132,14 +132,14 @@
                  <artifactItem>
                    <groupId>org.apache.tuscany.sca</groupId>
                    <artifactId>oasis-assembly-contributions</artifactId>
-                   <version>2.0-Beta1-SNAPSHOT</version>
+                   <version>2.0-SNAPSHOT</version>
                    <type>zip</type>
                    <outputDirectory>${project.build.directory}/oasis-contributions</outputDirectory>
                  </artifactItem>
                  <artifactItem>
                    <groupId>org.apache.tuscany.sca</groupId>
                    <artifactId>tuscany-otests-asm-tests</artifactId>
-                   <version>2.0-Beta1-SNAPSHOT</version>
+                   <version>2.0-SNAPSHOT</version>
                    <type>jar</type>
                    <excludes>commons-logging.properties,oasis-sca-tests.properties</excludes>
                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>

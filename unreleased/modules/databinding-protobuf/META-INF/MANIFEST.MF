@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA Data Binding for Google ProtocolBuffers
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Data Binding for JSON
+Import-Package: javax.xml.namespace,
+ javax.xml.stream,
+ org.apache.tuscany.sca.common.xml.stax;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.databinding;version="2.0.0",
+ org.apache.tuscany.sca.databinding.impl;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.impl;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.databinding.protobuf
+Bundle-DocURL: http://www.apache.org/
+

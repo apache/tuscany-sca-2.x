@@ -65,7 +65,7 @@
                    <artifactItems>
                      <artifactItem>
                        <groupId>org.apache.tuscany.sca</groupId>
-                       <artifactId>helloworld-contribution</artifactId>
+                       <artifactId>sample-helloworld-contribution</artifactId>
                        <version>${pom.version}</version>
                        <!-- should really go in the target folder but i can't get jetty:run to work using that -->
                        <outputDirectory>src/main/webapp/WEB-INF/sca-contributions</outputDirectory>
