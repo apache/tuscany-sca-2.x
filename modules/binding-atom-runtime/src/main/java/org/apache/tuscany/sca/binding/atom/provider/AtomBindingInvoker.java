@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.binding.atom.provider;
 import static org.apache.tuscany.sca.binding.atom.provider.AtomBindingUtil.entry;
 import static org.apache.tuscany.sca.binding.atom.provider.AtomBindingUtil.feedEntry;
 
-import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +99,7 @@ class AtomBindingInvoker implements Invoker {
                 // Read the Atom entry
                 if (status == 200) {
                     Document<org.apache.abdera.model.Entry> doc = 
-                    	abderaParser.parse(new InputStreamReader(getMethod.getResponseBodyAsStream()));
+                    	abderaParser.parse(getMethod.getResponseBodyAsStream());
                     parsing = true;
                     org.apache.abdera.model.Entry feedEntry = doc.getRoot();
                     
@@ -184,7 +183,7 @@ class AtomBindingInvoker implements Invoker {
 
                 // Read the Atom entry
                 if (status == 200 || status == 201) {
-                    Document<org.apache.abdera.model.Entry> doc = abderaParser.parse(new InputStreamReader(postMethod.getResponseBodyAsStream()));
+                    Document<org.apache.abdera.model.Entry> doc = abderaParser.parse(postMethod.getResponseBodyAsStream());
                     parsing = true;
                     org.apache.abdera.model.Entry createdEntry = doc.getRoot();
 
@@ -355,7 +354,7 @@ class AtomBindingInvoker implements Invoker {
 
                 // Read the Atom feed
                 if (status == 200) {
-                    Document<Feed> doc = abderaParser.parse(new InputStreamReader(getMethod.getResponseBodyAsStream()));
+                    Document<Feed> doc = abderaParser.parse(getMethod.getResponseBodyAsStream());
                     parsing = true;
                     
                     Feed feed = null;
@@ -431,7 +430,7 @@ class AtomBindingInvoker implements Invoker {
 
                 // Read the Atom feed
                 if (status == 200) {
-                    Document<Feed> doc = abderaParser.parse(new InputStreamReader(getMethod.getResponseBodyAsStream()));
+                    Document<Feed> doc = abderaParser.parse(getMethod.getResponseBodyAsStream());
                     parsing = true;
                     Feed feed = doc.getRoot();
 
