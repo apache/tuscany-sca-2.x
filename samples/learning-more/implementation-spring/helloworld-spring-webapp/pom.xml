@@ -57,7 +57,7 @@
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>sample-helloworld-spring</artifactId>
+            <artifactId>sample-implementation-spring-helloworld-contribution</artifactId>
             <version>2.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
@@ -110,7 +110,7 @@
                     <overlays>
                         <overlay>
                             <groupId>org.apache.tuscany.sca</groupId>
-                            <artifactId>sample-helloworld-spring</artifactId>
+                            <artifactId>sample-implementation-spring-helloworld-contribution</artifactId>
                             <type>jar</type>
                             <targetPath>WEB-INF/classes</targetPath>
                             <excludes>
@@ -120,7 +120,7 @@
                         
                         <overlay>
                             <groupId>org.apache.tuscany.sca</groupId>
-                            <artifactId>sample-helloworld-spring</artifactId>
+                            <artifactId>sample-implementation-spring-helloworld-contribution</artifactId>
                             <type>jar</type>
                             <includes>
                                 <include>META-INF/**/*</include>
