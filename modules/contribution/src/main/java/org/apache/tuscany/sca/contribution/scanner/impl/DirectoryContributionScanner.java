@@ -24,8 +24,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.AccessControlException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -40,8 +45,10 @@ import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
  * @version $Rev$ $Date$
  */
 public class DirectoryContributionScanner implements ContributionScanner {
-    private ContributionFactory contributionFactory; 
-        
+	private static final Logger logger = Logger.getLogger(DirectoryContributionScanner.class.getName());
+
+    private ContributionFactory contributionFactory;
+
     public DirectoryContributionScanner(ContributionFactory contributionFactory) {
         this.contributionFactory = contributionFactory;
     }
@@ -61,7 +68,7 @@ public class DirectoryContributionScanner implements ContributionScanner {
                 Artifact artifact = contributionFactory.createArtifact();
                 artifact.setURI(uri);
                 artifact.setLocation(file.toURI().toURL().toString());
-                
+
                 artifacts.add(artifact);
             } catch (MalformedURLException e) {
                 throw new ContributionReadException(e);
@@ -72,10 +79,10 @@ public class DirectoryContributionScanner implements ContributionScanner {
         return artifacts;
     }
 
-    
+
     /**
      * Scan the contribution to retrieve all artifact uris
-     * 
+     *
      * @param contribution
      * @return
      * @throws ContributionReadException
@@ -83,45 +90,63 @@ public class DirectoryContributionScanner implements ContributionScanner {
     private List<String> scanContributionArtifacts(Contribution contribution) throws ContributionReadException {
         File directory = directory(contribution);
         List<String> artifacts = new ArrayList<String>();
+        // [rfeng] There are cases that the folder contains symbolic links that point to the same physical directory
+        Set<File> visited = new HashSet<File>();
         try {
-            traverse(artifacts, directory, directory);
+            traverse(artifacts, directory, directory, visited);
         } catch (IOException e) {
             throw new ContributionReadException(e);
         }
-        
+
         return artifacts;
     }
-    
+
     /**
      * Recursively traverse a root directory
      *
      * @param fileList
      * @param file
      * @param root
+     * @param visited The visited directories
      * @throws IOException
      */
-    private static void traverse(List<String> fileList, File file, File root) throws IOException {
-        if (file.isFile()) {
-            fileList.add(root.toURI().relativize(file.toURI()).toString());
-        } else if (file.isDirectory()) {
-            String uri = root.toURI().relativize(file.toURI()).toString();
-            if (uri.endsWith("/")) {
-                uri = uri.substring(0, uri.length() - 1);
-            }
-            fileList.add(uri);
+    private static void traverse(List<String> fileList, File file, File root, Set<File> visited) throws IOException {
 
-            File[] files = file.listFiles();
-            for (File f: files) {
-                if (!f.getName().startsWith(".")) {
-                    traverse(fileList, f, root);
+    	//TUSCANY-3667 - Google add some private directories when you deploy your application
+    	//to GAE and trying to execute file IO operations on it's contents fails with AccessControlException
+    	try {
+            if (file.isFile()) {
+                fileList.add(root.toURI().relativize(file.toURI()).toString());
+            } else if (file.isDirectory()) {
+                File dir = file.getCanonicalFile();
+                if (!visited.contains(dir)) {
+                    // [rfeng] Add the canonical file into the visited set to avoid duplicate navigation of directories
+                    // following the symbolic links
+                    visited.add(dir);
+                    String uri = root.toURI().relativize(file.toURI()).toString();
+                    if (uri.endsWith("/")) {
+                        uri = uri.substring(0, uri.length() - 1);
+                    }
+                    fileList.add(uri);
+
+                    File[] files = file.listFiles();
+                    for (File f : files) {
+                        if (!f.getName().startsWith(".")) {
+                            traverse(fileList, f, root, visited);
+                        }
+                    }
                 }
             }
-        }
+    	} catch (AccessControlException e) {
+    		//TUSCANY-3667 - Log the AccessControlException error and continue without processing the file/directory
+    		logger.log(Level.WARNING, "Error traversing file:" + file.getPath());
+    	}
+
     }
-        
+
     /**
      * Get the contribution location as a file
-     * 
+     *
      * @param contribution
      * @return
      * @throws ContributionReadException
@@ -143,6 +168,6 @@ public class DirectoryContributionScanner implements ContributionScanner {
         }
         return file;
     }
-    
+
 
 }

@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.binding.jms.provider;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
@@ -114,12 +116,35 @@ public abstract class AbstractMessageProcessor implements JMSMessageProcessor {
         try {
 
             ObjectMessage message = session.createObjectMessage();
-            String causeMsg;
-            if (o instanceof RuntimeException) {
-                message.setObject(new RuntimeException(o.getMessage()));
+            if (o instanceof RuntimeException || o instanceof Error) {
+                int recursionKlugeDetector = 20;
+                Throwable rootCause = o;
+                Throwable deepRootCause = rootCause.getCause();
+                do {
+                    if (rootCause == deepRootCause) {
+                        break;
+                    } else if (deepRootCause != null) {
+                        rootCause = deepRootCause;
+                    }
+
+                    if (recursionKlugeDetector-- <= 0) {
+                        break;
+                    }
+                } while (deepRootCause != null);
+
+                final StringWriter sw = new StringWriter();
+                final PrintWriter pw = new PrintWriter(sw);
+                pw.print("Message = " + o.getMessage());
+                StackTraceElement[] stackElements = o.getStackTrace();
+                for (int i = 0; i < stackElements.length; i++) {
+                        pw.print("\t>> \t at ");
+                        pw.println(stackElements[i].toString());
+                }
+                pw.flush();
+
+                message.setObject(new RuntimeException( sw.toString() ));
             } else {
-                // for a checked exception return the checked exception
-                message.setObject(o);
+                 message.setObject(o);
             }
             message.setBooleanProperty(JMSBindingConstants.FAULT_PROPERTY, true);
             return message;

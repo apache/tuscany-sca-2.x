@@ -107,6 +107,12 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
                 if (op.getName().equals(operationName)) {
                     operation = op;
                     break;
+                } else {
+                	String nativeName = jmsBinding.getNativeOperationName(op.getName());
+                	if (( nativeName != null ) && ( nativeName.equals(operationName)) ) {
+                		operation = op;
+                		break;
+                	}
                 }
             }
         } else if (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSDefault
@@ -121,11 +127,14 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
 
                     if (xmlPayload != null) {
                         rootElement = domHelper.load(xmlPayload);
-                        operationFromPayload = rootElement.getLocalName();
-                        for (Operation op : serviceOperations) {
-                            if (op.getName().equals(operationFromPayload)) {
-                                operation = op;
-                                break;
+                        Node firstChild = rootElement.getFirstChild();
+                        if (firstChild != null) {
+                            operationFromPayload = firstChild.getLocalName();
+                            for (Operation op : serviceOperations) {
+                                if (op.getName().equals(operationFromPayload)) {
+                                    operation = op;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -137,11 +146,14 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
 
                     if (bytes != null) {
                         rootElement = domHelper.load(new String(bytes));
-                        operationFromPayload = rootElement.getLocalName();
-                        for (Operation op : serviceOperations) {
-                            if (op.getName().equals(operationFromPayload)) {
-                                operation = op;
-                                break;
+                        Node firstChild = rootElement.getFirstChild();
+                        if (firstChild != null) {
+                            operationFromPayload = firstChild.getLocalName();
+                            for (Operation op : serviceOperations) {
+                                if (op.getName().equals(operationFromPayload)) {
+                                    operation = op;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -169,7 +181,7 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
         }
         
         if (operation == null) {
-            throw new JMSBindingException("Can't find operation " + (operationName != null ? operationName : ON_MESSAGE_METHOD_NAME));
+            throw new JMSBindingException("Cannot determine service operation");
         }
 
         return operation;

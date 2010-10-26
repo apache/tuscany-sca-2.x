@@ -134,7 +134,6 @@ public class NodeImpl implements Node {
                                          configuration.getURI(),
                                          nodeFactory.getDeployer().getSystemDefinitions());
                 
-                CompositeContext.setThreadCompositeContext(compositeContext);
             } finally {
                 // Reset the thread context monitor
                 nodeFactory.monitorFactory.setContextMonitor(tcm);
@@ -213,7 +212,6 @@ public class NodeImpl implements Node {
             this.compositeContext = null;
             
             ThreadMessageContext.removeMessageContext();
-            CompositeContext.removeCompositeContext();
 
         } catch (ActivationException e) {
             throw new IllegalStateException(e);
@@ -375,7 +373,7 @@ public class NodeImpl implements Node {
         return result;
     }
     
-    List<Contribution> getContributions() {
+    public List<Contribution> getContributions() {
         return contributions;
     }
 

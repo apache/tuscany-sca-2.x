@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
-        <version>4</version>
+        <version>7</version>
     </parent>
 
     <!-- ====================================================================== -->
@@ -211,6 +211,7 @@
         </pluginRepository>
 
         <!-- Codehaus SNAPSHOT repository -->
+        <!--
         <pluginRepository>
             <id>codehaus-snapshot</id>
             <name>Codehaus Snapshot Repository</name>
@@ -219,6 +220,7 @@
                 <enabled>true</enabled>
             </snapshots>
         </pluginRepository>
+        -->
 
        <!-- Maven central repository -->
        <pluginRepository>
@@ -272,12 +274,11 @@
                 <module>maven/maven-tuscany-plugin</module>
                 <module>modules</module>
                 <module>samples</module>
-                <module>itest</module>
+                <module>testing/itest</module>
                 <module>features</module>
-                <module>shades</module>
                 <module>distribution</module>
-                <module>archetypes</module>
-                <module>compliance-tests</module>
+                <module>maven/archetypes</module>
+                <module>testing/compliance-tests</module>
             </modules>
         </profile>
         <!-- ====================================================================== -->
@@ -298,12 +299,11 @@
                 <module>maven/maven-tuscany-plugin</module>
                 <module>modules</module>
                 <module>samples</module>
-                <module>itest</module>
+                <module>testing/itest</module>
                 <module>features</module>
-                <module>shades</module>
                 <module>distribution</module>
-                <module>archetypes</module>
-                <module>compliance-tests</module>
+                <module>maven/archetypes</module>
+                <module>testing/compliance-tests</module>
             </modules>
         </profile>
 
@@ -315,7 +315,7 @@
             <modules>
                 <module>modules</module>
                 <module>samples</module>
-                <module>itest</module>
+                <module>testing/itest</module>
                 <module>features</module>
                 <module>distribution</module>
             </modules>
@@ -353,7 +353,7 @@
             <modules>
                 <module>modules</module>
                 <module>samples</module>
-                <module>itest</module>
+                <module>testing/itest</module>
                 <module>features</module>
                 <module>distribution</module>
             </modules>
@@ -388,12 +388,11 @@
                 <module>maven/maven-tuscany-plugin</module>
                 <module>modules</module>
                 <module>samples</module>
-                <module>itest</module>
+                <module>testing/itest</module>
                 <module>features</module>
-                <module>shades</module>
                 <module>distribution</module>
-                <module>archetypes</module>
-                <module>compliance-tests</module>
+                <module>maven/archetypes</module>
+                <module>testing/compliance-tests</module>
             </modules>
            <build>
               <plugins>
@@ -404,7 +403,7 @@
         <profile>
             <id>compliance</id>
             <modules>
-                <module>compliance-tests</module>
+                <module>testing/compliance-tests</module>
             </modules>
         </profile>
 
@@ -480,9 +479,9 @@
             <id>dependencies</id>
             <modules>
                 <module>modules</module>
-                <!--module>samples</module>
+                <module>samples</module>
                 <module>tutorials</module>
-                <module>demos</module-->
+                <module>demos</module>
             </modules>
             <build>
                 <plugins>
@@ -506,7 +505,7 @@
         <profile>
             <id>security</id>
             <modules>
-                <module>itest</module>
+                <module>testing/itest</module>
             </modules>
             <activation>
                 <property>
@@ -564,6 +563,11 @@
             </build>
         </profile>
 
+        <!--
+          to test this profile you may like to run mvn with arguments ...
+          -DaltDeploymentRepository=id::default::file:target/deploy -Prelease -Dgpg.skip
+          then look in the target/deploy directory for a locally deployed repository of artifacts 
+        -->
         <profile>
             <id>release</id>
             <properties>
@@ -573,10 +577,9 @@
             <modules>
                 <module>maven/maven-tuscany-plugin</module>
                 <module>modules</module>
-                <module>shades</module>
                 <module>features</module>
                 <module>distribution</module>
-                <module>archetypes</module>
+                <module>maven/archetypes</module>
             </modules>
            <build>
               <defaultGoal>deploy</defaultGoal>
@@ -620,6 +623,47 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.6.1</version>
+                        <configuration>
+                            <maxmemory>1024m</maxmemory>
+                            <tags>
+                                <tag>
+                                    <name>tuscany.spi.extension.inheritfrom</name>
+                                    <!-- extension spi by inheritance tag for placing in classes /interfaces -->
+                                    <placement>t</placement>
+                                    <head>Provides part of the Tuscany SPI for Extension Developers by specialization of this class/interface
+                                    </head>
+                                </tag>
+                                <tag>
+                                    <name>tuscany.spi.extension.asclient</name>
+                                    <!-- extension spi by client access tag for placing in classes / interfaces. The term client here is used
+                                    in the OO design sense of any class that calls the methods of another is a client of the latter -->
+                                    <placement>t</placement>
+                                    <head>Provides part of the Tuscany SPI for Extension Developers by calling methods on this interface/class.</head>
+                                </tag>
+                                <tag>
+                                    <name>tuscany.spi.extension</name>
+                                    <!-- extension spi indicator for overviews, packages -->
+                                    <placement>a</placement>
+                                    <head>Elements of the Tuscany SPI for Extension developers are provided.</head>
+                                </tag>
+                            </tags>
+
+ 
+
+                            <groups>
+                                <!-- beware: this group stanza results in a grouping of pages that contains a superset of the spi, until we complete identification and then refactor out non spi code from listed packages-->
+                                <group>
+                                    <title>Extension Developer's SPIs (Work in Progress)</title>
+                                    <packages>
+org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apache.tuscany.sca.assembly.impl:org.apache.tuscany.sca.assembly.xml:org.apache.tuscany.sca.common.http:org.apache.tuscany.sca.common.xml:org.apache.tuscany.sca.common.xml.dom:org.apache.tuscany.sca.common.xml.stax:org.apache.tuscany.sca.context:org.apache.tuscany.sca.contribution:org.apache.tuscany.sca.contribution.namespace:org.apache.tuscany.sca.contribution.processor:org.apache.tuscany.sca.contribution.resolver:org.apache.tuscany.sca.core:org.apache.tuscany.sca.core.assembly:org.apache.tuscany.sca.core.factory:org.apache.tuscany.sca.core.invocation:org.apache.tuscany.sca.core.scope:org.apache.tuscany.sca.data.collection:org.apache.tuscany.sca.databinding:org.apache.tuscany.sca.databinding.impl:org.apache.tuscany.sca.databinding.javabeans:org.apache.tuscany.sca.databinding.xml:org.apache.tuscany.sca.extensibility:org.apache.tuscany.sca.host.http:org.apache.tuscany.sca.interfacedef:org.apache.tuscany.sca.interfacedef.impl:org.apache.tuscany.sca.interfacedef.util:org.apache.tuscany.sca.interfacedef.wsdl:org.apache.tuscany.sca.invocation:org.apache.tuscany.sca.monitor:org.apache.tuscany.sca.policy:org.apache.tuscany.sca.policy.authentication.token:org.apache.tuscany.sca.policy.security:org.apache.tuscany.sca.policy.util:org.apache.tuscany.sca.provider:org.apache.tuscany.sca.runtime:org.apache.tuscany.sca.web.javascript:org.apache.tuscany.sca.work:org.apache.tuscany.sca.xsd</packages>
+                                </group>
+                            </groups>  <!-- -->
+                        </configuration>
+                    </plugin>
               </plugins>
            </build>
         </profile>
@@ -649,8 +693,7 @@
                 <module>modules/databinding-jaxb</module>
                 <module>modules/deployment</module>
                 <module>modules/domain-node</module>
-                <module>modules/endpoint-hazelcast</module>
-                <module>modules/endpoint-hazelcast-client</module>
+                <module>modules/domain-hazelcast</module>
                 <module>modules/extensibility</module>
                 <module>modules/host-http</module>
                 <module>modules/host-jetty</module>
@@ -672,9 +715,7 @@
                 <module>modules/sca-client-impl</module>
                 <module>modules/wink</module>
                 <module>modules/xsd</module>
-                <module>shades/base</module>
-                <module>shades/base-nodep</module>
-                <module>compliance-tests</module>
+                <module>testing/compliance-tests</module>
             </modules>
         </profile>
         <profile>
@@ -683,7 +724,7 @@
                 <module>modules/binding-jms</module>
                 <module>modules/binding-jms-runtime</module>
                 <module>samples/webapps/helloworld-jms</module>
-                <module>itest/jms</module>
+                <module>testing/itest/jms</module>
             </modules>
         </profile>
 
@@ -694,12 +735,11 @@
             <modules>
                 <module>modules</module>
                 <module>samples</module>
-                <module>itest</module>
+                <module>testing/itest</module>
                 <module>features</module>
-                <module>shades</module>
                 <module>distribution</module>
-                <module>archetypes</module>
-                <!-- module>compliance-tests</module -->
+                <module>maven/archetypes</module>
+                <!-- module>testing/compliance-tests</module -->
             </modules>
            <build>
               <plugins>
@@ -789,7 +829,8 @@
                    <message>Best Practice is to always define released plugin versions!</message>
                    <banLatest>true</banLatest>
                    <banRelease>true</banRelease>
-                   <banSnapshots>true</banSnapshots>
+<!-- TUSCANY-3674 -->
+                   <banSnapshots>false</banSnapshots>
                    <phases>clean,deploy,site</phases>
                    <additionalPlugins>
                    </additionalPlugins>
@@ -839,6 +880,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-eclipse-plugin</artifactId>
                     <version>2.8</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-archetype-plugin</artifactId>
+                    <version>2.0-alpha-5</version>
                 </plugin>
 
                 <!-- compiler plugin configuration -->

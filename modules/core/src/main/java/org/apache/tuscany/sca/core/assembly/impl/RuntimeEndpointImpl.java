@@ -212,6 +212,12 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             bindingInvocationChain = new InvocationChainImpl(null, null, false, phaseManager);
             initServiceBindingInvocationChains();
         }
+        
+        // Init the operation invocation chains now. We know they will 
+        // be needed as well as the binding invocation chain and this
+        // makes the wire processors run
+        getInvocationChains();
+        
         return bindingInvocationChain;
     }
 
@@ -232,6 +238,10 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 // IDLs
                 if (operation.getInterface().isRemotable()) {
                     if (operation.getName().equals(op.getName())) {
+                        invocationChainMap.put(operation, chain);
+                        return chain;
+                    }
+                    if (interfaceContractMapper.isCompatible(operation, op, Compatibility.SUBSET)) {
                         invocationChainMap.put(operation, chain);
                         return chain;
                     }
@@ -488,27 +498,32 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         
         InterfaceContract serviceContract = getComponentServiceInterfaceContract();
         InterfaceContract bindingContract = getBindingInterfaceContract();
-
+                
         if ((serviceContract != null) &&
             (bindingContract != null)){
            
             boolean bindingHasCallback = bindingContract.getCallbackInterface() != null;
             
-            try {
-                if ((serviceContract.getClass() != bindingContract.getClass()) &&
-                    (serviceContract instanceof JavaInterfaceContract)) {
-                        interfaceContractMapper.checkCompatibility(getGeneratedWSDLContract(serviceContract), 
-                                                                   bindingContract, 
-                                                                   Compatibility.SUBSET, 
-                                                                   !bindingHasCallback, // ignore callbacks if binding doesn't have one 
-                                                                   false);
-                    } else {
-                        interfaceContractMapper.checkCompatibility(serviceContract, 
-                                                                   bindingContract, 
-                                                                   Compatibility.SUBSET, 
-                                                                   !bindingHasCallback, // ignore callbacks if binding doesn't have one 
-                                                                   false);                   
-                    }                 
+            try {                                                         
+               
+                // Use the normalized contract if the interface types are different or if 
+                // a normalized contract has been previously generate, for example, by virtue
+                // of finding a JAXWS annotation on a Java class that references a WSDL file
+                if (serviceContract.getClass() != bindingContract.getClass() ||
+                    serviceContract.getNormalizedWSDLContract() != null ||
+                    bindingContract.getNormalizedWSDLContract() != null) {
+                    interfaceContractMapper.checkCompatibility(getGeneratedWSDLContract(serviceContract), 
+                                                               getGeneratedWSDLContract(bindingContract), 
+                                                               Compatibility.SUBSET, 
+                                                               !bindingHasCallback, // ignore callbacks if binding doesn't have one 
+                                                               false);
+                } else {
+                    interfaceContractMapper.checkCompatibility(serviceContract, 
+                                                               bindingContract, 
+                                                               Compatibility.SUBSET, 
+                                                               !bindingHasCallback, // ignore callbacks if binding doesn't have one 
+                                                               false);                   
+                }  
             } catch (Exception ex){
                 throw new ServiceRuntimeException("Component " +
                                                   this.getComponent().getName() +
@@ -620,7 +635,6 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             for (PolicyProvider p : pps) {
                 Interceptor interceptor = p.createInterceptor(operation);
                 if (interceptor != null) {
-                    //chain.addInterceptor(p.createInterceptor(operation));
                     chain.addInterceptor(interceptor);
                 }
             }
@@ -811,7 +825,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 if (contractBuilder == null){
                     throw new ServiceRuntimeException("Contract builder not found while calculating WSDL contract for " + this.toString());
                 }
-                contractBuilder.build(getComponentServiceInterfaceContract(), null);
+                contractBuilder.build(interfaceContract, null);
             }
         }
         

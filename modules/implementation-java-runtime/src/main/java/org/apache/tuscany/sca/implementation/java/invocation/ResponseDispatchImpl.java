@@ -63,6 +63,7 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 	 */
 	private static final long serialVersionUID = 300158355992568592L;
     private static String WS_MESSAGE_ID = "WS_MESSAGE_ID";
+    private static String MESSAGE_ID = "MESSAGE_ID";
 	
 	// A latch used to ensure that the sendResponse() and sendFault() operations are used at most once
 	// The latch is initialized with the value "false"
@@ -87,7 +88,12 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 		callbackRef = getAsyncCallbackRef( msg );
     	
 		callbackAddress = msg.getFrom().getCallbackEndpoint().getURI();
-    	messageID = (String) msg.getHeaders().get(WS_MESSAGE_ID);
+		
+		// TODO - why is WS stuff bleeding into general code?
+    	messageID = (String) msg.getHeaders().get(MESSAGE_ID);
+    	if (messageID == null){
+    	    messageID = (String) msg.getHeaders().get(WS_MESSAGE_ID);
+    	}
     	
 	} // end constructor
 	
@@ -206,6 +212,7 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 		
 		// Add in the header for the RelatesTo Message ID
 		msgContext.getHeaders().put(WS_MESSAGE_ID, messageID);
+		msgContext.getHeaders().put(MESSAGE_ID, messageID);
 		
 		ThreadMessageContext.setMessageContext(msgContext);
 	} // end method setResponseHeaders

@@ -57,6 +57,7 @@ public class JavaInstanceFactoryProvider<T> implements InstanceFactoryProvider<T
     private final EventInvoker<T> initInvoker;
     private final EventInvoker<T> destroyInvoker;
     private final Map<JavaElementImpl, Object> factories = new HashMap<JavaElementImpl, Object>();
+	private final List<JavaElementImpl> callbackInjectionSites;
 
     public JavaInstanceFactoryProvider(JavaImplementation definition) {
         this.definition = definition;
@@ -65,6 +66,7 @@ public class JavaInstanceFactoryProvider<T> implements InstanceFactoryProvider<T
         this.destroyInvoker = definition.getDestroyMethod() == null ? null : new MethodEventInvoker<T>(definition
             .getDestroyMethod());
         injectionSites = new ArrayList<JavaElementImpl>();
+        callbackInjectionSites = new ArrayList<JavaElementImpl>();
     }
 
     ProxyFactory getProxyFactory() {
@@ -85,12 +87,15 @@ public class JavaInstanceFactoryProvider<T> implements InstanceFactoryProvider<T
     @SuppressWarnings("unchecked")
     public InstanceFactory<T> createFactory() {
         ObjectFactory<?>[] initArgs = getConstructorArgs();
-        Injector<T>[] injectors = getInjectors();
+        Injector<T>[] injectors = getInjectors(false);
+        Injector<T>[] callbackInjectors = getInjectors(true);
         return new ReflectiveInstanceFactory<T>((Constructor<T>)definition.getConstructor().getConstructor(),
-                                                initArgs, injectors, initInvoker, destroyInvoker);
+                                                initArgs, injectors, callbackInjectors, initInvoker, destroyInvoker);
     }
 
-    private ObjectFactory<?>[] getConstructorArgs() {
+ 
+
+	private ObjectFactory<?>[] getConstructorArgs() {
         JavaConstructorImpl<?> constructor = definition.getConstructor();
         ObjectFactory<?>[] initArgs = new ObjectFactory<?>[constructor.getParameters().length];
         for (int i = 0; i < initArgs.length; i++) {
@@ -101,13 +106,21 @@ public class JavaInstanceFactoryProvider<T> implements InstanceFactoryProvider<T
         return initArgs;
     }
 
+	   
+	   
     @SuppressWarnings("unchecked")
-    private Injector<T>[] getInjectors() {
+    private Injector<T>[] getInjectors(boolean callback) {
+    	List<JavaElementImpl> sites = null;
+    	if ( callback ) 
+    		sites = callbackInjectionSites;
+    	else
+    		sites = injectionSites;
+    	
         // work around JDK1.5 issue with allocating generic arrays
-        Injector<T>[] injectors = new Injector[injectionSites.size()];
+        Injector<T>[] injectors = new Injector[sites.size()];
 
         int i = 0;
-        for (JavaElementImpl element : injectionSites) {
+        for (JavaElementImpl element : sites) {
             Object obj = factories.get(element);
             if (obj != null) {
                 if (obj instanceof ObjectFactory) {
@@ -172,11 +185,20 @@ public class JavaInstanceFactoryProvider<T> implements InstanceFactoryProvider<T
         return injectionSites;
     }
 
+    /**     
+     * @return the callbackInjectionSites
+     */
+    public List<JavaElementImpl> getCallbackInjectionSites() {
+		return callbackInjectionSites;
+	}
+    
     /**
      * @return the factories
      */
     Map<JavaElementImpl, Object> getFactories() {
         return factories;
     }
+
+	
 
 }

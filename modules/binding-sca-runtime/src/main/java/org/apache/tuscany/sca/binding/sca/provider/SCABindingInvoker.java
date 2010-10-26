@@ -26,6 +26,8 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * @version $Rev$ $Date$
@@ -36,17 +38,21 @@ public class SCABindingInvoker implements Interceptor {
     private Operation sourceOperation;
     private Operation targetOperation;
     private boolean passByValue;
+    private RuntimeEndpointReference epr;
+    private RuntimeEndpoint ep;
 
     /**
      * Construct a SCABindingInvoker that delegates to the service invocaiton chain
      */
-    public SCABindingInvoker(InvocationChain chain, Operation sourceOperation, Mediator mediator, boolean passByValue) {
+    public SCABindingInvoker(InvocationChain chain, Operation sourceOperation, Mediator mediator, boolean passByValue, RuntimeEndpointReference epr) {
         super();
         this.chain = chain;
         this.mediator = mediator;
         this.sourceOperation = sourceOperation;
         this.targetOperation = chain.getTargetOperation();
         this.passByValue = passByValue;
+        this.epr = epr;
+        this.ep = (RuntimeEndpoint)epr.getTargetEndpoint();
     }
 
     /**
@@ -71,6 +77,13 @@ public class SCABindingInvoker implements Interceptor {
         if (passByValue) {
             msg.setBody(mediator.copyInput(msg.getBody(), sourceOperation, targetOperation));
         }
+        
+        ep.getInvocationChains();
+        if ( !ep.getCallbackEndpointReferences().isEmpty() ) {
+            RuntimeEndpointReference asyncEPR = (RuntimeEndpointReference) ep.getCallbackEndpointReferences().get(0);
+            // Place a link to the callback EPR into the message headers...
+            msg.getHeaders().put("ASYNC_CALLBACK", asyncEPR );
+        } 
 
         Message resultMsg = getNext().invoke(msg);
 

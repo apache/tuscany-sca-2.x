@@ -52,10 +52,13 @@ import org.apache.tuscany.sca.core.scope.TargetResolutionException;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaResourceImpl;
+import org.apache.tuscany.sca.implementation.java.JavaScopeImpl;
 import org.apache.tuscany.sca.implementation.java.context.InstanceFactory;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
@@ -76,6 +79,7 @@ public class JavaComponentContextProvider {
     private JavaInstanceFactoryProvider<?> instanceFactoryProvider;
     private ProxyFactory proxyFactory;
     private InstanceFactory instanceFactory;
+	private JavaScopeImpl scope;
 
     public JavaComponentContextProvider(RuntimeComponent component,
                                         JavaInstanceFactoryProvider configuration,
@@ -93,6 +97,7 @@ public class JavaComponentContextProvider {
         //        }
         this.component = component;
         this.propertyValueFactory = (JavaPropertyValueObjectFactory) propertyValueObjectFactory;
+        this.scope = ((JavaImplementation)component.getImplementation()).getJavaScope();
     }
 
     InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
@@ -144,6 +149,16 @@ public class JavaComponentContextProvider {
     }
 
     void start() {
+    	List<JavaElementImpl> callbackInjectionList = null;
+    	
+    	// If the component implementation is stateless, we need to inject the callbacks on service invocation
+    	// rather than doing it once at the component level. 
+    	if ( scope.equals(JavaScopeImpl.STATELESS)) {
+    		callbackInjectionList = instanceFactoryProvider.getCallbackInjectionSites();
+    	} else {
+    		callbackInjectionList = instanceFactoryProvider.getInjectionSites();
+    	}
+    		
         if (!instanceFactoryProvider.getImplementation().getCallbackMembers().isEmpty()) {
             Map<String, List<EndpointReference>> callbackWires = new HashMap<String, List<EndpointReference>>();
             for (ComponentService service : component.getServices()) {
@@ -179,7 +194,7 @@ public class JavaComponentContextProvider {
                         factory = new CallbackWireObjectFactory(businessInterface, proxyFactory, wires);
                     }
                     if (!(element.getAnchor() instanceof Constructor)) {
-                        instanceFactoryProvider.getInjectionSites().add(element);
+                        callbackInjectionList.add(element);
                     }
                     instanceFactoryProvider.setObjectFactory(element, factory);
                 }
@@ -288,14 +303,15 @@ public class JavaComponentContextProvider {
         //cleanUpPolicyHandlers();
     }
 
-    Invoker createInvoker(Operation operation) throws NoSuchMethodException {
+    Invoker createInvoker(Operation operation, InterfaceContract interfaceContract) throws NoSuchMethodException {
         Class<?> implClass = instanceFactoryProvider.getImplementationClass();
 
         Method method = JavaInterfaceUtil.findMethod(implClass, operation);
-        if( ((JavaOperation) operation).isAsyncServer() ) {
-        	return new JavaAsyncImplementationInvoker(operation, method, component);
+        if (operation instanceof JavaOperation &&
+            ((JavaOperation) operation).isAsyncServer() ) {
+        	return new JavaAsyncImplementationInvoker(operation, method, component, interfaceContract);
         } else {
-        	return new JavaImplementationInvoker(operation, method, component);
+        	return new JavaImplementationInvoker(operation, method, component, interfaceContract);
         } // end if
     } // end 
 

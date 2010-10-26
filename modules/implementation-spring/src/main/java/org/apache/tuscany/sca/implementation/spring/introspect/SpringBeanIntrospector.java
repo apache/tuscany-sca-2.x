@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.spring.SpringConstructorArgElement;
+import org.apache.tuscany.sca.implementation.spring.SpringImplementation;
 
 /**
  * Provides introspection functions for Spring beans
@@ -47,8 +48,7 @@ public class SpringBeanIntrospector {
      * @param javaFactory The Java Interface Factory to use
      * @param policyFactory The Policy Factory to use.
      */
-    public SpringBeanIntrospector(ExtensionPointRegistry registry,
-                                  List<SpringConstructorArgElement> conArgs) {
+    public SpringBeanIntrospector(ExtensionPointRegistry registry, List<SpringConstructorArgElement> conArgs) {
 
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         javaImplementationFactory = factories.getFactory(JavaImplementationFactory.class);
@@ -64,13 +64,15 @@ public class SpringBeanIntrospector {
      * Spring Bean or its componentType
      *
      */
-    public JavaImplementation introspectBean(Class<?> beanClass, ComponentType componentType) throws ContributionResolveException 
-    {
+    public JavaImplementation introspectBean(Class<?> beanClass, ComponentType componentType)
+        throws ContributionResolveException {
         if (componentType == null)
             throw new ContributionResolveException("Introspect Spring bean: supplied componentType is null");
 
         // Create a Java implementation ready for the introspection
         JavaImplementation javaImplementation = javaImplementationFactory.createJavaImplementation();
+        // Set the type to be implementation.spring to avoid heuristic introspection
+        javaImplementation.setType(SpringImplementation.TYPE);
 
         try {
             // Introspect the bean...the results of the introspection are placed into the Java implementation
@@ -81,17 +83,11 @@ public class SpringBeanIntrospector {
             componentType.getServices().addAll(javaImplementation.getServices());
             componentType.getReferences().addAll(javaImplementation.getReferences());
             componentType.getProperties().addAll(javaImplementation.getProperties());
-            
+
         } catch (IntrospectionException e) {
             throw new ContributionResolveException(e);
         } // end try
 
-        /* List<Service> services = javaImplementation.getServices();
-        for (Service service : services) {
-            String name = service.getName();
-            System.out.println("Spring Bean: found service with name: " + name);
-        } // end for */
-        
         return javaImplementation;
 
     } // end method introspectBean

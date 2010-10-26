@@ -19,13 +19,13 @@
 
 package org.apache.tuscany.sca.binding.jsonp;
 
+
 /**
  * Factory to create JSONPBinding instances
  */
-public interface JSONPBindingFactory {
+public class JSONPBindingFactory {
 
-    /**
-     * Create JSONPBinding model
-     */
-    JSONPBinding createJSONPBinding();
+    public JSONPBinding createJSONPBinding() {
+        return new JSONPBinding();
+    }
 }

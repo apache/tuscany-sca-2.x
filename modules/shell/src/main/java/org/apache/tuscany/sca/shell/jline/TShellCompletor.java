@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.shell.jline;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,7 +32,6 @@ import jline.FileNameCompletor;
 import jline.NullCompletor;
 import jline.SimpleCompletor;
 
-import org.apache.tuscany.sca.node2.Node;
 import org.apache.tuscany.sca.shell.Shell;
 
 /**
@@ -43,24 +43,25 @@ public class TShellCompletor extends ArgumentCompletor {
     Map<String, Completor[]> completors;
     final Completor commandCompletor = new SimpleCompletor(Shell.COMMANDS);
     final ArgumentDelimiter delim = new WhitespaceArgumentDelimiter();
-    final Node node;
+    final Shell shell;
     
     static String lastArg;
+    static List<String> allArgs;
 
-    public TShellCompletor(Node node) {
+    public TShellCompletor(Shell shell) {
         super((Completor)null);
-        this.node = node;
+        this.shell = shell;
         completors = new HashMap<String, Completor[]>();
         completors.put("help", new Completor[]{commandCompletor, commandCompletor, new NullCompletor()});    
-//        completors.put("install", new Completor[]{commandCompletor, new InstallCompletor(), new NullCompletor()});    
-        completors.put("install", new Completor[]{commandCompletor, new FileNameCompletor(), new FileNameCompletor(), new NullCompletor()});    
-        completors.put("installed", new Completor[]{commandCompletor, new ICURICompletor(node), new NullCompletor()});    
-        completors.put("remove", new Completor[]{commandCompletor, new ICURICompletor(node), new NullCompletor()});    
-        completors.put("addDeploymentComposite", new Completor[]{commandCompletor, new ICURICompletor(node), new FileNameCompletor(), new NullCompletor()});    
-        completors.put("printDomainLevelComposite", new Completor[]{commandCompletor, new NullCompletor()});    
-        completors.put("start", new Completor[]{commandCompletor, new ICURICompletor(node), new CompositeURICompletor(node), new NullCompletor()});    
-        completors.put("status", new Completor[]{commandCompletor, new ICURICompletor(node), new CompositeURICompletor(node), new NullCompletor()});    
-        completors.put("stop", new Completor[]{commandCompletor, new ICURICompletor(node), new CompositeURICompletor(node), new NullCompletor()});    
+        completors.put("install", new Completor[]{commandCompletor, new InstallCompletor(shell)});    
+        completors.put("installed", new Completor[]{commandCompletor, new ICURICompletor(shell), new NullCompletor()});    
+        completors.put("load", new Completor[]{commandCompletor, new FileNameCompletor(), new NullCompletor()});    
+        completors.put("remove", new Completor[]{commandCompletor, new ICURICompletor(shell), new NullCompletor()});    
+        completors.put("run", new Completor[]{commandCompletor, new FileNameCompletor(), new NullCompletor()});    
+        completors.put("save", new Completor[]{commandCompletor, new FileNameCompletor(), new NullCompletor()});    
+        completors.put("start", new Completor[]{commandCompletor, new ICURICompletor(shell), new CompositeURICompletor(shell), new NullCompletor()});    
+        completors.put("status", new Completor[]{commandCompletor, new ICURICompletor(shell), new CompositeURICompletor(shell), new NullCompletor()});    
+        completors.put("stop", new Completor[]{commandCompletor, new ICURICompletor(shell), new CompositeURICompletor(shell), new NullCompletor()});    
     }
 
     @Override
@@ -70,6 +71,7 @@ public class TShellCompletor extends ArgumentCompletor {
      */
     public int complete(final String buffer, final int cursor,
                         final List candidates) {
+        
         ArgumentList list = delim.delimit(buffer, cursor);
         int argpos = list.getArgumentPosition();
         int argIndex = list.getCursorArgumentIndex();
@@ -83,6 +85,7 @@ public class TShellCompletor extends ArgumentCompletor {
             lastArg = list.getArguments()[argIndex-1];
             if (lastArg != null) lastArg = lastArg.trim();
         }
+        allArgs = Arrays.asList(list.getArguments());
         
         final Completor comp;
         

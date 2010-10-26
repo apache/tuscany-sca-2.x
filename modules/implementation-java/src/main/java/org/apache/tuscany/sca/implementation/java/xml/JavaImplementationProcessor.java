@@ -50,14 +50,24 @@ import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
+import org.apache.tuscany.sca.interfacedef.Compatibility;
+import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -74,13 +84,18 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
     private AssemblyFactory assemblyFactory;
     private PolicyFactory policyFactory;
     private PolicySubjectProcessor policyProcessor;
-    
+    private StAXArtifactProcessor<Object> extensionProcessor;
+    private transient InterfaceContractMapper interfaceContractMapper;
 
-    public JavaImplementationProcessor(FactoryExtensionPoint modelFactories) {
+    public JavaImplementationProcessor(ExtensionPointRegistry registry,  StAXArtifactProcessor<?> staxProcessor) {
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.javaFactory = modelFactories.getFactory(JavaImplementationFactory.class);
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
+        this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
     }
 
     /**
@@ -190,7 +205,10 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
 
 	        checkNoStaticAnnotations(monitor, javaImplementation);
 	        
+	        postJAXWSProcessorResolve(resolver, javaImplementation, context);
+	        
 	        javaImplementation.setUnresolved(false);
+	        
 	        mergeComponentType(resolver, javaImplementation, context);
 
 	        // FIXME the introspector should always create at least one service
@@ -309,6 +327,49 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
 
         }
     }
+    
+    private void postJAXWSProcessorResolve(ModelResolver resolver, JavaImplementation impl, ProcessorContext context)
+        throws ContributionResolveException, IncompatibleInterfaceContractException {
+        for(Service service : impl.getServices()){
+            JavaInterfaceContract javaInterfaceContract = (JavaInterfaceContract)service.getInterfaceContract();
+            
+            JavaInterface javaInterface = (JavaInterface)javaInterfaceContract.getInterface();
+            if (javaInterface.isUnresolved()){             
+                extensionProcessor.resolve(javaInterfaceContract, resolver, context);
+            }
+            
+            WSDLInterfaceContract wsdlInterfaceContract = (WSDLInterfaceContract)javaInterfaceContract.getNormalizedWSDLContract();
+            if(wsdlInterfaceContract != null){
+                // The user has explicitly associated a WSDL with the Java implementation
+                // using a @WebService(wsdlLocation="...") annotation
+                WSDLInterface wsdlInterface = (WSDLInterface)wsdlInterfaceContract.getInterface();
+                if (wsdlInterface.isUnresolved()){
+                    //WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlInterface.getWsdlDefinition(), context);
+                    extensionProcessor.resolve(wsdlInterfaceContract, resolver, context);
+                    
+                    // check that the Java and WSDL contracts are compatible
+                    interfaceContractMapper.checkCompatibility(wsdlInterfaceContract,
+                                                               javaInterfaceContract,
+                                                               Compatibility.SUBSET, 
+                                                               false, 
+                                                               false);
+                    
+                    // retrieve the resolved WSDL interface
+                    wsdlInterface = (WSDLInterface)wsdlInterfaceContract.getInterface();
+                    
+                    // copy policy from the WSDL interface to the Java interface
+                    javaInterface.getPolicySets().addAll(wsdlInterface.getPolicySets());
+                    javaInterface.getRequiredIntents().addAll(wsdlInterface.getRequiredIntents());
+                    
+                    // copy policy from the WSDL interface to the component type service
+                    service.getPolicySets().addAll(wsdlInterface.getPolicySets());
+                    service.getRequiredIntents().addAll(wsdlInterface.getRequiredIntents());                    
+                    
+                    // TODO - is there anything else to be copied from the user specified WSDL?
+                } 
+            }
+        }
+    }    
 
     private ComponentType getComponentType(ModelResolver resolver, JavaImplementation impl, ProcessorContext context) {
         String className = impl.getJavaClass().getName();

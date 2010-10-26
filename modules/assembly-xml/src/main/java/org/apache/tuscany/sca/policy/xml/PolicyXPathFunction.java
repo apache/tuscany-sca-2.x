@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathFunction;
@@ -242,7 +243,7 @@ public class PolicyXPathFunction implements XPathFunction {
 	private QName getStringAsQName(String intent) {
 		int idx = intent.indexOf(':');
 		if (idx == -1)
-			return new QName(intent);
+			return new QName(namespaceContext.getNamespaceURI(XMLConstants.DEFAULT_NS_PREFIX), intent);
 		
 		String prefix = intent.substring(0, idx);
 		intent = intent.substring(idx + 1);

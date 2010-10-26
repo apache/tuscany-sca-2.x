@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.policy.BindingType;
 import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.ExternalAttachment;
 import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
@@ -72,6 +73,8 @@ public class ReadDocumentTestCase {
     private Map<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
     private Map<QName, BindingType> bindingTypesTable = new Hashtable<QName, BindingType>();
     private Map<QName, ImplementationType> implTypesTable = new Hashtable<QName, ImplementationType>();
+    private Map<QName, ExternalAttachment> attachmentsTable = new Hashtable<QName, ExternalAttachment>();
+    
     private static final String scaNamespace = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     private static final String namespace = "http://test";
 
@@ -86,6 +89,7 @@ public class ReadDocumentTestCase {
     private static final QName basicAuthMsgProtSecurity = new QName(namespace, "BasicAuthMsgProtSecurity");
     private static final QName wsBinding = new QName(scaNamespace, "binding.ws");
     private static final QName javaImpl = new QName(scaNamespace, "implementation.java");
+    private static final QName testPolicySetOne = new QName(namespace, "TestPolicySetOne");
 
     @Before
     public void setUp() throws Exception {
@@ -136,6 +140,9 @@ public class ReadDocumentTestCase {
                     } else if (artifact instanceof ImplementationType) {
                         ImplementationType implType = (ImplementationType)artifact;
                         implTypesTable.put(implType.getType(), implType);
+                    } else if ( artifact instanceof ExternalAttachment) {
+                    	ExternalAttachment attachment = (ExternalAttachment)artifact;
+                    	attachmentsTable.put(attachment.getPolicySets().get(0).getName(), attachment);
                     }
 
                     if (artifact != null) {
@@ -172,6 +179,10 @@ public class ReadDocumentTestCase {
         assertNotNull(bindingTypesTable.get(wsBinding));
         assertEquals(implTypesTable.size(), 1);
         assertNotNull(implTypesTable.get(javaImpl));
+        
+        // Test external attachments
+        assertEquals(1, attachmentsTable.size());
+        assertNotNull(attachmentsTable.get(policySetTable.get(testPolicySetOne).getName()));
     }
     
     private int getNumberOfQualifiedPolicies(PolicySet policySet) {
@@ -218,6 +229,10 @@ public class ReadDocumentTestCase {
         assertNull(javaImplType.getAlwaysProvidedIntents().get(0).getDescription());
         assertNull(javaImplType.getMayProvidedIntents().get(0).getDescription());
 
+        ExternalAttachment attachment = attachmentsTable.values().iterator().next();
+        PolicySet psOne = policySetTable.get(testPolicySetOne);
+        assertEquals(psOne, attachment.getPolicySets().get(0));
+        
         List<Intent> intents = new ArrayList<Intent>(intentTable.values());
 
         for (Intent intent : intents) {
@@ -240,6 +255,10 @@ public class ReadDocumentTestCase {
 
         for (ExtensionType implType : implTypesTable.values()) {
             staxProcessor.resolve(implType, resolver, context);
+        }
+        
+        for ( ExternalAttachment ea : attachmentsTable.values()) {
+        	staxProcessor.resolve(ea, resolver, context);
         }
 
         //testing if policy intents have been linked have property been linked up 
@@ -268,6 +287,8 @@ public class ReadDocumentTestCase {
 
         assertNotNull(javaImplType.getAlwaysProvidedIntents().get(0).getDescription());
         assertNotNull(javaImplType.getMayProvidedIntents().get(0).getDescription());
+        
+    
     }
 
     private boolean isRealizedBy(PolicySet policySet, Intent intent) {

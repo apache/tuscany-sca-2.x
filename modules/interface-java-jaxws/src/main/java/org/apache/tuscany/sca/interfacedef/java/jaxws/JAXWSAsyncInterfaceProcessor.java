@@ -20,48 +20,54 @@
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
+
+import javax.xml.ws.AsyncHandler;
+import javax.xml.ws.Response;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 
 public class JAXWSAsyncInterfaceProcessor implements JavaInterfaceVisitor {
     private static String ASYNC = "Async";
 
     public JAXWSAsyncInterfaceProcessor(ExtensionPointRegistry registry) {
-        
     }
-    
+
     public void visitInterface(JavaInterface javaInterface) throws InvalidInterfaceException {
         List<Operation> validOperations = new ArrayList<Operation>();
         List<Operation> asyncOperations = new ArrayList<Operation>();
-        
+
         validOperations.addAll(javaInterface.getOperations());
-        for(Operation o : javaInterface.getOperations()) {
-            if (! o.getName().endsWith(ASYNC)) {
-                Operation op = o;
-                
-                for(Operation asyncOp : getAsyncOperations(javaInterface.getOperations(), o.getName()) ) {
-                    if (isJAXWSAsyncPoolingOperation(op, asyncOp) ||
-                        isJAXWSAsyncCallbackOperation(op, asyncOp)) {
+        for (Operation o : javaInterface.getOperations()) {
+            if (!o.getName().endsWith(ASYNC)) {
+                JavaOperation op = (JavaOperation)o;
+                if (op.getJavaMethod().getName().endsWith(ASYNC)) {
+                    continue;
+                }
+                for (Operation asyncOp : getAsyncOperations(javaInterface.getOperations(), op)) {
+                    if (isJAXWSAsyncPoolingOperation(op, asyncOp) || isJAXWSAsyncCallbackOperation(op, asyncOp)) {
                         validOperations.remove(asyncOp);
                         asyncOperations.add(asyncOp);
-                    } 
+                    }
                 }
-            } 
+            }
         }
-        
+
         javaInterface.getOperations().clear();
         javaInterface.getOperations().addAll(validOperations);
-        
+
         javaInterface.getAttributes().put("JAXWS-ASYNC-OPERATIONS", asyncOperations);
     }
-    
+
     /**
      * The additional client-side asynchronous polling and callback methods defined by JAX-WS are recognized in a Java interface as follows:
      * For each method M in the interface, if another method P in the interface has
@@ -75,53 +81,59 @@ public class JAXWSAsyncInterfaceProcessor implements JavaInterfaceVisitor {
      * @return
      */
     private static boolean isJAXWSAsyncPoolingOperation(Operation operation, Operation asyncOperation) {
-        //a method name that is M's method name with the characters "Async" appended
-        if (operation.getName().endsWith(ASYNC)) {
+
+        if (asyncOperation.getOutputType() == null || Response.class != asyncOperation.getOutputType().getPhysical()) {
+            // The return type is not Response<T>
             return false;
         }
 
-        if (! asyncOperation.getName().endsWith(ASYNC)) {
-            return false;
-        }
-        
-        if(! asyncOperation.getName().equals(operation.getName() + ASYNC)) {
-            return false;
-        }
-        
         //the same parameter signature as M
         List<DataType> operationInputType = operation.getInputType().getLogical();
         List<DataType> asyncOperationInputType = asyncOperation.getInputType().getLogical();
         int size = operationInputType.size();
+        if (asyncOperationInputType.size() != size) {
+            return false;
+        }
         for (int i = 0; i < size; i++) {
             if (!isCompatible(operationInputType.get(i), asyncOperationInputType.get(i))) {
                 return false;
             }
         }
-        
+
         //a return type of Response<R> where R is the return type of M
         DataType<?> operationOutputType = operation.getOutputType();
         DataType<?> asyncOperationOutputType = asyncOperation.getOutputType();
-        
+
         if (operationOutputType != null && asyncOperationOutputType != null) {
-            ParameterizedType asyncReturnType =  (ParameterizedType) asyncOperationOutputType.getGenericType();
-            Class<?> asyncReturnTypeClass = (Class<?>)asyncReturnType.getRawType();
-            if(asyncReturnTypeClass.getName().equals("javax.xml.ws.Response")) {
+            Class<?> asyncReturnTypeClass = (Class<?>)asyncOperationOutputType.getPhysical();
+            if (asyncReturnTypeClass == Response.class) {
                 //now check the actual type of the Response<R> with R
-                Class<?> returnType =  operationOutputType.getPhysical();
-                Class<?> asyncActualReturnTypeClass = (Class<?>) asyncReturnType.getActualTypeArguments()[0];
-            
-                if(returnType == asyncActualReturnTypeClass ||
-                    returnType.isPrimitive() && primitiveAssignable(returnType,asyncActualReturnTypeClass)) {
-                    //valid
-                } else { 
-                   return false;
+                Class<?> returnType = operationOutputType.getPhysical();
+                Class<?> asyncActualReturnTypeClass = Object.class;
+                if (asyncOperationOutputType.getGenericType() instanceof ParameterizedType) {
+                    ParameterizedType asyncReturnType = (ParameterizedType)asyncOperationOutputType.getGenericType();
+                    asyncActualReturnTypeClass = (Class<?>)asyncReturnType.getActualTypeArguments()[0];
+                }
+
+                if (operation.getWrapper() != null) {
+                    // The return type could be the wrapper type per JAX-WS spec 
+                    Class<?> wrapperClass = operation.getWrapper().getOutputWrapperClass();
+                    if (wrapperClass == asyncActualReturnTypeClass) {
+                        return true;
+                    }
+                }
+                if (returnType == asyncActualReturnTypeClass || returnType.isPrimitive()
+                    && primitiveAssignable(returnType, asyncActualReturnTypeClass)) {
+                    return true;
+                } else {
+                    return false;
                 }
             }
         }
-        
+
         return true;
     }
-    
+
     /**
      * For each method M in the interface, if another method C in the interface has
      * a) a method name that is M's method name with the characters "Async" appended, and
@@ -136,71 +148,57 @@ public class JAXWSAsyncInterfaceProcessor implements JavaInterfaceVisitor {
      * @return
      */
     private static boolean isJAXWSAsyncCallbackOperation(Operation operation, Operation asyncOperation) {
-        //a method name that is M's method name with the characters "Async" appended
-        if (operation.getName().endsWith(ASYNC)) {
+
+        if (asyncOperation.getOutputType() == null || Future.class != asyncOperation.getOutputType().getPhysical()) {
+            // The return type is not Future<?>
             return false;
         }
 
-        if (! asyncOperation.getName().endsWith(ASYNC)) {
-            return false;
-        }
-        
-        if(! asyncOperation.getName().equals(operation.getName() + ASYNC)) {
-            return false;
-        }
-        
         //a parameter signature that is M's parameter signature 
         //with an additional final parameter of type AsyncHandler<R> where R is the return type of M, and
         List<DataType> operationInputType = operation.getInputType().getLogical();
         List<DataType> asyncOperationInputType = asyncOperation.getInputType().getLogical();
         int size = operationInputType.size();
+        if (asyncOperationInputType.size() != size + 1) {
+            return false;
+        }
         for (int i = 0; i < size; i++) {
             if (!isCompatible(operationInputType.get(i), asyncOperationInputType.get(i))) {
                 return false;
             }
         }
-        
-        if(asyncOperationInputType.size() == size + 1) {
-            ParameterizedType asyncLastParameterType =  (ParameterizedType) asyncOperationInputType.get(size + 1).getGenericType();
-            Class<?> asyncLastParameterTypeClass = (Class<?>)asyncLastParameterType.getRawType();
-            if(asyncLastParameterTypeClass.getName().equals("javax.xml.ws.AsyncHandler")) {
-              //now check the actual type of the AsyncHandler<R> with R
-                Class<?> returnType =  operation.getOutputType().getPhysical();
-                Class<?> asyncActualLastParameterTypeClass = (Class<?>) asyncLastParameterType.getActualTypeArguments()[0];
-            
-                if(returnType == asyncActualLastParameterTypeClass ||
-                    returnType.isPrimitive() && primitiveAssignable(returnType,asyncActualLastParameterTypeClass)) {
-                    //valid
-                } else {
-                    return false;
-                }
-            }            
-        }
-        
-        //a return type of Response<R> where R is the return type of M
-        DataType<?> operationOutputType = operation.getOutputType();
-        DataType<?> asyncOperationOutputType = asyncOperation.getOutputType();
-        
-        if (operationOutputType != null && asyncOperationOutputType != null) {
-            ParameterizedType asyncReturnType =  (ParameterizedType) asyncOperationOutputType.getGenericType();
-            Class<?> asyncReturnTypeClass = (Class<?>)asyncReturnType.getRawType();
-            if(asyncReturnTypeClass.getName().equals("javax.xml.ws.Response")) {
-                //now check the actual type of the Response<R> with R
-                Class<?> returnType =  operationOutputType.getPhysical();
-                Class<?> asyncActualReturnTypeClass = (Class<?>) asyncReturnType.getActualTypeArguments()[0];
-            
-                if(returnType == asyncActualReturnTypeClass ||
-                    returnType.isPrimitive() && primitiveAssignable(returnType,asyncActualReturnTypeClass)) {
-                    //valid
-                } else {
-                    return false;
+
+        Type genericParamType = asyncOperationInputType.get(size).getGenericType();
+
+        Class<?> asyncLastParameterTypeClass = asyncOperationInputType.get(size).getPhysical();
+        if (asyncLastParameterTypeClass == AsyncHandler.class) {
+            //now check the actual type of the AsyncHandler<R> with R
+            Class<?> returnType = operation.getOutputType().getPhysical();
+            Class<?> asyncActualLastParameterTypeClass = Object.class;
+            if (genericParamType instanceof ParameterizedType) {
+                ParameterizedType asyncLastParameterType = (ParameterizedType)genericParamType;
+                asyncActualLastParameterTypeClass = (Class<?>)asyncLastParameterType.getActualTypeArguments()[0];
+            }
+
+            if (operation.getWrapper() != null) {
+                // The return type could be the wrapper type per JAX-WS spec 
+                Class<?> wrapperClass = operation.getWrapper().getOutputWrapperClass();
+                if (wrapperClass == asyncActualLastParameterTypeClass) {
+                    return true;
                 }
             }
+
+            if (returnType == asyncActualLastParameterTypeClass || returnType.isPrimitive()
+                && primitiveAssignable(returnType, asyncActualLastParameterTypeClass)) {
+                return true;
+            } else {
+                return false;
+            }
         }
-        
+
         return true;
-    }    
-    
+    }
+
     /**
      * Get operation by name
      * 
@@ -208,18 +206,30 @@ public class JAXWSAsyncInterfaceProcessor implements JavaInterfaceVisitor {
      * @param operationName
      * @return
      */
-    private static List<Operation> getAsyncOperations(List<Operation> operations, String operationName) {
+    private static List<Operation> getAsyncOperations(List<Operation> operations, JavaOperation op) {
         List<Operation> returnOperations = new ArrayList<Operation>();
 
-        for(Operation o : operations) {
-            if(o.getName().equals(operationName + ASYNC)) {
+        for (Operation o : operations) {
+            if (o == op) {
+                continue;
+            }
+            String operationName = op.getName();
+            if (o.getName().equals(operationName)) {
+                // Async operations have the same name when @WebMethod is present 
+                /*
+                JavaOperation jop = (JavaOperation)o;
+                if (op.getJavaMethod().getName().equals(jop.getJavaMethod().getName() + ASYNC)) {
+                    returnOperations.add(o);
+                }
+                */
+                returnOperations.add(o);
+            } else if (o.getName().equals(operationName + ASYNC)) {
                 returnOperations.add(o);
             }
         }
-        
+
         return returnOperations;
     }
-    
 
     /**
      * Check if two operation parameters are compatible

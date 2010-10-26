@@ -22,6 +22,7 @@ import org.apache.tuscany.sca.binding.ejb.EJBBinding;
 import org.apache.tuscany.sca.binding.ejb.util.EJBHandler;
 import org.apache.tuscany.sca.binding.ejb.util.NamingEndpoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 
@@ -71,7 +72,22 @@ public class EJBBindingInvoker implements Invoker {
         // lookup home and ejb stub
         EJBHandler ejbHandler = new EJBHandler(endpoint, serviceInterface);
 
-        String methodName = operation.getName();
+        //
+        // If we really couldn't have anything but a JavaOperation maybe we should
+        // remove the if-block.  Assuming we had some other type of operation, if
+        // that is possible, we might still need to map to a Java operation name,
+        // (for example because the WSDL operation name might be set using a JSR-181
+        // annotation to something other than the Java operation name.
+        //
+        // But for now we'll keep the else-block in here.
+        //
+        String methodName = null;
+        if (operation instanceof JavaOperation) {
+            JavaOperation javaOp = (JavaOperation) operation;
+            methodName = javaOp.getJavaMethod().getName();
+        } else {
+            methodName = operation.getName();
+        }
 
         // invoke business method on ejb
         Object response = ejbHandler.invoke(methodName, (Object[])payload);

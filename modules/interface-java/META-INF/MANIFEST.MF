@@ -19,11 +19,14 @@ Bundle-Version: 2.0.0
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Java Interface Model
-Import-Package: javax.xml.namespace,
+Import-Package: javax.jws,
+ javax.jws.soap,
+ javax.xml.namespace,
  javax.xml.stream,
- org.oasisopen.sca;version="2.0.0",
+ javax.xml.ws,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.assembly.xml;version="2.0.0",
+ org.apache.tuscany.sca.contribution;version="2.0.0",
  org.apache.tuscany.sca.contribution.processor;version="2.0.0",
  org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
@@ -35,8 +38,10 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.interfacedef.java.impl;version="2.0.0",
  org.apache.tuscany.sca.interfacedef.java.introspect;version="2.0.0",
  org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.wsdl;version="2.0.0",
  org.apache.tuscany.sca.monitor;version="2.0.0",
  org.apache.tuscany.sca.policy;version="2.0.0",
+ org.oasisopen.sca;version="2.0.0",
  org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.interface.java
 Bundle-DocURL: http://www.apache.org/

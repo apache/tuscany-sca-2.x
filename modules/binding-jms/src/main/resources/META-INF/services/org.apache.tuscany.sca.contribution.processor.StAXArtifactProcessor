@@ -17,13 +17,13 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.binding.jms.JMSBindingProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200912#binding.jms,model=org.apache.tuscany.sca.binding.jms.JMSBinding
-org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefaultProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#wireFormat.jmsdefault,model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault
+org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefaultProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200912#wireFormat.jmsDefault,model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault
 org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextXMLProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#wireFormat.jmsTextXML,model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextXML
 org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytesProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#wireFormat.jmsBytes,model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytes
 org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytesXMLProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#wireFormat.jmsBytesXML,model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytesXML
 org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#wireFormat.jmsText,model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSText
 org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSObjectProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#wireFormat.jmsObject,model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSObject
-org.apache.tuscany.sca.binding.jms.operationselector.OperationSelectorJMSDefaultProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#operationSelector.jmsdefault,model=org.apache.tuscany.sca.binding.jms.operationselector.OperationSelectorJMSDefault
+org.apache.tuscany.sca.binding.jms.operationselector.OperationSelectorJMSDefaultProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200912#operationSelector.jmsDefault,model=org.apache.tuscany.sca.binding.jms.operationselector.OperationSelectorJMSDefault
 org.apache.tuscany.sca.binding.jms.operationselector.OperationSelectorJMSUserPropProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#operationSelector.jmsUserProp,model=org.apache.tuscany.sca.binding.jms.operationselector.OperationSelectorJMSUserProp
 org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#jmsTokenAuthentication,model=org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicy
 org.apache.tuscany.sca.binding.jms.policy.header.JMSHeaderPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#jmsHeader,model=org.apache.tuscany.sca.binding.jms.policy.header.JMSHeaderPolicy

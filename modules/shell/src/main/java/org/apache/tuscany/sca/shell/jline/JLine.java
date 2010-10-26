@@ -26,13 +26,9 @@ import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 
-import jline.ArgumentCompletor;
 import jline.Completor;
 import jline.ConsoleReader;
-import jline.FileNameCompletor;
-import jline.SimpleCompletor;
 
-import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.shell.Shell;
 
 /**
@@ -51,11 +47,7 @@ public class JLine {
         // Add a Ctrl-c listener
         reader.addTriggeredAction((char)3, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try {
-                    shell.stop(null);
-                } catch (ActivationException e1) {
-                    e1.printStackTrace();
-                }
+                shell.bye();
                 System.exit(0);
             }
         });
@@ -66,7 +58,7 @@ public class JLine {
 //        completors.add(new ICURICompletor(shell.node));
 //        completors.add(new FileNameCompletor());
 //        reader.addCompletor(new ArgumentCompletor(completors));
-        reader.addCompletor(new TShellCompletor(shell.node));
+        reader.addCompletor(new TShellCompletor(shell));
         return reader;
     }
 

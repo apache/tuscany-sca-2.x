@@ -16,9 +16,11 @@ Import-Package: javax.servlet,
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.host.http;version="2.0.0",
  org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.util,
  org.apache.tuscany.sca.invocation;version="2.0.0",
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.oasisopen.sca,
  org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.http.runtime
 Bundle-DocURL: http://www.apache.org/

@@ -320,7 +320,7 @@ public class EquinoxHost {
             }
             if ((launcherBundle.getState() & Bundle.ACTIVE) == 0) {
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("Starting bundle: " + string(launcherBundle, false));
+                    logger.fine("Starting launcher bundle: " + string(launcherBundle, false));
                 }
                 launcherBundle.start();
             } else if (logger.isLoggable(Level.FINE)) {
@@ -514,7 +514,7 @@ public class EquinoxHost {
             }
             bundle = bundleContext.installBundle(location);
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine("Bundle installed in " + (currentTimeMillis() - installStart)
+                logger.fine("Bundle " + bundleFile + " installed in " + (currentTimeMillis() - installStart)
                     + " ms: "
                     + string(bundle, false));
             }

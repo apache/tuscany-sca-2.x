@@ -790,11 +790,11 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             // Write the component implementation
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                writeStart(writer, IMPLEMENTATION_COMPOSITE, new XAttr(NAME, ((Composite)implementation).getName()));
+                writeStart(writer, IMPLEMENTATION_COMPOSITE, new XAttr(NAME, ((Composite)implementation).getName()), policyProcessor.writePolicies(implementation));
 
                 //write extended attributes
                 this.writeExtendedAttributes(writer, (Composite)implementation, extensionAttributeProcessor, context);
-
+                
                 writeEnd(writer);
             } else {
                 extensionProcessor.write(component.getImplementation(), writer, context);
@@ -1098,17 +1098,20 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     //now resolve the implementation so that even if there is a shared instance
                     //for this that is resolved, the specified intents and policysets are safe in the
                     //component and not lost
-                	List<Intent> intents = implementation.getRequiredIntents();
-                	List<PolicySet> policySets = implementation.getPolicySets();
-                	
-                	
+
+                	List<PolicySet> policySets = new ArrayList<PolicySet>(implementation.getPolicySets());                	
+                	List<Intent> intents = new ArrayList<Intent>(implementation.getRequiredIntents());
                     implementation = resolveImplementation(implementation, resolver, context);
 
-                    implementation.getPolicySets().clear();
-                    implementation.getPolicySets().addAll(policySets);
-                    implementation.getRequiredIntents().clear();
-                    implementation.getRequiredIntents().addAll(intents);
-                    
+                    // If there are any policy sets on the implementation or component we have to
+                    // ignore policy sets from the component type (policy spec 4.9)
+                    if ( !policySets.isEmpty() || !component.getPolicySets().isEmpty() ) {                    	
+                    	implementation.getPolicySets().clear();
+                    	implementation.getPolicySets().addAll(policySets);                    	
+                    }
+                    	
+                    implementation.getRequiredIntents().addAll(intents);              
+
                     component.setImplementation(implementation);
                 }
 
@@ -1149,7 +1152,6 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
      * @param writer
      * @throws XMLStreamException
      */
-    @Override
     protected void writePropertyValue(Object propertyValue, QName element, QName type, XMLStreamWriter writer)
         throws XMLStreamException {
 

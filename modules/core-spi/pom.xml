@@ -56,7 +56,7 @@
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
-            <version>3.2.4</version>
+            <version>3.2.6</version>
             <scope>runtime</scope>
             <exclusions>
                 <exclusion>
@@ -69,7 +69,7 @@
     </dependencies>
 
   <build>
-    <plugins>
+    <!-- plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>buildnumber-maven-plugin</artifactId>
@@ -112,7 +112,7 @@
              </execution>
           </executions>
        </plugin>
-    </plugins>
+    </plugins-->
   </build>
 
 </project>

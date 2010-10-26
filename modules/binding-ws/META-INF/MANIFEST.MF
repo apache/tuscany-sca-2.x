@@ -7,7 +7,8 @@ Export-Package: org.apache.tuscany.sca.binding.ws;version="2.0.0";
    org.w3c.dom,
    javax.wsdl,
    javax.xml.namespace",
- org.apache.tuscany.sca.binding.ws.addressing;version="2.0.0";uses:="javax.xml.namespace"
+ org.apache.tuscany.sca.binding.ws.addressing;version="2.0.0";uses:="javax.xml.namespace",
+ org.apache.tuscany.sca.binding.ws.xml
 Private-Package: org.apache.tuscany.sca.binding.ws.impl;version="2.0.0"
 SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA WS Binding Model

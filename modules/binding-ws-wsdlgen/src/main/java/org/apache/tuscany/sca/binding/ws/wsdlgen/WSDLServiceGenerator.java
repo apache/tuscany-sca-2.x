@@ -249,10 +249,10 @@ public class WSDLServiceGenerator {
 
         // add a service and ports to the generated definition  
         WSDLDefinitionGenerator helper =
-                new WSDLDefinitionGenerator(BindingWSDLGenerator.requiresSOAP12(wsBinding));
+                new WSDLDefinitionGenerator(wsBinding);
         WSDLInterface wi = (WSDLInterface)wsBinding.getBindingInterfaceContract().getInterface();
         PortType portType = wi.getPortType();
-        Service service = helper.createService(def, portType);
+        Service service = helper.createService(def, portType, contract.getName());
         if (wsBinding.getBinding() == null && ports.size() == 0) {
             Binding binding = helper.createBinding(def, portType);
             if (BindingWSDLGenerator.requiresSOAP12(wsBinding)) {

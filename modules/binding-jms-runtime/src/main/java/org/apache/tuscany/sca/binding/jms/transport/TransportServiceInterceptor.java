@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.jms.transport;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
@@ -53,11 +54,9 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 public class TransportServiceInterceptor implements Interceptor {
     private static final Logger logger = Logger.getLogger(TransportServiceInterceptor.class.getName());
       
-    private Invoker next;
-    private RuntimeEndpoint endpoint;
+    private Invoker next;    
     private JMSResourceFactory jmsResourceFactory;
-    private JMSBinding jmsBinding;
-    private JMSMessageProcessor requestMessageProcessor;
+    private JMSBinding jmsBinding;   
     private JMSMessageProcessor responseMessageProcessor;
     private RuntimeComponentService service;
     private String correlationScheme;
@@ -66,10 +65,8 @@ public class TransportServiceInterceptor implements Interceptor {
 
     public TransportServiceInterceptor(ExtensionPointRegistry registry, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeEndpoint endpoint) {
         super();
-        this.jmsBinding = jmsBinding;
-        this.endpoint = endpoint;
-        this.jmsResourceFactory = jmsResourceFactory;
-        this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(registry, jmsBinding);
+        this.jmsBinding = jmsBinding;      
+        this.jmsResourceFactory = jmsResourceFactory;     
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(registry, jmsBinding);
         this.service = (RuntimeComponentService)endpoint.getService();
         this.correlationScheme = jmsBinding.getCorrelationScheme();
@@ -99,9 +96,7 @@ public class TransportServiceInterceptor implements Interceptor {
     }    
     
     public Message invokeRequest(Message msg) { 
-//        try {
-            JMSBindingContext context = msg.getBindingContext();
-            javax.jms.Message requestJMSMsg = context.getJmsMsg();
+//        try {                  
 
             EndpointReference from = assemblyFactory.createEndpointReference();
             Endpoint fromEndpoint = assemblyFactory.createEndpoint();
@@ -120,6 +115,7 @@ public class TransportServiceInterceptor implements Interceptor {
     }
     
     public Message invokeResponse(Message msg) { 
+        JMSBindingContext context = msg.getBindingContext();
         try {
 
             //if operation is oneway, return back.
@@ -128,7 +124,6 @@ public class TransportServiceInterceptor implements Interceptor {
                 return msg;
             }
 
-            JMSBindingContext context = msg.getBindingContext();
             Session session = context.getJmsResponseSession();
             javax.jms.Message requestJMSMsg = context.getJmsMsg();
             javax.jms.Message responseJMSMsg = msg.getBody();
@@ -151,9 +146,25 @@ public class TransportServiceInterceptor implements Interceptor {
                 }
                 return msg;
             }
-            
-            responseJMSMsg.setJMSDeliveryMode(requestJMSMsg.getJMSDeliveryMode());
-            responseJMSMsg.setJMSPriority(requestJMSMsg.getJMSPriority());
+
+            if ((msg.getOperation() != null)) {
+                String operationName = msg.getOperation().getName();
+                if (jmsBinding.getEffectiveJMSPriority(operationName) != null) {
+                    responseJMSMsg.setJMSPriority(jmsBinding.getEffectiveJMSPriority(operationName));
+                }
+        
+                if ( jmsBinding.getEffectiveJMSType(operationName) != null) {
+                    responseJMSMsg.setJMSType(jmsBinding.getEffectiveJMSType(operationName));
+                }
+                
+                if ((jmsBinding.getEffectiveJMSDeliveryMode(operationName) != null)) {
+                    responseJMSMsg.setJMSDeliveryMode(jmsBinding.getEffectiveJMSDeliveryMode(operationName) ? DeliveryMode.PERSISTENT : DeliveryMode.NON_PERSISTENT);                   
+                } 
+                
+                if ((jmsBinding.getEffectiveJMSTimeToLive(operationName) != null)) {
+                	responseJMSMsg.setJMSExpiration(jmsBinding.getEffectiveJMSTimeToLive(operationName).longValue());
+                }
+            }
     
             if (correlationScheme == null || 
                 JMSBindingConstants.CORRELATE_MSG_ID.equalsIgnoreCase(correlationScheme)) {
@@ -169,16 +180,19 @@ public class TransportServiceInterceptor implements Interceptor {
             producer.setDeliveryMode(deliveryMode);
             int deliveryPriority = requestJMSMsg.getJMSPriority();
             producer.setPriority(deliveryPriority);
+            long timeToLive = requestJMSMsg.getJMSExpiration();
+            producer.setTimeToLive(timeToLive);
     
             producer.send((javax.jms.Message)msg.getBody());
     
             producer.close();
-            context.closeJmsResponseSession();
             
             return msg;
     
         } catch (JMSException e) {
             throw new JMSBindingException(e);
+        } finally {
+            context.closeJmsResponseSession();
         }
     }    
     

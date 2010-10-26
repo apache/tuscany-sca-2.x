@@ -22,6 +22,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
@@ -107,6 +108,15 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                         contribution = nodeConfigurationFactory.createContributionConfiguration();
                         contribution.setURI(reader.getAttributeValue(null, "uri"));
                         contribution.setLocation(reader.getAttributeValue(null, "location"));
+                        contribution.setMetaDataURL(reader.getAttributeValue(null, "metaDataURL"));
+                        String startDeployables = reader.getAttributeValue(null, "startDeployables");
+                        if (startDeployables != null) {
+                            contribution.setStartDeployables(Boolean.parseBoolean(startDeployables));
+                        }
+                        String dependentURIs = reader.getAttributeValue(null, "dependentURIs");
+                        if (dependentURIs != null) {
+                            contribution.setDependentContributionURIs(Arrays.asList(dependentURIs.split(",")));
+                        }
                         node.getContributions().add(contribution);
                     } else if (BINDING.equals(name)) {
                         binding = nodeConfigurationFactory.createBindingConfiguration();

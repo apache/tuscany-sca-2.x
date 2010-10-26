@@ -31,10 +31,18 @@ public class JSONPServiceBindingProvider implements ServiceBindingProvider {
 
     private RuntimeEndpoint endpoint;
     private ServletHost servletHost;
+    private InterfaceContract contract;
 
     public JSONPServiceBindingProvider(RuntimeEndpoint endpoint, ServletHost servletHost) {
         this.endpoint = endpoint;
         this.servletHost = servletHost;
+        
+        try {
+            contract = (InterfaceContract)endpoint.getComponentServiceInterfaceContract().clone();
+        } catch (Exception ex){
+            // we know this supports clone
+        }
+        contract.getInterface().resetDataBinding("JSON");
     }
 
     public void start() {
@@ -58,7 +66,7 @@ public class JSONPServiceBindingProvider implements ServiceBindingProvider {
 
     // TODO: Why are these two still on the ServiceBindingProvider interface?
     public InterfaceContract getBindingInterfaceContract() {
-        return null;
+        return contract;
     }
 
     public boolean supportsOneWayInvocation() {

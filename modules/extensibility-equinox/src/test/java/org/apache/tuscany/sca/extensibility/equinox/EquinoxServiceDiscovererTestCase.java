@@ -111,6 +111,12 @@ public class EquinoxServiceDiscovererTestCase {
         descriptors = discoverer.getServiceDeclarations("notthere");
         Assert.assertEquals(0, descriptors.size());
     }
+    
+    @Test
+    public void testDiscoverResources() throws IOException {
+        Collection<ServiceDeclaration> descriptors = discoverer.getServiceDeclarations("/META-INF/services/test.TestService");
+        Assert.assertEquals(2, descriptors.size());
+    }
 
     @Test
     public void testDiscoveryFirst() throws IOException {

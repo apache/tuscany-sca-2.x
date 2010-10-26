@@ -29,5 +29,6 @@ org.apache.tuscany.sca.implementation.java.introspect.impl.ReferenceProcessor;ra
 org.apache.tuscany.sca.implementation.java.introspect.impl.ResourceProcessor;ranking=1100
 org.apache.tuscany.sca.implementation.java.introspect.impl.ScopeProcessor;ranking=1000
 org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;ranking=900
+org.apache.tuscany.sca.implementation.java.introspect.impl.JAXWSProcessor;ranking=850
 org.apache.tuscany.sca.implementation.java.introspect.impl.HeuristicPojoProcessor;ranking=800
 org.apache.tuscany.sca.implementation.java.introspect.impl.PolicyProcessor;ranking=700

@@ -31,6 +31,14 @@
     <name>Apache Tuscany SCA Features</name>
 
     <modules>
+
+        <!-- 
+            Features 
+            
+            Somewhat arbitrary and necessarily overlapping collections of Tuscany
+            modules targetted at supporting specific types of application with 
+            appropriate groups of function
+        -->
         <module>all</module>
         <module>api</module>
         <module>core</module>
@@ -44,8 +52,7 @@
 <!--
         <module>manager</module>
         <module>repository</module>
--->
-        <module>binding-ws</module>
+-->     
     </modules>
 
 </project>

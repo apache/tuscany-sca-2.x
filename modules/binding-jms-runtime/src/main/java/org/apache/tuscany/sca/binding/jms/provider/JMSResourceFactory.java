@@ -24,6 +24,7 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Session;
 import javax.naming.NamingException;
+import javax.resource.spi.ActivationSpec;
 
 public interface JMSResourceFactory {
 
@@ -92,4 +93,7 @@ public interface JMSResourceFactory {
      * shared with other users, or where connections cannot be held across transaction boundaries.
      */
     public abstract boolean isConnectionClosedAfterUse();
+
+	public abstract ActivationSpec lookupActivationSpec(
+			String activationSpecName);
 }

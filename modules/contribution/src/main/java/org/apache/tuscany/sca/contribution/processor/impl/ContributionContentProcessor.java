@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Artifact;
@@ -139,7 +140,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
                 
                 monitor.pushContext("Artifact: " + artifact.getURI());
     
-                old = context.setContribution(contribution);
+                Artifact oldArtifact = context.setArtifact(artifact);
                 try {
                     // Read each artifact
                     URL artifactLocationURL = null;
@@ -169,7 +170,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
                     }
                 } finally {
                     monitor.popContext();
-                    context.setContribution(old);
+                    context.setArtifact(oldArtifact);
                 }                    
             }
             
@@ -191,6 +192,19 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
                 contribution.getImports().add(defaultImport);
                 DefaultExport defaultExport = contributionFactory.createDefaultExport();
                 contribution.getExports().add(defaultExport);
+            } else {
+                if (contribution.getDeployables().size() > 0) {
+                    // Update the deployable Composite objects with the correct Composite object for the artifact
+                    for (Artifact a : contribution.getArtifacts()) {
+                        if (a.getModel() instanceof Composite) {
+                            for (ListIterator<Composite> lit = contribution.getDeployables().listIterator(); lit.hasNext();) {
+                                if (lit.next().getName().equals(((Composite)a.getModel()).getName())) {
+                                    lit.set((Composite)a.getModel());
+                                }
+                            }
+                        }
+                    }
+                }
             }
         } finally {
             monitor.popContext();
@@ -252,23 +266,32 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
 	        for (Artifact artifact : contribution.getArtifacts()) {
 	            Object model = artifact.getModel();
 	            if (model != null) {
+	                Artifact oldArtifact = context.setArtifact(artifact);
 	                try {
 	                   artifactProcessor.resolve(model, contributionResolver, context);
 	                } catch (Throwable e) {
 	                    throw new ContributionResolveException(e);
+	                } finally {
+	                    context.setArtifact(oldArtifact);
 	                }
 	            }
 	        }
 	
-	        // Resolve deployable composites
-	        List<Composite> deployables = contribution.getDeployables();
-	        for (int i = 0, n = deployables.size(); i < n; i++) {
-	            Composite deployable = deployables.get(i);
-	            Composite resolved = (Composite)contributionResolver.resolveModel(Composite.class, deployable, context);
-	            if (resolved != deployable) {
-	                deployables.set(i, resolved);
-	            }
-	        } // end for
+            // Resolve deployable composites
+            List<Composite> deployables = contribution.getDeployables();
+            Artifact oldArtifact = context.setArtifact(contribution);
+            try {
+                for (int i = 0, n = deployables.size(); i < n; i++) {
+                    Composite deployable = deployables.get(i);
+                    Composite resolved =
+                        (Composite)contributionResolver.resolveModel(Composite.class, deployable, context);
+                    if (resolved != deployable) {
+                        deployables.set(i, resolved);
+                    }
+                } // end for
+            } finally {
+                context.setArtifact(oldArtifact);
+            }
     	} finally {
     		monitor.popContext();
     		context.setContribution(old);

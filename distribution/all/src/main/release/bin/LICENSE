@@ -257,19 +257,17 @@ The following components come under Apache Software License 2.0
  derby-10.4.1.3.jar
  dwr-2.0.3.jar
  geronimo-activation_1.1_spec-1.0.1.jar
- geronimo-connector-2.1.3.jar
+ geronimo-connector-2.1.4.jar
  geronimo-ejb_3.0_spec-1.0.1.jar
- geronimo-el_1.0_spec-1.0.1.jar
  geronimo-javamail_1.4_spec-1.6.jar
  geronimo-jms_1.1_spec-1.1.1.jar
  geronimo-jpa_3.0_spec-1.1.1.jar
- geronimo-jsp_2.1_spec-1.0.1.jar
  geronimo-jta_1.0.1B_spec-1.0.jar
  geronimo-jta_1.1_spec-1.1.1.jar
  geronimo-j2ee-connector_1.5_spec-2.0.0.jar
  geronimo-kernel-2.0.1.jar
  geronimo-stax-api_1.0_spec-1.0.1.jar
- geronimo-transaction-2.1.3.jar
+ geronimo-transaction-2.1.4.jar
  geronimo-ws-metadata_2.0_spec-1.1.2.jar
  groovy-all-1.7.1.jar
  hazelcast-1.8.3.jar
@@ -278,9 +276,9 @@ The following components come under Apache Software License 2.0
  httpcore-4.0.1.jar
  httpcore-nio-4.0.1.jar
  jabsorb-1.3.1.jar
- jackson-core-asl-1.5.4.jar
- jackson-mapper-asl-1.5.4.jar
- jackson-xc-1.5.4.jar
+ jackson-core-asl-1.6.0.jar
+ jackson-mapper-asl-1.6.0.jar
+ jackson-xc-1.6.0.jar
  jettison-1.2.jar
  jetty-6.1.19.jar
  jetty-util-6.1.19.jar
@@ -310,14 +308,12 @@ The following components come under Apache Software License 2.0
  rampart-policy-1.4.jar
  rampart-trust-1.4.jar
  regexp-1.3.jar
- rome-1.0.jar
  spring-aop-3.0.2.RELEASE.jar
  spring-asm-3.0.2.RELEASE.jar
  spring-beans-3.0.2.RELEASE.jar
  spring-context-3.0.2.RELEASE.jar
  spring-core-3.0.2.RELEASE.jar
  spring-expression-3.0.2.RELEASE.jar
- stripes-1.5.2.jar
  tranql-connector-1.1.jar
  tribes-6.0.26.jar
  wink-common-1.1.1-incubating.jar
@@ -327,7 +323,6 @@ The following components come under Apache Software License 2.0
  woden-impl-dom-1.0M8.jar
  wss4j-1.5.4.jar
  wstx-asl-3.2.4.jar
- wstx-asl-3.2.6.jar
  xalan-2.7.0.jar
  xercesImpl-2.8.1.jar
  xml-apis-1.3.04.jar
@@ -1613,53 +1608,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-==========================================================================================
-
-
-The tuscany-assembly-xsd-osoa jar includes XSD files under the following SCA Collaboration license:
-
-License for the Service Component Architecture JavaDoc, Interface 
-Definition files and XSD files.
-
-The Service Component Architecture JavaDoc, Interface Definition files, 
-and XSD files are being provided by the copyright holders under the 
-following license. By using and/or copying this work, you agree that 
-you have read, understood and will comply with the following terms and 
-conditions:
-
-Permission to copy, display, make derivative works of, and distribute 
-the Service Component Architecture JavaDoc, Interface Definition Files 
-and XSD files (the "Artifacts") in any medium without fee or royalty is 
-hereby granted, provided that you include the following on ALL copies 
-of the Artifacts, or portions thereof, that you make: 
-
-1. A link or URL to the Artifacts at this location:
-http://www.osoa.org/display/Main/Service+Component+Architecture+Specifications 
-
-2. The full text of this copyright notice as shown in the Artifacts.
-
-THE ARTIFACTS ARE PROVIDED "AS IS," AND THE AUTHORS MAKE NO 
-REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, REGARDING THE 
-ARTIFACTS AND THE IMPLEMENTATION OF THEIR CONTENTS, INCLUDING, BUT NOT 
-LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
-PURPOSE, NON-INFRINGEMENT OR TITLE.  
-
-THE AUTHORS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL, 
-INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATING TO ANY 
-USE OR DISTRIBUTION OF THE ARTIFACTS.
-
-The name and trademarks of the Authors may NOT be used in any manner, 
-including advertising or publicity pertaining to the Service Component 
-Architecture Specification or its contents without specific, written 
-prior permission. Title to copyright in the Service Component 
-Architecture Specification and the JavaDoc, Interface Definition Files 
-and XSD Files will at all times remain with the Authors.
-
-No other rights are granted by implication, estoppel or otherwise.
-
-Revision level 1.1, last updated on 2007/11/19
-
-
 ================================================================================
 
 The tuscany-assembly-xsd.jar and tuscany-sca-api.jar include files under the following OASIS license:
@@ -2275,7 +2223,7 @@ EXHIBIT A -Mozilla Public License.
      Original Code Source Code for Your Modifications.]
 ========================================================================================================
 
-The jython-2.2.1.jar includes files under the following licenses: 
+The jython-2.5.2-beta1.jar includes files under the following licenses: 
 
 The Jython License
 A. TERMS AND CONDITIONS FOR ACCESSING OR OTHERWISE USING JYTHON

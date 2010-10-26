@@ -112,17 +112,21 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider {
                                     wsBinding.getPort().getName());
         properties.put(Endpoint.WSDL_PORT, portName);
                       
+        QName bindingServiceName = wsBinding.getServiceName() == null ? wsBinding.getService().getQName() : wsBinding.getServiceName();
         QName serviceName = new QName(targetNamespace,
-                                      wsBinding.getService().getQName().getLocalPart());
+                                     bindingServiceName.getLocalPart()); 
         properties.put(Endpoint.WSDL_SERVICE, serviceName);
-        
+
         wsEndpoint.setMetadata(metadata);
         wsEndpoint.setProperties(properties);               
        
         // Start up the endpoint
+   
         wsEndpoint.publish(wsBinding.getURI());
-        
+     
+       
         jaxwsBindingProvider.start();        
+       
     }
 
     public void stop() {

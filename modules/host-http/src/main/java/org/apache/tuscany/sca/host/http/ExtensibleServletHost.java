@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -130,5 +131,10 @@ public class ExtensibleServletHost implements ServletHost {
     
     public String getName() {
         return getDefaultServletHost().getName();
+    }
+
+    @Override
+    public ServletContext getServletContext() {
+        return getDefaultServletHost().getServletContext();
     }
 }

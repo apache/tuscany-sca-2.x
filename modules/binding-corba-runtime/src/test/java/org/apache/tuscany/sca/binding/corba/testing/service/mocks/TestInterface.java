@@ -24,6 +24,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -159,5 +160,35 @@ public class TestInterface implements JavaInterface {
         // TODO Auto-generated method stub
         
     }
-
+    
+    public String getJAXWSJavaInterfaceName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    public void setJAXWSJavaInterfaceName(String javaInterfaceName) {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    public String getJAXWSWSDLLocation() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    public void setJAXWSWSDLLocation(String wsdlLocation) {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    public Contribution getContributionContainingClass() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    public void setContributionContainingClass(
+            Contribution contributionContainingClass) {
+        // TODO Auto-generated method stub
+        
+    }
 }

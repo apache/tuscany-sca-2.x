@@ -38,6 +38,7 @@ public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneab
     private boolean overridingBindings;
     private Callback callback;
     private List<Endpoint> endpoints = new ArrayList<Endpoint>();
+    private boolean isJAXWSService = false;
 
     /**
      * Constructs a new service.
@@ -102,5 +103,13 @@ public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneab
 
     public void setOverridingBindings(boolean overridingBindings) {
         this.overridingBindings = overridingBindings;
+    }
+    
+    public boolean isJAXWSService() {
+        return isJAXWSService;
+    }
+    
+    public void setJAXWSService(boolean isJAXWSService) {
+        this.isJAXWSService = isJAXWSService;
     }
 }

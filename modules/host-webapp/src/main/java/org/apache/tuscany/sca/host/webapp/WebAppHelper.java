@@ -31,6 +31,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.node.Node;
@@ -38,6 +39,15 @@ import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 
 public class WebAppHelper {
+    private static final String ROOT = "/";
+    // The prefix for the parameters in web.xml which configure the folders that contain SCA contributions
+    private static final String CONTRIBUTIONS = "contributions";
+    // The prefix for the parameters in web.xml which configure the individual SCA contributions
+    private static final String CONTRIBUTION = "contribution";
+    private static final String NODE_CONFIGURATION = "node.configuration";
+    private static final String WEB_COMPOSITE = "/WEB-INF/web.composite";
+    private static final String DOMAIN_URI = "domain.uri";
+    private static final String NODE_URI = "node.uri";
     public static final String DOMAIN_NAME_ATTR = "org.apache.tuscany.sca.domain.name";
     public static final String SCA_NODE_ATTRIBUTE = Node.class.getName();
     private static NodeFactory factory;
@@ -49,8 +59,8 @@ public class WebAppHelper {
             return uri.toURL();
         } else {
             String path = location;
-            if (!path.startsWith("/")) {
-                path = "/" + path;
+            if (!path.startsWith(ROOT)) {
+                path = ROOT + path;
             }
             URL url = servletContext.getResource(path);
             if (url != null && url.getProtocol().equals("jndi")) {
@@ -63,11 +73,19 @@ public class WebAppHelper {
             }
         }
     }
+    
+    private static String[] parse(String listOfValues) {
+        if (listOfValues == null) {
+            return null;
+        }
+        return listOfValues.split("(\\s|,)+");
+    }
 
     @SuppressWarnings("unchecked")
-    private static NodeConfiguration getNodeConfiguration(ServletContext servletContext) throws IOException, URISyntaxException {
+    private static NodeConfiguration getNodeConfiguration(ServletContext servletContext) throws IOException,
+        URISyntaxException {
         NodeConfiguration configuration = null;
-        String nodeConfigURI = (String) servletContext.getAttribute("node.configuration");
+        String nodeConfigURI = (String)servletContext.getAttribute(NODE_CONFIGURATION);
         if (nodeConfigURI != null) {
             URL url = getResource(servletContext, nodeConfigURI);
             configuration = factory.loadConfiguration(url.openStream(), url);
@@ -76,35 +94,52 @@ public class WebAppHelper {
             Enumeration<String> names = servletContext.getAttributeNames();
             while (names.hasMoreElements()) {
                 String name = names.nextElement();
-                if (name.startsWith("contribution")) {
-                    String contrib = (String) servletContext.getAttribute(name);
-                    if (contrib != null) {
-                        File f = new File(getResource(servletContext, contrib).toURI());
-                        if (f.isDirectory()) {
-                            for (File n : f.listFiles()) {
-                                configuration.addContribution(n.toURI().toURL());
+                if (name.equals(CONTRIBUTION) || name.startsWith(CONTRIBUTION + ".")) {
+                    // We need to have a way to select one or more folders within the webapp as the contributions
+                    String listOfValues = (String)servletContext.getAttribute(name);
+                    if (listOfValues != null) {
+                        for (String path : parse(listOfValues)) {
+                            if ("".equals(path)) {
+                                continue;
                             }
-                        } else {
+                            File f = new File(getResource(servletContext, path).toURI());
                             configuration.addContribution(f.toURI().toURL());
+                        }
+                    }
+                } else if (name.equals(CONTRIBUTIONS) || name.startsWith(CONTRIBUTIONS + ".")) {
+                    String listOfValues = (String)servletContext.getAttribute(name);
+                    if (listOfValues != null) {
+                        for (String path : parse(listOfValues)) {
+                            if ("".equals(path)) {
+                                continue;
+                            }
+                            File f = new File(getResource(servletContext, path).toURI());
+                            if (f.isDirectory()) {
+                                for (File n : f.listFiles()) {
+                                    configuration.addContribution(n.toURI().toURL());
+                                }
+                            } else {
+                                configuration.addContribution(f.toURI().toURL());
+                            }
                         }
                     }
                 }
             }
-            
+
             if (configuration.getContributions().isEmpty()) {
                 // TODO: Which path should be the default root
-                configuration.addContribution(getResource(servletContext, "/"));
+                configuration.addContribution(getResource(servletContext, ROOT));
             }
-            URL composite = getResource(servletContext, "/WEB-INF/web.composite");
+            URL composite = getResource(servletContext, WEB_COMPOSITE);
             if (composite != null) {
                 configuration.getContributions().get(0).addDeploymentComposite(composite);
             }
-            String nodeURI = (String) servletContext.getAttribute("node.uri");
+            String nodeURI = (String)servletContext.getAttribute(NODE_URI);
             if (nodeURI == null) {
-                nodeURI = new File(servletContext.getRealPath("/")).getName();
+                nodeURI = new File(servletContext.getRealPath(ROOT)).getName();
             }
             configuration.setURI(nodeURI);
-            String domainURI = (String) servletContext.getAttribute("domain.uri");
+            String domainURI = (String)servletContext.getAttribute(DOMAIN_URI);
             if (domainURI != null) {
                 configuration.setDomainURI(domainURI);
             } else {
@@ -122,34 +157,39 @@ public class WebAppHelper {
     private static String getDomainName(String configURI) {
         String domainName;
         if (configURI.startsWith("tuscany:vm:")) {
-            domainName = configURI.substring("tuscany:vm:".length());  
+            domainName = configURI.substring("tuscany:vm:".length());
         } else if (configURI.startsWith("tuscany:")) {
             int i = configURI.indexOf('?');
             if (i == -1) {
-                domainName = configURI.substring("tuscany:".length());  
-            } else{
-                domainName = configURI.substring("tuscany:".length(), i);  
+                domainName = configURI.substring("tuscany:".length());
+            } else {
+                domainName = configURI.substring("tuscany:".length(), i);
             }
         } else {
-            domainName = configURI;  
+            domainName = configURI;
         }
         return domainName;
     }
-    
+
     public synchronized static ServletHost init(final ServletContext servletContext) {
         if (host == null) {
             try {
-                
+
                 String configValue = servletContext.getInitParameter("org.apache.tuscany.sca.config");
                 if (configValue != null) {
                     factory = NodeFactory.newInstance(configValue);
                 } else {
                     factory = NodeFactory.newInstance();
                 }
+                
+                // Add ServletContext as a utility
                 ExtensionPointRegistry registry = factory.getExtensionPointRegistry();
+                UtilityExtensionPoint utilityExtensionPoint = registry.getExtensionPoint(UtilityExtensionPoint.class);
+                utilityExtensionPoint.addUtility(ServletContext.class, servletContext);
+                
                 ServletHostExtensionPoint servletHosts = registry.getExtensionPoint(ServletHostExtensionPoint.class);
                 servletHosts.setWebApp(true);
-                
+
                 // TODO: why are the init parameters copied to the attributes?
                 for (Enumeration<?> e = servletContext.getInitParameterNames(); e.hasMoreElements();) {
                     String name = (String)e.nextElement();
@@ -200,7 +240,7 @@ public class WebAppHelper {
 
     private static WebAppServletHost getServletHost(NodeFactory factory) {
         ExtensionPointRegistry registry = factory.getExtensionPointRegistry();
-        return (WebAppServletHost) org.apache.tuscany.sca.host.http.ServletHostHelper.getServletHost(registry);
+        return (WebAppServletHost)org.apache.tuscany.sca.host.http.ServletHostHelper.getServletHost(registry);
     }
 
     private static Node createAndStartNode(final ServletContext servletContext) throws ServletException {
@@ -217,10 +257,10 @@ public class WebAppHelper {
     }
 
     public static void stop(ServletContext servletContext) {
-        Node node = (Node)servletContext.getAttribute(WebAppHelper.SCA_NODE_ATTRIBUTE);
+        Node node = (Node)servletContext.getAttribute(SCA_NODE_ATTRIBUTE);
         if (node != null) {
             node.stop();
-            servletContext.setAttribute(WebAppHelper.SCA_NODE_ATTRIBUTE, null);
+            servletContext.setAttribute(SCA_NODE_ATTRIBUTE, null);
         }
     }
 

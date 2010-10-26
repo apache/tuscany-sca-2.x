@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-compliance-tests</artifactId>
+        <version>2.0-Beta1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>tuscany-compliance-test-binding-ws</artifactId>
+    <name>Apache Tuscany SCA Specification Compliance Tests Binding WS</name>
+
+    <dependencies>
+
+        <dependency>
+            <!-- This is only needed to get the module working in Eclipse which doesn't pick it up from the dependency plugin unpack -->
+            <!-- The dependency plugin unpack is needed as presently the surefire plugin wont run tests in a dependency jar -->
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-otests-sca-ws-tests</artifactId>
+            <version>2.0-Beta1-SNAPSHOT</version>
+        </dependency>
+
+       <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-base-runtime-pom</artifactId>
+            <version>2.0-Beta1-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency> 
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-jms</artifactId>
+            <version>2.0-Beta1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-osgi-runtime-pom</artifactId>
+            <version>2.0-Beta1-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency> 
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
+            <version>2.0-Beta1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-jetty</artifactId>
+            <version>2.0-Beta1-SNAPSHOT</version>
+        </dependency> 
+
+         <!-- This is need when running with Sun JDK which gets an unsupported operation exception creating an XMLStreamReader from a DOMSource
+             when Tuscany is writing a property value  -->
+         <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>3.2.4</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>stax</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.5</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+  <build>
+    <finalName>${artifactId}</finalName>
+    <plugins>
+                        
+      <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-surefire-plugin</artifactId>
+         <configuration>
+           <excludes>
+           </excludes>
+         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+               <artifactItems>
+                 <artifactItem>
+                   <groupId>org.apache.tuscany.sca</groupId>
+                   <artifactId>oasis-ws-contributions</artifactId>
+                   <version>2.0-Beta1-SNAPSHOT</version>
+                   <type>zip</type>
+                   <outputDirectory>${project.build.directory}/oasis-contributions</outputDirectory>
+                 </artifactItem>
+                 <artifactItem>
+                   <groupId>org.apache.tuscany.sca</groupId>
+                   <artifactId>tuscany-otests-sca-ws-tests</artifactId>
+                   <version>2.0-Beta1-SNAPSHOT</version>
+                   <type>jar</type>
+                   <excludes>commons-logging.properties,oasis-sca-tests.properties</excludes>
+                   <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+                 </artifactItem>
+               </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+</project>

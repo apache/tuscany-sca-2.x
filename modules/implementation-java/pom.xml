@@ -40,6 +40,18 @@
             <artifactId>tuscany-interface-java</artifactId>
             <version>2.0-Beta1-SNAPSHOT</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-java-jaxws</artifactId>
+            <version>2.0-Beta1-SNAPSHOT</version>
+        </dependency>        
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-wsdl</artifactId>
+            <version>2.0-Beta1-SNAPSHOT</version>
+        </dependency>        
  
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -70,8 +82,14 @@
             <artifactId>tuscany-contribution</artifactId>
             <version>2.0-Beta1-SNAPSHOT</version>
         </dependency>
-
+        
         <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws</artifactId>
+            <version>2.0-Beta1-SNAPSHOT</version>
+        </dependency>         
+
+        <!--dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-builder</artifactId>
             <version>2.0-Beta1-SNAPSHOT</version>
@@ -83,7 +101,14 @@
             <artifactId>tuscany-binding-sca-runtime</artifactId>
             <version>2.0-Beta1-SNAPSHOT</version>
             <scope>test</scope>
-        </dependency>        
+        </dependency>    
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws</artifactId>
+            <version>2.0-Beta1-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency-->             
 
     </dependencies>
 

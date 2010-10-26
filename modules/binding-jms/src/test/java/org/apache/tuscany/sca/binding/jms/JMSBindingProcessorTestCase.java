@@ -53,7 +53,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
-            + "          <binding.jms uri=\"jms:testQueue\" />"
+            + "          <binding.jms uri=\"jms:jndi:testQueue\" />"
             + "      </service>"
             + " </component>"
             + "</composite>";
@@ -426,10 +426,10 @@ public class JMSBindingProcessorTestCase extends TestCase {
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
-        assertEquals("myType", binding.getJMSType());
-        assertTrue(binding.isdeliveryModePersistent());
-        assertEquals(54321, binding.getJMSTimeToLive().longValue());
-        assertEquals(5, binding.getJMSPriority().intValue());
+        assertEquals("myType", binding.getJMSHeaderType());
+        assertTrue(binding.isHeaderDeliveryModePersistent());
+        assertEquals(54321, binding.getJMSHeaderTimeToLive().longValue());
+        assertEquals(5, binding.getJMSHeaderPriority().intValue());
     }
 
     public void testProperties1() throws Exception {

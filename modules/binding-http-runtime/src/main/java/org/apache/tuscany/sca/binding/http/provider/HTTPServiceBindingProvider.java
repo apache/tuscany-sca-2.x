@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.binding.http.provider;
 import javax.servlet.Servlet;
 
 import org.apache.tuscany.sca.binding.http.HTTPBinding;
+import org.apache.tuscany.sca.binding.http.HTTPDefaultOperationSelector;
+import org.apache.tuscany.sca.binding.http.HTTPDefaultWireFormat;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -36,8 +38,6 @@ import org.apache.tuscany.sca.provider.OperationSelectorProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
 import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
@@ -49,17 +49,15 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
     private ExtensionPointRegistry extensionPoints;
     
     private RuntimeEndpoint endpoint;
-    private RuntimeComponent component;
-    private RuntimeComponentService service;  
-    private InterfaceContract serviceContract;
     private HTTPBinding binding;
     private MessageFactory messageFactory;
-    
     private OperationSelectorProvider osProvider;
     private WireFormatProvider wfProvider;
-    
     private ServletHost servletHost;
     private String servletMapping;
+    private InterfaceContract interfaceContract;
+    private boolean widget;
+
     private HTTPBindingListenerServlet bindingListenerServlet;
    
     public HTTPServiceBindingProvider(RuntimeEndpoint endpoint,
@@ -68,18 +66,24 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
                                       ServletHost servletHost) {
     	
     	this.endpoint = endpoint;
-        this.component = (RuntimeComponent)endpoint.getComponent();
-        this.service = (RuntimeComponentService)endpoint.getService();
         this.binding = (HTTPBinding)endpoint.getBinding();
+        this.widget = "Widget".equals(binding.getName());
         
         this.extensionPoints = extensionPoints;
         this.messageFactory = messageFactory;
         this.servletHost = servletHost;
         
-        // retrieve operation selector and wire format service providers
+        if (binding.getOperationSelector() == null && !widget) {
+            binding.setOperationSelector(new HTTPDefaultOperationSelector());
+        }
+        if (binding.getRequestWireFormat() == null && !widget) {
+            binding.setRequestWireFormat(new HTTPDefaultWireFormat());
+        }
+        if (binding.getResponseWireFormat() == null && !widget) {
+            binding.setResponseWireFormat(new HTTPDefaultWireFormat());
+        }
         
         ProviderFactoryExtensionPoint  providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-
         
         if (binding.getOperationSelector() != null) {
             // Configure the interceptors for operation selection
@@ -97,23 +101,36 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
             }            
         }
 
-        
-        
         //clone the service contract to avoid databinding issues
         try {
-            this.serviceContract = (InterfaceContract) service.getInterfaceContract().clone();
+            interfaceContract = (InterfaceContract)endpoint.getComponentServiceInterfaceContract().clone();
             
             // configure data binding
             if (this.wfProvider != null) {
-                wfProvider.configureWireFormatInterfaceContract(service.getInterfaceContract());
+                wfProvider.configureWireFormatInterfaceContract(interfaceContract);
             }
         } catch(CloneNotSupportedException e) {
-            this.serviceContract = service.getInterfaceContract();
+            // shouldn't happen
         }
         
+        servletMapping = binding.getURI();
+        if (!servletMapping.endsWith("/")) {
+            servletMapping += "/";
+        }
+        if (!servletMapping.endsWith("*")) {
+            servletMapping += "*";
+        }
     }
 
     public void start() {
+        if (widget) {
+            start1x();
+        } else {
+            servletHost.addServletMapping(servletMapping, new HTTPBindingServiceServlet(endpoint, messageFactory));
+        }
+    }
+    
+    public void start1x() {
         // Get the invokers for the supported operations
         Servlet servlet = null;
         bindingListenerServlet = new HTTPBindingListenerServlet(binding, messageFactory );
@@ -122,39 +139,39 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
             String operationName = operation.getName();
             if (operationName.equals("get")) { 
                 Invoker getInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setGetInvoker(getInvoker);
+                bindingListenerServlet.setGetInvoker(getInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("conditionalGet")) {
                 Invoker conditionalGetInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setConditionalGetInvoker(conditionalGetInvoker);
+                bindingListenerServlet.setConditionalGetInvoker(conditionalGetInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("delete")) {
                 Invoker deleteInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setDeleteInvoker(deleteInvoker);
+                bindingListenerServlet.setDeleteInvoker(deleteInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("conditionalDelete")) {
                 Invoker conditionalDeleteInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setConditionalDeleteInvoker(conditionalDeleteInvoker);
+                bindingListenerServlet.setConditionalDeleteInvoker(conditionalDeleteInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("put")) {
                 Invoker putInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setPutInvoker(putInvoker);
+                bindingListenerServlet.setPutInvoker(putInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("conditionalPut")) {
                 Invoker conditionalPutInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setConditionalPutInvoker(conditionalPutInvoker);
+                bindingListenerServlet.setConditionalPutInvoker(conditionalPutInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("post")) {
                 Invoker postInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setPostInvoker(postInvoker);
+                bindingListenerServlet.setPostInvoker(postInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("conditionalPost")) {
                 Invoker conditionalPostInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setConditionalPostInvoker(conditionalPostInvoker);
+                bindingListenerServlet.setConditionalPostInvoker(conditionalPostInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("service")) {
                 Invoker serviceInvoker = invocationChain.getHeadInvoker();
-                servlet = new HTTPServiceListenerServlet(binding, serviceInvoker, messageFactory);
+//                servlet = new HTTPServiceListenerServlet(binding, serviceInvoker, messageFactory);
                 break;
             } 
         }
@@ -174,14 +191,13 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
         
         servletHost.addServletMapping(servletMapping, servlet);
     }
-
+    
     public void stop() {        
-        // Unregister the Servlet from the Servlet host
         servletHost.removeServletMapping(servletMapping);
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        return service.getInterfaceContract();
+        return interfaceContract;
     }
     
     public boolean supportsOneWayInvocation() {
@@ -192,6 +208,8 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
      * Add specific http interceptor to invocation chain
      */
     public void configure() {
+        
+        if (widget) return;
 
         InvocationChain bindingChain = endpoint.getBindingInvocationChain();
 

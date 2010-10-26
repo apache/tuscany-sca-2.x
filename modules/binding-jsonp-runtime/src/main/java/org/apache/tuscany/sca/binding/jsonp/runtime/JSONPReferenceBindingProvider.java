@@ -28,9 +28,17 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 public class JSONPReferenceBindingProvider implements ReferenceBindingProvider {
 
     private EndpointReference endpoint;
+    private InterfaceContract contract;
 
     public JSONPReferenceBindingProvider(EndpointReference endpoint) {
         this.endpoint = endpoint;
+        
+        try {
+            contract = (InterfaceContract)endpoint.getComponentReferenceInterfaceContract().clone();
+        } catch (Exception ex){
+            // we know this supports clone
+        }
+        contract.getInterface().resetDataBinding("JSON");
     }
     public Invoker createInvoker(Operation operation) {
         return new JSONPInvoker(operation, endpoint);
@@ -43,7 +51,7 @@ public class JSONPReferenceBindingProvider implements ReferenceBindingProvider {
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        return null;
+        return contract;
     }
 
     public boolean supportsOneWayInvocation() {

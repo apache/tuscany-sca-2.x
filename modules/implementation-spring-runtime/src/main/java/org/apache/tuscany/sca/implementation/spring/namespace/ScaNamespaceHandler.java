@@ -16,7 +16,15 @@
  */
 package org.apache.tuscany.sca.implementation.spring.namespace;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import javax.xml.namespace.QName;
+
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * Handler for the &lt;sca:&gt; namespace in an application context
@@ -26,13 +34,60 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 public class ScaNamespaceHandler extends NamespaceHandlerSupport {
 
     public ScaNamespaceHandler() {
-        init();
     }
 
-    public final void init() {
+    @Override
+    public void init() {
         registerBeanDefinitionParser("reference", new ScaReferenceBeanDefinitionParser());
         registerBeanDefinitionParser("service", new ScaServiceBeanDefinitionParser());
         registerBeanDefinitionParser("property", new ScaPropertyBeanDefinitionParser());
     }
 
+    private static String getNamespaceURI(Element element, String prefix) {
+        if (element == null) {
+            return null;
+        }
+        String name = ("".equals(prefix)) ? "xmlns" : "xmlns:" + prefix;
+        String ns = element.getAttribute(name);
+        if (ns != null && !"".equals(ns)) {
+            return ns;
+        }
+        Node parent = element.getParentNode();
+        if (parent instanceof Element) {
+            return getNamespaceURI((Element)parent, prefix);
+        } else {
+            return null;
+        }
+    }
+
+    public static List<QName> resolve(Element element, String listOfNames) {
+        List<QName> qnames = new ArrayList<QName>();
+        StringTokenizer tokenizer = new StringTokenizer(listOfNames);
+        while (tokenizer.hasMoreTokens()) {
+            String qname = tokenizer.nextToken();
+            String prefix = "";
+            String local = qname;
+            int index = qname.indexOf(':');
+            if (index != -1) {
+                local = qname.substring(index + 1);
+                prefix = qname.substring(0, index);
+            }
+            String ns = getNamespaceURI(element, prefix);
+            if (ns != null) {
+                qnames.add(new QName(ns, local, prefix));
+            } else {
+                throw new IllegalArgumentException("Prefix " + prefix + "is not bound to a namespace");
+            }
+        }
+        return qnames;
+    }
+
+    public static String getAttribute(Element element, String name) {
+        String attr = element.getAttributeNS(null, name);
+        if ("".equals(attr)) {
+            return null;
+        } else {
+            return attr;
+        }
+    }
 }

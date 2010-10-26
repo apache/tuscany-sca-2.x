@@ -359,8 +359,14 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         writer.writeStartElement(SCA11_NS, POLICY_SET);
         writer.writeNamespace(policySet.getName().getPrefix(), policySet.getName().getNamespaceURI());
         writer.writeAttribute(NAME, policySet.getName().getPrefix() + COLON + policySet.getName().getLocalPart());
-        writer.writeAttribute(APPLIES_TO, policySet.getAppliesTo());
-        writer.writeAttribute(ATTACH_TO, policySet.getAttachTo());
+
+        if (policySet.getAppliesTo() != null){
+            writer.writeAttribute(APPLIES_TO, policySet.getAppliesTo());
+        }
+        
+        if (policySet.getAttachTo() != null){
+            writer.writeAttribute(ATTACH_TO, policySet.getAttachTo());
+        }
 
         writeProvidedIntents(policySet, writer);
 

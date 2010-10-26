@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.implementation.java.context;
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.scope.TargetDestructionException;
 import org.apache.tuscany.sca.core.scope.TargetInitializationException;
+import org.apache.tuscany.sca.implementation.java.injection.Injector;
 import org.apache.tuscany.sca.implementation.java.invocation.EventInvoker;
 
 /**
@@ -30,11 +31,13 @@ public class ReflectiveInstanceWrapper<T> implements InstanceWrapper<T> {
     private final EventInvoker<T> initInvoker;
     private final EventInvoker<T> destroyInvoker;
     private final T instance;
+	private final Injector<T>[] callbackInjectors;
 
-    public ReflectiveInstanceWrapper(T instance, EventInvoker<T> initInvoker, EventInvoker<T> destroyInvoker) {
+    public ReflectiveInstanceWrapper(T instance, EventInvoker<T> initInvoker, EventInvoker<T> destroyInvoker, Injector<T>[] callbackInjectors) {
         this.instance = instance;
         this.initInvoker = initInvoker;
         this.destroyInvoker = destroyInvoker;
+        this.callbackInjectors = callbackInjectors;
     }
     
     public T getInstance() {
@@ -61,4 +64,9 @@ public class ReflectiveInstanceWrapper<T> implements InstanceWrapper<T> {
             destroyInvoker.invokeEvent(instance);
         }
     }
+
+    public Injector<T>[] getCallbackInjectors() {
+    	return this.callbackInjectors;
+    }
+
 }

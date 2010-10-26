@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.client.impl;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.net.URI;
+import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.node.Node;
@@ -41,9 +42,20 @@ public class SCAClientFactoryImpl2 extends SCAClientFactory {
 
     public SCAClientFactoryImpl2(URI domainURI) throws NoSuchDomainException {
         super(domainURI);
+        checkDomainURI(domainURI);
     }   
     
-    @SuppressWarnings("unchecked")
+    private void checkDomainURI(URI domainURI) throws NoSuchDomainException {
+		for ( NodeFactory nodeFactory : NodeFactory.getNodeFactories()) {
+			String domainName = getDomainName();
+			List<Node> nodes = ((NodeFactoryImpl)nodeFactory).getNodesInDomain(domainName);
+			if ( !nodes.isEmpty() ) 
+				return;			
+		}
+		throw new NoSuchDomainException(getDomainName());
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
     public <T> T getService(Class<T> serviceInterface, String serviceName) throws NoSuchServiceException, NoSuchDomainException {
         

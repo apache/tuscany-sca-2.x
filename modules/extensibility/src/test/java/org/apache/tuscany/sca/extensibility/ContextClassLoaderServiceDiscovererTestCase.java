@@ -52,6 +52,12 @@ public class ContextClassLoaderServiceDiscovererTestCase {
     }
 
     @Test
+    public void testDiscoverResources() throws IOException {
+        Collection<ServiceDeclaration> descriptors = discover.getServiceDeclarations("/META-INF/services/org.apache.tuscany.sca.extensibility.test.TestInterface");
+        Assert.assertEquals(3, descriptors.size());
+    }
+    
+    @Test
     public void testDiscoveryFirst() throws IOException {
         ServiceDeclaration descriptor =
             discover.getServiceDeclaration("org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint");

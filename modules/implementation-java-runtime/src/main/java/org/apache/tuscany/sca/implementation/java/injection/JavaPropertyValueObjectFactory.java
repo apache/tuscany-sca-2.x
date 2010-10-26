@@ -100,9 +100,33 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
     }
 
     public <B> B createPropertyValue(ComponentProperty property, Class<B> type) {
+    	
+    	validateTypes(property, type);
+    	
         ObjectFactory<B> factory = this.createValueFactory(property, property.getValue(), type);
         return factory.getInstance();
     }
+
+	private <B> void validateTypes(ComponentProperty property, Class<B> type) {
+		// JAXB seems to do some strange things with conversions, so
+    	// we can't rely on the databinding conversion from Node->Java to catch
+		// incompatible types. 
+		
+		DataType prop1 = property.getProperty().getDataType();
+    	
+		if ( (prop1 != null) && (type.isAssignableFrom(prop1.getPhysical())) )  {
+			return;    			
+		} else if ( simpleTypeMapper.getXMLType(type) != null ) { 
+    		if ( simpleTypeMapper.getXMLType(type).getQName().equals(property.getXSDType())) 
+    			return;    			    		
+    	} else if ( isSimpleType(property) ) {
+    		if ( type.isAssignableFrom(simpleTypeMapper.getJavaType(property.getXSDType()))) 
+    			return;    		
+    	} 
+    	
+		throw new IllegalArgumentException("Property type " + prop1.getPhysical().getName() + " is not compatible with " + type.getName());
+ 
+	}
 
     abstract class ObjectFactoryImplBase implements ObjectFactory {
         protected SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperImpl();
@@ -304,9 +328,12 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
      * @return
      */
     private static List<Node> getValues(Document document) {
+    	 List<Node> propValues = new ArrayList<Node>();
+    	 if ( document == null )
+    		 return propValues;
         // The root is the property element
         Element rootElement = document.getDocumentElement();
-        List<Node> propValues = new ArrayList<Node>();
+       
         NodeList nodes = rootElement.getChildNodes();
         for (int count = 0; count < nodes.getLength(); ++count) {
             Node node = nodes.item(count);

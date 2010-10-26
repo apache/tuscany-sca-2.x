@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.implementation.java.injection;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
@@ -58,10 +59,28 @@ public class FieldInjector<T> implements Injector<T> {
      * Inject a new value on the given instance
      */
     public void inject(T instance) throws ObjectCreationException {
+    	inject(instance, objectFactory.getInstance());
+    }
+    
+    public void inject(T instance, Object value) {
         try {
-            field.set(instance, objectFactory.getInstance());
+            field.set(instance, value);
         } catch (IllegalAccessException e) {
             throw new ObjectCreationException("Field is not accessible [" + field + "]", e);
         }
     }
+    
+    public Class<?> getType() {
+    	return field.getType();
+    }
+    
+	public Type getGenericType() {
+		return field.getGenericType();
+	}
+
+	public void injectNull(T instance) throws ObjectCreationException {
+		inject(instance, null);		
+	}
+
+
 }

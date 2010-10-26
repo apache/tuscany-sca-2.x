@@ -1,0 +1,15 @@
+JSE Sample Launchers
+====================
+
+This directory contains sample java launchers for the
+tuscany sample contributions.   
+
+To use this sample JSE launcher with ant execute the command
+
+ant run-<contributionname>
+
+where run-<contributionname> is one of the targets in the build.xml file
+
+To use this sample launcher to run all of the contributions as junit test cases,
+execute the command "mvn" in the launcher directory.
+

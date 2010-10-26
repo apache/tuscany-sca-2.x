@@ -95,7 +95,15 @@ class AtomServiceBindingProvider implements ServiceBindingProvider {
             bindingURI += "/";
         }
 
-        servletHost.addServletMapping(bindingURI, servlet);
+        String mappedURI = servletHost.addServletMapping(bindingURI, servlet);
+        String deployedURI = mappedURI;
+        if (deployedURI.endsWith("*")) {
+            deployedURI = deployedURI.substring(0, deployedURI.length() - 1);
+        }
+        if (deployedURI.endsWith("/")) {
+            deployedURI = deployedURI.substring(0, deployedURI.length() - 1);
+        }
+        binding.setURI(deployedURI);
     }
 
     public void stop() {

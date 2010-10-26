@@ -25,8 +25,6 @@ import junit.framework.Assert;
 
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
-import org.apache.tuscany.sca.node2.Node;
-import org.apache.tuscany.sca.node2.NodeFactory;
 import org.apache.tuscany.sca.node2.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.junit.Ignore;
@@ -45,12 +43,12 @@ public class NodeTestCase {
 //        Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
     }
 
-    @Ignore("TODO: fails with Sun JDK due to SCA properties issue")
     @Test
+    @Ignore("Depdends on itest/T3558 which isn't in the build?")
     public void testInstallWithDependent() throws NoSuchServiceException, ContributionReadException, ActivationException, ValidationException {
         Node node = NodeFactory.newInstance().createNode("default");
-        node.installContribution("store", "/Tuscany/svn/2.x-trunk/itest/T3558/src/test/resources/sample-store.jar", null, null, true);
-        node.installContribution("store-client", "/Tuscany/svn/2.x-trunk/itest/T3558/src/test/resources/sample-store-client.jar", null, null, true);
+        node.installContribution("store", "../../itest/T3558/src/test/resources/sample-store.jar", null, null, true);
+        node.installContribution("store-client", "../../itest/T3558/src/test/resources/sample-store-client.jar", null, null, true);
 
 //        Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
 //        Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
@@ -69,7 +67,7 @@ public class NodeTestCase {
 //            // expected as there is no deployables
 //        }
 
-        node.addToDomainLevelComposite("helloworld" + "/helloworld.composite");
+        node.addToDomainLevelComposite("helloworld", "helloworld.composite");
 //        Helloworld helloworldService = scaClientFactory.getService(Helloworld.class, "HelloworldComponent");
 //        Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
     }
@@ -87,7 +85,7 @@ public class NodeTestCase {
     public void testGetDeployedCompostes() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, MalformedURLException, ActivationException, ValidationException {
         Node node = NodeFactory.newInstance().createNode("default");
         node.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
-        List<String> dcs = node.getDeployedCompostes("foo");
+        List<String> dcs = node.getDeployedComposites("foo");
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("helloworld.composite", dcs.get(0));
     }
@@ -96,8 +94,8 @@ public class NodeTestCase {
     public void testRemoveComposte() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, MalformedURLException, ActivationException, ValidationException {
         Node node = NodeFactory.newInstance().createNode("default");
         node.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
-        node.removeFromDomainLevelComposite("foo/helloworld.composite");
-        List<String> dcs = node.getDeployedCompostes("foo");
+        node.removeFromDomainLevelComposite("foo", "helloworld.composite");
+        List<String> dcs = node.getDeployedComposites("foo");
         Assert.assertEquals(0, dcs.size());
     }
 
@@ -106,7 +104,7 @@ public class NodeTestCase {
         Node node = NodeFactory.newInstance().createNode("default");
         ((NodeImpl)node).installContribution("helloworld", "src/test/resources/sample-helloworld-nodeployable.jar", "src/test/resources/sca-contribution-generated.xml", null, true);
 
-        List<String> dcs = node.getDeployedCompostes("helloworld");
+        List<String> dcs = node.getDeployedComposites("helloworld");
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("helloworld.composite", dcs.get(0));
 
@@ -123,20 +121,20 @@ public class NodeTestCase {
 
     @Test
     public void testStaticCreate() {
-        Node node = NodeFactory.createNode("helloworld.composite", "src/test/resources/sample-helloworld.jar");
+        Node node = NodeFactory.newStandaloneNode("helloworld.composite", "src/test/resources/sample-helloworld.jar");
         List<String> cs = node.getInstalledContributions();
         Assert.assertEquals(1, cs.size());
-        List<String> dcs = node.getDeployedCompostes(cs.get(0));
+        List<String> dcs = node.getDeployedComposites(cs.get(0));
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("helloworld.composite", dcs.get(0));
     }
 
     @Test
     public void testStaticCreateWithNullComposite() {
-        Node node = NodeFactory.createNode(null, "src/test/resources/sample-helloworld.jar");
+        Node node = NodeFactory.newStandaloneNode(null, "src/test/resources/sample-helloworld.jar");
         List<String> cs = node.getInstalledContributions();
         Assert.assertEquals(1, cs.size());
-        List<String> dcs = node.getDeployedCompostes(cs.get(0));
+        List<String> dcs = node.getDeployedComposites(cs.get(0));
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("helloworld.composite", dcs.get(0));
     }

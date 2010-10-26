@@ -33,6 +33,8 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.example.stock.async.StockExceptionTest;
+
 public class JAXWSAsyncInterfaceProcessorTestCase {
     private ExtensionPointRegistry registry;
     
@@ -49,6 +51,26 @@ public class JAXWSAsyncInterfaceProcessorTestCase {
     public final void testProcessor() throws Exception {
         DefaultJavaInterfaceFactory iFactory = new DefaultJavaInterfaceFactory(registry);
         JavaInterface contract = iFactory.createJavaInterface(StockQuote.class);
+        
+        assertTrue(contract.isRemotable());
+        
+        Assert.assertEquals(1,contract.getOperations().size());
+        
+        List<Operation> asyncOperations = (List<Operation>) contract.getAttributes().get("JAXWS-ASYNC-OPERATIONS");
+        Assert.assertEquals(2,asyncOperations.size());
+        
+        //list operation
+        System.out.println(">>> Filtered Operations");
+        for(Operation o : contract.getOperations()) {
+            System.out.println(">>>>>>" + o);
+        }
+        
+    }
+    
+    @Test
+    public final void testProcessorGenerated() throws Exception {
+        DefaultJavaInterfaceFactory iFactory = new DefaultJavaInterfaceFactory(registry);
+        JavaInterface contract = iFactory.createJavaInterface(StockExceptionTest.class);
         
         assertTrue(contract.isRemotable());
         

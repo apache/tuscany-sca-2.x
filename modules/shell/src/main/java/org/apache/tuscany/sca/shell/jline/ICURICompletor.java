@@ -23,24 +23,26 @@ import java.util.List;
 
 import jline.SimpleCompletor;
 
-import org.apache.tuscany.sca.node2.Node;
+import org.apache.tuscany.sca.shell.Shell;
 
 /**
  * An Installed Contribution URI Completor
  */
 public class ICURICompletor extends SimpleCompletor {
 
-    private Node node;
+    private Shell shell;
 
-    public ICURICompletor(Node node) {
+    public ICURICompletor(Shell shell) {
         super("");
-        this.node = node;
+        this.shell = shell;
     }
     
     @Override
     public int complete(final String buffer, final int cursor, final List clist) {
-       List<String> ics = node.getInstalledContributions();
-       setCandidateStrings(ics.toArray(new String[ics.size()]));
+        if (shell.getNode() != null) {
+            List<String> ics = shell.getNode().getInstalledContributions();
+            setCandidateStrings(ics.toArray(new String[ics.size()]));
+        }
        return super.complete(buffer, cursor, clist);   
     }
     

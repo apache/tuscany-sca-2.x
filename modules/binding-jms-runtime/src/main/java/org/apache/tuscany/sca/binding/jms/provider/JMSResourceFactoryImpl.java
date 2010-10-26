@@ -28,6 +28,7 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.resource.spi.ActivationSpec;
 
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 
@@ -128,10 +129,14 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
     }
 
     protected void createConnection() throws NamingException, JMSException {
-        ConnectionFactory connectionFactory = (ConnectionFactory)jndiLookUp(connectionFactoryName);
-        if (connectionFactory == null) {
+        Object o  = jndiLookUp(connectionFactoryName);
+        if (o == null) {
             throw new JMSBindingException("connection factory not found: " + connectionFactoryName);
         }
+    	if (!(o instanceof ConnectionFactory)) { 
+    		throw new JMSBindingException("JNDI resource '" + connectionFactoryName +"' is not a JMS ConnectionFactory");
+    	}
+        ConnectionFactory connectionFactory = (ConnectionFactory)o;
         connection = connectionFactory.createConnection();
     }
 
@@ -214,6 +219,9 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
      * @see org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory#createDestination(java.lang.String)
      */
     public Destination createDestination(String jndiName) throws NamingException {
+    	if ( jndiName == null ) 
+    		return null;
+    	
         return lookupDestination("dynamicQueues/" + jndiName);
     }
 
@@ -278,5 +286,15 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
         // where the connection can be held for the life of the binding.
         return false;
     }
+
+	public ActivationSpec lookupActivationSpec(String activationSpecName) {
+		Object o = jndiLookUp(activationSpecName);
+		if ( o == null ) 
+			return null;
+		else if (o instanceof ActivationSpec) 
+			return (ActivationSpec) o;
+		
+		throw new JMSBindingException("Incorrect resource type for ActivationSpec: " + o.getClass().getName());
+	}
 
 }

@@ -48,6 +48,7 @@ public class PolicySetImpl implements PolicySet {
 
     private List<IntentMap> intentMaps = new ArrayList<IntentMap>();
     private List<PolicyExpression> policies = new ArrayList<PolicyExpression>();
+	private boolean isExternalAttachment;
 
     public QName getName() {
         return name;
@@ -141,5 +142,13 @@ public class PolicySetImpl implements PolicySet {
             return false;
         return true;
     }
+
+	public boolean isExternalAttachment() {
+		return this.isExternalAttachment;
+	}
+
+	public void setIsExternalAttachment(boolean value) {
+		this.isExternalAttachment = value;		
+	}
 
 }

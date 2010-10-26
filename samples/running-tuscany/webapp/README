@@ -1,0 +1,59 @@
+The Tuscany SCA Java runtime can run inside a webapp (a WAR) and expose 
+services when the webapp is started. In order for this to work 
+a number of things have to be in place in the webapp:
+
+1. The Tuscany runtime jars have to be packaed in the webapp WEB-INF/lib
+   directory
+2. The Tuscany HTTP filter servlet has to be configured in the 
+   WEB-INF/web.xml file using something like:
+
+  <filter>
+    <filter-name>tuscany</filter-name> 
+    <filter-class>org.apache.tuscany.sca.host.webapp.TuscanyServletFilter</filter-class> 
+  </filter>
+
+  <filter-mapping>
+    <filter-name>tuscany</filter-name> 
+    <url-pattern>/*</url-pattern> 
+  </filter-mapping>
+
+3. The composite application has to packaged in the WAR file. When the 
+   TuscanyServletFilter started it effectvely reads its own WAR file as
+   the contribution. As an alternative you can package complete 
+   contribution archives in the WEB-INF/sca-contributions directory.
+
+In the getting-started/helloworl-webapp sample we provided a Maven 
+build script that perform these WAR packaging steps. 
+
+To execute a webapp based contributions (sample contributions that have webapp
+at the end of their name) you can build the contribution using maven and then 
+copy the resulting war file to your web container of choice
+
+For example, for learning-more/binding-jsonrpc/contribution-calculator-webapp, 
+do the following
+
+cd learning-more/binding-jsonrpc/contribution-calculator-webapp
+mvn 
+cp target/sample-contribution-binding-jsonrpc-calculator-webapp.war your_container_deployment-dir
+
+
+As an alternative sample webapp based contributions can be run within Jetty directly from Maven, look for 
+webapp contributions that have the following configuration in their pom.xml file:
+
+<plugin>
+    <groupId>org.mortbay.jetty</groupId>
+    <artifactId>maven-jetty-plugin</artifactId>
+    <version>6.1.18</version>
+</plugin>
+
+For contributions that have this, for example, 
+learning-more/binding-jsonrpc/contribution-calculator-webapp, do the following
+
+cd learning-more/binding-jsonrpc/contribution-calculator-webapp
+mvn jetty:run
+
+This will launch the contribution in the Jetty runtime and then wait. At this point you can use
+HTTP clients to send messages to services that the running SCA applcation exposes. For this 
+example try pointing your browser at:
+
+http://localhost:8080/sample-contribution-binding-jsonrpc-calculator-webapp/

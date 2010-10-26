@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.host.webapp;
@@ -24,12 +24,12 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
@@ -45,7 +45,7 @@ import org.apache.tuscany.sca.node.Node;
 
 /**
  * ServletHost implementation for use in a webapp environment.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class WebAppServletHost implements ServletHost {
@@ -73,14 +73,14 @@ public class WebAppServletHost implements ServletHost {
     public int getDefaultPort() {
         return defaultPortNumber;
     }
-    
+
     public String getName() {
         return "webapp";
     }
-    
+
     public String addServletMapping(String suri, Servlet servlet) throws ServletMappingException {
         return addServletMapping(suri, servlet, null);
-    }    
+    }
 
     public String addServletMapping(String suri, Servlet servlet, SecurityContext securityContext) throws ServletMappingException {
         URI pathURI = URI.create(suri);
@@ -94,7 +94,7 @@ public class WebAppServletHost implements ServletHost {
         // String relativeURI = suri;
         if (!suri.startsWith(contextPath + "/")) {
             suri = contextPath + suri;
-        } 
+        }
 
         if (!servlets.values().contains(servlet)) {
             // The same servlet can be registred more than once
@@ -104,12 +104,12 @@ public class WebAppServletHost implements ServletHost {
                 throw new ServletMappingException(e);
             }
         }
-        
+
         // In a webapp just use the given path and ignore the host and port
         // as they are fixed by the Web container
         servlets.put(suri, servlet);
 
-        URL url = getURLMapping(suri, securityContext);
+        URL url = getURLMapping(pathURI.toString(), securityContext);
         logger.info("Added Servlet mapping: " + url);
         return url.toString();
     }
@@ -161,7 +161,8 @@ public class WebAppServletHost implements ServletHost {
             scheme = "http";
         }
         int portNumber = uri.getPort();
-        if (portNumber == -1) {
+        if (portNumber == -1 && uri.getScheme() == null) {
+            // Only set the default port number if the scheme is not present
             portNumber = defaultPortNumber;
         }
 
@@ -169,8 +170,10 @@ public class WebAppServletHost implements ServletHost {
         String host = uri.getHost();
         if (host == null) {
             try {
-                host = InetAddress.getLocalHost().getHostName();
-            } catch (UnknownHostException e) {
+            	//TUSCANY-3667 - InetAddress is not allowed in GoogleAppEngine
+            	host = InetAddress.getLocalHost().getHostName();
+            } catch (Throwable t) {
+            	logger.log(Level.WARNING, "Error retrieving host information : " + t.getMessage());
                 host = "localhost";
             }
         }
@@ -233,22 +236,22 @@ public class WebAppServletHost implements ServletHost {
     public void init(ServletConfig config) throws ServletException {
         this.servletConfig = config;
         servletContext = config.getServletContext();
-        
+
         for (String name : tempAttributes.keySet()) {
             servletContext.setAttribute(name, tempAttributes.get(name));
         }
-        
+
         // WebAppHelper.init(servletContext);
-        
+
         initContextPath(config);
 
         // Initialize the registered Servlets
         for (Servlet servlet : servlets.values()) {
             servlet.init(config);
         }
-        
+
     }
-    
+
     /**
      * Initializes the contextPath
      * The 2.5 Servlet API has a getter for this, for pre 2.5 Servlet
@@ -256,9 +259,9 @@ public class WebAppServletHost implements ServletHost {
      */
     @SuppressWarnings("unchecked")
     public void initContextPath(ServletConfig config) {
-        
+
         String oldContextPath = contextPath;
-        
+
         if (Collections.list(config.getInitParameterNames()).contains("contextPath")) {
             contextPath = config.getInitParameter("contextPath");
         } else {
@@ -292,9 +295,9 @@ public class WebAppServletHost implements ServletHost {
                 servlets.put(ns, servlets.remove(oldURI));
             }
         }
-        
-    }    
-    
+
+    }
+
     void destroy() {
 
         // Destroy the registered Servlets
@@ -334,5 +337,9 @@ public class WebAppServletHost implements ServletHost {
         } else {
             tempAttributes.put(name, value);
         }
+    }
+
+    public ServletContext getServletContext() {
+        return servletContext;
     }
 }

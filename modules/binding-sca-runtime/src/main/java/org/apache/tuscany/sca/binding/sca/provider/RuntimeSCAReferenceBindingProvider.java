@@ -154,7 +154,7 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceProv
                 // it turns out that the chain source and target operations are the same, and are the operation 
                 // from the target, not sure if thats by design or a bug. The SCA binding invoker needs to know 
                 // the source and target class loaders so pass in the real source operation in the constructor 
-                return chain == null ? null : new SCABindingInvoker(chain, operation, mediator, passByValue);
+                return chain == null ? null : new SCABindingInvoker(chain, operation, mediator, passByValue, epr);
             }
         }
         return null;

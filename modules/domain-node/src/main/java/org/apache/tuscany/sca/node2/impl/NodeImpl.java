@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.node2.impl;
 
+import java.io.File;
 import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
@@ -70,19 +71,13 @@ public class NodeImpl implements Node {
     }
 
     public String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException {
-        int lastDot = contributionURL.lastIndexOf('.');
-        int lastSep = contributionURL.lastIndexOf("/");
-        String uri;
-        if (lastDot > -1 && lastSep > -1 && lastDot > lastSep) {
-            uri = contributionURL.substring(lastSep+1, lastDot);
-        } else {
-            uri = contributionURL;
-        }
-        installContribution(uri, contributionURL, null, null, true);
-        return uri;
+        return installContribution(null, contributionURL, null, null, true);
     }
-    
-    public void installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException {
+
+    public String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException {
+        if (uri == null) {
+            uri = getDefaultContributionURI(contributionURL);
+        }
         Monitor monitor = deployer.createMonitor();
         Contribution contribution = deployer.loadContribution(IOHelper.createURI(uri), IOHelper.getLocationAsURL(contributionURL), monitor);
         monitor.analyzeProblems();
@@ -90,6 +85,7 @@ public class NodeImpl implements Node {
             mergeContributionMetaData(metaDataURL, contribution);
         }
         installContribution(contribution, dependentContributionURIs, runDeployables);
+        return uri;
     }
 
     private void mergeContributionMetaData(String metaDataURL, Contribution contribution) throws ValidationException {
@@ -106,7 +102,7 @@ public class NodeImpl implements Node {
         contribution.getExports().addAll(metaData.getExports());
     }
     
-    public void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException {
+    public String installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException {
         InstalledContribution ic = new InstalledContribution(contribution.getURI(), contribution.getLocation(), contribution, dependentContributionURIs);
         installedContributions.put(contribution.getURI(), ic);
         if (runDeployables) {
@@ -126,6 +122,7 @@ public class NodeImpl implements Node {
             }
             monitor.analyzeProblems();
         }
+        return ic.getURI();
     }
 
     protected List<Contribution> calculateDependentContributions(InstalledContribution ic) {
@@ -164,15 +161,14 @@ public class NodeImpl implements Node {
         return compositeArtifcatURI;
     }
 
-    public void addToDomainLevelComposite(String compositeURI) throws ActivationException, ValidationException {
-        String contributionURI = getContributionUriForArtifact(compositeURI);
+    @Override
+    public void addToDomainLevelComposite(String contributionURI, String compositeURI) throws ActivationException, ValidationException {
         InstalledContribution ic = installedContributions.get(contributionURI);
         if (ic == null) {
             throw new IllegalArgumentException("Contribution not installed: " + contributionURI);
         }
-        String relativeURI = compositeURI.substring(contributionURI.endsWith("/") ? contributionURI.length() : contributionURI.length()+1);
         for (Artifact a : ic.getContribution().getArtifacts()) {
-            if (a.getURI().equals(relativeURI)) {
+            if (a.getURI().equals(compositeURI)) {
                 runComposite((Composite) a.getModel(), ic);
                 return;
             }
@@ -180,12 +176,14 @@ public class NodeImpl implements Node {
         throw new IllegalArgumentException("composite not found: " + compositeURI);
     }
 
-    public void removeFromDomainLevelComposite(String compositeURI) throws ActivationException {
-        String contributionURI = getContributionUriForArtifact(compositeURI);
+    @Override
+    public void removeFromDomainLevelComposite(String contributionURI, String compositeURI) throws ActivationException {
         InstalledContribution ic = installedContributions.get(contributionURI);
-        String relativeURI = compositeURI.substring(contributionURI.length()+1);
+        if (ic == null) {
+            throw new IllegalArgumentException("Contribution not installed: " + contributionURI);
+        }
         for (DeployedComposite dc : ic.getDeployedComposites()) {
-            if (relativeURI.equals(dc.getURI())) {
+            if (compositeURI.equals(dc.getURI())) {
                 ic.getDeployedComposites().remove(dc);
                 dc.unDeploy();
                 return;
@@ -272,7 +270,7 @@ public class NodeImpl implements Node {
         return domainName;
     }
 
-    public List<String> getDeployedCompostes(String contributionURI) {
+    public List<String> getDeployedComposites(String contributionURI) {
         ArrayList<String> compositeURIs = new ArrayList<String>();
         InstalledContribution ic = installedContributions.get(contributionURI);
         if (ic == null) {
@@ -332,4 +330,29 @@ public class NodeImpl implements Node {
         }
         return dependentContributionURIs;
     }
+
+    /**
+     * Returns a default URI for a contribution based on the contribution URL
+     */
+    protected String getDefaultContributionURI(String contributionURL) {
+        String uri = null;
+        try {
+            File f = new File(contributionURL);
+            if ("classes".equals(f.getName()) && "target".equals(f.getParentFile().getName())) {
+                uri = f.getParentFile().getParentFile().getName();                   
+            } else {
+                uri = f.getName();
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+        if (uri == null) {
+            uri = contributionURL;
+        }
+        if (uri.endsWith(".zip") || uri.endsWith(".jar")) {
+            uri = uri.substring(0, uri.length()-4);
+        }
+        return uri;
+    }
+
 }

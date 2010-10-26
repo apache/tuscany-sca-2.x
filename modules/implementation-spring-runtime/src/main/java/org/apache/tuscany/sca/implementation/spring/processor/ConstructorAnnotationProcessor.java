@@ -28,15 +28,14 @@ import org.springframework.util.Assert;
 
 public class ConstructorAnnotationProcessor extends InstantiationAwareBeanPostProcessorAdapter {
 
-    private Class<? extends Annotation> constructorAnnotationType 
-    = org.oasisopen.sca.annotation.Constructor.class;
-    
+    private Class<? extends Annotation> constructorAnnotationType = org.oasisopen.sca.annotation.Constructor.class;
+
     private Class<? extends Annotation> autowiredAnnotationType = Autowired.class;
-    
-    public ConstructorAnnotationProcessor () {
+
+    public ConstructorAnnotationProcessor() {
         // Default constructor.
     }
-    
+
     /**
      * Set the 'autowired' annotation type, to be used on constructors, fields,
      * setter methods and arbitrary config methods.
@@ -52,7 +51,7 @@ public class ConstructorAnnotationProcessor extends InstantiationAwareBeanPostPr
     protected Class<? extends Annotation> getAutowiredAnnotationType() {
         return this.autowiredAnnotationType;
     }
-    
+
     /**
      * Return the 'constructor' annotation type.
      */
@@ -73,8 +72,7 @@ public class ConstructorAnnotationProcessor extends InstantiationAwareBeanPostPr
      * 
      * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessBeforeInitialization(java.lang.Object, java.lang.String)
      */
-    public Object postProcessBeforeInitialization(Object bean, String beanName) 
-    throws BeansException {
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         return bean;
     }
 
@@ -83,11 +81,10 @@ public class ConstructorAnnotationProcessor extends InstantiationAwareBeanPostPr
      * 
      * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessAfterInitialization(java.lang.Object, java.lang.String)
      */
-    public Object postProcessAfterInitialization(Object bean, String beanName)
-    throws BeansException {
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         return bean;
     }
-    
+
     public Constructor[] determineCandidateConstructors(Class beanClass, String beanName) throws BeansException {
         /*Constructor[] declaredConstructors = beanClass.getDeclaredConstructors();                
         Method[] declaredMethods = beanClass.getDeclaredMethods();

@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.getAllInterfaces;
 import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.getAllPublicAndProtectedFields;
 import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
+import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.getBaseType;
 import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.toPropertyName;
 
 import java.lang.annotation.Annotation;
@@ -56,6 +57,7 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.ComponentName;
 import org.oasisopen.sca.annotation.Context;
@@ -131,6 +133,11 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         evaluateConstructor(type, clazz);
     }
 
+    // Check if the implementation is implementation.java
+    private boolean isImplementationJava(JavaImplementation type) {
+        return JavaImplementation.TYPE.equals(type.getType());
+    }
+
     private void addService(JavaImplementation type, Class<?> clazz) throws IntrospectionException {
         try {
             org.apache.tuscany.sca.assembly.Service service = createService(clazz);
@@ -142,7 +149,13 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     
     private static boolean isAnnotatedWithSCA(AnnotatedElement element) {
         for (Annotation a : element.getAnnotations()) {
-            if (isSCAAnnotation(a)) {
+            // JCI_8023
+            // policy annotations can be added to reference fields that 
+            // don't have @Reference annotations so we need to allow 
+            // for the fields to be detected as references
+            if (isSCAPolicyAnnotation(a)){
+                continue;
+            } else if (isSCAAnnotation(a)) {
                 return true;
             }
         }
@@ -151,6 +164,16 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
 
     private static boolean isSCAAnnotation(Annotation a) {
         return a.annotationType().getName().startsWith("org.oasisopen.sca.annotation.");
+    }
+    
+    private static boolean isSCAPolicyAnnotation(Annotation a) {
+        if (a.annotationType().getName().startsWith("org.oasisopen.sca.annotation.PolicySets") ){
+            return true;
+        } else if (a.annotationType().getName().startsWith("org.oasisopen.sca.annotation.Intent") ){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private <T> void calcPropRefs(Set<Method> methods,
@@ -179,7 +202,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
                     Class<?> param = method.getParameterTypes()[0];
                     Type genericType = method.getGenericParameterTypes()[0];
                     if (isReferenceType(param, genericType)) {
-                        type.getReferences().add(createReference(name, param));
+                        type.getReferences().add(createReference(name, param, genericType));
                         type.getReferenceMembers().put(name, new JavaElementImpl(method, 0));
                     } else {
                         type.getProperties().add(createProperty(name, param, genericType));
@@ -206,7 +229,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             // avoid duplicate property or ref names
             if (isReferenceType(param, method.getGenericParameterTypes()[0])) {
                 if (!type.getReferenceMembers().containsKey(name)) {
-                    type.getReferences().add(createReference(name, param));
+                    type.getReferences().add(createReference(name, param, paramType));
                     type.getReferenceMembers().put(name, new JavaElementImpl(method, 0));
                 }
             } else {
@@ -233,7 +256,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             Type genericType = field.getGenericType();
             if (isReferenceType(paramType, field.getGenericType())) {
                 if (!type.getReferenceMembers().containsKey(name)) {
-                    type.getReferences().add(createReference(name, paramType));
+                    type.getReferences().add(createReference(name, paramType, genericType));
                     type.getReferenceMembers().put(name, new JavaElementImpl(field));
                 }
             } else {
@@ -269,6 +292,10 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             explict = true;
             constructor = definition.getConstructor();
         } else {
+            if (!isImplementationJava(type)) {
+                // FIXME: [rfeng] Don't process the constructors for non implementation.java types
+                return;
+            }
             // no definition, heuristically determine constructor
             Constructor[] constructors = clazz.getConstructors();
             if (constructors.length == 0) {
@@ -374,7 +401,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         for (JavaParameterImpl p : parameters) {
             String name = p.getType().getSimpleName().toLowerCase();
             if (isReferenceType(p.getType(), p.getGenericType())) {
-                type.getReferences().add(createReference(name, p.getType()));
+                type.getReferences().add(createReference(name, p.getType(), p.getGenericType()));
                 p.setClassifer(Reference.class);
                 type.getReferenceMembers().put(name, p);
             } else {
@@ -472,23 +499,40 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         return AbstractPropertyProcessor.createProperty(assemblyFactory, name, javaClass, genericType);
     }
 
-     private org.apache.tuscany.sca.assembly.Reference createReference(String name, Class<?> paramType)
+     private org.apache.tuscany.sca.assembly.Reference createReference(String name, Class<?> paramType,
+    		                                                           Type genericType )
         throws IntrospectionException {
         org.apache.tuscany.sca.assembly.Reference reference = assemblyFactory.createReference();
         reference.setName(name);
         JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         reference.setInterfaceContract(interfaceContract);
+        // Compute the interface type dealing with array/Collection types and with Generic types
+        Class<?> baseType = getBaseType(paramType, genericType);
+        if (ServiceReference.class.isAssignableFrom(baseType)) {
+            if (Collection.class.isAssignableFrom(paramType)) {
+                genericType = JavaIntrospectionHelper.getParameterType(genericType);
+            }
+            baseType = JavaIntrospectionHelper.getBusinessInterface(baseType, genericType);
+        } // end if
         try {
-            JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(paramType);
+            JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(baseType);
+
             reference.getInterfaceContract().setInterface(callInterface);
             if (callInterface.getCallbackClass() != null) {
                 JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass());
                 reference.getInterfaceContract().setCallbackInterface(callbackInterface);
             }
-            reference.setMultiplicity(Multiplicity.ZERO_ONE);
+            // Multiplicity of an implicit reference is 1..1 for a simple interface type
+            // and 1..n for an array of interface or Collection of interface type
+            // as defined in the OASIS SCA Java POJO specification, section 8.1 : TUSCANY-3636
+            if( isCollectionType( paramType ) || isArrayType( paramType )) {
+            	reference.setMultiplicity(Multiplicity.ONE_N);
+            } else {
+            	reference.setMultiplicity(Multiplicity.ONE_ONE);
+            } // end if 
         } catch (InvalidInterfaceException e1) {
             throw new IntrospectionException(e1);
-        }
+        } // end try
 
         // FIXME:  This part seems to have already been taken care above!!
         try {
@@ -497,6 +541,26 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             throw new IntrospectionException(e);
         }
         return reference;
+    }
+     
+    /**
+     * Reports if a parameter type is a form of java.util.Collection 
+     * @param paramType
+     * @return true if paramType is a form of java.util.Collection, false otherwise
+     */
+    private boolean isCollectionType( Class<?> paramType ) {
+    	if( Collection.class.isAssignableFrom(paramType) ) return true;
+    	return false;
+    }
+    
+    /**
+     * Reports if a parameter type is an array
+     * @param paramType
+     * @return true if paramType is an array
+     */
+    private boolean isArrayType( Class<?> paramType ) {
+    	if( paramType.isArray() ) return true;
+    	return false;
     }
 
     private org.apache.tuscany.sca.assembly.Service createService(Class<?> interfaze) throws InvalidInterfaceException {

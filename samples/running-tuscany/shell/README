@@ -1,0 +1,34 @@
+Sample Tuscany Shell
+====================
+
+This directory contains a sample shell program supporting simple commands to
+start and stop SCA composites.
+
+To build the sample shell do this:
+mvn install
+
+To run it:
+./sca
+
+at the prompt:
+start myNode ../../applications/store/target/sample-store.jar
+
+or:
+start myNode http://people.apache.org/~jsdelfino/tuscany/java/test/sample-store.jar
+
+also try:
+status
+stop myNode
+bye
+
+Starting and stopping composites is pretty fast. To see that, try the following
+two scripts, which start/stop the sample store composite 10 times.
+
+./sca <scripts/test.txt
+or
+./sca <scripts/test-remote.txt
+
+The shell can also run as a Webapp. To try it install target/scashell.war in
+a Web container, point your Web browser to http://localhost:8080/scashell
+and try the links on that page.
+

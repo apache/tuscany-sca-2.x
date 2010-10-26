@@ -34,9 +34,11 @@ import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 // Ignore so its not run in the build yet till its working
+@Ignore("TUSCANY-3718")
 public class MultiRegTestCase implements EndpointListener {
     private static ExtensionPointRegistry extensionPoints;
     private static AssemblyFactory assemblyFactory;
