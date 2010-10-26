@@ -180,11 +180,11 @@
             <artifactId>tuscany-implementation-java</artifactId>
             <version>${pom.version}</version>
         </dependency>
-        <!-- dependency>
+        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-jaxrs</artifactId>
             <version>${pom.version}</version>
-        </dependency -->
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-python</artifactId>
