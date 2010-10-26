@@ -31,29 +31,37 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>
-			<artifactId>tuscany-feature-api</artifactId>
+			<artifactId>tuscany-core-runtime-pom</artifactId>
 			<version>2.0-SNAPSHOT</version>
 			<type>pom</type>
 		</dependency>
+		
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-osgi-runtime-pom</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency>		
+		
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-rest-runtime</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>		
 
 		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>
-			<artifactId>tuscany-feature-all</artifactId>
+			<artifactId>tuscany-base-runtime-pom</artifactId>
 			<version>2.0-SNAPSHOT</version>
+			<scope>test</scope>
 			<type>pom</type>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.tuscany.sca</groupId>
-			<artifactId>tuscany-binding-rest-runtime</artifactId>
-			<version>2.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
-			<scope>provided</scope>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Explicitly add slf4j so that jabsorb uses the latest versions -->
