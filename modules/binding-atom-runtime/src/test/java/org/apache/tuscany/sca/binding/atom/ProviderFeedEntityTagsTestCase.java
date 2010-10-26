@@ -315,9 +315,23 @@ public class ProviderFeedEntityTagsTestCase {
         RequestOptions opts = new RequestOptions();
         final String contentType = "application/atom+xml"; 
         opts.setContentType(contentType);
+        opts.setHeader( "If-Modified-Since", dateFormat.format( new Date() ));
+        
+        ClientResponse res = client.get(providerURI, opts);
+        Assert.assertNotNull(res);
+        try {
+            // Should return 304 - Feed not provided since feed is unmodified.
+            Assert.assertEquals(304, res.getStatus());
+        } finally {
+            res.release();
+        }
+
+        // Feed request with predicates
+        opts = new RequestOptions();
+        opts.setContentType(contentType);
         opts.setHeader( "If-Modified-Since", dateFormat.format( previousSecond(lastModified) ));
 
-        ClientResponse res = client.get(providerURI, opts);
+        res = client.get(providerURI, opts);
         Assert.assertNotNull(res);
         try {
             // Should return 200 - Feed provided since feed is changed.
