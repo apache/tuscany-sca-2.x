@@ -69,7 +69,7 @@ public class DeployerTestCase {
         monitor.analyzeProblems();
         composite.setURI("helloworld2.composite");
         node.addDeploymentComposite("foo", composite);
-        List<String> dcs = node.getDeployedCompostes("foo");
+        List<String> dcs = node.getDeployedComposites("foo");
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("helloworld2.composite", dcs.get(0));
     }

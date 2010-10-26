@@ -45,6 +45,12 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-xsd</artifactId>
             <version>2.0-Beta1</version>
+        </dependency>    
+             
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-common-xml</artifactId>
+            <version>2.0-Beta1</version>
         </dependency>         
 
         <!-- 
@@ -65,7 +71,7 @@
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
-            <version>3.2.4</version>
+            <version>3.2.6</version>
             <scope>runtime</scope>
             <exclusions>
                 <exclusion>

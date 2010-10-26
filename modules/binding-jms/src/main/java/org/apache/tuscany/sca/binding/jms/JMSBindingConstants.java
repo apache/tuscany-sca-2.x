@@ -36,8 +36,8 @@ public interface JMSBindingConstants {
     // model and for setting up defaults
     String BINDING_JMS = "binding.jms";
     QName BINDING_JMS_QNAME = new QName(Constants.SCA11_NS, BINDING_JMS);
-    String CORRELATE_MSG_ID = "requestmsgidtocorrelid";
-    String CORRELATE_CORRELATION_ID = "requestcorrelidtocorrelid";
+    String CORRELATE_MSG_ID = "messageID";
+    String CORRELATE_CORRELATION_ID = "correlationID";
     String CORRELATE_NONE = "none";
     List<String> VALID_CORRELATION_SCHEMES =
         Arrays.asList(new String[] {CORRELATE_MSG_ID, CORRELATE_CORRELATION_ID, CORRELATE_NONE});
@@ -47,7 +47,7 @@ public interface JMSBindingConstants {
         Arrays.asList(new String[] {DESTINATION_TYPE_QUEUE, DESTINATION_TYPE_TOPIC});
     String CREATE_ALWAYS = "always";
     String CREATE_NEVER = "never";
-    String CREATE_IF_NOT_EXIST = "ifnotexist";
+    String CREATE_IF_NOT_EXIST = "ifNotExist";
     String DEFAULT_CONTEXT_FACTORY_NAME = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
     String DEFAULT_JNDI_URL = "tcp://localhost:61616";
     int DEFAULT_TIME_TO_LIVE = 20000; // in milliseconds
@@ -65,7 +65,7 @@ public interface JMSBindingConstants {
     String FAULT_PROPERTY = "org_apache_tuscany_sca_fault";
     
     String CALLBACK_ID_PROPERTY = "CallbackID";
-    String CALLBACK_Q_PROPERTY = "scaCallbackQueue";
+    String CALLBACK_Q_PROPERTY = "scaCallbackDestination";
     String CONVERSATION_ID_PROPERTY = "scaConversationId";
     
     // XML element and attribute names

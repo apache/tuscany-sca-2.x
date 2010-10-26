@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.definitions.DefinitionsFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.BindingType;
+import org.apache.tuscany.sca.policy.ExternalAttachment;
 import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
@@ -118,6 +119,8 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
                                 definitions.getBindingTypes().add((BindingType)extension);
                             } else if (extension instanceof ImplementationType) {
                                 definitions.getImplementationTypes().add((ImplementationType)extension);
+                            } else if (extension instanceof ExternalAttachment) {
+                            	definitions.getExternalAttachments().add((ExternalAttachment)extension);
                             }
                         }
                         break;
@@ -250,14 +253,17 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
         // Flat intentMap structure by creating a policySet for each one
         List<PolicySet> copy = new ArrayList<PolicySet>(scaDefns.getPolicySets());
         for (PolicySet policySet : copy) {
-            //[lresende] Do we need to remove the current policySet and just include the flat one based on qualifiers ?
-            //If we don't, the policy is being resolved to the one that has intentMap and no direct concrete policies 
-            boolean remove = false;
+        	// Add PolicySets to model based on qualified intents. The policy builder will be responsible for assigning
+        	// the correct policy set. 
+        	// For example, ManagedTransactionPolicySet will result in:
+        	// ManagedTransactionPolicySet  (original PolicySet, must exist for matching at build time)
+        	// ManagedTransactionPolicySet.managedTransaction.global
+        	// ManagedTransactionPolicySet.managedTransaction.local
             
             //process intent maps
             for(IntentMap intentMap : policySet.getIntentMaps()) {
                 for(Qualifier qualifier : intentMap.getQualifiers()) {
-                    remove = true;
+           //         remove = true;
                     
                     PolicySet qualifiedPolicySet = policyFactory.createPolicySet();
                     qualifiedPolicySet.setAppliesTo(policySet.getAppliesTo());
@@ -265,7 +271,8 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
                     qualifiedPolicySet.setAttachTo(policySet.getAttachTo());
                     qualifiedPolicySet.setAttachToXPathExpression(policySet.getAttachToXPathExpression());
 
-                    qualifiedPolicySet.setName(qualifier.getIntent().getName());
+                    String qualifiedLocalName = policySet.getName().getLocalPart() + "." + qualifier.getIntent().getName().getLocalPart();
+                    qualifiedPolicySet.setName(new QName(policySet.getName().getNamespaceURI(), qualifiedLocalName));
                     qualifiedPolicySet.getProvidedIntents().clear();
                     qualifiedPolicySet.getProvidedIntents().add(qualifier.getIntent());
                     qualifiedPolicySet.getPolicies().clear();
@@ -275,9 +282,9 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
                 }
             }
             
-            if(remove) {
-                scaDefns.getPolicySets().remove(policySet);
-            }
+//            if(remove) {
+//                scaDefns.getPolicySets().remove(policySet);
+//            }
         }
     }
 

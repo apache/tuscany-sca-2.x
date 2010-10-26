@@ -157,6 +157,10 @@ public class AsyncResponseHandlerImpl<V> implements AsyncResponseHandler<V>,
     public Message invoke(Message msg) {
 		// Get the unique ID from the message header
 		String idValue = (String)msg.getHeaders().get(WS_MESSAGE_ID);
+		if (idValue == null){
+		    idValue = (String)msg.getHeaders().get("MESSAGE_ID");
+		}
+		
 		if( idValue == null ) { 
 			System.out.println( "Async message ID not found ");
 		} else {

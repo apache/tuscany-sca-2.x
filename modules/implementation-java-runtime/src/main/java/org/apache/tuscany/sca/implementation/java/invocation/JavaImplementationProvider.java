@@ -118,7 +118,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
         try {
-            return componentContextProvider.createInvoker(operation);
+            return componentContextProvider.createInvoker(operation, service.getInterfaceContract());
         } catch (NoSuchMethodException e) {
             // It's possible that the instance being invoked is a user-specified
             // callback object that isn't an instance of the component implementation
@@ -132,12 +132,12 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
             if (iface instanceof JavaInterface) {
                 try {
                     Method method = JavaInterfaceUtil.findMethod(((JavaInterface)iface).getJavaClass(), operation);
-                    return new JavaImplementationInvoker(operation, method, componentContextProvider.getComponent());
+                    return new JavaImplementationInvoker(operation, method, componentContextProvider.getComponent(), service.getInterfaceContract());
                 } catch (NoSuchMethodException e1) {
                     throw new IllegalArgumentException(e1);
                 }
             } else {
-                return new JavaImplementationInvoker(operation, componentContextProvider.getComponent());
+                return new JavaImplementationInvoker(operation, componentContextProvider.getComponent(), service.getInterfaceContract());
             }
         }
     }

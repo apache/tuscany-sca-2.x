@@ -23,6 +23,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
@@ -46,6 +48,7 @@ import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSObject;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSText;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextXML;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -113,7 +116,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  *         <property name="NMTOKEN" type="NMTOKEN">*
  *     </resourceAdapter>?
  * 
- *     <operationProperties name="string" nativeOperation="string"?>
+ *     <operationProperties name="string" selectedOperation="string"?>
  *         <property name="NMTOKEN" type="NMTOKEN">*
  *         <headers type="string"?
  *                  deliveryMode="string"?
@@ -205,10 +208,10 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         }
 
         // Read correlation scheme
-        String correlationScheme = reader.getAttributeValue(null, "correlationScheme");
-        if (correlationScheme != null && correlationScheme.length() > 0) {
-            if (JMSBindingConstants.VALID_CORRELATION_SCHEMES.contains(correlationScheme.toLowerCase())) {
-                jmsBinding.setCorrelationScheme(correlationScheme);
+        QName correlationScheme = StAXHelper.getAttributeAsQName(reader, "correlationScheme");
+        if (correlationScheme != null) {
+            if (Base.SCA11_NS.equals(correlationScheme.getNamespaceURI()) && JMSBindingConstants.VALID_CORRELATION_SCHEMES.contains(correlationScheme.getLocalPart())) {
+                jmsBinding.setCorrelationScheme(correlationScheme.getLocalPart());
             } else {
             	error(monitor, "InvalidCorrelationScheme", reader, correlationScheme);
             }
@@ -356,26 +359,49 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     protected void parseURI(String uri, JMSBinding jmsBinding, Monitor monitor) {
-        if (!uri.startsWith("jms:")) {
-        	error(monitor, "MustStartWithSchema", jmsBinding, uri);
-        	return;
+        if (!(uri.startsWith("jms:jndi:") || uri.startsWith("jms:queue:") || uri.startsWith("jms:topic:"))) {
+            error(monitor, "MustStartWithSchema", jmsBinding, uri);
+            return;
         }
         int i = uri.indexOf('?');            
         if (i >= 0) {
         	StringTokenizer st = new StringTokenizer(uri.substring(i+1),"&");
         	while (st.hasMoreTokens()) {
         	    String s = st.nextToken();
-        	    if (s.startsWith("connectionFactoryName=")) {
-        	        jmsBinding.setConnectionFactoryName(s.substring(22));
-        	    } else {
-        	        error(monitor, "UnknownTokenInURI", jmsBinding, s, uri);
-                 	return;
-        	     }
-        	}
-        	jmsBinding.setDestinationName(uri.substring(4, i));
+        	    if (s.startsWith("jndiConnectionFactoryName=")) {
+        	        jmsBinding.setConnectionFactoryName(s.substring(26));
+                    } else if (s.startsWith("deliveryMode=")) {
+                        jmsBinding.setURIJMSDeliveryMode("persistent".equals(s.substring(13)));
+                    } else if (s.startsWith("priority=")) {
+                        jmsBinding.setURIJMSPriority(Integer.parseInt(s.substring(9)));
+                    } else if (s.startsWith("timeToLive=")) {
+                        jmsBinding.setURIJMSTimeToLive(Long.parseLong(s.substring(11)));
+                    } else if (s.startsWith("selector='")) {
+                        String selector = s.substring(10);
+                        if (selector.startsWith("\"") || selector.startsWith("'")) {
+                            selector = selector.substring(1, selector.length());
+                        }
+                        if (selector.endsWith("\"") || selector.endsWith("'")) {
+                            selector = selector.substring(0, selector.length() - 1);
+                        }
+                        jmsBinding.setURIJMSSelector(selector);
+                    } else if (s.startsWith("type")) {
+                    	String type = s.substring(5);
+                    	jmsBinding.setJMSURIType(type);                    	
+                    } else {
+                    	error(monitor, "UnknownTokenInURI", jmsBinding, s, uri);
+                    	return;
+                    }
+        		}
+        	int j=uri.indexOf(':', 4);
+        	jmsBinding.setDestinationName(uri.substring(j+1, i));
+        	jmsBinding.setDestinationType(uri.substring(4, j));
         } else {
-           jmsBinding.setDestinationName(uri.substring(4));
+           int j=uri.indexOf(':', 4);
+           jmsBinding.setDestinationName(uri.substring(j+1));
+           jmsBinding.setDestinationType(uri.substring(4, j));
         }
+        jmsBinding.setJMSURI(uri);
     }
 
     public void resolve(JMSBinding model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
@@ -402,6 +428,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     private void parseDestination(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
+    	jmsBinding.setIsDestinationSpecified(true);
         String name = getURIString(reader, "jndiName");
         if (name != null && name.length() > 0) {
             jmsBinding.setDestinationName(name);
@@ -420,10 +447,22 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
         String create = reader.getAttributeValue(null, "create");
         if (create != null && create.length() > 0) {
+        	validateCreate(create, reader, monitor);
             jmsBinding.setDestinationCreate(create);
         }
 
         jmsBinding.getDestinationProperties().putAll(parseBindingProperties(reader, monitor));
+        
+        if (jmsBinding.getDestinationCreate().equals(JMSBindingConstants.CREATE_IF_NOT_EXIST)) {
+            if (name == null || name.length() < 1) {
+                error(monitor, "MissingNameForCREATE_IF_NOT_EXIST", reader);
+            }
+        }
+        if (jmsBinding.getDestinationCreate().equals(JMSBindingConstants.CREATE_NEVER)) {
+            if (name == null || name.length() < 1) {
+                error(monitor, "MissingNameForCREATE_NEVER", reader);
+            }
+        }
     }
 
     private void parseConnectionFactory(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
@@ -433,16 +472,48 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         } else {
             error(monitor, "MissingConnectionFactoryName", reader);
         }
+
+        String create = reader.getAttributeValue(null, "create");
+        if (create != null && create.length() > 0) {
+        	validateCreate(create, reader, monitor);
+            jmsBinding.setConnectionFactoryCreate(create);
+        }
+        if (jmsBinding.getConnectionFactoryCreate().equals(JMSBindingConstants.CREATE_IF_NOT_EXIST)) {
+            if (name == null || name.length() < 1) {
+                error(monitor, "MissingNameForCREATE_IF_NOT_EXIST", reader);
+            }
+        }
+        if (jmsBinding.getConnectionFactoryCreate().equals(JMSBindingConstants.CREATE_NEVER)) {
+            if (name == null || name.length() < 1) {
+                error(monitor, "MissingNameForCREATE_NEVER", reader);
+            }
+        }
+        
         jmsBinding.getConnectionFactoryProperties().putAll(parseBindingProperties(reader, monitor));
     }
 
     private void parseActivationSpec(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
-        String name = reader.getAttributeValue(null, "name");        
+        String name = reader.getAttributeValue(null, "jndiName");        
         if (name != null && name.length() > 0) {
             jmsBinding.setActivationSpecName(name);            
-        } else {
-            warning(monitor, "MissingActivationSpecName", reader);
         }
+
+        String create = reader.getAttributeValue(null, "create");
+        if (create != null && create.length() > 0) {
+        	validateCreate(create, reader, monitor);
+            jmsBinding.setActivationSpecCreate(create);
+        }
+        if (jmsBinding.getActivationSpecCreate().equals(JMSBindingConstants.CREATE_IF_NOT_EXIST)) {
+            if (name == null || name.length() < 1) {
+                error(monitor, "MissingNameForCREATE_IF_NOT_EXIST", reader);
+            }
+        }
+        if (jmsBinding.getActivationSpecCreate().equals(JMSBindingConstants.CREATE_NEVER)) {
+            if (name == null || name.length() < 1) {
+                error(monitor, "MissingNameForCREATE_NEVER", reader);
+            }
+        }
+
         jmsBinding.getActivationSpecProperties().putAll(parseBindingProperties(reader, monitor));
     }
 
@@ -466,31 +537,83 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
         String create = reader.getAttributeValue(null, "create");
         if (create != null && create.length() > 0) {
+        	validateCreate(create, reader, monitor);
             jmsBinding.setResponseDestinationCreate(create);
+        }
+        if (jmsBinding.getResponseDestinationCreate().equals(JMSBindingConstants.CREATE_IF_NOT_EXIST)) {
+            if (name == null || name.length() < 1) {
+                error(monitor, "MissingNameForCREATE_IF_NOT_EXIST", reader);
+            }
+        }
+        if (jmsBinding.getResponseDestinationCreate().equals(JMSBindingConstants.CREATE_NEVER)) {
+            if (name == null || name.length() < 1) {
+                error(monitor, "MissingNameForCREATE_NEVER", reader);
+            }
         }
 
         jmsBinding.getResponseDestinationProperties().putAll(parseBindingProperties(reader, monitor));
     }
 
-    private void parseResponseConnectionFactory(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
+	private void parseResponseConnectionFactory(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
         String name = getURIString(reader, "jndiName");
         if (name != null && name.length() > 0) {
             jmsBinding.setResponseConnectionFactoryName(name);            
         } else {
             warning(monitor, "MissingResponseConnectionFactory", reader);
         }
+        String create = reader.getAttributeValue(null, "create");
+        if (create != null && create.length() > 0) {
+        	validateCreate(create, reader, monitor);
+            jmsBinding.setResponseConnectionFactoryCreate(create);
+        }
+        if (jmsBinding.getResponseConnectionFactoryCreate().equals(JMSBindingConstants.CREATE_IF_NOT_EXIST)) {
+            if (name == null || name.length() < 1) {
+                error(monitor, "MissingNameForCREATE_IF_NOT_EXIST", reader);
+            }
+        }
+        if (jmsBinding.getResponseConnectionFactoryCreate().equals(JMSBindingConstants.CREATE_NEVER)) {
+            if (name == null || name.length() < 1) {
+                error(monitor, "MissingNameForCREATE_NEVER", reader);
+            }
+        }
         jmsBinding.getResponseConnectionFactoryProperties().putAll(parseBindingProperties(reader, monitor));
     }
 
     private void parseResponseActivationSpec(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
-        String name = reader.getAttributeValue(null, "name");
+        String name = reader.getAttributeValue(null, "jndiName");
         if (name != null && name.length() > 0) {
             jmsBinding.setResponseActivationSpecName(name);            
-        } else {
-            warning(monitor, "MissingResponseActivationSpec", reader);
+        }
+        String create = reader.getAttributeValue(null, "create");
+        if (create != null && create.length() > 0) {
+        	validateCreate(create, reader, monitor);
+            jmsBinding.setResponseActivationSpecCreate(create);
+        }
+        if (jmsBinding.getResponseActivationSpecCreate().equals(JMSBindingConstants.CREATE_IF_NOT_EXIST)) {
+            if (name == null || name.length() < 1) {
+                error(monitor, "MissingNameForCREATE_IF_NOT_EXIST", reader);
+            }
+        }
+        if (jmsBinding.getResponseActivationSpecCreate().equals(JMSBindingConstants.CREATE_NEVER)) {
+            if (name == null || name.length() < 1) {
+                error(monitor, "MissingNameForCREATE_NEVER", reader);
+            }
         }
         jmsBinding.getResponseActivationSpecProperties().putAll(parseBindingProperties(reader, monitor));
     }
+
+    private void validateCreate(String create, XMLStreamReader reader, Monitor monitor) {
+    	if (JMSBindingConstants.CREATE_ALWAYS.equals(create)) {
+    		return;
+    	}
+    	if (JMSBindingConstants.CREATE_NEVER.equals(create)) {
+    		return;
+    	}
+    	if (JMSBindingConstants.CREATE_IF_NOT_EXIST.equals(create)) {
+    		return;
+    	}
+    	error(monitor, "InvalidCreate", reader, create);
+	}
 
     private void parseResponse(XMLStreamReader reader, JMSBinding jmsBinding, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         // Read sub-elements of response
@@ -555,15 +678,15 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     private void parseHeaders(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
         String jmsType = reader.getAttributeValue(null, "type");
         if (jmsType != null && jmsType.length() > 0) {
-            jmsBinding.setJMSType(jmsType);
+            jmsBinding.setJMSHeaderType(jmsType);
         }
 
         String jmsDeliveryMode = reader.getAttributeValue(null, "deliveryMode");
         if (jmsDeliveryMode != null && jmsDeliveryMode.length() > 0) {
             if ("persistent".equalsIgnoreCase(jmsDeliveryMode)) {
-                jmsBinding.setJMSDeliveryMode(true);
+                jmsBinding.setJMSHeaderDeliveryMode(true);
             } else if ("nonpersistent".equalsIgnoreCase(jmsDeliveryMode)) {
-                jmsBinding.setJMSDeliveryMode(false);
+                jmsBinding.setJMSHeaderDeliveryMode(false);
             } else {
                 error(monitor, "InvalidJMSDeliveryMode", jmsBinding, jmsDeliveryMode);
             }
@@ -571,7 +694,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
         String jmsTimeToLive = reader.getAttributeValue(null, "timeToLive");
         if (jmsTimeToLive != null && jmsTimeToLive.length() > 0) {
-            jmsBinding.setJMSTimeToLive(Long.parseLong(jmsTimeToLive));
+            jmsBinding.setJMSHeaderTimeToLive(Long.parseLong(jmsTimeToLive));
         }
 
         String jmsPriority = reader.getAttributeValue(null, "priority");
@@ -579,7 +702,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             try {
                 int p = Integer.parseInt(jmsPriority);
                 if (p >= 0 && p <= 9) {
-                    jmsBinding.setJMSPriority(p);
+                    jmsBinding.setJMSHeaderPriority(p);
                 } else {
                     warning(monitor, "InvalidJMSPriority", jmsBinding, jmsPriority);
                 }
@@ -609,9 +732,12 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     private void parseProperty(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         jmsBinding.setHeaders( true );
         String name = reader.getAttributeValue(null, "name");
-        String type = reader.getAttributeValue(null, "type");        
+        QName typeName = StAXHelper.getAttributeAsQName(reader, "type");
+        String type = typeName == null ? null : typeName.getLocalPart(); 
+        
         if (name != null && name.length() > 0) {
             Object value = reader.getElementText();
+           
             if ("boolean".equalsIgnoreCase(type)) {
                 value = Boolean.parseBoolean((String)value);
             } else if ("byte".equalsIgnoreCase(type)) {
@@ -634,7 +760,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     /**
-     * <operationProperties name="string" nativeOperation="string"?>
+     * <operationProperties name="string" selectedOperation="string"?>
      *   <property name="NMTOKEN" type="NMTOKEN"?>*
      *   <headers JMSType="string"?
      *            JMSCorrelationID="string"?
@@ -653,12 +779,12 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         
         String opName = reader.getAttributeValue(null, "name");
         if (opName == null || opName.length() < 1) {
-            warning(monitor, "MissingJMSOperationPropertyName", jmsBinding);
+            error(monitor, "MissingJMSOperationPropertyName", jmsBinding);
             return;
         }
         // Since nativeOpName, headers, and property elements are optional, must add opName.
         jmsBinding.addOperationName(opName);
-        String nativeOpName = reader.getAttributeValue(null, "nativeOperation"); // optional
+        String nativeOpName = reader.getAttributeValue(null, "selectedOperation"); // optional
         if (nativeOpName != null && nativeOpName.length() > 0) {
             jmsBinding.setNativeOperationName(opName, nativeOpName);
         }
@@ -749,7 +875,8 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
     private void parseOperationPropertyProperties(XMLStreamReader reader, JMSBinding jmsBinding, String opName) throws XMLStreamException {
         String propName = reader.getAttributeValue(null, "name");
-        String type = reader.getAttributeValue(null, "type");
+        QName typeName = StAXHelper.getAttributeAsQName(reader, "type");
+        String type = typeName == null ? null : typeName.getLocalPart(); 
         if (propName != null && propName.length() > 0) {
             Object value = reader.getElementText();
             if ("boolean".equalsIgnoreCase(type)) {
@@ -775,7 +902,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
     private void parseSubscriptionHeaders(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         String jmsSelector = reader.getAttributeValue(null, "selector");
-        if (jmsSelector != null && jmsSelector.length() > 0) {
+        if (jmsSelector != null && jmsSelector.length() > 0 && jmsBinding.getJMSSelector() == null) {
             jmsBinding.setJMSSelector(jmsSelector);
         }
         
@@ -871,6 +998,39 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                 error(monitor, "ConnectionFactoryActivationSpecContradiction", jmsBinding, connectionFactoryName, activationSpecName );                
             }
         }
+        
+        // If URI is specified, destination should not be present
+        if ( ( jmsBinding.getJMSURI() != null ) && ( jmsBinding.getJMSURI().length() > 0) &&
+        		(jmsBinding.isDestinationSpecified())) {
+        	error(monitor, "DestinationURIContradiction", jmsBinding, jmsBinding.getJMSURI(), jmsBinding.getDestinationName());
+        }
+        
+        // If activation spec and destination are both specified, they have to match
+        if ( ( jmsBinding.getActivationSpecName() != null ) && (jmsBinding.getActivationSpecName().length() > 0 ) &&
+        		(jmsBinding.getDestinationName() != null) && (jmsBinding.getDestinationName().length() > 0 ) ) {
+        	if ( !jmsBinding.getActivationSpecName().equals(jmsBinding.getDestinationName())) {
+        		error(monitor, "ActivationSpecAndDestinationMismatch", jmsBinding, jmsBinding.getActivationSpecName(), jmsBinding.getDestinationName());
+        	}
+        }
+
+        if ( ( jmsBinding.getResponseActivationSpecName() != null ) && (jmsBinding.getResponseActivationSpecName().length() > 0 ) &&
+        		(jmsBinding.getResponseDestinationName() != null ) && (jmsBinding.getResponseDestinationName().length() > 0 ) ) {
+        	if ( !jmsBinding.getResponseActivationSpecName().equals(jmsBinding.getResponseDestinationName())) {
+        		error(monitor, "ActivationSpecAndDestinationMismatch", jmsBinding, jmsBinding.getResponseActivationSpecName(), jmsBinding.getResponseDestinationName());
+        	}
+        }
+        // If activation spec exists with create=always, a jndiName must be specified
+        if (JMSBindingConstants.CREATE_ALWAYS.equals(jmsBinding.getActivationSpecCreate()) &&
+        		(jmsBinding.getActivationSpecName() == null)) {
+        	error(monitor, "ActivationSpecNameRequiredForCreateAlways", jmsBinding);
+        }
+        // If Connection factory specified then destination name must also be
+        if (( connectionFactoryName != null ) && ( connectionFactoryName.length() > 0 )) {
+            String destinationName = jmsBinding.getDestinationName();
+            if ((destinationName == null) || (destinationName.length() < 1 )) {
+                error(monitor, "ConnectionFactoryDestinationContradiction", jmsBinding, connectionFactoryName);                
+            }
+        }
 
         // Given a response connection name attribute, there must not be a response element.
         // 156  /binding.jms/@responseConnection - identifies a binding.jms element that is present in a
@@ -884,6 +1044,13 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             }
         }
 
+        // [BJM30029] The value of the operationProperties/@selectedOperation attribute MUST be unique across the containing binding.jms element
+        Set<String> ops = new HashSet<String>(jmsBinding.getNativeOperationNames().values());
+        if (ops.size() != jmsBinding.getNativeOperationNames().values().size()) {
+            error(monitor, "BJM30029", jmsBinding);                               
+        }
+        
+        
         // Other jmsBinding model validation may be added here.
 
     }
@@ -916,8 +1083,10 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             writer.writeAttribute("name", jmsBinding.getName());
         }
 
-        if (jmsBinding.getURI() != null) {
-            writer.writeAttribute("uri", jmsBinding.getURI());
+        if (jmsBinding.getJMSURI() != null) {
+            writer.writeAttribute("uri", jmsBinding.getJMSURI());
+            writeEnd(writer);
+            return;
         }
 
         //String dest = jmsBinding.getDestinationName();
@@ -1010,12 +1179,12 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
         writer.writeStartElement(Constants.SCA11_NS, JMSBindingConstants.HEADERS);
 
-        String jmsType = jmsBinding.getJMSType();
+        String jmsType = jmsBinding.getJMSHeaderType();
         if (jmsType != null && jmsType.length() > 0) {
             writer.writeAttribute("type", jmsType);
         }
 
-        Boolean jmsDeliveryMode = jmsBinding.isdeliveryModePersistent();
+        Boolean jmsDeliveryMode = jmsBinding.isHeaderDeliveryModePersistent();
         if (jmsDeliveryMode != null) {
             if ( jmsDeliveryMode.booleanValue() )
                writer.writeAttribute("deliveryMode", "persistent");
@@ -1023,12 +1192,12 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                writer.writeAttribute("deliveryMode", "nonpersistent");
         }
 
-        Long jmsTimeToLive = jmsBinding.getJMSTimeToLive();
+        Long jmsTimeToLive = jmsBinding.getJMSHeaderTimeToLive();
         if (jmsTimeToLive != null) {
             writer.writeAttribute("timeToLive", jmsTimeToLive.toString());
         }
 
-        Integer jmsPriority = jmsBinding.getJMSPriority();
+        Integer jmsPriority = jmsBinding.getJMSHeaderPriority();
         if (jmsPriority != null) {
             writer.writeAttribute("priority", jmsPriority.toString());
         }
@@ -1104,7 +1273,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     /**
      * Writes operation properties if there are any.
      * 
-     *     <operationProperties name="string" nativeOperation="string"?>
+     *     <operationProperties name="string" selectedOperation="string"?>
      *         <property name="NMTOKEN" type="NMTOKEN">*
      *         <headers JMSType="string"?
      *                  JMSCorrelationID="string"?
@@ -1134,7 +1303,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             String nativeOperation = jmsBinding.getNativeOperationName(opName);
             if (nativeOperation != null && nativeOperation.length() > 0) {
                 if ( !nativeOperation.equals( opName )) {
-                   writer.writeAttribute("nativeOperation", nativeOperation);
+                   writer.writeAttribute("selectedOperation", nativeOperation);
                 }
             }
 

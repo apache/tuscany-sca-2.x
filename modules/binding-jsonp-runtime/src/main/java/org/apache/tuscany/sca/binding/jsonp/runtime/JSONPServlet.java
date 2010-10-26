@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.binding.jsonp.runtime;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -56,16 +57,19 @@ public class JSONPServlet extends GenericServlet {
 
     @Override
     public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
-        String jsonRequest = getJSONRequest(servletRequest);
-        Object[] args = jsonToObjects(jsonRequest);
+        //String jsonRequest = getJSONRequest(servletRequest);
+        //Object[] args = jsonToObjects(jsonRequest);
+        Object[] args = getJSONRequestStringArray(servletRequest);
         Object response = invokeService(args);        
-        String jsonResponse = getJSONResponse(servletRequest, response);
+        //String jsonResponse = getJSONResponse(servletRequest, response);
+        String jsonResponse = getJSONResponseAsString(servletRequest, response);
         servletResponse.getOutputStream().println(jsonResponse);
     }
 
     /**
      * Turn the request into JSON 
      */
+/* Not required now JSON conversion is delegated to databinding       
     protected String getJSONRequest(ServletRequest servletRequest) throws IOException, JsonParseException, JsonMappingException {
         
         List<DataType> types = operation.getInputType().getLogical();
@@ -96,6 +100,43 @@ public class JSONPServlet extends GenericServlet {
 
         return "[" + jsonRequest + "]";
     }
+*/
+    
+    /**
+     * Turn the request into a string array of JSON structures. The Databinding
+     * layer will then convert each of the individual parameters into the appropriate
+     * types for the implementation interface
+     * 
+     */
+    protected Object[] getJSONRequestStringArray(ServletRequest servletRequest) throws IOException, JsonParseException, JsonMappingException {
+        
+        List<DataType> types = operation.getInputType().getLogical();
+        int typesIndex = 0;
+        
+        List<String> jsonRequestArray = new ArrayList<String>();
+        
+        for (String name : getOrderedParameterNames(servletRequest)) {
+            String jsonRequest = "";
+            if (!name.startsWith("_") && !"callback".equals(name)) {
+
+                // automatically quote string parameters so clients work in the usual javascript way               
+                if (typesIndex < types.size() && String.class.equals(types.get(typesIndex++).getGenericType())) {
+                    String x = servletRequest.getParameter(name);
+                    // TODO: do this more properly
+                    if (!x.startsWith("\"")) {
+                        jsonRequest += "\"" + x + "\"";
+                    } else {
+                        jsonRequest += x;
+                    }
+                } else {               
+                    jsonRequest += servletRequest.getParameter(name);
+                }  
+                jsonRequestArray.add(jsonRequest);
+            }
+        }
+
+        return jsonRequestArray.toArray();
+    }    
 
     /**
      * Get the request parameter names in the correct order.
@@ -127,6 +168,7 @@ public class JSONPServlet extends GenericServlet {
     /**
      * Turn the response object into JSON 
      */
+/* Not required now JSON conversion is delegated to databinding   
     protected String getJSONResponse(ServletRequest servletRequest, Object response) throws IOException, JsonParseException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         mapper.writeValue(os , response);
@@ -139,15 +181,34 @@ public class JSONPServlet extends GenericServlet {
 
         return jsonResponse;
     }
+*/
+    
+    /**
+     * The databinding layer will have converterted the return type into a JSON string so simply 
+     * add wrap it for return.
+     */
+    protected String getJSONResponseAsString(ServletRequest servletRequest, Object response) throws IOException, JsonParseException {
+        String jsonResponse = response.toString();
+
+        String callback = servletRequest.getParameter("callback");
+        if (callback != null && callback.length() > 1) {
+            jsonResponse = callback + "(" + jsonResponse + ");";
+        }
+
+        return jsonResponse;
+    }    
 
     /**
      * Turn the request JSON into objects 
      */
+/* Not required now JSON conversion is delegated to databinding       
     protected Object[] jsonToObjects(String jsonRequest) throws IOException, JsonParseException, JsonMappingException {
         Class<?> c = new Object[0].getClass();
         Object[] args = (Object[])mapper.readValue(jsonRequest, c);
         return args;
     }
+*/
+    
 
     /**
      * Send the request down the wire to invoke the service 

@@ -22,9 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.jms.BytesMessage;
+import javax.jms.JMSException;
 import javax.jms.Session;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
+import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.provider.DefaultMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
@@ -160,6 +163,15 @@ public class WireFormatJMSDefaultServiceInterceptor implements Interceptor {
             }
         }
 
+       
+        try {
+        	responseJMSMsg.setStringProperty(JMSBindingConstants.DEFAULT_OPERATION_PROP_NAME, msg.getOperation().getName());
+        } catch (JMSException e) {
+        	// Not sure what to do at this point.. it doesn't make sense to create a fault message.
+        	// Throwing a runtime exception for now.  
+        	throw new JMSBindingException(e);        	
+        }
+        
         msg.setBody(responseJMSMsg);
 
         return msg;

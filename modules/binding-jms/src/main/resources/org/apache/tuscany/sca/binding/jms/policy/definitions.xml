@@ -17,73 +17,13 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
- 			 targetNamespace="http://www.osoa.org/xmlns/sca/1.0"
- 			 xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
+<sca:definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+            targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
+            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+            xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
 
-    <!-- intents not yet enabled -->
-    <!--sca:bindingType type="sca:binding.jms"  
-                     alwaysProvides="JMS"
-                     mayProvide="atLeastOnce atMostOnce ordered conversation" /-->
-                     
-    <!-- MJE 22/06/2010 - add asyncInvocation to the @mayProvide list, for async services support -->
     <sca:bindingType type="sca:binding.jms"  
-                     alwaysProvides=""
-                     mayProvide="sca:asyncInvocation" />
+                     alwaysProvides="sca:JMS"
+                     mayProvide="sca:atLeastOnce sca:atMostOnce sca:ordered sca:asyncInvocation" />
 
-    <!-- PolicyIntents defined by the SCA Runtime Extension for JMS Binding -->
-    
-    <sca:intent name="JMS" constrains="sca:binding.jms">
-        <sca:description>
-            Communication through this binding requires JMS
-        </sca:description>
-    </sca:intent>
-    
-    <!-- delivery mode -->
-    <intent name="deliveryMode" 
-            constrains="sca:binding.jms">
-        <description>
-            This intent is used to indicate the deliver mode
-            of the sent message
-        </description>
-    </intent>
-    
-    <intent name="deliveryMode.persistent">
-        <description>
-            Message are sent persistently
-        </description>
-    </intent>
-    
-    <intent name="deliveryMode.nonPersistent">
-        <description>
-            Message are sent non-persistently
-        </description>
-    </intent>
-        
-    <!-- priority -->
-	<intent name="priority" 
-	 		constrains="sca:binding.jms">
-		<description>
-            This intent is used to indicate the priority of the 
-            sent message
-		</description>
-	</intent>
-    
-    <intent name="priority.high">
-        <description>
-            Messages are high priority
-        </description>
-    </intent>   
-    
-    <intent name="priority.medium">
-        <description>
-            Messages are medium priority
-        </description>
-    </intent>
-	  
-    <intent name="priority.low">
-        <description>
-            Messages are low priority
-        </description>
-    </intent>      
-</definitions>
+</sca:definitions>

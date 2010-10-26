@@ -35,6 +35,7 @@ import java.util.concurrent.Future;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.AsyncHandler;
+import javax.xml.ws.Holder;
 import javax.xml.ws.Response;
 
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -44,6 +45,7 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.InvalidOperationException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.OverloadedOperationException;
+import org.apache.tuscany.sca.interfacedef.ParameterMode;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -220,6 +222,9 @@ public class JavaInterfaceIntrospectorImpl {
                 }
             }
 
+            JavaOperation operation = new JavaOperationImpl();
+            operation.setName(name);
+            
             // Set outputType to null for void
             XMLType xmlReturnType = new XMLType(new QName(ns, "return"), null);
             DataType<XMLType> returnDataType =
@@ -229,10 +234,24 @@ public class JavaInterfaceIntrospectorImpl {
             Type[] genericParamTypes = method.getGenericParameterTypes();
             for (int i = 0; i < parameterTypes.length; i++) {
                 Class<?> paramType = parameterTypes[i];
-                XMLType xmlParamType = new XMLType(new QName(ns, "arg" + i), null);
-                paramDataTypes.add(new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, paramType, genericParamTypes[i],
-                                                             xmlParamType));
+                XMLType xmlParamType = new XMLType(new QName(ns, "arg" + i), null);                            
+     
+                DataTypeImpl<XMLType> xmlDataType = new DataTypeImpl<XMLType>(
+                		UNKNOWN_DATABINDING, paramType, genericParamTypes[i],xmlParamType);
+                ParameterMode mode = ParameterMode.IN;
+                // Holder pattern. Physical types of Holder<T> classes are updated to <T> to aid in transformations.
+                if ( Holder.class == paramType) {
+                	Type firstActual = getFirstActualType( genericParamTypes[ i ] );
+                	if ( firstActual != null ) {
+                		xmlDataType.setPhysical( (Class<?>)firstActual );
+                		mode = ParameterMode.INOUT;
+                	}
+                }
+                paramDataTypes.add( xmlDataType);
+                operation.getParameterModes().add(mode);
             }
+                    
+            // Fault types                                                          
             List<DataType> faultDataTypes = new ArrayList<DataType>(faultTypes.length);
             Type[] genericFaultTypes = method.getGenericExceptionTypes();
             if( method.isAnnotationPresent(AsyncFault.class) ) {
@@ -254,8 +273,7 @@ public class JavaInterfaceIntrospectorImpl {
 
             DataType<List<DataType>> inputType =
                 new DataTypeImpl<List<DataType>>(IDL_INPUT, Object[].class, paramDataTypes);
-            JavaOperation operation = new JavaOperationImpl();
-            operation.setName(name);
+           
             operation.setInputType(inputType);
             operation.setOutputType(returnDataType);
             operation.setFaultTypes(faultDataTypes);
@@ -290,20 +308,35 @@ public class JavaInterfaceIntrospectorImpl {
 
     private boolean jaxwsAsyncMethod(Method method) {
         if (method.getName().endsWith("Async")) {
-            if (method.getName().endsWith("Async")) {
-                if (method.getReturnType().isAssignableFrom(Future.class)) {
-                    if (method.getParameterTypes().length > 0) {
-                        if (method.getParameterTypes()[method.getParameterTypes().length-1].isAssignableFrom(AsyncHandler.class)) {
-                            return true;
-                        }
+            if (method.getReturnType().isAssignableFrom(Future.class)) {
+                if (method.getParameterTypes().length > 0) {
+                    if (method.getParameterTypes()[method.getParameterTypes().length-1].isAssignableFrom(AsyncHandler.class)) {
+                        return true;
                     }
                 }
-                if (method.getReturnType().isAssignableFrom(Response.class)) {
-                    return true;
-                }
+            }
+            if (method.getReturnType().isAssignableFrom(Response.class)) {
+                return true;
             }
         }
         return false;
+    }
+    
+
+    /**
+     * Given a Class<T>, returns T, otherwise null.
+     * @param testClass
+     * @return
+     */
+    protected static Type getFirstActualType(Type genericType) {
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType)genericType;
+            Type[] actualTypes = pType.getActualTypeArguments();
+            if ((actualTypes != null) && (actualTypes.length > 0)) {
+                return actualTypes[0];
+            }
+        }
+        return null;
     }
 
 }

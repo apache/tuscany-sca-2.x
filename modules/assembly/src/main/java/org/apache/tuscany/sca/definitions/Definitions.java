@@ -26,6 +26,8 @@ import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
+import org.apache.tuscany.sca.policy.ExternalAttachment;
+
 
 /**
  * Represents SCA Definitions.
@@ -81,4 +83,10 @@ public interface Definitions {
      * @return a list of domain wide binding definition objects 
      */
     List<Binding> getBindings();
+    
+    /**
+     * Returns a list of external attachments
+     * @return
+     */
+    List<ExternalAttachment> getExternalAttachments();
 }

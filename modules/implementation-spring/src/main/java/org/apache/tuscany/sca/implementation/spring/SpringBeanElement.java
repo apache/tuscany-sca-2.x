@@ -37,10 +37,13 @@ public class SpringBeanElement {
     private boolean parentAttribute = false;
     private boolean factoryBeanAttribute = false;
     private boolean factoryMethodAttribute = false;
-    
+
     private List<SpringPropertyElement> properties = new ArrayList<SpringPropertyElement>();
     private List<SpringConstructorArgElement> constructorargs = new ArrayList<SpringConstructorArgElement>();
 
+    public SpringBeanElement() {
+    }
+    
     public SpringBeanElement(String id, String className) {
         this.id = id;
         this.className = className;
@@ -53,7 +56,7 @@ public class SpringBeanElement {
     public String getId() {
         return id;
     }
-    
+
     public void setId(String id) {
         this.id = id;
     }
@@ -65,7 +68,7 @@ public class SpringBeanElement {
     public void addProperty(SpringPropertyElement property) {
         properties.add(property);
     }
-    
+
     public List<SpringConstructorArgElement> getCustructorArgs() {
         return constructorargs;
     }
@@ -73,45 +76,57 @@ public class SpringBeanElement {
     public void addCustructorArgs(SpringConstructorArgElement args) {
         constructorargs.add(args);
     }
-    
+
     public boolean isInnerBean() {
         return innerBean;
     }
-    
+
     public void setInnerBean(boolean innerBean) {
         this.innerBean = innerBean;
     }
-    
+
     public boolean isAbstractBean() {
         return abstractBean;
     }
-    
+
     public void setAbstractBean(boolean abstractBean) {
         this.abstractBean = abstractBean;
     }
-    
+
     public boolean hasParentAttribute() {
         return parentAttribute;
     }
-    
+
     public void setParentAttribute(boolean parentAttribute) {
         this.parentAttribute = parentAttribute;
     }
-    
+
     public boolean hasFactoryBeanAttribute() {
         return factoryBeanAttribute;
     }
-    
+
     public void setFactoryBeanAttribute(boolean factoryBeanAttribute) {
         this.factoryBeanAttribute = factoryBeanAttribute;
     }
-    
+
     public boolean hasFactoryMethodAttribute() {
         return factoryMethodAttribute;
     }
-    
+
     public void setFactoryMethodAttribute(boolean factoryMethodAttribute) {
         this.factoryMethodAttribute = factoryMethodAttribute;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SpringBeanElement [id=").append(id).append(", className=").append(className)
+            .append(", innerBean=").append(innerBean).append(", abstractBean=").append(abstractBean)
+            .append(", parentAttribute=").append(parentAttribute).append(", factoryBeanAttribute=")
+            .append(factoryBeanAttribute).append(", factoryMethodAttribute=").append(factoryMethodAttribute)
+            .append(", properties=").append(properties).append(", constructorargs=").append(constructorargs)
+            .append("]");
+        return builder.toString();
     }
 
 } // end class SpringBeanElement

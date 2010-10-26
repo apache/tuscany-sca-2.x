@@ -83,44 +83,51 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
         }
     }
     
-    private Composite checkAppliesTo(Document document, Map<PolicySet, List<PolicySubject>> appliesToSubjects, Composite composite, BuilderContext context) throws Exception {
-        // look at policies recursively
-        for (Component component : composite.getComponents()) {
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                checkAppliesTo(document, appliesToSubjects, (Composite)implementation, context);
-            }
-        }
+    private Composite checkAppliesTo(Document document, Map<PolicySet, List<PolicySubject>> appliesToSubjects, Composite topComposite, BuilderContext context) throws Exception {
+ 
+    	for ( Component component : topComposite.getComponents() ) {
+    		if ( component.getImplementation() instanceof Composite ) {
+    			Composite nested = (Composite) component.getImplementation();
+    			checkAppliesTo(saveAsDOM(nested),new HashMap<PolicySet, List<PolicySubject>>(), nested, context );
+    		}
+    	}
 
-        for (Component component : composite.getComponents()) {
+    	for (Component component : topComposite.getComponents()) {
 
-            for (ComponentService componentService : component.getServices()) {
-                for (Endpoint ep : componentService.getEndpoints()) {
-                    if (ep.getBinding() instanceof PolicySubject) {
-                        checkAppliesToSubject(document, appliesToSubjects, composite, (PolicySubject)ep.getBinding(), ep.getPolicySets());
-                    }
-                }
-            }
+    		for (ComponentService componentService : component.getServices()) {
+    			for (Endpoint ep : componentService.getEndpoints()) {
+    			    List<PolicySet> policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getService(), ep.getService().getPolicySets());
+    			    ep.getPolicySets().removeAll(policySetsToRemove);
+    				if (ep.getBinding() instanceof PolicySubject) {
+    				    policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getBinding(), ((PolicySubject)ep.getBinding()).getPolicySets());
+    				    ep.getPolicySets().removeAll(policySetsToRemove);
+    				}
+    			}
+    		}
 
-            for (ComponentReference componentReference : component.getReferences()) {
-                for (EndpointReference epr : componentReference.getEndpointReferences()) {
-                    if (epr.getBinding() instanceof PolicySubject) {
-                        checkAppliesToSubject(document, appliesToSubjects, composite, (PolicySubject)epr.getBinding(), epr.getPolicySets());
-                    }
-                }
-            }
+    		for (ComponentReference componentReference : component.getReferences()) {
+    			for (EndpointReference epr : componentReference.getEndpointReferences()) {
+    			    List<PolicySet> policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getReference(), epr.getReference().getPolicySets());
+    			    epr.getPolicySets().removeAll(policySetsToRemove);
+    				if (epr.getBinding() instanceof PolicySubject) {
+    				    policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getBinding(), ((PolicySubject)epr.getBinding()).getPolicySets());
+    				    epr.getPolicySets().removeAll(policySetsToRemove);
+    				} 
+    			}
+    		}
 
-            Implementation implementation = component.getImplementation();
-            if (implementation != null && 
-                implementation instanceof PolicySubject) {
-                checkAppliesToSubject(document, appliesToSubjects, composite, implementation, implementation.getPolicySets());
-            }
-        }
-        
-        return composite;
+    		Implementation implementation = component.getImplementation();
+    		if (implementation != null && 
+    				implementation instanceof PolicySubject) {
+    			checkAppliesToSubject(document, appliesToSubjects, topComposite, implementation, implementation.getPolicySets());
+    		}
+    	}
+
+        return topComposite;
     }
     
-    /**
+
+	/**
      * Checks that all the provided policy sets apply to the provided policy subject
      * 
      * @param document
@@ -130,7 +137,7 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
      * @return
      * @throws Exception
      */
-    private void checkAppliesToSubject(Document document, Map<PolicySet, List<PolicySubject>> appliesToSubjects, Composite composite, PolicySubject policySubject, List<PolicySet> policySets) throws Exception {
+    private List<PolicySet> checkAppliesToSubject(Document document, Map<PolicySet, List<PolicySubject>> appliesToSubjects, Composite composite, PolicySubject policySubject, List<PolicySet> policySets) throws Exception {
         List<PolicySet> policySetsToRemove = new ArrayList<PolicySet>();
         
         for (PolicySet policySet : policySets){
@@ -150,7 +157,8 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
                         Node node = nodes.item(i);
                         String index = getStructuralURI(node);
                         PolicySubject subject = lookup(composite, index);
-                        subjects.add(subject);
+                        if ( subject != null ) 
+                        	subjects.add(subject);
                     }
                 }
             }
@@ -166,6 +174,7 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
 
         }
         
-        policySets.removeAll(policySetsToRemove);      
+        policySets.removeAll(policySetsToRemove); 
+        return policySetsToRemove;
     }    
 }

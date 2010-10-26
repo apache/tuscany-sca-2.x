@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.binding.jms.transport;
 
+import javax.jms.DeliveryMode;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
@@ -25,6 +26,7 @@ import javax.jms.Session;
 import javax.naming.NamingException;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
@@ -41,15 +43,13 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
  */
 public class TransportReferenceInterceptor implements Interceptor {
       
-    private Invoker next;
-    private RuntimeEndpointReference runtimeWire;
+    private Invoker next;    
     private JMSResourceFactory jmsResourceFactory;
     private JMSBinding jmsBinding;
 
     public TransportReferenceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeEndpointReference runtimeWire) {
         super();
-        this.jmsBinding = jmsBinding;
-        this.runtimeWire = runtimeWire;
+        this.jmsBinding = jmsBinding;        
         this.jmsResourceFactory = jmsResourceFactory;
     }
     
@@ -59,7 +59,8 @@ public class TransportReferenceInterceptor implements Interceptor {
         // get the jms context
         JMSBindingContext context = msg.getBindingContext();
         
-        if (context.getReplyToDestination() == null) {
+        // [rfeng] For oneway operation as part of the bi-directional interface, the JMSReplyTo is present
+        if (context.getReplyToDestination() == null || msg.getOperation().isNonBlocking()) {
             responseMsg.setBody(null);
         } else {
             responseMsg = invokeResponse(msg);
@@ -78,20 +79,20 @@ public class TransportReferenceInterceptor implements Interceptor {
     
             // Set JMS header attributes in producer, not message.
             String opName = msg.getOperation().getName();
-            if (jmsBinding.getOperationJMSTimeToLive(msg.getOperation().getName()) != null) {
-                producer.setTimeToLive(jmsBinding.getOperationJMSTimeToLive(msg.getOperation().getName()));
-            }
-            Integer priority = jmsBinding.getOperationJMSPriority( opName );
+            if (jmsBinding.getEffectiveJMSTimeToLive(opName) != null) {
+                producer.setTimeToLive(jmsBinding.getEffectiveJMSTimeToLive(msg.getOperation().getName()).longValue());
+            } 
+            
+            Integer priority = jmsBinding.getEffectiveJMSPriority(opName);
             if (priority != null) {
-               producer.setPriority(priority.intValue());
+            	producer.setPriority(priority.intValue());
             }  
-            Boolean deliveryModePersistent = jmsBinding.getOperationJMSDeliveryMode(opName);
+            
+            Boolean deliveryModePersistent = jmsBinding.getEffectiveJMSDeliveryMode(opName);
             if (deliveryModePersistent != null) {
-                if (deliveryModePersistent.booleanValue())
-                    producer.setDeliveryMode(javax.jms.DeliveryMode.PERSISTENT);
-                else
-                    producer.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
-            }
+            	producer.setDeliveryMode( deliveryModePersistent ? DeliveryMode.PERSISTENT : DeliveryMode.NON_PERSISTENT);               
+            } 
+                       
             
             try {
                 producer.send((javax.jms.Message)msg.getBody());
@@ -111,10 +112,20 @@ public class TransportReferenceInterceptor implements Interceptor {
             
             javax.jms.Message requestMessage = (javax.jms.Message)msg.getBody();
                       
-            String msgSelector = "JMSCorrelationID = '" + 
-                                 requestMessage.getJMSMessageID() + 
-                                 "'";
-            MessageConsumer consumer = session.createConsumer(context.getReplyToDestination(), msgSelector);  
+            String msgSelector = null;
+            String correlationScheme = jmsBinding.getCorrelationScheme();
+            if (correlationScheme == null || JMSBindingConstants.CORRELATE_MSG_ID.equalsIgnoreCase(correlationScheme)) {
+                msgSelector = "JMSCorrelationID = '" + requestMessage.getJMSMessageID() + "'";
+            } else if (JMSBindingConstants.CORRELATE_CORRELATION_ID.equalsIgnoreCase(correlationScheme)) {
+                msgSelector = "JMSCorrelationID = '" + requestMessage.getJMSCorrelationID() + "'";
+            }                
+
+            MessageConsumer consumer;
+            if (msgSelector != null) {
+                consumer = session.createConsumer(context.getReplyToDestination(), msgSelector);  
+            } else {
+                consumer = session.createConsumer(context.getReplyToDestination());  
+            }
             
             javax.jms.Message replyMsg;
             try {

@@ -36,13 +36,13 @@ import org.springframework.util.ReflectionUtils;
 public class ComponentNameAnnotationProcessor implements BeanPostProcessor {
 
     private Class<? extends Annotation> componentNameAnnotationType = ComponentName.class;
-    
+
     private String componentName;
-    
-    public ComponentNameAnnotationProcessor (String componentName) {
+
+    public ComponentNameAnnotationProcessor(String componentName) {
         this.componentName = componentName;
     }
-    
+
     /**
      * Gets componentName annotation type.
      */
@@ -63,8 +63,7 @@ public class ComponentNameAnnotationProcessor implements BeanPostProcessor {
      * 
      * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessBeforeInitialization(java.lang.Object, java.lang.String)
      */
-    public Object postProcessBeforeInitialization(Object bean, String beanName) 
-    throws BeansException {
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         processAnnotation(bean);
         return bean;
     }
@@ -74,8 +73,7 @@ public class ComponentNameAnnotationProcessor implements BeanPostProcessor {
      * 
      * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessAfterInitialization(java.lang.Object, java.lang.String)
      */
-    public Object postProcessAfterInitialization(Object bean, String beanName)
-    throws BeansException {
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         return bean;
     }
 
@@ -83,7 +81,7 @@ public class ComponentNameAnnotationProcessor implements BeanPostProcessor {
      * <p>Processes a beans fields for injection if it has a {@link Reference} annotation.</p>
      */
     protected void processAnnotation(final Object bean) {
-        
+
         final Class<?> clazz = bean.getClass();
 
         ReflectionUtils.doWithFields(clazz, new ReflectionUtils.FieldCallback() {
@@ -94,19 +92,20 @@ public class ComponentNameAnnotationProcessor implements BeanPostProcessor {
                     if (Modifier.isStatic(field.getModifiers())) {
                         throw new IllegalStateException("ComponentName annotation is not supported on static fields");
                     }
-                    
+
                     if (Modifier.isPrivate(field.getModifiers())) {
                         throw new IllegalStateException("ComponentName annotation is not supported on private fields");
                     }
 
                     ReflectionUtils.makeAccessible(field);
-                    
+
                     if (field.getType().getName().equals("java.lang.String")) {
-                        Object nameObj = componentName;   
+                        Object nameObj = componentName;
                         if (nameObj != null)
                             ReflectionUtils.setField(field, bean, nameObj);
                     } else {
-                        throw new IllegalStateException("ComponentName annotation is supported only on java.lang.String field type.");
+                        throw new IllegalStateException(
+                                                        "ComponentName annotation is supported only on java.lang.String field type.");
                     }
                 }
             }
@@ -115,33 +114,35 @@ public class ComponentNameAnnotationProcessor implements BeanPostProcessor {
         ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
             public void doWith(Method method) {
                 Annotation annotation = method.getAnnotation(getComponentNameAnnotationType());
-                
+
                 if (annotation != null) {
                     if (Modifier.isStatic(method.getModifiers())) {
                         throw new IllegalStateException("ComponentName annotation is not supported on static methods");
                     }
-                    
+
                     if (Modifier.isPrivate(method.getModifiers())) {
                         throw new IllegalStateException("ComponentName annotation is not supported on private methods");
                     }
 
                     if (method.getParameterTypes().length == 0) {
-                        throw new IllegalStateException("ComponentName annotation requires at least one argument: " + method);
+                        throw new IllegalStateException(
+                                                        "ComponentName annotation requires at least one argument: " + method);
                     }
-                    
-                    PropertyDescriptor pd = BeanUtils.findPropertyForMethod(method);                    
-                    
+
+                    PropertyDescriptor pd = BeanUtils.findPropertyForMethod(method);
+
                     if (pd.getPropertyType().getName().equals("java.lang.String")) {
-                        Object nameObj = componentName;                    
+                        Object nameObj = componentName;
                         if (nameObj != null) {
-                            try {                                                       
-                                pd.getWriteMethod().invoke(bean, new Object[] { nameObj });
+                            try {
+                                pd.getWriteMethod().invoke(bean, new Object[] {nameObj});
                             } catch (Throwable e) {
                                 throw new FatalBeanException("Problem injecting reference:  " + e.getMessage(), e);
                             }
                         }
                     } else {
-                        throw new IllegalStateException("ComponentName annotation is supported only on java.lang.String field type.");
+                        throw new IllegalStateException(
+                                                        "ComponentName annotation is supported only on java.lang.String field type.");
                     }
                 }
             }

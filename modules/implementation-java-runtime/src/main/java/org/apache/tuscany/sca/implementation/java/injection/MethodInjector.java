@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.implementation.java.injection;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
@@ -51,8 +52,12 @@ public class MethodInjector<T> implements Injector<T> {
     }
 
     public void inject(T instance) throws ObjectCreationException {
+    	inject(instance, objectFactory.getInstance());
+    }
+    
+    private void inject(T instance, Object value) {
         try {
-            method.invoke(instance, objectFactory.getInstance());
+            method.invoke(instance, value);
         } catch (IllegalAccessException e) {
             throw new ObjectCreationException("Method is not accessible [" + method + "]", e);
         } catch (IllegalArgumentException e) {
@@ -61,4 +66,18 @@ public class MethodInjector<T> implements Injector<T> {
             throw new ObjectCreationException("Exception thrown by setter: " + method.getName(), e);
         }
     }
+
+	public Class<?> getType() {
+		return method.getParameterTypes()[0];
+	}
+	
+	public Type getGenericType() {
+		return method.getGenericParameterTypes()[0];
+	}
+
+	public void injectNull(T instance) throws ObjectCreationException {
+		inject(instance, null);		
+	}
+
+	
 }

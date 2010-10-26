@@ -18,8 +18,9 @@ REM # specific language governing permissions and limitations
 REM # under the License. 
 
 REM TODO: can't get these to work yet when using the tribes domaim URI in quotes
-REM if "%1".=="/?". goto help
-REM if "%1".=="-help". goto help
+if "%1".=="/?". goto help
+if "%1".=="-help". goto help
+if "%1".=="-help". goto help
 
 if not "%TUSCANY_HOME%"=="" goto gotHome
 SET TUSCANY_HOME=%~dp0\..
@@ -32,13 +33,13 @@ goto error
 
 
 set _XDEBUG=
-if not %1==debug goto skipDebug
+if not "%1"=="debug" goto skipDebug
 set _XDEBUG=-Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y
 shift
 :skipDebug
 
 set _FORK=
-if not %1==fork goto skipFork
+if not "%1"=="fork" goto skipFork
 set _FORK=start
 shift
 :skipFORK

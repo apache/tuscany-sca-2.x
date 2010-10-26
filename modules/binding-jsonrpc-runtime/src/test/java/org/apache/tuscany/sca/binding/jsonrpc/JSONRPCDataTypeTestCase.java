@@ -199,4 +199,21 @@ public class JSONRPCDataTypeTestCase {
 
         Assert.assertEquals("red", jsonResp.getJSONArray("result").get(0));
     }
+    
+    @Test
+    public void testBigDecimal() throws Exception {
+        JSONObject jsonRequest = new JSONObject(
+                "{ \"method\": \"echoBigDecimal\", \"params\": [\"12345.67\"], \"id\": 4}");
+
+        WebConversation wc = new WebConversation();
+        WebRequest request = new PostMethodWebRequest(SERVICE_URL,
+                new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
+        WebResponse response = wc.getResource(request);
+
+        Assert.assertEquals(200, response.getResponseCode());
+
+        JSONObject jsonResp = new JSONObject(response.getText());
+
+        Assert.assertEquals("12345.67", jsonResp.get("result"));
+    }    
 }

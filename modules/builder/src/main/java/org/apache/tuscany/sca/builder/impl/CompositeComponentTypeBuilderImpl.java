@@ -657,7 +657,7 @@ public class CompositeComponentTypeBuilderImpl {
     }
     
     /**
-     * A local wrapper for the interace contract mapper as we need to normalize the 
+     * A local wrapper for the interface contract mapper as we need to normalize the 
      * interface contracts if appropriate and the mapper doesn't have the right
      * dependencies to be able to do it. 
      * 

@@ -103,6 +103,8 @@ public class DefinitionsUtil {
         }        
       
         target.getBindings().addAll(source.getBindings());
+        
+        target.getExternalAttachments().addAll(source.getExternalAttachments());
     }
     
 }

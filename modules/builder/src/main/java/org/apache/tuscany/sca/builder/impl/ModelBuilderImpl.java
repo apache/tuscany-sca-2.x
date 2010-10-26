@@ -97,15 +97,14 @@ public class ModelBuilderImpl implements CompositeBuilder {
             composite = compositeIncludeBuilder.build(composite, context);
 
             // Set up the structural URIs for components (services/references/bindings)
-            // TODO does this need to happen before policy attachment
             composite = structuralURIBuilder.build(composite, context);
             
             // Apply policy external attachment. Happens before the composite type
             // is created so that suitable promotion and structural processing is
             // applied to the attached policies
-            // TODO - I don't think this is correct. The policy spec (4.12.1)implies that
-            //        policy attachment happens independently of implementation or 
-            //        structural inheritance
+            // TODO - Can you attach a policy to a component and have it promoted to the 
+            //        components services and references. If yes this call is in the 
+            //        right place
             composite = policyAttachmentBuilder.build(composite, context);
 
             // Process the implementation hierarchy by calculating the component type 

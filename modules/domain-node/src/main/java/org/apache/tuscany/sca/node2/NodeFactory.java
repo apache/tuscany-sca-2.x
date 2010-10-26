@@ -19,22 +19,35 @@
 
 package org.apache.tuscany.sca.node2;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Properties;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.common.java.io.IOHelper;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
+import org.apache.tuscany.sca.core.assembly.impl.EndpointRegistryImpl;
 import org.apache.tuscany.sca.deployment.Deployer;
+import org.apache.tuscany.sca.monitor.ValidationException;
+import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node2.impl.NodeImpl;
+import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.apache.tuscany.sca.work.WorkScheduler;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 public class NodeFactory {
 
@@ -44,37 +57,36 @@ public class NodeFactory {
     private ExtensibleDomainRegistryFactory domainRegistryFactory;
     private RuntimeAssemblyFactory assemblyFactory;
 
+    public static NodeFactory newInstance() {
+        return new NodeFactory(null);
+    }
+    public static NodeFactory newInstance(Properties config) {
+        return new NodeFactory(config);
+    }
+
     /**
-     * A helper method to simplify creating a Node with an installed contributions
-     * @param compositeURI  URI of a composite to run relative to the first contribution
-     *         if compositeURI is null then all deployable composites in the first contribution will be run 
-     * @param contributionURLs  URLs to contributions to install
+     * A helper method to simplify creating a standalone Node 
+     * @param compositeURI  URI within the contribution of a composite to run 
+     *         if compositeURI is null then all deployable composites in the contribution will be run 
+     * @param contributionURL  URL of the contribution
+     * @param dependentContributionURLs  optional URLs of dependent contributions
      * @return a Node with installed contributions
      */
-    public static Node createNode(String compositeURI, String... contributionURLs) {
+    public static Node newStandaloneNode(String compositeURI, String contributionURL, String... dependentContributionURLs) {
         try {
-            
-            Node node = newInstance().createOneoffNode();
-            String uri = "";
-            for (int i=contributionURLs.length-1; i>-1; i--) {
-                boolean runDeployables = (i==0) && (compositeURI == null);
-                int lastDot = contributionURLs[i].lastIndexOf('.');
-                int lastSep = contributionURLs[i].lastIndexOf("/");
-                if (lastDot > -1 && lastSep > -1 && lastDot > lastSep) {
-                    uri = contributionURLs[i].substring(lastSep+1, lastDot);
-                } else {
-                    uri = contributionURLs[i];
-                }
+            NodeFactory nodeFactory = newInstance();
+            EndpointRegistry endpointRegistry = new EndpointRegistryImpl(nodeFactory.extensionPointRegistry, null, null);
+            NodeImpl node = new NodeImpl("default", nodeFactory.deployer, nodeFactory.compositeActivator, endpointRegistry, nodeFactory.extensionPointRegistry, nodeFactory);
 
-                node.installContribution(uri, contributionURLs[i], null, null, runDeployables);
-            }
-            if (compositeURI != null) {
-                if (uri.endsWith("/")) {
-                    uri = uri + compositeURI;
-                } else {
-                    uri = uri + "/" + compositeURI;
+            if (dependentContributionURLs != null) {
+                for (int i=dependentContributionURLs.length-1; i>-1; i--) {
+                    node.installContribution(null, dependentContributionURLs[i], null, null, false);
                 }
-                node.addToDomainLevelComposite(uri);
+            }
+
+            String curi = node.installContribution(null, contributionURL, null, null, compositeURI == null);
+            if (compositeURI != null) {
+                node.addToDomainLevelComposite(curi, compositeURI);
             }
             return node;
             
@@ -83,26 +95,30 @@ public class NodeFactory {
         }
     }
 
-    public static NodeFactory newInstance() {
-        return new NodeFactory(null);
-    }
-    public static NodeFactory newInstance(Properties config) {
-        return new NodeFactory(config);
-    }
-
     protected NodeFactory(Properties config) {
         init(config);
     }
+    
+    public Node createNode() {
+        return createNode(null);
+    }
 
     public Node createNode(String domainURI) {
-        String domainName = getDomainName(domainURI);
+        String domainName = "default";
+        if (domainURI != null){
+            domainName = getDomainName(domainURI);
+        }
         EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, domainName);
         return new NodeImpl(domainName, deployer, compositeActivator, endpointRegistry, extensionPointRegistry, null);
     }
 
-    protected Node createOneoffNode() {
-        EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry("default", "default");
-        return new NodeImpl("default", deployer, compositeActivator, endpointRegistry, extensionPointRegistry, this);
+    public Node createNodeFromXML(String configURL) throws ContributionReadException, ActivationException, ValidationException {
+        NodeConfiguration configuration = loadConfiguration(configURL);
+        Node node = createNode(configuration.getDomainURI());
+        for ( ContributionConfiguration c : configuration.getContributions()) {
+            node.installContribution(c.getURI(), c.getLocation(), c.getMetaDataURL(), c.getDependentContributionURIs(), c.isStartDeployables());
+        }
+        return node;
     }
 
     public void stop() {
@@ -163,4 +179,37 @@ public class NodeFactory {
             return domainURI.substring(scheme+1, qm);
         }
     }
+
+    protected NodeConfiguration loadConfiguration(String configURL) {
+        InputStream xml =null;
+        try {
+            URL base = IOHelper.getLocationAsURL(configURL);
+            xml = IOHelper.openStream(base);
+            InputStreamReader reader = new InputStreamReader(xml, "UTF-8");
+            ProcessorContext context = deployer.createProcessorContext();
+            NodeConfiguration config = deployer.loadXMLDocument(reader, context.getMonitor());
+            if (base != null && config != null) {
+                // Resolve the contribution location against the node.xml
+                // TODO: absolute locations?
+                for (ContributionConfiguration c : config.getContributions()) {
+                    String location = c.getLocation();
+                    if (location != null) {
+                        URL url = new URL(base, location);
+                        url = IOHelper.normalize(url);
+                        c.setLocation(url.toString());
+                    }
+                }
+            }
+            return config;
+        } catch (Throwable e) {
+            throw new ServiceRuntimeException(e);
+        } finally {
+            try {
+                if (xml != null) xml.close();
+            } catch (IOException e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
+    }
+
 }

@@ -99,4 +99,43 @@ public interface ContributionConfiguration {
      * @return
      */
     ContributionConfiguration addDeploymentComposite(InputStream content);
+
+    /**
+     * Set if the deployable composites should be started when the contribution is installed
+     * @param startDeployables  whether or not deployable composites should be started. The default is false.
+     */
+    void setStartDeployables(boolean startDeployables);
+
+    /**
+     * Tests if the deployable composites should be started when the contribution is installed
+     */
+    boolean isStartDeployables();
+
+    /**
+     * Gets the URIs of any dependent contributions. The dependent contributions are the
+     * contributions that will be used to resolve any imports used by this contribution.
+     * @return the URIs of any dependent contribution
+     */
+    List<String> getDependentContributionURIs();
+
+    /**
+     * Sets the dependent contribution URIs for this contribution. The dependent contributions are the
+     * contributions that will be used to resolve any imports used by this contribution.
+     * @param dependentContributionURIs
+     */
+    void setDependentContributionURIs(List<String> dependentContributionURIs);
+
+    /**
+     * Get the contribution meta data url. This is sca-contribution.xml data that is added to any 
+     * existing meta-inf/sca-contribution.xml file within the contribution.
+     * @return the metadata url string
+     */
+    String getMetaDataURL();
+
+    /**
+     * Set the contribution meta data url. This is sca-contribution.xml data that is added to any 
+     * existing meta-inf/sca-contribution.xml file within the contribution.
+     * @param metaDataURL  the url string to the metadata file.
+     */
+    void setMetaDataURL(String metaDataURL);
 }

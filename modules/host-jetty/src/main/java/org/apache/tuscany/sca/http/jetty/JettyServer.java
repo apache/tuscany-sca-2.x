@@ -32,12 +32,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -80,7 +81,7 @@ public class JettyServer implements ServletHost, LifeCycleListener {
 
     private boolean sendServerVersion;
     private WorkScheduler workScheduler;
-    
+
     // TODO - this static seems to be set by the JSORPC binding unit test
     //        doesn't look to be a great way of doing things
     public static int portDefault = 8080;
@@ -130,12 +131,12 @@ public class JettyServer implements ServletHost, LifeCycleListener {
                 keyStoreType = System.getProperty("javax.net.ssl.keyStoreType", KeyStore.getDefaultType());
                 trustStoreType = System.getProperty("javax.net.ssl.trustStoreType", KeyStore.getDefaultType());
 
-                System.setProperty("JETTY_NO_SHUTDOWN_HOOK", "true");                
+                System.setProperty("JETTY_NO_SHUTDOWN_HOOK", "true");
                 return null;
             }
         });
     }
-    
+
     public String getName() {
         return "jetty";
     }
@@ -181,11 +182,14 @@ public class JettyServer implements ServletHost, LifeCycleListener {
     private void configureSSL(SslSocketConnector connector, SecurityContext securityContext) {
         connector.setProtocol("TLS");
         if (securityContext != null) {
-            keyStoreType = securityContext.getSSLProperties().getProperty("javax.net.ssl.keyStoreType", KeyStore.getDefaultType());
+            keyStoreType =
+                securityContext.getSSLProperties().getProperty("javax.net.ssl.keyStoreType", KeyStore.getDefaultType());
             keyStore = securityContext.getSSLProperties().getProperty("javax.net.ssl.keyStore");
             keyStorePassword = securityContext.getSSLProperties().getProperty("javax.net.ssl.keyStorePassword");
 
-            trustStoreType = securityContext.getSSLProperties().getProperty("javax.net.ssl.trustStoreType", KeyStore.getDefaultType());
+            trustStoreType =
+                securityContext.getSSLProperties().getProperty("javax.net.ssl.trustStoreType",
+                                                               KeyStore.getDefaultType());
             trustStore = securityContext.getSSLProperties().getProperty("javax.net.ssl.trustStore");
             trustStorePassword = securityContext.getSSLProperties().getProperty("javax.net.ssl.trustStorePassword");
         }
@@ -203,30 +207,31 @@ public class JettyServer implements ServletHost, LifeCycleListener {
         }
 
     }
-    
+
     public String addServletMapping(String suri, Servlet servlet) throws ServletMappingException {
         return addServletMapping(suri, servlet, null);
-    }    
+    }
 
-    public String addServletMapping(String suri, Servlet servlet, final SecurityContext securityContext) throws ServletMappingException {
+    public String addServletMapping(String suri, Servlet servlet, final SecurityContext securityContext)
+        throws ServletMappingException {
         URI uri = URI.create(suri);
 
         // Get the URI scheme and port
         String scheme = null;
-        if(securityContext != null && securityContext.isSSLEnabled()) {
+        if (securityContext != null && securityContext.isSSLEnabled()) {
             scheme = "https";
         } else {
             scheme = uri.getScheme();
             if (scheme == null) {
                 scheme = "http";
-            }            
+            }
         }
-        
+
         String host = uri.getHost();
         if ("0.0.0.0".equals(host)) {
             host = null;
         }
-        
+
         int portNumber = uri.getPort();
         if (portNumber == -1) {
             if ("http".equals(scheme)) {
@@ -350,21 +355,21 @@ public class JettyServer implements ServletHost, LifeCycleListener {
     public URL getURLMapping(String suri, SecurityContext securityContext) throws ServletMappingException {
         return map(suri, securityContext, true);
     }
-    
+
     private URL map(String suri, SecurityContext securityContext, boolean resolve) throws ServletMappingException {
         URI uri = URI.create(suri);
-        
+
         // Get the URI scheme and port
         String scheme = null;
-        if(securityContext != null && securityContext.isSSLEnabled()) {
+        if (securityContext != null && securityContext.isSSLEnabled()) {
             scheme = "https";
         } else {
             scheme = uri.getScheme();
             if (scheme == null) {
                 scheme = "http";
-            }            
+            }
         }
-        
+
         int portNumber = uri.getPort();
         if (portNumber == -1) {
             if ("http".equals(scheme)) {
@@ -372,7 +377,7 @@ public class JettyServer implements ServletHost, LifeCycleListener {
             } else {
                 portNumber = defaultSSLPort;
             }
-        }        
+        }
 
         // Get the host
         String host = uri.getHost();
@@ -576,7 +581,16 @@ public class JettyServer implements ServletHost, LifeCycleListener {
             Log.setLog(jettyLogger);
         } catch (Throwable e) {
             // Ignore
-        } 
+        }
+    }
+
+    @Override
+    public ServletContext getServletContext() {
+        if (ports.size() > 0) {
+            return ports.values().iterator().next().getServletHandler().getServletContext();
+        } else {
+            return null;
+        }
     }
 
 }

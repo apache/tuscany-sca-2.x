@@ -29,4 +29,13 @@ public class HelloWorldImpl implements HelloWorldService {
         return "Hello " + firstName + " " + lastName;
     }
     
+    public BeanA sayHello3(BeanA bean) {
+        bean.setS("XYZ");
+        return bean;
+    }
+
+    public int sayHello4(boolean flag) {
+        return 0;
+    }
+    
 }

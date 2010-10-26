@@ -39,8 +39,12 @@
                 <exclude>**/target/dependency-maven-plugin-markers/**/*</exclude>
                 <exclude>**/target/.felix</exclude>
                 <exclude>**/target/.felix/**/*</exclude>
+                <exclude>**/target/generated-sources</exclude>
+                <exclude>**/target/generated-sources/**/*</exclude>
                 <exclude>**/target/maven-archiver</exclude>
                 <exclude>**/target/maven-archiver/**/*</exclude>
+                <exclude>**/target/maven-shared-archive-resources</exclude>
+                <exclude>**/target/maven-shared-archive-resources/**/*</exclude>
                 <exclude>**/target/test-classes</exclude>
                 <exclude>**/target/test-classes/**/*</exclude>
                 <exclude>**/target/sdo-source</exclude>
@@ -51,8 +55,11 @@
                 <exclude>**/target/surefire-osgi-reports/**/*</exclude>
                 <exclude>**/target/war</exclude>
                 <exclude>**/target/war/**/*</exclude>
-                <exclude>webapps/*/target</exclude>
-                <exclude>webapps/*/target/**/*</exclude>
+                <exclude>**/target/work</exclude>
+                <exclude>**/target/work/**/*</exclude>
+                <exclude>**/*-webapp/target</exclude>
+                <exclude>**/*-webapp/target/**/*</exclude>
+                <exclude>**/*-webapp/src/main/webapp/dojo/**/*</exclude>
             </excludes>
         </fileSet>
     </fileSets>

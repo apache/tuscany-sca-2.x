@@ -13,7 +13,11 @@
 # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
-# under the License. 
+# under the License.
+# 
+# first one, set remotable flag 
 org.apache.tuscany.sca.interfacedef.java.jaxws.WebServiceInterfaceProcessor;ranking=400
+# second one, introspect the JAXWS annotations
 org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;ranking=100
-org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSAsyncInterfaceProcessor;ranking=900
+# third one, introspect JAXWS async methods
+org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSAsyncInterfaceProcessor;ranking=50

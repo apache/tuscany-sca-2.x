@@ -46,12 +46,13 @@ public interface Node {
      *               root contribution and other dependent contributions. May be null.
      * @param runDeployables  true if the composites defined as deployable in the contributions sca-contribution.xml
      *               file or supplied metaData file should be run, false if they should not be. 
+     * @return the URI of the installed contribution
      * 
      * @throws ContributionReadException 
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    void installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException;
+    String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException;
 
     /**
      * Creates an installed contribution from a supplied Contribution object.
@@ -62,19 +63,21 @@ public interface Node {
      *               root contribution and other dependent contributions. May be null.
      * @param runDeployables  true if the composites defined as deployable in the contributions sca-contribution.xml
      *               file or supplied metaData file should be run, false if they should not be. 
+     * @return the URI of the installed contribution
      * 
      * @throws ContributionReadException 
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException;
+    String installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException;
 
     /**
-     * Creates an installed contribution from a supplied root contribution.
-     * See section 10.5.1 of the Assembly Specification.
+     * Creates an installed contribution from a supplied root contribution URL.
+     * See section 10.5.1 of the Assembly Specification. This version of 
+     * installContribution automatically runs deployable composites
      * 
      * @param contributionURL  the URL where the contribution is located
-     * @return the URI where the contribution was installed
+     * @return the URI of the installed contribution
      * 
      * @throws ContributionReadException 
      * @throws ActivationException 
@@ -179,21 +182,23 @@ public interface Node {
      * 4685 services and references in the supplied composite is not defined; since there is no composite scope
      * 4686 outside the domain composite, the usual idea of promotion has no utility.
      *  
+     * @param cotributionURI
      * @param compositeURI
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    void addToDomainLevelComposite(String compositeURI) throws ActivationException, ValidationException;
+    void addToDomainLevelComposite(String contributionURI, String compositeURI) throws ActivationException, ValidationException;
     
     /**
      * 4687 10.7.2 remove From Domain-Level Composite
      * 4688 Removes from the Domain Level composite the elements corresponding to the composite identified by a
      * 4689 supplied composite URI. This means that the removal of the components, wires, services and references
      * 4690 originally added to the domain level composite by the identified composite.     * 
+     * @param contributionURI
      * @param compositeURI
      * @throws ActivationException 
      */
-    void removeFromDomainLevelComposite(String compositeURI) throws ActivationException;
+    void removeFromDomainLevelComposite(String contributionURI, String compositeURI) throws ActivationException;
 
     /**
      * 10.7.3 get Domain-Level Composite
@@ -240,7 +245,7 @@ public interface Node {
      * @param contributionURI  the contribution URI
      * @return the List of deployed composites
      */
-    List<String> getDeployedCompostes(String contributionURI);
+    List<String> getDeployedComposites(String contributionURI);
 
     /**
      * Get the URIs of all the contributions installed on this Node

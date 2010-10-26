@@ -64,11 +64,11 @@ public class PolicyProcessorTestCase {
         JavaInterface type = factory.createJavaInterface(Interface3.class);
         // policyProcessor.visitInterface(type);
         assertEquals(2, type.getRequiredIntents().size());
-        assertEquals(1, type.getOperations().get(0).getRequiredIntents().size());
-        assertEquals(1, type.getOperations().get(1).getRequiredIntents().size());
+        assertEquals(3, type.getOperations().get(0).getRequiredIntents().size());
+        assertEquals(3, type.getOperations().get(1).getRequiredIntents().size());
         assertEquals(1, type.getPolicySets().size());
-        assertEquals(1, type.getOperations().get(0).getPolicySets().size());
-        assertEquals(1, type.getOperations().get(1).getPolicySets().size());
+        assertEquals(2, type.getOperations().get(0).getPolicySets().size());
+        assertEquals(2, type.getOperations().get(1).getPolicySets().size());
     }
 
     @Before

@@ -1,0 +1,25 @@
+Calculator Sample Contribution
+==============================
+
+This sample implements a simple calculator using SCA components. 
+
+The README in the <distribution-unpack-dir>/samples directory provides 
+general instructions about building and running samples. ( where
+distribution-unpack-dir is the directory in which you unpacked the tuscany
+binary distribution archive) Take a look there for instructions on how to launch
+this sample contribution. 
+
+Sample Overview
+---------------
+The sample provides a single calculator service with a default SCA (java) 
+binding. The CalculatorClient exercises this interface by calling add, 
+subtract, multiply and divide operations. This results in messages passing to 
+the appropriate components in the composite across the local wires.
+
+You should see the following output from the run target.
+
+run:
+     [java] 3 + 2=5.0
+     [java] 3 - 2=1.0
+     [java] 3 * 2=6.0
+     [java] 3 / 2=1.5

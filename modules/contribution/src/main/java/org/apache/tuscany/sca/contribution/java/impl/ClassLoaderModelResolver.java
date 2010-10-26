@@ -49,6 +49,10 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
     private WeakReference<Contribution> contribution;
     private ProcessorContext context;
     private Map<String, ModelResolver> importResolvers = new HashMap<String, ModelResolver>();
+    
+    // a space to pass back the contribution that was used to resolve
+    // a class via an import
+    private Contribution contributionContainingClass;
 
     private static ClassLoader parentClassLoader(Contribution contribution) {
         if (contribution.getClassLoader() != null) {
@@ -107,10 +111,15 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
 
         try {
             this.context = context;
+            contributionContainingClass = contribution.get();
+            
             // Load the class and return a class reference for it
             String className = ((ClassReference)unresolved).getClassName();
-            Class<?> clazz = Class.forName(className, true, this);
-            return modelClass.cast(new ClassReference(clazz));
+            Class<?> clazz = Class.forName(className, false, this);
+            ClassReference classReference = new ClassReference(clazz);
+            classReference.setContributionContainingClass(contributionContainingClass);
+            contributionContainingClass = null;
+            return modelClass.cast(classReference);
 
         } catch (ClassNotFoundException e) {
             return unresolved;
@@ -160,6 +169,7 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
         if (importResolver != null) {
             ClassReference classReference = importResolver.resolveModel(ClassReference.class, new ClassReference(name), context);
             if (!classReference.isUnresolved()) {
+                contributionContainingClass = classReference.getContributionContainingClass();
                 return classReference.getJavaClass();
             }
         }

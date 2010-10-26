@@ -28,17 +28,7 @@
     <artifactId>tuscany-implementation-spring</artifactId>
     <name>Apache Tuscany SCA Spring Implementation Model</name>
 
-    <dependencies>
-
-        <!-- **************************************** -->    
-        <!-- *                                      * -->    
-        <!-- * DONT ADD ANY SPRING DEPENDENCIES!!!  * -->    
-        <!-- *                                      * -->    
-        <!-- * See the README for details why not   * -->    
-        <!-- *                                      * -->    
-        <!-- *                                      * -->    
-        <!-- **************************************** -->    
-   
+    <dependencies>   
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly</artifactId>
@@ -61,7 +51,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <artifactId>tuscany-implementation-java</artifactId>
             <version>2.0-Beta1</version>
         </dependency>
                   

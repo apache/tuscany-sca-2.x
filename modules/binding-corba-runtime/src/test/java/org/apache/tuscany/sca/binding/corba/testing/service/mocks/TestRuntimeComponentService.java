@@ -216,5 +216,11 @@ public class TestRuntimeComponentService implements RuntimeComponentService {
         // TODO Auto-generated method stub
         
     }
-
+    
+    public boolean isJAXWSService() {
+        return false;
+    }
+    
+    public void setJAXWSService(boolean isJAXWSService) {
+    }    
 }

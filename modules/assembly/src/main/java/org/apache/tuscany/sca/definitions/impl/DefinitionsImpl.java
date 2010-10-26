@@ -25,6 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.policy.BindingType;
+import org.apache.tuscany.sca.policy.ExternalAttachment;
 import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -41,6 +42,7 @@ public class DefinitionsImpl implements Definitions {
     private List<BindingType> bindingTypes = new CopyOnWriteArrayList<BindingType>();
     private List<ImplementationType> implementationTypes = new CopyOnWriteArrayList<ImplementationType>();
     private List<Binding> bindings = new CopyOnWriteArrayList<Binding>();
+	private List<ExternalAttachment> externalAttachments = new CopyOnWriteArrayList<ExternalAttachment>();
 
    
     public List<BindingType> getBindingTypes() {
@@ -70,4 +72,8 @@ public class DefinitionsImpl implements Definitions {
     public List<Binding> getBindings() {
         return bindings;
     }
+
+	public List<ExternalAttachment> getExternalAttachments() {
+		return externalAttachments ;
+	}
 }

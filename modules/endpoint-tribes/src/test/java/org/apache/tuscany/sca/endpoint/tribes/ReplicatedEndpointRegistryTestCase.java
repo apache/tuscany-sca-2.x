@@ -28,8 +28,10 @@ import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("TUSCANY-3718")
 public class ReplicatedEndpointRegistryTestCase {
 
     @Test

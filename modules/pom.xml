@@ -36,9 +36,10 @@
         <module>binding-atom</module>
         <module>binding-atom-js-dojo</module>        
         <module>binding-atom-runtime</module>
+        <module>binding-comet</module>
+        <module>binding-comet-runtime</module>
         <module>binding-ejb</module>
         <module>binding-ejb-runtime</module>
-        <module>binding-hazelcast-runtime</module>
         <module>binding-http</module>
         <module>binding-http-runtime</module>
         <module>binding-jms</module>
@@ -49,11 +50,10 @@
         <module>binding-jsonrpc-js-dojo</module>        
         <module>binding-jsonrpc-runtime</module>
         <module>binding-rest</module>
+        <module>binding-rest-js-dojo</module>        
         <module>binding-rest-runtime</module>
         <module>binding-rmi</module>
         <module>binding-rmi-runtime</module>
-        <module>binding-rss</module>
-        <module>binding-rss-runtime</module>
         <module>binding-sca-runtime</module>
         <module>binding-ws</module>
         <module>binding-ws-runtime-axis2</module>
@@ -65,6 +65,7 @@
         <module>common-java</module>
         <module>common-xml</module>
         <module>contribution</module>
+        <module>contribution-resource</module>
         <module>core</module>
         <module>core-databinding</module>
         <module>core-spi</module>
@@ -77,10 +78,9 @@
         <module>databinding-sdo-axiom</module>
         <module>databinding-json</module>
         <module>deployment</module>
+        <module>domain-hazelcast</module>
         <module>domain-node</module>
         <module>endpoint-tribes</module>
-        <module>endpoint-hazelcast</module>
-        <module>endpoint-hazelcast-client</module>
         <module>extensibility</module>
         <module>extensibility-equinox</module>
         <module>host-http</module>
@@ -91,8 +91,17 @@
         <module>implementation-bpel-runtime</module>
         <module>implementation-java</module>
         <module>implementation-java-runtime</module>
+        <module>implementation-jaxrs</module>
+        <module>implementation-jaxrs-runtime</module>		
+        <module>implementation-python</module>
+        <module>implementation-python-runtime</module>
+        <module>implementation-script</module>
+        <module>implementation-script-runtime</module>		
         <module>implementation-spring</module>
         <module>implementation-spring-runtime</module>
+        <module>implementation-spring-webapp</module>
+        <module>implementation-spring-stub</module>
+        <module>implementation-spring-tie</module>
         <module>implementation-web</module>
         <module>implementation-web-client</module>
         <module>implementation-web-runtime</module>
@@ -140,10 +149,20 @@
         <module>binding-corba</module>
         <module>binding-corba-runtime</module>
 
-        <module>implementation-script</module>
-        <module>implementation-script-runtime</module>
-        <module>implementation-jaxrs</module>
-        <module>implementation-jaxrs-runtime</module>
+        <!-- 
+            Runtime collection features 
+
+            Non-overallapping groups of Tuscany modules that define the 
+            core runtime modules, containing the Tuscany extension SPI, 
+            and the base runtime that defines the minimal Tuscany runtime
+            to which other extensions can be added
+       
+            Extensions are included using maven dependencies on the *-runtime
+            modules in the /modules directory 
+        -->
+        <module>core-runtime-pom</module>
+        <module>base-runtime-pom</module>
+        <module>osgi-runtime-pom</module>
 
     </modules>
 

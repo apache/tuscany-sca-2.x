@@ -609,6 +609,13 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
      * @return The SCA node
      */
     public abstract Node createNode(NodeConfiguration configuration);
+    
+    /**
+     * Create an SCA node from a list of pre-built o.a.t.sca.contribution.Contribution objects.
+     * Pass java.lang.Objects for now as this class doesn't have direct dependencies on
+     * o.a.t.sca.contribution.Contribution.
+     */
+    public abstract Node createNode(List<?> contributions);
 
     /**
      * Create the node configuration from the XML document

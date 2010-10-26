@@ -1,0 +1,141 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<project name="launcher-embedded-jse" default="run"> 
+    <property name="tuscany.home" value="../../.."/>
+    <property name="jar.name"   value="sample-launcher-embedded-jse.jar" />
+
+    <echo>Root of Tuscany binary distribution is - ${tuscany.home}</echo>
+
+    <import file="${tuscany.home}/features/tuscany-base-runtime-pom/build-path.xml"/>
+    <import file="${tuscany.home}/features/tuscany-binding-ws-runtime-axis2/build-path.xml"/>
+    <import file="${tuscany.home}/features/tuscany-binding-rmi-runtime/build-path.xml"/>
+    <import file="${tuscany.home}/features/tuscany-host-jetty/build-path.xml"/>
+
+    <target name="init"> 
+      <delete quiet="true" includeemptydirs="true"> 
+         <fileset dir="target"/> 
+      </delete> 
+      <mkdir dir="target/classes"/> 
+    </target>
+	
+    <target name="compile" depends="init">
+      <javac srcdir="src/main/java" 
+      	     destdir="target/classes" 
+      	     debug="on"
+             source="1.5"
+             target="1.5"
+      	     failonerror="true"> 
+         <classpath>
+            <fileset dir="${tuscany.home}/lib">
+               <include name="tuscany-base-*.jar" />
+            </fileset>
+         </classpath>
+      </javac> 
+      <jar destfile="target/${jar.name}" basedir="target/classes"> 
+      </jar>    	
+    </target>
+	
+    <target name="run" depends="compile">
+        <echo>Please use 'ant run-name-of-sample-contribution-to-run' for example, try one of</echo>
+	<echo>  'ant sample-binding-sca-calculator-contribution' </echo>
+	<echo>  'ant sample-binding-ws-calculator-contribution'  </echo>
+	<echo>  'ant sample-binding-rmi-calculator-contribution'  </echo>
+	<echo>  'ant sample-implementation-java-calculator-contribution'  </echo>
+    <echo>  'ant sample-implementation-java-calculator-async-contribution'  </echo>
+    </target>
+
+    <!-- Run using the "all" manifest jar -->
+    <target name="sample-binding-sca-calculator-contribution" depends="compile">
+  	     <java classname="launcher.JSELauncherBindingSCACalculator"
+              fork="true"
+              failonerror="true">
+            <classpath>  
+                <pathelement location="target/${jar.name}"/>
+                <fileset dir="${tuscany.home}/features">
+                   <include name="tuscany-sca-manifest.jar" />
+                </fileset>
+            </classpath> 
+        </java>  
+    </target>
+	
+    <!-- Run using the base + extension ant paths -->
+    <target name="sample-binding-ws-calculator-contribution" depends="compile">
+        <java classname="launcher.JSELauncherBindingWSCalculator"
+              fork="true"
+              failonerror="true">
+            <classpath>  
+                <pathelement location="target/${jar.name}"/>
+                <path refid="tuscany-base-runtime-pom.path"/>
+                <path refid="tuscany-binding-ws-runtime-axis2.path"/>
+                <path refid="tuscany-host-jetty.path"/>
+            </classpath> 
+        </java>     
+    </target>	
+	
+    <!-- Run using the base + extension manifest -->
+    <target name="sample-binding-rmi-calculator-contribution" depends="compile">
+        <java classname="launcher.JSELauncherBindingRMICalculator"
+              fork="true"
+              failonerror="true">
+            <classpath>  
+                <pathelement location="target/${jar.name}"/>
+                <fileset dir="${tuscany.home}/features/tuscany-base-runtime-pom">
+                   <include name="tuscany-base-runtime-pom-manifest.jar" />
+                </fileset>
+                <fileset dir="${tuscany.home}/features/tuscany-binding-rmi-runtime">
+                   <include name="tuscany-binding-rmi-runtime-manifest.jar" />
+                </fileset>
+            </classpath> 
+        </java>       
+    </target>	
+	
+    <!-- Run using the base + extension aggregations -->
+    <target name="sample-implementation-java-calculator-contribution" depends="compile">
+        <java classname="launcher.JSELauncherImplementationJavaCalculator"
+              fork="true"
+              failonerror="true">
+            <classpath>  
+                <pathelement location="target/${jar.name}"/>
+                <fileset dir="${tuscany.home}/lib">
+                   <include name="tuscany-base-runtime-aggregation-2.0-Beta1.jar" />
+                </fileset>
+            </classpath> 
+        </java>       
+    </target>	
+	
+    <target name="sample-implementation-java-calculator-async-contribution" depends="compile">
+        <java classname="launcher.JSELauncherImplementationJavaCalculatorAsync"
+              fork="true"
+              failonerror="true">
+            <classpath>  
+                <pathelement location="target/${jar.name}"/>
+                <fileset dir="${tuscany.home}/features/tuscany-base-runtime-pom">
+                   <include name="tuscany-base-runtime-pom-manifest.jar" />
+                </fileset>
+                <fileset dir="${tuscany.home}/features/tuscany-binding-ws-runtime-axis2">
+                   <include name="tuscany-binding-ws-runtime-axis2-manifest.jar" />
+                </fileset>
+                <fileset dir="${tuscany.home}/features/tuscany-host-jetty">
+                   <include name="tuscany-host-jetty-manifest.jar" />
+                </fileset>            	
+            </classpath>
+        </java>       
+    </target>	
+
+</project>

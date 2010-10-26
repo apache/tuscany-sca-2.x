@@ -29,6 +29,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.ParameterMode;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.policy.ExtensionType;
@@ -49,6 +50,7 @@ public class OperationImpl implements Operation {
     private DataType<List<DataType>> inputType;
     private List<DataType> faultTypes;
     private Interface interfaze;
+    private List<ParameterMode> parameterModes = new ArrayList<ParameterMode>();
     private boolean nonBlocking;
     private boolean wrapperStyle;
     private WrapperInfo wrapper;
@@ -277,6 +279,10 @@ public class OperationImpl implements Operation {
 	 */
 	public boolean isAsyncServer() {
 		return false;
+	}
+
+	public List<ParameterMode> getParameterModes() {
+		return this.parameterModes;
 	}
 
 }

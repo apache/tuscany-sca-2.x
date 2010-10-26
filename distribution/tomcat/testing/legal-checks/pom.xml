@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>itest-distribution</artifactId>
+        <artifactId>tuscany-distribution-tomcat-testing</artifactId>
         <version>2.0-Beta1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -29,6 +29,12 @@
     <name>Apache Tuscany SCA WAR Distribution Legal Checks</name>
 
     <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
     
     <build>

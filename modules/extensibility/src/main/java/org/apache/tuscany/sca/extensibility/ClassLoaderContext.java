@@ -6,24 +6,27 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.extensibility;
 
+import java.io.IOException;
+import java.net.URL;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.tuscany.sca.extensibility.impl.ClassLoaderDelegate;
@@ -108,10 +111,10 @@ public class ClassLoaderContext {
 
     /**
      * Set the thread context classloader (TCCL) to a classloader that delegates to a collection
-     * of classloaders 
+     * of classloaders
      * @param parent The parent classloader
      * @param delegates A list of classloaders to try
-     * @return The existing TCCL 
+     * @return The existing TCCL
      */
     public static ClassLoader setContextClassLoader(ClassLoader parent, ClassLoader... delegates) {
         ClassLoaderContext context = new ClassLoaderContext(parent, delegates);
@@ -124,7 +127,9 @@ public class ClassLoaderContext {
      * @param serviceNames A list of service provider names
      * @return The old TCCL if a new one is set, otherwise null
      */
-    public static ClassLoader setContextClassLoader(ClassLoader parent, ServiceDiscovery discovery, String... serviceNames) {
+    public static ClassLoader setContextClassLoader(ClassLoader parent,
+                                                    ServiceDiscovery discovery,
+                                                    String... serviceNames) {
         ClassLoaderContext context = new ClassLoaderContext(parent, discovery, serviceNames);
         return context.setContextClassLoader();
     }
@@ -135,7 +140,9 @@ public class ClassLoaderContext {
      * @param serviceNames A list of service provider names
      * @return The old TCCL if a new one is set, otherwise null
      */
-    public static ClassLoader setContextClassLoader(ClassLoader parent, ServiceDiscovery discovery, Class<?>... serviceTypes) {
+    public static ClassLoader setContextClassLoader(ClassLoader parent,
+                                                    ServiceDiscovery discovery,
+                                                    Class<?>... serviceTypes) {
         ClassLoaderContext context = new ClassLoaderContext(parent, discovery, serviceTypes);
         return context.setContextClassLoader();
     }
@@ -154,7 +161,15 @@ public class ClassLoaderContext {
         try {
             ServiceDeclaration sd = discovery.getServiceDeclaration(serviceProvider);
             if (sd != null) {
-                return sd.loadClass().getClassLoader();
+                try {
+                    if (sd.loadClass() != null) {
+                        return sd.loadClass().getClassLoader();
+                    } else {
+                        return new ClassLoaderImpl(sd);
+                    }
+                } catch (ClassNotFoundException e) {
+                    return new ClassLoaderImpl(sd);
+                }
             }
         } catch (Exception e) {
             // Ignore
@@ -195,7 +210,7 @@ public class ClassLoaderContext {
         List<ClassLoader> loaders = new ArrayList<ClassLoader>();
         for (Class<?> serviceType : serviceTypes) {
             ClassLoader classLoader = getClassLoader(discovery, serviceType);
-            if (classLoader != null && loaders.contains(classLoader)) {
+            if (classLoader != null && !loaders.contains(classLoader)) {
                 loaders.add(classLoader);
             }
         }
@@ -208,6 +223,31 @@ public class ClassLoaderContext {
 
     public ClassLoader getClassLoader() {
         return classLoader;
+    }
+
+    private static class ClassLoaderImpl extends ClassLoader {
+        private final ServiceDeclaration sd;
+
+        public ClassLoaderImpl(ServiceDeclaration sd) {
+            super();
+            this.sd = sd;
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            return sd.loadClass(name);
+        }
+
+        @Override
+        protected URL findResource(String name) {
+            return sd.getResource(name);
+        }
+
+        @Override
+        protected Enumeration<URL> findResources(String name) throws IOException {
+            return sd.getResources(name);
+        }
+
     }
 
 }

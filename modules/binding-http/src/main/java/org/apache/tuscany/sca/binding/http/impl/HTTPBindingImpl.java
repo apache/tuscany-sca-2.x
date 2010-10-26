@@ -31,13 +31,16 @@ import org.apache.tuscany.sca.binding.http.HTTPBinding;
  * 
  * @version $Rev$ $Date$
  */
-class HTTPBindingImpl implements HTTPBinding {
+public class HTTPBindingImpl implements HTTPBinding {
 
     private String name;
     private String uri;
 
     private WireFormat wireFormat;
     private OperationSelector operationSelector;    
+    
+    public HTTPBindingImpl() {
+    }
 
     public QName getType() {
         return TYPE;

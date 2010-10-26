@@ -53,7 +53,7 @@ public class TransactionModuleActivator implements ModuleActivator {
             }
         }
         try {
-            wrapper = new TransactionManagerWrapper();
+            wrapper = new TransactionManagerWrapper();        
             wrapper.start();
         } catch (Exception e) {
             throw new IllegalStateException(e);

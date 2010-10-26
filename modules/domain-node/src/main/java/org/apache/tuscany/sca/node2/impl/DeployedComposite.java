@@ -102,8 +102,6 @@ public class DeployedComposite {
                                                 null, // don't need node uri
                                                 deployer.getSystemDefinitions());
                        
-        CompositeContext.setThreadCompositeContext(compositeContext); // TODO: what is this doing?
-
         compositeActivator.activate(compositeContext, domainComposite);
         compositeActivator.start(compositeContext, domainComposite);
 

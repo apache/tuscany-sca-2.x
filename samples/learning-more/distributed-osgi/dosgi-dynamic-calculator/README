@@ -1,0 +1,148 @@
+Distributed OSGi Calculator Sample
+==================================
+This sample implements a distributed calculator using Distributed OSGi (RFC 119) over SCA.
+
+The README in the <distribution-unpack-dir>/samples directory provides 
+general instructions about building and running samples. (where
+distribution-unpack-dir is the directory in which you unpacked the tuscany
+binary distribution archive). Take a look there first (noting at you read it that this sample
+is not a new style sample). 
+
+NOTE: if you want this sample to exploit the dynamic distribution behaviour there is some unit test
+      configuration that should be disabled. See the comments in OSGI-INF/remote-service/calculator-service-descriptions.xml
+
+On Windows, run
+java -jar ..\..\modules\osgi-3.5.0-v20090520.jar -configuration ..\..\features\configuration -clean -console -Dorg.osgi.sca.domain.registry=tribes:default
+
+On *Unix, run
+java -jar ../../modules/osgi-3.5.0-v20090520.jar -configuration ../../features/configuration -clean -console -Dorg.osgi.sca.domain.registry=tribes:default
+
+You should see the osgi console:
+
+osgi>
+
+osgi> Jun 22, 2009 1:32:27 PM org.apache.tuscany.sca.extensibility.equinox.EquinoxServiceDiscoveryActivator start
+INFO: Equinox-based service discoverer is now configured.
+
+You can run "ss" command under the osgi> to see the status of the bundles.
+osgi> ss
+
+Then you can install and start the calculator.dosgi bundle:
+
+osgi> install file:./target/sample-dosgi-dynamic-calculator.jar
+Bundle id is 198
+
+osgi> start 198
+Nov 4, 2009 5:20:21 PM calculator.dosgi.impl.CalculatorActivator start
+INFO: Starting calculator.dosgi.dynamic_1.0.0 [198]
+Nov 4, 2009 5:20:21 PM calculator.dosgi.impl.CalculatorActivator start
+INFO: Registering calculator.dosgi.CalculatorService
+Nov 4, 2009 5:20:21 PM org.apache.tuscany.sca.node.impl.NodeImpl start
+INFO: Starting node: urn:osgi.service.d5a06834-ae15-42b3-9287-71fe6537c869 domai
+n: tuscany.apache.org
+log4j:WARN No appenders could be found for logger (org.apache.axiom.om.util.StAX
+Utils).
+log4j:WARN Please initialize the log4j system properly.
+Nov 4, 2009 5:20:24 PM org.mortbay.log.Slf4jLog info
+INFO: Logging to org.slf4j.impl.JDK14LoggerAdapter(org.mortbay.log) via org.mort
+bay.log.Slf4jLog
+Nov 4, 2009 5:20:25 PM org.apache.tuscany.sca.http.jetty.JettyLogger info
+INFO: jetty-6.1.x
+Nov 4, 2009 5:20:25 PM org.apache.tuscany.sca.http.jetty.JettyLogger info
+INFO: Started SelectChannelConnector@0.0.0.0:8086
+Nov 4, 2009 5:20:25 PM org.apache.tuscany.sca.http.jetty.JettyServer addServletM
+apping
+INFO: Added Servlet mapping: http://rfengt61p:8086/CalculatorService
+Nov 4, 2009 5:20:25 PM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl addEndpoint
+INFO: Add endpoint - (@23394516)Endpoint:  URI = osgi.service.d5a06834-ae15-42b3
+-9287-71fe6537c869#service-binding(CalculatorService/Calculator)
+Nov 4, 2009 5:20:25 PM calculator.dosgi.impl.CalculatorActivator getBundle
+INFO: calculator.dosgi.operations.AddService is loaded by bundle: calculator.dos
+gi.dynamic
+
+You can point your browser to http://localhost:8086/CalculatorService?wsdl to see
+the WSDL.
+
+You can also use the WebService Explorer from Eclipse WTP to test the Web Service.
+
+To stop the bundle:
+
+osgi> stop 198
+Nov 4, 2009 5:21:16 PM org.apache.tuscany.sca.node.impl.NodeImpl stop
+INFO: Stopping node: urn:osgi.service.d5a06834-ae15-42b3-9287-71fe6537c869
+Nov 4, 2009 5:21:16 PM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl endpointRemoved
+INFO: Remove endpoint - (@23394516)Endpoint:  URI = osgi.service.d5a06834-ae15-4
+2b3-9287-71fe6537c869#service-binding(CalculatorService/Calculator)
+Nov 4, 2009 5:21:16 PM org.apache.tuscany.sca.http.jetty.JettyServer removeServl
+etMapping
+INFO: Removed Servlet mapping: /CalculatorService
+Nov 4, 2009 5:21:16 PM calculator.dosgi.impl.CalculatorActivator stop
+INFO: Stopping calculator.dosgi.dynamic_1.0.0 [198]
+Nov 4, 2009 5:21:16 PM org.apache.tuscany.sca.node.impl.NodeImpl stop
+INFO: Stopping node: urn:osgi.service.d5a06834-ae15-42b3-9287-71fe6537c869
+
+To exit the console, run:
+osgi> exit
+
+Sample Overview
+---------------
+The application consists of two OSGi bundles:
+ * The calculator bundle: It provides the calculator service. The service is implemented by a java class that
+   consumes other services to perform the “add”, “subtract”, “multiply” and “divide” operations.
+ * The operations bundle: It provides the add/subtract/multiply/divide services.
+   (See ../samples/dosgi-dynamic-calculator-operations)
+
+
+dosgi-dynamic-calculator/
+  src/
+    main/
+      java/
+        calculator/
+            dosgi/
+                CalculatorService.java  - The interface for Calculator service
+                impl/
+                    CalculatorActivator.java - OSGi bundle activator for Calculator bundle
+                    CalculatorServiceDSImpl.java - OSGi declarative service based implementation
+                    CalculatorServiceImpl.java - Basic OSGi implementation
+                operations/
+                    AddService.java - Interface for Add
+                    SubtractService.java - Interface for Subtract
+                    MultiplyService.java - Interface for Multiply
+                    DivideService.java - Interface for Divide
+                rmi/
+                    OperationsRemote.java - RMI remote interface for operations
+                    OperationsRMIServer_Stub.java - RMI stub
+                    OperationsRMIServer.java - RMI server implementation of the operations
+      resources/
+            META-INF/
+                sca-contribution.xml
+            OSGI-INF/
+                sca-config/
+                    calculator-config.xml - The SCA configuration file for OSGi remote services
+                remote-service/
+                    calculator-service-descriptions.xml - The OSGi remote service endpoint descriptions    
+  test/
+    java/
+        src/
+            calculator/
+                dosgi/
+                    test/
+                        CalculatorOSGiNodeTestCase.java - The JUNIT test case that tests this bundle against a RMI service
+
+  META-INF/
+    MANIFEST.MF - The OSGi manifest for this bundle
+  dosig-calculator.png - a pictorial representation of the sample
+  pom.xml                         - the Maven build file
+
+
+
+Building And Running The Test Case Using Maven
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run
+using Maven as follows.
+
+cd dosgi-calculator
+mvn
+

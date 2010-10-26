@@ -67,4 +67,20 @@ public class JSONRPCReferenceTestCase {
             node.stop();
         }
     }
+
+    @Test
+    public void testInvokeReferenceVoidOperation() throws Exception {
+        Node node = null;
+
+        String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCReferenceTestCase.class);
+        node = NodeFactory.newInstance().createNode("JSONRPCReference.composite", new Contribution("testClient", contribution));
+        node.start();
+
+        Echo echoComponent = node.getService(Echo.class,"EchoComponentWithReference");
+        echoComponent.echoVoid();
+
+        if (node != null) {
+            node.stop();
+        }
+    }
 }

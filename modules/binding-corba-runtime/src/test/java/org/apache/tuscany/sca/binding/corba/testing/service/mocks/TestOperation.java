@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.ParameterMode;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.policy.ExtensionType;
@@ -172,6 +173,11 @@ public class TestOperation implements Operation {
 
 	public boolean isAsyncServer() {
 		return false;
+	}
+
+	public List<ParameterMode> getParameterModes() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

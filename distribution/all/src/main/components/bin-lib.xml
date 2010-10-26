@@ -24,6 +24,20 @@
             <useTransitiveDependencies>true</useTransitiveDependencies>
             <unpack>false</unpack>
             <includes>
+                <include>org.apache.tuscany.sca.aggregation:tuscany-base-runtime-aggregation</include>
+                <include>org.apache.tuscany.sca.aggregation:tuscany-binding-rmi-runtime-aggregation</include>
+                <include>org.apache.tuscany.sca.aggregation:tuscany-binding-ws-runtime-axis2-aggregation</include>
+                <!-- needed by some of the sample build scripts but don't think we actually need to put this here -->
+                <include>org.apache.tuscany.sca:tuscany-sca-api</include>
+            </includes>
+        </dependencySet>
+
+<!-- dependencies referring to the shade jars, disabling for the time being
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <unpack>false</unpack>
+            <includes>
                 <include>org.apache.tuscany.sca.shades:tuscany-base</include>
                 <include>org.apache.ws.commons.schema:XmlSchema</include>
                 <include>cglib:cglib</include>
@@ -42,6 +56,7 @@
                 <include>org.springframework:*</include>
             </includes>
         </dependencySet>
+-->
     </dependencySets>
     <fileSets>
 	<fileSet>

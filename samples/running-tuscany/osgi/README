@@ -1,0 +1,33 @@
+The Tuscany runtime can be run in and OSGi container. 
+
+Running in Equinox
+------------------
+
+On Windows, run
+java -jar ..\..\modules\osgi-3.5.0-v20090520.jar -configuration ..\..\features\configuration -clean -console
+
+On *Unix, run
+java -jar ../../modules/osgi-3.5.0-v20090520.jar -configuration ../../features/configuration -clean -console
+
+You should see the osgi console:
+
+osgi>
+
+osgi> Jun 22, 2009 1:32:27 PM org.apache.tuscany.sca.extensibility.equinox.EquinoxServiceDiscoveryActivator start
+INFO: Equinox-based service discoverer is now configured.
+
+You can run "ss" command under the osgi> to see the status of the bundles.
+osgi> ss
+
+Then you can install and start contributions as bundles by doing the following:
+
+osgi> install file:./path/to/contribution_bundle.jar
+
+Note that contribution_bundle.jar will need an activator in order to register the bundle as a SCA contribution
+see samples/????
+TODO is this still true
+
+Running on Felix
+----------------
+
+See http://tuscany.apache.org/documentation-2x/running-tuscany-sca-2x-with-equinox-and-felix.html

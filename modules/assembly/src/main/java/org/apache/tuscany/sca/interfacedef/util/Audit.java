@@ -25,13 +25,19 @@ package org.apache.tuscany.sca.interfacedef.util;
  * 
  */
 public class Audit {
+	
+	public static final String seperator = "|||"; 
 	private StringBuffer buf;
 
 	public Audit() {
 		this.buf = new StringBuffer();
 	}
 	public void  append(String str) {
-		buf.append("||| " + str);
+		buf.append(str);
+	}
+	
+	public void appendSeperator() {
+		buf.append(seperator);
 	}
 	public String toString() {
 		return buf.toString();

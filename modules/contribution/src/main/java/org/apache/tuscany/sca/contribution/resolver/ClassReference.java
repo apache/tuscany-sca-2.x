@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.contribution.resolver;
 import java.lang.ref.WeakReference;
 
 import org.apache.tuscany.sca.assembly.Base;
+import org.apache.tuscany.sca.contribution.Contribution;
 
 /**
  * A weak reference to a class, which should be used to register classes
@@ -37,6 +38,7 @@ public class ClassReference implements Base {
     
     private WeakReference<Class<?>> clazz;
     private String className;
+    private Contribution contributionContainingClass;
 
     /**
      * Constructs a new ClassReference.
@@ -103,6 +105,25 @@ public class ClassReference implements Base {
                 return false;
             }
         }
+    }
+    
+    /**
+     * A Java class may reference a WSDL file via a JAXWS annotation. We need to resolve
+     * the WSDL file location in the context of the same contribution that holds the 
+     * Java file. In order to do this we need to pass back the actual contribution that
+     * was used to resolve a Java class. It's possible that multiple contributions hold
+     * the same class so just scanning the artifacts in all the contribution is not good 
+     * enough
+     * 
+     * @return
+     */
+    public Contribution getContributionContainingClass() {
+        return contributionContainingClass;
+    }
+    
+    public void setContributionContainingClass(
+            Contribution contributionContainingClass) {
+        this.contributionContainingClass = contributionContainingClass;
     }
 
 }

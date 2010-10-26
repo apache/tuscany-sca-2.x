@@ -110,7 +110,7 @@ public class ComponentPolicyBuilderImpl {
                     // The intents are merged and the exclusion check will be done after
                     for (Intent intent : subject.getRequiredIntents()) {
                         if (!policySubject.getRequiredIntents().contains(intent)){
-                            if (intentType != null) {
+                            if ((intent.getType() != null) && (intentType != null) ) {
                                 if (intent.getType().equals(intentType)){
                                     policySubject.getRequiredIntents().add(intent);
                                 }
@@ -392,7 +392,7 @@ public class ComponentPolicyBuilderImpl {
                 subject.getRequiredIntents().remove(i);
                 subject.getRequiredIntents().add(i.getDefaultQualifiedIntent());
             }
-        }
+        }       
     }
     protected void resolveAndNormalize(PolicySubject subject, BuilderContext context) {
         Definitions definitions = context.getDefinitions();
@@ -469,9 +469,13 @@ public class ComponentPolicyBuilderImpl {
         if(extensionType != null){
             List<Intent> copy = new ArrayList<Intent>(intents);
             for (Intent i : copy) {
-                if (i.getConstrainedTypes().size() > 0){
+            	List<ExtensionType> constrainedTypes = i.getConstrainedTypes();
+            	if (( constrainedTypes.size() == 0 ) && ( i.getQualifiableIntent() != null ) )  
+            		constrainedTypes = i.getQualifiableIntent().getConstrainedTypes();
+            	
+                if (constrainedTypes.size() > 0){
                     boolean constraintFound = false;
-                    for (ExtensionType constrainedType : i.getConstrainedTypes()){
+                    for (ExtensionType constrainedType : constrainedTypes){
                         if (constrainedType.getType().equals(extensionType.getType()) ||
                             constrainedType.getType().equals(extensionType.getBaseType())){
                             constraintFound = true;

@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.headers.HeaderServiceInterceptor;
 import org.apache.tuscany.sca.binding.jms.host.JMSServiceListener;
 import org.apache.tuscany.sca.binding.jms.host.JMSServiceListenerDetails;
 import org.apache.tuscany.sca.binding.jms.host.JMSServiceListenerFactory;
@@ -90,6 +91,10 @@ public class JMSBindingServiceBindingProvider implements EndpointProvider, JMSSe
         this.jmsResourceFactory = jmsResourceFactory;
         this.registry = registry;
 
+        if (jmsBinding.getResponseActivationSpecName() != null && jmsBinding.getResponseActivationSpecName().length() > 0) {
+            throw new JMSBindingException("[BJM30023] response/activationSpec element MUST NOT be present when the binding is being used for an SCA service");
+        }
+        
         // Set the default destination when using a connection factory.
         // If an activation spec is being used, do not set the destination
         // because the activation spec provides the destination.
@@ -153,6 +158,7 @@ public class JMSBindingServiceBindingProvider implements EndpointProvider, JMSSe
             serviceListener.start();
             
         } catch (Exception e) {
+            if (e instanceof JMSBindingException) throw (JMSBindingException)e;
             throw new JMSBindingException("Error starting JMSServiceBinding", e);
         }
     }
@@ -161,6 +167,7 @@ public class JMSBindingServiceBindingProvider implements EndpointProvider, JMSSe
         try {
             serviceListener.stop();
         } catch (Exception e) {
+            if (e instanceof JMSBindingException) throw (JMSBindingException)e;
             throw new JMSBindingException("Error stopping JMSServiceBinding", e);
         }
     }
@@ -194,6 +201,8 @@ public class JMSBindingServiceBindingProvider implements EndpointProvider, JMSSe
         bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT,
                                     new CallbackDestinationInterceptor(endpoint));
 
+        bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT, new HeaderServiceInterceptor(jmsBinding));
+        
         // add request wire format
         bindingChain.addInterceptor(requestWireFormatProvider.getPhase(), 
                                     requestWireFormatProvider.createInterceptor());
@@ -203,6 +212,7 @@ public class JMSBindingServiceBindingProvider implements EndpointProvider, JMSSe
             bindingChain.addInterceptor(responseWireFormatProvider.getPhase(), 
                                         responseWireFormatProvider.createInterceptor());
         }
+        
     }
 
     public RuntimeComponent getComponent() {

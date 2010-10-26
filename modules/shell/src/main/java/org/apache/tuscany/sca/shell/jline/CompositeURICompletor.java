@@ -27,7 +27,7 @@ import jline.SimpleCompletor;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.node2.Node;
+import org.apache.tuscany.sca.shell.Shell;
 
 /**
  * A Completor that uses the composite URIs within a Contribution
@@ -35,16 +35,19 @@ import org.apache.tuscany.sca.node2.Node;
  */
 public class CompositeURICompletor extends SimpleCompletor {
 
-    private Node node;
+    private Shell shell;
 
-    public CompositeURICompletor(Node node) {
+    public CompositeURICompletor(Shell shell) {
         super("");
-        this.node = node;
+        this.shell = shell;
     }
     
     @Override
     public int complete(final String buffer, final int cursor, final List clist) {
-       Contribution c = node.getInstalledContribution(getContributionURI());
+        if (shell.getNode() == null) {
+            return -1;
+        }
+       Contribution c = shell.getNode().getInstalledContribution(getContributionURI());
        if (c == null) {
            return -1;
        }

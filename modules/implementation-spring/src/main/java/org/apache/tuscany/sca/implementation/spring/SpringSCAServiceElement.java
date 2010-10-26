@@ -20,6 +20,9 @@ package org.apache.tuscany.sca.implementation.spring;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
@@ -37,12 +40,18 @@ public class SpringSCAServiceElement {
     private String target;
     private List<Intent> intents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<QName> intentNames = new ArrayList<QName>();
+    private List<QName> policySetNames = new ArrayList<QName>();
+
+    public SpringSCAServiceElement() {
+
+    }
 
     public SpringSCAServiceElement(String name, String target) {
         this.name = name;
         this.target = target;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
@@ -50,7 +59,7 @@ public class SpringSCAServiceElement {
     public String getName() {
         return name;
     }
-    
+
     public void setType(String type) {
         this.type = type;
     }
@@ -58,7 +67,7 @@ public class SpringSCAServiceElement {
     public String getType() {
         return type;
     }
-    
+
     public void setTarget(String target) {
         this.target = target;
     }
@@ -66,13 +75,31 @@ public class SpringSCAServiceElement {
     public String getTarget() {
         return target;
     }
-    
+
     public List<Intent> getRequiredIntents() {
         return intents;
     }
-    
-    public List<PolicySet> getPolicySets() {   	
-    	return policySets;
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+
+    public List<QName> getIntentNames() {
+        return intentNames;
+    }
+
+    public List<QName> getPolicySetNames() {
+        return policySetNames;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SpringSCAServiceElement [name=").append(name).append(", type=").append(type)
+            .append(", target=").append(target).append(", intents=").append(intents).append(", policySets=")
+            .append(policySets).append(", intentNames=").append(intentNames).append(", policySetNames=")
+            .append(policySetNames).append("]");
+        return builder.toString();
     }
 
 } // end class SpringSCAServiceElement

@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.java;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Implementation;
 
@@ -55,5 +57,12 @@ public interface BaseJavaImplementation extends Implementation, Extensible {
      * @param javaClass the Java implementation class
      */
     void setJavaClass(Class<?> javaClass);
+    
+    /**
+     * Customize the implementation type so that components are implemented using Java based framework such as
+     * implementation.spring or implementation.jaxrs can leverage the introspection
+     * @param type
+     */
+    void setType(QName type);
 
 }

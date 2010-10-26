@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.binding.jsonrpc.provider;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.Servlet;
+
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -80,7 +82,8 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     
     public void start() {
         // Set default databinding to json
-        // serviceContract.getInterface().resetDataBinding(JSONDataBinding.NAME);
+        // replaced by JSONRPCDatabindingHelper.setDataBinding(serviceContract.getInterface()); above
+        //serviceContract.getInterface().resetDataBinding(JSONDataBinding.NAME);
 
         // Determine the service business interface
         Class<?> serviceInterface = getTargetJavaClass(serviceContract.getInterface());
@@ -91,18 +94,28 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         // Create and register a Servlet for this service
         JSONRPCServiceServlet serviceServlet =
             new JSONRPCServiceServlet(messageFactory, endpoint, serviceInterface, proxy);
-        String mapping = binding.getURI();
-        if (!mapping.endsWith("/")) {
-            mapping += "/";
+        String mapping = registerServlet(serviceServlet);
+        servletMappings.add(mapping);
+    }
+    
+    public String registerServlet(Servlet servlet) {
+        // Create our HTTP service listener Servlet and register it with the
+        // Servlet host
+        String servletMapping = binding.getURI();
+        if (!servletMapping.endsWith("/")) {
+            servletMapping += "/";
         }
-        if (!mapping.endsWith("*")) {
-            mapping += "*";
+        if (!servletMapping.endsWith("*")) {
+            servletMapping += "*";
         }
 
-        servletHost.addServletMapping(mapping, serviceServlet);
-        servletMappings.add(mapping);
-        servletHost.addServletMapping(binding.getURI(), serviceServlet);
-        servletMappings.add(binding.getURI());
+        String mappedURI = servletHost.addServletMapping(servletMapping, servlet);
+        String deployedURI = mappedURI;
+        if (deployedURI.endsWith("*")) {
+            deployedURI = deployedURI.substring(0, deployedURI.length() - 1);
+        }
+        binding.setURI(deployedURI);
+        return mappedURI;
     }
 
     public void stop() {

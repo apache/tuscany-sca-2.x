@@ -64,7 +64,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         bundleTracker = new ActiveBundleTracker(context);
         bundleTracker.open();
     }
-    
+
     public void stop() {
         bundleTracker.close();
     }
@@ -73,7 +73,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         String header = (String)bundle.getHeaders().get("SCA-Version");
         return Version.parseVersion(header);
     }
-    
+
     public static class ActiveBundleTracker extends BundleTracker {
 
         /**
@@ -94,7 +94,6 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
 
     }
-
 
     public static class ServiceDeclarationImpl implements ServiceDeclaration {
         private Bundle bundle;
@@ -162,9 +161,14 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             try {
                 loadClass();
             } catch (ClassNotFoundException e) {
-                // Ignore 
+                // Ignore
             }
             return (javaClass != null && serviceType.isAssignableFrom(javaClass));
+        }
+
+        @Override
+        public Enumeration<URL> getResources(final String name) throws IOException {
+            return (Enumeration<URL>) bundle.getResources(name);
         }
 
     }
@@ -201,7 +205,6 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
 
     }
 
-
     public ServiceDeclaration getServiceDeclaration(String name) throws IOException {
         Collection<ServiceDeclaration> declarations = getServiceDeclarations(name);
         if (declarations.isEmpty()) {
@@ -210,13 +213,13 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             return declarations.iterator().next();
         }
     }
-    
+
     private boolean isProviderBundle(Bundle bundle, boolean isTuscanyService) {
         if (bundle.getBundleId() == 0 || bundle.getSymbolicName().startsWith("1.x-osgi-bundle")
             || bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null) {
             // Skip system bundle as it has access to the application classloader
             // Skip the 1.x runtime bundle as this has 1.x services in it
-            //    For testing running 1.x and 2.x in same VM. 
+            //    For testing running 1.x and 2.x in same VM.
             //    Don't know what final form will be yet.
             // Skip bundle fragments too
             return false;
@@ -231,7 +234,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
         return true;
     }
-    
+
     protected Collection<Bundle> getBundles(boolean isTuscanyService) {
         // return bundles.keySet();
         Set<Bundle> set = new HashSet<Bundle>();
@@ -257,14 +260,21 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         // http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/xpath/XPathFactory.html
         boolean isPropertyFile = "javax.xml.xpath.XPathFactory".equals(serviceName);
         boolean isTuscanyService = serviceName.startsWith("org.apache.tuscany.sca.");
-        serviceName = "META-INF/services/" + serviceName;
+
+        if (serviceName.startsWith("/")) {
+            // If the service name starts with /, treat it as the entry name
+            serviceName = serviceName.substring(1);
+        } else {
+            // Use JDK SPI pattern
+            serviceName = "META-INF/services/" + serviceName;
+        }
 
         Set<URL> visited = new HashSet<URL>();
         //System.out.println(">>>> getServiceDeclarations()");
         for (Bundle bundle : getBundles(isTuscanyService)) {
-//            if (!isProviderBundle(bundle)) {
-//                continue;
-//            }
+            //            if (!isProviderBundle(bundle)) {
+            //                continue;
+            //            }
             Enumeration<URL> urls = null;
             try {
                 // Use getResources to find resources on the classpath of the bundle
@@ -278,17 +288,17 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
                 if (urls == null) {
                     URL entry = bundle.getEntry(serviceName);
                     if (entry != null) {
-                        logger.warning("Unresolved resource " + serviceName + " found in " + toString(bundle));
+                        logger.warning("Unresolved resource " + serviceName + " found in bundle: " + toString(bundle));
                         try {
                             bundle.start();
                         } catch (BundleException e) {
-                            logger.log(Level.SEVERE, e.getMessage(), e);
+                            logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
                         }
                         // urls = Collections.enumeration(Arrays.asList(entry));
                     }
                 }
             } catch (IOException e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
+                logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
             }
             if (urls == null) {
                 continue;
@@ -307,17 +317,18 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
                 try {
                     for (Map<String, String> attributes : ServiceDeclarationParser.load(url, isPropertyFile)) {
                         String className = attributes.get("class");
-                        ServiceDeclarationImpl descriptor = new ServiceDeclarationImpl(bundle, url, className, attributes);
+                        ServiceDeclarationImpl descriptor =
+                            new ServiceDeclarationImpl(bundle, url, className, attributes);
                         descriptors.add(descriptor);
                     }
                 } catch (IOException e) {
-                    logger.log(Level.SEVERE, e.getMessage(), e);
+                    logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
                 }
             }
         }
         return descriptors;
     }
-    
+
     public ClassLoader getContextClassLoader() {
         // Get the bundle classloader for the extensibility bundle that has DynamicImport-Package *
         return getClass().getClassLoader();

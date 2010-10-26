@@ -18,6 +18,7 @@
  */
 package test;
 
+import helloworld.BeanA;
 import helloworld.HelloWorldService;
 
 import java.io.BufferedReader;
@@ -33,6 +34,7 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class BindingTestCase {
@@ -55,22 +57,52 @@ public class BindingTestCase {
         String response = br.readLine();
         Assert.assertEquals("foo(\"Hello petra arnold\");", response);
 
-    }
+    } 
 
     @Test
     public void testReference() throws MalformedURLException, IOException {
         
-        HelloWorldService client = node.getService(HelloWorldService.class, "HelloWorldClient");
+        HelloWorldService client = node.getService(HelloWorldService.class, "HelloWorldClient/HelloWorldService/sca");
 
         Assert.assertEquals("Hello beate", client.sayHello("beate"));
         Assert.assertEquals("Hello beate arnold", client.sayHello2("beate", "arnold"));
+        Assert.assertEquals(0, client.sayHello4(true));
+    }
+    
+    @Test
+    public void testComplexParams() throws MalformedURLException, IOException {
+        
+        HelloWorldService client = node.getService(HelloWorldService.class, "HelloWorldClient/HelloWorldService/sca");
 
+        BeanA bean = new BeanA();
+        bean.setB(true);
+        bean.setS("Fred");
+        bean.setX(2);
+        bean.setX(5);
+
+        Assert.assertEquals("XYZ", client.sayHello3(bean).getS());
+    }  
+    
+    /*
+     * Uncomment to keep the server running so you can ping it manually from a browser
+     * try:
+     *   http://localhost:8085/HelloWorldComponent/HelloWorldService/sayHello3?bean={%22b%22:%22true%22,%22s%22:%22a%20string%22,%22x%22:%2227%22,%22y%22:%2213%22}&callback=submitSucess
+     */
+    @Test
+    @Ignore
+    public void waitForInput(){
+        System.out.println("Press a key");
+        try {
+            System.in.read();
+        } catch (Exception ex){
+            // do nothing
+        }
     }
 
     @BeforeClass
     public static void init() throws Exception {
         JettyServer.portDefault = 8085;
-        node = NodeFactory.newInstance().createNode("helloworld.composite").start();
+        node = NodeFactory.newInstance().createNode("jsonp/helloworld.composite").start();
     }
     
     @AfterClass

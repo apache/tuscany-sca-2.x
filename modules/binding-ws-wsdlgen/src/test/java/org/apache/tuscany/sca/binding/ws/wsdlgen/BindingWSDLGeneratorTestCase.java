@@ -58,7 +58,7 @@ public class BindingWSDLGeneratorTestCase extends TestCase {
         JavaInterface iface = factory.createJavaInterface(HelloWorld.class);
         DefaultDataBindingExtensionPoint dataBindings = new DefaultDataBindingExtensionPoint(registry);
         JAXWSFaultExceptionMapper faultExceptionMapper = new JAXWSFaultExceptionMapper(dataBindings, null);
-        new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper, null).visitInterface(iface);
+        new JAXWSJavaInterfaceProcessor(registry).visitInterface(iface);
         new DataBindingJavaInterfaceProcessor(registry).visitInterface(iface);
         javaIC.setInterface(iface);
         WSDLInterfaceContract wsdlIC = BindingWSDLGenerator.createWSDLInterfaceContract(javaIC, false, new XSDModelResolver(null, null), dataBindings, wsdlFactory, xsdFactory, documentBuilderFactory, null);
@@ -71,7 +71,7 @@ public class BindingWSDLGeneratorTestCase extends TestCase {
  
         JavaInterfaceContract javaIC2 = factory.createJavaInterfaceContract();
         JavaInterface iface2 = factory.createJavaInterface(TestJavaInterface.class);
-        new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper, null).visitInterface(iface2);
+        new JAXWSJavaInterfaceProcessor(registry).visitInterface(iface2);
         new DataBindingJavaInterfaceProcessor(registry).visitInterface(iface2);
         javaIC2.setInterface(iface2);
         WSDLInterfaceContract wsdlIC2 = BindingWSDLGenerator.createWSDLInterfaceContract(javaIC2, false, new XSDModelResolver(null, null), dataBindings, wsdlFactory, xsdFactory, documentBuilderFactory, null);

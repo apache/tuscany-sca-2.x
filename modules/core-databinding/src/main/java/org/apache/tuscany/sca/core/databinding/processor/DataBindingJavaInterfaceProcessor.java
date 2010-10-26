@@ -21,9 +21,7 @@ package org.apache.tuscany.sca.core.databinding.processor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
@@ -66,26 +64,17 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
             wrapperStyle = dataBinding.wrapped();
         }
 
-        Map<String, Operation> opMap = new HashMap<String, Operation>();
         for (Operation op : javaInterface.getOperations()) {
-            opMap.put(op.getName(), op);
+            JavaOperation operation = (JavaOperation) op;
             // In the case of @WebMethod, the method name can be different from the operation name
-            if (op instanceof JavaOperation) {
-                opMap.put(((JavaOperation)op).getJavaMethod().getName(), op);
-            }
+
             if (dataBindingId != null) {
                 op.setDataBinding(dataBindingId);
                 op.setWrapperStyle(wrapperStyle);
             }
-        }
-        for (Method method : clazz.getMethods()) {
-            if (method.getDeclaringClass() == Object.class) {
-                continue;
-            }
-            Operation operation = opMap.get(method.getName());
-            if (operation == null) { // @WebMethod exclude=true
-                continue;
-            }
+
+            Method method = operation.getJavaMethod();
+
             DataBinding methodDataBinding = clazz.getAnnotation(DataBinding.class);
             if (methodDataBinding == null) {
                 methodDataBinding = dataBinding;

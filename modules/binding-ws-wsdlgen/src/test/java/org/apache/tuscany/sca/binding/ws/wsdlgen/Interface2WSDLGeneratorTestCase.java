@@ -55,7 +55,7 @@ public class Interface2WSDLGeneratorTestCase {
         JavaInterface iface = iFactory.createJavaInterface(TestJavaInterface.class);
         DefaultDataBindingExtensionPoint dataBindings = new DefaultDataBindingExtensionPoint(new DefaultExtensionPointRegistry());
         JAXWSFaultExceptionMapper faultExceptionMapper = new JAXWSFaultExceptionMapper(dataBindings, null);
-        new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper, null).visitInterface(iface);
+        new JAXWSJavaInterfaceProcessor(registry).visitInterface(iface);
         new DataBindingJavaInterfaceProcessor(registry).visitInterface(iface);
         DefaultFactoryExtensionPoint modelFactories = new DefaultFactoryExtensionPoint(registry);
         WSDLFactory wFactory = new DefaultWSDLFactory(registry);

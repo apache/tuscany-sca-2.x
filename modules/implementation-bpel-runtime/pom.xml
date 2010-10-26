@@ -30,55 +30,11 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-assembly</artifactId>
+            <artifactId>tuscany-base-runtime-pom</artifactId>
+            <type>pom</type>
             <version>2.0-Beta1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-bpel</artifactId>
-            <version>2.0-Beta1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core</artifactId>
-            <version>2.0-Beta1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-assembly-xml</artifactId>
-            <version>2.0-Beta1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-contribution</artifactId>
-            <version>2.0-Beta1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-sca-api</artifactId>
-            <version>2.0-Beta1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding</artifactId>
-            <version>2.0-Beta1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>2.0-Beta1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-impl</artifactId>
-            <version>2.0-Beta1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-interface-wsdl</artifactId>
-            <version>2.0-Beta1</version>
-        </dependency>
-
+            <scope>provided</scope>
+        </dependency> 
         <!-- ODE Jars -->
         <dependency>
             <groupId>org.apache.ode</groupId>
@@ -211,7 +167,7 @@
         <dependency>
             <groupId>org.apache.geronimo.components</groupId>
             <artifactId>geronimo-transaction</artifactId>
-            <version>2.0.1</version>
+            <version>2.1.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.geronimo.specs</groupId>
@@ -263,7 +219,7 @@
         <dependency>
             <groupId>org.apache.geronimo.components</groupId>
             <artifactId>geronimo-connector</artifactId>
-            <version>2.0.1</version>
+            <version>2.1.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.geronimo.specs</groupId>
@@ -459,6 +415,18 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        
+        <!-- Explicitly add slf4j so that ODE uses the latest versions -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.5.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.5.11</version>
+        </dependency>        
     </dependencies>
 
     <build>

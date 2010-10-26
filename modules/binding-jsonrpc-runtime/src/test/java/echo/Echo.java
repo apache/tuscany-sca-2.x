@@ -18,6 +18,7 @@
  */
 package echo;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,12 +39,16 @@ import bean.TestBean;
 public interface Echo {
 
     String echo(String msg);
-
+    
+    void echoVoid();
+    
     void echoRuntimeException() throws RuntimeException;
 
     void echoBusinessException() throws EchoBusinessException;
 
     int echoInt(int param);
+    
+    double echoDouble(double param);
 
     boolean echoBoolean(boolean param);
 
@@ -61,4 +66,5 @@ public interface Echo {
 
     void get\u03a9\u03bb\u03c0();
 
+    BigDecimal echoBigDecimal(BigDecimal param);
 }

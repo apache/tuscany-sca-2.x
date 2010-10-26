@@ -27,6 +27,7 @@ import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
@@ -172,6 +173,11 @@ public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoi
 
         public void stop() {
             ServiceHelper.stop(host);
+        }
+
+        @Override
+        public ServletContext getServletContext() {
+            return getServletHost().getServletContext();
         }
     }
 

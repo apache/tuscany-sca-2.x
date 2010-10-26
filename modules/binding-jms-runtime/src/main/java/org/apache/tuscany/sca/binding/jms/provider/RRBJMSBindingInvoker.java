@@ -136,6 +136,11 @@ public class RRBJMSBindingInvoker implements Invoker {
             qCreateMode = jmsBinding.getDestinationCreate();
         }
 
+        // FIXME: [rfeng] A hack to remove jms:jndi: prefix
+        if (queueName.startsWith("jms:jndi:")) {
+            queueName = queueName.substring("jms:jndi:".length());
+        }
+        
         Destination dest = jmsResourceFactory.lookupDestination(queueName);
 
         if (qCreateMode.equals(JMSBindingConstants.CREATE_ALWAYS)) {
@@ -153,7 +158,8 @@ public class RRBJMSBindingInvoker implements Invoker {
 
         } else if (qCreateMode.equals(JMSBindingConstants.CREATE_IF_NOT_EXIST)) {
             // In this mode, the queue may nor may not exist. It will be created if it does not exist
-            if (dest == null) {
+            // but don't create when using jms:jndi uri format
+            if (dest == null && !"jndi".equals(jmsBinding.getDestinationType())) {
                 dest = jmsResourceFactory.createDestination(queueName);
             }
 
@@ -246,7 +252,9 @@ public class RRBJMSBindingInvoker implements Invoker {
     
     protected Destination getReplyToDestination(Session session) throws JMSException, JMSBindingException, NamingException {
         Destination replyToDest;
-        if (operation.isNonBlocking()) {
+        // [rfeng] If the oneway operation is part of bi-directional interface, the JMSReplyTo should be set
+        if (operation.isNonBlocking() && endpointReference.getComponentReferenceInterfaceContract()
+            .getCallbackInterface() == null) {
             replyToDest = null;
         } else {
             if (bindingReplyDest != null) {

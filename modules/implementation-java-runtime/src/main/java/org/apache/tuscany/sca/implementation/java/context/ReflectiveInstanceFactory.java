@@ -36,15 +36,18 @@ public class ReflectiveInstanceFactory<T> implements InstanceFactory<T> {
     private final Injector<T>[] injectors;
     private final EventInvoker<T> initInvoker;
     private final EventInvoker<T> destroyInvoker;
+	private final Injector<T>[] callbackInjectors;
 
     public ReflectiveInstanceFactory(Constructor<T> ctr,
                                      ObjectFactory<?>[] ctrArgs,
                                      Injector<T>[] injectors,
+                                     Injector<T>[] callbackInjectors,
                                      EventInvoker<T> initInvoker,
                                      EventInvoker<T> destroyInvoker) {
         this.ctr = ctr;
         this.ctrArgs = ctrArgs;
         this.injectors = injectors;
+        this.callbackInjectors = callbackInjectors;
         this.initInvoker = initInvoker;
         this.destroyInvoker = destroyInvoker;
     }
@@ -88,6 +91,6 @@ public class ReflectiveInstanceFactory<T> implements InstanceFactory<T> {
             }
         }
 
-        return new ReflectiveInstanceWrapper<T>(instance, initInvoker, destroyInvoker);
+        return new ReflectiveInstanceWrapper<T>(instance, initInvoker, destroyInvoker, callbackInjectors);
     }
 }

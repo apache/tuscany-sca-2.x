@@ -28,6 +28,7 @@ import java.lang.reflect.ParameterizedType;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -50,6 +51,9 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
     private WeakReference<Class<?>> javaClass;
     private Class<?> callbackClass;
     private QName qname;
+    private String jaxwsWSDLLocation;
+    private String jaxwsJavaInterfaceName;
+    private Contribution contributionContainingClass;
     
     protected JavaInterfaceImpl() {
     	super();
@@ -321,5 +325,36 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
     	} // end for
     	return false;
     } // end method isAsyncServer
-
+    
+    public String getJAXWSWSDLLocation() {
+        return jaxwsWSDLLocation;
+    }
+    
+    public void setJAXWSWSDLLocation(String wsdlLocation) {
+        this.jaxwsWSDLLocation = wsdlLocation;
+    }
+    
+    public String getJAXWSJavaInterfaceName() {
+        return jaxwsJavaInterfaceName;
+    }
+    
+    public void setJAXWSJavaInterfaceName(String javaInterfaceName) {
+        this.jaxwsJavaInterfaceName = javaInterfaceName;
+    }
+    
+    /**
+     * A Java class may reference a WSDL file via a JAXWS annotation. We need to resolve
+     * the WSDL file location in the context of the same contribution that holds the 
+     * Java file. In order to do this we need to remember the actual contribution that
+     * was used to resolve a Java class. 
+     * 
+     * @return
+     */
+    public Contribution getContributionContainingClass() {
+        return contributionContainingClass;
+    }
+    
+    public void setContributionContainingClass(Contribution contributionContainingClass) {
+        this.contributionContainingClass = contributionContainingClass;
+    }
 }

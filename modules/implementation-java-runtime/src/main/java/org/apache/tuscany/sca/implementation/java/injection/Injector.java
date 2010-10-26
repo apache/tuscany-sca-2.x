@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
+import java.lang.reflect.Type;
+
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 
 /**
@@ -31,5 +33,8 @@ public interface Injector<T> {
      * Inject a value on the given instance
      */
     void inject(T instance) throws ObjectCreationException;
+    void injectNull(T instance) throws ObjectCreationException;
+    Class<?> getType();
+	Type getGenericType();
 
 }

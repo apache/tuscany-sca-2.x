@@ -66,10 +66,12 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.tuscany.sca.assembly.Binding;
@@ -87,6 +89,7 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.common.xml.xpath.XPathHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -111,6 +114,8 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * A composite processor.
@@ -123,6 +128,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
     private StAXAttributeProcessor<Object> extensionAttributeProcessor;
     private ContributionFactory contributionFactory;
     private XSDFactory xsdFactory;
+    
+    private StAXHelper staxHelper;
 
     /**
      * Construct a new composite processor
@@ -140,6 +147,9 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
         this.extensionAttributeProcessor = extensionAttributeProcessor;
         
         this.xsdFactory = extensionPoints.getExtensionPoint(XSDFactory.class);
+        
+        // 
+        staxHelper = StAXHelper.getInstance(extensionPoints);
     }
 
     /**
@@ -354,23 +364,11 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 }
                                 componentProperty.setSource(source);
                                 if (source != null) {
-                                    // $<name>/...
-                                    if (source.charAt(0) == '$') {
-                                        int index = source.indexOf('/');
-                                        if (index == -1) {
-                                            // Tolerating $prop
-                                            source = "";
-                                        } else {
-                                            source = source.substring(index + 1);
-                                        }
-                                        if ("".equals(source)) {
-                                            source = ".";
-                                        }
-                                    }
-
+                                	String xPath = prepareSourceXPathString( source );
+                                    
                                     try {
                                         componentProperty.setSourceXPathExpression(xpathHelper.compile(reader
-                                            .getNamespaceContext(), source));
+                                            .getNamespaceContext(), xPath));
                                     } catch (XPathExpressionException e) {
                                         ContributionReadException ce = new ContributionReadException(e);
                                         error(monitor, "ContributionReadException", source, ce);
@@ -648,6 +646,51 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 
         return composite;
     }
+    
+    /**
+     * Prepares the property @source XPath expression
+     * 
+     * The form of the @source attribute in the composite file must take one of the forms
+     *   $propertyName
+     *   $propertyName/expression
+     *   $propertyName[n]
+     *   $propertyName[n]/expression
+     * Property values are stored as <sca:property> elements with one or more <sca:value> subelements or one or more
+     * global element subelements. The XPath constructed is designed to work against this XML structure and aims to
+     * retrieve one or more of the subelements or subportions of those subelements (eg some text content).
+     * Thus the XPath:
+     * - starts with "*", which means "all the child elements of the root" where root = the <property/> element
+     * - may then be followed by [xxx] (typically [n] to select one of the child elements) if the source string has [xxx]
+     *   following the propertyName
+     * - may then be followed by /expression, if the source contains an expression, which will typically select some subportion
+     *   of the child element(s)
+     * 
+     * @param source - the @source attribute string from a <sca:property> element
+     * @return the XPath string to use for the source property
+     */
+    private String prepareSourceXPathString( String source ) {
+    	String output = null;
+    	// Expression must begin with '$'
+    	if( source.charAt(0) != '$' ) return output;
+    	
+        int slash = source.indexOf('/');
+        int bracket = source.indexOf('[');
+        if (slash == -1) {
+            // Form is $propertyName or $propertyName[n]
+            output = "*";
+            if( bracket != -1 ) {
+            	output = "*" + source.substring(bracket);
+            }
+        } else {
+        	// Form is $propertyName/exp or $propertyName[n]/exp
+            output = "*/" + source.substring(slash + 1);
+            if( bracket != -1 && bracket < slash ) {
+            	output = "*"  + source.substring(bracket);
+            }
+        } // end if
+        
+    	return output;
+    } // end method prepareSourceXPathString( source )
 
     public void write(Composite composite, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
@@ -747,11 +790,11 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             // Write the component implementation
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                writeStart(writer, IMPLEMENTATION_COMPOSITE, new XAttr(NAME, ((Composite)implementation).getName()));
+                writeStart(writer, IMPLEMENTATION_COMPOSITE, new XAttr(NAME, ((Composite)implementation).getName()), policyProcessor.writePolicies(implementation));
 
                 //write extended attributes
                 this.writeExtendedAttributes(writer, (Composite)implementation, extensionAttributeProcessor, context);
-
+                
                 writeEnd(writer);
             } else {
                 extensionProcessor.write(component.getImplementation(), writer, context);
@@ -1055,7 +1098,19 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     //now resolve the implementation so that even if there is a shared instance
                     //for this that is resolved, the specified intents and policysets are safe in the
                     //component and not lost
+
+                	List<PolicySet> policySets = new ArrayList<PolicySet>(implementation.getPolicySets());                	
+                	List<Intent> intents = new ArrayList<Intent>(implementation.getRequiredIntents());
                     implementation = resolveImplementation(implementation, resolver, context);
+
+                    // If there are any policy sets on the implementation or component we have to
+                    // ignore policy sets from the component type (policy spec 4.9)
+                    if ( !policySets.isEmpty() || !component.getPolicySets().isEmpty() ) {                    	
+                    	implementation.getPolicySets().clear();
+                    	implementation.getPolicySets().addAll(policySets);                    	
+                    }
+                    	
+                    implementation.getRequiredIntents().addAll(intents);              
 
                     component.setImplementation(implementation);
                 }
@@ -1088,6 +1143,76 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
     public Class<Composite> getModelType() {
         return Composite.class;
     }
+    
+    /**
+     * Write the value of a property - override to use correct method of creating an XMLStreamReader
+     * @param document
+     * @param element
+     * @param type
+     * @param writer
+     * @throws XMLStreamException
+     */
+    protected void writePropertyValue(Object propertyValue, QName element, QName type, XMLStreamWriter writer)
+        throws XMLStreamException {
+
+        if (propertyValue instanceof Document) {
+            Document document = (Document)propertyValue;
+            NodeList nodeList = document.getDocumentElement().getChildNodes();
+
+            for (int item = 0; item < nodeList.getLength(); ++item) {
+                Node node = nodeList.item(item);
+                int nodeType = node.getNodeType();
+                if (nodeType == Node.ELEMENT_NODE) {
+                	// Correct way to create a reader for a node object...
+                	XMLStreamReader reader = staxHelper.createXMLStreamReader(node);
+
+                    while (reader.hasNext()) {
+                        switch (reader.next()) {
+                            case XMLStreamConstants.START_ELEMENT:
+                                QName name = reader.getName();
+                                writer.writeStartElement(name.getPrefix(), name.getLocalPart(), name.getNamespaceURI());
+
+                                int namespaces = reader.getNamespaceCount();
+                                for (int i = 0; i < namespaces; i++) {
+                                    String prefix = reader.getNamespacePrefix(i);
+                                    String ns = reader.getNamespaceURI(i);
+                                    writer.writeNamespace(prefix, ns);
+                                }
+
+                                if (!"".equals(name.getNamespaceURI())) {
+                                    writer.writeNamespace(name.getPrefix(), name.getNamespaceURI());
+                                }
+
+                                // add the attributes for this element
+                                namespaces = reader.getAttributeCount();
+                                for (int i = 0; i < namespaces; i++) {
+                                    String ns = reader.getAttributeNamespace(i);
+                                    String prefix = reader.getAttributePrefix(i);
+                                    String qname = reader.getAttributeLocalName(i);
+                                    String value = reader.getAttributeValue(i);
+
+                                    writer.writeAttribute(prefix, ns, qname, value);
+                                }
+
+                                break;
+                            case XMLStreamConstants.CDATA:
+                                writer.writeCData(reader.getText());
+                                break;
+                            case XMLStreamConstants.CHARACTERS:
+                                writer.writeCharacters(reader.getText());
+                                break;
+                            case XMLStreamConstants.END_ELEMENT:
+                                writer.writeEndElement();
+                                break;
+                        }
+                    }
+                } else {
+                    writer.writeCharacters(node.getTextContent());
+                }
+            }
+        }
+    } // end method writePropertyValue
+
 
     /**
      * Returns the model factory extension point to use.

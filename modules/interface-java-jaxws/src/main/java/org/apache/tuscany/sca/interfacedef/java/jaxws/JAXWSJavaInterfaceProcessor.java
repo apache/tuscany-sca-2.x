@@ -31,8 +31,8 @@ import java.util.List;
 import javax.jws.Oneway;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
+import javax.jws.WebParam.Mode;
 import javax.jws.WebResult;
-import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 import javax.xml.namespace.QName;
@@ -40,6 +40,7 @@ import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.javabeans.JavaExceptionDataBinding;
@@ -49,15 +50,17 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.ParameterMode;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
-import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 
 /**
  * Introspect the java class/interface with JSR-181 and JAXWS annotations
@@ -70,28 +73,35 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
     private DataBindingExtensionPoint dataBindingExtensionPoint;
     private FaultExceptionMapper faultExceptionMapper;
     private XMLAdapterExtensionPoint xmlAdapterExtensionPoint;
+    protected JavaInterfaceFactory javaInterfaceFactory;
+    private WSDLFactory wsdlFactory;
 
 
     public JAXWSJavaInterfaceProcessor(ExtensionPointRegistry registry) {
         dataBindingExtensionPoint = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         faultExceptionMapper = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(FaultExceptionMapper.class);
         xmlAdapterExtensionPoint = registry.getExtensionPoint(XMLAdapterExtensionPoint.class);
-    }
-    
-    
-    public JAXWSJavaInterfaceProcessor(DataBindingExtensionPoint dataBindingExtensionPoint,
-                                       FaultExceptionMapper faultExceptionMapper,
-                                       XMLAdapterExtensionPoint xmlAdapters) {
-        super();
-        this.dataBindingExtensionPoint = dataBindingExtensionPoint;
-        this.faultExceptionMapper = faultExceptionMapper;
-        this.xmlAdapterExtensionPoint = xmlAdapters;
+        
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
+        this.wsdlFactory = factories.getFactory(WSDLFactory.class);
     }
 
+  
     public JAXWSJavaInterfaceProcessor() {
         super();
     }
 
+    private ParameterMode getParameterMode(WebParam.Mode mode) {
+    	if (mode == Mode.INOUT) {
+    		return ParameterMode.INOUT;
+    	} else if (mode == Mode.OUT) {
+    		return ParameterMode.OUT;
+    	} else {
+    		return ParameterMode.IN;
+    	}
+    }
+    
     private static String capitalize(String name) {
         if (name == null || name.length() == 0) {
             return name;
@@ -103,16 +113,10 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
     public void visitInterface(JavaInterface contract) throws InvalidInterfaceException {
 
         final Class<?> clazz = contract.getJavaClass();
-        WebService webService = clazz.getAnnotation(WebService.class);
-        String tns = JavaXMLMapper.getNamespace(clazz);
-        String localName = clazz.getSimpleName();
-        if (webService != null) {
-            tns = getValue(webService.targetNamespace(), tns);
-            localName = getValue(webService.name(), localName);
-            contract.setQName(new QName(tns, localName));
-            // Mark SEI as Remotable
-            contract.setRemotable(true);
-        }
+        
+        contract = JAXWSUtils.configureJavaInterface(contract, clazz);
+        String tns = contract.getQName().getNamespaceURI();      
+        
         if (!contract.isRemotable()) {
             return;
         }
@@ -178,6 +182,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                         if (logical instanceof XMLType) {
                             ((XMLType)logical).setElementName(element);
                         }
+                        operation.getParameterModes().set(i, getParameterMode(param.mode()));
                     }
                 }
                 WebResult result = method.getAnnotation(WebResult.class);
@@ -287,6 +292,9 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                         type = ((XMLType)logical).getTypeName();
                     }
                     inputElements.add(new ElementInfo(element, new TypeInfo(type, false, null)));
+                    if (param != null) {
+                    	operation.getParameterModes().set(i, getParameterMode(param.mode()));
+                    }
                 }
 
                 List<ElementInfo> outputElements = new ArrayList<ElementInfo>();

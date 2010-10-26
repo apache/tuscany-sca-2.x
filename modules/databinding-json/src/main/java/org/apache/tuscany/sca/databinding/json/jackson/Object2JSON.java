@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.databinding.json.jackson;
 
+import java.math.BigDecimal;
+
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -53,9 +55,16 @@ public class Object2JSON implements PullTransformer<Object, Object> {
             targetType = String.class;
         }
         try {
+            if (targetType != null && targetType.isPrimitive()) {
+                return source;
+            }
             String value = mapper.writeValueAsString(source);
-            if (targetType == String.class || targetType == Object.class) {
+            if (targetType == String.class || 
+                targetType == Object.class || 
+                targetType.isPrimitive()) {
                 return value;
+            } else if (targetType == BigDecimal.class){
+                return value.toString();
             } else if (JsonNode.class.isAssignableFrom(targetType)) {
                 return JacksonHelper.createJsonParser(value).readValueAsTree();
             }

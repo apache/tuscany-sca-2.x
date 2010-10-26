@@ -1,0 +1,157 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<html>
+	<head>
+		<title>Apache Tuscany Comet Sample</title>
+		<!-- Tuscany Comet Javascript Toolkit is dependent on jQuery -->
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script type="text/javascript" src="org.apache.tuscany.sca.cometComponentContext.js"></script>
+		<script type="text/javascript">
+		$(document).ready(function()
+		{
+			// Initialization
+			var location = new Object();
+			location.city = null;
+			location.country = null;
+
+			document.getElementById('locationButton').disabled = true;
+			document.getElementById('tempCButton').disabled = true;
+			document.getElementById('tempFButton').disabled = true;
+			document.getElementById('humButton').disabled = true;
+			document.getElementById('precipButton').disabled = true;
+
+			document.getElementById('locationButton').onclick = function(event) {
+				location.city = document.getElementById('city').value;
+				location.country = document.getElementById('country').value;
+				document.getElementById('locationButton').value = 'Switch location';
+				document.getElementById('tempCButton').disabled = false;
+				document.getElementById('tempFButton').disabled = false;
+				document.getElementById('humButton').disabled = false;
+				document.getElementById('precipButton').disabled = false;
+				document.getElementById('tempCText').textContent = 'N/A';
+				document.getElementById('tempCDate').textContent = '';
+				document.getElementById('tempFText').textContent = 'N/A';
+				document.getElementById('tempFDate').textContent = '';
+				document.getElementById('humText').textContent = 'N/A';
+				document.getElementById('humDate').textContent = '';
+				document.getElementById('precipText').textContent = 'N/A';
+				document.getElementById('precipDate').textContent = '';
+			}
+
+			// Tuscany Comet specific API
+			
+			document.getElementById('connect').onclick = function(event) {
+                /* transport can be : long-polling or streaming */
+			 	SCA.TuscanyComet.connect(document.getElementById('transport').value);
+                document.getElementById('connect').disabled = true;
+                document.getElementById('transport').disabled = true;
+                document.getElementById('locationButton').disabled = false;
+			}
+			
+
+			document.getElementById('tempCButton').onclick = function(event) {
+				SCA.CometComponentContext.TemperatureService.getTemperature(location, 1, updateTempC);
+			}
+
+			document.getElementById('tempFButton').onclick = function(event) {
+				SCA.CometComponentContext.TemperatureService.getTemperature(location, 2, updateTempF);
+			}
+
+			document.getElementById('humButton').onclick = function(event) {
+				SCA.CometComponentContext.HumidityService.getHumidity(location, updateHum);
+			}
+
+			document.getElementById('precipButton').onclick = function(event) {
+				SCA.CometComponentContext.PrecipitationService.getPrecipitation(location, updatePrecip);
+			}
+		});
+
+		function updateTempC(response) {
+			document.getElementById('tempCText').textContent = response.data;
+			document.getElementById('tempCDate').textContent = response.date;
+		}
+
+		function updateTempF(response) {
+			document.getElementById('tempFText').textContent = response.data;
+			document.getElementById('tempFDate').textContent = response.date;
+		}
+
+		function updateHum(response) {
+			document.getElementById('humText').textContent = response.data;
+			document.getElementById('humDate').textContent = response.date;
+		}
+
+		function updatePrecip(response) {
+			document.getElementById('precipText').textContent = response.data;
+			document.getElementById('precipDate').textContent = response.date;
+		}
+		</script>
+	</head>
+	<body>
+		<div id='sidebar'>
+		<h2>Apache Tuscany Comet Sample</h2>
+		<label>Select transport</label>
+    	<select id="transport">
+    		<option id="streaming" value="streaming">http streaming</option>
+			<option id="long-polling" value="long-polling">long-polling</option>
+    	</select>
+    	<input id='connect' type='submit' value='Connect'/>
+		<h3>Weather Monitor</h3>
+		<p/>
+		<table>
+			<tr>
+				<td>City</td>
+				<td><input type="text" id='city' value='Brasov'/></td>
+			</tr>
+			<tr>
+				<td>Country</td>
+				<td><input type="text" id ='country' value='Romania'/></td>
+			</tr>
+		</table>
+		<input type="button" id='locationButton' value='Set location'/>
+		<p/>
+		<table>
+			<tr>
+				<th align="left">Temperature (Celsius):</th>
+				<td><span id='tempCText'>N/A</span></td>
+				<td><input type='button' id='tempCButton' value="Update"/></td>
+				<td><span id='tempCDate'></span>
+			</tr>
+			<tr>
+				<th align="left">Temperature (Fahrenheit):</th>
+				<td><span id='tempFText'>N/A</span></td>
+				<td><input type='button' id='tempFButton' value="Update"/></td>
+				<td><span id='tempFDate'></span>
+			</tr>
+			<tr>
+				<th align="left">Humidity:</th>
+				<td><span id='humText'>N/A</span></td>
+				<td><input type='button' id='humButton' value="Update"/></td>
+				<td><span id='humDate'></span>
+			</tr>
+			<tr>
+				<th align="left">Precipitation probability:</th>
+				<td><span id='precipText'>N/A</span></td>
+				<td><input type='button' id='precipButton' value="Update"/></td>
+				<td><span id='precipDate'></span>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>
