@@ -9,8 +9,8 @@ Bundle-Description: Apache Tuscany Domain Hazelcast
 Bundle-SymbolicName: org.apache.tuscany.sca.domain.hazelcast
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: com.hazelcast.config,
- com.hazelcast.client,
+Import-Package: com.hazelcast.client,
+ com.hazelcast.config,
  com.hazelcast.core,
  com.hazelcast.nio,
  org.apache.tuscany.sca.assembly;version="2.0.0",
@@ -19,6 +19,7 @@ Import-Package: com.hazelcast.config,
  org.apache.tuscany.sca.binding.ws;version="2.0.0",
  org.apache.tuscany.sca.binding.ws.wsdlgen;version="2.0.0",
  org.apache.tuscany.sca.common.xml;version="2.0.0",
+ org.apache.tuscany.sca.common.xml.dom;version="2.0.0",
  org.apache.tuscany.sca.context;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.databinding.xml;version="2.0.0",
