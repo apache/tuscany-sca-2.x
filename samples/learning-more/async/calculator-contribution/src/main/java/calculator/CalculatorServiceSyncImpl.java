@@ -27,5 +27,12 @@ public class CalculatorServiceSyncImpl implements CalculatorServiceSync {
 		String retval = "sync service invoked: " + n1 + " + " + n1 + " = " + result;
 		return retval;
 	}
+	
+	@Override
+    public void print(Integer n1) {
+        int result = n1 + n1;
+        String retval = "sync service invoked: " + n1 + " + " + n1 + " = " + result;
+        System.out.println(retval);
+    }
 
 }

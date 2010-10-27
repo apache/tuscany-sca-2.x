@@ -33,8 +33,6 @@ import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface CalculateReferenceAsync {
-
-	//public Response<String> calculate( Integer i1);
 	
 	// Sync
 	public String calculate(Integer i1);
@@ -44,6 +42,16 @@ public interface CalculateReferenceAsync {
 	
 	// Async Callback
 	public Future<String> calculateAsync(Integer i1, AsyncHandler<String> handler);
-	
+
+/* TUSCANY-3757	
+	// Sync
+    public void print(Integer i1);
+    
+    // Aysnc Poll
+    public Response<Void> printAsync(Integer i1);
+    
+    // Async Callback
+    public Future<Void> printAsync(Integer i1, AsyncHandler<Void> handler);
+*/	
 }
 

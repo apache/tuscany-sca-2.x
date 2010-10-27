@@ -42,6 +42,10 @@ public class CalculatorClient {
     @Init
     public void calculate() {
         System.out.println("calculation=" + calculatorService.calculate(20));
+        System.out.println("print");
+        /* TUSCANY-3757
+        calculatorService.print(27);
+        */
     }
     
 

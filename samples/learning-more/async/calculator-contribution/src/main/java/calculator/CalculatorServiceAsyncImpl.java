@@ -30,5 +30,15 @@ public class CalculatorServiceAsyncImpl implements CalculatorServiceAsync {
 		
 	    response.sendResponse(retval);
 	}
+	
+/* TUSCANY-3757	
+    @Override
+
+    public void printAsync(Integer n1, ResponseDispatch<Void> response) {
+        int result = n1 + n1;
+        String retval = "async service invoked: " + n1 + " + " + n1 + " = " + result;
+        System.out.println(retval);
+    }
+*/    
 
 }

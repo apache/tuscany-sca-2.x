@@ -27,4 +27,5 @@ import org.oasisopen.sca.annotation.Remotable;
 @Remotable
 public interface CalculatorServiceSync {
     String calculate(Integer n1);
+    void print(Integer n1);
 }

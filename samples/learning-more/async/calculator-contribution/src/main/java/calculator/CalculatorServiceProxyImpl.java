@@ -43,11 +43,11 @@ public class CalculatorServiceProxyImpl implements CalculatorServiceSync {
 	    String result = null;
 	    
 	    // calculate using a sync service
-	    System.out.println("Calling sync service");
+	    System.out.println("Calling sync service for calculate");
 	    result = calculate(calculatorServiceRefSync, n1);
 	    
 	    // calculate using an aycn service
-	    System.out.println("Calling async service");
+	    System.out.println("Calling async service for calculate");
 	    result += calculate(calculatorServiceRefAsync, n1);
 	    
 	    return result;
@@ -98,4 +98,35 @@ public class CalculatorServiceProxyImpl implements CalculatorServiceSync {
 
 		return result;
 	}
+	
+/* TUSCANY-3757
+    @Override
+*/
+    public void print(Integer n1) {
+        
+        // calculate using a sync service
+        System.out.println("Calling sync service for print");
+        //print(calculatorServiceRefSync, n1);
+        
+        // calculate using an asycn service
+        System.out.println("Calling async service for print");
+        //print(calculatorServiceRefAsync, n1);
+    }    
+        
+/* TUSCANY-3757    
+    // exercise sync and async versions of a service interface method
+    private void print(CalculateReferenceAsync calculatorRef, Integer n1) {       
+        
+        // sync
+        calculatorRef.print(1);
+        
+        // async poll
+        Response<Void> response = calculatorRef.printAsync(20);
+    
+        // async callback 
+        CalculatorPrintAsyncHandler handler = new CalculatorPrintAsyncHandler();
+        Future<Void> future = calculatorRef.printAsync(3, handler);
+      
+    }
+*/	
 }

@@ -18,19 +18,19 @@
  */
 package calculator;
 
-import org.oasisopen.sca.ResponseDispatch;
-import org.oasisopen.sca.annotation.AsyncInvocation;
-import org.oasisopen.sca.annotation.Remotable;
+import javax.xml.ws.AsyncHandler;
+import javax.xml.ws.Response;
 
 /**
- * The async Calculator service interface.
+ * Handles callbacks to the async client
  */
 
-@Remotable
-@AsyncInvocation
-public interface CalculatorServiceAsync {
-    void calculateAsync(Integer n1, ResponseDispatch<String> response);
-    /* TUSCANY-3757
-    void printAsync(Integer n1, ResponseDispatch<Void> response);
-    */
+public class CalculatorPrintAsyncHandler implements AsyncHandler<Void> {
+    public void handleResponse(Response<Void> res) {
+        try {
+            System.out.println("Async client callback patern: result in print handler = " + res.get());
+        } catch(Exception ex){
+            System.out.println("Async client callback patern: exception in print handler = " + ex.getMessage());
+        }
+    }
 }
