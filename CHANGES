@@ -3,6 +3,18 @@ Changes With Apache Tuscany SCA 2.0-Beta1 June 2010
 
 Lots of updates to keep up with recent changes in the OASIS Specifications
 
+Changes With Apache Tuscany SCA 2.0-Beta1 November 2010
+=======================================================
+
+Highlights include:
+- Passes the OASIS conformance test suite for the SCA Assembly, SCA-J CAA, SCA-J CI, 
+  Policy, Binding WS, Binding JMS Specifications!
+- Added new extensions binding.comet
+- Tidied the samples directory
+- Added meta-data to the bindary distribution to identify which Jars are required
+  by each extension
+- Numerous other bug fixes and improvements 
+
 
 Changes With Apache Tuscany SCA 2.0-M5 June 2010
 ====================================================
