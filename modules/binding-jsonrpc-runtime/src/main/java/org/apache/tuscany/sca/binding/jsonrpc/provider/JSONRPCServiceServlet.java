@@ -344,7 +344,13 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
                     try {
                         result = responseMessage.getBody();
                         JSONObject jsonResponse = new JSONObject();
-                        jsonResponse.put("result", result);
+                        //JSONObject put will remove the entry if it's value is null
+                        //and per javadoc, we should pass JSONObject.NULL
+                        if(result == null) {
+                            jsonResponse.put("result", JSONObject.NULL);
+                        } else {
+                            jsonResponse.put("result", result);
+                        }
                         jsonResponse.putOpt("id", id);
                         //get response to send to client
                         return jsonResponse.toString().getBytes("UTF-8");
