@@ -316,7 +316,7 @@ public class WSDLModelResolver implements ModelResolver {
                 imp.setDefinition(d.getDefinition());
                 imp.setLocationURI(d.getDefinition().getDocumentBaseURI());
                 facade.addImport(imp);
-                aggregated.getXmlSchemas().addAll(d.getXmlSchemas());
+ //               aggregated.getXmlSchemas().addAll(d.getXmlSchemas());
                 aggregated.getImportedDefinitions().add(d);
                 // Deal with extensibility elements in the imported Definitions...
                 List<ExtensibilityElement> extElements = (List<ExtensibilityElement>) d.getDefinition().getExtensibilityElements();
