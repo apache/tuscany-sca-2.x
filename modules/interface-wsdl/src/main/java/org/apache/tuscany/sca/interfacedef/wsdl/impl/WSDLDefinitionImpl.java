@@ -219,7 +219,25 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
             }
         }
         if (schemaCollection != null) {
-            return schemaCollection.getElementByQName(name);
+           XmlSchemaElement element = schemaCollection.getElementByQName(name);
+           if ( element != null) {
+        	   return element;
+           }
+        }
+        
+        for ( WSDLDefinition d: imported ) {
+        	if ( d.getDefinition() == definition ) {
+        		XmlSchemaElement element = d.getXmlSchemaElement(name);
+            	if ( element != null )
+            		return element; 
+            	break;
+        	}
+        }
+
+        for ( WSDLDefinition d : imported ) {
+        	XmlSchemaElement element = d.getXmlSchemaElement(name);
+        	if ( element != null )
+        		return element; 
         }
         return null;
     }
@@ -239,7 +257,32 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
             }
         }
         if (schemaCollection != null) {
-            return schemaCollection.getTypeByQName(name);
+            XmlSchemaType type = schemaCollection.getTypeByQName(name);
+            if ( type != null ) {
+            	return type;
+            }
+        }
+        
+        // If this is an aggregated facade WSDL, the definition that this is intended to represent 
+        // will be in the list of imports. We check for the type in this definition first before
+        // proceeding to any imports. 
+        // TODO - This aggregated WSDL facade is a little strange and this isn't the most efficient
+        // way to handle this. For now, this resolves an issue where inline types are being 
+        // returned from the wrong wsdl, but this could be improved. 
+        for ( WSDLDefinition d: imported ) {
+        	if ( d.getDefinition() == definition ) {
+        		XmlSchemaType type = d.getXmlSchemaType(name);
+            	if ( type != null )
+            		return type; 
+            	break;
+        	}
+        }
+        
+        for ( WSDLDefinition d: imported ) {        
+        	XmlSchemaType type = d.getXmlSchemaType(name);
+        	if ( type != null )
+        		return type; 
+        	break;        	
         }
         return null;
     }
