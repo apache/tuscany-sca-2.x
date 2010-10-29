@@ -37,6 +37,13 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-runtime-pom</artifactId>
+            <version>${pom.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-domain-node</artifactId>
             <version>${pom.version}</version>
         </dependency>

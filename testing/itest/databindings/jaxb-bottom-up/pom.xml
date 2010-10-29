@@ -59,62 +59,47 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-api</artifactId>
-            <version>${pom.version}</version>
+            <artifactId>tuscany-core-runtime-pom</artifactId>
+            <version>2.0-Beta1-SNAPSHOT</version>
+            <type>pom</type>
         </dependency>
+        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-impl</artifactId>
-            <version>${pom.version}</version>
+            <artifactId>tuscany-base-runtime-pom</artifactId>
+            <version>2.0-Beta1-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
-            <version>${pom.version}</version>
-            <scope>runtime</scope>
+            <version>2.0-Beta1-SNAPSHOT</version>
+            <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-jetty</artifactId>
+            <version>2.0-Beta1-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+            
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-jaxb</artifactId>
             <version>${pom.version}</version>
             <scope>runtime</scope>
         </dependency>
-        <!--dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding-sdo</artifactId>
-            <version>${pom.version}</version>
-            <scope>compile</scope>
-        </dependency-->
+        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-axiom</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>
-        <!--dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>itest-databindings-common</artifactId>
-            <version>${pom.version}</version>
-            <scope>compile</scope>
-        </dependency-->
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>${pom.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-interface-java</artifactId>
-            <version>${pom.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-jetty</artifactId>
-            <version>${pom.version}</version>
-            <scope>runtime</scope>
-        </dependency>
+        
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
@@ -127,6 +112,7 @@
             <artifactId>jaxws-rt</artifactId>
             <version>2.1.3</version>
         </dependency>
+        
         <!-- Added by Simon Nash    -->
         <dependency>
             <groupId>commons-collections</groupId>
