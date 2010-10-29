@@ -71,6 +71,42 @@ public class SCAClientHandler implements InvocationHandler {
         this.serviceInterface = serviceInterface;
     }
 
+    public void checkDomain() throws NoSuchDomainException {
+        NodeFactoryImpl nodeFactory = (NodeFactoryImpl)NodeFactory.newInstance(domainURI);
+        try {
+            nodeFactory.init();
+            
+            ExtensionPointRegistry extensionsRegistry = nodeFactory.getExtensionPointRegistry();
+            Properties props = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
+            props.setProperty("client", "true");
+            DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionsRegistry);
+            
+            String registryURI = domainURI;
+
+            // TODO: theres better ways to do this but this gets things working for now
+            if (registryURI.indexOf(":") == -1) {
+                registryURI = "tuscanyclient:" + registryURI;
+            }
+            if (registryURI.startsWith("uri:")) {
+                registryURI = "tuscanyclient:" + registryURI.substring(4);
+            }
+            if (registryURI.startsWith("tuscany:")) {
+                registryURI = "tuscanyclient:" + registryURI.substring(8);
+            }
+            
+          
+            try {
+                domainRegistryFactory.getEndpointRegistry(registryURI, domainURI);
+            } catch (Exception e) {
+                throw new NoSuchDomainException(domainURI, e);
+            }
+        } finally {
+            nodeFactory.destroy();
+        }
+    }
+    
+   
+          
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         NodeFactoryImpl nodeFactory = (NodeFactoryImpl)NodeFactory.newInstance(domainURI);
         try {
