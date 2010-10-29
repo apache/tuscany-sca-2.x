@@ -59,14 +59,14 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jsp_2.1_spec</artifactId>
             <version>1.0.1</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
 
         <!-- provided scope doesn't pull in transitive dependencies -->
@@ -74,7 +74,7 @@
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-el_1.0_spec</artifactId>
             <version>1.0.1</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
