@@ -115,7 +115,7 @@
         <executions>
           <execution>
             <id>unpack</id>
-            <phase>test-compile</phase>
+            <phase>process-classes</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
