@@ -15,10 +15,8 @@ tuscany-sca-<version>
 
    /features     - OSGi runtime configuration, Tuscany manifest and PDE target
 
-   /lib          - a new feature of this release looking at how to aggregate the
-                   information in modules into more coarse grained jars to ease
-                   classpath creation without having to rely on the Tuscany distribution
-                   structure.
+   /lib          - coarse grained jars to ease classpath creation without having to rely 
+                   on the Tuscany distribution structure.
 
    /modules      - all of the individual Tuscany jars and their dependencies
 

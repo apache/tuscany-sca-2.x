@@ -1,5 +1,5 @@
-Apache Tuscany SCA 2.0-Beta1 June 2010 Release Notes
-=====================================================
+Apache Tuscany SCA 2.0-Beta1 November 2010 Release Notes
+========================================================
 
 Apache Tuscany provides a runtime based on the Service Component
 Architecture. SCA is a set of specifications aimed at simplifying SOA
@@ -9,28 +9,38 @@ of Open Composite Services Architecture (Open CSA) - http://www.oasis-opencsa.or
 Overview
 --------
 
-     The Apache Tuscany SCA 2.0-Beta1 release includes implementations of the
-     main SCA specifications and recent updates from Open CSA drafts including:
+The Apache Tuscany SCA 2.0-Beta1 release includes implementations of the
+main SCA specifications and recent updates from Open CSA drafts including:
 
-        SCA Assembly Model V1.1
-        SCA Policy Framework V1.1
-        SCA Java Common Annotations and APIs V1.1
-        SCA Java Component Implementation V1.1
+        * SCA Assembly Model V1.1 
+        * SCA Policy Framework V1.1 
+        * SCA Java Common Annotations and APIs V1.1
+        * SCA Java Component Implementation V1.1
+        * SCA Web Services Binding V1.1
+        * SCA JMS Binding V1.1
         SCA Client & Implementation: Spring V1.1
-        SCA Web Services Binding V1.1
         SCA WS-BPEL Client and Implementation V1.1
         (portions of) SCA JEE Integration V1.1
 
-    It also includes implementations of many features not yet defined
-    by SCA specifications, including:
+For those specs marked * the Tuscany runtime passes the 
+OASIS conformance tests (otests) for the specs as they stand
+at the time of release. 
+
+It also includes implementations of many features not yet defined
+by SCA specifications, including:
 
         - SCA bindings for RMI, HTTP, JSON-RPC, ATOM.
         - Databindings for JAXB, Axis2's AXIOM, DOM, SAX and StAX
         - Integration with various web frameworks
 
-    The Tuscany SCA Runtime can be configured as a single node SCA domain or 
-    as an SCA domain distributed across multiple nodes. 
-    In addition Tuscany SCA supports the following host-deployment options: -
+The Tuscany SCA Runtime can be configured as a single node SCA domain.
+ 
+For this Beta1 release the remote Domain support is disabled pending 
+some up-coming changes in the way that domains are addressed and accessed. 
+This means that the scaclient-* samples don't work and cross JVM applications 
+that rely on binding-sca won't work. 
+
+In addition Tuscany SCA supports the following host-deployment options: -
         - running standalone 
         - running in a OSGi enabled runtime Environment (Equinox)
         - running with distributed nodes across multiple JVMs
