@@ -39,13 +39,15 @@
     </repositories>
 
     <modules>
-
+<!-- TUSCANY-3748 - comment out the tests for the Beta1 Release as OASIS haven't
+     released the test resources anywhere yet. 
        <module>assembly</module>
        <module>java-caa</module>
        <module>java-ci</module>
        <module>policy</module>
        <module>binding-ws</module>
-<!--   
+-->
+<!-- Tuscany snapshot test artifacts not up to date for JMS
        <module>binding-jms</module>
 -->
     </modules>

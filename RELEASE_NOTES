@@ -24,10 +24,14 @@ main SCA specifications and recent updates from Open CSA drafts including:
 
 For those specs marked * the Tuscany runtime passes the 
 OASIS conformance tests (otests) for the specs as they stand
-at the time of release. 
+at the time of release. If you want to see the tests run you
+can manually remove the comment that prevents them running 
+in the main build in the following Maven pom:
 
-It also includes implementations of many features not yet defined
-by SCA specifications, including:
+        testing/compliance-tests/pom.xml
+
+The distribution also includes implementations of many features not 
+yet defined by SCA specifications, including:
 
         - SCA bindings for RMI, HTTP, JSON-RPC, ATOM.
         - Databindings for JAXB, Axis2's AXIOM, DOM, SAX and StAX
