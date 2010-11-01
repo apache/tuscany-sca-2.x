@@ -21,5 +21,6 @@
               xmlns:sample="http://sample">
 
    <deployable composite="sample:helloworld"/>
+   <deployable composite="sample:helloworldws"/>
 
 </contribution>
