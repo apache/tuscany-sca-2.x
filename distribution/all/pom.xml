@@ -161,10 +161,7 @@
             <plugin>
                 <groupId>org.apache.tuscany.maven.plugins</groupId> 
                 <artifactId>maven-bundle-plugin</artifactId> 
-<!-- TUSCANY-3674 
-                <version>1.0.6</version>          
--->
-                <version>1.0.7-SNAPSHOT</version>
+                <version>1.0.7</version>
                 <executions>
                     <execution>
                         <id>distribution-modules</id>
@@ -235,9 +232,7 @@
                               </artifactAggregations-->
                         </configuration>
                     </execution>
-<!-- TUSCANY-3674 
-     uncomment when using maven-bundle-plugin v1.0.7-SNAPSHOT
--->
+
                     <execution>
                         <id>extensions-build</id>
                         <phase>process-resources</phase>
