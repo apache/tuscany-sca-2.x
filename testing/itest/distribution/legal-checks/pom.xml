@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>itest-distribution</artifactId>
-        <version>2.0-Beta1-SNAPSHOT</version>
+        <version>2.0-Beta1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>itest-distribution-legal-checks</artifactId>
@@ -36,7 +36,7 @@
                     <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>itest-bin-distro-unzip</artifactId>
                     <type>pom</type>
-                    <version>2.0-Beta1-SNAPSHOT</version>
+                    <version>2.0-Beta1</version>
                 </dependency>        
             </dependencies>
         </profile>
@@ -56,15 +56,15 @@
                             </execution>
                         </executions>
                         <configuration>
-                           <basedir>../../../../distribution/all/target/apache-tuscany-sca-all-2.0-Beta1-SNAPSHOT.dir</basedir>
+                           <basedir>../../../../distribution/all/target/apache-tuscany-sca-all-2.0-Beta1.dir</basedir>
                            <excludeSubProjects>false</excludeSubProjects>
                            <excludes> 
-                              <exclude>tuscany-sca-2.0-Beta1-SNAPSHOT/CHANGES</exclude>
+                              <exclude>tuscany-sca-2.0-Beta1/CHANGES</exclude>
                               <exclude>**/MANIFEST.MF</exclude>
                               <exclude>**/DEPENDENCIES</exclude>
                               <exclude>**/target/**/*.log</exclude>
                               <exclude>**/config.ini</exclude>
-                              <exclude>tuscany-sca-2.0-Beta1-SNAPSHOT/features/configuration/config.ini</exclude>
+                              <exclude>tuscany-sca-2.0-Beta1/features/configuration/config.ini</exclude>
                            </excludes>
                         </configuration>
                     </plugin>

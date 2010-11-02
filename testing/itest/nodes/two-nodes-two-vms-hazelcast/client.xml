@@ -30,7 +30,7 @@
 
 	
 	<target name="run-cmdline">
-		<java classpath="../../../distribution/all/target/apache-tuscany-sca-all-2.0-Beta1-SNAPSHOT.dir/tuscany-sca-2.0-Beta1-SNAPSHOT/features/tuscany-sca-manifest.jar:./target/test-classes:../helloworld-iface/target/classes" 
+		<java classpath="../../../distribution/all/target/apache-tuscany-sca-all-2.0-Beta1.dir/tuscany-sca-2.0-Beta1/features/tuscany-sca-manifest.jar:./target/test-classes:../helloworld-iface/target/classes" 
 			  classname="itest.Client"
 			  fork="true"
 			  failonerror="true">
