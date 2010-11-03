@@ -38,6 +38,14 @@ import org.junit.Test;
  *    tuscany-base-2.0-SNAPSHOT.jar
  *    wsdl4j-1.6.2.jar
  *    XmlSchema-1.4.3.jar  
+ *    
+ *    Some of the provided dependencies were put back to 
+ *    make tuscany-stripes and implementation-web compile in PDE
+ *    so also need
+ *    
+ *    geronimo-el_1.0_spec-1.0.1.jar
+ *    geronimo-jsp_2.1_spec-1.0.1.jar
+ *    servlet-api-2.5.jar
  *
  *    junit-4.8.1.jar (only from this testcase)
  *
@@ -51,6 +59,6 @@ public class ValidateDependenciesTestCase {
         Assert.assertTrue(dependenciesDir.exists());
         
         File[] dependencyFiles = dependenciesDir.listFiles();
-        Assert.assertEquals(6, dependencyFiles.length);
+        Assert.assertEquals(9, dependencyFiles.length);
     }
 }
