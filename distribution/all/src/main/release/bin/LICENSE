@@ -259,9 +259,11 @@ The following components come under Apache Software License 2.0
  geronimo-activation_1.1_spec-1.0.1.jar
  geronimo-connector-2.1.4.jar
  geronimo-ejb_3.0_spec-1.0.1.jar
+ geronimo-el_1.0_spec-1.0.1.jar
  geronimo-javamail_1.4_spec-1.6.jar
  geronimo-jms_1.1_spec-1.1.1.jar
  geronimo-jpa_3.0_spec-1.1.1.jar
+ geronimo-jsp_2.1_spec-1.0.1.jar
  geronimo-jta_1.0.1B_spec-1.0.jar
  geronimo-jta_1.1_spec-1.1.1.jar
  geronimo-j2ee-connector_1.5_spec-2.0.0.jar
@@ -315,6 +317,7 @@ The following components come under Apache Software License 2.0
  spring-context-3.0.2.RELEASE.jar
  spring-core-3.0.2.RELEASE.jar
  spring-expression-3.0.2.RELEASE.jar
+ stripes-1.5.2.jar
  tranql-connector-1.1.jar
  tribes-6.0.26.jar
  wink-common-1.1.1-incubating.jar
