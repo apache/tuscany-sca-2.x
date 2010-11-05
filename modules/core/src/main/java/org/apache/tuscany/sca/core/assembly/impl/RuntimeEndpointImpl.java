@@ -529,7 +529,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                                                   this.getComponent().getName() +
                                                   " Service " +
                                                   getService().getName() +
-                                                  " interface is incompatible with the interface of the reference binding  - " + 
+                                                  " interface is incompatible with the interface of the service binding  - " + 
                                                   getBinding().getName() +
                                                   " - " + 
                                                   ex.getMessage() +
