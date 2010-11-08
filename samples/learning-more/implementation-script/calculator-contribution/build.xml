@@ -18,7 +18,7 @@
 -->
 
 <project name="sample-implementation-script-calculator-contribution" default="compile">
-    <property name="tuscany.home" value="../../.."/>
+    <property name="tuscany.home" value="../../../.."/>
     <property name="jar.name"   value="sample-implementation-script-calculator-contribution.jar" />
     
     <echo>${tuscany.home}</echo>
