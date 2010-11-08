@@ -112,7 +112,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
     }
     
     /**
-     * Bind a single endpoint reference at build time. Here we expect the
+     * Bind a single endpoint reference at run time. Here we expect the
      * registry to be populated with endpoints from across the domain
      *
      * @param endpointRegistry
