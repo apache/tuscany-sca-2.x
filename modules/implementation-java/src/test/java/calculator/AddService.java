@@ -18,11 +18,14 @@
  */
 package calculator;
 
+import org.oasisopen.sca.annotation.Remotable;
+
 /**
  * Interface for the Add Service.
  *
  * @version $Rev$ $Date$
  */
+@Remotable
 public interface AddService {
 
     double add(double n1, double n2);
