@@ -41,7 +41,7 @@ public class JSELauncherBindingJSONRPCCalculator {
      * Using the Tuscany Node API to get a local service proxy
      */
     public void launchBindingSCACalculator(){
-        Node node = NodeFactory.newInstance().createNode(new Contribution("c1", "../binding-jsonrpc/calculator-contribution/target/sample-binding-jsonrpc-calculator-contribution.jar"));
+        Node node = NodeFactory.newInstance().createNode(new Contribution("c1", "../../learning-more/binding-jsonrpc/calculator-contribution/target/sample-binding-jsonrpc-calculator-contribution.jar"));
         node.start();
         
         CalculatorService calculator = node.getService(CalculatorService.class, "CalculatorServiceComponent");
