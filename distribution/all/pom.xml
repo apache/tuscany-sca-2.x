@@ -161,10 +161,7 @@
             <plugin>
                 <groupId>org.apache.tuscany.maven.plugins</groupId> 
                 <artifactId>maven-bundle-plugin</artifactId> 
-<!-- TUSCANY-3674 
-                <version>1.0.6</version>          
--->
-                <version>1.0.7-SNAPSHOT</version>
+                <version>1.0.7</version>
                 <executions>
                     <execution>
                         <id>distribution-modules</id>
@@ -235,9 +232,11 @@
                               </artifactAggregations-->
                         </configuration>
                     </execution>
-<!-- TUSCANY-3674 
-     uncomment when using maven-bundle-plugin v1.0.7-SNAPSHOT
--->
+                    <!-- 
+                       The following execution must repeat the same set of artifact
+                       manifests as the previous one so that the dependency set that 
+                       that th executions are working against is the same. 
+                    -->
                     <execution>
                         <id>extensions-build</id>
                         <phase>process-resources</phase>
