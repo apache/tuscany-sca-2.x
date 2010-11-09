@@ -40,6 +40,13 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-runtime-pom</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-base-runtime-pom</artifactId>
             <version>2.0-SNAPSHOT</version>
             <type>pom</type>
@@ -110,7 +117,7 @@
         <executions>
           <execution>
             <id>unpack</id>
-            <phase>process-test-resources</phase>
+            <phase>process-classes</phase>
             <goals>
               <goal>unpack</goal>
             </goals>

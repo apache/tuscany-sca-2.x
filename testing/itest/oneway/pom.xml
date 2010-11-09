@@ -30,35 +30,39 @@
     <version>2.0-SNAPSHOT</version>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-api</artifactId>
-            <version>${pom.version}</version>
+         <dependency>
+            <groupId>backport-util-concurrent</groupId>
+            <artifactId>backport-util-concurrent</artifactId>
+            <version>3.1</version>
         </dependency>
-
+        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-impl</artifactId>
+            <artifactId>tuscany-core-runtime-pom</artifactId>
             <version>${pom.version}</version>
+            <type>pom</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-base-runtime-pom</artifactId>
+            <version>${pom.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
             <version>${pom.version}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-jetty</artifactId>
-            <version>${pom.version}</version>
+            <scope>test</scope>
         </dependency>
                 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <artifactId>tuscany-host-jetty</artifactId>
             <version>${pom.version}</version>
-            <scope>runtime</scope>
+            <scope>test</scope>
         </dependency>        
     </dependencies>
 </project>
