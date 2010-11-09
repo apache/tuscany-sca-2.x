@@ -22,7 +22,7 @@
            targetNamespace="http://sample"
            name="helloworldws">
 
-    <component name="HelloworldComponent">
+    <component name="HelloworldWSComponent">
         <implementation.java class="sample.HelloworldImpl"/>
         <service name="Helloworld">
            <binding.ws />

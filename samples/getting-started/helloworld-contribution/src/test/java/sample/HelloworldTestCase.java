@@ -20,14 +20,29 @@ package sample;
 
 import static org.junit.Assert.assertEquals;
 
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.Test;
 
 public class HelloworldTestCase {
 
     @Test
     public void testSayHello() {
-        HelloworldImpl helloworld = new HelloworldImpl();
-        assertEquals("Hello Petra", helloworld.sayHello("Petra"));
+        // Start up the Tuscany runtime with this modules as the contribution 
+        Node node = NodeFactory.newInstance().createNode(new Contribution("c1", "target/classes"));
+        node.start();
+        
+        // This contribution is configured to deploy the helloworld.composite file 
+        // automatically. This defines the HelloworldComponent. Get a local proxy to it 
+        // and call the sayHello service operation. 
+        Helloworld helloworld = node.getService(Helloworld.class, "HelloworldComponent");
+        String response = helloworld.sayHello("Petra");
+        System.out.println("Response from helloworld.sayHello(\"Petra\") = " + response);
+        assertEquals("Hello Petra", response);
+        
+        // Stop the Tuscany runtime
+        node.stop();        
     }
 
 }

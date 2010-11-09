@@ -34,9 +34,10 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-base-runtime</artifactId>
+            <artifactId>tuscany-base-runtime-pom</artifactId>
             <version>2.0-SNAPSHOT</version>
-        </dependency>
+            <type>pom</type>
+        </dependency>         
 
         <dependency>
             <groupId>junit</groupId>
