@@ -4,12 +4,12 @@ The Apache Tuscany SCA Samples
 Welcome to the Apache Tuscany SCA Java runtime. You can find more general 
 documentation about the runtime at:
 
-http://tuscany.apache.org/documentation-2x/. 
+http://tuscany.apache.org/documentation-2x/ 
 
 Here we give a short overview of what you can find in the samples directory. 
 More detail on the individual sample contributions can be found at:
 
-http://tuscany.apache.org/documentation-2x/2.0-beta-Samples+documentation
+http://tuscany.apache.org/documentation-2x/20-beta-samples-documentation.html
 
 There are several samples subdirectories in the distribution; 
   

@@ -1,7 +1,6 @@
-Sample Binding Extension
+Sample async implemenation.java
 ===============================
-This sample demonstrates how to develop a new binding type for Apache 
-Tuscany SCA. 
+This sample demonstrates the SCA Java asynchronous programming model 
 
 See http://tuscany.apache.org/documentation-2x/20-beta-samples-documentation.html
 for more information

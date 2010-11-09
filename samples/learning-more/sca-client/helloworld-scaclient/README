@@ -1,17 +1,17 @@
-Calculator SCA Client 
+Helloworld SCA Client 
 =====================
 
 To run an application that uses the SCA client API to send messages to the 
-Calculator service running in the domain do the following
+Helloworld service running in the domain do the following
 
-First start one of the Calculator based contributions. For example,
+First start one of the Helloworld based contributions. For example,
 
-cd samples/learning-more/binding-sca/contribution-calculator
+cd samples/getting-started/helloworld-contribution
 follow the instructions in the README there
 
 Then run the the SCA client by doing the following:
 
-cd samples/learning-more/scaclient-calculator
+cd samples/learning-more/scaclient-helloworld
 mvn exec:java
 
 See http://tuscany.apache.org/documentation-2x/20-beta-samples-documentation.html

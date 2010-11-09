@@ -2,14 +2,9 @@ JSE Sample Launchers
 ====================
 
 This directory contains sample java launchers for the
-tuscany sample contributions.   
+Tuscany sample contributions. The launchers use the Tuscany Node API
+to embed the Tuscany runtime. 
 
-To use this sample JSE launcher with ant execute the command
-
-ant run-<contributionname>
-
-where run-<contributionname> is one of the targets in the build.xml file
-
-To use this sample launcher to run all of the contributions as junit test cases,
-execute the command "mvn" in the launcher directory.
+See http://tuscany.apache.org/documentation-2x/20-beta-samples-documentation.html
+for more information
 

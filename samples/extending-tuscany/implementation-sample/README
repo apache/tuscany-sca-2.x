@@ -3,7 +3,6 @@ Sample Implementation Extension
 This sample demonstrates how to develop a new component implementation type
 for Apache Tuscany SCA. 
 
-The README in the samples directory (the directory two directories above 
-this one) provides instructions about building and running the samples. Take
-a look there.
+See http://tuscany.apache.org/documentation-2x/20-beta-samples-documentation.html
+for more information
 

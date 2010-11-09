@@ -3,23 +3,7 @@ Calculator Contribution Sample
 
 This directory contains code which implements a simple calculator SCA contribution.
 
-The contribution can be run as a tuscany application using one of the tuscany launchers
-as described in the README in the root directory of the samples. 
-
-Sample Overview
----------------
-The sample provides a single calculator service with a default SCA (java) 
-binding. The launcher exercises this interface by calling add, 
-subtract, multiply and divide operations. This results in messages passing to 
-the appropriate components in the composite across the local wires.
-
-You should see the following output (depending on the launcher you use, this output
-may be surrounded by other output).
-
-run:
-     [java] 3 + 2=5.0
-     [java] 3 - 2=1.0
-     [java] 3 * 2=6.0
-     [java] 3 / 2=1.5
+See http://tuscany.apache.org/documentation-2x/20-beta-samples-documentation.html
+for more information
 
 
