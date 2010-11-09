@@ -1,20 +1,23 @@
-Changes With Apache Tuscany SCA 2.0-Beta1 June 2010
-====================================================
-
-Lots of updates to keep up with recent changes in the OASIS Specifications
-
 Changes With Apache Tuscany SCA 2.0-Beta1 November 2010
 =======================================================
 
 Highlights include:
-- Passes the OASIS conformance test suite for the SCA Assembly, SCA-J CAA, SCA-J CI, 
+- The mojority of work since June has been numerous fixes to the code base so that the runtime
+  now passes the OASIS conformance test suite for the SCA Assembly, SCA-J CAA, SCA-J CI, 
   Policy, Binding WS, Binding JMS Specifications!
-- Added new extensions binding.comet
-- Tidied the samples directory
+- Added new extensions 
+    <binding.comet>
+    <implmentation.python>
+- Reorganization of <implementation.spring> extension Jars
+- More improvements to the samples directory layout to separate various
+  different types of samples
 - Added meta-data to the bindary distribution to identify which Jars are required
   by each extension
+- Started tidying project poms to depend on core collection of Tuscany Jars
 - Numerous other bug fixes and improvements 
-
+- For this Beta1 release the remote Domain support is disabled pending some up-coming
+  changes in the way that domains are addressed and accessed. This means that the 
+  scaclient-* samples don't work
 
 Changes With Apache Tuscany SCA 2.0-M5 June 2010
 ====================================================
