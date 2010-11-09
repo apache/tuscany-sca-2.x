@@ -41,6 +41,7 @@
                 <exclude>**/target/.felix/**/*</exclude>
                 <exclude>**/target/generated-sources</exclude>
                 <exclude>**/target/generated-sources/**/*</exclude>
+                <exclude>**/target/logs</exclude>
                 <exclude>**/target/maven-archiver</exclude>
                 <exclude>**/target/maven-archiver/**/*</exclude>
                 <exclude>**/target/maven-shared-archive-resources</exclude>
@@ -60,6 +61,11 @@
                 <exclude>**/*-webapp/target</exclude>
                 <exclude>**/*-webapp/target/**/*</exclude>
                 <exclude>**/*-webapp/src/main/webapp/dojo/**/*</exclude>
+                <exclude>**/implementation-web/**/target</exclude>
+                <exclude>**/implementation-web/**/target/**/*</exclude>
+                <exclude>**/implementation-web/**/src/main/webapp/dojo/**/*</exclude>
+                <exclude>**/running-tuscany/**/target</exclude>
+                <exclude>**/running-tuscany/**/target/**/*</exclude>
             </excludes>
         </fileSet>
     </fileSets>
