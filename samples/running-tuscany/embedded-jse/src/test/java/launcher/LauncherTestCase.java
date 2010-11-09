@@ -27,7 +27,7 @@ public class LauncherTestCase {
     
     @Test
     public void testBindingJSONRPCCalculator() throws Exception {
-        JSELauncherBindingSCACalculator.main(null);
+        JSELauncherBindingJSONRPCCalculator.main(null);
     }    
 
     @Test
