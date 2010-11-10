@@ -30,8 +30,10 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-extensibility</artifactId>
+            <artifactId>tuscany-core-runtime-pom</artifactId>
+            <type>pom</type>
             <version>2.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
