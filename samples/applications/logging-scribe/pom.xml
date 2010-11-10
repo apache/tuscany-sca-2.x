@@ -36,6 +36,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <!-- Disable due to Thrift SPANSHOT Dependency -->
                 <!--module>helloworld-scribe</module-->
             </modules>
         </profile>
