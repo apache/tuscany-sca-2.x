@@ -37,7 +37,6 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -68,7 +67,8 @@ public class PythonImplementationProcessor extends BaseStAXArtifactProcessor imp
                 Operation op = eval.getOperations().get(0);
                 op.setDynamic(true);
                 getOperations().add(op);
-                resetDataBinding(JSONDataBinding.NAME);
+                //resetDataBinding(JSONDataBinding.NAME);
+                resetDataBinding("JSON");
                 setUnresolved(false);
             }
 
