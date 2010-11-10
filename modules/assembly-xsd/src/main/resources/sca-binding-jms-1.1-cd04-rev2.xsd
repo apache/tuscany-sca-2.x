@@ -6,7 +6,7 @@
         xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
         elementFormDefault="qualified">
 
-   <include schemaLocation="sca-core-1.1-cd05-rev1.xsd"/>
+   <include schemaLocation="sca-core-1.1-cd06.xsd"/>
 
    <complexType name="JMSBinding">
       <complexContent>
@@ -96,7 +96,7 @@
 
    <complexType name="JMSHeaders">
       <sequence>
-         <element name="property" type="sca:BindingProperty" 
+         <element name="property" type="sca:JMSUserProperty" 
                   minOccurs="0" maxOccurs="unbounded"/>
       </sequence>
       <attribute name="type" type="string"/>
@@ -163,8 +163,29 @@
       </simpleContent>
    </complexType>
 
-   <element name="binding.jms" type="sca:JMSBinding" 
-            substitutionGroup="sca:binding"/>
+   <simpleType name="JMSUserPropertyType">
+      <restriction base="string">
+         <enumeration value="boolean"/>
+         <enumeration value="byte"/>
+         <enumeration value="short"/>
+         <enumeration value="int"/>
+         <enumeration value="long"/>
+         <enumeration value="float"/>
+         <enumeration value="double"/>
+         <enumeration value="String"/>
+         <enumeration value="xs:string"/>
+      </restriction>
+   </simpleType>
+
+   <complexType name="JMSUserProperty">
+      <simpleContent>
+         <extension base="string">
+            <attribute name="name" type="NMTOKEN" use="required"/>
+            <attribute name="type" type="sca:JMSUserPropertyType"
+                       use="optional" default="String"/>
+         </extension>
+      </simpleContent>
+   </complexType>
 
    <complexType name="JMSDefaultWireFormatType">
       <complexContent>
@@ -178,9 +199,14 @@
       </complexContent>
    </complexType>
 
-   <element name="wireFormat.jmsDefault" type="sca:JMSDefaultWireFormatType" 
+   <element name="binding.jms" type="sca:JMSBinding" 
+            substitutionGroup="sca:binding"/>
+
+   <element name="wireFormat.jmsDefault" 
+            type="sca:JMSDefaultWireFormatType"
             substitutionGroup="sca:wireFormat"/>
 
-   <element name="operationSelector.jmsDefault" type="sca:JMSDefaultOperationSelectorType" 
+   <element name="operationSelector.jmsDefault"
+            type="sca:JMSDefaultOperationSelectorType"
             substitutionGroup="sca:operationSelector"/>
 </schema>
