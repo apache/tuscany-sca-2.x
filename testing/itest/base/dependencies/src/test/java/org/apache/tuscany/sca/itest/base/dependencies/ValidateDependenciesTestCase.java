@@ -29,24 +29,17 @@ import org.junit.Test;
  * Test case for verifying the expected dependencies of the base jar
  * (Uses maven-dependency-plugin config in the pom.xml to generate the dependency list)
  *
- * *** NOTE: this is an API! If the dependencies change the API is changed and users will be broken.
- *           Don't just change the list without thinking about the consequencies
- * 
  * Current required jars are:
  *    asm-3.1.jar
  *    cglib-2.2.jar
  *    tuscany-base-2.0-SNAPSHOT.jar
  *    wsdl4j-1.6.2.jar
  *    XmlSchema-1.4.3.jar  
- *    
- *    Some of the provided dependencies were put back to 
- *    make tuscany-stripes and implementation-web compile in PDE
- *    so also need
- *    
- *    geronimo-el_1.0_spec-1.0.1.jar
- *    geronimo-jsp_2.1_spec-1.0.1.jar
- *    servlet-api-2.5.jar
  *
+ * *** NOTE: this is an API! If the dependencies change the API is changed and users will be broken.
+ *           Don't just change the list without thinking about the consequencies
+ *           or probably asking on the dev list first
+ *    
  *    junit-4.8.1.jar (only from this testcase)
  *
  */
@@ -59,6 +52,6 @@ public class ValidateDependenciesTestCase {
         Assert.assertTrue(dependenciesDir.exists());
         
         File[] dependencyFiles = dependenciesDir.listFiles();
-        Assert.assertEquals(9, dependencyFiles.length);
+        Assert.assertEquals(6, dependencyFiles.length);
     }
 }
