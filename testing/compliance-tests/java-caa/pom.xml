@@ -30,34 +30,19 @@
 
     <dependencies>
 
-        <dependency>
             <!-- This is only needed to get the module working in Eclipse which doesn't pick it up from the dependency plugin unpack -->
             <!-- The dependency plugin unpack is needed as presently the surefire plugin wont run tests in a dependency jar -->
+        <!-- dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-otests-sca-j-caa-tests</artifactId>
             <version>2.0-SNAPSHOT</version>
+        </dependency -->
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-base-runtime</artifactId>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core-runtime-pom</artifactId>
-            <version>2.0-SNAPSHOT</version>
-            <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-base-runtime-pom</artifactId>
-            <version>2.0-SNAPSHOT</version>
-            <type>pom</type>
-        </dependency> 
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-osgi-runtime-pom</artifactId>
-            <version>2.0-SNAPSHOT</version>
-            <type>pom</type>
-        </dependency> 
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -66,24 +51,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-jetty</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency> 
-
-        <!-- This is need when running with Sun JDK which gets an unsupported operation exception creating an XMLStreamReader from a DOMSource
-             when Tuscany is writing a property value  -->
-        <dependency>
-            <groupId>org.codehaus.woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
-            <version>3.2.4</version>
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>stax</groupId>
-                    <artifactId>stax-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <version>6.1.19</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
