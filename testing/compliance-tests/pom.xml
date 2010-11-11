@@ -41,7 +41,7 @@
     <modules>
 
        <module>assembly</module>
-       <module>java-caa</module>
+       <!-- TUSCANY-3781 module>java-caa</module -->
        <module>java-ci</module>
        <module>policy</module>
        <module>binding-ws</module>
