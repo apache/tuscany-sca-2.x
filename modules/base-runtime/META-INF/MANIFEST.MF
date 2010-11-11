@@ -1,0 +1,476 @@
+Manifest-Version: 1.0
+Main-Class: org.apache.tuscany.sca.shell.Shell
+Export-Package: org.apache.tuscany.sca.launcher;version="2.0",org.apac
+ he.tuscany.sca.assembly.xml;version="2.0.0";uses:="org.apache.tuscany
+ .sca.assembly,  javax.xml.parsers,  org.apache.tuscany.sca.core,  org
+ .apache.tuscany.sca.contribution,  org.apache.tuscany.sca.monitor,  o
+ rg.apache.tuscany.sca.policy,  org.apache.tuscany.sca.interfacedef,  
+ org.w3c.dom,  javax.xml.namespace,  javax.xml.stream,  org.apache.tus
+ cany.sca.contribution.resolver,  org.apache.tuscany.sca.contribution.
+ processor",org.apache.tuscany.sca.definitions.xml;version="2.0.0";use
+ s:="javax.xml.stream,  org.apache.tuscany.sca.contribution.resolver, 
+  org.apache.tuscany.sca.definitions,  org.apache.tuscany.sca.contribu
+ tion.processor,  org.apache.tuscany.sca.core,  org.apache.tuscany.sca
+ .monitor,  javax.xml.namespace",org.apache.tuscany.sca.policy.xml;ver
+ sion="2.0.0";uses:="javax.xml.xpath,  javax.xml.stream,  org.apache.t
+ uscany.sca.contribution.resolver,  org.apache.tuscany.sca.contributio
+ n.processor,  org.apache.tuscany.sca.core,  org.apache.tuscany.sca.po
+ licy,  org.apache.tuscany.sca.monitor,  javax.xml.namespace",org.apac
+ he.tuscany.sca.common.xml;version="2.0.0";uses:="org.xml.sax",org.apa
+ che.tuscany.sca.common.xml.dom;version="2.0.0";uses:="org.xml.sax.ext
+ ,  javax.xml.transform,  javax.xml.parsers,  org.apache.tuscany.sca.c
+ ore,  org.w3c.dom,  javax.xml.namespace,  org.xml.sax",org.apache.tus
+ cany.sca.common.xml.sax;version="2.0.0";uses:="javax.xml.parsers,org.
+ apache.tuscany.sca.core,org.xml.sax",org.apache.tuscany.sca.common.xm
+ l.stax;version="2.0.0";uses:="org.apache.tuscany.sca.common.xml.dom, 
+  javax.xml.stream,  javax.xml.transform,  org.apache.tuscany.sca.core
+ ,  org.w3c.dom,  javax.xml.namespace,  org.xml.sax",org.apache.tuscan
+ y.sca.common.xml.stax.reader;version="2.0.0";uses:="javax.xml.stream,
+   javax.xml.stream.util,  org.w3c.dom,  javax.xml.namespace",org.apac
+ he.tuscany.sca.common.xml.xpath;version="2.0.0";uses:="javax.xml.xpat
+ h,org.apache.tuscany.sca.core,javax.xml.namespace",org.apache.tuscany
+ .sca.interfacedef.wsdl;version="2.0.0";uses:="org.apache.ws.commons.s
+ chema,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.contribu
+ tion.resolver,javax.wsdl.extensions,org.apache.tuscany.sca.core,org.a
+ pache.tuscany.sca.interfacedef,javax.wsdl,javax.xml.namespace",org.ap
+ ache.tuscany.sca.databinding.jaxb;version="2.0.0";uses:="org.apache.t
+ uscany.sca.databinding,org.apache.tuscany.sca.interfacedef.util,javax
+ .xml.transform.dom,org.xml.sax,javax.xml.namespace,javax.imageio,java
+ x.xml.stream,org.apache.tuscany.sca.contribution.resolver,org.apache.
+ tuscany.sca.databinding.util,org.oasisopen.sca,org.apache.tuscany.sca
+ .databinding.xml,org.apache.tuscany.sca.databinding.impl,org.apache.w
+ s.commons.schema.resolver,org.apache.tuscany.sca.interfacedef,org.w3c
+ .dom,javax.xml.datatype,javax.activation,javax.xml.bind.attachment,ja
+ vax.xml.transform,javax.xml.bind.annotation,javax.xml.transform.strea
+ m,org.apache.tuscany.sca.interfacedef.impl,org.apache.tuscany.sca.xsd
+ ,javax.xml.bind",org.apache.tuscany.sca.implementation.web;version="2
+ .0.0";uses:="org.apache.tuscany.sca.assembly",org.apache.tuscany.sca.
+ context;version="2.0.0";uses:="org.apache.tuscany.sca.runtime,  org.a
+ pache.tuscany.sca.assembly,  org.apache.tuscany.sca.core,  org.oasiso
+ pen.sca,  org.apache.tuscany.sca.extensibility",org.apache.tuscany.sc
+ a.invocation;version="2.0.0";uses:="org.apache.tuscany.sca.runtime,or
+ g.apache.tuscany.sca.interfacedef",org.apache.tuscany.sca.management;
+ version="2.0.0";uses:="org.apache.tuscany.sca.runtime",org.apache.tus
+ cany.sca.provider;version="2.0.0";uses:="org.apache.tuscany.sca.invoc
+ ation,  org.apache.tuscany.sca.runtime,  org.apache.tuscany.sca.assem
+ bly,  org.apache.tuscany.sca.definitions,  org.apache.tuscany.sca.cor
+ e,  org.apache.tuscany.sca.interfacedef,  org.apache.tuscany.sca.exte
+ nsibility",org.apache.tuscany.sca.runtime;version="2.0.0";uses:="org.
+ apache.tuscany.sca.invocation,  org.apache.tuscany.sca.assembly,  org
+ .apache.tuscany.sca.endpointresolver,  org.apache.tuscany.sca.provide
+ r,  org.oasisopen.sca,  org.apache.tuscany.sca.interfacedef",org.apac
+ he.tuscany.sca.work;version="2.0.0",org.apache.tuscany.sca.interfaced
+ ef.java.jaxws;version="2.0.0";uses:="org.apache.tuscany.sca.databindi
+ ng,org.apache.tuscany.sca.interfacedef.util,org.objectweb.asm,javax.j
+ ws,javax.xml.namespace,javax.jws.soap,org.apache.tuscany.sca.interfac
+ edef.java.impl,org.apache.tuscany.sca.databinding.annotation,org.oasi
+ sopen.sca,javax.xml.bind.annotation.adapters,org.apache.tuscany.sca.i
+ nterfacedef.java,org.apache.tuscany.sca.interfacedef,org.apache.tusca
+ ny.sca.interfacedef.java.introspect,javax.xml.bind.annotation,org.apa
+ che.tuscany.sca.databinding.jaxb,org.apache.tuscany.sca.interfacedef.
+ impl,javax.xml.ws",org.apache.tuscany.sca.host.webapp;version="2.0.0"
+ ;uses:="javax.servlet,org.apache.tuscany.sca.host.http,org.apache.tus
+ cany.sca.core",org.apache.tuscany.sca.endpoint.hazelcast.client;versi
+ on="2.0.0";uses:="org.apache.tuscany.sca.runtime,org.apache.tuscany.s
+ ca.assembly,org.apache.tuscany.sca.core,org.apache.tuscany.sca.endpoi
+ nt.hazelcast",org.apache.tuscany.sca.binding.ws;version="2.0.0";uses:
+ ="org.apache.tuscany.sca.assembly,  org.apache.tuscany.sca.interfaced
+ ef.wsdl,  org.apache.tuscany.sca.assembly.builder,  org.apache.tuscan
+ y.sca.interfacedef,  org.w3c.dom,  javax.wsdl,  javax.xml.namespace",
+ org.apache.tuscany.sca.binding.ws.addressing;version="2.0.0";uses:="j
+ avax.xml.namespace",org.apache.ws.commons.schema,org.apache.ws.common
+ s.schema.resolver,org.apache.ws.commons.schema.utils,org.apache.ws.co
+ mmons.schema.constants,org.apache.ws.commons.schema.extensions,org.oa
+ sisopen.sca;version="2.0.0";uses:="javax.security.auth",org.oasisopen
+ .sca.annotation;version="2.0.0",org.oasisopen.sca.client;version="2.0
+ .0",org.objectweb.asm;version="3.1.0",org.objectweb.asm.signature;ver
+ sion="3.1.0",org.apache.tuscany.sca.monitor;version="2.0.0",org.apach
+ e.tuscany.sca.host.http;version="2.0.0";uses:="javax.servlet,javax.se
+ rvlet.http",javax.wsdl.extensions.schema;version="1.6.2",javax.wsdl.e
+ xtensions;version="1.6.2",com.ibm.wsdl.xml;version="1.6.2",javax.wsdl
+ .xml;version="1.6.2",com.ibm.wsdl.util;version="1.6.2",com.ibm.wsdl.e
+ xtensions.mime;version="1.6.2",com.ibm.wsdl.extensions.soap;version="
+ 1.6.2",javax.wsdl.extensions.soap12;version="1.6.2",javax.wsdl.extens
+ ions.mime;version="1.6.2",javax.wsdl;version="1.6.2",com.ibm.wsdl.uti
+ l.xml;version="1.6.2",com.ibm.wsdl.extensions.http;version="1.6.2",co
+ m.ibm.wsdl.extensions.soap12;version="1.6.2",javax.wsdl.extensions.ht
+ tp;version="1.6.2",com.ibm.wsdl;version="1.6.2",com.ibm.wsdl.extensio
+ ns;version="1.6.2",com.ibm.wsdl.extensions.schema;version="1.6.2",jav
+ ax.wsdl.factory;version="1.6.2",javax.wsdl.extensions.soap;version="1
+ .6.2",com.ibm.wsdl.factory;version="1.6.2",org.apache.tuscany.sca.dat
+ abinding;version="2.0.0";uses:="org.apache.tuscany.sca.interfacedef.u
+ til,org.apache.tuscany.sca.databinding.impl,org.apache.tuscany.sca.in
+ terfacedef,org.apache.tuscany.sca.extensibility,javax.xml.namespace,o
+ rg.apache.tuscany.sca.contribution.resolver,org.apache.tuscany.sca.in
+ terfacedef.impl,org.apache.tuscany.sca.xsd",org.apache.tuscany.sca.da
+ tabinding.xml;version="2.0.0";uses:="org.apache.tuscany.sca.databindi
+ ng,org.apache.tuscany.sca.interfacedef.util,org.apache.tuscany.sca.da
+ tabinding.impl,javax.xml.parsers,javax.xml.transform.dom,org.w3c.dom,
+ org.apache.tuscany.sca.interfacedef,org.xml.sax,javax.xml.namespace,j
+ avax.xml.stream,javax.xml.stream.util,org.xml.sax.ext,javax.xml.trans
+ form,javax.xml.transform.stream,org.apache.tuscany.sca.interfacedef.i
+ mpl,javax.xml.transform.sax,org.apache.tuscany.sca.databinding.javabe
+ ans,org.xml.sax.helpers",org.apache.tuscany.sca.databinding.impl;vers
+ ion="2.0.0";uses:="org.apache.tuscany.sca.databinding,org.apache.tusc
+ any.sca.interfacedef.util,javax.xml.parsers,org.apache.tuscany.sca.in
+ terfacedef,org.w3c.dom,javax.xml.datatype,javax.xml.namespace,javax.x
+ ml.transform,org.apache.tuscany.sca.interfacedef.impl",org.apache.tus
+ cany.sca.databinding.util;version="2.0.0";uses:="org.apache.tuscany.s
+ ca.interfacedef.util,org.apache.tuscany.sca.interfacedef",org.apache.
+ tuscany.sca.databinding.annotation;version="2.0.0",org.apache.tuscany
+ .sca.databinding.javabeans;version="2.0.0";uses:="org.apache.tuscany.
+ sca.databinding,org.apache.tuscany.sca.databinding.xml,org.apache.tus
+ cany.sca.interfacedef.util,org.apache.tuscany.sca.databinding.impl,ja
+ vax.xml.parsers,org.w3c.dom,org.apache.tuscany.sca.interfacedef,javax
+ .xml.datatype,javax.xml.namespace,javax.xml.stream",org.apache.tuscan
+ y.sca.binding.sca.provider;version="2.0.0";uses:="org.apache.tuscany.
+ sca.databinding,  org.apache.tuscany.sca.runtime,  org.apache.tuscany
+ .sca.assembly,  org.apache.tuscany.sca.provider,  org.apache.tuscany.
+ sca.core,  org.apache.tuscany.sca.interfacedef,  javax.xml.namespace,
+   org.apache.tuscany.sca.invocation,  org.apache.tuscany.sca.contribu
+ tion.processor,  org.apache.tuscany.sca.assembly.builder",org.apache.
+ tuscany.sca.implementation.java;version="2.0.0";uses:="org.apache.tus
+ cany.sca.assembly,  org.apache.tuscany.sca.implementation.java.intros
+ pect,  org.apache.tuscany.sca.core,  org.apache.tuscany.sca.policy,  
+ org.apache.tuscany.sca.interfacedef.java",org.apache.tuscany.sca.impl
+ ementation.java.introspect;version="2.0.0";uses:="org.apache.tuscany.
+ sca.assembly,org.apache.tuscany.sca.implementation.java,org.oasisopen
+ .sca",org.apache.tuscany.sca.implementation.java.introspect.impl;vers
+ ion="2.0.0",org.apache.tuscany.sca.implementation.web.runtime.utils;v
+ ersion="2.0",org.apache.tuscany.sca.implementation.web.runtime;versio
+ n="2.0",org.apache.tuscany.sca.deployment;version="2.0.0";uses:="java
+ x.xml.stream,  org.apache.tuscany.sca.assembly,  org.apache.tuscany.s
+ ca.contribution.processor,  org.apache.tuscany.sca.core,  org.apache.
+ tuscany.sca.contribution,  org.apache.tuscany.sca.monitor,  org.apach
+ e.tuscany.sca.assembly.builder",org.apache.tuscany.sca.deployment.imp
+ l;version="2.0.0";uses:="org.apache.tuscany.sca.assembly,  org.apache
+ .tuscany.sca.definitions,  org.apache.tuscany.sca.common.xml.stax,  o
+ rg.apache.tuscany.sca.contribution,  org.apache.tuscany.sca.core,  or
+ g.apache.tuscany.sca.deployment,  org.apache.tuscany.sca.monitor,  ja
+ vax.xml.stream,  org.apache.tuscany.sca.contribution.resolver,  org.a
+ pache.tuscany.sca.contribution.processor,  org.apache.tuscany.sca.ass
+ embly.builder",org.apache.tuscany.sca.contribution.scanner;version="2
+ .0.0";uses:="org.apache.tuscany.sca.contribution.processor,org.apache
+ .tuscany.sca.extensibility",org.apache.tuscany.sca.contribution.resol
+ ver;version="2.0.0";uses:="org.apache.tuscany.sca.assembly,org.apache
+ .tuscany.sca.core,org.apache.tuscany.sca.contribution,org.apache.tusc
+ any.sca.extensibility",org.apache.tuscany.sca.contribution.processor;
+ version="2.0.0";uses:="org.apache.tuscany.sca.assembly,org.apache.tus
+ cany.sca.core,org.apache.tuscany.sca.policy,org.apache.tuscany.sca.mo
+ nitor,org.apache.tuscany.sca.extensibility,org.xml.sax,javax.xml.name
+ space,javax.xml.stream,javax.xml.stream.util,javax.xml.transform,org.
+ apache.tuscany.sca.contribution.resolver,javax.xml.transform.stream,j
+ avax.xml.validation,org.xml.sax.helpers",org.apache.tuscany.sca.contr
+ ibution;version="2.0.0";uses:="org.apache.tuscany.sca.assembly,org.ap
+ ache.tuscany.sca.contribution.resolver",org.apache.tuscany.sca.contri
+ bution.namespace;version="2.0.0";uses:="org.apache.tuscany.sca.contri
+ bution",org.apache.tuscany.sca.contribution.java;version="2.0.0";uses
+ :="org.apache.tuscany.sca.contribution",org.apache.tuscany.sca.core.a
+ ssembly;version="2.0.0";uses:="org.apache.tuscany.sca.assembly,org.ap
+ ache.tuscany.sca.core",org.apache.tuscany.sca.core.context;version="2
+ .0.0";uses:="javax.xml.stream,  org.apache.tuscany.sca.runtime,  org.
+ apache.tuscany.sca.assembly,  org.apache.tuscany.sca.context,  org.oa
+ sisopen.sca,  org.apache.tuscany.sca.core",org.apache.tuscany.sca.cor
+ e.factory;version="2.0.0",org.apache.tuscany.sca.core.invocation;vers
+ ion="2.0.0";uses:="org.apache.tuscany.sca.invocation,  org.apache.tus
+ cany.sca.runtime,  org.apache.tuscany.sca.assembly,  org.oasisopen.sc
+ a,  org.apache.tuscany.sca.work,  org.apache.tuscany.sca.core.factory
+ ,  org.apache.tuscany.sca.core.context.impl,  org.apache.tuscany.sca.
+ core,  org.apache.tuscany.sca.interfacedef",org.apache.tuscany.sca.co
+ re.scope;version="2.0.0";uses:="org.apache.tuscany.sca.runtime,  org.
+ apache.tuscany.sca.provider,  org.apache.tuscany.sca.core.scope.impl,
+   org.apache.tuscany.sca.core.factory",org.apache.tuscany.sca.node.im
+ pl;version="2.0.0",org.apache.tuscany.sca.xsd;version="2.0.0";uses:="
+ org.apache.ws.commons.schema,  org.apache.tuscany.sca.assembly,  org.
+ apache.tuscany.sca.xsd.impl,  org.w3c.dom,  javax.xml.namespace",org.
+ apache.tuscany.sca.xsd.xml;version="2.0.0";uses:="org.apache.ws.commo
+ ns.schema.resolver,  org.apache.tuscany.sca.contribution.resolver,  o
+ rg.apache.tuscany.sca.contribution.processor,  org.apache.tuscany.sca
+ .contribution,  org.apache.tuscany.sca.xsd,  org.apache.tuscany.sca.c
+ ore,  org.apache.tuscany.sca.monitor,  org.xml.sax,  javax.xml.namesp
+ ace",org.apache.tuscany.sca.binding.ws.jaxws;version="2.0.0",org.apac
+ he.tuscany.sca.core;version="2.0.0";uses:="org.apache.tuscany.sca.ext
+ ensibility",org.apache.tuscany.sca.extensibility;version="2.0.0",org.
+ apache.tuscany.sca.endpoint.hazelcast;version="2.0.0";uses:="org.apac
+ he.tuscany.sca.runtime,org.apache.tuscany.sca.assembly,org.apache.tus
+ cany.sca.core",org.apache.tuscany.sca.implementation.java.context;ver
+ sion="2.0.0";uses:="org.apache.tuscany.sca.core.context,org.apache.tu
+ scany.sca.core.factory,org.apache.tuscany.sca.implementation.java,org
+ .apache.tuscany.sca.core.scope,org.apache.tuscany.sca.implementation.
+ java.injection",org.apache.tuscany.sca.implementation.java.injection;
+ version="2.0.0";uses:="org.apache.tuscany.sca.databinding,org.apache.
+ tuscany.sca.databinding.xml,org.apache.tuscany.sca.runtime,org.apache
+ .tuscany.sca.interfacedef.util,org.apache.tuscany.sca.assembly,org.ap
+ ache.tuscany.sca.context,org.apache.tuscany.sca.databinding.impl,org.
+ apache.tuscany.sca.core.context,org.apache.tuscany.sca.implementation
+ .java.introspect,org.apache.tuscany.sca.implementation.java,org.apach
+ e.tuscany.sca.interfacedef,org.w3c.dom,javax.xml.namespace,org.apache
+ .tuscany.sca.invocation,org.apache.tuscany.sca.core.factory,org.apach
+ e.tuscany.sca.interfacedef.impl,org.oasisopen.sca,org.apache.tuscany.
+ sca.core.invocation",com.hazelcast.cluster;uses:="com.hazelcast.impl.
+ base, com.hazelcast.nio, com.hazelcast.core, com.hazelcast.impl, com.
+ hazelcast.util",com.hazelcast.config;uses:="com.hazelcast.nio,org.w3c
+ .dom",com.hazelcast.core;uses:="com.hazelcast.monitor, com.hazelcast.
+ nio, com.hazelcast.query, com.hazelcast.impl, com.hazelcast.logging, 
+ com.hazelcast.config, com.hazelcast.partition",com.hazelcast.examples
+ ;uses:="com.hazelcast.core",com.hazelcast.jmx;uses:="com.hazelcast.co
+ nfig, com.hazelcast.core, javax.management, com.hazelcast.impl",com.h
+ azelcast.logging,com.hazelcast.monitor;uses:="com.hazelcast.core,com.
+ hazelcast.impl",com.hazelcast.nio;uses:="javax.crypto, com.hazelcast.
+ impl, com.hazelcast.logging, com.hazelcast.cluster",com.hazelcast.par
+ tition;uses:="com.hazelcast.core",com.hazelcast.query;uses:="com.haze
+ lcast.nio,com.hazelcast.core,com.hazelcast.impl",com.hazelcast.util,o
+ rg.apache.tuscany.sca.binding.ws.wsdlgen;version="2.0.0";uses:="org.a
+ pache.tuscany.sca.databinding,org.apache.tuscany.sca.interfacedef.uti
+ l,org.apache.tuscany.sca.core,org.apache.tuscany.sca.policy,javax.wsd
+ l.extensions.schema,javax.xml.namespace,javax.wsdl.xml,javax.wsdl.ext
+ ensions,org.apache.tuscany.sca.contribution.resolver,org.oasisopen.sc
+ a,org.apache.ws.commons.schema,javax.wsdl.factory,org.apache.tuscany.
+ sca.assembly,javax.wsdl.extensions.soap,javax.xml.parsers,org.apache.
+ tuscany.sca.monitor,org.apache.tuscany.sca.interfacedef.java,org.apac
+ he.tuscany.sca.interfacedef,org.w3c.dom,javax.wsdl,org.apache.tuscany
+ .sca.binding.ws,javax.wsdl.extensions.soap12,org.apache.tuscany.sca.d
+ atabinding.jaxb,org.apache.tuscany.sca.interfacedef.wsdl,org.apache.w
+ s.commons.schema.utils,org.apache.tuscany.sca.xsd",org.apache.tuscany
+ .sca.node;version="2.0.0";uses:="org.oasisopen.sca",org.apache.tuscan
+ y.sca.node.configuration;version="2.0.0",org.apache.tuscany.sca.core.
+ databinding.processor;version="2.0.0";uses:="org.w3c.dom",org.apache.
+ tuscany.sca.assembly;version="2.0.0";uses:="javax.xml.xpath,  org.apa
+ che.tuscany.sca.assembly.impl,  org.apache.tuscany.sca.core,  org.apa
+ che.tuscany.sca.policy,  org.apache.tuscany.sca.interfacedef,  javax.
+ xml.namespace",org.apache.tuscany.sca.assembly.builder;version="2.0.0
+ ";uses:="org.apache.tuscany.sca.assembly,  org.apache.tuscany.sca.def
+ initions,  org.apache.tuscany.sca.core,  org.apache.tuscany.sca.monit
+ or",org.apache.tuscany.sca.assembly.impl;version="2.0.0";uses:="javax
+ .xml.xpath,  org.apache.tuscany.sca.assembly,  org.apache.tuscany.sca
+ .core,  org.apache.tuscany.sca.policy,  org.apache.tuscany.sca.interf
+ acedef,  javax.xml.namespace",org.apache.tuscany.sca.definitions;vers
+ ion="2.0.0",org.apache.tuscany.sca.definitions.util;version="2.0.0";u
+ ses:="org.apache.tuscany.sca.definitions,org.apache.tuscany.sca.monit
+ or",org.apache.tuscany.sca.interfacedef;version="2.0.0";uses:="org.ap
+ ache.tuscany.sca.interfacedef.util,org.apache.tuscany.sca.policy",org
+ .apache.tuscany.sca.interfacedef.impl;version="2.0.0";uses:="org.apac
+ he.tuscany.sca.interfacedef.util,org.apache.tuscany.sca.policy,org.ap
+ ache.tuscany.sca.interfacedef",org.apache.tuscany.sca.interfacedef.ut
+ il;version="2.0.0";uses:="org.apache.tuscany.sca.interfacedef,javax.x
+ ml.namespace",org.apache.tuscany.sca.policy;version="2.0.0";uses:="ja
+ vax.xml.xpath,org.apache.tuscany.sca.policy.impl,javax.xml.namespace"
+ ,org.apache.tuscany.sca.policy.impl;version="2.0.0";uses:="javax.xml.
+ xpath,org.apache.tuscany.sca.policy,javax.xml.namespace",org.apache.t
+ uscany.sca.policy.util;version="2.0.0";uses:="javax.xml.parsers,org.a
+ pache.tuscany.sca.policy",org.apache.tuscany.sca.assembly.xsd;version
+ ="2.0.0",org.apache.tuscany.sca.common.java.classloader;version="2.0.
+ 0",org.apache.tuscany.sca.common.java.collection;version="2.0.0",org.
+ apache.tuscany.sca.common.java.io;version="2.0.0",org.apache.tuscany.
+ sca.common.java.reflection;version="2.0.0";uses:="org.apache.tuscany.
+ sca.core",com.hazelcast.client.examples;version="1.8.3",com.hazelcast
+ .client.impl;version="1.8.3",com.hazelcast.client;version="1.8.3",com
+ .hazelcast.client.cluster;version="1.8.3",net.sf.cglib.proxy;version=
+ "2.2.0",net.sf.cglib.transform;version="2.2.0",net.sf.cglib.reflect;v
+ ersion="2.2.0",net.sf.cglib.util;version="2.2.0",net.sf.cglib.beans;v
+ ersion="2.2.0",net.sf.cglib.transform.impl;version="2.2.0",net.sf.cgl
+ ib.core;version="2.2.0",org.apache.tuscany.sca.interfacedef.java.impl
+ ;version="2.0.0";uses:="org.osoa.sca.annotations,org.apache.tuscany.s
+ ca.interfacedef.util,org.apache.tuscany.sca.policy,org.apache.tuscany
+ .sca.interfacedef.java,org.apache.tuscany.sca.interfacedef,javax.xml.
+ namespace,org.apache.tuscany.sca.interfacedef.java.introspect,org.apa
+ che.tuscany.sca.interfacedef.impl",org.apache.tuscany.sca.interfacede
+ f.java.introspect;version="2.0.0";uses:="org.apache.tuscany.sca.inter
+ facedef.java,org.apache.tuscany.sca.interfacedef",org.apache.tuscany.
+ sca.interfacedef.java;version="2.0.0";uses:="org.apache.tuscany.sca.a
+ ssembly,org.apache.tuscany.sca.interfacedef.java.impl,org.apache.tusc
+ any.sca.interfacedef.java.introspect,org.apache.tuscany.sca.core,org.
+ apache.tuscany.sca.policy,org.apache.tuscany.sca.interfacedef,org.apa
+ che.tuscany.sca.extensibility,javax.xml.namespace"
+Private-Package: org.apache.tuscany.sca.interfacedef.wsdl.impl;version
+ ="2.0.0",org.apache.tuscany.sca.implementation.web.impl;version="2.0.
+ 0",org.apache.tuscany.sca.binding.ws.impl;version="2.0.0",org.apache.
+ tuscany.sca.databinding.externalizable;version="2.0.0",org.apache.tus
+ cany.sca.binding.sca.provider;version="2.0.0",org.apache.tuscany.sca.
+ implementation.java.impl;version="2.0.0",org.apache.tuscany.sca.imple
+ mentation.java.introspect.impl;version="2.0.0",org.apache.tuscany.sca
+ .contribution.impl;version="1.4",org.apache.tuscany.sca.xsd.impl;vers
+ ion="2.0.0",org.apache.tuscany.sca.implementation.java.invocation;ver
+ sion="2.0.0",org.apache.tuscany.sca.implementation.java.module;versio
+ n="2.0.0",org.apache.tuscany.sca.core.databinding.module;version="2.0
+ .0",org.apache.tuscany.sca.core.databinding.processor;version="2.0.0"
+ ,org.apache.tuscany.sca.core.databinding.transformers;version="2.0.0"
+ ,org.apache.tuscany.sca.core.databinding.wire;version="2.0.0",org.apa
+ che.tuscany.sca.assembly.builder.impl;version="2.0.0",org.apache.tusc
+ any.sca.http.jetty;version="2.0.0"
+Bundle-ClassPath: .
+Bundle-Name: Apache Tuscany Base with No Dependencies
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+DynamicImport-Package: javax.transaction;version="1.1",javax.transacti
+ on.xa;version="1.1",*,org.apache.tuscany.sca.*;version="2.0.0",org.ap
+ ache.tuscany.sca.extensibility.equinox,org.apache.tuscany.sca.node.im
+ pl,org.apache.tuscany.sca.extensibility
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+SCA-Version: 1.1
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany Launcher,Apache Tuscany SCA XML Ass
+ embly Model,Apache Tuscany SCA Common XML,Apache Tuscany SCA WSDL Int
+ erface Model,Apache Tuscany SCA Data Binding for JAXB,Apache Tuscany 
+ SCA Implementation Web Model,Apache Tuscany SCA Domain Node,Apache Tu
+ scany SCA Core SPI,Apache Tuscany Java Interface for JAXWS,Apache Tus
+ cany SCA Webapp Host,Apache Tuscany Hazelcast Client Endpoint Regsitr
+ y,Apache Tuscany SCA WS Binding Model,Apache Tuscany SCA Assembly Mod
+ el,API classes for the Service Component Architecture,Apache Tuscany 
+ SCA Client Impl,Apache Tuscany SCA Monitor,Apache Tuscany SCA HTTP Se
+ rvlet Host Extension Point,Apache Tuscany SCA Wink,Apache Tuscany SCA
+  Stripes,Apache Tuscany SCA DataBinding Framework,Apache Tuscany SCA 
+ Default Binding Model,Apache Tuscany SCA Java Implementation Model,Ap
+ ache Tuscany SCA Implementation Web Runtime,Apache Tuscany SCA Node I
+ mplementation,Apache Tuscany SCA Contribution Model,Apache Tuscany SC
+ A Core Runtime,Apache Tuscany SCA XSD Model,Apache Tuscany Hazelcast 
+ Binding,Apache Tuscany SCA JAXWS-based WS Binding Extension,Apache Tu
+ scany SCA Extensibility,Apache Tuscany Hazelcast Endpoint Regsitry,Ap
+ ache Tuscany SCA Web Service binding WSDL Generator,Apache Tuscany SC
+ A Node API,Apache Tuscany SCA Core/DataBinding Integration,Apache Tus
+ cany SCA Assembly Model XML Schemas,Apache Tuscany SCA Jetty Servlet 
+ Host Extension,Apache Tuscany SCA Common Java,Apache Tuscany SCA Java
+  Interface Model
+Bundle-DocURL: http://www.apache.org/
+Bundle-SymbolicName: org.apache.tuscany.sca.base
+Import-Package: com.hazelcast.client,
+ com.hazelcast.config,
+ com.hazelcast.core,
+ com.hazelcast.nio,
+ javax.activation,
+ javax.imageio,
+ javax.jws,
+ javax.jws.soap,
+ javax.management;resolution:=optional,
+ javax.naming,
+ javax.net.ssl;resolution:=optional,
+ javax.security.auth,
+ javax.security.auth.callback;resolution:=optional,
+ javax.servlet;resolution:=optional,
+ javax.servlet.http;resolution:=optional,
+ javax.servlet.jsp;resolution:=optional,
+ javax.servlet.jsp.tagext;resolution:=optional,
+ javax.wsdl,
+ javax.wsdl.extensions,
+ javax.wsdl.extensions.schema,
+ javax.wsdl.extensions.soap,
+ javax.wsdl.extensions.soap12,
+ javax.wsdl.factory,
+ javax.wsdl.xml,
+ javax.xml.bind,
+ javax.xml.bind.annotation,
+ javax.xml.bind.annotation.adapters,
+ javax.xml.bind.attachment,
+ javax.xml.datatype,
+ javax.xml.namespace,
+ javax.xml.parsers,
+ javax.xml.soap,
+ javax.xml.stream,
+ javax.xml.stream.events,
+ javax.xml.stream.util,
+ javax.xml.transform,
+ javax.xml.transform.dom,
+ javax.xml.transform.sax,
+ javax.xml.transform.stream,
+ javax.xml.validation;resolution:=optional,
+ javax.xml.ws,
+ javax.xml.xpath,
+ net.sf.cglib.proxy;resolution:=optional,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.builder;version="2.0.0",
+ org.apache.tuscany.sca.assembly.impl;version="2.0.0",
+ org.apache.tuscany.sca.assembly.xml;version="2.0.0",
+ org.apache.tuscany.sca.assembly.xsd;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.binding.ws;version="2.0.0",
+ org.apache.tuscany.sca.binding.ws.addressing;version="2.0.0",
+ org.apache.tuscany.sca.binding.ws.wsdlgen;version="2.0.0",
+ org.apache.tuscany.sca.common.java.classloader;version="2.0.0",
+ org.apache.tuscany.sca.common.java.collection;version="2.0.0",
+ org.apache.tuscany.sca.common.java.io;version="2.0.0",
+ org.apache.tuscany.sca.common.java.reflection;version="2.0.0",
+ org.apache.tuscany.sca.common.xml;version="2.0.0",
+ org.apache.tuscany.sca.common.xml.dom;version="2.0.0",
+ org.apache.tuscany.sca.common.xml.sax;version="2.0.0",
+ org.apache.tuscany.sca.common.xml.stax;version="2.0.0",
+ org.apache.tuscany.sca.common.xml.stax.reader;version="2.0.0",
+ org.apache.tuscany.sca.common.xml.xpath;version="2.0.0",
+ org.apache.tuscany.sca.context;version="2.0.0",
+ org.apache.tuscany.sca.contribution;version="2.0.0",
+ org.apache.tuscany.sca.contribution.java;version="2.0.0",
+ org.apache.tuscany.sca.contribution.namespace;version="2.0.0",
+ org.apache.tuscany.sca.contribution.processor;version="2.0.0",
+ org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
+ org.apache.tuscany.sca.contribution.scanner;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.core.assembly;version="2.0.0",
+ org.apache.tuscany.sca.core.context;version="2.0.0",
+ org.apache.tuscany.sca.core.factory;version="2.0.0",
+ org.apache.tuscany.sca.core.invocation;version="2.0.0",
+ org.apache.tuscany.sca.core.scope;version="2.0.0",
+ org.apache.tuscany.sca.databinding;version="2.0.0",
+ org.apache.tuscany.sca.databinding.annotation;version="2.0.0",
+ org.apache.tuscany.sca.databinding.impl;version="2.0.0",
+ org.apache.tuscany.sca.databinding.javabeans;version="2.0.0",
+ org.apache.tuscany.sca.databinding.jaxb;version="2.0.0",
+ org.apache.tuscany.sca.databinding.util;version="2.0.0",
+ org.apache.tuscany.sca.databinding.xml;version="2.0.0",
+ org.apache.tuscany.sca.definitions;version="2.0.0",
+ org.apache.tuscany.sca.definitions.util;version="2.0.0",
+ org.apache.tuscany.sca.definitions.xml;version="2.0.0",
+ org.apache.tuscany.sca.deployment;version="2.0.0",
+ org.apache.tuscany.sca.endpoint.hazelcast;version="2.0.0",
+ org.apache.tuscany.sca.extensibility;version="2.0.0",
+ org.apache.tuscany.sca.host.http;version="2.0.0",
+ org.apache.tuscany.sca.host.webapp;version="2.0.0",
+ org.apache.tuscany.sca.implementation.java;version="2.0.0",
+ org.apache.tuscany.sca.implementation.java.context;version="2.0.0",
+ org.apache.tuscany.sca.implementation.java.injection;version="2.0.0",
+ org.apache.tuscany.sca.implementation.java.introspect;version="2.0.0",
+ org.apache.tuscany.sca.implementation.java.invocation;resolution:=optional,
+ org.apache.tuscany.sca.implementation.web;version="2.0.0",
+ org.apache.tuscany.sca.implementation.web.runtime.utils;version="2.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.impl;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java.impl;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java.introspect;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java.jaxws;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.wsdl;version="2.0.0",
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.launcher;version="2.0",
+ org.apache.tuscany.sca.management;version="2.0.0",
+ org.apache.tuscany.sca.monitor;version="2.0.0",
+ org.apache.tuscany.sca.node;version="2.0.0",
+ org.apache.tuscany.sca.node.configuration;version="2.0.0",
+ org.apache.tuscany.sca.node.impl;version="2.0.0",
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.policy.impl;version="2.0.0",
+ org.apache.tuscany.sca.policy.util;version="2.0.0",
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.apache.tuscany.sca.work;version="2.0.0",
+ org.apache.tuscany.sca.xsd;version="2.0.0",
+ org.apache.tuscany.sca.xsd.xml;version="2.0.0",
+ org.apache.ws.commons.schema,
+ org.apache.ws.commons.schema.resolver,
+ org.apache.ws.commons.schema.utils,
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional,
+ org.oasisopen.sca.client;version="2.0.0",
+ org.objectweb.asm;version="3.1",
+ org.objectweb.asm.util;version="3.1";resolution:=optional,
+ org.osgi.framework;version="1.4.0";resolution:=optional,
+ org.osgi.framework.hooks.service;version="1.0.0";resolution:=optional,
+ org.osgi.service.cm;version="1.2.1";resolution:=optional,
+ org.osgi.service.component;version="1.1.0";resolution:=optional,
+ org.osgi.service.event;version="1.2.0";resolution:=optional,
+ org.osgi.service.packageadmin;version="1.2.0";resolution:=optional,
+ org.osgi.service.remoteserviceadmin;version="1.0.0";resolution:=optional,
+ org.osgi.util.tracker;version="1.3.0";resolution:=optional,
+ org.w3c.dom,
+ org.w3c.dom.ls,
+ org.xml.sax;resolution:=optional,
+ org.xml.sax.ext,
+ org.xml.sax.helpers

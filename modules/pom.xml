@@ -161,6 +161,7 @@
             modules in the /modules directory 
         -->
         <module>core-runtime-pom</module>
+        <module>base-runtime</module>
         <module>base-runtime-pom</module>
         <module>osgi-runtime-pom</module>
 
