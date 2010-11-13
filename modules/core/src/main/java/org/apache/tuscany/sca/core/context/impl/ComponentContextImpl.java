@@ -45,6 +45,7 @@ import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
@@ -59,8 +60,6 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.RequestContext;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
-
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 
 /**
  * Implementation of ComponentContext that delegates to a ComponentContextProvider.
@@ -476,7 +475,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         
         if(!compatible) {
         	// JCA-9011
-        	throw new IllegalArgumentException("Business interface " + businessInterface.getName() + " is not compatible with " + interfaceContract.getInterface().getClass().getName());
+        	throw new IllegalArgumentException("Business interface " + businessInterface.getName() + " is not compatible with " + interfaceContract.getInterface());
         }
 
         return interfaceContract;
