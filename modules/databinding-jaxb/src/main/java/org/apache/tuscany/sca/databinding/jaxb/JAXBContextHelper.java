@@ -24,6 +24,8 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +41,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.common.java.collection.LRUCache;
@@ -68,7 +73,7 @@ public final class JAXBContextHelper {
     public JAXBContextHelper(ExtensionPointRegistry registry) {
         cache = new JAXBContextCache(registry);
     }
-    
+
     public static JAXBContextHelper getInstance(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilityExtensionPoint = registry.getExtensionPoint(UtilityExtensionPoint.class);
         return utilityExtensionPoint.getUtility(JAXBContextHelper.class);
@@ -107,7 +112,7 @@ public final class JAXBContextHelper {
         return createJAXBContext(dataType);
 
     }
-    
+
     private static Class<?>[] getSeeAlso(Class<?> interfaze) {
         if (interfaze == null) {
             return null;
@@ -131,7 +136,7 @@ public final class JAXBContextHelper {
     public void releaseJAXBUnmarshaller(JAXBContext context, Unmarshaller unmarshaller) {
         cache.releaseJAXBUnmarshaller(context, unmarshaller);
     }
-    
+
     public Marshaller getMarshaller(JAXBContext context) throws JAXBException {
         return cache.getMarshaller(context);
     }
@@ -139,10 +144,11 @@ public final class JAXBContextHelper {
     public void releaseJAXBMarshaller(JAXBContext context, Marshaller marshaller) {
         cache.releaseJAXBMarshaller(context, marshaller);
     }
-    
+
     @SuppressWarnings("unchecked")
     public static Object createJAXBElement(JAXBContext context, DataType dataType, Object value) {
         Class<?> type = dataType == null ? value.getClass() : dataType.getPhysical();
+        type = getValueType(type);
         QName name = JAXBDataBinding.ROOT_ELEMENT;
         if (context != null) {
             Object logical = dataType == null ? null : dataType.getLogical();
@@ -183,8 +189,8 @@ public final class JAXBContextHelper {
         } else {
             if (value instanceof JAXBElement) {
                 Object returnValue = ((JAXBElement)value).getValue();
-                
-                if (returnValue == null){
+
+                if (returnValue == null) {
                     // TUSCANY-3530
                     // something went wrong in the transformation that 
                     // generated the JAXBElement. Have seen this when trying
@@ -261,6 +267,8 @@ public final class JAXBContextHelper {
         if (JAXBDataBinding.NAME.equals(db) || (db != null && db.startsWith("java:")) || db == null) {
             if (!d.getPhysical().isInterface() && !JAXBElement.class.isAssignableFrom(d.getPhysical())) {
                 classes.add(d.getPhysical());
+            } else {
+                classes.addAll(findJAXBClassesByInterface(d.getPhysical()));
             }
         }
         if (d.getPhysical() != d.getGenericType()) {
@@ -283,6 +291,8 @@ public final class JAXBContextHelper {
             Class<?> cls = (Class<?>)type;
             if (!cls.isInterface()) {
                 classSet.add(cls);
+            } else {
+                classSet.addAll(findJAXBClassesByInterface(cls));
             }
             return;
         } else if (type instanceof ParameterizedType) {
@@ -308,6 +318,65 @@ public final class JAXBContextHelper {
                 findClasses(t, classSet, visited);
             }
         }
+    }
+
+    /**
+     * Introspect the @XmlJavaTypeAdapter and @XmlSeeAlso for an interface
+     * @param cls
+     * @return
+     */
+    private static Set<Class<?>> findJAXBClassesByInterface(Class<?> cls) {
+        if (!cls.isInterface()) {
+            return Collections.emptySet();
+        }
+        Set<Class<?>> jaxbClasses = new HashSet<Class<?>>();
+        Class<?> valueType = getValueType(cls);
+        if (valueType != null) {
+            jaxbClasses.add(valueType);
+        }
+
+        Class<?>[] others = getSeeAlso(cls);
+        if (others != null) {
+            jaxbClasses.addAll(Arrays.asList(others));
+        }
+        
+        Package pkg = cls.getPackage();
+        if (pkg != null) {
+            XmlJavaTypeAdapters adapters = pkg.getAnnotation(XmlJavaTypeAdapters.class);
+            if (adapters != null) {
+                for (XmlJavaTypeAdapter a : adapters.value()) {
+                    jaxbClasses.add(getValueType(a));
+                }
+            }
+        }
+        return jaxbClasses;
+    }
+
+    public static Class<?> getValueType(Class<?> cls) {
+        if (cls == null) {
+            return null;
+        }
+        if (cls.isInterface()) {
+            XmlJavaTypeAdapter adapter = cls.getAnnotation(XmlJavaTypeAdapter.class);
+            return getValueType(adapter);
+        } else {
+            return cls;
+        }
+    }
+
+    public static Class<?> getValueType(XmlJavaTypeAdapter adapter) {
+        if (adapter != null) {
+            Class<? extends XmlAdapter> adapterClass = adapter.value();
+            if (adapterClass != null) {
+                Type superClass = adapterClass.getGenericSuperclass();
+                while (superClass instanceof ParameterizedType && XmlAdapter.class != ((ParameterizedType)superClass)
+                    .getRawType()) {
+                    superClass = ((Class<?>)((ParameterizedType)superClass).getRawType()).getGenericSuperclass();
+                }
+                return (Class<?>)((ParameterizedType)superClass).getActualTypeArguments()[0];
+            }
+        }
+        return null;
     }
 
     public JAXBContext createJAXBContext(Interface intf) throws JAXBException {
@@ -460,8 +529,8 @@ public final class JAXBContextHelper {
     /**
      * The JAXB RI doesn't implement the decapitalization algorithm in the
      * JAXB spec.  See Sun bug 6505643 for details.  This means that instead
-	 * of calling java.beans.Introspector.decapitalize() as the JAXB spec says,
-	 * Tuscany needs to mimic the incorrect JAXB RI algorithm.
+     * of calling java.beans.Introspector.decapitalize() as the JAXB spec says,
+     * Tuscany needs to mimic the incorrect JAXB RI algorithm.
      */
     public static String jaxbDecapitalize(String name) {
         // find first lower case char in name
@@ -475,15 +544,15 @@ public final class JAXBContextHelper {
 
         int decap;
         if (name.length() == 0) {
-            decap = 0;  // empty string: nothing to do
+            decap = 0; // empty string: nothing to do
         } else if (lower == 0) {
-            decap = 0;  // first char is lower case: nothing to do
+            decap = 0; // first char is lower case: nothing to do
         } else if (lower == 1) {
-            decap = 1;  // one upper followed by lower: decapitalize 1 char
-        } else if (lower < name.length()) { 
-            decap = lower - 1;  // n uppers followed by at least one lower: decapitalize n-1 chars
+            decap = 1; // one upper followed by lower: decapitalize 1 char
+        } else if (lower < name.length()) {
+            decap = lower - 1; // n uppers followed by at least one lower: decapitalize n-1 chars
         } else {
-            decap = name.length();  // all upper case: decapitalize all chars
+            decap = name.length(); // all upper case: decapitalize all chars
         }
 
         return name.substring(0, decap).toLowerCase() + name.substring(decap);

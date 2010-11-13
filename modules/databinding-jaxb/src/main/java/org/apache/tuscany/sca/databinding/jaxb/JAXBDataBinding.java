@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.databinding.jaxb;
 
+import static org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper.getValueType;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -120,9 +122,9 @@ public class JAXBDataBinding extends BaseDataBinding {
             Object value;
             if (targetDataType != null && targetDataType.getPhysical() != sourceDataType.getPhysical()) {
                 JAXBContext targetContext = contextHelper.createJAXBContext(targetDataType);
-                value = targetContext.createUnmarshaller().unmarshal(doc, targetDataType.getPhysical());
+                value = targetContext.createUnmarshaller().unmarshal(doc, getValueType(targetDataType.getPhysical()));
             } else {
-                value = context.createUnmarshaller().unmarshal(doc, sourceDataType.getPhysical());
+                value = context.createUnmarshaller().unmarshal(doc, getValueType(sourceDataType.getPhysical()));
             }
             
             if (isElement && value instanceof JAXBElement) {
