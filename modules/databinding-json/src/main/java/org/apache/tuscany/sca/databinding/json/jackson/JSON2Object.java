@@ -38,7 +38,6 @@ public class JSON2Object implements PullTransformer<Object, Object> {
 
     public JSON2Object() {
         super();
-        mapper = JacksonHelper.createObjectMapper();
     }
 
     public Object transform(Object source, TransformationContext context) {
@@ -47,6 +46,8 @@ public class JSON2Object implements PullTransformer<Object, Object> {
         }
 
         try {
+            Class<?> cls = context.getTargetDataType().getPhysical();
+            ObjectMapper mapper = JacksonHelper.createObjectMapper(cls);
             JavaType javaType = TypeFactory.type(context.getTargetDataType().getGenericType());
             if (source instanceof String) {
             	String sourceString = (String) source;

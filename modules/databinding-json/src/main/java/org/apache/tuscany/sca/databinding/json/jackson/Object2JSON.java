@@ -35,11 +35,9 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @version $Rev$ $Date$
  */
 public class Object2JSON implements PullTransformer<Object, Object> {
-    private ObjectMapper mapper;
 
     public Object2JSON() {
         super();
-        mapper = JacksonHelper.createObjectMapper();
     }
 
     public Object transform(Object source, TransformationContext context) {
@@ -58,12 +56,11 @@ public class Object2JSON implements PullTransformer<Object, Object> {
             if (targetType != null && targetType.isPrimitive()) {
                 return source;
             }
+            ObjectMapper mapper = JacksonHelper.createObjectMapper(targetType);
             String value = mapper.writeValueAsString(source);
-            if (targetType == String.class || 
-                targetType == Object.class || 
-                targetType.isPrimitive()) {
+            if (targetType == String.class || targetType == Object.class || targetType.isPrimitive()) {
                 return value;
-            } else if (targetType == BigDecimal.class){
+            } else if (targetType == BigDecimal.class) {
                 return value.toString();
             } else if (JsonNode.class.isAssignableFrom(targetType)) {
                 return JacksonHelper.createJsonParser(value).readValueAsTree();

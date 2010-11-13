@@ -26,9 +26,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.json.JSONArray;
@@ -39,18 +39,18 @@ import org.json.JSONObject;
  * 
  * @version $Rev$ $Date$
  */
-public class JSONRPCBindingInvoker implements Invoker {
+public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
     private EndpointReference endpointReference;
     private Operation operation;
     private String uri;
-    
+
     private HttpClient httpClient;
 
     public JSONRPCBindingInvoker(EndpointReference endpointReference, Operation operation, HttpClient httpClient) {
         this.endpointReference = endpointReference;
         this.operation = operation;
-        this.uri = ((JSONRPCBinding) endpointReference.getBinding()).getURI();
-        
+        this.uri = endpointReference.getBinding().getURI();
+
         this.httpClient = httpClient;
     }
 
@@ -64,9 +64,9 @@ public class JSONRPCBindingInvoker implements Invoker {
             final String db = msg.getOperation().getWrapper().getDataBinding();
             String req;
             if (!db.equals(JSONDataBinding.NAME)) {
-            	
 
-                JSONObject jsonRequest = null;;
+                JSONObject jsonRequest = null;
+                ;
                 Object[] args = null;
                 try {
                     // Extract the method
@@ -87,7 +87,7 @@ public class JSONRPCBindingInvoker implements Invoker {
                 }
                 req = jsonRequest.toString();
             } else {
-            	req = (String)((Object[])msg.getBody())[0];
+                req = (String)((Object[])msg.getBody())[0];
             }
             StringEntity entity = new StringEntity(req, "UTF-8");
             post.setEntity(entity);
@@ -97,20 +97,20 @@ public class JSONRPCBindingInvoker implements Invoker {
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 //success 
                 try {
-                	String entityResponse = EntityUtils.toString(response.getEntity());                	
+                    String entityResponse = EntityUtils.toString(response.getEntity());
                     if (!db.equals(JSONDataBinding.NAME)) {
                         JSONObject jsonResponse = new JSONObject(entityResponse);
 
-	                    //check requestId
-	                    if (! jsonResponse.getString("id").equalsIgnoreCase(requestId)) {
-	                        throw new RuntimeException("Invalid response id:" + requestId );
-	                    }
+                        //check requestId
+                        if (!jsonResponse.getString("id").equalsIgnoreCase(requestId)) {
+                            throw new RuntimeException("Invalid response id:" + requestId);
+                        }
 
-	                    msg.setBody(jsonResponse.get("result"));
+                        msg.setBody(jsonResponse.get("result"));
                     } else {
-	                    msg.setBody(entityResponse);
+                        msg.setBody(entityResponse);
                     }
-                    
+
                 } catch (Exception e) {
                     //FIXME Exceptions are not handled correctly here
                     // They should be reported to the client JavaScript as proper
@@ -125,17 +125,18 @@ public class JSONRPCBindingInvoker implements Invoker {
 
         return msg;
     }
-    
+
     private static JSONObject getJSONRequest(Message msg) {
-        
-        JSONObject jsonRequest = null;;
+
+        JSONObject jsonRequest = null;
+        ;
         Object[] args = null;
         Object id = null;
         try {
             // Extract the method
             jsonRequest = new JSONObject();
             jsonRequest.putOpt("method", "Service" + "." + msg.getOperation().getName());
-            
+
             // Extract the arguments
             args = msg.getBody();
             JSONArray array = new JSONArray();
@@ -151,5 +152,10 @@ public class JSONRPCBindingInvoker implements Invoker {
 
         return jsonRequest;
     }
-    
+
+    @Override
+    public boolean allowsPassByReference() {
+        return true;
+    }
+
 }

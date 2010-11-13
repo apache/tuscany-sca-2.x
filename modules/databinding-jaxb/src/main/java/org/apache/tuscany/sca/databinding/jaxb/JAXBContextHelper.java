@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.databinding.jaxb;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -363,6 +364,31 @@ public final class JAXBContextHelper {
             return cls;
         }
     }
+    
+    private static Class<?> erase(Type type) {
+        if (type instanceof Class) {
+            return (Class<?>)type;
+        }
+        if (type instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType)type;
+            return (Class<?>)pt.getRawType();
+        }
+        if (type instanceof TypeVariable) {
+            TypeVariable tv = (TypeVariable)type;
+            Type[] bounds = tv.getBounds();
+            return (0 < bounds.length) ? erase(bounds[0]) : Object.class;
+        }
+        if (type instanceof WildcardType) {
+            WildcardType wt = (WildcardType)type;
+            Type[] bounds = wt.getUpperBounds();
+            return (0 < bounds.length) ? erase(bounds[0]) : Object.class;
+        }
+        if (type instanceof GenericArrayType) {
+            GenericArrayType gat = (GenericArrayType)type;
+            return Array.newInstance(erase(gat.getGenericComponentType()), 0).getClass();
+        }
+        throw new IllegalArgumentException("Unknown Type kind: " + type.getClass());
+    }
 
     public static Class<?> getValueType(XmlJavaTypeAdapter adapter) {
         if (adapter != null) {
@@ -371,9 +397,9 @@ public final class JAXBContextHelper {
                 Type superClass = adapterClass.getGenericSuperclass();
                 while (superClass instanceof ParameterizedType && XmlAdapter.class != ((ParameterizedType)superClass)
                     .getRawType()) {
-                    superClass = ((Class<?>)((ParameterizedType)superClass).getRawType()).getGenericSuperclass();
+                    superClass = erase(superClass).getGenericSuperclass();
                 }
-                return (Class<?>)((ParameterizedType)superClass).getActualTypeArguments()[0];
+                return erase(((ParameterizedType)superClass).getActualTypeArguments()[0]);
             }
         }
         return null;

@@ -56,7 +56,7 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
     public JSONRPCReferenceBindingProvider(EndpointReference endpointReference) {
 
         this.endpointReference = endpointReference;
-        this.reference = (RuntimeComponentReference) endpointReference.getReference();
+        this.reference = (RuntimeComponentReference)endpointReference.getReference();
 
         //clone the service contract to avoid databinding issues
         /*
@@ -70,6 +70,10 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
         */
 
         // Create an HTTP client
+        httpClient = createHttpClient();
+    }
+
+    public HttpClient createHttpClient() {
         HttpParams defaultParameters = new BasicHttpParams();
         //defaultParameters.setIntParameter(HttpConnectionManagerParams.MAX_TOTAL_CONNECTIONS, 10);
         HttpProtocolParams.setContentCharset(defaultParameters, HTTP.UTF_8);
@@ -79,9 +83,10 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
         SchemeRegistry supportedSchemes = new SchemeRegistry();
         supportedSchemes.register(new Scheme(HttpHost.DEFAULT_SCHEME_NAME, PlainSocketFactory.getSocketFactory(), 80));
 
-        ClientConnectionManager connectionManager = new ThreadSafeClientConnManager(defaultParameters, supportedSchemes);
+        ClientConnectionManager connectionManager =
+            new ThreadSafeClientConnManager(defaultParameters, supportedSchemes);
 
-        httpClient = new DefaultHttpClient(connectionManager, defaultParameters);
+        return new DefaultHttpClient(connectionManager, defaultParameters);
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -90,10 +95,10 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
     }
 
     public Invoker createInvoker(Operation operation) {
-    	final Interface intf = reference.getInterfaceContract().getInterface();
-    	if (intf.isDynamic()) {
-    		return new JSONRPCBindingInvoker(endpointReference, operation, httpClient);
-    	}
+        final Interface intf = reference.getInterfaceContract().getInterface();
+        if (intf.isDynamic()) {
+            return new JSONRPCBindingInvoker(endpointReference, operation, httpClient);
+        }
         return new JSONRPCClientInvoker(endpointReference, operation, httpClient);
     }
 
