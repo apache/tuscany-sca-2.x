@@ -140,7 +140,7 @@ public class RESTBindingInvoker implements Invoker {
         }
 
         if (operation.getOutputType() != null) {
-            responseType = operation.getOutputType().getPhysical();
+            responseType = operation.getOutputType().getLogical().get(0).getPhysical();
         } else {
             responseType = null;
         }

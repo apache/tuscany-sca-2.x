@@ -127,9 +127,11 @@ public class XMLWireFormatServiceProvider implements WireFormatProvider {
 
             // handle output types
             if (configureOutput) {
-                DataType outputType = operation.getOutputType();
-                if (outputType != null) {
-                    outputType.setDataBinding(XMLStringDataBinding.NAME);
+                List<DataType> outputTypes = operation.getOutputType().getLogical();
+                for ( DataType outputType : outputTypes ) {
+                	if (outputType != null) {
+                		outputType.setDataBinding(XMLStringDataBinding.NAME);
+                	}
                 }
             }
         }

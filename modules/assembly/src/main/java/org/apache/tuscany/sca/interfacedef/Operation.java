@@ -79,13 +79,12 @@ public interface Operation extends Cloneable, PolicySubject {
      * Get the data type for the output
      *
      * @return the outputType
-     */
-    DataType getOutputType();
-
+     */  
+    DataType<List<DataType>> getOutputType();
     /**
      * @param outputType
      */
-    void setOutputType(DataType outputType);
+    void setOutputType(DataType<List<DataType>> outputType);
 
     /**
      * Get a list of data types to represent the faults/exceptions
@@ -206,4 +205,12 @@ public interface Operation extends Cloneable, PolicySubject {
      * @return
      */
     List<ParameterMode> getParameterModes();
+    
+    /**
+     * Returns true 
+     * @return
+     */
+    public boolean hasHolders();
+    
+    public void setHasHolders(boolean value);
 }

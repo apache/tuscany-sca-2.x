@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.interfacedef.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -252,21 +253,23 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         // FIXME: We need to deal with wrapped<-->unwrapped conversion
 
         // Check output type
-        DataType<?> sourceOutputType = source.getOutputType();
-        DataType<?> targetOutputType = target.getOutputType();
+        List<DataType> sourceOutputType = source.getOutputType().getLogical();
+        List<DataType> targetOutputType = target.getOutputType().getLogical();
 
         boolean checkSourceWrapper = true;
         List<DataType> sourceInputType = source.getInputType().getLogical();
         if (source.isWrapperStyle() && source.getWrapper() != null) {
             sourceInputType = source.getWrapper().getUnwrappedInputType().getLogical();
-            sourceOutputType = source.getWrapper().getUnwrappedOutputType();
+            sourceOutputType = new ArrayList<DataType>();
+            sourceOutputType.add(source.getWrapper().getUnwrappedOutputType());
             checkSourceWrapper = false;
         }
         boolean checkTargetWrapper = true;
         List<DataType> targetInputType = target.getInputType().getLogical();
         if (target.isWrapperStyle() && target.getWrapper() != null) {
             targetInputType = target.getWrapper().getUnwrappedInputType().getLogical();
-            targetOutputType = target.getWrapper().getUnwrappedOutputType();
+            targetOutputType = new ArrayList<DataType>();
+            targetOutputType.add(target.getWrapper().getUnwrappedOutputType());
             checkTargetWrapper = false;
         }
 
@@ -276,13 +279,25 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         }
 */
 
-        if (!isCompatible(targetOutputType, sourceOutputType, passByValue, audit)) {
-            if (audit != null){
-                audit.append(" output types");
-                audit.appendSeperator();
-            } 
-            return false;
+        
+        if ( sourceOutputType.size() != targetOutputType.size()) {
+        	  if (audit != null){
+                  audit.append("different number of output types");
+                  audit.appendSeperator();
+              } 
+              return false;
         }
+               
+        for ( int i=0; i < sourceOutputType.size(); i++) {
+        	 if (!isCompatible(targetOutputType.get(i), sourceOutputType.get(i), passByValue, audit)) {
+                 if (audit != null){
+                     audit.append(" output types");
+                     audit.appendSeperator();
+                 } 
+                 return false;
+             }
+        }
+       
 
         if (sourceInputType.size() != targetInputType.size()) {
             if (audit != null){

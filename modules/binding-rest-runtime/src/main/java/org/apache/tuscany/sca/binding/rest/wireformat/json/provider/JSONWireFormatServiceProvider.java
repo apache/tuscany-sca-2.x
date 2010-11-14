@@ -124,11 +124,13 @@ public class JSONWireFormatServiceProvider implements WireFormatProvider {
 
             // handle output types
             if (configureOutput) {
-                DataType outputType = operation.getOutputType();
-                if (outputType != null) {
-                    if (!SimpleJavaDataBinding.NAME.equals(outputType.getDataBinding())) {
-                        outputType.setDataBinding(JSONDataBinding.NAME);
-                    }
+                List<DataType> outputTypes = operation.getOutputType().getLogical();
+                for ( DataType outputType : outputTypes) {
+                	if (outputType != null) {
+                		if (!SimpleJavaDataBinding.NAME.equals(outputType.getDataBinding())) {
+                			outputType.setDataBinding(JSONDataBinding.NAME);
+                		}
+                	}
                 }
             }
         }

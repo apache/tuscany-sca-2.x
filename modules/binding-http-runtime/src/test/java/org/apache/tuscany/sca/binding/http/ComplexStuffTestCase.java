@@ -70,7 +70,13 @@ public class ComplexStuffTestCase {
     public void testEchoBean() throws Exception {
         URL url = new URL("http://localhost:8080/ComplexComponent/ComplexStuff/echoBeanA?x={\"s\":\"petra\",\"b\":true,\"y\":42,\"x\":1}");
         InputStream is = url.openStream();
-        Assert.assertEquals("{\"s\":\"petra\",\"b\":true,\"y\":42,\"x\":1}", read(is));
+        String result = read(is);
+        Assert.assertTrue(result.startsWith("{"));
+        Assert.assertTrue(result.contains("\"s\":\"petra\""));
+        Assert.assertTrue(result.contains("\"b\":true"));
+        Assert.assertTrue(result.contains("\"y\":42"));
+        Assert.assertTrue(result.contains("\"x\":1"));
+     //   Assert.assertEquals("{\"s\":\"petra\",\"b\":true,\"y\":42,\"x\":1}", read(is));
     }
 
     @Test

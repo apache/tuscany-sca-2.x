@@ -180,4 +180,22 @@ public class TestOperation implements Operation {
 		return null;
 	}
 
+	public List<DataType> getOutputTypes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	public boolean hasHolders() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void setHasHolders(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+
 }

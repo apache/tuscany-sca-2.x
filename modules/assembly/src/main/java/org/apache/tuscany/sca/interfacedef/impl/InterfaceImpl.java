@@ -199,10 +199,13 @@ public class InterfaceImpl implements Interface {
                     setDataBinding(d, dataBinding);
                 }
             }
-            DataType outputType = op.getOutputType();
-            if (outputType != null) {
-                setDataBinding(outputType, dataBinding);
+            List<DataType> outputTypes = op.getOutputType().getLogical();
+            for ( DataType outputType : outputTypes ) {
+            	if (outputType != null) {
+            		setDataBinding(outputType, dataBinding);
+            	}
             }
+           
             List<DataType> faultTypes = op.getFaultTypes();
             if (faultTypes != null) {
                 for (DataType d : faultTypes) {

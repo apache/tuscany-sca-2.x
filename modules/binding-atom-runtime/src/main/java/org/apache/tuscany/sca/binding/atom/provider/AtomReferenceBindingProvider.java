@@ -91,7 +91,7 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
             // Determine the collection item type
             itemXMLType = new DataTypeImpl<Class<?>>(String.class.getName(), String.class, String.class);
             Class<?> itemClass = operation.getOutputType().getPhysical();
-            DataType<XMLType> outputType = operation.getOutputType();
+            DataType<XMLType> outputType = operation.getOutputType().getLogical().get(0);
             itemClassType = outputType;
             if (itemClassType.getPhysical() == org.apache.abdera.model.Entry.class) {
                 supportsFeedEntries = true;

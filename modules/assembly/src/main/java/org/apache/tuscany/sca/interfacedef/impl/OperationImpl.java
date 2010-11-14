@@ -45,8 +45,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 public class OperationImpl implements Operation {
 
     private String name;
-    private boolean unresolved;
-    private DataType outputType;
+    private boolean unresolved;    
     private DataType<List<DataType>> inputType;
     private List<DataType> faultTypes;
     private Interface interfaze;
@@ -64,6 +63,8 @@ public class OperationImpl implements Operation {
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private ExtensionType type;
+	private DataType<List<DataType>> outputType;
+	private boolean hasHolders;
 
     /**
      * @param name
@@ -121,15 +122,16 @@ public class OperationImpl implements Operation {
     /**
      * @return the outputType
      */
-    public DataType getOutputType() {
-        return outputType;
-    }
+    public DataType<List<DataType>> getOutputType() {
+    	return this.outputType;
+    }     
 
+    
     /**
      * @param outputType the outputType to set
      */
-    public void setOutputType(DataType outputType) {
-        this.outputType = outputType;
+    public void setOutputType(DataType<List<DataType>> outputType) {
+       this.outputType = outputType;
     }
 
     /**
@@ -234,8 +236,20 @@ public class OperationImpl implements Operation {
         clonedInputType.setDataBinding(inputType.getDataBinding());
         copy.inputType = clonedInputType;
 
-        if (this.outputType != null) {
-            copy.outputType = (DataType) this.outputType.clone();
+        if ( outputType != null ) {
+        	List<DataType> clonedLogicalOutputTypes = new ArrayList<DataType>();
+        	for ( DataType t : outputType.getLogical()) {
+        		if ( t == null ) {
+        			clonedLogicalOutputTypes.add(null);
+        		} else {
+        			DataType type = (DataType) t.clone();
+        			clonedLogicalOutputTypes.add(type);
+        		}
+        	}
+        	DataType<List<DataType>> clonedOutputType = 
+        		new DataTypeImpl<List<DataType>>(outputType.getPhysical(), clonedLogicalOutputTypes);
+       		 clonedOutputType.setDataBinding(outputType.getDataBinding());
+       		 copy.outputType = clonedOutputType;    
         }
 
         copy.attributes = new ConcurrentHashMap<Object, Object>();
@@ -283,6 +297,14 @@ public class OperationImpl implements Operation {
 
 	public List<ParameterMode> getParameterModes() {
 		return this.parameterModes;
+	}
+	
+	public boolean hasHolders() {
+		return this.hasHolders;
+	}
+	
+	public void setHasHolders(boolean value) {
+		this.hasHolders = value;
 	}
 
 }

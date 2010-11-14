@@ -52,12 +52,14 @@ public class JSONRPCDatabindingHelper {
                     } 
                 }
             }
-            DataType outputType = operation.getOutputType();
-            if (outputType != null) {
-                if (!SimpleJavaDataBinding.NAME.equals(outputType.getDataBinding()) ||
-                    outputType.getPhysical() == BigDecimal.class   ) {
-                    outputType.setDataBinding(JSONDataBinding.NAME);
-                }
+
+            for (DataType outputType : operation.getOutputType().getLogical() ) {
+            	if (outputType != null) {
+            		if (!SimpleJavaDataBinding.NAME.equals(outputType.getDataBinding()) ||
+            				outputType.getPhysical() == BigDecimal.class   ) {
+            			outputType.setDataBinding(JSONDataBinding.NAME);
+            		}
+            	}
             }
         }
     }
