@@ -26,7 +26,7 @@ Tuscany developers may find it useful to add the script from their SVN checkout
 development build to their environment so as to start runtimes using their local
 trunk build, for example: 
 
-set PATH=%PATH%;\Tuscany\SVN\trunk\distribution\all\target\apache-tuscany-sca-all-2.0-SNAPSHOT-dir\tuscany-sca-2.0-SNAPSHOT\bin
+set PATH=%PATH%;\Tuscany\SVN\trunk\distribution\all\target\apache-tuscany-sca-all-2.0-Beta1-dir\tuscany-sca-2.0-Beta1\bin
 
 
 

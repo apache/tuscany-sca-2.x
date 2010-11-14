@@ -42,8 +42,8 @@ public class StopStartNodesTestCase{
     
     @Test
     public void testTwoNodesSameDomain() throws Exception {
-        serviceNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar"});
-        clientNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar"});
+        serviceNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-service-2.0-Beta1.jar"});
+        clientNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-client-2.0-Beta1.jar"});
 
         Helloworld service = SCAClientFactory.newInstance(URI.create("vm://fooDomain")).getService(Helloworld.class, "HelloworldService");
         assertNotNull(service);
@@ -64,7 +64,7 @@ public class StopStartNodesTestCase{
             // expected
         }
 
-        serviceNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar"});
+        serviceNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-service-2.0-Beta1.jar"});
         client = SCAClientFactory.newInstance(URI.create("vm://fooDomain")).getService(Helloworld.class, "HelloworldClient");
         assertNotNull(client);
         assertEquals("Hi Hello Petra", client.sayHello("Petra"));
