@@ -123,12 +123,15 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         			holderPattern = true;
         			// Pop results and place in holder (demote).
         			Holder holder = (Holder) args[ i ]; 
-        			Object[] resultArray = (Object[])result;
-        			holder.value = resultArray[++resultIdx];
+        		
+        			Object[] results = (Object[])result;
+        			if ( result != null ) {
+        				holder.value =  results[++resultIdx]; 
+        			}
         		}            
         	}
         }
-        if ( holderPattern ) 
+        if ( holderPattern && result != null) 
         	return ((Object[])result)[0];
         else
         	return result;

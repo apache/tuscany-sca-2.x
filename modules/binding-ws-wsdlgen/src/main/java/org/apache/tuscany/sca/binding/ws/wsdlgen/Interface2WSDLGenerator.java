@@ -240,7 +240,7 @@ public class Interface2WSDLGenerator {
             if (useOutputWrapper) {
                 addDataType(dataTypes, dt2, helpers);
             } else {
-                dt2 = op.getOutputType();
+                dt2 = op.getOutputType().getLogical().get(0);
                 addDataType(dataTypes, dt2, helpers);
             }
             
@@ -645,8 +645,9 @@ public class Interface2WSDLGenerator {
             if (op.getWrapper() != null) {
                 outputMsg.addPart(generateWrapperPart(definition, op, helpers, wrappers, false));
             } else {
-                DataType outputType = op.getOutputType();
-                if (outputType != null) {
+                
+                if ((op.getOutputType() != null) && ( op.getOutputType().getLogical().get(0) != null)) {
+                	DataType outputType = op.getOutputType().getLogical().get(0);
                     outputMsg.addPart(generatePart(definition, outputType, "return"));
                     elements = new ArrayList<ElementInfo>();
                     ElementInfo element = getElementInfo(outputType.getPhysical(), outputType, null, helpers);
@@ -754,7 +755,7 @@ public class Interface2WSDLGenerator {
             } else {
                 Class<?> returnType = method.getReturnType();
                 if (returnType != Void.TYPE) {
-                    DataType dataType = operation.getOutputType();
+                    DataType dataType = operation.getOutputType().getLogical().get(0);
                     elements.set(0, getElementInfo(returnType, dataType, elements.get(0).getQName(), helpers));
                 }
             }

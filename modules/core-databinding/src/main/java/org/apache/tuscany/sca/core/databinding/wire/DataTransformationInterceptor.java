@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.core.databinding.wire;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,17 +60,7 @@ public class DataTransformationInterceptor implements Interceptor {
         	JavaOperation javaOp = (JavaOperation) sourceOperation;
         	Method sourceMethod = javaOp.getJavaMethod();
         }
-        // Holder pattern. In order to perform data mediation on Holder return types, it is
-        // necessary to set up a data transformation on the Holder<T> class T. on return.
-        DataType<DataType> returnTargetType = getFirstHolderType( sourceOperation.getInputType() );
-        if ( returnTargetType != null ) {
-        	this.sourceOperation.setOutputType(returnTargetType);               
-        }
-        returnTargetType = getFirstHolderType( targetOperation.getInputType() );
-        if ( returnTargetType != null ) {
-        	this.targetOperation.setOutputType(returnTargetType);               
-        }
-        	        
+        
         this.mediator = mediator;
         this.invocable = invocable;
     }
@@ -121,21 +112,21 @@ public class DataTransformationInterceptor implements Interceptor {
      * Returns return type for first Holder in input list.
      * Returns null if the inputs do not contain a Holder.
      */
-    protected static DataType<DataType> getFirstHolderType( DataType<List<DataType>> inputTypes ) {
+    protected  List<DataType<DataType>> getHolderTypes( DataType<List<DataType>> inputTypes ) {
+    	ArrayList<DataType<DataType>> returnTypes = new ArrayList<DataType<DataType>>();
     	if (inputTypes != null) {
+    		
     		List<DataType> logicalType = inputTypes.getLogical();
     		if (logicalType != null) {
     			for (int i = 0; i < logicalType.size(); i++) {
     				DataType dataType = logicalType.get(i);
     				if (isHolder(dataType.getGenericType())) {
-    					// Fix up output from void to returned data type.
-    					// System.out.println("DataTransformationInterceptor.<> source input[" + i + "] is Holder, logicalType=" + dataType);
-    					return dataType;
+    					returnTypes.add(dataType);
     				}
     			}
     		}
     	}
-    	return null;
+    	return returnTypes;
     }
     
     protected static boolean isHolder( Type type ) {

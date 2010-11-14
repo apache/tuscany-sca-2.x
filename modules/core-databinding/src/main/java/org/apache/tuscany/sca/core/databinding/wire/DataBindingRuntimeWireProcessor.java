@@ -84,14 +84,19 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
         }
 
         // Check output type
-        DataType sourceOutputType = source.getOutputType();
-        DataType targetOutputType = target.getOutputType();
+        List<DataType> sourceOutputType = source.getOutputType().getLogical();
+        List<DataType> targetOutputType = target.getOutputType().getLogical();
 
-        // Note the target output type is now the source for checking
-        // compatibility
-        if (isTransformationRequired(targetOutputType, sourceOutputType)) {
-            return true;
+        int outputSize = sourceOutputType.size();
+        if ( outputSize != targetOutputType.size() ) {
+        	return true;
         }
+        
+        for (int i = 0; i < outputSize; i++) {
+            if (isTransformationRequired(sourceOutputType.get(i), targetOutputType.get(i))) {
+                return true;
+            }
+        }       
 
         List<DataType> sourceInputType = source.getInputType().getLogical();
         List<DataType> targetInputType = target.getInputType().getLogical();

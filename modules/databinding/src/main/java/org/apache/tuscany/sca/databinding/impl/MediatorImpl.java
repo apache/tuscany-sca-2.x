@@ -386,14 +386,10 @@ public class MediatorImpl implements Mediator {
                                 Operation sourceOperation,
                                 Operation targetOperation,
                                 Map<String, Object> metadata) {
-        // Create a data type to represent the ouput produced by the target operation
-        DataType<DataType> targetType =
-            new DataTypeImpl<DataType>(IDL_OUTPUT, Object.class, targetOperation.getOutputType());
-
-        // Create a data type to represent the ouput expected by the source operation
-        DataType<DataType> sourceType =
-            new DataTypeImpl<DataType>(IDL_OUTPUT, Object.class, sourceOperation.getOutputType());
-
+       
+        DataType sourceType = new DataTypeImpl<DataType>(IDL_OUTPUT, Object.class, sourceOperation.getOutputType());
+        DataType targetType = new DataTypeImpl<DataType>(IDL_OUTPUT, Object.class, targetOperation.getOutputType());
+        
         if (sourceType == targetType || (sourceType != null && sourceType.equals(targetType))) {
             return output;
         }
@@ -579,7 +575,45 @@ public class MediatorImpl implements Mediator {
     }
     
     public Object copyOutput(Object data, Operation sourceOperation, Operation targetOperation) {
-        return copy(data, targetOperation.getOutputType(), sourceOperation.getOutputType(), targetOperation, sourceOperation);
+    	if ( data == null ) 
+    		return null;
+    	Object[] output = null;
+    	
+    	if ( !sourceOperation.hasHolders() ) {
+    		output = new Object[] {data};
+    	} else {
+    		output = (Object[])data;    		
+    	}
+   
+        List<DataType> outputTypes = sourceOperation.getOutputType().getLogical();
+        List<DataType> outputTypesTarget = targetOperation == null ? null : targetOperation.getOutputType().getLogical();
+        Object[] copy = new Object[output.length];
+        Map<Object, Object> map = new IdentityHashMap<Object, Object>();
+        for (int i = 0, size = output.length; i < size; i++) {
+            Object arg = output[i];
+            if (arg == null) {
+                copy[i] = null;
+            } else {
+                Object copiedArg = map.get(arg);
+                if (copiedArg != null) {
+                    copy[i] = copiedArg;
+                } else {
+                    copiedArg =
+                        copy(arg,
+                             outputTypes.get(i),
+                             outputTypesTarget == null ? null : outputTypesTarget.get(i),
+                             sourceOperation,
+                             targetOperation);
+                    map.put(arg, copiedArg);
+                    copy[i] = copiedArg;
+                }
+            }
+        }
+        if ( !targetOperation.hasHolders()) {
+    		return copy[0];
+        } else {
+        	return copy;
+        }
     }
 
     public Object copyFault(Object fault, Operation operation) {

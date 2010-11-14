@@ -104,16 +104,22 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 i++;
             }
             if (operation.getOutputType() != null) {
-                DataType<?> d = operation.getOutputType();
-                if (d.getDataBinding() == null) {
-                    d.setDataBinding(dataBindingId);
-                }
+            	for ( org.apache.tuscany.sca.interfacedef.DataType<?> d : operation.getOutputType().getLogical()) {
+            		if ( d != null ) {
+            			// The DataType is null for void operations
+            			if ( d.getDataBinding() == null ) {
+            				d.setDataBinding(dataBindingId);
+            			}
+            			dataBindingRegistry.introspectType(d, operation);
+            		}
+            	}
+              
                 org.apache.tuscany.sca.databinding.annotation.DataType dt =
                     method.getAnnotation(org.apache.tuscany.sca.databinding.annotation.DataType.class);
                 if (dt != null) {
-                    d.setDataBinding(dt.value());
+                    operation.getOutputType().getLogical().get(0).setDataBinding(dt.value());
                 }
-                dataBindingRegistry.introspectType(d, operation);
+                
             }
         }
     }

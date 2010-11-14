@@ -18,17 +18,18 @@
  */
 package org.apache.tuscany.sca.core.databinding.transformers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
-import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
@@ -189,8 +190,9 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                                                                  sourceOp,
                                                                  false);
                             }
+                            DataType<List<DataType>> targetLogicalType = targetType.getLogical();
                             Object targetWrapper =
-                                mediator.mediate(sourceWrapper, sourceWrapperType, targetType.getLogical(), context
+                                mediator.mediate(sourceWrapper, sourceWrapperType, targetLogicalType.getLogical().get(0), context
                                     .getMetadata());
                             return targetWrapper;
                         }
@@ -204,10 +206,25 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                 }
 
                 DataType<XMLType> argType = wrapper.getUnwrappedOutputType();
-                Object child = response;
-                child = mediator.mediate(response, sourceType.getLogical(), argType, context.getMetadata());
-                targetWrapperHandler.setChildren(targetWrapper, new Object[] {child}, targetOp, false);
-                return targetWrapper;
+               
+                if ( !sourceOp.hasHolders() ) {
+                	Object child = response;
+                	DataType<List<DataType>> sourceLogicalType = sourceType.getLogical();
+                	child = mediator.mediate(response, sourceLogicalType.getLogical().get(0), argType, context.getMetadata());
+                	targetWrapperHandler.setChildren(targetWrapper, new Object[] {child}, targetOp, false);
+                	return targetWrapper;
+                } else {
+                	Object[] child = (Object[])response;
+                	ArrayList<Object> children = new ArrayList<Object>();
+                	for ( int i=0; i < child.length; i++) {
+                		DataType<List<DataType>> sourceLogicalType = sourceType.getLogical();                	
+                		DataType childType = sourceLogicalType.getLogical().get(i);
+                		if ( childType != null ) 
+                			children.add(mediator.mediate(child[i], childType, argType, context.getMetadata()));
+                	}
+                	targetWrapperHandler.setChildren(targetWrapper, children.toArray(), targetOp, false);
+                	return targetWrapper;
+                }
             } else if (sourceWrapped && (!targetWrapped && !targetBare)) {
                 // Wrapped to Unwrapped
                 Object sourceWrapper = response;
@@ -228,19 +245,47 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                             targetWrapperInfo != null ? targetWrapperInfo.getOutputWrapperType() : null;
 
                         if (targetWrapperType != null && matches(sourceOp.getWrapper(), targetOp.getWrapper())) {
+                        	DataType<List<DataType>> sourceLogicalType = sourceType.getLogical();
                             Object targetWrapper =
-                                mediator.mediate(sourceWrapper, sourceType.getLogical(), targetWrapperType, context
+                                mediator.mediate(sourceWrapper, sourceLogicalType.getLogical().get(0), targetWrapperType, context
                                     .getMetadata());
                             return targetWrapperHandler.getChildren(targetWrapper, targetOp, false).get(0);
                         }
                     }
                 }
-                Object child = sourceWrapperHandler.getChildren(sourceWrapper, sourceOp, false).get(0);
-                DataType<?> childType = sourceOp.getWrapper().getUnwrappedOutputType();
-                return mediator.mediate(child, childType, targetType.getLogical(), context.getMetadata());
+                if ( !targetOp.hasHolders()) {
+                	Object child = sourceWrapperHandler.getChildren(sourceWrapper, sourceOp, false).get(0);
+                	DataType<?> childType = sourceOp.getWrapper().getUnwrappedOutputType();
+                	DataType<List<DataType>> foo = targetType.getLogical();
+                	return mediator.mediate(child, childType, foo.getLogical().get(0), context.getMetadata());
+                } else {
+                	Object[] child = sourceWrapperHandler.getChildren(sourceWrapper, sourceOp, false).toArray();
+                	DataType<?> childType = sourceOp.getWrapper().getUnwrappedOutputType();
+                	DataType<List<DataType>> targetLogicalType = targetType.getLogical();
+            		
+            		Object[] target = child;
+            		if ( targetLogicalType.getLogical().get(0) == null ) {
+            			target = new Object[child.length +1];
+            			target[0] = null;
+            			for ( int i=1; i <= child.length; i++ ) {
+//            				if ( targetLogicalType.getLogical().get(i).getDataBinding() == null )
+//            					targetLogicalType.getLogical().get(i).setDataBinding(targetDataBinding);
+            				target[i] = mediator.mediate(child[i-1], childType, targetLogicalType.getLogical().get(i), context.getMetadata());
+            			}
+            		} else {
+            			for ( int i=0; i < child.length; i++) {      
+//            				if ( targetLogicalType.getLogical().get(i).getDataBinding() == null )
+//            					targetLogicalType.getLogical().get(i).setDataBinding(targetDataBinding);
+            				target[i] = mediator.mediate(child[i], childType, targetLogicalType.getLogical().get(i) , context.getMetadata());
+            			}
+            		}
+                	return target;
+                }
             } else {
                 // FIXME: Do we want to handle wrapped to wrapped?
-                return mediator.mediate(response, sourceType.getLogical(), targetType.getLogical(), context
+            	DataType<List<DataType>> sourceLogical = sourceType.getLogical();
+            	DataType<List<DataType>> targetLogical = targetType.getLogical();
+                return mediator.mediate(response, sourceLogical.getLogical().get(0), targetLogical.getLogical().get(0), context
                     .getMetadata());
             }
         } catch (Exception e) {
