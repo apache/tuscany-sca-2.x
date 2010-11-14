@@ -73,7 +73,7 @@ public class WSDLInterfaceIntrospectorTestCase extends AbstractWSDLTestCase {
         Assert.assertEquals("getLastTradePrice", operation.getName());
         DataType<List<DataType>> inputType = operation.getInputType();
         Assert.assertEquals(1, inputType.getLogical().size());
-        DataType<XMLType> returnType = operation.getOutputType();
+        DataType<List<DataType>> returnType = operation.getOutputType();
         Assert.assertNotNull(returnType);
         Assert.assertEquals(0, operation.getFaultTypes().size());
         // Assert.assertEquals(1,

@@ -149,24 +149,35 @@ public class WSDLOperationIntrospectorImpl {
      * @throws NotSupportedWSDLException
      */
     @SuppressWarnings("unchecked")
-    public DataType<XMLType> getOutputType() throws InvalidWSDLException {
+    public DataType<List<DataType>> getOutputType() throws InvalidWSDLException {
         if (outputType == null) {
             Output output = operation.getOutput();
             Message outputMsg = (output == null) ? null : output.getMessage();
 
-            List outputParts = (outputMsg == null) ? null : outputMsg.getOrderedParts(null);
+            operation.getInput();
+            List<Part> outputParts = (outputMsg == null) ? null : outputMsg.getOrderedParts(null);
+            ArrayList<DataType> partTypes = new ArrayList<DataType>();
             if (outputParts != null && outputParts.size() > 0) {
-                if (outputParts.size() > 1) {
-                    // We don't support output with multiple parts
-                    if (logger.isLoggable(Level.WARNING)) {
-                        logger.warning("Multi-part output is not supported, please use BARE parameter style.");
-                    }
-                    // throw new InvalidWSDLException("Multi-part output is not supported");
+//                if (outputParts.size() > 1) {
+//                    // We don't support output with multiple parts
+//                    if (logger.isLoggable(Level.WARNING)) {
+//                        logger.warning("Multi-part output is not supported, please use BARE parameter style.");
+//                    }
+//                    // throw new InvalidWSDLException("Multi-part output is not supported");
+//                }
+                for ( Part part : outputParts ) {               
+                	DataType partType = new WSDLPart(part, Object.class).getDataType();                
+                	partTypes.add(partType);
                 }
-                Part part = (Part)outputParts.get(0);
-                outputType = new WSDLPart(part, Object.class).getDataType();
+                
                 // outputType.setMetadata(WSDLOperation.class.getName(), this);
+            } else {
+            	partTypes.add(null);
             }
+         
+          
+            outputType = 
+            	new DataTypeImpl<List<DataType>>(dataBinding, Object[].class, partTypes);          
         }
         return outputType;
     }

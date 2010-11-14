@@ -64,6 +64,7 @@ import org.oasisopen.sca.annotation.Remotable;
  */
 public class JavaInterfaceIntrospectorImpl {
     public static final String IDL_INPUT = "idl:input";
+    public static final String IDL_OUTPUT = "idl:output";
 
     private static final String UNKNOWN_DATABINDING = null;
 
@@ -185,6 +186,7 @@ public class JavaInterfaceIntrospectorImpl {
         List<Operation> operations = new ArrayList<Operation>(methods.length);
         Set<String> names = remotable ? new HashSet<String>() : null;
         for (Method method : methods) {
+        	boolean hasHolders = false;
             if (method.getDeclaringClass() == Object.class) {
                 // Skip the methods on the Object.class
                 continue;
@@ -202,6 +204,7 @@ public class JavaInterfaceIntrospectorImpl {
                 getActualTypes(method.getGenericParameterTypes(), method.getParameterTypes(), typeBindings);
             Class<?>[] faultTypes =
                 getActualTypes(method.getGenericExceptionTypes(), method.getExceptionTypes(), typeBindings);
+            Class<?>[] allOutputTypes = getOutputTypes(returnType, parameterTypes);
             
             // For async server interfaces, faults are described using the @AsyncFaults annotation
             if( method.isAnnotationPresent(AsyncFault.class) ) {
@@ -230,7 +233,12 @@ public class JavaInterfaceIntrospectorImpl {
             DataType<XMLType> returnDataType =
                 returnType == void.class ? null : new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, returnType, method
                     .getGenericReturnType(), xmlReturnType);
-            List<DataType> paramDataTypes = new ArrayList<DataType>(parameterTypes.length);
+            
+            
+            // Handle Input Types
+          	List<DataType> paramDataTypes = new ArrayList<DataType>(parameterTypes.length);
+          	List<Type> genericHolderTypes = new ArrayList<Type>();
+          	List<Class<?>> physicalHolderTypes = new ArrayList<Class<?>>();
             Type[] genericParamTypes = method.getGenericParameterTypes();
             for (int i = 0; i < parameterTypes.length; i++) {
                 Class<?> paramType = parameterTypes[i];
@@ -241,16 +249,40 @@ public class JavaInterfaceIntrospectorImpl {
                 ParameterMode mode = ParameterMode.IN;
                 // Holder pattern. Physical types of Holder<T> classes are updated to <T> to aid in transformations.
                 if ( Holder.class == paramType) {
+                	hasHolders = true;
+                	genericHolderTypes.add(genericParamTypes[i]);
                 	Type firstActual = getFirstActualType( genericParamTypes[ i ] );
                 	if ( firstActual != null ) {
+                		physicalHolderTypes.add((Class<?>)firstActual);
                 		xmlDataType.setPhysical( (Class<?>)firstActual );
                 		mode = ParameterMode.INOUT;
+                	} else {
+                		physicalHolderTypes.add(xmlDataType.getPhysical());
                 	}
                 }
                 paramDataTypes.add( xmlDataType);
                 operation.getParameterModes().add(mode);
             }
-                    
+            
+            
+            // Get Output Types                     
+        	List<DataType> outputDataTypes = new ArrayList<DataType>(allOutputTypes.length);
+    		Type genericReturnType = method.getGenericReturnType();
+    		
+    		for ( int i=0; i <= genericHolderTypes.size(); i++ ) {
+    			Class<?> paramType = allOutputTypes[i];
+    			XMLType xmlOutputType = new XMLType(new QName(ns, "out" + i), null);
+    			
+    			if ( i == 0 ) {
+    				outputDataTypes.add(returnDataType);
+    			} else {
+    				DataTypeImpl<XMLType> xmlDataType = xmlDataType = new DataTypeImpl<XMLType>(
+    						UNKNOWN_DATABINDING, physicalHolderTypes.get(i-1), genericHolderTypes.get(i-1), xmlOutputType);
+    				outputDataTypes.add(xmlDataType);
+    			}
+    			
+    		}
+    		
             // Fault types                                                          
             List<DataType> faultDataTypes = new ArrayList<DataType>(faultTypes.length);
             Type[] genericFaultTypes = method.getGenericExceptionTypes();
@@ -273,18 +305,37 @@ public class JavaInterfaceIntrospectorImpl {
 
             DataType<List<DataType>> inputType =
                 new DataTypeImpl<List<DataType>>(IDL_INPUT, Object[].class, paramDataTypes);
-           
-            operation.setInputType(inputType);
-            operation.setOutputType(returnDataType);
+            DataType<List<DataType>> outputType = 
+            	new DataTypeImpl<List<DataType>>(IDL_OUTPUT, Object[].class, outputDataTypes);
+
+            operation.setOutputType(outputType);
+            	
+            operation.setInputType(inputType);                     
             operation.setFaultTypes(faultDataTypes);
             operation.setNonBlocking(nonBlocking);
             operation.setJavaMethod(method);
+            operation.setHasHolders(hasHolders);     
             operations.add(operation);
         }
         return operations;
     }
     
-    /**
+
+	private Class<?>[] getOutputTypes(Class<?> returnType, Class<?>[] parameterTypes) {
+		Class<?>[] returnTypes = new Class<?>[parameterTypes.length + 1];
+		returnTypes[0] = returnType;
+		int idx = 1;
+		for ( Class<?> clazz : parameterTypes ) {
+			if ( Holder.class == clazz )
+				returnTypes[idx++] = clazz;
+		}
+		
+		return returnTypes;
+	}
+
+
+
+	/**
      * Reads the fault types declared in an @AsyncFault annotation on an async server method
      * @param method - the Method
      * @return - an array of fault/exception classes

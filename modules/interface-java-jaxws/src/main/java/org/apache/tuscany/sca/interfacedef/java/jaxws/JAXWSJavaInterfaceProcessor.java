@@ -306,8 +306,8 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 name = getValue(name, "return");
                 QName element = new QName(ns, name);
 
-                if (operation.getOutputType() != null) {
-                    Object logical = operation.getOutputType().getLogical();
+                if ((operation.getOutputType() != null) && ( operation.getOutputType().getLogical().get(0) != null)) {
+                    Object logical = operation.getOutputType().getLogical().get(0).getLogical();
                     QName type = null;
                     if (logical instanceof XMLType) {
                         ((XMLType)logical).setElementName(element);

@@ -67,9 +67,10 @@ public class WSDLOperationIntrospectorTestCase extends AbstractWSDLTestCase {
         DataType<XMLType> type = inputType.getLogical().get(0);
         Assert.assertEquals(new QName("http://example.com/stockquote.xsd", "getLastTradePrice"), type.getLogical().getElementName());
 
-        DataType<XMLType> outputType = op.getOutputType();
+        DataType<List<DataType>> outputType = op.getOutputType();
+        DataType<XMLType> logical = outputType.getLogical().get(0);
         Assert.assertEquals(new QName("http://example.com/stockquote.xsd", "getLastTradePriceResponse"),
-                            outputType.getLogical().getElementName());
+                            logical.getLogical().getElementName());
         Assert.assertTrue(op.isWrapperStyle());
 
         DataType<List<DataType>> unwrappedInputType = op.getWrapper().getUnwrappedInputType();

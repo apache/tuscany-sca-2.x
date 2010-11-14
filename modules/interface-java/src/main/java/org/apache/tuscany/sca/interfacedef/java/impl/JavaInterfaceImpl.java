@@ -201,7 +201,7 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
             DataType<List<DataType>> requestParams = operation.getInputType();
 
         	DataType<List<DataType>> inputType = prepareSyncInputParams( requestParams );
-            DataType<XMLType> returnDataType = prepareSyncReturnParam( requestParams );
+            DataType<List<DataType>> returnDataType = prepareSyncReturnParam( requestParams );
             List<DataType> faultDataTypes = prepareSyncFaults( operation );
         	
         	syncOperation.setName(opName);
@@ -246,7 +246,7 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
      * @param requestParams - - async method input parameters
      * @return - the sync method return parameter
      */
-    private DataType<XMLType> prepareSyncReturnParam( DataType<List<DataType>> requestParams ) {
+    private DataType<List<DataType>> prepareSyncReturnParam( DataType<List<DataType>> requestParams ) {
     	List<DataType> requestLogical = requestParams.getLogical();
     	int paramCount = requestLogical.size();
     	
@@ -271,7 +271,14 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
         DataType<XMLType> returnDataType =
             returnType == void.class ? null : new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, returnType, xmlReturnType);
         
-        return returnDataType;
+        ArrayList<DataType> returnTypes = new ArrayList<DataType>();
+        returnTypes.add(returnDataType);
+        
+        DataType<List<DataType>> outputType =
+            new DataTypeImpl<List<DataType>>(requestParams.getDataBinding(),
+            		                         requestParams.getPhysical(), returnTypes);
+    
+        return outputType;
     } // end method prepareSyncReturnParam
     
     /**
@@ -294,7 +301,7 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
     	// 1) void return type
     	// 2) name ending in "Async"
     	// 3) final parameter which is of ResponseDispatch<?> type
-    	DataType<?> response = operation.getOutputType();
+    	DataType<?> response = operation.getOutputType().getLogical().get(0);
     	if( response != null ) {
     	   if ( response.getPhysical() != void.class ) return false;
     	} // end if

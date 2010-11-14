@@ -162,23 +162,24 @@ public class JavaImplementationInvoker implements Invoker {
             
                         
             if (argumentHolderCount > 0) {
-                // Holder pattern. Any payload Holder<T> types are returned as the message body.
-                List<Object> returnArgs = new ArrayList<Object>();
-                returnArgs.add(ret);
+            	
+                // Holder pattern. Any payload Holder<T> types are returned as part of the message body.
+            	Object[] payloadArray = (Object[])payload;           
+            	ArrayList<Object> result = new ArrayList<Object>();
                 if (imethod != null) {
-                	Object[] payloadArray = (Object[])payload;
-                    for (int i = 0, size = op.getParameterModes().size(); i < size; i++) {
-                        // System.out.println( "JavaImplementationInvoker.invoke return parameter " + i + " type=" + parameter.getClass().getName() );
+                	
+                	result.add(ret);
+                    for (int i = 0, size = op.getParameterModes().size(); i < size; i++) {                       
                         if (ParameterMode.IN != op.getParameterModes().get(i)) {                        	
-                            // Demote array params from Holder<T> to <T>.                                                   
-                                Holder<Object> item = (Holder<Object>)payloadArray[i];
-                                payloadArray[i] = item.value;
-                                returnArgs.add(payloadArray[i]);
+                        	// Demote array params from Holder<T> to <T>.                                                   
+                        	Holder<Object> item = (Holder<Object>)payloadArray[i];
+                        	payloadArray[i] = item.value;
+                        	result.add(payloadArray[i]);                        	                      
                         }
                     }
                 }
 
-                msg.setBody(returnArgs.toArray());
+                msg.setBody(result.toArray());
 
             } else {
                 msg.setBody(ret);

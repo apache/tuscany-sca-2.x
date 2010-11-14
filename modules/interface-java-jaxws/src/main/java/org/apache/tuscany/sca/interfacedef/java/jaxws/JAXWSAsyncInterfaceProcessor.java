@@ -82,7 +82,7 @@ public class JAXWSAsyncInterfaceProcessor implements JavaInterfaceVisitor {
      */
     private static boolean isJAXWSAsyncPoolingOperation(Operation operation, Operation asyncOperation) {
 
-        if (asyncOperation.getOutputType() == null || Response.class != asyncOperation.getOutputType().getPhysical()) {
+        if (asyncOperation.getOutputType().getLogical().get(0) == null || Response.class != asyncOperation.getOutputType().getLogical().get(0).getPhysical()) {
             // The return type is not Response<T>
             return false;
         }
@@ -101,8 +101,8 @@ public class JAXWSAsyncInterfaceProcessor implements JavaInterfaceVisitor {
         }
 
         //a return type of Response<R> where R is the return type of M
-        DataType<?> operationOutputType = operation.getOutputType();
-        DataType<?> asyncOperationOutputType = asyncOperation.getOutputType();
+        DataType<?> operationOutputType = operation.getOutputType().getLogical().get(0);
+        DataType<?> asyncOperationOutputType = asyncOperation.getOutputType().getLogical().get(0);
 
         if (operationOutputType != null && asyncOperationOutputType != null) {
             Class<?> asyncReturnTypeClass = (Class<?>)asyncOperationOutputType.getPhysical();
@@ -149,7 +149,7 @@ public class JAXWSAsyncInterfaceProcessor implements JavaInterfaceVisitor {
      */
     private static boolean isJAXWSAsyncCallbackOperation(Operation operation, Operation asyncOperation) {
 
-        if (asyncOperation.getOutputType() == null || Future.class != asyncOperation.getOutputType().getPhysical()) {
+        if (asyncOperation.getOutputType().getLogical().get(0) == null || Future.class != asyncOperation.getOutputType().getLogical().get(0).getPhysical()) {
             // The return type is not Future<?>
             return false;
         }
@@ -173,7 +173,7 @@ public class JAXWSAsyncInterfaceProcessor implements JavaInterfaceVisitor {
         Class<?> asyncLastParameterTypeClass = asyncOperationInputType.get(size).getPhysical();
         if (asyncLastParameterTypeClass == AsyncHandler.class) {
             //now check the actual type of the AsyncHandler<R> with R
-            Class<?> returnType = operation.getOutputType().getPhysical();
+            Class<?> returnType = operation.getOutputType().getLogical().get(0).getPhysical();
             Class<?> asyncActualLastParameterTypeClass = Object.class;
             if (genericParamType instanceof ParameterizedType) {
                 ParameterizedType asyncLastParameterType = (ParameterizedType)genericParamType;
