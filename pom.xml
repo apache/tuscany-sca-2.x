@@ -317,7 +317,7 @@
                 <module>samples</module>
                 <module>testing/itest</module>
                 <module>features</module>
-                <module>distribution</module>
+                <modules>features/eclipse-pde</modules>
             </modules>
            <build>
                 <defaultGoal>org.apache.tuscany.maven.plugins:maven-bundle-plugin:eclipse</defaultGoal>
