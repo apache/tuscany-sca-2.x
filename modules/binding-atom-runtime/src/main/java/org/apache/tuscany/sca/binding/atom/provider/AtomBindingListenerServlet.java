@@ -151,7 +151,7 @@ class AtomBindingListenerServlet extends HttpServlet {
             }
             //We assume that the item type is the same for both input and 
             //ouput for all operations on the interface
-            itemClassType = getOperation.getOutputType();
+            itemClassType = ((List<DataType>)getOperation.getOutputType().getLogical()).get(0);
         }
     }
 
