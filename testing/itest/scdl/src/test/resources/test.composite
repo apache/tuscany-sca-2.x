@@ -43,9 +43,8 @@
        <tuscany:binding.rmi/>
     </service>
 
-<!-- TODO: leave out WS binding for now as it drags in entire runtime
     <service name="WSService" promote="JavaComponent">
        <binding.ws/>
     </service>
--->
+
 </composite>
