@@ -113,7 +113,7 @@
             <classpath>  
                 <pathelement location="target/${jar.name}"/>
                 <fileset dir="${tuscany.home}/lib">
-                   <include name="tuscany-base-runtime-aggregation-2.0-Beta1-SNAPSHOT.jar" />
+                   <include name="tuscany-base-runtime-aggregation-2.0-Beta1.jar" />
                 </fileset>
             </classpath> 
         </java>       

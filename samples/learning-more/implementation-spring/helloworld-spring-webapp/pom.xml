@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-samples</artifactId>
-        <version>2.0-Beta1-SNAPSHOT</version>
+        <version>2.0-Beta1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -34,31 +34,31 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-base-runtime</artifactId>
-            <version>2.0-Beta1-SNAPSHOT</version>
+            <version>2.0-Beta1</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-spring-webapp</artifactId>
-            <version>2.0-Beta1-SNAPSHOT</version>
+            <version>2.0-Beta1</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-spring-runtime</artifactId>
-            <version>2.0-Beta1-SNAPSHOT</version>
+            <version>2.0-Beta1</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-jsonrpc-runtime</artifactId>
-            <version>2.0-Beta1-SNAPSHOT</version>
+            <version>2.0-Beta1</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>sample-implementation-spring-helloworld-contribution</artifactId>
-            <version>2.0-Beta1-SNAPSHOT</version>
+            <version>2.0-Beta1</version>
             <scope>provided</scope>
         </dependency>
 

@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-distribution</artifactId>
-        <version>2.0-Beta1-SNAPSHOT</version>
+        <version>2.0-Beta1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -38,7 +38,7 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-feature-all</artifactId>
             <type>pom</type>
-            <version>2.0-Beta1-SNAPSHOT</version>
+            <version>2.0-Beta1</version>
         </dependency>
 
         <!-- aggregation jars for lib directory -->
@@ -46,19 +46,19 @@
         <dependency>
             <groupId>org.apache.tuscany.sca.aggregation</groupId>
             <artifactId>tuscany-base-runtime-aggregation</artifactId>
-            <version>2.0-Beta1-SNAPSHOT</version>
+            <version>2.0-Beta1</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca.aggregation</groupId>
             <artifactId>tuscany-binding-rmi-runtime-aggregation</artifactId>
-            <version>2.0-Beta1-SNAPSHOT</version>
+            <version>2.0-Beta1</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca.aggregation</groupId>
             <artifactId>tuscany-binding-ws-runtime-axis2-aggregation</artifactId>
-            <version>2.0-Beta1-SNAPSHOT</version>
+            <version>2.0-Beta1</version>
         </dependency>
 
     </dependencies>
@@ -252,116 +252,116 @@
                                  <feature>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-base-runtime-pom</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </feature>
                              </features>
                              <extensions>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-binding-atom-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-binding-commet-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-binding-corba-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-binding-ejb-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-binding-hazelcase-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-binding-jms-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-binding-jsonp-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-binding-jsonrpc-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-binding-rest-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-binding-rmi-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-binding-rss-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
 
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-implementation-bpel-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-implementation-jaxes-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-implementation-osgi-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-implementation-python-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-implementation-script-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-implementation-spring-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-implementation-web-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-implementation-widget-runtime</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
 
                                  <extension>
                                      <groupId>org.apache.tuscany.sca</groupId>
                                      <artifactId>tuscany-host-jetty</artifactId>
-                                     <version>2.0-Beta1-SNAPSHOT</version>
+                                     <version>2.0-Beta1</version>
                                  </extension>
                              </extensions>
                             <artifactManifests>

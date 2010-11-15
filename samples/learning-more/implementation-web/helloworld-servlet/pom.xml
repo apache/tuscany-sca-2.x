@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-samples</artifactId>
-        <version>2.0-Beta1-SNAPSHOT</version>
+        <version>2.0-Beta1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-base-runtime-nodep</artifactId>
-            <version>2.0-Beta1-SNAPSHOT</version>
+            <version>2.0-Beta1</version>
         </dependency>
 
         <dependency>
