@@ -118,7 +118,7 @@ public class BPELDocumentModelResolver implements ModelResolver {
         // Not found, Lookup a definition for the given namespace, within contribution       
         resolved = (BPELProcessDefinition) map.get(qname);
         
-        if(resolved.isUnresolved()) {
+        if(resolved != null && resolved.isUnresolved()) {
         	try {
         		resolve(resolved, context);
         	} catch(Exception e) {
