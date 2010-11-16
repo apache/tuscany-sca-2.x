@@ -26,6 +26,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -176,6 +178,58 @@ public class Shell {
             }
         }
         return true;
+    }
+
+    boolean invoke(final List<String> toks) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        Node node = getNode();
+        if (getNode() == null) {
+            return true;
+        }
+        String serviceName = toks.get(0);
+        String operationName = toks.get(1);
+        String params[] = new String[toks.size()- 2];
+        System.arraycopy(toks.toArray(), 2, params, 0, params.length);
+        Method method = node.getClass().getMethod("getService", Class.class, String.class);
+        Object proxy = method.invoke(node, null, serviceName);
+        Object result = invoke(proxy, operationName, params);
+        out.println(result);
+        return true;
+    }
+
+    static Object invoke(Object proxy, String operationName, String... params) throws IllegalAccessException, InvocationTargetException {
+        for (Method m : proxy.getClass().getMethods()) {
+            if (m.getName().equals(operationName) && m.getParameterTypes().length == params.length) {
+                Object parameters[] = new Object[params.length];
+                int i = 0;
+                for (Class<?> type : m.getParameterTypes()) {
+                    if (type == byte.class || type == Byte.class) {
+                        parameters[i] = Byte.valueOf(params[i]);
+                    } else if (type == char.class || type == Character.class) {
+                        parameters[i] = params[i].charAt(0);
+                    } else if (type == boolean.class || type == Boolean.class) {
+                        parameters[i] = Boolean.valueOf(params[i]);
+                    } else if (type == short.class || type == Short.class) {
+                        parameters[i] = Short.valueOf(params[i]);
+                    } else if (type == int.class || type == Integer.class) {
+                        parameters[i] = Integer.valueOf(params[i]);
+                    } else if (type == long.class || type == Long.class) {
+                        parameters[i] = Long.valueOf(params[i]);
+                    } else if (type == float.class || type == Float.class) {
+                        parameters[i] = Float.valueOf(params[i]);
+                    } else if (type == double.class || type == Double.class) {
+                        parameters[i] = Double.valueOf(params[i]);
+                    } else if (type == String.class) {
+                        parameters[i] = params[i];
+                    } else {
+                        throw new IllegalArgumentException("Parameter type is not supported: " + type);
+                    }
+                    i++;
+                }
+                Object result = m.invoke(proxy, parameters);
+                return result;
+            }
+        }
+        throw new IllegalArgumentException("Invalid service operation: " + operationName);
     }
 
     boolean listComposites(final String curi) {
@@ -398,6 +452,12 @@ public class Shell {
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
                     return installed(toks);
+                }
+            };
+        if (op.equalsIgnoreCase("invoke"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return invoke(toks);
                 }
             };
         if (op.equalsIgnoreCase("load"))
