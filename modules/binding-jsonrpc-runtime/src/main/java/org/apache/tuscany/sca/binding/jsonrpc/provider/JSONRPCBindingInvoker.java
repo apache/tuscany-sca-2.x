@@ -140,8 +140,12 @@ public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
                         if (!jsonResponse.has("result")) {
                             processException(jsonResponse);
                         }
-                        DataType outputType = operation.getOutputType();
-                        if (outputType == null) {
+                        DataType<List<DataType>> outputType = operation.getOutputType();
+                        DataType returnType =
+                            (outputType != null && !outputType.getLogical().isEmpty()) ? outputType.getLogical().get(0)
+                                : null;
+
+                        if (returnType == null) {
                             msg.setBody(null);
                             return msg;
                         }
@@ -156,14 +160,14 @@ public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
                             processException(jsonResponse);
                         }
 
-                        Class<?> returnType = outputType.getPhysical();
-                        Type genericReturnType = outputType.getGenericType();
+                        Class<?> returnClass = returnType.getPhysical();
+                        Type genericReturnType = returnType.getGenericType();
 
-                        ObjectMapper mapper = createObjectMapper(returnType);
+                        ObjectMapper mapper = createObjectMapper(returnClass);
                         String json = rawResult.toString();
 
                         // Jackson requires the quoted String so that readValue can work
-                        if (returnType == String.class) {
+                        if (returnClass == String.class) {
                             json = "\"" + json + "\"";
                         }
                         Object body = mapper.readValue(json, TypeFactory.type(genericReturnType));
