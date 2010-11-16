@@ -33,7 +33,6 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -70,7 +69,7 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
         */
 
         // Create an HTTP client
-        httpClient = createHttpClient();
+        // httpClient = createHttpClient();
     }
 
     public HttpClient createHttpClient() {
@@ -95,19 +94,18 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
     }
 
     public Invoker createInvoker(Operation operation) {
-        final Interface intf = reference.getInterfaceContract().getInterface();
-        if (intf.isDynamic()) {
-            return new JSONRPCBindingInvoker(endpointReference, operation, httpClient);
-        }
-        return new JSONRPCClientInvoker(endpointReference, operation, httpClient);
+        // final Interface intf = reference.getInterfaceContract().getInterface();
+        return new JSONRPCBindingInvoker(endpointReference, operation, httpClient);
     }
 
     public void start() {
-
+        this.httpClient = createHttpClient();
     }
 
     public void stop() {
-
+        if (httpClient != null) {
+            httpClient.getConnectionManager().shutdown();
+        }
     }
 
     public boolean supportsOneWayInvocation() {

@@ -34,8 +34,6 @@ Import-Package: javax.security.auth.login,
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
  org.jabsorb,
- org.jabsorb.client,
- org.jabsorb.serializer,
  org.json,
  org.oasisopen.sca;version="2.0.0",
  org.oasisopen.sca.annotation;version="2.0.0"
