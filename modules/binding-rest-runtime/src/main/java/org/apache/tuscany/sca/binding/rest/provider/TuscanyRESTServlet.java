@@ -20,14 +20,10 @@
 package org.apache.tuscany.sca.binding.rest.provider;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,10 +31,8 @@ import java.util.logging.Logger;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.tuscany.sca.assembly.Binding;
@@ -50,13 +44,10 @@ import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
 import org.apache.wink.common.internal.registry.ProvidersRegistry;
 import org.apache.wink.common.internal.registry.metadata.MethodMetadata;
 import org.apache.wink.server.handlers.HandlersChain;
-import org.apache.wink.server.handlers.HandlersFactory;
 import org.apache.wink.server.handlers.MessageContext;
-import org.apache.wink.server.handlers.RequestHandler;
 import org.apache.wink.server.handlers.ResponseHandler;
 import org.apache.wink.server.internal.DeploymentConfiguration;
 import org.apache.wink.server.internal.RequestProcessor;
-import org.apache.wink.server.internal.handlers.CheckLocationHeaderHandler;
 import org.apache.wink.server.internal.registry.ResourceRecord;
 import org.apache.wink.server.internal.servlet.RestServlet;
 
@@ -65,7 +56,7 @@ import org.apache.wink.server.internal.servlet.RestServlet;
  */
 public class TuscanyRESTServlet extends RestServlet {
     private static final Logger logger = Logger.getLogger(TuscanyRESTServlet.class.getName());
-    
+
     private static final long serialVersionUID = 89997233133964915L;
     private ExtensionPointRegistry registry;
     private RESTBinding binding;
@@ -78,7 +69,7 @@ public class TuscanyRESTServlet extends RestServlet {
         this.binding = (RESTBinding) binding;
         this.resourceClass = resourceClass;
     }
-    
+
     public void init() throws ServletException {
         ClassLoader cl =
             ClassLoaderContext.setContextClassLoader(Thread.currentThread().getContextClassLoader(),
@@ -92,14 +83,6 @@ public class TuscanyRESTServlet extends RestServlet {
                 Thread.currentThread().setContextClassLoader(cl);
             }
         }
-    }
-    
-    /**
-     * Create Tuscany own DeploymentConfiguration in order to be able to 
-     * add ResponseHandler to the Wink HandlerChain
-     */
-    public DeploymentConfiguration createDeploymentConfiguration() throws ClassNotFoundException, InstantiationException, IllegalAccessException { 
-        return new TuscanyDeploymentConfiguration();
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -149,7 +132,9 @@ public class TuscanyRESTServlet extends RestServlet {
         ProvidersRegistry providers = config.getProvidersRegistry();
         providers.addProvider(new DataBindingJAXRSReader(registry), 0.001, true);
         providers.addProvider(new DataBindingJAXRSWriter(registry), 0.001, true);
-        
+
+        config.getResponseUserHandlers().add(new TuscanyResponseHandler());
+
         return config;
     }
 
@@ -194,39 +179,24 @@ public class TuscanyRESTServlet extends RestServlet {
         }
         return processor;
     }
-    
-    /**
-     * TuscanyDeploymentConfiguration
-     * 
-     * Required to inject TuscanyResponseHandler to the HandlerChain
-     */
-    class TuscanyDeploymentConfiguration extends DeploymentConfiguration {
-        
-        @Override
-        protected List<ResponseHandler> initResponseUserHandlers() {
-            List<ResponseHandler> list = super.initResponseUserHandlers();
-            list.add(new TuscanyResponseHandler());
-            return list;
-        }
-    }
-    
+
     /**
      * TuscanyResponseHandler
-     * 
+     *
      * Required to support declartive HTTP Headers
      */
     class TuscanyResponseHandler implements ResponseHandler {
         public void handleResponse(MessageContext context, HandlersChain chain) throws Throwable {
-            
+
             // assert response is not committed
             final HttpServletResponse httpResponse = context.getAttribute(HttpServletResponse.class);
             if (httpResponse.isCommitted()) {
                 logger.log(Level.FINE, "The response is already committed. Nothing to do.");
                 return;
             }
-            
+
             //process declarative headers
-            for(HTTPHeader header : binding.getHttpHeaders()) {                
+            for(HTTPHeader header : binding.getHttpHeaders()) {
                 //treat special headers that need to be calculated
                 if(header.getName().equalsIgnoreCase("Expires")) {
                     GregorianCalendar calendar = new GregorianCalendar();
@@ -239,14 +209,14 @@ public class TuscanyRESTServlet extends RestServlet {
                     //default behaviour to pass the header value to HTTP response
                     httpResponse.setHeader(header.getName(), header.getValue());
                 }
-            }     
+            }
 
             chain.doChain(context);
         }
 
         public void init(Properties props) {
 
-        }        
+        }
     }
 
 }
