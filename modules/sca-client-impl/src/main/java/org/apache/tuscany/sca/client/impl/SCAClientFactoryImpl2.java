@@ -48,19 +48,20 @@ public class SCAClientFactoryImpl2 extends SCAClientFactory {
     private void checkDomainURI(URI domainURI) throws NoSuchDomainException {
     	// Check for local node
     	String domainName = getDomainName();
-		for ( NodeFactory nodeFactory : NodeFactory.getNodeFactories()) {			
-			List<Node> nodes = ((NodeFactoryImpl)nodeFactory).getNodesInDomain(domainName);
-			if ( !nodes.isEmpty() ) 
-				return;			
-		}
-		
-		// Check for remote node
-		SCAClientHandler handler = new SCAClientHandler(domainName, null, null);
-		handler.checkDomain();
-	}
+        for ( NodeFactory nodeFactory : NodeFactory.getNodeFactories()) {                       
+            List<Node> nodes = ((NodeFactoryImpl)nodeFactory).getNodesInDomain(domainName);
+            if ( !nodes.isEmpty() ) {
+                return;                 
+            }
+        }
+    
+        // Check for remote node
+        SCAClientHandler handler = new SCAClientHandler(domainName, null, null);
+        handler.checkDomain();
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
+    @SuppressWarnings("unchecked")
+    @Override
     public <T> T getService(Class<T> serviceInterface, String serviceName) throws NoSuchServiceException, NoSuchDomainException {
         
         boolean foundDomain = false;
