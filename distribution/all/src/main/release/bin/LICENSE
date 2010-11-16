@@ -257,6 +257,7 @@ The following components come under Apache Software License 2.0
  derby-10.4.1.3.jar
  dwr-2.0.3.jar
  geronimo-activation_1.1_spec-1.0.1.jar
+ geronimo-annotation_1.1_spec-1.0.jar
  geronimo-connector-2.1.4.jar
  geronimo-ejb_3.0_spec-1.0.1.jar
  geronimo-javamail_1.4_spec-1.6.jar
@@ -318,9 +319,9 @@ The following components come under Apache Software License 2.0
  stripes-1.5.2.jar
  tranql-connector-1.1.jar
  tribes-6.0.26.jar
- wink-common-1.1.1-incubating.jar
- wink-client-1.1.1-incubating.jar
- wink-server-1.1.1-incubating.jar 
+ wink-common-1.1.2-incubating.jar
+ wink-client-1.1.2-incubating.jar
+ wink-server-1.1.2-incubating.jar 
  woden-api-1.0M8.jar
  woden-impl-dom-1.0M8.jar
  wss4j-1.5.4.jar
