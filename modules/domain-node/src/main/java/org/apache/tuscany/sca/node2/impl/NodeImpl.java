@@ -355,4 +355,8 @@ public class NodeImpl implements Node {
         return uri;
     }
 
+    public EndpointRegistry getEndpointRegistry() {
+        return endpointRegistry;
+    }
+
 }
