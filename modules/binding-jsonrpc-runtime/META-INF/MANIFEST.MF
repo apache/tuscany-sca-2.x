@@ -9,6 +9,7 @@ Bundle-Description: Apache Tuscany SCA JSON-RPC Binding Runtime
 Import-Package: javax.security.auth.login,
  javax.servlet,
  javax.servlet.http,
+ org.apache.http.conn.ssl,
  org.apache.http,
  org.apache.http.client,
  org.apache.http.client.methods,

@@ -32,8 +32,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.MediaType;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
@@ -42,13 +40,10 @@ import org.apache.tuscany.sca.common.http.HTTPHeader;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
 import org.apache.wink.common.internal.registry.ProvidersRegistry;
-import org.apache.wink.common.internal.registry.metadata.MethodMetadata;
 import org.apache.wink.server.handlers.HandlersChain;
 import org.apache.wink.server.handlers.MessageContext;
 import org.apache.wink.server.handlers.ResponseHandler;
 import org.apache.wink.server.internal.DeploymentConfiguration;
-import org.apache.wink.server.internal.RequestProcessor;
-import org.apache.wink.server.internal.registry.ResourceRecord;
 import org.apache.wink.server.internal.servlet.RestServlet;
 
 /**
@@ -138,6 +133,7 @@ public class TuscanyRESTServlet extends RestServlet {
         return config;
     }
 
+    /*
     private synchronized void fixMediaTypes(DeploymentConfiguration config) {
         if (fixed) {
             return;
@@ -179,6 +175,7 @@ public class TuscanyRESTServlet extends RestServlet {
         }
         return processor;
     }
+    */
 
     /**
      * TuscanyResponseHandler
