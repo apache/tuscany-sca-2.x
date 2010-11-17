@@ -38,6 +38,7 @@ import com.meterware.httpunit.WebResponse;
 /**
  * This shows how to test the Calculator composition.
  */
+@Ignore
 public class CalculatorTestCase {
     private final static String SERVICE_URL = "http://localhost:8085/calculator/";
 
