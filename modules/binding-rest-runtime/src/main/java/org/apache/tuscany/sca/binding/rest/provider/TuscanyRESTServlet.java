@@ -69,7 +69,8 @@ public class TuscanyRESTServlet extends RestServlet {
         ClassLoader cl =
             ClassLoaderContext.setContextClassLoader(Thread.currentThread().getContextClassLoader(),
                                                      registry.getServiceDiscovery(),
-                                                     "/META-INF/server/wink-providers");
+                                                     "/META-INF/server/wink-providers",
+                                                     "javax.ws.rs.ext.RuntimeDelegate");
         try {
             super.init();
         } finally {
