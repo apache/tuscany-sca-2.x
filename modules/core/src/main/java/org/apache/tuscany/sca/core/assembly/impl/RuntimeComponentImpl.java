@@ -22,6 +22,9 @@ package org.apache.tuscany.sca.core.assembly.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.impl.ComponentImpl;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ResolverExtension;
@@ -31,6 +34,8 @@ import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * @version $Rev$ $Date$
@@ -107,5 +112,47 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
     @Override
     public String toString() {
         return getName();
+    }
+
+    @Override
+    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String serviceName) {
+        RuntimeComponentContext componentContext = null;
+
+        // If the component is a composite, then we need to find the
+        // non-composite component that provides the requested service
+        if (getImplementation() instanceof Composite) {
+            for (ComponentService componentService : getServices()) {
+                String bindingName = null;
+                if (serviceName != null) {
+                    int index = serviceName.indexOf('/');
+                    if (index != -1) {
+                        bindingName = serviceName.substring(index + 1);
+                        serviceName = serviceName.substring(0, index);
+                    }
+                }
+                if (serviceName == null || serviceName.equals(componentService.getName())) {
+                    CompositeService compositeService = (CompositeService)componentService.getService();
+                    if (compositeService != null) {
+                        componentContext =
+                            ((RuntimeComponent)compositeService.getPromotedComponent()).getComponentContext();
+                        serviceName = compositeService.getPromotedService().getName();
+                        if (bindingName != null) {
+                            serviceName = serviceName + "/" + bindingName;
+                        }
+                        return componentContext.createSelfReference(businessInterface, serviceName);
+                    }
+                    break;
+                }
+            }
+            // No matching service found
+            throw new ServiceRuntimeException("Composite service not found: " + serviceName);
+        } else {
+            componentContext = getComponentContext();
+            if (serviceName != null) {
+                return componentContext.createSelfReference(businessInterface, serviceName);
+            } else {
+                return componentContext.createSelfReference(businessInterface);
+            }
+        }
     }
 }

@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * The runtime component interface. Provides the bridge between the
@@ -81,4 +82,15 @@ public interface RuntimeComponent extends Component {
      * @return
      */
     List<PolicyProvider> getPolicyProviders();
+    
+    
+    /**
+     * Returns a ServiceReference for a service provided by the component
+     *
+     * @param businessInterface the interface that will be used to invoke the service
+     * @param serviceName the name of the service
+     * @param <B> the Java type of the business interface for the service
+     * @return an object that implements the business interface
+     */
+    <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String name);
 }

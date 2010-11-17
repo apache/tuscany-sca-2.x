@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -44,7 +45,10 @@ import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.node2.Node;
 import org.apache.tuscany.sca.node2.NodeFactory;
+import org.apache.tuscany.sca.node2.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.ActivationException;
+import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.Version;
 import org.apache.tuscany.sca.shell.jline.JLine;
 
@@ -60,9 +64,8 @@ public class Shell {
     private Map<String, Node> standaloneNodes = new HashMap<String, Node>();
     private Map<String, Node> nodes = new HashMap<String, Node>();
 
-    public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "help", "install", "installed",
-                                                          "load", "remove", "run", "save", "start", "status",
-                                                          "stop"};
+    public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "help", "install", "installed", "invoke",
+                                                          "load", "remove", "run", "save", "services", "start", "status", "stop"};
 
     public static void main(final String[] args) throws Exception {
         boolean useJline = true;
@@ -181,17 +184,27 @@ public class Shell {
     }
 
     boolean invoke(final List<String> toks) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        Node node = getNode();
-        if (getNode() == null) {
+        String endpointName = toks.get(1);
+        String serviceName = null;
+        if (endpointName.contains("/")) {
+            int i = endpointName.indexOf("/");
+            if (i < endpointName.length()-1) {
+                serviceName = endpointName.substring(i+1);
+            }
+        }
+        String operationName = toks.get(2);
+        String params[] = new String[toks.size()- 3];
+        System.arraycopy(toks.toArray(), 3, params, 0, params.length);
+        
+        EndpointRegistry reg = ((NodeImpl)getNode()).getEndpointRegistry();
+        List<Endpoint> endpoints = reg.findEndpoint(endpointName);
+        if (endpoints.size() < 1) {
+            out.println(" no service found: " + endpointName);
             return true;
         }
-        String serviceName = toks.get(0);
-        String operationName = toks.get(1);
-        String params[] = new String[toks.size()- 2];
-        System.arraycopy(toks.toArray(), 2, params, 0, params.length);
-        Method method = node.getClass().getMethod("getService", Class.class, String.class);
-        Object proxy = method.invoke(node, null, serviceName);
+        Object proxy = ((RuntimeComponent)endpoints.get(0).getComponent()).getServiceReference(null, serviceName).getService();        
         Object result = invoke(proxy, operationName, params);
+        
         out.println(result);
         return true;
     }
@@ -284,6 +297,17 @@ public class Shell {
 
     boolean save(final String directory) throws IOException {
         out.println("TODO: not yet implemented");
+        return true;
+    }
+
+    boolean services() throws IOException {
+        if (getNode() == null) {
+            return true;
+        }
+        EndpointRegistry reg = ((NodeImpl)getNode()).getEndpointRegistry();
+        for (Endpoint endpoint : reg.getEndpoints()) {
+            out.println(endpoint.getComponent().getURI() + "/" + endpoint.getService().getName());
+        }
         return true;
     }
 
@@ -496,6 +520,12 @@ public class Shell {
                     return stop(toks);
                 }
             };
+        if (op.equalsIgnoreCase("services"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return services();
+                }
+            };
         if (op.equalsIgnoreCase("bye"))
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
@@ -585,6 +615,8 @@ public class Shell {
             helpInstall();
         } else if ("installed".equalsIgnoreCase(command)) {
             helpInstalled();
+        } else if ("invoke".equalsIgnoreCase(command)) {
+            helpInvoke();
         } else if ("load".equalsIgnoreCase(command)) {
             helpLoad();
         } else if ("remove".equalsIgnoreCase(command)) {
@@ -601,9 +633,12 @@ public class Shell {
             helpStop();
         } else if ("startup".equalsIgnoreCase(command)) {
             helpStartUp();
+        } else if ("services".equalsIgnoreCase(command)) {
+            helpServices();
         } else if ("bye".equalsIgnoreCase(command)) {
             helpBye();
         }
+        out.println();
         return true;
     }
 
@@ -621,10 +656,12 @@ public class Shell {
         out.println("   domains");
         out.println("   install [<uri>] <contributionURL> [-start] [-metadata <url>] [-duris <uri,uri,...>]");
         out.println("   installed [<contributionURI>]");
+        out.println("   invoke <component>[/<service>] <operation> [<arg0> <arg1> ...]");
         out.println("   load <configXmlURL>");
         out.println("   remove <contributionURI>");
         out.println("   run <commandsFileURL>");
         out.println("   save <directoryPath>");
+        out.println("   services");
         out.println("   start <curi> <compositeUri>|<contentURL>");
         out.println("   start <name> [<compositeUri>] <contributionURL> [-duris <uri,uri,...>]");
         out.println("   status [<curi> [<compositeUri>]]");
@@ -698,6 +735,20 @@ public class Shell {
         out.println("      contributionURI - (optional) the URI of an installed contribution");
     }
 
+    void helpInvoke() {
+        out.println("   invoke <component>[/<service>] <operation> [<arg0> <arg1> ...]");
+        out.println();
+        out.println("   Invokes an operation of a component service.");
+        out.println("   (presently parameters and return values are limited to simple types)");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      component - (required) the name of the component");
+        out.println("      service   - (optional) the name of the component service, which may be omitted");
+        out.println("                             when the component has a single service.");
+        out.println("      operation - (required) the name of the operation");
+        out.println("      args      - (optional) the operation arguments");
+    }
+
     void helpLoad() {
         out.println("   load <configXmlUrl>");
         out.println();
@@ -738,6 +789,15 @@ public class Shell {
         out.println();
         out.println("   Arguments:");
         out.println("      directoryPath - (required) the URL of a directory to be used to store the state.");
+    }
+
+    void helpServices() {
+        out.println("   services");
+        out.println();
+        out.println("   Lists the components and services available in the Domain.");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      none");
     }
 
     void helpStart() {
