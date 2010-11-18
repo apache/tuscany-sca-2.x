@@ -38,16 +38,38 @@
         </repository>
     </repositories>
 
-    <modules>
-
-       <module>assembly</module>
-       <!-- TUSCANY-3781 module>java-caa</module -->
-       <module>java-ci</module>
-       <module>policy</module>
-       <module>binding-ws</module>
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>assembly</module>
+                <module>java-caa</module>
+                <module>java-ci</module>
+                <module>policy</module>
+                <module>binding-ws</module>
 <!--   
-       <module>binding-jms</module>
+                <module>binding-jms</module>
 -->
-    </modules>
+            </modules>
+        </profile>
+
+<!-- TUSCANY-3781 - add a profile so that java-caa is only missed out on hudson-->
+        <profile>
+            <id>hudson</id>
+            <modules>
+                <module>assembly</module>
+                <!-- TUSCANY-3781 module>java-caa</module -->
+                <module>java-ci</module>
+                <module>policy</module>
+                <module>binding-ws</module>
+<!--   
+                <module>binding-jms</module>
+-->
+            </modules>
+        </profile>
+    </profiles>
 
 </project>
