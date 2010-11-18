@@ -47,4 +47,8 @@ public class Item {
         this.price = price;
     }
 
+    public String toString() {
+       return "Item name: " + name + ", price: " + price;
+    }
+
 }
