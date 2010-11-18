@@ -204,8 +204,11 @@ public class Shell {
         }
         Object proxy = ((RuntimeComponent)endpoints.get(0).getComponent()).getServiceReference(null, serviceName).getService();        
         Object result = invoke(proxy, operationName, params);
-        
-        out.println(result);
+        if (result != null && result.getClass().isArray()) {
+            out.println(Arrays.toString((Object[])result));
+        } else {
+            out.println(result);
+        }
         return true;
     }
 
