@@ -29,9 +29,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,7 +89,7 @@ public class Shell {
         if (contribution != null) {
             shell.install(Arrays.asList(new String[]{"install", contribution, "-start"}));
         }
-        shell.run();
+        shell.run(contribution==null);
     }
 
     public Shell(String domainURI, boolean useJLine) {
@@ -633,8 +630,10 @@ public class Shell {
         }
     }
 
-    public void run() throws IOException {
-        help(null);
+    public void run(boolean initialHelp) throws IOException {
+        if (initialHelp) {
+            help(null);
+        }
         Object reader;
         if (useJline) {
             reader = JLine.createJLineReader(this);
