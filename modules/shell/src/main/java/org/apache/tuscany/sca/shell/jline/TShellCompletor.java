@@ -55,7 +55,7 @@ public class TShellCompletor extends ArgumentCompletor {
         completors.put("help", new Completor[]{commandCompletor, commandCompletor, new NullCompletor()});    
         completors.put("install", new Completor[]{commandCompletor, new InstallCompletor(shell)});    
         completors.put("installed", new Completor[]{commandCompletor, new ICURICompletor(shell), new NullCompletor()});    
-        completors.put("invoke", new Completor[]{commandCompletor, new InvokeCompletor(shell), new NullCompletor()});    
+        completors.put("invoke", new Completor[]{commandCompletor, new ServiceCompletor(shell), new ServiceOperationCompletor(shell), new NullCompletor()});    
         completors.put("load", new Completor[]{commandCompletor, new FileNameCompletor(), new NullCompletor()});    
         completors.put("remove", new Completor[]{commandCompletor, new ICURICompletor(shell), new NullCompletor()});    
         completors.put("run", new Completor[]{commandCompletor, new FileNameCompletor(), new NullCompletor()});    

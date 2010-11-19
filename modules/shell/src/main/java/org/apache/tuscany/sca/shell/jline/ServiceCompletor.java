@@ -30,13 +30,13 @@ import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.shell.Shell;
 
 /**
- * An Invoke command Completor
+ * A Completor for available services
  */
-public class InvokeCompletor extends SimpleCompletor {
+public class ServiceCompletor extends SimpleCompletor {
 
     private Shell shell;
 
-    public InvokeCompletor(Shell shell) {
+    public ServiceCompletor(Shell shell) {
         super("");
         this.shell = shell;
     }
@@ -51,7 +51,7 @@ public class InvokeCompletor extends SimpleCompletor {
             }
             setCandidateStrings(services.toArray(new String[services.size()]));
         }
-       return super.complete(buffer, cursor, clist);   
+       return super.complete(buffer, cursor, clist);
     }
     
 }
