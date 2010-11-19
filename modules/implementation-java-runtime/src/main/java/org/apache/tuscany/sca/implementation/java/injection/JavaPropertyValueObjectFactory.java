@@ -170,14 +170,21 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
     }
 
     class ObjectFactoryImpl extends ObjectFactoryImplBase {
+        private Object result = null;
+        
         public ObjectFactoryImpl(Property property, Object propertyValue, Class<?> javaType) {
             super(property, propertyValue, javaType);
         }
 
         public Object getInstance() throws ObjectCreationException {
+            // TUSCANY-3791
+            if (result != null){
+                return result;
+            }
+            
             if (isSimpleType) {
                 try {
-                    return simpleTypeMapper.toJavaObject(property.getXSDType(), (String)propertyValue, null);
+                    result = simpleTypeMapper.toJavaObject(property.getXSDType(), (String)propertyValue, null);
                 } catch (NumberFormatException ex) {
                     throw new ObjectCreationException("Failed to create instance for property " + property.getName()
                         + " with value "
@@ -188,19 +195,26 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
                         + propertyValue, ex);
                 }
             } else {
-                return mediator.mediate(propertyValue, sourceDataType, targetDataType, null);
-                // return null;
+                result = mediator.mediate(propertyValue, sourceDataType, targetDataType, null);
             }
+            return result;
         }
     }
 
     class ListObjectFactoryImpl extends ObjectFactoryImplBase {
+        private List result = null;
+        
         public ListObjectFactoryImpl(Property property, List<?> propertyValues, Class<?> javaType) {
             super(property, propertyValues, javaType);
         }
 
         @SuppressWarnings("unchecked")
         public List<?> getInstance() throws ObjectCreationException {
+            // TUSCANY-3791
+            if (result != null){
+                return result;
+            }
+            
             if (isSimpleType) {
                 List<Object> values = new ArrayList<Object>();
                 for (String aValue : (List<String>)propertyValue) {
@@ -222,24 +236,33 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
                             + propertyValue, ex);
                     }
                 }
-                return values;
+                result = values;
             } else {
                 List instances = new ArrayList();
                 for (Node aValue : (List<Node>)propertyValue) {
                     instances.add(mediator.mediate(aValue, sourceDataType, targetDataType, null));
                 }
-                return instances;
+                result = instances;
             }
+            
+            return result;
         }
     }
 
     class ArrayObjectFactoryImpl extends ObjectFactoryImplBase {
+        private Object result = null;
+        
         public ArrayObjectFactoryImpl(Property property, List<?> propertyValues, Class<?> javaType) {
             super(property, propertyValues, javaType);
         }
 
         @SuppressWarnings("unchecked")
         public Object getInstance() throws ObjectCreationException {
+            // TUSCANY-3791
+            if (result != null){
+                return result;
+            }
+            
             if (isSimpleType) {
                 int count = 0;
                 Object values = Array.newInstance(javaType, ((List<Object>)propertyValue).size());
@@ -262,15 +285,17 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
                             + propertyValue, ex);
                     }
                 }
-                return values;
+                result = values;
             } else {
                 Object instances = Array.newInstance(javaType, ((List<Object>)propertyValue).size());
                 int count = 0;
                 for (Node aValue : (List<Node>)propertyValue) {
                     Array.set(instances, count++, mediator.mediate(aValue, sourceDataType, targetDataType, null));
                 }
-                return instances;
+                result = instances;
             }
+            
+            return result;
         }
     }
 
