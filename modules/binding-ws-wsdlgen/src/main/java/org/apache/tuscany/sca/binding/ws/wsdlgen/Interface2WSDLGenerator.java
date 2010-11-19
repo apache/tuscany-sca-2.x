@@ -666,7 +666,8 @@ public class Interface2WSDLGenerator {
 
         for (DataType<DataType> faultType: op.getFaultTypes()) {
             Fault fault = definition.createFault();
-            QName faultName = ((XMLType)faultType.getLogical().getLogical()).getElementName();
+            // TUSCANY-3778 - use the definition namespace not the element namespace to create the fault message
+            QName faultName = new QName(namespaceURI, ((XMLType)faultType.getLogical().getLogical()).getElementName().getLocalPart());
             fault.setName(faultName.getLocalPart());
             Message faultMsg = definition.getMessage(faultName);
             if (faultMsg == null) {
