@@ -37,7 +37,7 @@ public class String2OMElement extends BaseTransformer<String, OMElement> impleme
     @SuppressWarnings("unchecked")
     public OMElement transform(String source, TransformationContext context) {
         try {
-            StAXOMBuilder builder = new StAXOMBuilder(new ByteArrayInputStream(source.getBytes()));
+            StAXOMBuilder builder = new StAXOMBuilder(new ByteArrayInputStream(source.getBytes("UTF-8")));
             OMElement element = builder.getDocumentElement();
             AxiomHelper.adjustElementName(context, element);
             return element;
