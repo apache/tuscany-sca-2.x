@@ -23,11 +23,15 @@ import static java.lang.System.in;
 import static java.lang.System.out;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,14 +74,25 @@ public class Shell {
     public static void main(final String[] args) throws Exception {
         boolean useJline = true;
         String domainURI = "default";
+        
+        String contribution = null;
         for (String s : args) {
             if ("-nojline".equals(s)) {
                 useJline = false;
             } else {
-                domainURI = s;
+                File f = new File(s);
+                if (f.exists()) {
+                    contribution = s;
+                } else {
+                    domainURI = s;
+                }
             }
         }
-        new Shell(domainURI, useJline).run();
+        Shell shell = new Shell(domainURI, useJline);
+        if (contribution != null) {
+            shell.install(Arrays.asList(new String[]{"install", contribution, "-start"}));
+        }
+        shell.run();
     }
 
     public Shell(String domainURI, boolean useJLine) {
@@ -152,10 +167,32 @@ public class Shell {
         } else {
             curl = first;
         }
+        
+        curl = mavenProject(curl);
 
         String uri = getNode().installContribution(curi, curl, metaDataURL, duris, startDeployables);
         out.println("installed at: " + uri);
         return true;
+    }
+
+    /**
+     * Try to simplify pointing at a Maven project contribution without needing target/classes suffix
+     */
+    private String mavenProject(String curl) {
+        File f = new File(curl);
+        if (!f.exists()) {
+            return curl;
+        }
+        f = new File(f, "target");
+        if (!f.exists()) {
+            return curl;
+        }
+        f = new File(f, "classes");
+        if (f.exists()) {
+            return f.toURI().toString();
+        }
+        // TODO: look for .zip or .jar in target? 
+        return curl;
     }
 
     boolean installed(final List<String> toks) {
