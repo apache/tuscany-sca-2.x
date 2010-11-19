@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -436,7 +438,23 @@ public abstract class BaseBeanGenerator implements Opcodes {
                              String name,
                              BeanProperty[] properties,
                              GeneratedClassLoader classLoader) {
-        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+    	
+    	// The reflection code here allows for toleration of older versions of ASM. 
+    	ClassWriter cw;
+    	try {   		
+    		Constructor<ClassWriter> c = ClassWriter.class.getConstructor(new Class[] {int.class});
+    		Field f = ClassWriter.class.getField("COMPUTE_MAXS");
+    		cw = c.newInstance(f.get(null)); 
+    	} catch ( Exception ex ) {
+    		try {
+    			Constructor<ClassWriter> c = ClassWriter.class.getConstructor(new Class[] {boolean.class});
+    			cw = c.newInstance(true);
+    		} catch ( Exception ex2 ) {
+    			throw new IllegalArgumentException(ex2);
+    		}
+    		
+    	} 
+		
         byte[] byteCode = defineClass(cw, classDescriptor, classSignature, namespace, name, properties);
         String className = classDescriptor.replace('/', '.');
         Class<?> generated = classLoader.getGeneratedClass(className, byteCode);

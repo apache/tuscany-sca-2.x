@@ -23,6 +23,8 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,7 +74,25 @@ public class FaultBeanGenerator extends BaseBeanGenerator {
 
     public byte[] generate(Class<? extends Throwable> exceptionClass) {
         String className = getFaultBeanName(exceptionClass);
-        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        
+    	// The reflection code here allows for toleration of older versions of ASM.      
+    	ClassWriter cw;
+    	try {   		
+    		Constructor<ClassWriter> c = ClassWriter.class.getConstructor(new Class[] {int.class});
+    		Field f = ClassWriter.class.getField("COMPUTE_MAXS");
+    		cw = c.newInstance(f.get(null)); 
+    	} catch ( Exception ex ) {
+    		try {
+    			Constructor<ClassWriter> c = ClassWriter.class.getConstructor(new Class[] {boolean.class});
+    			cw = c.newInstance(true);
+    		} catch ( Exception ex2 ) {
+    			throw new IllegalArgumentException(ex2);
+    		}
+    		
+    	}  
+
+    		
+       
         String classDescriptor = className.replace('.', '/');
         String classSignature = "L" + classDescriptor + ";";
         QName element = getElementName(exceptionClass);
