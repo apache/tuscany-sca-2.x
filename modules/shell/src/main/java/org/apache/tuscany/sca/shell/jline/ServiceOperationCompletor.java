@@ -39,12 +39,17 @@ public class ServiceOperationCompletor extends SimpleCompletor {
 
     private Shell shell;
     private static final List<String> EXCLUDED_OPS = Arrays.asList(new String[] {"equals", "getClass",
-                                                                                "getInvocationHandler",
-                                                                                "getProxyClass", "hashCode",
-                                                                                "isProxyClass", "newProxyInstance",
-                                                                                "notify", "notifyAll", "toString",
-                                                                                "wait"});
-
+                                                                                 "getInvocationHandler",
+                                                                                 "getProxyClass", "hashCode",
+                                                                                 "isProxyClass", "newProxyInstance",
+                                                                                 "notify", "notifyAll", "toString",
+                                                                                 "wait", "CGLIB$SET_STATIC_CALLBACKS",
+                                                                                 "CGLIB$SET_THREAD_CALLBACKS",
+                                                                                 "CGLIB$findMethodProxy",
+                                                                                 "getCallback", "getCallbacks",
+                                                                                 "newInstance", "setCallback",
+                                                                                 "setCallbacks"});    
+    
     public ServiceOperationCompletor(Shell shell) {
         super("");
         this.shell = shell;
