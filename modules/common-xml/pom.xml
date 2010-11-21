@@ -45,7 +45,7 @@
     </dependencies>
 
     <profiles>
-        <profile>
+<!--        <profile>
             <id>jdk15</id>
             <activation>
                 <jdk>1.5</jdk>
@@ -92,7 +92,7 @@
 
             </dependencies>
 
-        </profile>
+        </profile>-->
     </profiles>
 
 </project>
