@@ -69,6 +69,14 @@
                     <artifactId>bsf-engines</artifactId>
                 </exclusion>
                 <exclusion>
+                    <groupId>org.apache.ws.commons.axiom</groupId>
+                    <artifactId>axiom-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.ws.commons.axiom</groupId>
+                    <artifactId>axiom-impl</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>stax</groupId>
                     <artifactId>stax-api</artifactId>
                 </exclusion>
