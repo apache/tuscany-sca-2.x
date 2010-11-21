@@ -21,6 +21,10 @@
            xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1" targetNamespace="http://sample"
            name="JRubyReference">
 
+    <component name="TargetComponent">
+        <implementation.java class="org.apache.tuscany.sca.implementation.script.itests.references.HelloWorldTarget"/>
+    </component>
+
     <component name="ClientComponent">
         <implementation.java class="org.apache.tuscany.sca.implementation.script.itests.helloworld.HelloWorldProxy"/>
         <reference name="delegate" target="ReferenceComponent"></reference>
@@ -29,10 +33,6 @@
     <component name="ReferenceComponent">
         <tuscany:implementation.script script="org/apache/tuscany/sca/implementation/script/itests/references/reference.rb"/>
         <reference name="ref" target="TargetComponent" />
-    </component>
-
-    <component name="TargetComponent">
-        <implementation.java class="org.apache.tuscany.sca.implementation.script.itests.references.HelloWorldTarget"/>
     </component>
 
 </composite>
