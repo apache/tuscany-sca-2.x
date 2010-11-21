@@ -240,7 +240,7 @@ The following components come under Apache Software License 2.0
  axis2-transport-local-1.5.1.jar
  axis2-transport-http-1.5.1.jar
  axis-ant-1.4.jar
- bsf-all-3.0.jar
+ bsf-util-3.1.jar
  cglib-2.2.jar
  commons-beanutils-1.7.0.jar
  commons-cli-1.2.jar
@@ -1671,7 +1671,7 @@ uses. Please see http://www.oasis-open.org/who/trademark.php for above guidance.
 
 ================================================================================
 
-The jruby-complete-1.4.0.jar includes files under the following licenses: 
+The jruby-complete-1.5.5.jar includes files under the following licenses: 
 
 Common Public License - v 1.0
 
