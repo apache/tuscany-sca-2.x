@@ -17,4 +17,5 @@
 
 # Implementation provider for Sample components
 sample.impl.SampleProviderFactory;model=sample.impl.SampleImplementation
+sampleasync.impl.SampleAsyncProviderFactory;model=sampleasync.impl.SampleAsyncImplementation
 

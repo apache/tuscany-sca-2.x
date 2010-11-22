@@ -55,6 +55,7 @@
     <!-- Test component converts a string to uppercase -->
     <component name="upper-test">
         <t:implementation.sample class="sample.UpperTest"/>
-    </component>     
+    </component>   
+      
 
 </composite>

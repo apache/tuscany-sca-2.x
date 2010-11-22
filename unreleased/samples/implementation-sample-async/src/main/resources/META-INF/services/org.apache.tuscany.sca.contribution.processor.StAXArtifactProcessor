@@ -17,4 +17,5 @@
 
 # Implementation class for the artifact processor extension
 sample.impl.SampleImplementationProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#implementation.sample,model=sample.impl.SampleImplementation
+sampleasync.impl.SampleAsyncImplementationProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#implementation.sampleasync,model=sampleasync.impl.SampleAsyncImplementation
 
