@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.provider.ProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sample.Client;
@@ -63,6 +64,7 @@ import sample.WelloTest;
  * 
  * @version $Rev$ $Date$
  */
+@Ignore
 public class EmbedTestCase {
     static NodeFactory nf;
     static EmbedUtil.Context ec;

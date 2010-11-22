@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -47,6 +48,7 @@ import org.junit.Test;
  * 
  * @version $Rev$ $Date$
  */
+@Ignore
 public class ReadWriteTestCase {
     static XMLInputFactory xif;
     static XMLOutputFactory xof;

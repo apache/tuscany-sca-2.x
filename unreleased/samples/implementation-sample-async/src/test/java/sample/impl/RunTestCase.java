@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sample.Client;
@@ -38,6 +39,7 @@ import sample.Client;
  * 
  * @version $Rev$ $Date$
  */
+@Ignore
 public class RunTestCase {
     static Node node;
 
