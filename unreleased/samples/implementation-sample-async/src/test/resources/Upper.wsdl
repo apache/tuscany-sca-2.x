@@ -20,6 +20,7 @@
 <wsdl:definitions targetNamespace="http://sample/upper" xmlns:tns="http://sample/upper"
     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
 	name="Upper">
 
     <wsdl:types>
@@ -52,7 +53,7 @@
         <wsdl:part element="tns:upperResponse" name="parameters" />
     </wsdl:message>
 
-    <wsdl:portType name="Upper">
+    <wsdl:portType name="Upper" sca:requires="sca:asyncInvocation">
         <wsdl:operation name="upper">
             <wsdl:input message="tns:upperRequest" name="upperRequest" />
             <wsdl:output message="tns:upperResponse" name="upperResponse" />
