@@ -21,18 +21,14 @@ package sampleasync.impl;
 
 import static java.lang.System.out;
 
-import org.oasisopen.sca.ResponseDispatch;
-
-import sample.api.Java;
-import sampleasync.Upper;
-import sampleasync.UpperAsyncService;
+import sample.api.WSDL;
 
 /**
  * Sample component implementation that uses Java interfaces.
  * 
  * @version $Rev$ $Date$
  */
-@Java(Upper.class)
+@WSDL("http://sample/upper#Upper")
 public class UpperSampleAsyncServiceImpl {
 
     public String upper(String s) {
