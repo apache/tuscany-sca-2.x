@@ -21,6 +21,7 @@ package sampleasync.impl;
 
 import static java.lang.System.out;
 import sample.api.Java;
+import sample.api.WSDL;
 import sampleasync.Upper;
 
 /**
@@ -31,7 +32,7 @@ import sampleasync.Upper;
 @Java(Upper.class)
 public class UpperSampleAsyncReferenceImpl {
     
-    @Java(Upper.class)
+    @WSDL("http://sample/upper#Upper")
     Upper upper;
     
     public String upper(String s) {
