@@ -62,19 +62,19 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- provided scope doesn't pull in transitive dependencies -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jsp_2.1_spec</artifactId>
             <version>1.0.1</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
-        <!-- provided scope doesn't pull in transitive dependencies -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-el_1.0_spec</artifactId>
             <version>1.0.1</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
