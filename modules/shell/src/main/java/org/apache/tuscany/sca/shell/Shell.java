@@ -37,8 +37,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -344,6 +346,11 @@ public class Shell {
         EndpointRegistry reg = ((NodeImpl)getNode()).getEndpointRegistry();
         for (Endpoint endpoint : reg.getEndpoints()) {
             out.println(endpoint.getComponent().getURI() + "/" + endpoint.getService().getName());
+            for (Binding b : endpoint.getService().getBindings()) {
+                if (!SCABinding.TYPE.equals(b.getType())) {
+                    out.println("    " + b.getType().getLocalPart() + " " + b.getURI());
+                }
+            }
         }
         return true;
     }
