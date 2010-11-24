@@ -22,6 +22,7 @@ package sampleasync.impl;
 import static java.lang.System.out;
 import sample.api.Java;
 import sample.api.WSDL;
+import sample.api.WSDLReference;
 import sampleasync.Upper;
 
 /**
@@ -33,10 +34,20 @@ import sampleasync.Upper;
 public class UpperSampleAsyncReferenceImpl {
     
     @WSDL("http://sample/upper#Upper")
-    Upper upper;
+    WSDLReference upper;
     
     public String upper(String s) {
-        out.println("UpperReferenceImpl.upper(" + s + ")");
-        return upper.upper(s);
+        out.println("UpperSampleAsyncReferenceImpl.upper(" + s + ")");
+        upper.callAsync("upper", null);
+        return null;
+    }
+    
+    /**
+     *  In this implementation the convention is that the 
+     *  async callback arrives at an operation named
+     *  operationName + Callback
+     */
+    public void upperCallback(String s) {
+        out.println("UpperSampleAsyncReferenceImpl.upperCallback(" + s + ")");
     }
 }
