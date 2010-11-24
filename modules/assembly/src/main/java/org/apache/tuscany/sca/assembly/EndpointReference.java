@@ -162,4 +162,13 @@ public interface EndpointReference extends Base, PolicySubject, Cloneable, Seria
      * @param status the new status
      */
     void setStatus(Status status);
+    
+    /**
+     * When true this endpoint reference is able to process the invocation
+     * as being asynchronous. The forward call is effectively one-way
+     * and the response will arrive asynchronously via the CallbackEndpoint
+     * 
+     * @return true if the reference is asynchronous
+     */
+    boolean isAsyncInvocation();
 }

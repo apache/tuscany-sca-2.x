@@ -230,4 +230,13 @@ public class EndpointReferenceImpl implements EndpointReference {
     public void setStatus(Status status) {
         this.status = status;
     }
+    
+    public boolean isAsyncInvocation() {
+        for(Intent intent : getRequiredIntents()){
+            if (intent.getName().getLocalPart().equals("asyncInvocation")){
+                return true;
+            }
+        }
+        return false;
+    }
 }
