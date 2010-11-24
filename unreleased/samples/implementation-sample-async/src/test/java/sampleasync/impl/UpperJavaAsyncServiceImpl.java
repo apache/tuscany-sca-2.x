@@ -32,7 +32,7 @@ import sampleasync.UpperAsyncService;
  */
 public class UpperJavaAsyncServiceImpl implements UpperAsyncService {
 
-    public void upper(String s,ResponseDispatch<String> response) {
+    public void upperAsync(String s,ResponseDispatch<String> response) {
         out.println("UpperServiceImple.upper(" + s + ")");
         response.sendResponse(s.toUpperCase());
     }

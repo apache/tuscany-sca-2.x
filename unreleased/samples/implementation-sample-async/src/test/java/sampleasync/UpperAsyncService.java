@@ -32,5 +32,5 @@ import org.oasisopen.sca.annotation.Remotable;
 @AsyncInvocation
 public interface UpperAsyncService {
 
-    void upper(String s,ResponseDispatch<String> response);
+    void upperAsync(String s,ResponseDispatch<String> response);
 }
