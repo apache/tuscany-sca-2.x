@@ -54,4 +54,9 @@ class SampleWSDLProxy implements WSDLReference {
             throw new RuntimeException(ex);
         }
     }
+    
+    @Override
+    public void callAsync(String op, Element e) {
+        return;
+    }
 }

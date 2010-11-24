@@ -45,6 +45,7 @@ class SampleWSDLInvoker implements Invoker {
 
     public Message invoke(final Message msg) {
         try {
+            //AsyncHeader asyncHeader = (String) message.getHeaders().get("ASYNC-HEADER");
             // Invoke the generic call method
             msg.setBody(method.invoke(instance, name, ((Object[])msg.getBody())[0]));
         } catch(Exception e) {

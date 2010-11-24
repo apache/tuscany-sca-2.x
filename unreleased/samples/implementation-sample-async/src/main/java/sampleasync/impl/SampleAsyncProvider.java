@@ -22,6 +22,7 @@ package sampleasync.impl;
 import java.lang.reflect.Field;
 
 import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -42,12 +43,14 @@ class SampleAsyncProvider implements ImplementationProvider {
     final RuntimeComponent comp;
     final SampleAsyncImplementation impl;
     final ProxyFactory pxf;
+    final ExtensionPointRegistry ep;
     Object instance;
 
-    SampleAsyncProvider(final RuntimeComponent comp, final SampleAsyncImplementation impl, ProxyFactory pf) {
+    SampleAsyncProvider(final RuntimeComponent comp, final SampleAsyncImplementation impl, ProxyFactory pf, ExtensionPointRegistry ep) {
         this.comp = comp;
         this.impl = impl;
         this.pxf = pf;
+        this.ep = ep;
     }
 
     public void start() {
@@ -63,7 +66,7 @@ class SampleAsyncProvider implements ImplementationProvider {
                 if(i instanceof JavaInterface)
                     f.set(instance, pxf.createProxy(comp.getComponentContext().getServiceReference(f.getType(), r.getName())));
                 else
-                    f.set(instance, new SampleWSDLProxy(r.getEndpointReferences().get(0), i));
+                    f.set(instance, new SampleWSDLProxy(r.getEndpointReferences().get(0), i, ep));
             }
         } catch(Exception e) {
             throw new RuntimeException(e);

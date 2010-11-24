@@ -24,8 +24,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.w3c.dom.Element;
 
@@ -37,14 +41,19 @@ import sample.api.WSDLReference;
 class SampleWSDLProxy implements WSDLReference {
     final RuntimeEndpointReference repr;
     final Map<String, Operation> ops;
+    final ExtensionPointRegistry ep;
+    final MessageFactory mf;
 
-    SampleWSDLProxy(EndpointReference epr, Interface wi) {
+    SampleWSDLProxy(EndpointReference epr, Interface wi, ExtensionPointRegistry ep) {
+        this.ep = ep;
+        mf = ep.getExtensionPoint(MessageFactory.class);
+        
         repr = (RuntimeEndpointReference)epr;
         ops = new HashMap<String, Operation>();
         for(Operation o: wi.getOperations())
             ops.put(o.getName(), o);
     }
-
+    
     @Override
     public Element call(String op, Element e) {
         try {
@@ -53,5 +62,21 @@ class SampleWSDLProxy implements WSDLReference {
         } catch(InvocationTargetException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    @Override
+    public void callAsync(String op, Element e) {
+        // Asynchronously invoke the named operation on the endpoint reference
+        Message message = mf.createMessage();
+        message.setBody(message);
+        
+        // We could add implementation specific headers here if required
+        
+        repr.invokeAsync(ops.get(op), message);
+        
+        String messageID = (String) message.getHeaders().get(Constants.MESSAGE_ID);
+        
+        // save the message id ready for when we process the response
+        
     }
 }
