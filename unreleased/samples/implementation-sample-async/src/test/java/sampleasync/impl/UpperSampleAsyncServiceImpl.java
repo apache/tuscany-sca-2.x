@@ -32,7 +32,7 @@ import sample.api.WSDL;
 public class UpperSampleAsyncServiceImpl {
 
     public String upper(String s) {
-        out.println("UpperServiceImple.upper(" + s + ")");
+        out.println("UpperSampleAsyncServiceImpl.upper(" + s + ")");
         return s.toUpperCase();
     }
 }
