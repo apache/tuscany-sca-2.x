@@ -669,6 +669,23 @@ org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apac
         </profile>
 
         <profile>
+            <id>all-distro</id>
+            <properties>
+                <skipTests>true</skipTests>
+                <buildZips>true</buildZips>
+            </properties>
+            <modules>
+                <module>maven/maven-tuscany-plugin</module>
+                <module>modules</module>
+                <module>features</module>
+                <module>distribution/all</module>
+            </modules>
+           <build>
+              <defaultGoal>install</defaultGoal>
+           </build>
+        </profile>
+
+        <profile>
             <id>base</id>
             <modules>
                 <module>modules/assembly</module>
