@@ -19,8 +19,7 @@ Bnd-LastModified: 1225397459984
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Script Implementation Extension
-Import-Package: com.sun.script.jruby,
- javax.script,
+Import-Package: javax.script,
  javax.xml.namespace,
  org.apache.axiom.om,
  org.apache.bsf.xml,
