@@ -74,7 +74,7 @@ public class NodeImpl implements Node {
         return installContribution(null, contributionURL, null, null, true);
     }
 
-    public String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException {
+    public String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean startDeployables) throws ContributionReadException, ActivationException, ValidationException {
         if (uri == null) {
             uri = getDefaultContributionURI(contributionURL);
         }
@@ -84,7 +84,7 @@ public class NodeImpl implements Node {
         if (metaDataURL != null) {
             mergeContributionMetaData(metaDataURL, contribution);
         }
-        installContribution(contribution, dependentContributionURIs, runDeployables);
+        installContribution(contribution, dependentContributionURIs, startDeployables);
         return uri;
     }
 
@@ -102,12 +102,12 @@ public class NodeImpl implements Node {
         contribution.getExports().addAll(metaData.getExports());
     }
     
-    public String installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException {
+    public String installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean startDeployables) throws ContributionReadException, ActivationException, ValidationException {
         InstalledContribution ic = new InstalledContribution(contribution.getURI(), contribution.getLocation(), contribution, dependentContributionURIs);
         installedContributions.put(contribution.getURI(), ic);
-        if (runDeployables) {
+        if (startDeployables) {
             for (Composite c : ic.getDefaultDeployables()) {
-                runComposite(c, ic);
+                startComposite(c, ic);
             }
         } else {
             contribution.getDeployables().clear();
@@ -144,32 +144,31 @@ public class NodeImpl implements Node {
         return dependentContributions;
     }
 
-    public String addDeploymentComposite(String contributionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException {
+    public String start(String contributionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException {
         Monitor monitor = deployer.createMonitor();
         Composite composite = deployer.loadXMLDocument(compositeXML, monitor);
         monitor.analyzeProblems();
-        return addDeploymentComposite(contributionURI, composite);
+        return start(contributionURI, composite);
     }
 
-    public String addDeploymentComposite(String contributionURI, Composite composite) throws ActivationException, ValidationException {
+    public String start(String contributionURI, Composite composite) throws ActivationException, ValidationException {
         InstalledContribution ic = installedContributions.get(contributionURI);
         if (ic == null) {
             throw new IllegalArgumentException("contribution not installed: " + contributionURI);
         }
         String compositeArtifcatURI = deployer.attachDeploymentComposite(ic.getContribution(), composite, true);
-        runComposite(composite, ic);
+        startComposite(composite, ic);
         return compositeArtifcatURI;
     }
 
-    @Override
-    public void addToDomainLevelComposite(String contributionURI, String compositeURI) throws ActivationException, ValidationException {
+    public void start(String contributionURI, String compositeURI) throws ActivationException, ValidationException {
         InstalledContribution ic = installedContributions.get(contributionURI);
         if (ic == null) {
             throw new IllegalArgumentException("Contribution not installed: " + contributionURI);
         }
         for (Artifact a : ic.getContribution().getArtifacts()) {
             if (a.getURI().equals(compositeURI)) {
-                runComposite((Composite) a.getModel(), ic);
+                startComposite((Composite) a.getModel(), ic);
                 return;
             }
         }
@@ -177,7 +176,7 @@ public class NodeImpl implements Node {
     }
 
     @Override
-    public void removeFromDomainLevelComposite(String contributionURI, String compositeURI) throws ActivationException {
+    public void stop(String contributionURI, String compositeURI) throws ActivationException {
         InstalledContribution ic = installedContributions.get(contributionURI);
         if (ic == null) {
             throw new IllegalArgumentException("Contribution not installed: " + contributionURI);
@@ -307,7 +306,7 @@ public class NodeImpl implements Node {
         return contributionURI;
     }
 
-    protected void runComposite(Composite c, InstalledContribution ic) throws ActivationException, ValidationException {
+    protected void startComposite(Composite c, InstalledContribution ic) throws ActivationException, ValidationException {
         List<Contribution> dependentContributions = calculateDependentContributions(ic);
 
         DeployedComposite dc = new DeployedComposite(c, ic, dependentContributions, deployer, compositeActivator, endpointRegistry, extensionPointRegistry);

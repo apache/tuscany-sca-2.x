@@ -68,7 +68,7 @@ public class DeployerTestCase {
         Composite composite = deployer.loadXMLDocument(new File("src/test/resources/helloworld2.composite").toURI().toURL(), monitor);
         monitor.analyzeProblems();
         composite.setURI("helloworld2.composite");
-        node.addDeploymentComposite("foo", composite);
+        node.start("foo", composite);
         List<String> dcs = node.getDeployedComposites("foo");
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("helloworld2.composite", dcs.get(0));

@@ -44,15 +44,15 @@ public interface Node {
      *               of the Assembly Specification. May be null.
      * @param dependentContributionURIs  specifies the contributions that are used to resolve the dependencies of the 
      *               root contribution and other dependent contributions. May be null.
-     * @param runDeployables  true if the composites defined as deployable in the contributions sca-contribution.xml
-     *               file or supplied metaData file should be run, false if they should not be. 
+     * @param start  true if the composites defined as deployable in the contribution's sca-contribution.xml
+     *               file or supplied metaData file should be started, false if they should not be. 
      * @return the URI of the installed contribution
      * 
      * @throws ContributionReadException 
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException;
+    String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean start) throws ContributionReadException, ActivationException, ValidationException;
 
     /**
      * Creates an installed contribution from a supplied Contribution object.
@@ -61,20 +61,20 @@ public interface Node {
      * @param contribution  the Contribution object
      * @param dependentContributionURIs  specifies the contributions that are used to resolve the dependencies of the 
      *               root contribution and other dependent contributions. May be null.
-     * @param runDeployables  true if the composites defined as deployable in the contributions sca-contribution.xml
-     *               file or supplied metaData file should be run, false if they should not be. 
+     * @param start  true if the composites defined as deployable in the contribution's sca-contribution.xml
+     *               file or supplied metaData file should be started, false if they should not be. 
      * @return the URI of the installed contribution
      * 
      * @throws ContributionReadException 
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    String installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean runDeployables) throws ContributionReadException, ActivationException, ValidationException;
+    String installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean start) throws ContributionReadException, ActivationException, ValidationException;
 
     /**
      * Creates an installed contribution from a supplied root contribution URL.
-     * See section 10.5.1 of the Assembly Specification. This version of 
-     * installContribution automatically runs deployable composites
+     * See section 10.5.1 of the Assembly Specification. This method is the same
+     * as calling installContribution(null, contributionURL, null, null, true)
      * 
      * @param contributionURL  the URL where the contribution is located
      * @return the URI of the installed contribution
@@ -137,8 +137,8 @@ public interface Node {
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    String addDeploymentComposite(String contributionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException;
-    String addDeploymentComposite(String contributionURI, Composite composite) throws ActivationException, ValidationException;
+    String start(String contributionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException;
+    String start(String contributionURI, Composite composite) throws ActivationException, ValidationException;
 
     /**
      * 4599 10.5.2 add Deployment Composite & update Deployment Composite
@@ -187,18 +187,18 @@ public interface Node {
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    void addToDomainLevelComposite(String contributionURI, String compositeURI) throws ActivationException, ValidationException;
+    void start(String contributionURI, String compositeURI) throws ActivationException, ValidationException;
     
     /**
      * 4687 10.7.2 remove From Domain-Level Composite
      * 4688 Removes from the Domain Level composite the elements corresponding to the composite identified by a
      * 4689 supplied composite URI. This means that the removal of the components, wires, services and references
-     * 4690 originally added to the domain level composite by the identified composite.     * 
+     * 4690 originally added to the domain level composite by the identified composite.   
      * @param contributionURI
      * @param compositeURI
      * @throws ActivationException 
      */
-    void removeFromDomainLevelComposite(String contributionURI, String compositeURI) throws ActivationException;
+    void stop(String contributionURI, String compositeURI) throws ActivationException;
 
     /**
      * 10.7.3 get Domain-Level Composite

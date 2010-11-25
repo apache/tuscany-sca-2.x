@@ -86,7 +86,7 @@ public class NodeFactory {
 
             String curi = node.installContribution(null, contributionURL, null, null, compositeURI == null);
             if (compositeURI != null) {
-                node.addToDomainLevelComposite(curi, compositeURI);
+                node.start(curi, compositeURI);
             }
             return node;
             
