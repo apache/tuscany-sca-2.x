@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.binding.jsonp;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.binding.http.HTTPDefaultOperationSelector;
 import org.apache.tuscany.sca.binding.http.HTTPDefaultWireFormat;
 import org.apache.tuscany.sca.binding.http.impl.HTTPBindingImpl;
@@ -27,6 +29,9 @@ import org.apache.tuscany.sca.binding.http.impl.HTTPBindingImpl;
  * JSONP Binding model
  */
 public class JSONPBinding extends HTTPBindingImpl {
+
+    QName TYPE = new QName(SCA11_TUSCANY_NS, "binding.jsonp");
+
     public JSONPBinding() {
         super();
 
@@ -34,5 +39,10 @@ public class JSONPBinding extends HTTPBindingImpl {
         setOperationSelector(new HTTPDefaultOperationSelector());
         setRequestWireFormat(new HTTPDefaultWireFormat());
         setResponseWireFormat(new HTTPDefaultWireFormat());
+    }
+
+    @Override
+    public QName getType() {
+        return TYPE;
     }
 }
