@@ -358,7 +358,7 @@ public class Shell {
     public boolean stop(List<String> toks) throws ActivationException {
         String curi = toks.get(1);
         if (toks.size() > 2) {
-            getNode().removeFromDomainLevelComposite(curi, toks.get(2));
+            getNode().stop(curi, toks.get(2));
         } else {
             if (standaloneNodes.containsKey(curi)) {
                 standaloneNodes.remove(curi).stop();
@@ -370,7 +370,7 @@ public class Shell {
                 }
             } else {
                 for (String compositeURI : getNode().getDeployedComposites(curi)) {
-                    getNode().removeFromDomainLevelComposite(curi, compositeURI);
+                    getNode().stop(curi, compositeURI);
                 }
             }
         }
@@ -392,7 +392,7 @@ public class Shell {
         Contribution c = getNode().getInstalledContribution(curi);
         for (Artifact a : c.getArtifacts()) {
             if (compositeURI.equals(a.getURI())) {
-                getNode().addToDomainLevelComposite(curi, compositeURI);
+                getNode().start(curi, compositeURI);
                 return true;
             }
         }
@@ -401,7 +401,7 @@ public class Shell {
             URL url = IOHelper.getLocationAsURL(compositeURI);
             InputStream is = IOHelper.openStream(url);
             BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-            getNode().addDeploymentComposite(curi, br);
+            getNode().start(curi, br);
         } catch (Exception e) {
             System.out.println(e);
         }
