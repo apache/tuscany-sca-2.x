@@ -38,7 +38,7 @@ public class InstalledContribution {
         this.uri = uri;
         this.url = url;
         this.contribution = contribution;
-        this.defaultDeployables = contribution.getDeployables();
+        this.defaultDeployables = new ArrayList<Composite>(contribution.getDeployables());
         this.dependentContributionURIs = dependentContributionURIs;
     }
     public Contribution getContribution() {
