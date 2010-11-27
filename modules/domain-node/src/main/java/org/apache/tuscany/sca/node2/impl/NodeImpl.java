@@ -269,7 +269,7 @@ public class NodeImpl implements Node {
         return domainName;
     }
 
-    public List<String> getDeployedComposites(String contributionURI) {
+    public List<String> getStartedCompositeURIs(String contributionURI) {
         ArrayList<String> compositeURIs = new ArrayList<String>();
         InstalledContribution ic = installedContributions.get(contributionURI);
         if (ic == null) {
@@ -281,7 +281,7 @@ public class NodeImpl implements Node {
         return compositeURIs;
     }
 
-    public List<String> getInstalledContributions() {
+    public List<String> getInstalledContributionURIs() {
         return new ArrayList<String>(installedContributions.keySet());
     }
 

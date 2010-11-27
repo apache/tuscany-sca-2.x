@@ -38,13 +38,13 @@ public interface Node {
      * Creates an installed contribution from a supplied root contribution and installed at a supplied base URI.
      * See section 10.5.1 of the Assembly Specification.
      * 
-     * @param uri  the base uri of where to install the contribution
+     * @param uri  the base uri of where to install the contribution. May be null in which case a URI is derived from the contribution URL
      * @param contributionURL  the URL where the contribution is located
      * @param metaDataURL  the location of an optional generated Contribution Metadata Document. See section 10.2.2
      *               of the Assembly Specification. May be null.
      * @param dependentContributionURIs  specifies the contributions that are used to resolve the dependencies of the 
      *               root contribution and other dependent contributions. May be null.
-     * @param start  true if the composites defined as deployable in the contribution's sca-contribution.xml
+     * @param startDeployables  true if the composites defined as deployable in the contribution's sca-contribution.xml
      *               file or supplied metaData file should be started, false if they should not be. 
      * @return the URI of the installed contribution
      * 
@@ -52,7 +52,7 @@ public interface Node {
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean start) throws ContributionReadException, ActivationException, ValidationException;
+    String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean startDeployables) throws ContributionReadException, ActivationException, ValidationException;
 
     /**
      * Creates an installed contribution from a supplied Contribution object.
@@ -61,7 +61,7 @@ public interface Node {
      * @param contribution  the Contribution object
      * @param dependentContributionURIs  specifies the contributions that are used to resolve the dependencies of the 
      *               root contribution and other dependent contributions. May be null.
-     * @param start  true if the composites defined as deployable in the contribution's sca-contribution.xml
+     * @param startDeployables  true if the composites defined as deployable in the contribution's sca-contribution.xml
      *               file or supplied metaData file should be started, false if they should not be. 
      * @return the URI of the installed contribution
      * 
@@ -69,7 +69,7 @@ public interface Node {
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    String installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean start) throws ContributionReadException, ActivationException, ValidationException;
+    String installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean startDeployables) throws ContributionReadException, ActivationException, ValidationException;
 
     /**
      * Creates an installed contribution from a supplied root contribution URL.
@@ -86,36 +86,6 @@ public interface Node {
     String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException;
     
     /**
-     * 4577 10.5.1 install Contribution & update Contribution
-     * 4578 Creates or updates an installed contribution with a supplied root contribution, and installed at a supplied
-     * 4579 base URI. A supplied dependent contribution list (<export/> elements) specifies the contributions that are
-     * 4580 used to resolve the dependencies of the root contribution and other dependent contributions. These
-     * 4581 override any dependent contributions explicitly listed via the @location attribute in the import statements
-     * 4582 of the contribution.
-     * 4583 SCA follows the simplifying assumption that the use of a contribution for resolving anything also means
-     * 4584 that all other exported artifacts can be used from that contribution. Because of this, the dependent
-     * 4585 contribution list is just a list of installed contribution URIs. There is no need to specify what is being used
-     * 4586 from each one.
-     * 4587 Each dependent contribution is also an installed contribution, with its own dependent contributions. By
-     * 4588 default these dependent contributions of the dependent contributions (which we will call indirect
-     * 4589 dependent contributions) are included as dependent contributions of the installed contribution. However,
-     * 4590 if a contribution in the dependent contribution list exports any conflicting definitions with an indirect
-     * 4591 dependent contribution, then the indirect dependent contribution is not included (i.e. the explicit list
-     * 4592 overrides the default inclusion of indirect dependent contributions). Also, if there is ever a conflict
-     * 4593 between two indirect dependent contributions, then the conflict MUST be resolved by an explicit entry in
-     * 4594 the dependent contribution list.
-     * 4595 [ASM12009]
-     * 4596 Note that in many cases, the dependent contribution list can be generated. In particular, if the creator of
-     * 4597 a Domain is careful to avoid creating duplicate definitions for the same qualified name, then it is easy for
-     * 4598 this list to be generated by tooling.
-     *  
-     * @param uri
-     * @param contributionURL
-     */
-    void updateContribution(String uri, String contributionURL);
-    void updateContribution(Contribution contribution);
-
-    /**
      * 4599 10.5.2 add Deployment Composite & update Deployment Composite
      * 4600 Adds or updates a deployment composite using a supplied composite ("composite by value" - a data
      * 4601 structure, not an existing resource in the Domain) to the contribution identified by a supplied contribution
@@ -129,8 +99,8 @@ public interface Node {
      * 4609 then possible for those to be given component names by a (possibly generated) composite that is added
      * 4610 into the installed contribution, without having to modify the packaging.     * 
      * 
-     * @param uri
-     * @param compositeXML
+     * @param contributionURI the URI of the installed contribution to add the composite to
+     * @param compositeXML the composite to add to the contribution
      * @return
      * @throws XMLStreamException 
      * @throws ContributionReadException 
@@ -139,27 +109,6 @@ public interface Node {
      */
     String start(String contributionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException;
     String start(String contributionURI, Composite composite) throws ActivationException, ValidationException;
-
-    /**
-     * 4599 10.5.2 add Deployment Composite & update Deployment Composite
-     * 4600 Adds or updates a deployment composite using a supplied composite ("composite by value" - a data
-     * 4601 structure, not an existing resource in the Domain) to the contribution identified by a supplied contribution
-     * 4602 URI. The added or updated deployment composite is given a relative URI that matches the @name
-     * 4603 attribute of the composite, with a ".composite" suffix. Since all composites run within the context of a
-     * 4604 installed contribution (any component implementations or other definitions are resolved within that
-     * 4605 contribution), this functionality makes it possible for the deployer to create a composite with final
-     * 4606 configuration and wiring decisions and add it to an installed contribution without having to modify the
-     * 4607 contents of the root contribution.
-     * 4608 Also, in some use cases, a contribution might include only implementation code (e.g. PHP scripts). It is
-     * 4609 then possible for those to be given component names by a (possibly generated) composite that is added
-     * 4610 into the installed contribution, without having to modify the packaging.     * 
-     * 
-     * @param uri
-     * @param compositeXML
-     * @return
-     */
-    String updateDeploymentComposite(String uri, Reader compositeXML);
-    String updateDeploymentComposite(String uri, Composite composite);
 
     /**
      * 4611 11.4.310.5.3 remove Contribution
@@ -241,17 +190,17 @@ public interface Node {
     <T> T getService(Class<T> interfaze, String serviceURI) throws NoSuchServiceException;    
 
     /**
-     * Get a contributions deployed composites.
+     * Get the URIs of any composites that have been started for a contribution
      * @param contributionURI  the contribution URI
-     * @return the List of deployed composites
+     * @return the List of started composite URIs
      */
-    List<String> getDeployedComposites(String contributionURI);
+    List<String> getStartedCompositeURIs(String contributionURI);
 
     /**
      * Get the URIs of all the contributions installed on this Node
      * @return the list of installed contribution URIs
      */
-    List<String> getInstalledContributions();
+    List<String> getInstalledContributionURIs();
 
     /**
      * Get an installed Contribution
@@ -261,4 +210,56 @@ public interface Node {
     Contribution getInstalledContribution(String uri);
     
     String getDomainName();
+
+// TODO: the spec is unclear if update is different from remove/install, leave it out for now    
+//    /**
+//     * 4577 10.5.1 install Contribution & update Contribution
+//     * 4578 Creates or updates an installed contribution with a supplied root contribution, and installed at a supplied
+//     * 4579 base URI. A supplied dependent contribution list (<export/> elements) specifies the contributions that are
+//     * 4580 used to resolve the dependencies of the root contribution and other dependent contributions. These
+//     * 4581 override any dependent contributions explicitly listed via the @location attribute in the import statements
+//     * 4582 of the contribution.
+//     * 4583 SCA follows the simplifying assumption that the use of a contribution for resolving anything also means
+//     * 4584 that all other exported artifacts can be used from that contribution. Because of this, the dependent
+//     * 4585 contribution list is just a list of installed contribution URIs. There is no need to specify what is being used
+//     * 4586 from each one.
+//     * 4587 Each dependent contribution is also an installed contribution, with its own dependent contributions. By
+//     * 4588 default these dependent contributions of the dependent contributions (which we will call indirect
+//     * 4589 dependent contributions) are included as dependent contributions of the installed contribution. However,
+//     * 4590 if a contribution in the dependent contribution list exports any conflicting definitions with an indirect
+//     * 4591 dependent contribution, then the indirect dependent contribution is not included (i.e. the explicit list
+//     * 4592 overrides the default inclusion of indirect dependent contributions). Also, if there is ever a conflict
+//     * 4593 between two indirect dependent contributions, then the conflict MUST be resolved by an explicit entry in
+//     * 4594 the dependent contribution list.
+//     * 4595 [ASM12009]
+//     * 4596 Note that in many cases, the dependent contribution list can be generated. In particular, if the creator of
+//     * 4597 a Domain is careful to avoid creating duplicate definitions for the same qualified name, then it is easy for
+//     * 4598 this list to be generated by tooling.
+//     *  
+//     * @param uri
+//     * @param contributionURL
+//     */
+//    void updateContribution(String uri, String contributionURL);
+//    void updateContribution(Contribution contribution);
+//    /**
+//     * 4599 10.5.2 add Deployment Composite & update Deployment Composite
+//     * 4600 Adds or updates a deployment composite using a supplied composite ("composite by value" - a data
+//     * 4601 structure, not an existing resource in the Domain) to the contribution identified by a supplied contribution
+//     * 4602 URI. The added or updated deployment composite is given a relative URI that matches the @name
+//     * 4603 attribute of the composite, with a ".composite" suffix. Since all composites run within the context of a
+//     * 4604 installed contribution (any component implementations or other definitions are resolved within that
+//     * 4605 contribution), this functionality makes it possible for the deployer to create a composite with final
+//     * 4606 configuration and wiring decisions and add it to an installed contribution without having to modify the
+//     * 4607 contents of the root contribution.
+//     * 4608 Also, in some use cases, a contribution might include only implementation code (e.g. PHP scripts). It is
+//     * 4609 then possible for those to be given component names by a (possibly generated) composite that is added
+//     * 4610 into the installed contribution, without having to modify the packaging.     * 
+//     * 
+//     * @param uri
+//     * @param compositeXML
+//     * @return
+//     */
+//    String updateDeploymentComposite(String uri, Reader compositeXML);
+//    String updateDeploymentComposite(String uri, Composite composite);
+
 }

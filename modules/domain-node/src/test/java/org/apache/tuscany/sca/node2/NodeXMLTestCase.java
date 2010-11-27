@@ -33,10 +33,10 @@ public class NodeXMLTestCase {
     public void testHelloworldXML() throws ContributionReadException, ActivationException, ValidationException {
         Node node = NodeFactory.newInstance().createNodeFromXML("src/test/resources/helloworldNode.xml");
         Assert.assertEquals("helloworld", node.getDomainName());
-        List<String> cs = node.getInstalledContributions();
+        List<String> cs = node.getInstalledContributionURIs();
         Assert.assertEquals(1, cs.size());
         Assert.assertEquals("sample-helloworld", cs.get(0));
-        List<String> compsoites = node.getDeployedComposites("sample-helloworld");
+        List<String> compsoites = node.getStartedCompositeURIs("sample-helloworld");
         Assert.assertEquals(1, compsoites.size());
         Assert.assertEquals("helloworld.composite", compsoites.get(0));
     }

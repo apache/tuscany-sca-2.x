@@ -51,7 +51,7 @@ public class DeployerTestCase {
         monitor.analyzeProblems();
         
         node.installContribution(contribution, null, true);
-        List<String> ics = node.getInstalledContributions();
+        List<String> ics = node.getInstalledContributionURIs();
         Assert.assertEquals(1, ics.size());
         Assert.assertEquals("foo", ics.get(0));
     }
@@ -69,7 +69,7 @@ public class DeployerTestCase {
         monitor.analyzeProblems();
         composite.setURI("helloworld2.composite");
         node.start("foo", composite);
-        List<String> dcs = node.getDeployedComposites("foo");
+        List<String> dcs = node.getStartedCompositeURIs("foo");
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("helloworld2.composite", dcs.get(0));
     }

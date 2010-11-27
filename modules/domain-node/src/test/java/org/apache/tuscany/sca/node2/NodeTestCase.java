@@ -76,7 +76,7 @@ public class NodeTestCase {
     public void testGetInstalledContributions() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
         Node node = NodeFactory.newInstance().createNode("default");
         node.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
-        List<String> ics = node.getInstalledContributions();
+        List<String> ics = node.getInstalledContributionURIs();
         Assert.assertEquals(1, ics.size());
         Assert.assertEquals("foo", ics.get(0));
     }
@@ -85,7 +85,7 @@ public class NodeTestCase {
     public void testGetDeployedCompostes() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, MalformedURLException, ActivationException, ValidationException {
         Node node = NodeFactory.newInstance().createNode("default");
         node.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
-        List<String> dcs = node.getDeployedComposites("foo");
+        List<String> dcs = node.getStartedCompositeURIs("foo");
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("helloworld.composite", dcs.get(0));
     }
@@ -95,7 +95,7 @@ public class NodeTestCase {
         Node node = NodeFactory.newInstance().createNode("default");
         node.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
         node.stop("foo", "helloworld.composite");
-        List<String> dcs = node.getDeployedComposites("foo");
+        List<String> dcs = node.getStartedCompositeURIs("foo");
         Assert.assertEquals(0, dcs.size());
     }
 
@@ -104,7 +104,7 @@ public class NodeTestCase {
         Node node = NodeFactory.newInstance().createNode("default");
         ((NodeImpl)node).installContribution("helloworld", "src/test/resources/sample-helloworld-nodeployable.jar", "src/test/resources/sca-contribution-generated.xml", null, true);
 
-        List<String> dcs = node.getDeployedComposites("helloworld");
+        List<String> dcs = node.getStartedCompositeURIs("helloworld");
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("helloworld.composite", dcs.get(0));
 
@@ -122,9 +122,9 @@ public class NodeTestCase {
     @Test
     public void testStaticCreate() {
         Node node = NodeFactory.newStandaloneNode("helloworld.composite", "src/test/resources/sample-helloworld.jar");
-        List<String> cs = node.getInstalledContributions();
+        List<String> cs = node.getInstalledContributionURIs();
         Assert.assertEquals(1, cs.size());
-        List<String> dcs = node.getDeployedComposites(cs.get(0));
+        List<String> dcs = node.getStartedCompositeURIs(cs.get(0));
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("helloworld.composite", dcs.get(0));
     }
@@ -132,9 +132,9 @@ public class NodeTestCase {
     @Test
     public void testStaticCreateWithNullComposite() {
         Node node = NodeFactory.newStandaloneNode(null, "src/test/resources/sample-helloworld.jar");
-        List<String> cs = node.getInstalledContributions();
+        List<String> cs = node.getInstalledContributionURIs();
         Assert.assertEquals(1, cs.size());
-        List<String> dcs = node.getDeployedComposites(cs.get(0));
+        List<String> dcs = node.getStartedCompositeURIs(cs.get(0));
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("helloworld.composite", dcs.get(0));
     }
