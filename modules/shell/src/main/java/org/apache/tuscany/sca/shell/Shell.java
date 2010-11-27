@@ -68,7 +68,7 @@ public class Shell {
     private Map<String, Node> nodes = new HashMap<String, Node>();
 
     public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "help", "install", "installed", "invoke",
-                                                          "load", "remove", "run", "save", "services", "start", "status", "stop"};
+                                                          "load", "remove", "run", "save", "services", "start", "started", "stop"};
 
     public static void main(final String[] args) throws Exception {
         boolean useJline = true;
@@ -202,12 +202,12 @@ public class Shell {
             if (getNode() == null) {
                 return true;
             }
-            curis = getNode().getInstalledContributions();
+            curis = getNode().getInstalledContributionURIs();
         }
         for (String curi : curis) {
             out.println(curi + " " + getNode().getInstalledContribution(curi).getLocation());
             Contribution c = getNode().getInstalledContribution(curi);
-            List<String> deployeds = getNode().getDeployedComposites(curi);
+            List<String> deployeds = getNode().getStartedCompositeURIs(curi);
             for (Artifact a : c.getArtifacts()) {
                 if (a.getModel() instanceof Composite) {
                     Composite composite = (Composite)a.getModel();
@@ -369,7 +369,7 @@ public class Shell {
                     currentDomain = "";
                 }
             } else {
-                for (String compositeURI : getNode().getDeployedComposites(curi)) {
+                for (String compositeURI : getNode().getStartedCompositeURIs(curi)) {
                     getNode().stop(curi, compositeURI);
                 }
             }
@@ -416,13 +416,13 @@ public class Shell {
         return true;
     }
 
-    boolean status(final List<String> toks) {
+    boolean started(final List<String> toks) {
         if (standaloneNodes.size() > 0) {
             out.println("Standalone Nodes:");
             for (String nodeName : standaloneNodes.keySet()) {
                 Node node = standaloneNodes.get(nodeName);
-                for (String curi : node.getInstalledContributions()) {
-                    for (String dc : node.getDeployedComposites(curi)) {
+                for (String curi : node.getInstalledContributionURIs()) {
+                    for (String dc : node.getStartedCompositeURIs(curi)) {
                         out.println("   " + nodeName + " " + dc);
                     }
                 }
@@ -437,17 +437,17 @@ public class Shell {
                     ics = new ArrayList<String>();
                     ics.add(toks.get(1));
                 } else {
-                    ics = node.getInstalledContributions();
+                    ics = node.getInstalledContributionURIs();
                 }
 
                 for (String curi : ics) {
                     Contribution c = node.getInstalledContribution(curi);
-                    List<String> dcs = node.getDeployedComposites(curi);
+                    List<String> dcs = node.getStartedCompositeURIs(curi);
                     if (toks.size() > 2) {
                         dcs = new ArrayList<String>();
                         dcs.add(toks.get(2));
                     } else {
-                        dcs = node.getDeployedComposites(curi);
+                        dcs = node.getStartedCompositeURIs(curi);
                     }
                     for (String compositeUri : dcs) {
                         for (Artifact a : c.getArtifacts()) {
@@ -602,10 +602,10 @@ public class Shell {
                     }
                 }
             };
-        if (op.equalsIgnoreCase("status"))
+        if (op.equalsIgnoreCase("started"))
             return new Callable<Boolean>() {
                 public Boolean call() {
-                    return status(toks);
+                    return started(toks);
                 }
             };
         if (op.equalsIgnoreCase("history"))
@@ -673,8 +673,8 @@ public class Shell {
             helpSave();
         } else if ("start".equalsIgnoreCase(command)) {
             helpStart();
-        } else if ("status".equalsIgnoreCase(command)) {
-            helpStatus();
+        } else if ("started".equalsIgnoreCase(command)) {
+            helpStarted();
         } else if ("stop".equalsIgnoreCase(command)) {
             helpStop();
         } else if ("startup".equalsIgnoreCase(command)) {
@@ -710,7 +710,7 @@ public class Shell {
         out.println("   services");
         out.println("   start <curi> <compositeUri>|<contentURL>");
         out.println("   start <name> [<compositeUri>] <contributionURL> [-duris <uri,uri,...>]");
-        out.println("   status [<curi> [<compositeUri>]]");
+        out.println("   started [<curi> [<compositeUri>]]");
         out.println("   stop [<curi> [<compositeUri>]]");
         out.println("   bye");
         out.println();
@@ -870,10 +870,10 @@ public class Shell {
         out.println("               dependencies of the root contribution and other dependent contributions.");
     }
 
-    void helpStatus() {
-        out.println("   status [<curi> [<compositeUri>]]");
+    void helpStarted() {
+        out.println("   started [<curi> [<compositeUri>]]");
         out.println();
-        out.println("   Shows the status of the Node, listing for each deployed composite its");
+        out.println("   Shows the status of the Node, listing for each started composite, its");
         out.println("   contribution URI, the composite URI, and the composite QName.");
         out.println();
         out.println("   Arguments:");

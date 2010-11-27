@@ -40,7 +40,7 @@ public class ICURICompletor extends SimpleCompletor {
     @Override
     public int complete(final String buffer, final int cursor, final List clist) {
         if (shell.getNode() != null) {
-            List<String> ics = shell.getNode().getInstalledContributions();
+            List<String> ics = shell.getNode().getInstalledContributionURIs();
             setCandidateStrings(ics.toArray(new String[ics.size()]));
         }
        return super.complete(buffer, cursor, clist);   
