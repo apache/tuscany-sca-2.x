@@ -678,6 +678,7 @@ org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apac
                 <module>maven/maven-tuscany-plugin</module>
                 <module>modules</module>
                 <module>features</module>
+                <module>samples</module>
                 <module>distribution/all</module>
             </modules>
            <build>
