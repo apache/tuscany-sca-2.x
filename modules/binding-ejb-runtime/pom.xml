@@ -133,6 +133,10 @@
                     <groupId>asm</groupId>
                     <artifactId>asm-commons</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.xbean</groupId>
+                    <artifactId>xbean-reflect</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         
