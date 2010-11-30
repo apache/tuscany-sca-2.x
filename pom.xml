@@ -670,12 +670,13 @@ org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apac
         </profile>
 
         <profile>
-            <id>all-distro</id>
+            <id>hudson-deploy</id>
             <properties>
                 <skipTests>true</skipTests>
                 <buildZips>true</buildZips>
             </properties>
             <modules>
+                <module>modules</module>
                 <!-- samples need to be included so that the bin distro includes the prebuilt contributions -->
                 <module>samples</module>
                 <module>distribution/all</module>
