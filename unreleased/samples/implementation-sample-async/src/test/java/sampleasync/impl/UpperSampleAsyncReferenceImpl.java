@@ -20,6 +20,12 @@
 package sampleasync.impl;
 
 import static java.lang.System.out;
+import static sample.Xutil.elem;
+import static sample.Xutil.text;
+import static sample.Xutil.xdom;
+
+import org.w3c.dom.Element;
+
 import sample.api.Java;
 import sample.api.WSDL;
 import sample.api.WSDLReference;
@@ -35,11 +41,25 @@ public class UpperSampleAsyncReferenceImpl {
     
     @WSDL("http://sample/upper#Upper")
     WSDLReference upper;
+    String response;
     
     public String upper(String s) {
         out.println("UpperSampleAsyncReferenceImpl.upper(" + s + ")");
-        upper.callAsync("upper", null);
-        return null;
+        
+        // TODO - I'm passing in the non-wrapped version of the parameter
+        //        here which doesn't seem right. If I pass in the wrapped
+        //        version then the databinding won't unwrap on the reference
+        //        side as it thinks the target Java interface is bare?
+        final Element ureq = xdom("http://sample/upper", "s", text(s));
+        upper.callAsync("upper", ureq);
+        
+        try {
+            Thread.sleep(500);
+        } catch (Exception ex) {
+            // do nothing
+        }
+        
+        return response;
     }
     
     /**
@@ -47,7 +67,11 @@ public class UpperSampleAsyncReferenceImpl {
      *  async callback arrives at an operation named
      *  operationName + Callback
      */
-    public void upperCallback(String s) {
-        out.println("UpperSampleAsyncReferenceImpl.upperCallback(" + s + ")");
+    // TODO - I think this should take and Element parameter but the response 
+    //        handler interface is a Java interface at the moment and so no
+    //        transformation takes place automatically.
+    public void upperCallback(String response) {
+        out.println("UpperSampleAsyncReferenceImpl.upperCallback(" + response + ")");
+        this.response = response;
     }
 }

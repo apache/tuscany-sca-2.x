@@ -43,8 +43,10 @@ class SampleWSDLProxy implements WSDLReference {
     final Map<String, Operation> ops;
     final ExtensionPointRegistry ep;
     final MessageFactory mf;
+    Map<String, Object> asyncMessageMap;
 
-    SampleWSDLProxy(EndpointReference epr, Interface wi, ExtensionPointRegistry ep) {
+    SampleWSDLProxy(Map<String, Object> asyncMessageMap, EndpointReference epr, Interface wi, ExtensionPointRegistry ep) {
+        this.asyncMessageMap = asyncMessageMap;        
         this.ep = ep;
         mf = ep.getExtensionPoint(MessageFactory.class);
         
@@ -68,15 +70,18 @@ class SampleWSDLProxy implements WSDLReference {
     public void callAsync(String op, Element e) {
         // Asynchronously invoke the named operation on the endpoint reference
         Message message = mf.createMessage();
-        message.setBody(message);
+        message.setBody(new Object[]{e});
         
         // We could add implementation specific headers here if required
-        
-        repr.invokeAsync(ops.get(op), message);
-        
-        String messageID = (String) message.getHeaders().get(Constants.MESSAGE_ID);
+        try {
+            repr.invokeAsync(ops.get(op), message);
+        } catch (Throwable ex) {
+            ex.printStackTrace();
+        }
         
         // save the message id ready for when we process the response
+        String messageID = (String) message.getHeaders().get(Constants.MESSAGE_ID);
         
+        asyncMessageMap.put(messageID, op);
     }
 }
