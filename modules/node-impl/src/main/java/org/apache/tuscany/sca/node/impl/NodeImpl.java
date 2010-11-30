@@ -324,10 +324,9 @@ public class NodeImpl implements Node {
         // write out and nested composites
         for (Component component : composite.getComponents()) {
             if (component.getImplementation() instanceof Composite) {
-                result +=
-                    "\n<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->\n" + writeComposite((Composite)component
-                                                                                                          .getImplementation(),
-                                                                                                      compositeProcessor);
+                result += "\n<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->\n" + 
+                           writeComposite((Composite)component.getImplementation(),
+                                          compositeProcessor);
             }
         }
         
