@@ -79,11 +79,10 @@ public class Shell {
             if ("-nojline".equals(s)) {
                 useJline = false;
             } else {
-                File f = new File(s);
-                if (f.exists()) {
-                    contribution = s;
-                } else {
+                if (s.startsWith("uri:") || s.startsWith("properties:")) {
                     domainURI = s;
+                } else {
+                    contribution = s;
                 }
             }
         }
@@ -466,6 +465,10 @@ public class Shell {
         return true;
     }
 
+    boolean status() {
+        return true;
+    }
+
     boolean history() {
         for (String l : history)
             out.println(l);
@@ -608,6 +611,12 @@ public class Shell {
                     return started(toks);
                 }
             };
+        if (op.equalsIgnoreCase("status"))
+            return new Callable<Boolean>() {
+                public Boolean call() {
+                     return status();
+                }
+            };
         if (op.equalsIgnoreCase("history"))
             return new Callable<Boolean>() {
                 public Boolean call() {
@@ -679,6 +688,8 @@ public class Shell {
             helpStop();
         } else if ("startup".equalsIgnoreCase(command)) {
             helpStartUp();
+        } else if ("status".equalsIgnoreCase(command)) {
+            helpStatus();
         } else if ("services".equalsIgnoreCase(command)) {
             helpServices();
         } else if ("bye".equalsIgnoreCase(command)) {
@@ -711,6 +722,7 @@ public class Shell {
         out.println("   start <curi> <compositeUri>|<contentURL>");
         out.println("   start <name> [<compositeUri>] <contributionURL> [-duris <uri,uri,...>]");
         out.println("   started [<curi> [<compositeUri>]]");
+        out.println("   status");
         out.println("   stop [<curi> [<compositeUri>]]");
         out.println("   bye");
         out.println();
@@ -879,6 +891,16 @@ public class Shell {
         out.println("   Arguments:");
         out.println("      curi - (optional) the URI of an installed contribution");
         out.println("      compositeUri - (optional) the URI of a composite");
+    }
+
+    void helpStatus() {
+        out.println("   status");
+        out.println();
+        out.println("   Shows the status of the Shell including information on the known domains,");
+        out.println("   installed contributions, and started composites");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      none");
     }
 
     void helpStop() {
