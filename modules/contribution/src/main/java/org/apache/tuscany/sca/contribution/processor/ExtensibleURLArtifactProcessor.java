@@ -106,6 +106,9 @@ public class ExtensibleURLArtifactProcessor implements URLArtifactProcessor<Obje
         if (processor == null) {
             return null;
         }
+        if (context != null && context.getMonitor() != null){
+            context.getMonitor().setArtifactName(null); //Reset Artifact Name in Monitor   
+        }
         return processor.read(contributionURL, sourceURI, sourceURL, context);
     }
 
