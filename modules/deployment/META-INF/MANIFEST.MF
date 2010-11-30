@@ -45,6 +45,7 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.deployment;version="2.0.0",
  org.apache.tuscany.sca.monitor;version="2.0.0",
  org.apache.tuscany.sca.xsd;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
  org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.deployment
 Bundle-DocURL: http://www.apache.org/

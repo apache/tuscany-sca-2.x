@@ -182,7 +182,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             new ExtensibleWireProcessor(registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class));
 
         this.messageFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(MessageFactory.class);
-        this.invoker = new RuntimeInvoker(this.messageFactory, this);
+        this.invoker = new RuntimeInvoker(registry, this);
 
         this.phaseManager = utilities.getUtility(PhaseManager.class);
         this.serializer = utilities.getUtility(EndpointSerializer.class);
@@ -284,6 +284,11 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 
     public Message invoke(Operation operation, Message msg) {
         return invoker.invoke(operation, msg);
+    }
+    
+    public void invokeAsync(Operation operation, Message msg) {
+        msg.setOperation(operation);
+        invoker.invokeAsync(msg);
     }
 
     /**
@@ -647,7 +652,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     @Override
     public Object clone() throws CloneNotSupportedException {
         RuntimeEndpointImpl copy = (RuntimeEndpointImpl)super.clone();
-        copy.invoker = new RuntimeInvoker(copy.messageFactory, copy);
+        copy.invoker = new RuntimeInvoker(registry, copy);
         return copy;
     }
 

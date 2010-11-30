@@ -128,6 +128,15 @@ public interface Invocable {
      * @throws InvocationTargetException
      */
     Message invoke(Operation operation, Message msg);
+    
+    /**
+     * Asynchronously invoke an operation with a context message
+     * @param operation The operation
+     * @param msg The request message
+     * @return The ticket that can be used to identify this invocation
+     * @throws InvocationTargetException
+     */
+    void invokeAsync(Operation operation, Message msg);
 
     /**
      * Get a list of policy providers

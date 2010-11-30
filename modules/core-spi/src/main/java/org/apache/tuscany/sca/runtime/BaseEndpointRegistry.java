@@ -60,6 +60,7 @@ public abstract class BaseEndpointRegistry implements EndpointRegistry, LifeCycl
 
     public void addEndpointReference(EndpointReference endpointReference) {
         endpointreferences.add(endpointReference);
+        ((RuntimeEndpointReference)endpointReference).bind(registry, this);
         logger.fine("Add endpoint reference - " + endpointReference);
     }
 

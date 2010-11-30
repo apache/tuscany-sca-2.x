@@ -204,7 +204,10 @@ public class TestRuntimeWire implements RuntimeEndpoint {
         // TODO Auto-generated method stub
         return null;
     }
-
+    
+    public void invokeAsync(Operation operation, Message msg) {
+        return;
+    }
 
     public void unbind() {
         // TODO Auto-generated method stub

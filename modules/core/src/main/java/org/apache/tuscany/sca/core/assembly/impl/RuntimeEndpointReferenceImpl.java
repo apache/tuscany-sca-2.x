@@ -31,18 +31,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
+import org.apache.tuscany.sca.core.invocation.AsyncResponseHandler;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.core.invocation.RuntimeInvoker;
@@ -51,8 +57,10 @@ import org.apache.tuscany.sca.core.invocation.impl.PhaseManager;
 import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -68,7 +76,9 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointSerializer;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
@@ -169,7 +179,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
             new ExtensibleWireProcessor(registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class));
 
         this.messageFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(MessageFactory.class);
-        this.invoker = new RuntimeInvoker(this.messageFactory, this);
+        this.invoker = new RuntimeInvoker(registry, this);
 
         this.phaseManager = utilities.getUtility(PhaseManager.class);
         this.serializer = utilities.getUtility(EndpointSerializer.class);
@@ -226,6 +236,11 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
 
     public Message invoke(Operation operation, Message msg) {
         return invoker.invoke(operation, msg);
+    }
+    
+    public void invokeAsync(Operation operation, Message msg) {
+        msg.setOperation(operation);
+        invoker.invokeAsync(msg);
     }
 
     /**
@@ -472,7 +487,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
     @Override
     public Object clone() throws CloneNotSupportedException {
         RuntimeEndpointReferenceImpl copy = (RuntimeEndpointReferenceImpl)super.clone();
-        copy.invoker = new RuntimeInvoker(copy.messageFactory, copy);
+        copy.invoker = new RuntimeInvoker(registry, copy);
         return copy;
     }
 
@@ -615,5 +630,65 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         }
         
         return interfaceContract.getNormalizedWSDLContract();      
-    }     
+    }   
+    
+    public void createAsyncCallbackEndpoint(){
+        CompositeContext compositeContext = getCompositeContext();
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        RuntimeAssemblyFactory assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
+        
+        RuntimeEndpoint endpoint = (RuntimeEndpoint)assemblyFactory.createEndpoint();
+        endpoint.bind(compositeContext);
+        endpoint.setComponent(getComponent());
+
+        // Create pseudo-service
+        ComponentService service = assemblyFactory.createComponentService();
+        JavaInterfaceFactory javaInterfaceFactory =
+            (JavaInterfaceFactory)modelFactories.getFactory(JavaInterfaceFactory.class);
+        JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
+        try {
+            interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(AsyncResponseHandler.class));
+        } catch (InvalidInterfaceException e1) {
+            // Nothing to do here - will not happen
+        } // end try
+        
+        service.setInterfaceContract(interfaceContract);
+        String serviceName = getReference().getName() + "_asyncCallback";
+        service.setName(serviceName);
+        service.getEndpoints().add(endpoint);
+        service.setForCallback(true);
+        endpoint.setService(service);
+        
+        // Set pseudo-service onto the component
+        getComponent().getServices().add(service);
+
+        // Create a binding
+        // Mike had to go via the XML but I don't remember why
+        Binding binding = null;
+        try {
+            binding = (Binding)getBinding().clone();
+        } catch (Exception ex){
+            // 
+        }
+        String callbackURI = "/" + component.getName() + "/" + service.getName();
+        binding.setURI(callbackURI);
+        
+        BuilderExtensionPoint builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
+        BindingBuilder builder = builders.getBindingBuilder(binding.getType());
+        if (builder != null) {
+            org.apache.tuscany.sca.assembly.builder.BuilderContext builderContext = new BuilderContext(registry);
+            builder.build(component, service, binding, builderContext, true);
+        } // end if
+        
+        endpoint.setBinding(binding);
+
+        // Need to establish policies here (binding has some...)
+        endpoint.getRequiredIntents().addAll(getRequiredIntents());
+        endpoint.getPolicySets().addAll(getPolicySets());
+        String epURI = getComponent().getName() + "#service-binding(" + serviceName + "/" + serviceName + ")";
+        endpoint.setURI(epURI);
+        endpoint.setUnresolved(false);
+        
+        setCallbackEndpoint(endpoint);
+    }
 }

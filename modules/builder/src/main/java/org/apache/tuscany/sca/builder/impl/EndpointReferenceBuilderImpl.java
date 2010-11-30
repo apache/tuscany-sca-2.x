@@ -58,9 +58,6 @@ public class EndpointReferenceBuilderImpl {
 
     private AssemblyFactory assemblyFactory;
     private InterfaceContractMapper interfaceContractMapper;
-  
-    // causes dependency between builders and core
-    //private EndpointReferenceBinder endpointReferenceBinder;
     
     public EndpointReferenceBuilderImpl(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
@@ -68,9 +65,6 @@ public class EndpointReferenceBuilderImpl {
 
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        
-        // causes dependency between builders and core
-        //endpointReferenceBinder = registry.getExtensionPoint(EndpointReferenceBinder.class);
     }
 
     /**
@@ -88,20 +82,6 @@ public class EndpointReferenceBuilderImpl {
         // left until this stage, after all endpoints have been created, 
         // to to catch more complex cases caused by reference promotion
         validateComponentReferences(composite, context.getMonitor());
-        
-        // TODO - move the following buld time matching code
-        //        to somewhere else because of  
-        //        the dependency between builders and core
-        
-        // create temporary local registry for all available local endpoints
-        //EndpointRegistry registry = new EndpointRegistryImpl();
-        
-        // populate the registry with all the endpoints that are present in the model
-        //populateLocalRegistry(composite, registry, context);        
-        
-        // match all local services against the endpoint references 
-        // we've just created
-        //matchEndpointReferences(composite, registry, context); 
 
         return composite;
     }  
@@ -270,7 +250,7 @@ public class EndpointReferenceBuilderImpl {
                     // non-targetted, i.e. no URI, binding.sca in order to control the 
                     // intended QoS of the wire when matching takes place. If any other 
                     // bindings are specified then the test later on will complain about
-                    // mixing targts with bindings
+                    // mixing targets with bindings
                     if (reference.getBindings().size() == 1){
                         Binding binding = reference.getBindings().get(0);
                         if ((binding instanceof SCABinding) && (binding.getURI() == null)){
@@ -327,7 +307,7 @@ public class EndpointReferenceBuilderImpl {
                         }
                     } catch (Exception ex){
                         // do nothing and go to the next bit of code
-                        // which assumes that the URI is an SCA usi
+                        // which assumes that the URI is an SCA URI
                     }
     
                     // The user has put something in the binding uri but we don't know if it's
@@ -832,52 +812,6 @@ public class EndpointReferenceBuilderImpl {
                 } 
             } 
         } 
-    }
-    
-    //=========================================================================
-    // methods below related to build time matching which is currently disabled
-/*    
-    private void populateLocalRegistry(Composite composite, EndpointRegistry registry, BuilderContext context){
-        for (Component component : composite.getComponents()) {
-            // recurse for composite implementations
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                populateLocalRegistry((Composite)implementation, registry, context);
-            }
-            
-            for (ComponentService service : component.getServices()) {
-                for (Endpoint endpoint : service.getEndpoints()){
-                    registry.addEndpoint(endpoint);
-                }
-            }
-            
-            
-            for (ComponentReference reference : component.getReferences()) {
-                for (EndpointReference epr : reference.getEndpointReferences()){
-                    registry.addEndpointReference(epr);
-                }
-            }
-            
-            // remove all autowire place holders so they don't cause wires to be created
-            // have to pass in reference as we don't have access to the registry in
-            // the builders
-            for (EndpointReference epr : registry.getEndpointReferences()){
-                if (epr.getStatus() == EndpointReference.Status.AUTOWIRE_PLACEHOLDER){
-                    epr.getReference().getEndpointReferences().remove(epr);
-                }  
-            }
-        }
-    }
-
-    private void matchEndpointReferences(Composite composite, EndpointRegistry registry, BuilderContext context){
-        
-        // look at all the endpoint references and try to match them to 
-        // endpoints
-        for (EndpointReference endpointReference : registry.getEndpointReferences()){
-            endpointReferenceBinder.bindBuildTime(registry, endpointReference);
-        }
-    }
-*/    
-    
+    }  
 
 }

@@ -24,6 +24,7 @@ import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +39,13 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Base;
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
@@ -72,6 +79,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.core.assembly.impl.EndpointRegistryImpl;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.definitions.DefinitionsFactory;
 import org.apache.tuscany.sca.definitions.util.DefinitionsUtil;
@@ -79,6 +87,9 @@ import org.apache.tuscany.sca.definitions.xml.DefinitionsExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
+import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
+import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
 
@@ -103,6 +114,7 @@ public class DeployerImpl implements Deployer {
     protected ExtensibleURLArtifactProcessor artifactProcessor;
     protected ExtensibleStAXArtifactProcessor staxProcessor;
     protected ValidationSchemaExtensionPoint validationSchema;
+    protected EndpointReferenceBinder endpointReferenceBinder;
 
     protected MonitorFactory monitorFactory;
 
@@ -310,11 +322,13 @@ public class DeployerImpl implements Deployer {
 
         // get the validation schema
         validationSchema = registry.getExtensionPoint(ValidationSchemaExtensionPoint.class);
+        
+        // Get the reference binder
+        endpointReferenceBinder = registry.getExtensionPoint(EndpointReferenceBinder.class);
             
         loadSystemContribution(new ProcessorContext(monitorFactory.createMonitor()));
 
         inited = true;
-
     }
 
     protected void loadSystemContribution(ProcessorContext context) {
@@ -546,6 +560,9 @@ public class DeployerImpl implements Deployer {
         BuilderContext builderContext = new BuilderContext(systemDefinitions, bindingMap, monitor);
         compositeBuilder.build(domainComposite, builderContext);
         // analyzeProblems(monitor);
+   
+        // do build time reference binding
+        buildTimeReferenceBind(domainComposite, builderContext);        
 
         return domainComposite;
     }
@@ -717,5 +734,101 @@ public class DeployerImpl implements Deployer {
         init();
         return systemDefinitions;
     }
+    
+    // The following operations gives references a chance to bind to 
+    // services at deployment time. 
+    
+    private void buildTimeReferenceBind(Composite domainComposite, BuilderContext context){
+        // create temporary local registry for all available local endpoints
+        EndpointRegistry endpointRegistry = new LocalEndpointRegistry(registry);
+        
+        // populate the registry with all the endpoints that are present in the model
+        populateLocalRegistry(domainComposite, endpointRegistry, context);        
+        
+        // match all local services against the endpoint references 
+        // we've just created
+        matchEndpointReferences(domainComposite, endpointRegistry, context); 
+    }
+    
+    private void populateLocalRegistry(Composite composite, EndpointRegistry registry, BuilderContext context){
+        for (Component component : composite.getComponents()) {
+            // recurse for composite implementations
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                populateLocalRegistry((Composite)implementation, registry, context);
+            }
+            
+            // add all endpoints to the local registry
+            for (ComponentService service : component.getServices()) {
+                for (Endpoint endpoint : service.getEndpoints()){
+                    registry.addEndpoint(endpoint);
+                }
+            }
+            
+            // add endpoint references that we want to match to the registry
+            for (ComponentReference reference : component.getReferences()) {
+                for (EndpointReference epr : reference.getEndpointReferences()){
+                    if (epr.getStatus().equals(EndpointReference.Status.WIRED_TARGET_NOT_FOUND)||
+                        epr.getStatus().equals(EndpointReference.Status.WIRED_TARGET_IN_BINDING_URI)){
+                        registry.addEndpointReference(epr);
+                    }
+                }
+            }           
+        }
+    }
 
+    private void matchEndpointReferences(Composite composite, EndpointRegistry registry, BuilderContext builderContext){
+        
+        // look at all the endpoint references and try to match them to 
+        // endpoints
+        for (EndpointReference endpointReference : registry.getEndpointReferences()){
+            endpointReferenceBinder.bindBuildTime(registry, endpointReference, builderContext);
+        }
+    } 
+    
+    // A minimal endpoint registry implementation used to store the Endpoints/EndpointReferences 
+    // for build time local reference resolution. We don't rely on the endpoint registry
+    // factory here as we specifically just want to do simple local resolution
+    class LocalEndpointRegistry extends BaseEndpointRegistry {
+        
+        private List<Endpoint> endpoints = new ArrayList<Endpoint>();
+        
+        public LocalEndpointRegistry(ExtensionPointRegistry registry){
+            super(registry, null, "", "");
+        }
+
+        public void addEndpoint(Endpoint endpoint) {
+            endpoints.add(endpoint);
+            endpointAdded(endpoint);
+        }
+        
+        public void removeEndpoint(Endpoint endpoint) {
+        }
+        
+        public Collection<Endpoint> getEndpoints() {
+            return endpoints;
+        }
+        
+        public Endpoint getEndpoint(String uri) {
+            return null;
+        }
+        
+        public List<Endpoint> findEndpoint(String uri) {
+            List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
+            for (Endpoint endpoint : endpoints) {
+                if (endpoint.matches(uri)) {
+                    foundEndpoints.add(endpoint);
+                    logger.fine("Found endpoint with matching service  - " + endpoint);
+                }
+                // else the service name doesn't match
+            }
+            return foundEndpoints;
+        }
+        
+        public void start() {
+        }
+
+        public void stop() {
+        }
+    }
 }

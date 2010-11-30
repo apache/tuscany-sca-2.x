@@ -107,8 +107,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param endpointReference
      */
     public void bindBuildTime(EndpointRegistry endpointRegistry, 
-                              EndpointReference endpointReference) {
-       bind(endpointRegistry, endpointReference, false);
+                              EndpointReference endpointReference, 
+                              BuilderContext builderContext) {
+       bind(endpointRegistry, endpointReference, builderContext, false);
     }
     
     /**
@@ -120,7 +121,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      */
     public void bindRunTime(EndpointRegistry endpointRegistry,
                             EndpointReference endpointReference) {
-        bind(endpointRegistry, endpointReference, true);
+        bind(endpointRegistry, endpointReference, null, true);
     }
     
     /**
@@ -132,6 +133,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      */
     public void bind(EndpointRegistry endpointRegistry,  
                      EndpointReference endpointReference,
+                     BuilderContext builderContext,
                      boolean runtime){
         
         logger.fine("Binding " + endpointReference.toString());
@@ -159,7 +161,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                         continue;
                     }
                     
-                    if (haveMatchingPolicy(endpointReference, endpoint, matchAudit) &&
+                    if (haveMatchingPolicy(endpointReference, endpoint, matchAudit, builderContext) &&
                         haveMatchingInterfaceContracts(endpointReference, endpoint, matchAudit)){
                         // matching service so find if this reference already has 
                         // an endpoint reference for this endpoint
@@ -216,7 +218,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                     || endpointReference.getCallbackEndpoint().isUnresolved())) {
                 selectCallbackEndpoint(endpointReference,
                                        endpointReference.getReference().getCallbackService(),
-                                       matchAudit);
+                                       matchAudit, 
+                                       builderContext, 
+                                       runtime);
             } 
         } else if (endpointReference.getStatus() == EndpointReference.Status.WIRED_TARGET_FOUND_READY_FOR_MATCHING ){
             // The endpoint reference is already resolved to either
@@ -226,12 +230,15 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             
             selectForwardEndpoint(endpointReference,
                                   endpointReference.getTargetEndpoint().getService().getEndpoints(),
-                                  matchAudit);
+                                  matchAudit,
+                                  builderContext);
 
             if (hasCallback(endpointReference)){
                 selectCallbackEndpoint(endpointReference,
                                        endpointReference.getReference().getCallbackService(),
-                                       matchAudit);
+                                       matchAudit,
+                                       builderContext, 
+                                       runtime);
             }             
         } else if (endpointReference.getStatus() == EndpointReference.Status.WIRED_TARGET_IN_BINDING_URI ||
                    endpointReference.getStatus() == EndpointReference.Status.WIRED_TARGET_NOT_FOUND ||
@@ -241,10 +248,23 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             // find the service in the endpoint registry
             List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);
             
-            if ((endpoints.size() == 0) && 
-                (runtime == true)     ) {
-                
-                // tweak to test if this could be a resolve binding. This is the back end of the test
+            if (endpoints.size() > 0){
+                selectForwardEndpoint(endpointReference,
+                        endpoints,
+                        matchAudit,
+                        builderContext);
+
+                // If the reference was matched try to match the callback
+                if (endpointReference.getStatus().equals(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED) &&
+                    hasCallback(endpointReference)){
+                    selectCallbackEndpoint(endpointReference,
+                                           endpointReference.getReference().getCallbackService(),
+                                           matchAudit,
+                                           builderContext, 
+                                           runtime);
+                } 
+            } else if (runtime) {
+                // tweak to test if this could be a resolved binding. This is the back end of the test
                 // in the builder that pulls the URI out of the binding if there are no targets
                 // on the reference. have to wait until here to see if the binding uri matches any
                 // available services. If not we assume here that it's a resolved binding
@@ -260,16 +280,6 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                     throw new ServiceRuntimeException("Unable to bind " + 
                                                       monitor.getLastProblem().toString());
                 }
-            }            
-
-            selectForwardEndpoint(endpointReference,
-                                  endpoints,
-                                  matchAudit);
-
-            if (hasCallback(endpointReference)){
-                selectCallbackEndpoint(endpointReference,
-                                       endpointReference.getReference().getCallbackService(),
-                                       matchAudit);
             }             
         } 
         
@@ -285,21 +295,46 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                               "EndpointReferenceCantBeMatched", 
                               endpointReference.toString(),
                               matchAudit);
+                throw new ServiceRuntimeException("Unable to bind " + 
+                                                  monitor.getLastProblem().toString());
             } else {
                 Monitor.warning(monitor, 
                                 this, 
                                 "endpoint-validation-messages", 
                                 "ComponentReferenceTargetNotFound", 
                                 endpointReference.toString());
+                return;
             }
                
-            throw new ServiceRuntimeException("Unable to bind " + 
-                                               monitor.getLastProblem().toString());
+
         }
         
         // Now the endpoint reference is resolved check that the binding interfaces contract
         // and the reference contract are compatible
-        ((RuntimeEndpointReference)endpointReference).validateReferenceInterfaceCompatibility();
+        try {
+            ((RuntimeEndpointReference)endpointReference).validateReferenceInterfaceCompatibility();
+        } catch (ServiceRuntimeException ex) {
+            // don't re-throw this exception at build time just record the
+            // error. If it's thrown here is messes up the order in which
+            // build time errors are reported and that in turn messes
+            // up the output of the compliance tests. 
+            if (runtime){
+                throw ex;
+            } else {
+                Monitor.error(monitor, 
+                        this, 
+                        "endpoint-validation-messages", 
+                        "EndpointReferenceCantBeMatched", 
+                        endpointReference.toString(),
+                        ex.getMessage());
+            }
+        }
+        
+        // if the reference is an async reference fluff up the 
+        // response service/endpoint
+        if (endpointReference.isAsyncInvocation()){
+            ((RuntimeEndpointReference)endpointReference).createAsyncCallbackEndpoint();
+        }
     
         // System.out.println("MATCH AUDIT:" + matchAudit.toString());
     }       
@@ -323,7 +358,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param endpointReference
      * @param endpoints
      */
-    private void selectForwardEndpoint(EndpointReference endpointReference, List<Endpoint> endpoints, Audit matchAudit) {    
+    private void selectForwardEndpoint(EndpointReference endpointReference, List<Endpoint> endpoints, Audit matchAudit, BuilderContext builderContext) {    
              
         Endpoint matchedEndpoint = null;
         
@@ -337,7 +372,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         } else {
             // find the first endpoint that matches this endpoint reference
             for (Endpoint endpoint : endpoints){
-                if (haveMatchingPolicy(endpointReference, endpoint, matchAudit) &&
+                if (haveMatchingPolicy(endpointReference, endpoint, matchAudit, builderContext) &&
                     haveMatchingInterfaceContracts(endpointReference, endpoint, matchAudit)){
                     matchedEndpoint = endpoint;
                     break;
@@ -374,7 +409,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param endpointReference
      * @param endpoints
      */
-    private void selectCallbackEndpoint(EndpointReference endpointReference, ComponentService callbackService, Audit matchAudit) {
+    private void selectCallbackEndpoint(EndpointReference endpointReference, ComponentService callbackService, Audit matchAudit, BuilderContext builderContext, boolean runtime) {
       
         // find the first callback endpoint that matches a callback endpoint reference
         // at the service
@@ -382,7 +417,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         match:
         for ( EndpointReference callbackEndpointReference : endpointReference.getTargetEndpoint().getCallbackEndpointReferences()){
             for (Endpoint endpoint : callbackService.getEndpoints()){
-                if (haveMatchingPolicy(callbackEndpointReference, endpoint, matchAudit) &&
+                if (haveMatchingPolicy(callbackEndpointReference, endpoint, matchAudit, builderContext) &&
                     haveMatchingInterfaceContracts(callbackEndpointReference, endpoint, matchAudit)){
                     callbackEndpoint = (RuntimeEndpoint)endpoint;
                     break match;
@@ -435,13 +470,18 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             // build it
             build(callbackEndpoint);
             
-            // activate it
-            compositeActivator.activate(((RuntimeEndpointReferenceImpl)endpointReference).getCompositeContext(), 
-                                        callbackEndpoint);
-            
-            // start it
-            compositeActivator.start(((RuntimeEndpointReferenceImpl)endpointReference).getCompositeContext(), 
-                                     callbackEndpoint);  
+            // Only activate the callback endpoint if the bind is being done at runtime
+            // and hence everthing else is running. If we don't activate here then the
+            // endpoint will be activate at the same time as all the other endpoints
+            if (runtime) {
+                // activate it
+                compositeActivator.activate(((RuntimeEndpointReferenceImpl)endpointReference).getCompositeContext(), 
+                                            callbackEndpoint);
+                
+                // start it
+                compositeActivator.start(((RuntimeEndpointReferenceImpl)endpointReference).getCompositeContext(), 
+                                         callbackEndpoint);  
+            }
         } 
         
         endpointReference.setCallbackEndpoint(callbackEndpoint);
@@ -477,7 +517,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      *   - Perform policy specific match
      *   
      */
-    private boolean haveMatchingPolicy(EndpointReference endpointReference, Endpoint endpoint, Audit matchAudit){
+    private boolean haveMatchingPolicy(EndpointReference endpointReference, Endpoint endpoint, Audit matchAudit, BuilderContext builderContext){
         matchAudit.append("Match policy of " + endpointReference.toString() + " to " + endpoint.toString() + " ");
         
         List<PolicySet> referencePolicySets = new ArrayList<PolicySet>();
@@ -568,12 +608,17 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         // Failing this the intent is unresolved and the reference and 
         // service don't match
         
-      
-        
         // TODO - seems that we should do this loop on a binding by binding basis
         //        rather than each time we do matching
         BindingType bindingType = null;
-        Definitions systemDefinitions = ((RuntimeEndpoint)endpoint).getCompositeContext().getSystemDefinitions();
+        
+        Definitions systemDefinitions = null;
+        if (builderContext != null){
+            systemDefinitions = builderContext.getDefinitions();
+        } else {
+            systemDefinitions = ((RuntimeEndpoint)endpoint).getCompositeContext().getSystemDefinitions();
+        }
+        
         for (BindingType loopBindingType : systemDefinitions.getBindingTypes()){
             if (loopBindingType.getType().equals(binding.getType())){
                 bindingType = loopBindingType;
@@ -707,8 +752,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         endpointReference.getPolicySets().addAll(referencePolicySets);
         
         if (builder != null) {
-            // TODO - where to get builder context from?
-            BuilderContext builderContext = new BuilderContext(monitor);
+            if (builderContext == null){
+                builderContext = new BuilderContext(monitor);
+            }
             
             match = builder.build(endpointReference, endpoint, builderContext);
         } 

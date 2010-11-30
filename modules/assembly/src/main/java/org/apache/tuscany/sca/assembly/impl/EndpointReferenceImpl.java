@@ -232,6 +232,12 @@ public class EndpointReferenceImpl implements EndpointReference {
     }
     
     public boolean isAsyncInvocation() {
+        if (reference.getName().endsWith("_asyncCallback")){
+            // this is a response reference at the service component so don't create a
+            // response service. The response service will be at the reference component
+            return false;
+        }
+        
         for(Intent intent : getRequiredIntents()){
             if (intent.getName().getLocalPart().equals("asyncInvocation")){
                 return true;

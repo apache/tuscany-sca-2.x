@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.runtime;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 
 /**
  * A utility responsible for resolving the endpoint reference against a matching endpoint published
@@ -32,7 +33,7 @@ public interface EndpointReferenceBinder {
      * @param endpointReference
      * @return
      */
-    void bindBuildTime(EndpointRegistry endpointRegistry, EndpointReference endpointReference);
+    void bindBuildTime(EndpointRegistry endpointRegistry, EndpointReference endpointReference, BuilderContext builderContext);
 
     
     /**

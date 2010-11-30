@@ -77,4 +77,12 @@ public interface RuntimeEndpointReference extends EndpointReference, Invocable, 
      * @return
      */
     public InterfaceContract getGeneratedWSDLContract(InterfaceContract interfaceContract);
+    
+    /**
+     * Create the endpoint which will be the target of and asynchronous response to a 
+     * message sent through this reference. We have the code here as this can't be done
+     * in the builders in the same was as callbacks are because we don't know the details 
+     * of the endpoint until the endpoint reference has been resolved.  
+     */
+    public void createAsyncCallbackEndpoint();
 }
