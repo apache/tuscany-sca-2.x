@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>itest-distribution</artifactId>
-        <version>2.0-SNAPSHOT</version>
+        <version>2.0-Beta2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>itest-distribution-src-dsitro-rat</artifactId>
@@ -36,7 +36,7 @@
                     <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>itest-src-distro-unzip</artifactId>
                     <type>pom</type>
-                    <version>2.0-SNAPSHOT</version>
+                    <version>2.0-Beta2-SNAPSHOT</version>
                 </dependency>        
             </dependencies>
         </profile>
@@ -56,32 +56,32 @@
                             </execution>
                         </executions>
                         <configuration>
-                           <basedir>../../../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT-src.dir</basedir>
+                           <basedir>../../../../distribution/all/target/apache-tuscany-sca-all-2.0-Beta2-SNAPSHOT-src.dir</basedir>
                            <excludeSubProjects>false</excludeSubProjects>
                            <excludes> 
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/CHANGES</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/CHANGES</exclude>
                               <exclude>**/*.MF</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/testing/compliance-tests/binding-ws/sca_variables.dtd</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/testing/itest/implementation-spring/src/main/resources/implementation/policies/CalculatorJass.config</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/binding-ws-runtime-axis2/src/main/resources/org/apache/tuscany/sca/binding/ws/axis2/engine/repository/modules/modules.list</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/binding-ws-runtime-axis2/src/main/resources/org/apache/tuscany/sca/binding/ws/axis2/engine/repository/services/services.list</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-spring-tie/src/main/resources/META-INF/spring.handlers</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-spring-tie/src/main/resources/META-INF/spring.schemas</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-spring-runtime/src/main/resources/META-INF/spring.handlers</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-spring-runtime/src/main/resources/META-INF/spring.schemas</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/maven/archetypes/binding/src/test/resources/projects/basic/goal.txt</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-python-runtime/src/main/resources/django/__init__.py</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-python-runtime/src/main/resources/django/utils/__init__.py</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/testing/compliance-tests/binding-ws/sca_variables.dtd</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/testing/itest/implementation-spring/src/main/resources/implementation/policies/CalculatorJass.config</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/modules/binding-ws-runtime-axis2/src/main/resources/org/apache/tuscany/sca/binding/ws/axis2/engine/repository/modules/modules.list</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/modules/binding-ws-runtime-axis2/src/main/resources/org/apache/tuscany/sca/binding/ws/axis2/engine/repository/services/services.list</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/modules/implementation-spring-tie/src/main/resources/META-INF/spring.handlers</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/modules/implementation-spring-tie/src/main/resources/META-INF/spring.schemas</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/modules/implementation-spring-runtime/src/main/resources/META-INF/spring.handlers</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/modules/implementation-spring-runtime/src/main/resources/META-INF/spring.schemas</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/maven/archetypes/binding/src/test/resources/projects/basic/goal.txt</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/modules/implementation-python-runtime/src/main/resources/django/__init__.py</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/modules/implementation-python-runtime/src/main/resources/django/utils/__init__.py</exclude>
 
                               <!-- these ones we need to implement RAT license processors to handle the non-AL headers, just exclude for now -->
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/assembly-xsd/**/*.*</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/sca-api/**/*.*</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-web-runtime/src/main/resources/META-INF/sca.tld</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/assembly-xml/src/main/resources/META-INF/sca-policy-1.1-intents-definitions-cd03.xml</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/sca-client-impl/src/main/java/org/apache/tuscany/sca/client/impl/SCAClientFactoryFinderImpl.java</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/binding-comet-runtime/src/main/resources/jquery.json-2.2.min.js</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-python-runtime/src/main/resources/django/utils/simplejson/*</exclude>
-                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/testing/compliance-tests/binding-jms/src/test/resources/tuscany-oasis-sca-tests-errors.properties</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/modules/assembly-xsd/**/*.*</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/modules/sca-api/**/*.*</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/modules/implementation-web-runtime/src/main/resources/META-INF/sca.tld</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/modules/assembly-xml/src/main/resources/META-INF/sca-policy-1.1-intents-definitions-cd03.xml</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/modules/sca-client-impl/src/main/java/org/apache/tuscany/sca/client/impl/SCAClientFactoryFinderImpl.java</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/modules/binding-comet-runtime/src/main/resources/jquery.json-2.2.min.js</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/modules/implementation-python-runtime/src/main/resources/django/utils/simplejson/*</exclude>
+                              <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT-src/testing/compliance-tests/binding-jms/src/test/resources/tuscany-oasis-sca-tests-errors.properties</exclude>
                            </excludes>
                         </configuration>
                     </plugin>
