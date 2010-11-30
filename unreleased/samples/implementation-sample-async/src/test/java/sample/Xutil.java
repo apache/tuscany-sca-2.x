@@ -44,22 +44,22 @@ import org.w3c.dom.NodeList;
 /**
  * Just for fun, a little bit of magic code and utility functions to help work with XML DOM.
  */
-class Xutil {
-    interface NodeBuilder {
+public class Xutil {
+    public interface NodeBuilder {
         Node build(Document doc);
     }
 
     /**
      * Convert a name and a list of children to a document element.
      */
-    static Element xdom(String ns, String name, final NodeBuilder... nodes) {
+    public static Element xdom(String ns, String name, final NodeBuilder... nodes) {
         return (Element)elem(ns, name, nodes).build(db.newDocument());
     }
 
     /**
      * Convert a name and children to an element.
      */
-    static NodeBuilder elem(final String uri, final String n, final NodeBuilder... nodes) {
+    public static NodeBuilder elem(final String uri, final String n, final NodeBuilder... nodes) {
         return new NodeBuilder() {
             public Node build(Document doc) {
                 final Element e = doc.createElementNS(uri, n);
@@ -70,14 +70,14 @@ class Xutil {
         };
     }
 
-    static NodeBuilder elem(final String n, final NodeBuilder... nodes) {
+    public static NodeBuilder elem(final String n, final NodeBuilder... nodes) {
         return elem(null, n, nodes);
     }
 
     /**
      * Convert a string to a text element.
      */
-    static NodeBuilder text(final String t) {
+    public static NodeBuilder text(final String t) {
         return new NodeBuilder() {
             public Node build(final Document doc) {
                 return doc.createTextNode(t);
@@ -100,7 +100,7 @@ class Xutil {
      */
     static TransformerFactory trf = TransformerFactory.newInstance();
 
-    static String xml(final Node node) {
+    public static String xml(final Node node) {
         try {
             final StreamResult r = new StreamResult(new StringWriter());
             trf.newTransformer().transform(new DOMSource(node), r);
@@ -115,7 +115,7 @@ class Xutil {
      */
     private static XPathFactory xpf = XPathFactory.newInstance();
 
-    static String xpath(final String expr, final Node node) {
+    public static String xpath(final String expr, final Node node) {
         final XPath xp = xpf.newXPath();
         try {
             return (String)xp.evaluate(expr, node, XPathConstants.STRING);
@@ -141,7 +141,7 @@ class Xutil {
         T reduce(final T accum, final Element e);
     }
     
-    static Reducer<String> print = new Reducer<String>() {
+    public static Reducer<String> print = new Reducer<String>() {
         public String reduce(String accum, Element e) {
             return accum + e.getTextContent();
         }
@@ -150,7 +150,7 @@ class Xutil {
     /**
      * Apply a mapper to a list of elements.
      */
-    static <T> List<T> xmap(final Mapper<T> f, final Iterable<Element> l) {
+    public static <T> List<T> xmap(final Mapper<T> f, final Iterable<Element> l) {
         final List<T> v = new ArrayList<T>();
         for(Element e: l)
             v.add(f.map(e));
@@ -160,7 +160,7 @@ class Xutil {
     /**
      * Apply a filter to a list of elements.
      */
-    static List<Element> xfilter(final Mapper<Boolean> f, final Iterable<Element> l) {
+    public static List<Element> xfilter(final Mapper<Boolean> f, final Iterable<Element> l) {
         final List<Element> v = new ArrayList<Element>();
         for(Element e: l)
             if(f.map(e))
@@ -171,7 +171,7 @@ class Xutil {
     /**
      * Perform a reduction over a list of elements.
      */
-    static <T> T xreduce(final Reducer<T> f, final T initial, final Iterable<Element> l) {
+    public static <T> T xreduce(final Reducer<T> f, final T initial, final Iterable<Element> l) {
         T accum = initial;
         for(Element e: l)
             accum = f.reduce(accum, e);
@@ -181,7 +181,7 @@ class Xutil {
     /**
      * Return a filter that selects elements by name.
      */
-    static Mapper<Boolean> select(final String name) {
+    public static Mapper<Boolean> select(final String name) {
         return new Mapper<Boolean>() {
             public Boolean map(Element e) {
                 return name.equals(e.getLocalName());
@@ -192,7 +192,7 @@ class Xutil {
     /**
      * Return the child elements of a node.
      */
-    static Iterable<Element> elems(final Node parent) {
+    public static Iterable<Element> elems(final Node parent) {
         final List<Element> l = new ArrayList<Element>();
         for (Node n: children(parent))
             if (n instanceof Element)
