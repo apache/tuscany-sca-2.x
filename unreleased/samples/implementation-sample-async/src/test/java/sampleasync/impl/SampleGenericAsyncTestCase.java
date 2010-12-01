@@ -36,13 +36,13 @@ import sampleasync.Upper;
  * 
  * @version $Rev$ $Date$
  */
-public class SampleAsyncReferenceTestCase {
+public class SampleGenericAsyncTestCase {
     static Node node;
 
     @BeforeClass
     public static void setUp() throws Exception {
         final NodeFactory nf = NodeFactory.newInstance();
-        String here = SampleAsyncReferenceTestCase.class.getProtectionDomain().getCodeSource().getLocation().toString();
+        String here = SampleGenericAsyncTestCase.class.getProtectionDomain().getCodeSource().getLocation().toString();
         node = nf.createNode(new Contribution("test", here));
         node.start();
     }
