@@ -20,6 +20,11 @@
 package sampleasync.impl;
 
 import static java.lang.System.out;
+import static sample.Xutil.elem;
+import static sample.Xutil.text;
+import static sample.Xutil.xdom;
+
+import org.w3c.dom.Element;
 
 import sample.api.WSDL;
 
@@ -31,8 +36,10 @@ import sample.api.WSDL;
 @WSDL("http://sample/upper#Upper")
 public class UpperSampleAsyncServiceImpl {
 
-    public String upper(String s) {
-        out.println("UpperSampleAsyncServiceImpl.upper(" + s + ")");
-        return s.toUpperCase();
+    public Element call(String op, Element e) {
+        String input = e.getTextContent();
+        out.println("UpperSampleAsyncServiceImpl.upper(" + input + ")");
+        String output = input.toUpperCase();
+        return xdom("http://sample/upper", "upperResponse", elem("result", text(output)));
     }
 }
