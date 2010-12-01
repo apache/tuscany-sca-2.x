@@ -95,7 +95,7 @@ class SampleAsyncProvider implements ImplementationAsyncProvider {
         }
     }
     
-    public Invoker createAsyncInvoker(RuntimeComponentService service, Operation operation) {
-        return new SampleAsyncInvoker(asyncMessageMap, operation, impl.clazz, instance);
+    public Invoker createAsyncResponseInvoker(RuntimeComponentService service, Operation operation) {
+        return new SampleAsyncResponseInvoker(asyncMessageMap, operation, impl.clazz, instance);
     }
 }
