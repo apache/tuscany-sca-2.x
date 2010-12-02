@@ -42,6 +42,7 @@ public class WebAppHelper {
     private static final String ROOT = "/";
     // The prefix for the parameters in web.xml which configure the folders that contain SCA contributions
     private static final String CONTRIBUTIONS = "contributions";
+    private static final String DEFAULT_CONTRIBUTIONS = "/WEB-INF/sca-contributions";
     // The prefix for the parameters in web.xml which configure the individual SCA contributions
     private static final String CONTRIBUTION = "contribution";
     private static final String NODE_CONFIGURATION = "node.configuration";
@@ -91,10 +92,14 @@ public class WebAppHelper {
             configuration = factory.loadConfiguration(url.openStream(), url);
         } else {
             configuration = factory.createNodeConfiguration();
+            
+            
+            boolean explicitContributions = false;
             Enumeration<String> names = servletContext.getAttributeNames();
             while (names.hasMoreElements()) {
                 String name = names.nextElement();
                 if (name.equals(CONTRIBUTION) || name.startsWith(CONTRIBUTION + ".")) {
+                    explicitContributions = true;
                     // We need to have a way to select one or more folders within the webapp as the contributions
                     String listOfValues = (String)servletContext.getAttribute(name);
                     if (listOfValues != null) {
@@ -107,6 +112,7 @@ public class WebAppHelper {
                         }
                     }
                 } else if (name.equals(CONTRIBUTIONS) || name.startsWith(CONTRIBUTIONS + ".")) {
+                    explicitContributions = true;
                     String listOfValues = (String)servletContext.getAttribute(name);
                     if (listOfValues != null) {
                         for (String path : parse(listOfValues)) {
@@ -126,13 +132,24 @@ public class WebAppHelper {
                 }
             }
 
-            if (configuration.getContributions().isEmpty()) {
+            URL composite = getResource(servletContext, WEB_COMPOSITE);
+            if (configuration.getContributions().isEmpty() || (!explicitContributions && composite != null)) {
                 // TODO: Which path should be the default root
                 configuration.addContribution(getResource(servletContext, ROOT));
             }
-            URL composite = getResource(servletContext, WEB_COMPOSITE);
             if (composite != null) {
                 configuration.getContributions().get(0).addDeploymentComposite(composite);
+            }
+            if (!explicitContributions) {
+                URL url = getResource(servletContext, DEFAULT_CONTRIBUTIONS);
+                if (url != null) {
+                    File f = new File(url.toURI());
+                    if (f.isDirectory()) {
+                        for (File n : f.listFiles()) {
+                            configuration.addContribution(n.toURI().toURL());
+                        }
+                    }
+                }
             }
             String nodeURI = (String)servletContext.getAttribute(NODE_URI);
             if (nodeURI == null) {
