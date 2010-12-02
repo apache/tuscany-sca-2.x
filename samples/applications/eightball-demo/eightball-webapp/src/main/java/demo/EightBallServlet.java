@@ -21,10 +21,13 @@ package demo;
 import java.io.IOException;
 import java.io.Writer;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -33,6 +36,14 @@ public class EightBallServlet extends HttpServlet {
 
     @Reference
     protected EightBall eightball;
+
+    @Override
+    public void init(ServletConfig servletConfig) throws ServletException {
+        if (eightball == null) {
+            ComponentContext cc = (ComponentContext)servletConfig.getServletContext().getAttribute("org.oasisopen.sca.ComponentContext");
+            eightball = cc.getService(EightBall .class, "eightball");
+        }
+    }
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -24,6 +24,8 @@
 
     <display-name>eightball-webapp</display-name>
 
+    <listener><listener-class>org.apache.tuscany.sca.host.webapp.TuscanyContextListener</listener-class></listener>
+
     <servlet>
         <servlet-name>EightBallServlet</servlet-name>
         <servlet-class>demo.EightBallServlet</servlet-class>
@@ -39,3 +41,4 @@
     </welcome-file-list>
 
 </web-app>
+
