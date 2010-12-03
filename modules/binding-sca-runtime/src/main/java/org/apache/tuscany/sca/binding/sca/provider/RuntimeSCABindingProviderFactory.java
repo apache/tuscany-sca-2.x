@@ -1,5 +1,5 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
+ah * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -37,12 +37,10 @@ public class RuntimeSCABindingProviderFactory implements BindingProviderFactory<
     private ExtensionPointRegistry extensionPoints;
     
     public RuntimeSCABindingProviderFactory(ExtensionPointRegistry extensionPoints) {
-        this.extensionPoints = extensionPoints;
-     
+        this.extensionPoints = extensionPoints; 
     } 
     
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
-              
         return  new RuntimeSCAReferenceBindingProvider(extensionPoints, endpointReference);
     }
 
