@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.InvokerAsync;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
@@ -206,7 +207,9 @@ public class TestRuntimeWire implements RuntimeEndpoint {
     }
     
     public void invokeAsync(Operation operation, Message msg) {
-        return;
+    }
+    
+    public void invokeAsyncResponse(InvokerAsync tailInvoker, Message msg) {
     }
 
     public void unbind() {
@@ -311,4 +314,8 @@ public class TestRuntimeWire implements RuntimeEndpoint {
         return null;
     }
 
+    public boolean isAsyncInvocation() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

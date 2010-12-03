@@ -19,21 +19,56 @@
 package org.apache.tuscany.sca.invocation;
 
 /**
- * TUSCANY-3786 - Possibly temporary interface to describe an
- *                async invocation. Need to make it work end to 
- *                end before committing to this. 
- *                
- * Asynchronous mediation associated with a client- or target- side wire.
+ * TUSCANY-3786
+ * 
+ * Interface to describe an invoation where the request processing
+ * can be performed independently of the response processing. This 
+ * has been instigated to allow async responses to be processed
+ * independently of the requests that instigated them. Due to the need
+ * to run the reponse processing interceptors effectively backwards the 
+ * methods defined here are not responsible for finding the next invoker 
+ * in the chain. 
  *
  */
 public interface InvokerAsync {
-
+    
     /**
-     * Process an asynchronous wire
+     * Process the forward message and pass it down the chain
      *
-     * @param msg The request Message for the wire
+     * @param msg The request Message
+     * @return the processed message
      * 
      */
-    void invokeAsync(Message msg);
+    void invokeAsyncRequest(Message msg);
+    
+    /**
+     * Process response message and pass it back up the chain.
+     * This returns the message that is processed by the chain
+     * so that it can be passes onto the appropriate invoker by the caller
+     * the response path doesn't have an invoker. 
+     *
+     * @param msg The request Message
+     * @return the processed message
+     * 
+     */
+    Message invokeAsyncResponse(Message msg);    
+
+    /**
+     * Process a request message
+     *
+     * @param msg The request Message
+     * @return the processed message
+     * 
+     */
+    Message processRequest(Message msg);
+    
+    /**
+     * Process a response message
+     *
+     * @param msg The request Message
+     * @return the processed message
+     * 
+     */
+    Message processResponse(Message msg);    
 
 }

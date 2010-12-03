@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.InvokerAsync;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 
@@ -136,7 +137,15 @@ public interface Invocable {
      * @return The ticket that can be used to identify this invocation
      * @throws InvocationTargetException
      */
-    void invokeAsync(Operation operation, Message msg);
+    void invokeAsync(Operation operation, Message msg) throws Throwable;
+    // TODO - this shouldn't throw an exception
+    
+    /**
+     * Asynchronously invoke an operation with a context message
+     * @param tailInvoker the  invoker at the end of the chain
+     * @param msg The request message
+     */
+    void invokeAsyncResponse(InvokerAsync tailInvoker, Message msg);    
 
     /**
      * Get a list of policy providers
