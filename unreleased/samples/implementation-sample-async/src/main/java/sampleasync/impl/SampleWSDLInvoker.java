@@ -22,7 +22,7 @@ package sampleasync.impl;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.core.invocation.impl.InterceptorAsyncImpl;
+import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLOperation;
 import org.apache.tuscany.sca.invocation.InterceptorAsync;
 import org.apache.tuscany.sca.invocation.Invoker;
