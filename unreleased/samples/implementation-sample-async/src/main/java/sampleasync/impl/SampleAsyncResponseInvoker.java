@@ -54,10 +54,10 @@ class SampleAsyncResponseInvoker implements Invoker {
             String forwardOpName = (String)asyncMessageMap.get(messageID);
             
             // process the async response
-            Object reponse = ((Object[])msg.getBody())[0];
+            //Object reponse = ((Object[])msg.getBody())[0];
+            Object reponse = msg.getBody();
             
-            //Method method = instance.getClass().getMethod(forwardOpName + "Callback", Element.class);
-            Method method = instance.getClass().getMethod(forwardOpName + "Callback", String.class);
+            Method method = instance.getClass().getMethod(forwardOpName + "Callback", Element.class);
             method.invoke(instance, reponse);
         } catch(Exception e) {
             e.printStackTrace();

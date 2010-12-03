@@ -21,9 +21,14 @@ package sampleasync.impl;
 
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.core.invocation.impl.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLOperation;
+import org.apache.tuscany.sca.invocation.InterceptorAsync;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.InvokerAsync;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.w3c.dom.Element;
 
 /**
@@ -32,26 +37,53 @@ import org.w3c.dom.Element;
  * 
  * @version $Rev$ $Date$
  */
-class SampleWSDLInvoker implements Invoker {
+class SampleWSDLInvoker extends InterceptorAsyncImpl {
+    final Endpoint endpoint;
     final String name;
     final Object instance;
     final Method method;
 
-    SampleWSDLInvoker(final WSDLOperation op, final Class<?> clazz, final Object instance) throws SecurityException, NoSuchMethodException {
+    SampleWSDLInvoker(Endpoint endpoint, final WSDLOperation op, final Class<?> clazz, final Object instance) throws SecurityException, NoSuchMethodException {
+        this.endpoint = endpoint;
         this.name = op.getName();
         this.instance = instance;
         this.method = clazz.getMethod("call", String.class, Element.class);
     }
+    
+    public Invoker getNext() {
+        // Can't get next for an implementation invoker
+        return null;
+    }
 
     public Message invoke(final Message msg) {
+        return processRequest(msg);
+    }
+    
+    public void invokeAsyncRequest(Message msg) {
+        Message responseMsg = processRequest(msg);
+        
+        // in this sample programming model we make the async
+        // response from the implementation provider. The 
+        // component implementation itself doesn't get a chance to 
+        // do async responses. 
+        
+        ((RuntimeEndpoint)endpoint).invokeAsyncResponse(this, responseMsg);
+    }
+    
+    public Message processRequest(Message msg) {
         try {
             //AsyncHeader asyncHeader = (String) message.getHeaders().get("ASYNC-HEADER");
             // Invoke the generic call method
-            msg.setBody(method.invoke(instance, name, ((Object[])msg.getBody())[0]));
+            Object response = method.invoke(instance, name, ((Object[])msg.getBody())[0]);
+            msg.setBody(response);
         } catch(Exception e) {
             e.printStackTrace();
             msg.setFaultBody(e.getCause());
         }
+        return msg;
+    }
+    
+    public Message processResponse(Message msg) {
         return msg;
     }
 }

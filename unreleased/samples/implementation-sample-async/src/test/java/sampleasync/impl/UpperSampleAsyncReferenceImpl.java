@@ -41,7 +41,7 @@ public class UpperSampleAsyncReferenceImpl {
     
     @WSDL("http://sample/upper#Upper")
     WSDLReference upper;
-    String response;
+    Element response;
     
     public String upper(String s) {
         out.println("UpperSampleAsyncReferenceImpl.upper(" + s + ")");
@@ -59,7 +59,7 @@ public class UpperSampleAsyncReferenceImpl {
             // do nothing
         }
         
-        return response;
+        return response.getTextContent();
     }
     
     /**
@@ -67,11 +67,8 @@ public class UpperSampleAsyncReferenceImpl {
      *  async callback arrives at an operation named
      *  operationName + Callback
      */
-    // TODO - I think this should take and Element parameter but the response 
-    //        handler interface is a Java interface at the moment and so no
-    //        transformation takes place automatically.
-    public void upperCallback(String response) {
-        out.println("UpperSampleAsyncReferenceImpl.upperCallback(" + response + ")");
+    public void upperCallback(Element response) {
+        out.println("UpperSampleAsyncReferenceImpl.upperCallback(" + response.getTextContent() + ")");
         this.response = response;
     }
 }

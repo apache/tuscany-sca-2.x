@@ -72,16 +72,27 @@ class SampleWSDLProxy implements WSDLReference {
         Message message = mf.createMessage();
         message.setBody(new Object[]{e});
         
+        // We could MESSAGE_ID here if required. If not the infrastructure
+        // will generate a UUID
+        String messageID = "myuniqueid";
+        message.getHeaders().put(Constants.MESSAGE_ID, messageID);
+        
+        // save the message id ready for when we process the response        
+        asyncMessageMap.put(messageID, op);
+        
         // We could add implementation specific headers here if required
+        //message.getHeaders().put(Constants.???, ???);
+        
         try {
             repr.invokeAsync(ops.get(op), message);
         } catch (Throwable ex) {
             ex.printStackTrace();
         }
         
-        // save the message id ready for when we process the response
-        String messageID = (String) message.getHeaders().get(Constants.MESSAGE_ID);
-        
-        asyncMessageMap.put(messageID, op);
+        // if we don't provide a message id we can get the one the 
+        // infrastructure generates
+        //String messageID = (String) message.getHeaders().get(Constants.MESSAGE_ID);
+        //asyncMessageMap.put(messageID, op);
+
     }
 }
