@@ -19,9 +19,9 @@
 
 package org.apache.tuscany.sca.binding.sca.provider;
 
+import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -29,10 +29,11 @@ import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
+
 /**
  * @version $Rev$ $Date$
  */
-public class SCABindingInvoker implements Interceptor {
+public class SCABindingInvoker extends InterceptorAsyncImpl {
     private InvocationChain chain;
     private Mediator mediator;
     private Operation sourceOperation;
@@ -68,12 +69,8 @@ public class SCABindingInvoker implements Interceptor {
     public void setNext(Invoker next) {
         // NOOP
     }
-
-    /**
-     * @see org.apache.tuscany.sca.invocation.Invoker#invoke(org.apache.tuscany.sca.invocation.Message)
-     */
-    public Message invoke(Message msg) {
-
+    
+    public Message processRequest(Message msg){
         if (passByValue) {
             msg.setBody(mediator.copyInput(msg.getBody(), sourceOperation, targetOperation));
         }
@@ -83,22 +80,24 @@ public class SCABindingInvoker implements Interceptor {
             RuntimeEndpointReference asyncEPR = (RuntimeEndpointReference) ep.getCallbackEndpointReferences().get(0);
             // Place a link to the callback EPR into the message headers...
             msg.getHeaders().put("ASYNC_CALLBACK", asyncEPR );
-        } 
-
-        Message resultMsg = getNext().invoke(msg);
-
+        }
+        
+        return msg;
+    }
+    
+    public Message processResponse(Message msg){
         if (passByValue) {
             // Note source and target operation swapped so result is in source class loader
-            if (resultMsg.isFault()) {
-                resultMsg.setFaultBody(mediator.copyFault(resultMsg.getBody(), sourceOperation, targetOperation));
+            if (msg.isFault()) {
+                msg.setFaultBody(mediator.copyFault(msg.getBody(), sourceOperation, targetOperation));
             } else {
                 if (sourceOperation.getOutputType() != null) {
-                    resultMsg.setBody(mediator.copyOutput(resultMsg.getBody(), sourceOperation, targetOperation));
+                    msg.setBody(mediator.copyOutput(msg.getBody(), sourceOperation, targetOperation));
                 }
             }
         }
-
-        return resultMsg;
+        
+        return msg;
     }
 
 }
