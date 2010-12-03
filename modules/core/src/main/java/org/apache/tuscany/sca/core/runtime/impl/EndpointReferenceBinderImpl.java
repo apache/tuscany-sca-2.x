@@ -55,6 +55,8 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.Qualifier;
+import org.apache.tuscany.sca.provider.EndpointReferenceAsyncProvider;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
@@ -330,9 +332,14 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             }
         }
         
-        // if the reference is an async reference fluff up the 
-        // response service/endpoint
-        if (endpointReference.isAsyncInvocation()){
+        // TUSCANY-3783
+        // if the reference is an async reference and the binding doesn't support
+        // async natively fluff up the response service/endpoint
+        ReferenceBindingProvider referenceBindingProvider = ((RuntimeEndpointReference)endpointReference).getBindingProvider();
+        if ( referenceBindingProvider instanceof EndpointReferenceAsyncProvider &&
+             !((EndpointReferenceAsyncProvider)referenceBindingProvider).supportsNativeAsync() &&
+             endpointReference.isAsyncInvocation() && 
+             endpointReference.getCallbackEndpoint() == null) {
             ((RuntimeEndpointReference)endpointReference).createAsyncCallbackEndpoint();
         }
     
