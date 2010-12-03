@@ -136,4 +136,13 @@ public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
      */
     boolean matches(String serviceURI);
     
+    /**
+     * When true this endpoint is able to process the invocation
+     * asynchronously. The forward call is effectively one-way
+     * and the response will arrive asynchronously
+     * 
+     * @return true if the service is asynchronous
+     */
+    boolean isAsyncInvocation();    
+    
 }
