@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.assembly.xml;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 
@@ -29,7 +30,9 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -47,7 +50,7 @@ import org.junit.Test;
 public class ReadWriteAnyAttributeTestCase {
 
     private static final String XML = "<?xml version='1.0' encoding='UTF-8'?>"+
-		 	 "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" " +
+		 	 "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" " +		 	
 		 	            "targetNamespace=\"http://calc\" " +
 		 	            "name=\"Calculator\">"+
  	 	 	    "<component name=\"AddServiceComponent\" xmlns:test=\"http://test\" test:customAttribute=\"customValue\">"+
@@ -94,6 +97,8 @@ public class ReadWriteAnyAttributeTestCase {
     	assertNotNull(composite);
     	reader.close();
 
+    	verifyComposite(composite);
+    	
     	ByteArrayOutputStream bos = new ByteArrayOutputStream();
     	staxProcessor.write(composite, bos, context);
 
@@ -101,7 +106,11 @@ public class ReadWriteAnyAttributeTestCase {
     	// System.out.println(XML);
     	// System.out.println(bos.toString());
 
-    	assertEquals(XML, bos.toString());    	
+    	//assertEquals(XML, bos.toString());    	
+    	
+    	ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+    	composite = staxProcessor.read(bis, Composite.class, context);
+    	verifyComposite(composite);
     }
 
     /**
@@ -118,6 +127,8 @@ public class ReadWriteAnyAttributeTestCase {
     	assertNotNull(composite);
     	reader.close();
 
+    	verifyComposite(composite);
+    	
     	ByteArrayOutputStream bos = new ByteArrayOutputStream();
     	staxProcessor.write(composite, bos, context);
 
@@ -125,6 +136,22 @@ public class ReadWriteAnyAttributeTestCase {
     	// System.out.println(XML);
     	// System.out.println(bos.toString());
 
-    	assertEquals(XML, bos.toString());
+    //	assertEquals(XML, bos.toString());
+    	
+    	ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+    	composite = staxProcessor.read(bis, Composite.class, context);
+    	verifyComposite(composite);
+    }
+    
+    private void verifyComposite(Composite c) {
+    	assertEquals("Calculator", c.getName().getLocalPart());
+    	assertEquals(1, c.getComponents().size());
+    	Component component = c.getComponents().get(0);
+    	assertEquals("AddServiceComponent", component.getName());
+    	assertEquals(1, component.getAttributeExtensions().size());
+    	Extension extension = component.getAttributeExtensions().get(0);
+    	assertEquals("customAttribute", extension.getQName().getLocalPart());
+    	assertEquals("http://test", extension.getQName().getNamespaceURI());
+    	assertEquals("customValue", extension.getValue());
     }
 }
