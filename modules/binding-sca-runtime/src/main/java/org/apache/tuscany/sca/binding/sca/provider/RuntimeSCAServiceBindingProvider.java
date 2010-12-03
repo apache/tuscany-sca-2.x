@@ -22,6 +22,10 @@ package org.apache.tuscany.sca.binding.sca.provider;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
+import org.apache.tuscany.sca.provider.EndpointProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
@@ -34,7 +38,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  *
  * @version $Rev$ $Date$
  */
-public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider {
+public class RuntimeSCAServiceBindingProvider implements EndpointAsyncProvider {
     private RuntimeEndpoint endpoint;
     private RuntimeComponentService service;
 
@@ -98,4 +102,16 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
         }
     }
 
+    public void configure() {
+        // TODO Auto-generated method stub   
+    }
+    
+    public boolean supportsNativeAsync() {
+        return true;
+    }
+    
+    public Invoker createAsyncResponseInvoker(Operation operation) {
+        return new SCABindingAsyncResponseInvoker(null, null);
+    }
+    
 }
