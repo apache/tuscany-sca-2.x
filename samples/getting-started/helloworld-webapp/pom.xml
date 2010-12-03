@@ -85,6 +85,7 @@
                 <stopKey>foo</stopKey>
                 <stopPort>9999</stopPort>
              </configuration>
+<!--
              <executions>
                 <execution>
                    <id>start-jetty</id>
@@ -111,6 +112,7 @@
                    </goals>
                 </execution>
              </executions>
+-->
           </plugin>
        </plugins>
     </build>
