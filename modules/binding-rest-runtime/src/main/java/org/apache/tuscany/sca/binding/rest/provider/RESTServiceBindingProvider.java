@@ -157,6 +157,42 @@ public class RESTServiceBindingProvider implements EndpointProvider {
 
     }
 
+    public InterfaceContract getBindingInterfaceContract() {
+        return serviceContract;
+    }
+
+
+    /**
+     * Add specific rest interceptor to invocation chain
+     */
+    public void configure() {
+
+        InvocationChain bindingChain = endpoint.getBindingInvocationChain();
+
+        if (wfProvider != null) {
+            Interceptor interceptor = wfProvider.createInterceptor();
+            if (interceptor != null) {
+                bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT, interceptor);
+            }
+        }
+
+        if (wfResponseProvider != null) {
+            Interceptor interceptor = wfResponseProvider.createInterceptor();
+            if (interceptor != null) {
+                bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT, interceptor);
+            }
+
+        }
+
+        if (osProvider != null) {
+            Interceptor interceptor = osProvider.createInterceptor();
+            if (interceptor != null) {
+                bindingChain.addInterceptor(Phase.SERVICE_BINDING_OPERATION_SELECTOR, interceptor);
+            }
+        }
+
+    }
+
     public void start() {
         InvocationChain bindingChain = endpoint.getBindingInvocationChain();
 
@@ -214,7 +250,21 @@ public class RESTServiceBindingProvider implements EndpointProvider {
         servletMapping = registerServlet(servlet);
     }
 
-    public String registerServlet(Servlet servlet) {
+    public void stop() {
+        if (application != null) {
+            application.destroy();
+        }
+        // Unregister the Servlet from the Servlet host
+        servletHost.removeServletMapping(servletMapping);
+    }
+
+
+    public boolean supportsOneWayInvocation() {
+        return false;
+    }
+
+
+    private String registerServlet(Servlet servlet) {
         // Create our HTTP service listener Servlet and register it with the
         // Servlet host
         String servletMapping = binding.getURI();
@@ -232,22 +282,6 @@ public class RESTServiceBindingProvider implements EndpointProvider {
         }
         binding.setURI(deployedURI);
         return mappedURI;
-    }
-
-    public void stop() {
-        if (application != null) {
-            application.destroy();
-        }
-        // Unregister the Servlet from the Servlet host
-        servletHost.removeServletMapping(servletMapping);
-    }
-
-    public InterfaceContract getBindingInterfaceContract() {
-        return serviceContract;
-    }
-
-    public boolean supportsOneWayInvocation() {
-        return false;
     }
 
     /**
@@ -269,7 +303,7 @@ public class RESTServiceBindingProvider implements EndpointProvider {
                 TuscanyRESTServlet restServlet = new TuscanyRESTServlet(extensionPoints, binding, application.resourceClass);
 
                 servletMapping = registerServlet(restServlet);
-                
+
                 RegistrationUtils.registerApplication(application, restServlet.getServletContext());
                 return application;
             } else {
@@ -336,37 +370,6 @@ public class RESTServiceBindingProvider implements EndpointProvider {
         public void destroy() {
             resourceClass = null;
         }
-    }
-
-    /**
-     * Add specific rest interceptor to invocation chain
-     */
-    public void configure() {
-
-        InvocationChain bindingChain = endpoint.getBindingInvocationChain();
-
-        if (wfProvider != null) {
-            Interceptor interceptor = wfProvider.createInterceptor();
-            if (interceptor != null) {
-                bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT, interceptor);
-            }
-        }
-
-        if (wfResponseProvider != null) {
-            Interceptor interceptor = wfResponseProvider.createInterceptor();
-            if (interceptor != null) {
-                bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT, interceptor);
-            }
-
-        }
-
-        if (osProvider != null) {
-            Interceptor interceptor = osProvider.createInterceptor();
-            if (interceptor != null) {
-                bindingChain.addInterceptor(Phase.SERVICE_BINDING_OPERATION_SELECTOR, interceptor);
-            }
-        }
-
     }
 
 }
