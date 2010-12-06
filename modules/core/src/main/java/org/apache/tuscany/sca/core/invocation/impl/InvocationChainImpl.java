@@ -91,6 +91,34 @@ public class InvocationChainImpl implements InvocationChain {
         return nodes.isEmpty() ? null : nodes.get(0).getInvoker();
     }
     
+    public Invoker getTailInvoker() {
+        // find the tail invoker 
+        Invoker next = getHeadInvoker();
+        Invoker tail = null;
+        while (next != null){
+            tail = next;
+            if (next instanceof Interceptor){
+                next = ((Interceptor)next).getNext();
+                
+                // TODO - hack to get round SCA binding optimization
+                //        On the reference side this loop will go all the way 
+                //        across to the service invoker so stop looking if we find 
+                //        an invoker with no "previous" pointer. This will be the point
+                //        where the SCA binding invoker points to the head of the 
+                //        service chain
+                
+                if (!(next instanceof InterceptorAsync) || 
+                     ((InterceptorAsync)next).getPrevious() == null){
+                    break;
+                }
+            } else {
+                next = null;
+            }
+        }
+
+        return tail;
+    }
+    
     public Invoker getHeadInvoker(String phase) {
         int index = phaseManager.getAllPhases().indexOf(phase);
         if (index == -1) {

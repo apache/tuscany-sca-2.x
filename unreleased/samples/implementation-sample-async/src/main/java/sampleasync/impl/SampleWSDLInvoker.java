@@ -67,7 +67,7 @@ class SampleWSDLInvoker extends InterceptorAsyncImpl {
         // component implementation itself doesn't get a chance to 
         // do async responses. 
         
-        ((RuntimeEndpoint)endpoint).invokeAsyncResponse(this, responseMsg);
+        ((RuntimeEndpoint)endpoint).invokeAsyncResponse(responseMsg);
     }
     
     public Message processRequest(Message msg) {

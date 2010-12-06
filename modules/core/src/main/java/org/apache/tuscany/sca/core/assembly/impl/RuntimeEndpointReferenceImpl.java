@@ -245,8 +245,8 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         invoker.invokeAsync(msg);
     }
     
-    public void invokeAsyncResponse(InvokerAsync tailInvoker, Message msg){
-        invoker.invokeAsyncResponse(tailInvoker, msg);
+    public void invokeAsyncResponse(Message msg){
+        invoker.invokeAsyncResponse(msg);
     }    
 
     /**

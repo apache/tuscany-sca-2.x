@@ -209,7 +209,7 @@ public class TestRuntimeWire implements RuntimeEndpoint {
     public void invokeAsync(Operation operation, Message msg) {
     }
     
-    public void invokeAsyncResponse(InvokerAsync tailInvoker, Message msg) {
+    public void invokeAsyncResponse(Message msg) {
     }
 
     public void unbind() {

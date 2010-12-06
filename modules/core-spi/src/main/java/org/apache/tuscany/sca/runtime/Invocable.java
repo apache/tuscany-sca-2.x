@@ -145,7 +145,7 @@ public interface Invocable {
      * @param tailInvoker the  invoker at the end of the chain
      * @param msg The request message
      */
-    void invokeAsyncResponse(InvokerAsync tailInvoker, Message msg);    
+    void invokeAsyncResponse(Message msg);    
 
     /**
      * Get a list of policy providers

@@ -39,7 +39,7 @@ public class SCABindingAsyncResponseInvoker implements Invoker {
     // TODO - this only works for the local case!
     public Message invoke(Message msg) {
         RuntimeEndpointReference epr = (RuntimeEndpointReference)msg.getFrom();
-        epr.invokeAsyncResponse(null, msg);
+        epr.invokeAsyncResponse(msg);
         return null;
     }
 }

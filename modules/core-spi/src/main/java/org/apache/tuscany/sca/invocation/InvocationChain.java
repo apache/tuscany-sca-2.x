@@ -82,6 +82,13 @@ public interface InvocationChain {
     Invoker getHeadInvoker();
     
     /**
+     * Returns the last invoker in the chain.
+     *
+     * @return The last invoker in the chain
+     */
+    Invoker getTailInvoker();    
+    
+    /**
      * Get the first invoker that is on the same or later phase 
      * @param phase
      * @return The first invoker that is on the same or later phase

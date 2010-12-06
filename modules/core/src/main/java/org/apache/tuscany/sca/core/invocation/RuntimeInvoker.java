@@ -176,39 +176,10 @@ public class RuntimeInvoker implements Invoker{
         return;
     }
     
-    public void invokeAsyncResponse(InvokerAsync tailInvoker, Message msg) {  
+    public void invokeAsyncResponse(Message msg) {  
         
-        // TODO - I pass a tail invoker in as on the service side I have one handy
-        //        but calculate it here if it's not passed in
-        if (tailInvoker == null){
-            Operation operation = msg.getOperation();
-            InvocationChain chain = invocable.getInvocationChain(operation);
-            
-            // find the tail invoker 
-            Invoker next = chain.getHeadInvoker();
-            Invoker tail = null;
-            while (next != null){
-                tail = next;
-                if (next instanceof Interceptor){
-                    next = ((Interceptor)next).getNext();
-                    
-                    // TODO - hack to get round SCA binding optimization
-                    //        On the refrence side this loop will go all the way 
-                    //        across to the service invoker so stop the look if we find 
-                    //        an invoker with no previous pointer. This will be the point
-                    //        where the SCA binding invoker points to the head of the 
-                    //        service chain
-                    
-                    if (!(next instanceof InterceptorAsync) || 
-                         ((InterceptorAsync)next).getPrevious() == null){
-                        break;
-                    }
-                } else {
-                    next = null;
-                }
-            }
-            tailInvoker = (InvokerAsync)tail;
-        }
+        InvocationChain chain = invocable.getInvocationChain(msg.getOperation());
+        InvokerAsync tailInvoker = (InvokerAsync)chain.getTailInvoker();
         
         Message asyncResponseMsg = tailInvoker.invokeAsyncResponse(msg);
         
