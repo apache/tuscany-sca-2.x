@@ -96,7 +96,7 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceAsyn
                         + reference.getName());
                 }
 
-                if (scaBindingMapper.isRemotable()) {
+                if (scaBindingMapper.isRemotable(endpointReference)) {
                     distributedProvider =
                         new DelegatingSCAReferenceBindingProvider(endpointReference, scaBindingMapper);
                 }

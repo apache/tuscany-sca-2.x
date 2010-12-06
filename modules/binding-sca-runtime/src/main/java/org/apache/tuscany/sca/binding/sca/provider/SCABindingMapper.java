@@ -45,6 +45,7 @@ public interface SCABindingMapper {
      * Check if the remote SCA binding is supported
      * @return 
      */
-    boolean isRemotable();
+    boolean isRemotable(RuntimeEndpoint endpoint);
+    boolean isRemotable(RuntimeEndpointReference endpointReference);
 
 }

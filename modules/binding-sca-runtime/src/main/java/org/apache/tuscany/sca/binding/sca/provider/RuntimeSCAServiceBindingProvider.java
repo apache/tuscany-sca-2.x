@@ -55,7 +55,7 @@ public class RuntimeSCAServiceBindingProvider implements EndpointAsyncProvider {
         // then we need to create a remote endpoint 
         if (service.getInterfaceContract().getInterface().isRemotable()) {
 
-            if (scaBindingMapper.isRemotable()) {
+            if (scaBindingMapper.isRemotable(endpoint)) {
                 distributedProvider = new DelegatingSCAServiceBindingProvider(endpoint, scaBindingMapper);
             }
         }

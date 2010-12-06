@@ -57,51 +57,55 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
     private final static Logger logger = Logger.getLogger(DefaultSCABindingMapper.class.getName());
     protected ExtensionPointRegistry registry;
     protected ProviderFactoryExtensionPoint providerFactories;
-    protected StAXArtifactProcessor processor;
-    protected BindingBuilder builder;
-    protected QName mappedBinding;
-    private Binding bindingTemplate;
-    private boolean remotable;
+    protected StAXArtifactProcessorExtensionPoint processors;
+    protected QName defaultMappedBinding;
 
     public DefaultSCABindingMapper(ExtensionPointRegistry registry, Map<String, String> attributes) {
         this.registry = registry;
+        providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        defaultMappedBinding = getDefaultMappedBinding(attributes);
+    }
+
+    protected QName getDefaultMappedBinding(Map<String, String> attributes) {
+        QName defaultMappedBinding = null;
         if (attributes != null) {
             String qname = attributes.get("mappedBinding");
             if (qname != null) {
-                mappedBinding = ServiceDeclarationParser.getQName(qname);
+                defaultMappedBinding = ServiceDeclarationParser.getQName(qname);
             }
         }
-        if (mappedBinding == null) {
+        if (defaultMappedBinding == null) {
             String qname =
                 System.getProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding");
             if (qname != null) {
-                mappedBinding = ServiceDeclarationParser.getQName(qname);
+                defaultMappedBinding = ServiceDeclarationParser.getQName(qname);
             } else {
                 // By default, mapping to binding.ws or if thats not available then binding.rmi
-                mappedBinding = new QName(Base.SCA11_TUSCANY_NS, "binding.hazelcast");
-                if (registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class).getProcessor(mappedBinding) == null) {
-                    mappedBinding = new QName(Base.SCA11_NS, "binding.ws");
-                    if (registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class).getProcessor(mappedBinding) == null) {
-                        mappedBinding = new QName(Base.SCA11_TUSCANY_NS, "binding.rmi");
+                defaultMappedBinding = new QName(Base.SCA11_TUSCANY_NS, "binding.hazelcast");
+                if (registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class).getProcessor(defaultMappedBinding) == null) {
+                    defaultMappedBinding = new QName(Base.SCA11_NS, "binding.ws");
+                    if (registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class).getProcessor(defaultMappedBinding) == null) {
+                        defaultMappedBinding = new QName(Base.SCA11_TUSCANY_NS, "binding.rmi");
                     }
                 }
             }
         }
+        return defaultMappedBinding;
+    }
 
-        providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        StAXArtifactProcessorExtensionPoint processors =
-            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        processor = processors.getProcessor(mappedBinding);
+    private BindingBuilder getBindingBuilder(QName binding) {
+        StAXArtifactProcessor processor = processors.getProcessor(binding);
         if (processor == null) {
-            logger.warning("Mapped binding for binding.sca is not supported: " + mappedBinding);
+            logger.warning("Mapped binding for binding.sca is not supported: " + binding);
         }
 
         try {
             if (processor != null) {
-                bindingTemplate = createDelegatingBinding();
+                Binding bindingTemplate = createDelegatingBinding(defaultMappedBinding);
                 ProviderFactory providerFactory = providerFactories.getProviderFactory(bindingTemplate.getClass());
                 if (providerFactory == null) {
-                    logger.warning("Mapped binding for binding.sca is not supported: " + mappedBinding);
+                    logger.warning("Mapped binding for binding.sca is not supported: " + binding);
                     processor = null;
                 }
             }
@@ -109,13 +113,13 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
             throw new ServiceRuntimeException(e);
         }
         BuilderExtensionPoint builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
-        builder = builders.getBindingBuilder(mappedBinding);
-        remotable = isDistributed() && processor != null;
+        BindingBuilder builder = builders.getBindingBuilder(binding);
+        return builder;
     }
 
     // FIXME: [rfeng] This is a HACK to check if we should make binding.sca remotable
     // by checking if we have distributed domain registry present
-    private boolean isDistributed() {
+    protected boolean isDistributed() {
         DomainRegistryFactoryExtensionPoint factories =
             registry.getExtensionPoint(DomainRegistryFactoryExtensionPoint.class);
         List<DomainRegistryFactory> list = factories.getDomainRegistryFactories();
@@ -129,9 +133,13 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
     }
 
     public RuntimeEndpoint map(RuntimeEndpoint endpoint) {
-        if (processor == null) {
+        
+        QName bindingType = chooseBinding(endpoint);
+        if (processors.getProcessor(bindingType) == null) {
+            logger.warning("Mapped binding for binding.sca is not supported: " + bindingType);
             return null;
         }
+        
         // create a copy of the endpoint  but with the web service binding in
         RuntimeEndpoint ep = null;
         try {
@@ -140,8 +148,9 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
             // we know we can clone endpoint references
         }
 
-        Binding binding = map(endpoint.getBinding());
+        Binding binding = map(endpoint.getBinding(), bindingType);
         ep.setBinding(binding);
+        BindingBuilder builder = getBindingBuilder(bindingType);
         if (builder != null) {
             builder.build(ep.getComponent(), ep.getService(), binding, new BuilderContext(registry), false);
         }
@@ -149,9 +158,12 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
     }
 
     public RuntimeEndpointReference map(RuntimeEndpointReference endpointReference) {
-        if (processor == null) {
+        QName bindingType = chooseBinding(endpointReference);
+        if (processors.getProcessor(bindingType) == null) {
+            logger.warning("Mapped binding for binding.sca is not supported: " + bindingType);
             return null;
         }
+        
         // create a copy of the endpoint  but with the web service binding in
         RuntimeEndpointReference epr = null;
         try {
@@ -160,11 +172,12 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
             // we know we can clone endpoint references
         }
 
-        Binding binding = map(endpointReference.getBinding());
+        Binding binding = map(endpointReference.getBinding(), bindingType);
         epr.setBinding(binding);
 
         // epr.setTargetEndpoint(map((RuntimeEndpoint)epr.getTargetEndpoint()));
 
+        BindingBuilder builder = getBindingBuilder(bindingType);
         if (builder != null) {
             builder.build(epr.getComponent(), epr.getReference(), binding, new BuilderContext(registry), false);
         }
@@ -172,9 +185,9 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
         return epr;
     }
 
-    protected Binding map(Binding scaBinding) {
+    protected Binding map(Binding scaBinding, QName newBindingType) {
         try {
-            Binding binding = createDelegatingBinding();
+            Binding binding = createDelegatingBinding(newBindingType);
             binding.setName(scaBinding.getName());
             binding.setURI(scaBinding.getURI());
             binding.setOperationSelector(scaBinding.getOperationSelector());
@@ -192,29 +205,38 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
         }
 
     }
-
-    private Binding createDelegatingBinding() throws XMLStreamException, ContributionReadException {
-        if (bindingTemplate != null) {
-            try {
-                return (Binding)bindingTemplate.clone();
-            } catch (CloneNotSupportedException e) {
-                // Ignore
-            }
+    
+    protected Binding createDelegatingBinding(QName bindingType) throws XMLStreamException, ContributionReadException {
+        StAXArtifactProcessor processor = processors.getProcessor(bindingType);
+        if (processor == null) {
+            logger.warning("Mapped binding for binding.sca is not supported: " + bindingType);
         }
-        // This is a hack to create an instance of the binding using the XML QName
+
         StringBuffer xml = new StringBuffer();
-        xml.append("<").append(mappedBinding.getLocalPart()).append(" xmlns:b=\"").append(mappedBinding
-            .getNamespaceURI()).append("\"/>");
+        xml.append("<").append(bindingType.getLocalPart()).append(" xmlns:b=\"").append(bindingType.getNamespaceURI()).append("\"/>");
 
         StAXHelper staxHelper = StAXHelper.getInstance(registry);
         XMLStreamReader reader = staxHelper.createXMLStreamReader(new StringReader(xml.toString()));
         reader.nextTag();
         Binding binding = (Binding)processor.read(reader, new ProcessorContext(registry));
+        
         return binding;
     }
 
-    public boolean isRemotable() {
-        return remotable;
+    public boolean isRemotable(RuntimeEndpoint endpoint) {
+        return isDistributed() && processors.getProcessor(chooseBinding(endpoint)) != null;
+    }
+
+    public boolean isRemotable(RuntimeEndpointReference endpointReference) {
+        return isDistributed() && processors.getProcessor(chooseBinding(endpointReference)) != null;
+    }
+
+    protected QName chooseBinding(RuntimeEndpoint endpoint) {
+        return defaultMappedBinding;
+    }
+
+    protected QName chooseBinding(RuntimeEndpointReference endpointReference) {
+        return defaultMappedBinding;
     }
 
 }
