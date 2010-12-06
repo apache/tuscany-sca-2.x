@@ -35,7 +35,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tuscany.sca.binding.http.provider.HTTPContext;
+import org.apache.tuscany.sca.common.http.HTTPContext;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -87,7 +87,7 @@ public class HTTPDefaultWireFormatServiceInterceptor implements Interceptor {
 
     private Message invokeRequest(Message msg) throws IOException {
         HTTPContext context = msg.getBindingContext();
-        HttpServletRequest servletRequest = context.getRequest();
+        HttpServletRequest servletRequest = context.getHttpRequest();
         if ("GET".equals(servletRequest.getMethod())) {
             msg.setBody(getRequestFromQueryString(msg.getOperation(), servletRequest));
         } else {
@@ -120,8 +120,8 @@ public class HTTPDefaultWireFormatServiceInterceptor implements Interceptor {
 
     private Message invokeResponse(Message msg) throws IOException {
         HTTPContext context = msg.getBindingContext();
-        HttpServletRequest servletRequest = context.getRequest();
-        HttpServletResponse servletResponse = context.getResponse();
+        HttpServletRequest servletRequest = context.getHttpRequest();
+        HttpServletResponse servletResponse = context.getHttpResponse();
         
         if (msg.isFault()) {            
             servletResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, String.valueOf(msg.getBody()));
