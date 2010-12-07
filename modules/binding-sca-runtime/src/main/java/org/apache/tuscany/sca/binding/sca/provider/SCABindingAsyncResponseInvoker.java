@@ -20,26 +20,27 @@
 package org.apache.tuscany.sca.binding.sca.provider;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
-import org.apache.tuscany.sca.invocation.InvocationChain;
-import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * @version $Rev: 989157 $ $Date: 2010-08-25 16:02:01 +0100 (Wed, 25 Aug 2010) $
  */
-public class SCABindingAsyncResponseInvoker implements Invoker {
+public class SCABindingAsyncResponseInvoker implements InvokerAsyncResponse {
 
      public SCABindingAsyncResponseInvoker(ExtensionPointRegistry extensionPoints,
                                           RuntimeEndpointReference endpointReference) {
     }
-
+    
     // TODO - this only works for the local case!
-    public Message invoke(Message msg) {
+    public void invokeAsyncResponse(Message msg) {
         RuntimeEndpointReference epr = (RuntimeEndpointReference)msg.getFrom();
-        epr.invokeAsyncResponse(msg);
+        epr.invokeAsyncResponse(msg); 
+    }
+    
+    public Message processResponse(Message msg) {
+        // TODO Auto-generated method stub
         return null;
     }
 }

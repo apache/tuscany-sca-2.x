@@ -99,5 +99,9 @@ public class SCABindingInvoker extends InterceptorAsyncImpl {
         
         return msg;
     }
+    
+    public boolean isLocalSCABIndingInvoker() {
+        return true;
+    }
 
 }

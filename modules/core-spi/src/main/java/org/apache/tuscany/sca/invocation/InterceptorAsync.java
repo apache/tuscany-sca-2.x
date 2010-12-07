@@ -20,21 +20,21 @@ package org.apache.tuscany.sca.invocation;
 
 /**
  * Allows asynchronous wires to be navigated in reverse in order for the 
- * reponse to be processed. 
+ * response to be processed. 
  *
  */
-public interface InterceptorAsync extends Interceptor, InvokerAsync {
+public interface InterceptorAsync extends Interceptor, InvokerAsyncRequest, InvokerAsyncResponse {
 
     /**
      * Sets the previous invoker
      * @param next The previous invoker
      */
-    void setPrevious(InvokerAsync previous);
+    void setPrevious(InvokerAsyncResponse previous);
 
     /**
      * Returns the previous invoker or null
      * @return The previous Invoker
      */
-    InvokerAsync getPrevious();
-
+    InvokerAsyncResponse getPrevious();
+    
 }

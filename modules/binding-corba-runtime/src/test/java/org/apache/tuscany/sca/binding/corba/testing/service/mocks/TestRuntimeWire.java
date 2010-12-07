@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
-import org.apache.tuscany.sca.invocation.InvokerAsync;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
