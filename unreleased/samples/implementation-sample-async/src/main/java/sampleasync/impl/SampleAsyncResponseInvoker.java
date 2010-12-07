@@ -24,8 +24,7 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLOperation;
-import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.w3c.dom.Element;
 
@@ -35,7 +34,7 @@ import org.w3c.dom.Element;
  * 
  * @version $Rev$ $Date$
  */
-class SampleAsyncResponseInvoker implements Invoker {
+class SampleAsyncResponseInvoker implements InvokerAsyncResponse {
     final String name;
     final Object instance;
     final Operation op;
@@ -48,21 +47,25 @@ class SampleAsyncResponseInvoker implements Invoker {
         this.op = op;
     }
 
-    public Message invoke(final Message msg) {
+    public void invokeAsyncResponse(final Message msg) {
         try {
             String messageID = (String) msg.getHeaders().get(Constants.MESSAGE_ID);
             String forwardOpName = (String)asyncMessageMap.get(messageID);
             
             // process the async response
-            //Object reponse = ((Object[])msg.getBody())[0];
-            Object reponse = msg.getBody();
+            //Object response = ((Object[])msg.getBody())[0];
+            Object response = msg.getBody();
             
             Method method = instance.getClass().getMethod(forwardOpName + "Callback", Element.class);
-            method.invoke(instance, reponse);
+            method.invoke(instance, response);
         } catch(Exception e) {
             e.printStackTrace();
-            msg.setFaultBody(e.getCause());
+            // TODO - need to throw this to somewhere?
         }
-        return msg;
+    }
+    
+    public Message processResponse(Message msg) {
+        // Do nothing as no need to share the processing with synch here. 
+        return null;
     }
 }

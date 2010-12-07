@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.provider;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 
 
 /**
@@ -51,5 +52,5 @@ public interface EndpointAsyncProvider extends EndpointProvider {
      * @para operation
      * @return the invoker that will dispatch the async response 
      */
-    Invoker createAsyncResponseInvoker(Operation operation);  
+    InvokerAsyncResponse createAsyncResponseInvoker();  
 }

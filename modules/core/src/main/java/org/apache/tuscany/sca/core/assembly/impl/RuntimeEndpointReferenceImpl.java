@@ -63,14 +63,17 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.InterceptorAsync;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.InvokerAsync;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
+import org.apache.tuscany.sca.provider.ImplementationAsyncProvider;
+import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
@@ -324,10 +327,27 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
             }            
         }
 
-        // Set the chains until it's fully populated. If we initialize too early, any exeception could
+        // Set the chains until it's fully populated. If we initialize too early, any exception could
         // leave this endpoint reference in a wrong state with an empty chain.
         chains = chainList;
         wireProcessor.process(this);
+        
+        if (isAsyncInvocation()){
+            // fix up all of the operation chain response paths
+            // to point back to the implementation provided
+            // async response handler
+            ImplementationProvider implementationProvider = ((RuntimeComponent)getComponent()).getImplementationProvider();
+            if (implementationProvider instanceof ImplementationAsyncProvider){
+                for (InvocationChain chain : getInvocationChains()){
+                    InvokerAsyncResponse asyncResponseInvoker = ((ImplementationAsyncProvider)implementationProvider).createAsyncResponseInvoker(chain.getSourceOperation());
+                    if (chain.getHeadInvoker() instanceof InterceptorAsync){
+                        ((InterceptorAsync)chain.getHeadInvoker()).setPrevious(asyncResponseInvoker);
+                    } else {
+                        //TODO - throw error once the old async code is removed
+                    }
+                }
+            }
+        }
     }
     
     /**

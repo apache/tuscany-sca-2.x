@@ -33,6 +33,8 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLOperation;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.InvokerAsyncRequest;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.provider.ImplementationAsyncProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -88,10 +90,10 @@ class SampleAsyncProvider implements ImplementationAsyncProvider {
     public Invoker createInvoker(final RuntimeComponentService s, final Operation op) {
         // TODO - we're passing EP into the WSDL invoker so this isn't going to work
         //        properly for sync calls
-        return createAsyncInvoker(null, s, op); 
+        return (Invoker)createAsyncInvoker(null, s, op); 
     }
     
-    public Invoker createAsyncInvoker(Endpoint endpoint, final RuntimeComponentService s, final Operation op) {
+    public InvokerAsyncRequest createAsyncInvoker(Endpoint endpoint, final RuntimeComponentService s, final Operation op) {
         try {
             // Creating an invoker for a Java or WSDL-typed implementation
             if(op instanceof JavaOperation)
@@ -102,7 +104,7 @@ class SampleAsyncProvider implements ImplementationAsyncProvider {
         }
     }
     
-    public Invoker createAsyncResponseInvoker(Operation operation) {
+    public InvokerAsyncResponse createAsyncResponseInvoker(Operation operation) {
         return new SampleAsyncResponseInvoker(asyncMessageMap, operation, impl.clazz, instance);
     }
 }

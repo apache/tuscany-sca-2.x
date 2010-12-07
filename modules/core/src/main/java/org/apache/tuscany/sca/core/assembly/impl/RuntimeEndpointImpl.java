@@ -73,13 +73,15 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.InterceptorAsync;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.InvokerAsync;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
 import org.apache.tuscany.sca.provider.EndpointProvider;
 import org.apache.tuscany.sca.provider.ImplementationAsyncProvider;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
@@ -365,6 +367,31 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         }
 
         wireProcessor.process(this);
+        
+        // If we have to support async and there is no binding chain
+        // then set the response path to point directly to the 
+        // binding provided async response handler
+        if (isAsyncInvocation() && 
+            bindingInvocationChain == null){
+            // fix up the operation chain response path to point back to the 
+            // binding provided async response handler
+            ServiceBindingProvider serviceBindingProvider = getBindingProvider();
+            if (serviceBindingProvider instanceof EndpointAsyncProvider){
+                EndpointAsyncProvider asyncEndpointProvider = (EndpointAsyncProvider)serviceBindingProvider;
+                InvokerAsyncResponse asyncResponseInvoker = asyncEndpointProvider.createAsyncResponseInvoker();
+                
+                for (InvocationChain chain : getInvocationChains()){
+                    Invoker invoker = chain.getHeadInvoker();
+                    if (invoker instanceof InterceptorAsync){
+                        ((InterceptorAsync)invoker).setPrevious(asyncResponseInvoker);
+                    } else {
+                        //TODO - throw error once the old async code is removed
+                    }
+                }
+            } else {
+                // TODO - throw error once the old async code is removed
+            }
+        }
     }
     
     /**
@@ -570,11 +597,41 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 
         }
 
-        // TODO - add something on the end of the wire to invoke the
-        //        invocation chain. Need to split out the runtime
-        //        wire invoker into conversation, callback interceptors etc
+        // Add the runtime invoker to the end of the binding chain. 
+        // It mediates between the binding chain and selects the 
+        // correct invocation chain based on the operation that's
+        // been selected
         bindingInvocationChain.addInvoker(invoker);
-
+        
+        if (isAsyncInvocation()){
+            // fix up the invocation chains to point back to the 
+            // binding chain so that async response messages 
+            // are processed correctly
+            for (InvocationChain chain : getInvocationChains()){
+                Invoker invoker = chain.getHeadInvoker();
+                if (invoker instanceof InterceptorAsync){
+                    ((InterceptorAsync)invoker).setPrevious((InvokerAsyncResponse)bindingInvocationChain.getTailInvoker());
+                } else {
+                    // TODO - raise an error. Not doing that while
+                    //        we have the old async mechanism in play
+                }
+            }
+            
+            // fix up the binding chain response path to point back to the 
+            // binding provided async response handler
+            ServiceBindingProvider serviceBindingProvider = getBindingProvider();
+            if (serviceBindingProvider instanceof EndpointAsyncProvider){
+                EndpointAsyncProvider asyncEndpointProvider = (EndpointAsyncProvider)serviceBindingProvider;
+                InvokerAsyncResponse asyncResponseInvoker = asyncEndpointProvider.createAsyncResponseInvoker();
+                if (bindingInvocationChain.getHeadInvoker() instanceof  InterceptorAsync){
+                    ((InterceptorAsync)bindingInvocationChain.getHeadInvoker()).setPrevious(asyncResponseInvoker);
+                } else {
+                  //TODO - throw error once the old async code is removed
+                }
+            } else {
+                //TODO - throw error once the old async code is removed
+            }
+        }
     }
 
     /**
@@ -639,7 +696,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             RuntimeComponentService runtimeService = (RuntimeComponentService)service;
             if (runtimeService.getName().endsWith("_asyncCallback")){
                 if (provider instanceof ImplementationAsyncProvider){
-                    invoker = ((ImplementationAsyncProvider)provider).createAsyncResponseInvoker(operation);
+                    invoker = (Invoker)((ImplementationAsyncProvider)provider).createAsyncResponseInvoker(operation);
                 } else {
                     // TODO - This should be an error but taking account of the 
                     // existing non-native async support
@@ -656,7 +713,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 }
             } else if (isAsyncInvocation() && 
                        provider instanceof ImplementationAsyncProvider){
-                invoker = ((ImplementationAsyncProvider)provider).createAsyncInvoker(this, (RuntimeComponentService)service, operation);
+                invoker = (Invoker)((ImplementationAsyncProvider)provider).createAsyncInvoker(this, (RuntimeComponentService)service, operation);
             } else {
                 invoker = provider.createInvoker((RuntimeComponentService)service, operation);
             }

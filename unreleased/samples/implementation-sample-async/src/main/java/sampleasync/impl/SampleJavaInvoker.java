@@ -23,6 +23,8 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.InvokerAsyncRequest;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 
 /**
@@ -30,7 +32,7 @@ import org.apache.tuscany.sca.invocation.Message;
  * 
  * @version $Rev$ $Date$
  */
-class SampleJavaInvoker implements Invoker {
+class SampleJavaInvoker implements Invoker, InvokerAsyncRequest {
     final Object instance;
     final Method method;
 
@@ -40,6 +42,15 @@ class SampleJavaInvoker implements Invoker {
     }
 
     public Message invoke(final Message msg) {
+        return processRequest(msg);
+    }
+    
+    public void invokeAsyncRequest(Message msg) {
+        processRequest(msg);
+        // TODO - need to do something about exceptions
+    }
+    
+    public Message processRequest(Message msg) {
         try {
             // Call the method that implements the operation
             msg.setBody(method.invoke(instance, (Object[])msg.getBody()));

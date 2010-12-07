@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.provider;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.InvokerAsyncRequest;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
@@ -36,9 +38,10 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public interface ImplementationAsyncProvider extends ImplementationProvider {
     
     /**
+     * TUSCANY-3801
      * Create an async invoker for the component implementation in the invocation
      * chain. The invoker will be responsible for calling the implementation
-     * logic for the given component. The only realy difference between this and 
+     * logic for the given component. The only real difference between this and 
      * createInvoker is that the Endpoint is passed in so that the invoker can 
      * engineer the async response
      * 
@@ -48,9 +51,10 @@ public interface ImplementationAsyncProvider extends ImplementationProvider {
      * @return An invoker that handles the invocation logic, null should be
      *         returned if no invoker is required
      */
-    Invoker createAsyncInvoker(Endpoint endpoint, RuntimeComponentService service, Operation operation);
+    InvokerAsyncRequest createAsyncInvoker(Endpoint endpoint, RuntimeComponentService service, Operation operation);
 
     /**
+     * TUSCANY-3801
      * Create an invoker for the asynchronous responses in the invocation
      * chain. The invoker will be responsible for processing the async
      * response including correlating it with the forward call using
@@ -60,6 +64,6 @@ public interface ImplementationAsyncProvider extends ImplementationProvider {
      * @param operation The operation that the interceptor will handle
      * @return An AsyncResponseHandler<T> instance
      */
-    Invoker createAsyncResponseInvoker(Operation operation);
+    InvokerAsyncResponse createAsyncResponseInvoker(Operation operation);
 
 }

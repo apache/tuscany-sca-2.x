@@ -30,20 +30,13 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
-import org.apache.tuscany.sca.invocation.InterceptorAsync;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.InvokerAsync;
+import org.apache.tuscany.sca.invocation.InvokerAsyncRequest;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
-import org.apache.tuscany.sca.provider.ImplementationAsyncProvider;
-import org.apache.tuscany.sca.provider.ImplementationProvider;
-import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.Invocable;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
@@ -144,14 +137,14 @@ public class RuntimeInvoker implements Invoker{
         }
 
         // Perform the async invocation
-        InvokerAsync headInvoker = (InvokerAsync)chain.getHeadInvoker();
+        Invoker headInvoker = chain.getHeadInvoker();
 
         Message msgContext = ThreadMessageContext.setMessageContext(msg);
         try {
             // TODO - is this the way we'll pass async messages down the chain?
             Message resp = null;
             try {
-                headInvoker.invokeAsyncRequest(msg);
+                ((InvokerAsyncRequest)headInvoker).invokeAsyncRequest(msg);
             } catch (Throwable ex) {
                 // temporary fix to swallow the dummy exception that's
                 // thrown back to get past the response chain processing. 
@@ -179,10 +172,11 @@ public class RuntimeInvoker implements Invoker{
     public void invokeAsyncResponse(Message msg) {  
         
         InvocationChain chain = invocable.getInvocationChain(msg.getOperation());
-        InvokerAsync tailInvoker = (InvokerAsync)chain.getTailInvoker();
+        Invoker tailInvoker = chain.getTailInvoker();
         
-        Message asyncResponseMsg = tailInvoker.invokeAsyncResponse(msg);
+        ((InvokerAsyncResponse)tailInvoker).invokeAsyncResponse(msg);
         
+/* now statically configured        
         // now get the asyncResponseInvoker
         Invoker asyncResponseInvoker = null;
         
@@ -193,7 +187,7 @@ public class RuntimeInvoker implements Invoker{
             ServiceBindingProvider serviceBindingProvider = ep.getBindingProvider();
             if (serviceBindingProvider instanceof EndpointAsyncProvider){
                 EndpointAsyncProvider asyncEndpointProvider = (EndpointAsyncProvider)serviceBindingProvider;
-                asyncResponseInvoker = asyncEndpointProvider.createAsyncResponseInvoker(asyncResponseMsg.getOperation());
+                asyncResponseInvoker = asyncEndpointProvider.createAsyncResponseInvoker();
                 
             } else {
                 // TODO - throw error
@@ -211,5 +205,6 @@ public class RuntimeInvoker implements Invoker{
         }
         
         asyncResponseInvoker.invoke(asyncResponseMsg);
+*/        
     }
 }

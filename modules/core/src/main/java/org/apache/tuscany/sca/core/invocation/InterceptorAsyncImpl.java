@@ -22,7 +22,8 @@ package org.apache.tuscany.sca.core.invocation;
 
 import org.apache.tuscany.sca.invocation.InterceptorAsync;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.InvokerAsync;
+import org.apache.tuscany.sca.invocation.InvokerAsyncRequest;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 
 /**
@@ -33,22 +34,22 @@ import org.apache.tuscany.sca.invocation.Message;
  */
 public abstract class InterceptorAsyncImpl implements InterceptorAsync {
     
-    protected InvokerAsync next;
-    protected InvokerAsync previous;
+    protected Invoker next;
+    protected InvokerAsyncResponse previous;
     
     public Invoker getNext() {
         return (Invoker)next;
     }
     
     public void setNext(Invoker next) {
-        this.next = (InvokerAsync)next;
+        this.next = next;
     }
     
-    public InvokerAsync getPrevious() {
+    public InvokerAsyncResponse getPrevious() {
         return previous;
     }
     
-    public void setPrevious(InvokerAsync previous) {
+    public void setPrevious(InvokerAsyncResponse previous) {
         this.previous = previous;
     }
     
@@ -61,14 +62,23 @@ public abstract class InterceptorAsyncImpl implements InterceptorAsync {
     
     public void invokeAsyncRequest(Message msg) {
         msg = processRequest(msg);
-        ((InvokerAsync)getNext()).invokeAsyncRequest(msg);
+        ((InvokerAsyncRequest)getNext()).invokeAsyncRequest(msg);
     }
     
-    public Message invokeAsyncResponse(Message msg) {
+    public void invokeAsyncResponse(Message msg) {
         msg = processResponse(msg);
-        if (getPrevious() != null){
-            return ((InvokerAsync)getPrevious()).invokeAsyncResponse(msg);
-        }
-        return msg;
+        ((InvokerAsyncResponse)getPrevious()).invokeAsyncResponse(msg);
+    }
+    
+    /**
+     * A testing method while I use the local SCA binding wire to look 
+     * at how the async response path works. This allows me to detect the
+     * point where the reference wire turns into the service with in the
+     * optimized case
+     * 
+     * @return
+     */
+    public boolean isLocalSCABIndingInvoker() {
+        return false;
     }
 }

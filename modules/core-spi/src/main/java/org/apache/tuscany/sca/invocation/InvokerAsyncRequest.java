@@ -16,25 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-package org.apache.tuscany.sca.provider;
-
+package org.apache.tuscany.sca.invocation;
 
 /**
- * TUSCANY-3783
+ * TUSCANY-3786
  * 
- * Async related operations that are here rather than higher up
- * while we develop them. 
- * 
+ * The request side of an Interface to describe an invocation where 
+ * the request processing can be performed independently of the 
+ * response processing. 
  */
-public interface EndpointReferenceAsyncProvider extends EndpointReferenceProvider {
+public interface InvokerAsyncRequest {
+    
+    /**
+     * Process the request message and pass it down the chain
+     *
+     * @param msg The request Message
+     * @return the processed message
+     * 
+     */
+    void invokeAsyncRequest(Message msg);   
 
     /**
-     * TUSCANY-3801 
-     * Returns true if the reference binding provider is natively able
-     * to receive async responses. 
+     * Process a request message. Provided so that the synchronous
+     * and asynchronous patterns can re-use the request message
+     * processing 
+     *
+     * @param msg The request Message
+     * @return the processed message
      * 
-     * @return true if the service provide support async operation natively
      */
-    boolean supportsNativeAsync();
+    Message processRequest(Message msg);
+      
+
 }
