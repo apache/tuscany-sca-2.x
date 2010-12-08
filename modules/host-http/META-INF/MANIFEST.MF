@@ -15,19 +15,19 @@ Bundle-Description: Apache Tuscany SCA HTTP Servlet Host Extension Poi
  nt
 Import-Package: javax.servlet,
  javax.servlet.http,
+ org.apache.http;resolution:=optional,
+ org.apache.http.client;resolution:=optional,
+ org.apache.http.conn;resolution:=optional,
+ org.apache.http.conn.params;resolution:=optional,
+ org.apache.http.conn.scheme;resolution:=optional,
+ org.apache.http.conn.ssl;resolution:=optional,
+ org.apache.http.impl.client;resolution:=optional,
+ org.apache.http.impl.conn.tsccm;resolution:=optional,
+ org.apache.http.params;resolution:=optional,
+ org.apache.http.protocol;resolution:=optional,
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.extensibility;version="2.0.0",
- org.apache.tuscany.sca.host.http;version="2.0.0",
- org.apache.http,
- org.apache.http.client,
- org.apache.http.conn,
- org.apache.http.conn.params,
- org.apache.http.conn.scheme,
- org.apache.http.conn.ssl,
- org.apache.http.impl.client,
- org.apache.http.impl.conn.tsccm,
- org.apache.http.params,
- org.apache.http.protocol
+ org.apache.tuscany.sca.host.http;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.host.http
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
