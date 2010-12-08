@@ -74,6 +74,7 @@
          <groupId>org.apache.maven.plugins</groupId>
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
+           <argLine>-Xms256m -Xmx1024m</argLine>
            <excludes>
               <!-- 3002 is no longer part of the suite and 4015/4016 are tests for optional support that Tuscany doesn't provide -->
               <exclude>**/POL_3002_TestCase.java</exclude>
