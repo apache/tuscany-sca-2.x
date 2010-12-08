@@ -105,12 +105,12 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
 
     public void resolve(WidgetImplementation implementation, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
 
-    	if (implementation != null) {
-    	    // Resolve the resource directory location
+        if (implementation != null) {
+            // Resolve the resource directory location
             Artifact artifact = contributionFactory.createArtifact();
             artifact.setURI(implementation.getLocation());
             Artifact resolved = resolver.resolveModel(Artifact.class, artifact, context);
-            
+
             if(resolved.getLocation() == null) {
                 URL resource = null;
                 URI uri = URI.create(implementation.getLocation());
@@ -134,24 +134,34 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
 
                         implementation.setLocationURL(resource);
 
-                        //introspect implementation
-                        WidgetImplementationIntrospector widgetIntrospector =
-                            new WidgetImplementationIntrospector(registry, implementation);
-                        widgetIntrospector.introspectImplementation();
-
-                        implementation.setUnresolved(false);
                     } catch (MalformedURLException e) {
                         ContributionResolveException ce = new ContributionResolveException(e);
                         error(context.getMonitor(), "ContributionResolveException", resolver, ce);
                     }
                 }
+            } else {
+                try {
+                    implementation.setLocationURL(new URL(resolved.getLocation()));
+                } catch (MalformedURLException e) {
+                    ContributionResolveException ce = new ContributionResolveException(e);
+                    error(context.getMonitor(), "ContributionResolveException", resolver, ce);
+                }
             }
-            
+
+            //introspect implementation
+            WidgetImplementationIntrospector widgetIntrospector =
+                new WidgetImplementationIntrospector(registry, implementation);
+            widgetIntrospector.introspectImplementation();
+
+            implementation.setUnresolved(false);
+
+
+
             if (implementation.isUnresolved()) {
                 error(context.getMonitor(), "CouldNotResolveLocation", resolver, implementation.getLocation());
                 //throw new ContributionResolveException("Could not resolve implementation.widget location: " + implementation.getLocation());
             }
-    	}
+        }
     }
 
     public void write(WidgetImplementation implementation, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
