@@ -92,22 +92,16 @@
         </dependency>
         
         <dependency>
-           <groupId>commons-httpclient</groupId>
-           <artifactId>commons-httpclient</artifactId>
-           <version>3.1</version>
-        </dependency>
-
-        <dependency>
            <groupId>org.apache.ws.commons.axiom</groupId>
            <artifactId>axiom-impl</artifactId>
-           <version>1.2.8</version>
+           <version>1.2.10</version>
            <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.abdera</groupId>
             <artifactId>abdera-core</artifactId>
-            <version>1.0</version> 
+            <version>1.1.1</version> 
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.geronimo.specs</groupId>
@@ -119,7 +113,7 @@
         <dependency>
            <groupId>org.apache.abdera</groupId>
             <artifactId>abdera-parser</artifactId>
-            <version>1.0</version>
+            <version>1.1.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>stax</groupId>
@@ -139,19 +133,19 @@
         <dependency>
             <groupId>org.apache.abdera</groupId>
             <artifactId>abdera-client</artifactId>
-            <version>1.0</version> 
+            <version>1.1.1</version> 
         </dependency>            
                 
         <dependency>
             <groupId>org.apache.abdera</groupId>
             <artifactId>abdera-extensions-main</artifactId>
-            <version>1.0</version> 
+            <version>1.1.1</version> 
         </dependency>            
                 
         <dependency>
             <groupId>org.apache.abdera</groupId>
             <artifactId>abdera-extensions-json</artifactId>
-            <version>1.0</version> 
+            <version>1.1.1</version> 
         </dependency>            
 
         <dependency>
@@ -218,7 +212,7 @@
              <groupId>org.apache.maven.plugins</groupId>
              <artifactId>maven-surefire-plugin</artifactId>
              <configuration>
-                <skip>true</skip>
+                <skip>false</skip>
              </configuration>
           </plugin>
        </plugins>

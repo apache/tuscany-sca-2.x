@@ -24,8 +24,8 @@ import java.util.Map;
 import javax.security.auth.Subject;
 import javax.xml.namespace.QName;
 
+import org.apache.axiom.util.base64.Base64Utils;
 import org.apache.axis2.context.MessageContext;
-import org.apache.axis2.util.Base64;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.Phase;
@@ -86,7 +86,7 @@ public class BasicAuthenticationServicePolicyInterceptor implements PhasedInterc
             basicAuthString = basicAuthString.trim();
             
             if (basicAuthString.startsWith("Basic ")) {
-                decodedBasicAuthString = new String(Base64.decode(basicAuthString.substring(6)));
+                decodedBasicAuthString = new String(Base64Utils.decode(basicAuthString.substring(6)));
             }
             
             int collonIndex = decodedBasicAuthString.indexOf(':');
