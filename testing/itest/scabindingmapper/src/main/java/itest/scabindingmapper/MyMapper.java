@@ -51,7 +51,7 @@ public class MyMapper extends DefaultSCABindingMapper {
 
     @Override
     protected QName chooseBinding(RuntimeEndpointReference endpointReference) {
-        if (endpointReference.getURI().endsWith("2")) {
+        if (endpointReference.getBinding().getURI().contains("Service2")) {
             return JSONPBinding.TYPE;
         } else {
             return super.defaultMappedBinding;

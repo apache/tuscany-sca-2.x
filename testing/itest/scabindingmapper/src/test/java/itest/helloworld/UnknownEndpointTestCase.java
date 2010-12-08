@@ -18,10 +18,7 @@
  */
 package itest.helloworld;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
@@ -29,17 +26,20 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class Mapper1TestCase {
+public class UnknownEndpointTestCase {
 
     static {
         org.apache.tuscany.sca.http.jetty.JettyServer.portDefault = 8085;
     }
-    
+
+    Node servicesnode;
     Node node;
     
     @Test
-    public void testSCABindingFactory() throws IOException {
-        node = NodeFactory.newInstance().createNode("test.composite", new String[]{"target/test-classes"}) ;
+    public void testUnknownEndpoints() throws IOException, InterruptedException {
+        servicesnode = NodeFactory.newInstance().createNode("services.composite", new String[]{"target/test-classes"}) ;
+        servicesnode.start();
+        node = NodeFactory.newInstance().createNode("clients.composite", new String[]{"target/test-classes"}) ;
         node.start();
         
         // test the service invocations work
@@ -48,35 +48,11 @@ public class Mapper1TestCase {
 
         helloworld = node.getService(Helloworld.class, "Client2");
         Assert.assertEquals("Hello Petra", helloworld.sayHello("Petra"));
-        
-        // verify service1 is exposed as a WS endpoint and service2 is a jsonp endpoint
-        URL wsService = new URL("http://localhost:8085/Service1/Helloworld?wsdl");
-        Assert.assertTrue(getContent(wsService).contains("definitions name=\"HelloworldService\""));
-
-        URL jsonpService = new URL("http://localhost:8085/Client2/Helloworld/sayHello?name=Petra");
-        Assert.assertEquals("\"Hello Petra\"", getContent(jsonpService));
     }
 
-    private String getContent(URL url) throws IOException {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(url.openStream()));
-            StringBuffer sb = new StringBuffer();
-            String str;
-            while ((str = reader.readLine()) != null) {
-                sb.append(str);
-            }
-            return sb.toString();
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-        }
-    }
-    
     @After
-    public void shutdown() {
+    public void shutdown() throws InterruptedException {
         node.stop();
+        servicesnode.stop();
     }
-
 }
