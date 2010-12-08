@@ -1,0 +1,58 @@
+Manifest-Version: 1.0
+Service-Component: OSGI-INF/serviceComponents.xml
+Built-By: veithen
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.activation,javax.mail,javax.mail.internet,javax.
+ mail.util,javax.xml.namespace,javax.xml.stream,javax.xml.stream.util,
+ javax.xml.transform,javax.xml.transform.sax,org.apache.commons.loggin
+ g,org.jaxen;resolution:=optional,org.jaxen.saxpath;resolution:=option
+ al,org.jaxen.util;resolution:=optional,org.w3c.dom,org.xml.sax,org.xm
+ l.sax.ext,org.xml.sax.helpers, org.apache.axiom.om.impl.dom.factory;r
+ esolution:=optional,org.apache.axiom.om.impl.llom.factory;resolution:
+ =optional,org.apache.axiom.soap.impl.dom.factory;resolution:=optional
+ ,org.apache.axiom.soap.impl.llom.soap11;resolution:=optional,org.apac
+ he.axiom.soap.impl.llom.soap12;resolution:=optional
+Include-Resource: META-INF/DEPENDENCIES=target/maven-shared-archive-re
+ sources/META-INF/DEPENDENCIES,META-INF/LICENSE=target/maven-shared-ar
+ chive-resources/META-INF/LICENSE,META-INF/NOTICE=target/maven-shared-
+ archive-resources/META-INF/NOTICE,OSGI-INF/metatype/metatype.xml=targ
+ et/scr-plugin-generated/OSGI-INF/metatype/metatype.xml,OSGI-INF/scr-p
+ lugin/scrinfo.xml=target/scr-plugin-generated/OSGI-INF/scr-plugin/scr
+ info.xml,OSGI-INF/serviceComponents.xml=target/scr-plugin-generated/O
+ SGI-INF/serviceComponents.xml
+Implementation-Vendor-Id: org.apache.ws.commons.axiom
+Bnd-LastModified: 1288443040121
+Bundle-Version: 1.2.10
+Bundle-Name: Axiom API
+Bundle-Description: The Axiom API
+Build-Jdk: 1.5.0_24
+Bundle-ManifestVersion: 2
+Tool: Bnd-0.0.238
+Specification-Vendor: The Apache Software Foundation
+Implementation-Version: 1.2.10
+Implementation-Vendor: The Apache Software Foundation
+Specification-Title: Axiom API
+Created-By: Apache Maven Bundle Plugin
+Specification-Version: 1.2.10
+Export-Package: org.apache.axiom.util.stax,org.apache.axiom.om.impl,or
+ g.apache.axiom.om.impl.serialize,org.apache.axiom.util,org.apache.axi
+ om.soap.impl.builder,org.apache.axiom.util.base64,org.apache.axiom.ex
+ t.io,org.apache.axiom.ext.stax.datahandler,org.apache.axiom.om.impl.u
+ til,org.apache.axiom.om.impl.exception,org.apache.axiom.mime,org.apac
+ he.axiom.util.stax.xop,org.apache.axiom.util.blob,org.apache.axiom.os
+ gi,org.apache.axiom.util.stax.dialect,org.apache.axiom.om,org.apache.
+ axiom.util.stax.wrapper,org.apache.axiom.om.impl.jaxp,org.apache.axio
+ m.om.ds.custombuilder,org.apache.axiom.attachments.impl,org.apache.ax
+ iom.om.xpath,org.apache.axiom.util.activation,org.apache.axiom.om.uti
+ l,org.apache.axiom.attachments.lifecycle,org.apache.axiom.util.namesp
+ ace,org.apache.axiom.om.impl.traverse,org.apache.axiom.util.stax.debu
+ g,org.apache.axiom.attachments.utils,org.apache.axiom.soap,org.apache
+ .axiom.ext.activation,org.apache.axiom.attachments,org.apache.axiom.m
+ ime.impl.javamail,org.apache.axiom.ext.stax,org.apache.axiom.attachme
+ nts.lifecycle.impl,org.apache.axiom.om.ds,org.apache.axiom.om.impl.bu
+ ilder
+Bundle-DocURL: http://www.apache.org/
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.ws.commons.axiom.axiom-api
+Implementation-Title: Axiom API
+
