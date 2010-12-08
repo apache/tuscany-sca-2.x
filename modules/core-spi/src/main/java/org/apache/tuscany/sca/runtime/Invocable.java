@@ -136,8 +136,7 @@ public interface Invocable {
      * @return The ticket that can be used to identify this invocation
      * @throws InvocationTargetException
      */
-    void invokeAsync(Operation operation, Message msg) throws Throwable;
-    // TODO - this shouldn't throw an exception
+    void invokeAsync(Operation operation, Message msg);
     
     /**
      * Asynchronously invoke an operation with a context message

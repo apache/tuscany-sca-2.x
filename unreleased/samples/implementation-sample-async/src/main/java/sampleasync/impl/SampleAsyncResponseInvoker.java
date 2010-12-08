@@ -63,9 +63,4 @@ class SampleAsyncResponseInvoker implements InvokerAsyncResponse {
             // TODO - need to throw this to somewhere?
         }
     }
-    
-    public Message processResponse(Message msg) {
-        // Do nothing as no need to share the processing with synch here. 
-        return null;
-    }
 }

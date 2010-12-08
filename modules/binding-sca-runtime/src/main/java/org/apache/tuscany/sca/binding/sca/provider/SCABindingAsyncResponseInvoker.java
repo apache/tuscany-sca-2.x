@@ -38,9 +38,4 @@ public class SCABindingAsyncResponseInvoker implements InvokerAsyncResponse {
         RuntimeEndpointReference epr = (RuntimeEndpointReference)msg.getFrom();
         epr.invokeAsyncResponse(msg); 
     }
-    
-    public Message processResponse(Message msg) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

@@ -290,7 +290,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         return invoker.invoke(operation, msg);
     }
     
-    public void invokeAsync(Operation operation, Message msg) throws Throwable {
+    public void invokeAsync(Operation operation, Message msg){
         msg.setOperation(operation);
         invoker.invokeAsync(msg);
     }

@@ -112,6 +112,12 @@ public class RuntimeInvoker implements Invoker{
         }
     }
     
+    /**
+     * Initiate the sending of the forward part of an asynchronous
+     * exchange along the request part of the wire. 
+     * 
+     * @param msg the request message
+     */
     public void invokeAsync(Message msg) {
         if (invocable instanceof Endpoint) {
             msg.setTo((Endpoint)invocable);
@@ -141,25 +147,14 @@ public class RuntimeInvoker implements Invoker{
 
         Message msgContext = ThreadMessageContext.setMessageContext(msg);
         try {
-            // TODO - is this the way we'll pass async messages down the chain?
-            Message resp = null;
             try {
                 ((InvokerAsyncRequest)headInvoker).invokeAsyncRequest(msg);
             } catch (Throwable ex) {
                 // temporary fix to swallow the dummy exception that's
                 // thrown back to get past the response chain processing. 
                 if (!(ex instanceof AsyncResponseException)){
-                  //  throw ex;
-                }
-            }
-        
-            // This is async but we check the response in case there is a 
-            // fault reported on the forward request, i.e. before the 
-            // request reaches the binding
-            if (resp != null){
-                Object body = resp.getBody();
-                if (resp.isFault()) {
-                    //throw (Throwable)body;
+                  // TODO send the exception in through the 
+                  // async response processing path
                 }
             }
         } finally {
@@ -169,42 +164,17 @@ public class RuntimeInvoker implements Invoker{
         return;
     }
     
+    /**
+     * Initiate the sending of the response part of an asynchronous
+     * exchange along the response part of the wire. 
+     * 
+     * @param msg the response message
+     */
     public void invokeAsyncResponse(Message msg) {  
         
         InvocationChain chain = invocable.getInvocationChain(msg.getOperation());
         Invoker tailInvoker = chain.getTailInvoker();
         
-        ((InvokerAsyncResponse)tailInvoker).invokeAsyncResponse(msg);
-        
-/* now statically configured        
-        // now get the asyncResponseInvoker
-        Invoker asyncResponseInvoker = null;
-        
-        // We'd want to cache this based on the reference EPR
-        if (invocable instanceof Endpoint) {
-            // get it from the binding
-            RuntimeEndpoint ep = (RuntimeEndpoint)invocable;
-            ServiceBindingProvider serviceBindingProvider = ep.getBindingProvider();
-            if (serviceBindingProvider instanceof EndpointAsyncProvider){
-                EndpointAsyncProvider asyncEndpointProvider = (EndpointAsyncProvider)serviceBindingProvider;
-                asyncResponseInvoker = asyncEndpointProvider.createAsyncResponseInvoker();
-                
-            } else {
-                // TODO - throw error
-            }
-        } else if (invocable instanceof EndpointReference) {
-            // get it from the implementation
-            RuntimeEndpointReference epr = (RuntimeEndpointReference)invocable;
-            ImplementationProvider implementationProvider = ((RuntimeComponent)epr.getComponent()).getImplementationProvider();
-            
-            if (implementationProvider instanceof ImplementationAsyncProvider){
-                asyncResponseInvoker = ((ImplementationAsyncProvider)implementationProvider).createAsyncResponseInvoker(asyncResponseMsg.getOperation());
-            } else {
-                // TODO - throw an error
-            }
-        }
-        
-        asyncResponseInvoker.invoke(asyncResponseMsg);
-*/        
+        ((InvokerAsyncResponse)tailInvoker).invokeAsyncResponse(msg);       
     }
 }

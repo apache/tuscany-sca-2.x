@@ -36,15 +36,4 @@ public interface InvokerAsyncResponse {
      */
     void invokeAsyncResponse(Message msg);    
     
-    /**
-     * Process a response message. Provided so that the synchronous
-     * and asynchronous patterns can re-use the response message
-     * processing 
-     *
-     * @param msg The request Message
-     * @return the processed message
-     * 
-     */
-    Message processResponse(Message msg);    
-
 }

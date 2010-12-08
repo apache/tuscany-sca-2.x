@@ -37,4 +37,26 @@ public interface InterceptorAsync extends Interceptor, InvokerAsyncRequest, Invo
      */
     InvokerAsyncResponse getPrevious();
     
+    /**
+     * Process a request message. Provided so that the synchronous
+     * and asynchronous patterns can re-use the request message
+     * processing 
+     *
+     * @param msg The request Message
+     * @return the processed message
+     * 
+     */
+    Message processRequest(Message msg);
+    
+    /**
+     * Process a response message. Provided so that the synchronous
+     * and asynchronous patterns can re-use the response message
+     * processing 
+     *
+     * @param msg The request Message
+     * @return the processed message
+     * 
+     */
+    Message processResponse(Message msg); 
+
 }

@@ -243,7 +243,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         return invoker.invoke(operation, msg);
     }
     
-    public void invokeAsync(Operation operation, Message msg) throws Throwable {
+    public void invokeAsync(Operation operation, Message msg){
         msg.setOperation(operation);
         invoker.invokeAsync(msg);
     }
