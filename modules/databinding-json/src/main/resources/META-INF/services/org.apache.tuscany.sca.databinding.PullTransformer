@@ -23,7 +23,7 @@ org.apache.tuscany.sca.databinding.json.jackson.Object2JSON;source=java:simpleTy
 org.apache.tuscany.sca.databinding.json.axiom.JSON2OMElement;source=JSON,target=org.apache.axiom.om.OMElement,weight=500
 org.apache.tuscany.sca.databinding.json.jackson.Object2JSON;source=java:array,target=JSON,weight=90000,public=false
 org.apache.tuscany.sca.databinding.json.jackson.Object2JSON;source=commonj.sdo.DataObject,target=JSON,weight=90000,public=false
-org.apache.tuscany.sca.databinding.json.jackson.Object2JSON;source=javax.xml.bind.JAXBElement,target=JSON,weight=90000,public=false
+org.apache.tuscany.sca.databinding.json.jackson.Object2JSON;source=javax.xml.bind.JAXBElement,target=JSON,weight=90000,public=true
 org.apache.tuscany.sca.databinding.json.jackson.JSON2Object;source=JSON,target=java:complexType,weight=90000,public=false
 org.apache.tuscany.sca.databinding.json.jackson.JSON2Object;source=JSON,target=java:simpleType,weight=90000,public=false
 org.apache.tuscany.sca.databinding.json.jackson.JSON2Object;source=JSON,target=commonj.sdo.DataObject,weight=90000,public=false
