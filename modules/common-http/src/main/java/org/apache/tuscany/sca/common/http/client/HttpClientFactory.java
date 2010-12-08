@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.common.http.client;
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -42,6 +43,10 @@ public class HttpClientFactory {
     public HttpClient createHttpClient() {
         HttpParams defaultParameters = new BasicHttpParams();
         //defaultParameters.setIntParameter(HttpConnectionManagerParams.MAX_TOTAL_CONNECTIONS, 10);
+        
+        ConnManagerParams.setMaxTotalConnections(defaultParameters, 160);
+        // ConnManagerParams.setMaxConnectionsPerRoute(defaultParameters, ConnPerRoute);
+
         HttpProtocolParams.setContentCharset(defaultParameters, HTTP.UTF_8);
         HttpConnectionParams.setConnectionTimeout(defaultParameters, 60000);
         HttpConnectionParams.setSoTimeout(defaultParameters, 60000);
@@ -52,6 +57,8 @@ public class HttpClientFactory {
 
         ClientConnectionManager connectionManager =
             new ThreadSafeClientConnManager(defaultParameters, supportedSchemes);
+        
+        
 
         return new DefaultHttpClient(connectionManager, defaultParameters);
     }

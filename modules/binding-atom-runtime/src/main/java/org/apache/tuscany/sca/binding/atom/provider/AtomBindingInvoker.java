@@ -22,6 +22,7 @@ import static org.apache.tuscany.sca.binding.atom.provider.AtomBindingUtil.entry
 import static org.apache.tuscany.sca.binding.atom.provider.AtomBindingUtil.feedEntry;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +114,9 @@ class AtomBindingInvoker implements Invoker {
 
                 // Read the Atom entry
                 if (status == 200) {
-                    Document<org.apache.abdera.model.Entry> doc = abderaParser.parse(response.getEntity().getContent());
+                    InputStream content = response.getEntity().getContent();
+                    Document<org.apache.abdera.model.Entry> doc = abderaParser.parse(content);
+                    content.close();
                     parsing = true;
                     org.apache.abdera.model.Entry feedEntry = doc.getRoot();
 
@@ -145,11 +148,11 @@ class AtomBindingInvoker implements Invoker {
             } catch (Exception e) {
                 msg.setFaultBody(new ServiceRuntimeException(e));
             } finally {
-                if (!parsing) {
-                    // Release the connection unless the Abdera parser is
-                    // parsing the response, in this case it will release it
-                    release(getMethod, response);
-                }
+
+                // Release the connection unless the Abdera parser is
+                // parsing the response, in this case it will release it
+                release(getMethod, response);
+
             }
 
             return msg;
@@ -211,8 +214,9 @@ class AtomBindingInvoker implements Invoker {
 
                 // Read the Atom entry
                 if (status == 200 || status == 201) {
-                    Document<org.apache.abdera.model.Entry> doc =
-                        abderaParser.parse(postMethod.getEntity().getContent());
+                    InputStream content = postMethod.getEntity().getContent();
+                    Document<org.apache.abdera.model.Entry> doc = abderaParser.parse(content);
+                    content.close();
                     parsing = true;
                     org.apache.abdera.model.Entry createdEntry = doc.getRoot();
 
@@ -240,11 +244,11 @@ class AtomBindingInvoker implements Invoker {
             } catch (Exception e) {
                 msg.setFaultBody(new ServiceRuntimeException(e));
             } finally {
-                if (!parsing) {
-                    // Release the connection unless the Abdera parser is
-                    // parsing the response, in this case it will release it
-                    release(postMethod, response);
-                }
+
+                // Release the connection unless the Abdera parser is
+                // parsing the response, in this case it will release it
+                release(postMethod, response);
+
             }
 
             return msg;
@@ -408,7 +412,9 @@ class AtomBindingInvoker implements Invoker {
 
                 // Read the Atom feed
                 if (status == 200) {
-                    Document<Feed> doc = abderaParser.parse(response.getEntity().getContent());
+                    InputStream content = response.getEntity().getContent();
+                    Document<Feed> doc = abderaParser.parse(content);
+                    content.close();
                     parsing = true;
 
                     Feed feed = null;
@@ -451,11 +457,11 @@ class AtomBindingInvoker implements Invoker {
             } catch (Exception e) {
                 msg.setFaultBody(new ServiceRuntimeException(e));
             } finally {
-                if (!parsing) {
-                    // Release the connection unless the Abdera parser is
-                    // parsing the response, in this case it will release it
-                    release(getMethod, response);
-                }
+
+                // Release the connection unless the Abdera parser is
+                // parsing the response, in this case it will release it
+                release(getMethod, response);
+
             }
 
             return msg;
@@ -494,7 +500,9 @@ class AtomBindingInvoker implements Invoker {
 
                 // Read the Atom feed
                 if (status == 200) {
-                    Document<Feed> doc = abderaParser.parse(response.getEntity().getContent());
+                    InputStream content = response.getEntity().getContent();
+                    Document<Feed> doc = abderaParser.parse(content);
+                    content.close();
                     parsing = true;
                     Feed feed = doc.getRoot();
 
@@ -530,11 +538,11 @@ class AtomBindingInvoker implements Invoker {
             } catch (Exception e) {
                 msg.setFaultBody(new ServiceRuntimeException(e));
             } finally {
-                if (!parsing) {
-                    // Release the connection unless the Abdera parser is
-                    // parsing the response, in this case it will release it
-                    release(getMethod, response);
-                }
+
+                // Release the connection unless the Abdera parser is
+                // parsing the response, in this case it will release it
+                release(getMethod, response);
+
             }
 
             return msg;
