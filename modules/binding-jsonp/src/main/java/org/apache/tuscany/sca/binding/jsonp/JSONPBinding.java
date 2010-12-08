@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.binding.http.impl.HTTPBindingImpl;
  */
 public class JSONPBinding extends HTTPBindingImpl {
 
-    QName TYPE = new QName(SCA11_TUSCANY_NS, "binding.jsonp");
+    public static final QName TYPE = new QName(SCA11_TUSCANY_NS, "binding.jsonp");
 
     public JSONPBinding() {
         super();
