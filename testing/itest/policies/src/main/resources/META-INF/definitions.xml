@@ -51,9 +51,9 @@
                attachTo="IntentRefs('sca:suspendsTransaction')"/>    
                
     <policySet name="AuthorizationFineGrainPolicy" 
-               provides="sca:authorization.fineGrain" 
+               provides="sca:authorization" 
                appliesTo="//binding.sca | //implementation.java" 
-               attachTo="IntentRefs('sca:authorization') | IntentRefs('sca:authorization.fineGrain')"/>   
+               attachTo="IntentRefs('sca:authorization')"/>   
                
     <policySet name="ConfidentialityTransportPolicy" 
                provides="sca:confidentiality.transport" 

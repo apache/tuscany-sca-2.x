@@ -13,7 +13,6 @@
                      maxOccurs="unbounded"/>
             </sequence>
             <anyAttribute namespace="##any" processContents="lax"/>
-
         </complexType>
     </element>
 

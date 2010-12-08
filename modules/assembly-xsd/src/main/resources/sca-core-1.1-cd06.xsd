@@ -6,7 +6,7 @@
    targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
    elementFormDefault="qualified">
 
-   <include schemaLocation="sca-policy-1.1-cd03-rev1.xsd"/>	
+   <include schemaLocation="sca-policy-1.1-cd04.xsd"/>	
    <import namespace="http://www.w3.org/XML/1998/namespace" 
            schemaLocation="http://www.w3.org/2001/xml.xsd"/>
 

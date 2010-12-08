@@ -24,7 +24,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -366,13 +365,20 @@ public class XSDModelResolver implements ModelResolver {
                         return new InputSource(schemaLocation);
                     }
                 } else {
-                    // look to see whether Tuscany has a local version of the
-                    // required schema. It can load the local version rather 
-                    // than going out to the network in order to improve performance
-                    url = Constants.CACHED_XSDS.get(targetNamespace);
-                    
-                    if (url == null) {
-                        url = new URL(new URL(baseUri), schemaLocation);
+                    url = new URL(new URL(baseUri), schemaLocation);
+                    String scheme = url.getProtocol();
+                    if ("file".equalsIgnoreCase(scheme) || "jar".equalsIgnoreCase(scheme)
+                        || "zip".equalsIgnoreCase(scheme)
+                        || "wsjar".equalsIgnoreCase(scheme)) {
+                        // For local URLs, use as-is
+                    } else {
+                        // look to see whether Tuscany has a local version of the
+                        // required schema. It can load the local version rather 
+                        // than going out to the network in order to improve performance
+                        URL cached = Constants.CACHED_XSDS.get(targetNamespace);
+                        if (cached != null) {
+                            url = cached;
+                        }
                     }
                 }
                 return XMLDocumentHelper.getInputSource(url);

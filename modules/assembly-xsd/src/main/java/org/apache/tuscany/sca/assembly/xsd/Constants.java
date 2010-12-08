@@ -108,7 +108,7 @@ public interface Constants {
     static class XSDCache {
         static Map<String, URL> cache() {
             Map<String, URL> cachedXSDs = new HashMap<String, URL>();
-            cachedXSDs.put(Constants.SCA11_NS, Constants.class.getResource("/sca-1.1-cd05.xsd"));
+            cachedXSDs.put(Constants.SCA11_NS, Constants.class.getResource("/sca-1.1-cd06.xsd"));
             cachedXSDs
                 .put("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
                      Constants.class
