@@ -32,16 +32,10 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>2.5</version> <!-- to keep compatible with older servlet containers -->
+            <version>2.5</version> 
             <scope>provided</scope>
         </dependency>
         
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.0.3</version>
-        </dependency>    
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

@@ -19,21 +19,9 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
-import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.HTTP;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.host.http.client.HttpClientFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -58,6 +46,7 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
         this.endpointReference = endpointReference;
         this.reference = (RuntimeComponentReference)endpointReference.getReference();
 
+        
         //clone the service contract to avoid databinding issues
         /*
         try {
@@ -73,24 +62,6 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
         // httpClient = createHttpClient();
     }
 
-    public HttpClient createHttpClient() {
-        HttpParams defaultParameters = new BasicHttpParams();
-        //defaultParameters.setIntParameter(HttpConnectionManagerParams.MAX_TOTAL_CONNECTIONS, 10);
-        HttpProtocolParams.setContentCharset(defaultParameters, HTTP.UTF_8);
-        HttpConnectionParams.setConnectionTimeout(defaultParameters, 60000);
-        HttpConnectionParams.setSoTimeout(defaultParameters, 60000);
-
-        SchemeRegistry supportedSchemes = new SchemeRegistry();
-        supportedSchemes.register(new Scheme(HttpHost.DEFAULT_SCHEME_NAME, PlainSocketFactory.getSocketFactory(), 80));
-        supportedSchemes
-            .register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
-
-        ClientConnectionManager connectionManager =
-            new ThreadSafeClientConnManager(defaultParameters, supportedSchemes);
-
-        return new DefaultHttpClient(connectionManager, defaultParameters);
-    }
-
     public InterfaceContract getBindingInterfaceContract() {
         //return referenceContract;
         return reference.getInterfaceContract();
@@ -102,7 +73,9 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
     }
 
     public void start() {
-        this.httpClient = createHttpClient();
+        // Create an HTTP client
+        HttpClientFactory clientFactory = new HttpClientFactory();
+        httpClient = clientFactory.createHttpClient();
     }
 
     public void stop() {

@@ -22,8 +22,8 @@ package org.apache.tuscany.sca.binding.atom.provider;
 import org.apache.http.client.HttpClient;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.atom.AtomBinding;
-import org.apache.tuscany.sca.common.http.client.HttpClientFactory;
 import org.apache.tuscany.sca.databinding.Mediator;
+import org.apache.tuscany.sca.host.http.client.HttpClientFactory;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -69,9 +69,6 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
         //String authorization = "admin" + ":" + "admin";
         //authorizationHeader = "Basic " + new String(Base64.encodeBase64(authorization.getBytes()));
 
-        // Create an HTTP client
-        HttpClientFactory clientFactory = new HttpClientFactory();
-        httpClient = clientFactory.createHttpClient();
     }
 
     public Invoker createInvoker(Operation operation) {
@@ -123,13 +120,15 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
         //httpClient.getState().setCredentials(new AuthScope(uri.getHost(), uri.getPort()), credentials);
 
         // Find the get operation on the reference interface
-        if (true) {
-            return;
-        }
+        // Create an HTTP client
+        HttpClientFactory clientFactory = new HttpClientFactory();
+        httpClient = clientFactory.createHttpClient();
     }
 
     public void stop() {
-    	
+        if (httpClient != null) {
+            httpClient.getConnectionManager().shutdown();
+        }    	
     }
     
     public boolean supportsOneWayInvocation() {

@@ -37,7 +37,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.FileEntity;
-import org.apache.tuscany.sca.common.http.client.HttpClientFactory;
+import org.apache.tuscany.sca.host.http.client.HttpClientFactory;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;

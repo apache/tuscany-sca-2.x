@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.common.http.client;
+package org.apache.tuscany.sca.host.http.client;
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
