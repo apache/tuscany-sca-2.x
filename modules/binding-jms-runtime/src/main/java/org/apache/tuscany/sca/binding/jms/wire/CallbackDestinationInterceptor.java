@@ -36,6 +36,10 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
+/**
+ * JMS Binding Interceptor class that deals with a callback destination address on the service side
+ *
+ */
 public class CallbackDestinationInterceptor implements Interceptor {
     private Invoker next;
     private RuntimeComponentService service;
@@ -59,51 +63,60 @@ public class CallbackDestinationInterceptor implements Interceptor {
         return next.invoke(invokeRequest(msg));
     }
 
+    /**
+     * Handle an invocation request messaage
+     * @param msg the message
+     * @return the updated message
+     */
     public Message invokeRequest(Message msg) {
         try {
             // get the jms context
             JMSBindingContext context = msg.getBindingContext();
-            javax.jms.Message jmsMsg = context.getJmsMsg();             
+            javax.jms.Message jmsMsg = context.getJmsMsg(); 
+            
+            // Extract the Callback destination name header, if present
+            String callbackdestName = jmsMsg.getStringProperty(JMSBindingConstants.CALLBACK_Q_PROPERTY);
          
-           
-            if (service.getInterfaceContract().getCallbackInterface() != null) {
-
-                String callbackdestName = jmsMsg.getStringProperty(JMSBindingConstants.CALLBACK_Q_PROPERTY);
-                if (( callbackdestName == null) && ( jmsMsg.getJMSReplyTo() != null ) && msg.getOperation().isNonBlocking() ) {
-                	Destination replyTo = jmsMsg.getJMSReplyTo();
-                	if (replyTo != null) {
-                		callbackdestName = (replyTo instanceof Queue) ? ((Queue) replyTo).getQueueName() : ((Topic) replyTo).getTopicName();
-               	   	}
+            if (callbackdestName != null) {
+            	// If present, strip any leading "jms:jndi:" string
+                if (!callbackdestName.startsWith("jms:jndi:")) {
+                    throw new JMSBindingException("message property " + JMSBindingConstants.CALLBACK_Q_PROPERTY + " does not start with 'jms:jndi:' found: " + callbackdestName);
                 } else {
-                    if (callbackdestName != null) {
-                        if (!callbackdestName.startsWith("jms:jndi:")) {
-                            throw new JMSBindingException("message property " + JMSBindingConstants.CALLBACK_Q_PROPERTY + " does not start with 'jms:jndi:' found: " + callbackdestName);
-                        } else {
-                            callbackdestName = callbackdestName.substring(9);
-                        }
-                    }
-                }
+                    callbackdestName = callbackdestName.substring(9);
+                } // end if
+            } else {
+            	// If there is no Callback destination name header present, but the service is a callback, use the JMS ReplyTo header
+                if (service.getInterfaceContract().getCallbackInterface() != null) {
+                    if ( ( jmsMsg.getJMSReplyTo() != null ) && msg.getOperation().isNonBlocking() ) {
+                    	Destination replyTo = jmsMsg.getJMSReplyTo();
+                    	if (replyTo != null) {
+                    		callbackdestName = (replyTo instanceof Queue) ? ((Queue) replyTo).getQueueName() : ((Topic) replyTo).getTopicName();
+                   	   	}
+                    } // end if
+                } // end if
+            } // end if
                 
-                if (callbackdestName != null) {
-                	List<EndpointReference> refs = endpoint.getCallbackEndpointReferences();
-                	for (EndpointReference ref : refs ) {
-                		if  (ref.getBinding() instanceof JMSBinding ) {
-                			JMSBinding callbackBinding = (JMSBinding) ref.getBinding();
-                			callbackBinding.setDestinationName(callbackdestName);
-                		}
-                	}
-               }  
+            // Place the Callback destination name into the Callback EPRs for the service endpoint
+            if (callbackdestName != null) {
+            	List<EndpointReference> refs = endpoint.getCallbackEndpointReferences();
+            	for (EndpointReference ref : refs ) {
+            		if  (ref.getBinding() instanceof JMSBinding ) {
+            			JMSBinding callbackBinding = (JMSBinding) ref.getBinding();
+            			callbackBinding.setDestinationName(callbackdestName);
+            		} // end if
+            	} // end for
+            } // end if  
 
-                String callbackID = jmsMsg.getStringProperty(JMSBindingConstants.CALLBACK_ID_PROPERTY);
-                if (callbackID != null) {
-//                    parameters.setCallbackID(callbackID);
-                }
-            }
+// Callback ID not used at present            
+//            String callbackID = jmsMsg.getStringProperty(JMSBindingConstants.CALLBACK_ID_PROPERTY);
+//            if (callbackID != null) {
+//                parameters.setCallbackID(callbackID);
+//            }
 
         } catch (JMSException e) {
             throw new JMSBindingException(e);
-        }
+        } // end try
         
         return msg;
-    }
-}
+    } // end method invokeRequest
+} // end class
