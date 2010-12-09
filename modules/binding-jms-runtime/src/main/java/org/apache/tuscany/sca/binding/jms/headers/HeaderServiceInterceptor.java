@@ -40,8 +40,29 @@ public class HeaderServiceInterceptor implements Interceptor {
     }
 
     public Message invoke(Message msg) {
+    	msg = invokeRequest( msg );
         return invokeResponse(next.invoke(msg));
     }
+    
+    public Message invokeRequest(Message tuscanyMsg) {
+    	
+    	try {
+    	
+	    	javax.jms.Message jmsMsg = tuscanyMsg.getBody();
+	        
+	        // Handle MESSAGE_ID field of the JMS message, which is used to correlate async callbacks
+	        String msgID = (String)jmsMsg.getObjectProperty("MESSAGE_ID");
+	        if( msgID != null ) {
+	        	tuscanyMsg.getHeaders().put("MESSAGE_ID", msgID);
+	        } // end if 
+	        //
+        
+		} catch (JMSException e) {
+		    throw new JMSBindingException(e);
+		} // end try
+        
+        return tuscanyMsg;
+    } // end method invokeRequest
     
     public Message invokeResponse(Message tuscanyMsg) {
         try {

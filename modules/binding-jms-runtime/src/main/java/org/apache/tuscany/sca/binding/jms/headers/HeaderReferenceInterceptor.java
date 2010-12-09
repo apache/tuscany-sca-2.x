@@ -144,6 +144,13 @@ public class HeaderReferenceInterceptor implements Interceptor {
             	context.setTimeToLive(JMSBindingConstants.DEFAULT_TIME_TO_LIVE);        
             }
             
+            // Adding MESSAGE_ID field to the JMS message, which is used to correlate async callbacks
+            String msgID = (String)tuscanyMsg.getHeaders().get("MESSAGE_ID");
+            if( msgID != null ) {
+            	jmsMsg.setObjectProperty("MESSAGE_ID", msgID);
+            } // end if 
+            //
+            
             return tuscanyMsg;
         } catch (JMSException e) {
             throw new JMSBindingException(e);
