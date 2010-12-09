@@ -33,13 +33,15 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  */
 public class SampleProviderFactory implements ImplementationProviderFactory<SampleImplementation> {
     final ProxyFactory pxf;
+    final ExtensionPointRegistry ep;
 
     public SampleProviderFactory(final ExtensionPointRegistry ep) {
+        this.ep = ep;
         pxf = ExtensibleProxyFactory.getInstance(ep);
     }
 
     public ImplementationProvider createImplementationProvider(final RuntimeComponent comp, final SampleImplementation impl) {
-        return new SampleProvider(comp, impl, pxf);
+        return new SampleProvider(comp, impl, pxf, ep);
     }
 
     public Class<SampleImplementation> getModelType() {

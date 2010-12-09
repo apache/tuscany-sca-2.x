@@ -20,8 +20,11 @@
 package sample.impl;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -29,7 +32,9 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLOperation;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.provider.ImplementationProvider;
+import org.apache.tuscany.sca.invocation.InvokerAsyncRequest;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
+import org.apache.tuscany.sca.provider.ImplementationAsyncProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
@@ -38,16 +43,19 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * 
  * @version $Rev$ $Date$
  */
-class SampleProvider implements ImplementationProvider {
+class SampleProvider implements ImplementationAsyncProvider {
     final RuntimeComponent comp;
     final SampleImplementation impl;
     final ProxyFactory pxf;
+    final ExtensionPointRegistry ep;
     Object instance;
+    Map<String, Object> asyncMessageMap = new HashMap<String, Object>();
 
-    SampleProvider(final RuntimeComponent comp, final SampleImplementation impl, ProxyFactory pf) {
+    SampleProvider(final RuntimeComponent comp, final SampleImplementation impl, ProxyFactory pf, ExtensionPointRegistry ep) {
         this.comp = comp;
         this.impl = impl;
         this.pxf = pf;
+        this.ep = ep;
     }
 
     public void start() {
@@ -63,7 +71,7 @@ class SampleProvider implements ImplementationProvider {
                 if(i instanceof JavaInterface)
                     f.set(instance, pxf.createProxy(comp.getComponentContext().getServiceReference(f.getType(), r.getName())));
                 else
-                    f.set(instance, new SampleWSDLProxy(r.getEndpointReferences().get(0), i));
+                    f.set(instance, new SampleWSDLProxy(asyncMessageMap, r.getEndpointReferences().get(0), i, ep));
             }
         } catch(Exception e) {
             throw new RuntimeException(e);
@@ -87,5 +95,18 @@ class SampleProvider implements ImplementationProvider {
         } catch(Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    public InvokerAsyncRequest createAsyncInvoker(RuntimeComponentService service, Operation operation) {
+        // Only providing Async support through WSDL interfaces in this test
+        try {
+            return new SampleWSDLInvoker((WSDLOperation)operation, impl.clazz, instance);
+        } catch(Exception e) {
+            throw new RuntimeException(e);
+        }            
+    }
+    
+    public InvokerAsyncResponse createAsyncResponseInvoker(Operation operation) {
+        return new SampleAsyncResponseInvoker(asyncMessageMap, operation, impl.clazz, instance);
     }
 }
