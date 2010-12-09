@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -88,17 +87,15 @@ class SampleAsyncProvider implements ImplementationAsyncProvider {
     }
 
     public Invoker createInvoker(final RuntimeComponentService s, final Operation op) {
-        // TODO - we're passing EP into the WSDL invoker so this isn't going to work
-        //        properly for sync calls
-        return (Invoker)createAsyncInvoker(null, s, op); 
+        return (Invoker)createAsyncInvoker(s, op); 
     }
     
-    public InvokerAsyncRequest createAsyncInvoker(Endpoint endpoint, final RuntimeComponentService s, final Operation op) {
+    public InvokerAsyncRequest createAsyncInvoker(final RuntimeComponentService s, final Operation op) {
         try {
             // Creating an invoker for a Java or WSDL-typed implementation
             if(op instanceof JavaOperation)
                 return new SampleJavaInvoker((JavaOperation)op, impl.clazz, instance);
-            return new SampleWSDLInvoker(endpoint, (WSDLOperation)op, impl.clazz, instance);
+            return new SampleWSDLInvoker((WSDLOperation)op, impl.clazz, instance);
         } catch(Exception e) {
             throw new RuntimeException(e);
         }

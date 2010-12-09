@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.Invocable;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.work.WorkScheduler;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Invoker for a endpoint or endpoint reference
@@ -120,14 +121,23 @@ public class RuntimeInvoker implements Invoker{
      */
     public void invokeAsync(Message msg) {
         if (invocable instanceof Endpoint) {
-            msg.setTo((Endpoint)invocable);
+            Endpoint ep = (Endpoint)invocable;
+            msg.setTo(ep);
+            if (!ep.isAsyncInvocation()){
+                throw new ServiceRuntimeException("Calling invokeAsync on a non-async endpoint - " + 
+                                                  ep);
+            }
         } else if (invocable instanceof EndpointReference) {
             RuntimeEndpointReference epr = (RuntimeEndpointReference)invocable;
+            if (!epr.isAsyncInvocation()){
+                throw new ServiceRuntimeException("Calling invokeAsync on a non-async endpoint reference - " + 
+                                                  epr);
+            }
             if (epr.isOutOfDate()) {
                 epr.rebuild();
             }
-            msg.setFrom((EndpointReference)invocable);
-            msg.setTo(((EndpointReference)invocable).getTargetEndpoint());
+            msg.setFrom(epr);
+            msg.setTo(epr.getTargetEndpoint());
         }
         
         Operation operation = msg.getOperation();
@@ -153,8 +163,10 @@ public class RuntimeInvoker implements Invoker{
                 // temporary fix to swallow the dummy exception that's
                 // thrown back to get past the response chain processing. 
                 if (!(ex instanceof AsyncResponseException)){
-                  // TODO send the exception in through the 
+                  // send the exception in through the 
                   // async response processing path
+                  msg.setFaultBody(ex);
+                  invokeAsyncResponse(msg);
                 }
             }
         } finally {

@@ -36,13 +36,11 @@ import org.w3c.dom.Element;
  * @version $Rev$ $Date$
  */
 class SampleWSDLInvoker extends InterceptorAsyncImpl {
-    final Endpoint endpoint;
     final String name;
     final Object instance;
     final Method method;
 
-    SampleWSDLInvoker(Endpoint endpoint, final WSDLOperation op, final Class<?> clazz, final Object instance) throws SecurityException, NoSuchMethodException {
-        this.endpoint = endpoint;
+    SampleWSDLInvoker(final WSDLOperation op, final Class<?> clazz, final Object instance) throws SecurityException, NoSuchMethodException {
         this.name = op.getName();
         this.instance = instance;
         this.method = clazz.getMethod("call", String.class, Element.class);

@@ -713,7 +713,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 }
             } else if (isAsyncInvocation() && 
                        provider instanceof ImplementationAsyncProvider){
-                invoker = (Invoker)((ImplementationAsyncProvider)provider).createAsyncInvoker(this, (RuntimeComponentService)service, operation);
+                invoker = (Invoker)((ImplementationAsyncProvider)provider).createAsyncInvoker((RuntimeComponentService)service, operation);
             } else {
                 invoker = provider.createInvoker((RuntimeComponentService)service, operation);
             }

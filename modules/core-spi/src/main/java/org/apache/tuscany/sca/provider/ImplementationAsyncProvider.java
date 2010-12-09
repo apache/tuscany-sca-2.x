@@ -45,13 +45,12 @@ public interface ImplementationAsyncProvider extends ImplementationProvider {
      * createInvoker is that the Endpoint is passed in so that the invoker can 
      * engineer the async response
      * 
-     * @param endpoint the endoint at the head of this invocation chain
      * @param service The component service
      * @param operation The operation that the interceptor will handle
      * @return An invoker that handles the invocation logic, null should be
      *         returned if no invoker is required
      */
-    InvokerAsyncRequest createAsyncInvoker(Endpoint endpoint, RuntimeComponentService service, Operation operation);
+    InvokerAsyncRequest createAsyncInvoker(RuntimeComponentService service, Operation operation);
 
     /**
      * TUSCANY-3801
