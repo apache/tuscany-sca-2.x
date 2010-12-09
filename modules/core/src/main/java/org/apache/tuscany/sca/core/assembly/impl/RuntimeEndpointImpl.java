@@ -44,6 +44,7 @@ import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
@@ -423,7 +424,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         
         // Create pseudo-reference
         ComponentReference reference = assemblyFactory.createComponentReference();
-    	ExtensionPointRegistry registry = compositeContext.getExtensionPointRegistry();
+    	  ExtensionPointRegistry registry = compositeContext.getExtensionPointRegistry();
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         JavaInterfaceFactory javaInterfaceFactory = (JavaInterfaceFactory)modelFactories.getFactory(JavaInterfaceFactory.class);
         JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
@@ -436,6 +437,14 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         String referenceName = endpoint.getService().getName() + "_asyncCallback";
         reference.setName(referenceName);
         reference.setForCallback(true);
+        // Add in "implementation" reference (really a dummy, but with correct interface)
+        Reference implReference = assemblyFactory.createReference();
+        implReference.setInterfaceContract(interfaceContract);
+        implReference.setName(referenceName);
+        implReference.setForCallback(true);
+        
+        reference.setReference(implReference);
+        // Set the created ComponentReference into the EPR
         epr.setReference(reference);
         
         // Create a binding
