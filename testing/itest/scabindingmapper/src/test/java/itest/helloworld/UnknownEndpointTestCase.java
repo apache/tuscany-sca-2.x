@@ -37,9 +37,9 @@ public class UnknownEndpointTestCase {
     
     @Test
     public void testUnknownEndpoints() throws IOException, InterruptedException {
-        servicesnode = NodeFactory.newInstance().createNode("services.composite", new String[]{"target/test-classes"}) ;
+        servicesnode = NodeFactory.getInstance().createNode("services.composite", new String[]{"target/test-classes"}) ;
         servicesnode.start();
-        node = NodeFactory.newInstance().createNode("clients.composite", new String[]{"target/test-classes"}) ;
+        node = NodeFactory.getInstance().createNode("clients.composite", new String[]{"target/test-classes"}) ;
         node.start();
         
         // test the service invocations work
