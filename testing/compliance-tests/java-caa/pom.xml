@@ -79,6 +79,15 @@
            <argLine>-Xms256m -Xmx1024m</argLine>
            <excludes>
             <exclude>**/JCA_11021_TestCase.java</exclude><!-- TUSCANY-3664 -->
+            <!-- these 8 are new tests that we haven't done yet -->
+            <exclude>**/JCA_10029_TestCase.java</exclude>
+            <exclude>**/JCA_10030_TestCase.java</exclude>
+            <exclude>**/JCA_10031_TestCase.java</exclude>
+            <exclude>**/JCA_10032_TestCase.java</exclude>
+            <exclude>**/JCA_10033_TestCase.java</exclude>
+            <exclude>**/JCA_10034_TestCase.java</exclude>
+            <exclude>**/JCA_10035_TestCase.java</exclude>
+            <exclude>**/JCA_11022_TestCase.java</exclude>
            </excludes>
          </configuration>
       </plugin>
