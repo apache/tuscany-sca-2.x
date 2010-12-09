@@ -47,6 +47,7 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
@@ -515,6 +516,14 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
         service.setInterfaceContract(interfaceContract);
         String serviceName = epr.getReference().getName() + "_asyncCallback";
         service.setName(serviceName);
+        // MJE 06/12/2010 - fixup for JMS binding code which looks at the implementation service
+        // as well as the component service...
+        // Create a pseudo implementation service...
+        Service implService = assemblyFactory.createService();
+        implService.setName(serviceName);
+        implService.setInterfaceContract(interfaceContract);
+        service.setService(implService);
+        //
         endpoint.setService(service);
         // Set pseudo-service onto the pseudo-component
         List<ComponentService> services = fakeComponent.getServices();
