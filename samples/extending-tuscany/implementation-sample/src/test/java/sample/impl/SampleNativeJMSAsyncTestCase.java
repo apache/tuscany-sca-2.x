@@ -36,15 +36,15 @@ import sample.Upper;
  * 
  * @version $Rev$ $Date$
  */
-public class SampleNativeAsyncTestCase {
+public class SampleNativeJMSAsyncTestCase {
     static Node node;
 
     @BeforeClass
     public static void setUp() throws Exception {
         final NodeFactory nf = NodeFactory.newInstance();
-        String here = SampleNativeAsyncTestCase.class.getProtectionDomain().getCodeSource().getLocation().toString();
+        String here = SampleNativeJMSAsyncTestCase.class.getProtectionDomain().getCodeSource().getLocation().toString();
         // Create the node using the pattern "name of composite file to start" / Contribution to use
-        node = nf.createNode("testnativeasync.composite", new Contribution("test", here));
+        node = nf.createNode("testnativejmsasync.composite", new Contribution("test", here));
         node.start();
     }
 
