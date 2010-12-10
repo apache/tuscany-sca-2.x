@@ -85,7 +85,11 @@ public class JMSMessageProcessorUtil {
             try {
                 clazz = cl.loadClass(className);
             } catch (ClassNotFoundException e) {
-                clazz = binding.getClass().getClassLoader().loadClass(className);
+            	// MJE 07/12/2010 - for OSGi the default message processor belongs to the same bundle as
+            	// this JMSMessageProcessorUtil itself and so the "correct" classloader to use is the classloader
+            	// for THIS class, and not the binding class (which is a different bundle)
+                // clazz = binding.getClass().getClassLoader().loadClass(className);
+                clazz = JMSMessageProcessorUtil.class.getClassLoader().loadClass(className);
             }
 
             Constructor<?> constructor = clazz.getDeclaredConstructor(new Class[] {JMSBinding.class, ExtensionPointRegistry.class});

@@ -31,6 +31,8 @@ import javax.naming.NamingException;
 import javax.resource.spi.ActivationSpec;
 
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
+import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
+import org.apache.activemq.jndi.ActiveMQInitialContextFactory;
 
 /**
  * Abstracts away any JMS provide specific feature from the JMS binding
@@ -139,7 +141,8 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
         ConnectionFactory connectionFactory = (ConnectionFactory)o;
         connection = connectionFactory.createConnection();
     }
-
+   
+    static final String ACTIVEMQ_FACTORY = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
     protected synchronized Context getInitialContext() throws NamingException {
         if (context == null) {
             Properties props = new Properties();
@@ -152,8 +155,38 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
             }
 
             initJREEnvironment(props);
+            
+            /**
+             * For OSGi, need to provide access to the InitialContextFactory for the JMS provider that is going to be used.
+             * 
+             * The situation is that the InitialContext constructor instantiates an instance of the InitialContextFactory by
+             * calling "new" using the TCCL - thus there is a need to prepare the TCCL.
+             * 03/12/2010 MJE - for the present, only worry about ActiveMQ - other providers can be added later 
+             * 10/12/2010 MJE - the following code attempts to get the classloader for the ActiveMQ initial context factory
+             *                  it will fail if the ActiveMQ classes are not available in the runtime, but the code will still
+             *                  execute (although under OSGi the new InitialContext() operation will fail to find a suitable
+             *                  InitialContextFactory object...)
+             */
+            ClassLoader ActiveMQCl = null;
+            try {
+            	if( initialContextFactoryName == null || ACTIVEMQ_FACTORY.equals(initialContextFactoryName) ) {
+		        	ActiveMQCl = ActiveMQInitialContextFactory.class.getClassLoader();
+		        	props.setProperty(Context.INITIAL_CONTEXT_FACTORY, ACTIVEMQ_FACTORY);
+            	} // end if 
+            } catch (Exception e) {
+            	// Nothing to do in this case - the ActiveMQCl classloader will simply be null
+            } // end try 
 
-            context = new InitialContext(props);
+        	ClassLoader tccl = ClassLoaderContext.setContextClassLoader(JMSResourceFactoryImpl.class.getClassLoader(),
+        			ActiveMQCl,
+        			Thread.currentThread().getContextClassLoader() );
+        	try {
+        		// Load the JNDI InitialContext (will load the InitialContextFactory, if present)
+        		context = new InitialContext(props);
+        	} finally {
+                // Restore the TCCL if we changed it
+                if( tccl != null ) Thread.currentThread().setContextClassLoader(tccl);
+        	} // end try
         }
         return context;
     }
