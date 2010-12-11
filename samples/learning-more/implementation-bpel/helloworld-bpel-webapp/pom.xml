@@ -41,15 +41,8 @@
 		<!--  TUSCANY DEPENDENCIES -->
             <dependency>
                <groupId>org.apache.tuscany.sca</groupId>
-               <artifactId>tuscany-sca-api</artifactId>
+               <artifactId>tuscany-base-runtime</artifactId>
                <version>${tuscany.version}</version>
-            </dependency>
-
-            <dependency>
-               <groupId>org.apache.tuscany.sca</groupId>
-               <artifactId>tuscany-implementation-web-runtime</artifactId>
-               <version>${tuscany.version}</version>
-               <scope>runtime</scope>
             </dependency>
 
             <dependency>
