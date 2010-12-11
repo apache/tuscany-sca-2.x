@@ -24,6 +24,7 @@ import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
 
 import junit.framework.TestCase;
 
@@ -60,7 +61,9 @@ public class WriteTestCase extends TestCase {
         Composite composite = (Composite) staxProcessor.read(inputFactory.createXMLStreamReader(is), context);
         assertNotNull(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
+        XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
+        staxProcessor.write(composite, writer, context);
+        writer.close();
         
         assertTrue(bos.toString().contains("web-uri=\"MyWebapp\""));
 
