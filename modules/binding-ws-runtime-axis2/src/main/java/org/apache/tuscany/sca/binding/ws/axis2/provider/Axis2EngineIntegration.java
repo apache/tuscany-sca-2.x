@@ -59,7 +59,6 @@ import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
 import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.description.WSDLToAxisServiceBuilder;
 import org.apache.axis2.engine.MessageReceiver;
-import org.apache.axis2.transport.local.LocalResponder;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.common.xml.XMLDocumentHelper;
@@ -141,9 +140,8 @@ public class Axis2EngineIntegration {
                         // document builder. 
                         ClassLoader wsBindingCL = getClass().getClassLoader();
                         ClassLoader axis2CL = URLBasedAxisConfigurator.class.getClassLoader();
-                        ClassLoader localtransportCL = LocalResponder.class.getClassLoader();
                         ClassLoaderContext classLoaderContext =
-                            new ClassLoaderContext(wsBindingCL, axis2CL, localtransportCL);
+                            new ClassLoaderContext(wsBindingCL, axis2CL);
 
                         classLoaderContext =
                             new ClassLoaderContext(classLoaderContext.getClassLoader(), serviceDiscovery,

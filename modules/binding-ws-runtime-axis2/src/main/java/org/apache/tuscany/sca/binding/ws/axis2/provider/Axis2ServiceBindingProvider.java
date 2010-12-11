@@ -34,8 +34,6 @@ import org.apache.axis2.description.Parameter;
 import org.apache.axis2.description.TransportInDescription;
 import org.apache.axis2.description.TransportOutDescription;
 import org.apache.axis2.engine.ListenerManager;
-import org.apache.axis2.transport.jms.JMSListener;
-import org.apache.axis2.transport.jms.JMSSender;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
@@ -69,10 +67,6 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
     private String endpointURI;
     private String deployedURI;
     private InterfaceContract contract;
-       
-    // The Axis2 configuration that the binding creates
-    private JMSSender jmsSender;
-    private JMSListener jmsListener;    
        
     public Axis2ServiceBindingProvider(ExtensionPointRegistry extensionPoints,
                                        RuntimeEndpoint endpoint,
@@ -203,49 +197,6 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
                 } else {
                     deployedURI = servletHost.addServletMapping(endpointURI, servlet);
                 }
-            } else if (deployedURI.startsWith("jms")) {
-                logger.log(Level.INFO, "Axis2 JMS URL=" + deployedURI);
-
-                jmsListener = new JMSListener();
-                jmsSender = new JMSSender();
-                ListenerManager listenerManager = configContext.getListenerManager();
-                TransportInDescription trsIn =
-                    configContext.getAxisConfiguration().getTransportIn(org.apache.axis2.Constants.TRANSPORT_JMS);
-
-                // get JMS transport parameters from the computed URL
-//not in Axis2 1.5.1                    
-//                Map<String, String> jmsProps = JMSUtils.getProperties(endpointURL);
-
-                // collect the parameters used to configure the JMS transport
-                OMFactory fac = OMAbstractFactory.getOMFactory();
-                OMElement parms = fac.createOMElement(DEFAULT_QUEUE_CONNECTION_FACTORY, null);
-/*
-                for (String key : jmsProps.keySet()) {
-                    OMElement param = fac.createOMElement("parameter", null);
-                    param.addAttribute("name", key, null);
-                    param.addChild(fac.createOMText(param, jmsProps.get(key)));
-                    parms.addChild(param);
-                }
-*/
-                Parameter queueConnectionFactory = new Parameter(DEFAULT_QUEUE_CONNECTION_FACTORY, parms);
-                trsIn.addParameter(queueConnectionFactory);
-
-                trsIn.setReceiver(jmsListener);
-
-                configContext.getAxisConfiguration().addTransportIn(trsIn);
-                TransportOutDescription trsOut =
-                    configContext.getAxisConfiguration().getTransportOut(org.apache.axis2.Constants.TRANSPORT_JMS);
-                //configContext.getAxisConfiguration().addTransportOut( trsOut );
-                trsOut.setSender(jmsSender);
-
-                if (listenerManager == null) {
-                    listenerManager = new ListenerManager();
-                    listenerManager.init(configContext);
-                }
-                listenerManager.addListener(trsIn, true);
-                jmsSender.init(configContext, trsOut);
-                jmsListener.init(configContext, trsIn);
-                jmsListener.start();
             }
         } catch (AxisFault e) {
             throw new RuntimeException(e);
@@ -254,17 +205,7 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
 
     public void stop() {
         try {
-            if (jmsListener != null) {
-                jmsListener.stop();
-                jmsListener.destroy();
-            } else {
                 servletHost.removeServletMapping(endpointURI);
-            }
-            
-            if (jmsSender != null) {
-                jmsSender.stop();
-            }
-    
             servletHost = null;
 
             // get the path to the service
