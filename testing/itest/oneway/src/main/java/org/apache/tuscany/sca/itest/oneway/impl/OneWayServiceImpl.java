@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.sca.itest.oneway.impl;
 
-import org.apache.tuscany.sca.itest.oneway.OneWayService;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
+import org.apache.tuscany.sca.itest.oneway.OneWayService;
 
 /**
  * The service for the oneway itest.
