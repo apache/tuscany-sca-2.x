@@ -49,26 +49,29 @@
         </dependency>      
 
         <dependency>
-	       <groupId>org.apache.axis2</groupId> 
-           <artifactId>axis2</artifactId>
+           <groupId>org.apache.axis2</groupId> 
+           <artifactId>org.apache.axis2.osgi</artifactId>
            <version>1.5.3</version>
-           <classifier>jar</classifier>
-        </dependency>
-        <dependency>
-	       <groupId>org.apache.axis2</groupId>
-	       <artifactId>axis2-transport-http</artifactId>
-	       <version>1.5.3</version>
            <exclusions>
                <exclusion>
                    <groupId>org.apache.axis2</groupId>
-	               <artifactId>axis2-kernel</artifactId>
+	             <artifactId>axis2-adb</artifactId>
                </exclusion>
                <exclusion>
-                   <groupId>org.apache.httpcomponents</groupId>
-	               <artifactId>httpcore</artifactId>
+                   <groupId>org.apache.axis2</groupId>
+	             <artifactId>axis2-kernel</artifactId>
+               </exclusion>
+               <exclusion>
+                   <groupId>org.apache.axis2</groupId>
+	             <artifactId>axis2-transport-http</artifactId>
+               </exclusion>
+               <exclusion>
+                   <groupId>org.apache.axis2</groupId>
+	             <artifactId>axis2-transport-local</artifactId>
                </exclusion>
            </exclusions>
         </dependency>
+
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
