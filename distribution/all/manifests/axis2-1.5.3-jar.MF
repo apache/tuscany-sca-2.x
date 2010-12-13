@@ -1,19 +1,19 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.apache.axis2.axis2-kernel
-Bundle-Name: org.apache.axis2.axis2-kernel
+Bundle-SymbolicName: org.apache.axis2.axis2
+Bundle-Name: org.apache.axis2.axis2
 Bundle-Version: 1.5.3
 DynamicImport-Package: javax.transaction;version="1.1",javax.transacti
  on.xa;version="1.1",*
-Bundle-ClassPath: axis2-kernel-1.5.3.jar
+Bundle-ClassPath: axis2-1.5.3-jar.jar
 Export-Package: org.apache.axis2.client;version=1.5.3,org.apache.axis2
  .transaction;version=1.5.3,org.apache.axis2.classloader;version=1.5.3
  ,org.apache.axis2.wsdl.util;version=1.5.3,org.apache.axis2.descriptio
  n.java2wsdl.bytecode;version=1.5.3,org.apache.axis2.handlers;version=
  1.5.3,org.apache.axis2.dispatchers;version=1.5.3,org.apache.axis2.clu
  stering.configuration;version=1.5.3,org.apache.axis2.java.security;ve
- rsion=1.5.3,org.apache.axis2.phaseresolver;version=1.5.3,org.apache.a
- xis2.transport.http.util;version=1.5.3,org.apache.axis2.addressing.ws
+ rsion=1.5.3,org.apache.axis2.phaseresolver;version=1.5.3,
+ org.apache.axis2.addressing.ws
  dl;version=1.5.3,org.apache.axis2.description;version=1.5.3,org.apach
  e.axis2.description.java2wsdl;version=1.5.3,org.apache.axis2.addressi
  ng.i18n;version=1.5.3,org.apache.axis2.deployment.repository.util;ver
