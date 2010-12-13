@@ -605,13 +605,10 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             }
 
         }
-
-        // Add the runtime invoker to the end of the binding chain. 
-        // It mediates between the binding chain and selects the 
-        // correct invocation chain based on the operation that's
-        // been selected
-        bindingInvocationChain.addInvoker(invoker);
         
+        // This is strategically placed before the RuntimeInvoker is added to the end of the
+        // binding chain as the RuntimeInvoker doesn't need to take part in the response
+        // processing and doesn't implement InvokerAsyncResponse
         if (isAsyncInvocation()){
             // fix up the invocation chains to point back to the 
             // binding chain so that async response messages 
@@ -641,6 +638,12 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 //TODO - throw error once the old async code is removed
             }
         }
+        
+        // Add the runtime invoker to the end of the binding chain. 
+        // It mediates between the binding chain and selects the 
+        // correct invocation chain based on the operation that's
+        // been selected
+        bindingInvocationChain.addInvoker(invoker);        
     }
 
     /**
