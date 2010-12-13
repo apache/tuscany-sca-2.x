@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.apache.axis2.axis2
-Bundle-Name: org.apache.axis2.axis2
+Bundle-SymbolicName: org.apache.axis2.osgi
+Bundle-Name: org.apache.axis2.osgi
 Bundle-Version: 1.5.3
 DynamicImport-Package: javax.transaction;version="1.1",javax.transacti
  on.xa;version="1.1",*
@@ -13,6 +13,9 @@ Export-Package: org.apache.axis2.client;version=1.5.3,org.apache.axis2
  1.5.3,org.apache.axis2.dispatchers;version=1.5.3,org.apache.axis2.clu
  stering.configuration;version=1.5.3,org.apache.axis2.java.security;ve
  rsion=1.5.3,org.apache.axis2.phaseresolver;version=1.5.3,
+ org.apache.axis2.transport.http;version=1.5.3,
+ org.apache.axis2.transport.http.server;version=1.5.3,
+ org.apache.axis2.transport.http.util;version=1.5.3,
  org.apache.axis2.addressing.ws
  dl;version=1.5.3,org.apache.axis2.description;version=1.5.3,org.apach
  e.axis2.description.java2wsdl;version=1.5.3,org.apache.axis2.addressi
