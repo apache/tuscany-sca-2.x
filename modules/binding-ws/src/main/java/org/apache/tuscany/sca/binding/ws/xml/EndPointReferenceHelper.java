@@ -24,13 +24,12 @@ import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.dom.DOMSource;
 
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -63,10 +62,10 @@ public class EndPointReferenceHelper {
     /**
      * Write a wsa:endpointReference from a DOM Element
      */
-    public static void writeEndPointReference(Element element, XMLStreamWriter writer)  {
+    public static void writeEndPointReference(Element element, XMLStreamWriter writer, StAXHelper staxHelper)  {
         try {
 
-            saveElement(element, writer);
+            saveElement(element, writer, staxHelper);
 
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
@@ -174,10 +173,9 @@ public class EndPointReferenceHelper {
         }
     }
     
-    private static void saveElement(Element element, XMLStreamWriter writer) throws XMLStreamException{
+    private static void saveElement(Element element, XMLStreamWriter writer, StAXHelper staxHelper) throws XMLStreamException{
 
-        XMLStreamReader reader =
-            XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(element));
+        XMLStreamReader reader = staxHelper.createXMLStreamReader(element);
 
         while (reader.hasNext()) {
             switch (reader.next()) {
