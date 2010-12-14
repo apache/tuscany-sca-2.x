@@ -82,6 +82,7 @@ public class WriteNamespacesTestCase {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
         compositeProcessor.write(composite, writer, context);
+        writer.close();
         System.out.println(bos);
         
         // Read again
