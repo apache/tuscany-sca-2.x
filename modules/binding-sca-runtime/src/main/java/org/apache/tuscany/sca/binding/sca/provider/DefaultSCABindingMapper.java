@@ -102,7 +102,7 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
 
         try {
             if (processor != null) {
-                Binding bindingTemplate = createDelegatingBinding(defaultMappedBinding);
+                Binding bindingTemplate = createDelegatingBinding(binding);
                 ProviderFactory providerFactory = providerFactories.getProviderFactory(bindingTemplate.getClass());
                 if (providerFactory == null) {
                     logger.warning("Mapped binding for binding.sca is not supported: " + binding);
