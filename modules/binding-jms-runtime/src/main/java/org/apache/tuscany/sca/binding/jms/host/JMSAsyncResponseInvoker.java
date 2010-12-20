@@ -28,13 +28,13 @@ import javax.jms.MessageListener;
 import javax.naming.NamingException;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * TODO RRB experiement
@@ -42,39 +42,38 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultServiceInvoker implements MessageListener {
+public class JMSAsyncResponseInvoker implements MessageListener {
 
-    private static final Logger logger = Logger.getLogger(DefaultServiceInvoker.class.getName());
+    private static final Logger logger = Logger.getLogger(JMSAsyncResponseInvoker.class.getName());
 
-    private RuntimeEndpoint endpoint;
+    private RuntimeEndpointReference endpointReference;
     private JMSBinding jmsBinding;
-    private Binding targetBinding;
     private JMSResourceFactory jmsResourceFactory;
-    private RuntimeComponentService service;
+    private RuntimeComponentReference reference;
     private MessageFactory messageFactory;
 
-    public DefaultServiceInvoker(RuntimeEndpoint endpoint, Binding targetBinding, MessageFactory messageFactory, JMSResourceFactory rf) throws NamingException {
-        this.endpoint = endpoint;
-        this.jmsBinding = (JMSBinding) endpoint.getBinding();
+    public JMSAsyncResponseInvoker(RuntimeEndpointReference endpointReference, 
+    		MessageFactory messageFactory, 
+    		JMSResourceFactory rf) throws NamingException {
+        this.endpointReference = endpointReference;
+        this.jmsBinding = (JMSBinding) endpointReference.getBinding();
         this.jmsResourceFactory = rf;
-        this.service = (RuntimeComponentService) endpoint.getService();
-        this.targetBinding = targetBinding;
-        this.messageFactory = messageFactory;
-        
+        this.reference = (RuntimeComponentReference) endpointReference.getReference();
+        this.messageFactory = messageFactory;       
     }
 
     public void onMessage(Message requestJMSMsg) {
-        logger.log(Level.FINE, "JMS service '" + service.getName() + "' received message " + requestJMSMsg);
+        logger.log(Level.FINE, "JMS reference '" + reference.getName() + "' received message " + requestJMSMsg);
         try {
-            invokeService(requestJMSMsg);
+            invokeReference(requestJMSMsg);
         } catch (Throwable e) {
-            logger.log(Level.SEVERE, "Exception send fault response '" + service.getName(), e);
+            logger.log(Level.SEVERE, "Exception send fault response '" + reference.getName(), e);
         }
-    }
+    }  // end method onMessage
 
-    protected void invokeService(Message requestJMSMsg) throws JMSException, InvocationTargetException {
+    protected void invokeReference(Message requestJMSMsg) throws JMSException, InvocationTargetException {
 
-        // create the tuscany message
+        // create the Tuscany message
         org.apache.tuscany.sca.invocation.Message tuscanyMsg = messageFactory.createMessage();
         
         // populate the message context with JMS binding information
@@ -85,28 +84,15 @@ public class DefaultServiceInvoker implements MessageListener {
         context.setJmsResourceFactory(jmsResourceFactory);
         context.setReplyToDestination(requestJMSMsg.getJMSReplyTo());
         
+        
+        
         // set the message body
         tuscanyMsg.setBody(requestJMSMsg);
         
         // call the runtime wire - the response is handled by the 
         // transport interceptor
-        //getEndpoint(targetBinding).invoke(tuscanyMsg);
-        RuntimeEndpoint endpoint = getEndpoint(targetBinding);
-        if( endpoint.isAsyncInvocation() ) {
-        	endpoint.invokeAsync(tuscanyMsg);
-        } else {
-        	endpoint.invoke(tuscanyMsg);
-        } // end if
+        endpointReference.invokeAsyncResponse(tuscanyMsg);
             
-    } // end method invokeService
-    
-    private RuntimeEndpoint getEndpoint(Binding targetBinding) {
-        for(Endpoint ep: service.getEndpoints()) {
-            if(ep.getBinding() == targetBinding) {
-                return (RuntimeEndpoint) ep;
-            }
-        }
-        return endpoint; 
-    }
+    } // end method invokeReference
 
-}
+} // end class AsyncResponseInvoker

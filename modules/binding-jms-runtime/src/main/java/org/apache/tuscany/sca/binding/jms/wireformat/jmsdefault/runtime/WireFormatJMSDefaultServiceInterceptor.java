@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.binding.jms.provider.DefaultMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -46,8 +47,7 @@ import org.w3c.dom.Node;
  * 
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSDefaultServiceInterceptor implements Interceptor {
-    private Invoker next;
+public class WireFormatJMSDefaultServiceInterceptor extends InterceptorAsyncImpl {
     private RuntimeEndpoint endpoint;
     private JMSResourceFactory jmsResourceFactory;
     private JMSBinding jmsBinding;
@@ -137,6 +137,11 @@ public class WireFormatJMSDefaultServiceInterceptor implements Interceptor {
 
         // get the jms context
         JMSBindingContext context = msg.getBindingContext();
+        // The Binding Context may be null on an asynchronous response - in which case, create a new one
+        if(context == null) {
+        	context = createBindingContext();
+        	msg.setBindingContext(context);
+        } // end if
         Session session = context.getJmsResponseSession();
 
         javax.jms.Message responseJMSMsg;
@@ -177,11 +182,19 @@ public class WireFormatJMSDefaultServiceInterceptor implements Interceptor {
         return msg;
     }
 
-    public Invoker getNext() {
-        return next;
-    }
+	private JMSBindingContext createBindingContext() {
+		JMSBindingContext context = new JMSBindingContext();
+        context.setJmsResourceFactory(jmsResourceFactory);
 
-    public void setNext(Invoker next) {
-        this.next = next;
-    }
+		return context;
+	} // end method createBindingContext
+
+	public Message processRequest(Message msg) {
+		return invokeRequest( msg );
+	} // end method processRequest
+
+	public Message processResponse(Message msg) {
+		return invokeResponse( msg );
+	} // end method processResponse  
+    
 }

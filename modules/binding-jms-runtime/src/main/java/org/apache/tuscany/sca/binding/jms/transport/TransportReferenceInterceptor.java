@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -41,7 +42,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
  *
  * @version $Rev$ $Date$
  */
-public class TransportReferenceInterceptor implements Interceptor {
+public class TransportReferenceInterceptor extends InterceptorAsyncImpl {
       
     private Invoker next;    
     private JMSResourceFactory jmsResourceFactory;
@@ -91,8 +92,7 @@ public class TransportReferenceInterceptor implements Interceptor {
             Boolean deliveryModePersistent = jmsBinding.getEffectiveJMSDeliveryMode(opName);
             if (deliveryModePersistent != null) {
             	producer.setDeliveryMode( deliveryModePersistent ? DeliveryMode.PERSISTENT : DeliveryMode.NON_PERSISTENT);               
-            } 
-                       
+            }                      
             
             try {
                 producer.send((javax.jms.Message)msg.getBody());
@@ -102,8 +102,8 @@ public class TransportReferenceInterceptor implements Interceptor {
             return msg;
         } catch (JMSException e) {
             throw new JMSBindingException(e);
-        } 
-    }
+        } // end try
+    } // end method invokeRequest
     
     public Message invokeResponse(Message msg) {
         JMSBindingContext context = msg.getBindingContext();
@@ -165,4 +165,23 @@ public class TransportReferenceInterceptor implements Interceptor {
     public void setNext(Invoker next) {
         this.next = next;
     }
+
+	/**
+	 * Process forward request message
+	 * @param tuscanyMsg - the request message
+	 * @return the processed version of the request message
+	 */
+	public Message processRequest(Message tuscanyMsg) {
+		return invokeRequest(tuscanyMsg);
+	} // end method processRequest
+
+    /**
+     * Process response message
+	 * @param tuscanyMsg - the response message
+	 * @return the processed version of the response message
+     */
+	public Message processResponse(Message tuscanyMsg) {
+		// TODO Auto-generated method stub
+		return tuscanyMsg;
+	} // end method processResponse
 }

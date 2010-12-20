@@ -18,9 +18,7 @@
  */
 package org.apache.tuscany.sca.binding.jms.headers;
 
-
-
-
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -38,6 +36,7 @@ import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -49,31 +48,30 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
  *
  * @version $Rev$ $Date$
  */
-public class HeaderReferenceInterceptor implements Interceptor {
+public class HeaderReferenceInterceptor extends InterceptorAsyncImpl {
 
-    private Invoker next;
     private RuntimeEndpointReference runtimeWire;
     private JMSBinding jmsBinding;
     private JMSMessageProcessor requestMessageProcessor;
+    private List<Operation> operations;
 
 
-    public HeaderReferenceInterceptor(ExtensionPointRegistry extensions, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeEndpointReference runtimeWire) {
+    public HeaderReferenceInterceptor(ExtensionPointRegistry extensions, JMSBinding jmsBinding, 
+    		JMSResourceFactory jmsResourceFactory, RuntimeEndpointReference runtimeWire) {
         super();
         this.jmsBinding = jmsBinding;
         this.runtimeWire = runtimeWire;      
-        this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(extensions, jmsBinding);       
-        
-    }
+        this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(extensions, jmsBinding);
+        this.operations = runtimeWire.getReference().getInterfaceContract().getInterface().getOperations();
+    }  // end constructor
 
     public Message invoke(Message msg) {
-        
         return next.invoke(invokeRequest(msg));
-
-    }
+    } // end method invoke
     
     public Message invokeRequest(Message tuscanyMsg) {
         try {
-            // get the jms context
+            // Get the JMS context
             JMSBindingContext context = tuscanyMsg.getBindingContext();
             javax.jms.Message jmsMsg = tuscanyMsg.getBody();
             
@@ -81,12 +79,10 @@ public class HeaderReferenceInterceptor implements Interceptor {
             String operationName = operation.getName();
             RuntimeEndpointReference reference = runtimeWire;
             
-            // I think the OASIS spec suggests we do not need to do anything with
+            // OASIS spec suggests we do not need to do anything with
             // @nativeOperation here on the reference side.
             requestMessageProcessor.setOperationName(operationName, jmsMsg);
-    
-          
-            
+
             if (jmsBinding.getEffectiveJMSDeliveryMode(operationName) != null) {
             	if (jmsBinding.getEffectiveJMSDeliveryMode(operationName)) {
             		jmsMsg.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
@@ -157,8 +153,7 @@ public class HeaderReferenceInterceptor implements Interceptor {
         } catch (NamingException e) {
             throw new JMSBindingException(e);
 		} 
-    }
- 
+    } // end method invokeRequest
     
     protected String getCallbackDestinationName(RuntimeEndpointReference reference) {
         RuntimeEndpoint endpoint = (RuntimeEndpoint) reference.getCallbackEndpoint();
@@ -169,14 +164,35 @@ public class HeaderReferenceInterceptor implements Interceptor {
         return null;
     }  
       
+	public Message processRequest(Message msg) {
+		return invokeRequest(msg);
+	} // end method processRequest
 
-    public Invoker getNext() {
-        return next;
-    }
-
-    public void setNext(Invoker next) {
-        this.next = next;
-    }
+	public Message processResponse(Message msg) {
+		// When the response message arrives, there may be information about the 
+		// operation and the related request message ID in the headers - extract it into the
+		// Tuscany message
+		
+		javax.jms.Message responseMsg = msg.getBody();
+		try {
+			// Operation name...
+			String operationName = responseMsg.getStringProperty("scaOperationName");
+			for( Operation op : operations ) {
+				if( operationName.equals(op.getName())) {
+					msg.setOperation(op);
+					break;
+				} // end if
+			} // end for
+			
+			// Relates to header...
+			String relatesTo = responseMsg.getStringProperty("RELATES_TO");
+			if( relatesTo != null ) {
+				msg.getHeaders().put("RELATES_TO", relatesTo);
+			} // end if
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+		} // end try
+		return msg;
+	} // end method processResponse
     
-  
 }

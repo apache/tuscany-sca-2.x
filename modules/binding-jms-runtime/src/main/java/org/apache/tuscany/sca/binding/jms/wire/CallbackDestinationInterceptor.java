@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
+import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -40,7 +41,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  * JMS Binding Interceptor class that deals with a callback destination address on the service side
  *
  */
-public class CallbackDestinationInterceptor implements Interceptor {
+public class CallbackDestinationInterceptor extends InterceptorAsyncImpl {
     private Invoker next;
     private RuntimeComponentService service;
 	private RuntimeEndpoint endpoint;
@@ -119,4 +120,12 @@ public class CallbackDestinationInterceptor implements Interceptor {
         
         return msg;
     } // end method invokeRequest
+    
+	public Message processRequest(Message msg) {
+		return invokeRequest(msg);
+	} // end method processRequest
+
+	public Message processResponse(Message msg) {
+		return msg;
+	} // end method processResponse
 } // end class

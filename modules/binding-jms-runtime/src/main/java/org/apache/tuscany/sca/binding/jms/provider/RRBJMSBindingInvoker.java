@@ -29,9 +29,11 @@ import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
+import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -40,7 +42,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * 
  * @version $Rev$ $Date$
  */
-public class RRBJMSBindingInvoker implements Invoker {
+public class RRBJMSBindingInvoker extends InterceptorAsyncImpl {
 
     protected Operation operation;
     protected String operationName;
@@ -65,14 +67,12 @@ public class RRBJMSBindingInvoker implements Invoker {
             // properties of the inbound service request.  We should not look for or require a
             // statically-configured destination unless a message is received that does not have
             // the necessary properties.  
-//          if (!reference.isCallback()) { // TODO: 2.x migration, is this check needed?
-                bindingRequestDest = lookupDestination();
-//            }
+            bindingRequestDest = lookupDestination();
             bindingReplyDest = lookupResponseDestination();
         } catch (NamingException e) {
             throw new JMSBindingException(e);
-        }
-    }
+        } // end try
+    } // end constructor
 
     /**
      * Looks up the Destination Queue for the JMS Binding
@@ -136,7 +136,7 @@ public class RRBJMSBindingInvoker implements Invoker {
             qCreateMode = jmsBinding.getDestinationCreate();
         }
 
-        // FIXME: [rfeng] A hack to remove jms:jndi: prefix
+        // Remove jms:jndi: prefix if present
         if (queueName.startsWith("jms:jndi:")) {
             queueName = queueName.substring("jms:jndi:".length());
         }
@@ -186,7 +186,15 @@ public class RRBJMSBindingInvoker implements Invoker {
         }
 
         return dest;
-    }
+    } // end method lookupDestinationQueue
+    
+    /**
+     * Get the next in the chain from the binding invocation chain
+     */
+    public Invoker getNext() {
+        return (Invoker)endpointReference.getBindingInvocationChain().getHeadInvoker();
+    } // end method getNext
+
 
     public org.apache.tuscany.sca.invocation.Message invoke(org.apache.tuscany.sca.invocation.Message tuscanyMsg) {
         try {
@@ -264,6 +272,86 @@ public class RRBJMSBindingInvoker implements Invoker {
             }
         }
         return replyToDest;
-    }  
+    }
+
+	/**
+	 * Process forward request message
+	 * @param tuscanyMsg - the request message
+	 * @return the processed version of the request message
+	 */
+	public Message processRequest(Message tuscanyMsg) {
+        try {
+            // populate the message context with JMS binding information
+            JMSBindingContext context = new JMSBindingContext();
+            context.setJmsResourceFactory(jmsResourceFactory);
+            tuscanyMsg.setBindingContext(context);
+            
+            // get a JMS session to cover the creation and sending of the message
+            Session session = context.getJmsSession();
+
+            context.setRequestDestination(getRequestDestination(tuscanyMsg, session));
+            context.setReplyToDestination(getReplyToDestination(session));
+            
+            return tuscanyMsg;
+        } catch (Exception e) {
+            throw new JMSBindingException(e);
+        } // end try   
+	} // end method processRequest
+	
+	/**
+	 * Post processing for a request message where an error occurred
+	 * @param tuscanyMsg
+	 * @return the post processed message
+	 */
+	public Message postProcessRequest(Message tuscanyMsg, Throwable e) {
+		// Exception handling
+        if ( e instanceof ServiceRuntimeException ) {
+	        if (e.getCause() instanceof InvocationTargetException) {
+	            if ((e.getCause().getCause() instanceof RuntimeException)) {
+	                tuscanyMsg.setFaultBody(e.getCause());
+	            } else {
+	                tuscanyMsg.setFaultBody(((InvocationTargetException)e.getCause()).getTargetException());
+	            } // end if
+	        } else if (e.getCause() instanceof FaultException) {
+	            tuscanyMsg.setFaultBody(e.getCause());
+	        } else {
+	            tuscanyMsg.setFaultBody(e);
+	        } // end if
+        } else {
+        	tuscanyMsg.setFaultBody(e);
+        } // end if 
+        
+        return postProcessRequest( tuscanyMsg );
+	} // end method postProcessRequest
+	
+	/**
+	 * General post processing for a request message
+	 * - close out the JMS session & connection
+	 * @param tuscanyMsg
+     * @return the post processed message
+	 */
+	public Message postProcessRequest(Message tuscanyMsg) {
+        // Close of JMS session
+		try {
+			JMSBindingContext context = tuscanyMsg.getBindingContext();
+	        context.closeJmsSession();
+	        if (jmsResourceFactory.isConnectionClosedAfterUse()) {
+	            jmsResourceFactory.closeConnection();
+	        } // end if
+		} catch (JMSException ex) {
+			throw new JMSBindingException(ex);
+		} // end try
+		return tuscanyMsg;
+	} // end method postProcessRequest
+
+    /**
+     * Process response message
+	 * @param tuscanyMsg - the response message
+	 * @return the processed version of the response message
+     */
+	public Message processResponse(Message tuscanyMsg) {
+		// For async handling, there is nothing to do here
+		return tuscanyMsg;
+	}  
     
 }
