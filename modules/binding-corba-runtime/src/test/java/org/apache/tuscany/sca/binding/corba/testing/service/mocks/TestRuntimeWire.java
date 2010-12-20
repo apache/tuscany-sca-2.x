@@ -317,4 +317,11 @@ public class TestRuntimeWire implements RuntimeEndpoint {
         // TODO Auto-generated method stub
         return false;
     }
+
+
+	@Override
+	public void invokeAsync(Message msg) {
+		// TODO Auto-generated method stub
+		
+	}
 }
