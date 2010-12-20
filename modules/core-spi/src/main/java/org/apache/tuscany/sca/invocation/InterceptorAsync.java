@@ -47,16 +47,36 @@ public interface InterceptorAsync extends Interceptor, InvokerAsyncRequest, Invo
      * 
      */
     Message processRequest(Message msg);
+ 
+    /**
+     * Post processing for a request message. Intended to be called after
+     * the invocation of the request chain returns, to permit cleanup/error handling
+     * if required
+     * @param msg The request Message
+     * @return the processed message
+     */
+    Message postProcessRequest(Message msg);
+
+    /**
+     * Post processing for a request message where an exception was thrown. 
+     * Intended to be called after the invocation of the request chain returns, 
+     * to permit cleanup/error handling if required
+     * @param msg The request Message
+     * @param e a Thowable which is some form of exception thrown during the processing
+     * of the request message by the invocation chain
+     * @return the processed message
+     */
+    Message postProcessRequest(Message msg, Throwable e) throws Throwable;
     
     /**
      * Process a response message. Provided so that the synchronous
      * and asynchronous patterns can re-use the response message
      * processing 
      *
-     * @param msg The request Message
+     * @param msg The response Message
      * @return the processed message
      * 
      */
     Message processResponse(Message msg); 
-
-}
+    
+} // end interface InterceptorAsync

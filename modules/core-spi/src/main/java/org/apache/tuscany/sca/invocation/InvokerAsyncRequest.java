@@ -32,8 +32,9 @@ public interface InvokerAsyncRequest {
      *
      * @param msg The request Message
      * @return the processed message
+     * @throws Throwable 
      * 
      */
-    void invokeAsyncRequest(Message msg);   
+    void invokeAsyncRequest(Message msg) throws Throwable;   
 
 }
