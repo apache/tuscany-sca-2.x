@@ -60,15 +60,42 @@ public abstract class InterceptorAsyncImpl implements InterceptorAsync {
         return resultMsg;
     }
     
-    public void invokeAsyncRequest(Message msg) {
-        msg = processRequest(msg);
-        ((InvokerAsyncRequest)getNext()).invokeAsyncRequest(msg);
-    }
+    public void invokeAsyncRequest(Message msg) throws Throwable {
+    	try{ 
+	        msg = processRequest(msg);
+	        InvokerAsyncRequest theNext = (InvokerAsyncRequest)getNext();
+	        if( theNext != null ) theNext.invokeAsyncRequest(msg);
+	        postProcessRequest(msg);
+    	} catch (Throwable e) {
+    		postProcessRequest(msg, e);
+    	} // end try
+    } // end method invokeAsyncRequest
     
     public void invokeAsyncResponse(Message msg) {
         msg = processResponse(msg);
-        ((InvokerAsyncResponse)getPrevious()).invokeAsyncResponse(msg);
-    }
+        InvokerAsyncResponse thePrevious = (InvokerAsyncResponse)getPrevious();
+        if (thePrevious != null ) thePrevious.invokeAsyncResponse(msg);
+    } // end method invokeAsyncResponse
+
+    /**
+     * Basic null version of postProcessRequest - subclasses should override for any required
+     * real processing 
+     */
+    public Message postProcessRequest(Message msg) {
+    	// Default processing is to do nothing
+    	return msg;
+    } // end method postProcessRequest
+
+    /**
+     * Basic null version of postProcessRequest - subclasses should override for any required
+     * real processing 
+     * @throws Throwable 
+     */
+    public Message postProcessRequest(Message msg, Throwable e) throws Throwable {
+    	// Default processing is to rethrow the exception
+    	throw e;
+    } // end method postProcessRequest
+
     
     /**
      * A testing method while I use the local SCA binding wire to look 

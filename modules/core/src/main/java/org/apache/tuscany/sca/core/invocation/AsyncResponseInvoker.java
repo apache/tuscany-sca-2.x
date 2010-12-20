@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.core.invocation;
 
+import java.io.Serializable;
+
 import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
@@ -30,20 +32,33 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
  * and hides the decision about whether the response will be processed
  * natively or non-natively
  */
-public class AsyncResponseInvoker implements InvokerAsyncResponse {
+public class AsyncResponseInvoker implements InvokerAsyncResponse, Serializable {
     
-    RuntimeEndpoint requestEndpoint;
-    RuntimeEndpointReference responseEndpointReference;
-    
-    public AsyncResponseInvoker(Message requestMessage){
-        requestEndpoint = (RuntimeEndpoint)requestMessage.getTo();
-        responseEndpointReference = (RuntimeEndpointReference)requestMessage.getFrom();
-    }
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7992598227671386588L;
 	
+	RuntimeEndpoint requestEndpoint;
+    RuntimeEndpointReference responseEndpointReference; 
+    String responseTargetAddress;
+    String relatesToMsgID;
+    
+    public AsyncResponseInvoker(RuntimeEndpoint requestEndpoint,
+			RuntimeEndpointReference responseEndpointReference,
+			String responseTargetAddress, String relatesToMsgID) {
+		super();
+		this.requestEndpoint = requestEndpoint;
+		this.responseEndpointReference = responseEndpointReference;
+		this.responseTargetAddress = responseTargetAddress;
+		this.relatesToMsgID = relatesToMsgID;
+	} // end constructor
+
     /** 
      * If you have a Tuscany message you can call this
      */
     public void invokeAsyncResponse(Message responseMessage) {
+    	responseMessage.getHeaders().put("ASYNC_RESPONSE_INVOKER", this);
         if ((requestEndpoint.getBindingProvider() instanceof EndpointAsyncProvider) &&
              (((EndpointAsyncProvider)requestEndpoint.getBindingProvider()).supportsNativeAsync())){
             // process the response as a native async response
@@ -52,9 +67,25 @@ public class AsyncResponseInvoker implements InvokerAsyncResponse {
             // process the response as a non-native async response
             responseEndpointReference.invoke(responseMessage);
         }
-    }
+    } // end method invokeAsyncReponse(Message)
     
-    /**
+    public String getResponseTargetAddress() {
+		return responseTargetAddress;
+	}
+
+	public void setResponseTargetAddress(String responseTargetAddress) {
+		this.responseTargetAddress = responseTargetAddress;
+	}
+
+	public String getRelatesToMsgID() {
+		return relatesToMsgID;
+	}
+
+	public void setRelatesToMsgID(String relatesToMsgID) {
+		this.relatesToMsgID = relatesToMsgID;
+	}
+
+	/**
      * If you have Java beans you can call this and we'll create
      * a Tuscany message
      * 
@@ -66,5 +97,5 @@ public class AsyncResponseInvoker implements InvokerAsyncResponse {
         // turn args into a message
         Message responseMessage = null;
         invokeAsyncResponse(responseMessage);
-    }
-}
+    } // end method invokeAsyncResponse(Object)
+} // end class

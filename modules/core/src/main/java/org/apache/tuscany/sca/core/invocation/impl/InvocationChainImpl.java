@@ -94,6 +94,13 @@ public class InvocationChainImpl implements InvocationChain {
     }
     
     public Invoker getTailInvoker() {
+    	// ***
+    	int nodeCount = nodes.size();
+    	if( nodeCount > 0 ) {
+    		return nodes.get( nodeCount - 1).getInvoker();
+    	} // end if
+    	// ***
+    	
         // find the tail invoker 
         Invoker next = getHeadInvoker();
         Invoker tail = null;

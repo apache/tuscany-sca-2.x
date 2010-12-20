@@ -45,7 +45,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * Invoker for a endpoint or endpoint reference
  * @version $Rev$ $Date$
  */
-public class RuntimeInvoker implements Invoker{
+public class RuntimeInvoker implements Invoker, InvokerAsyncRequest {
     protected ExtensionPointRegistry registry;
     protected MessageFactory messageFactory;
     protected Invocable invocable;
@@ -70,7 +70,22 @@ public class RuntimeInvoker implements Invoker{
         } finally {
             ThreadMessageContext.setMessageContext(context);
         }
-    }
+    } // end method invokeBinding
+    
+    /**
+     * Async Invoke of the Binding Chain 
+     * @param msg - the message to use in the invocation
+     */
+    public void invokeBindingAsync(Message msg) {
+        Message context = ThreadMessageContext.setMessageContext(msg);
+        try {
+            ((InvokerAsyncRequest)invocable.getBindingInvocationChain().getHeadInvoker()).invokeAsyncRequest(msg);
+        } catch (Throwable t ) {
+        	// TODO - consider what best to do with exception
+        } finally {
+            ThreadMessageContext.setMessageContext(context);
+        } // end try
+    } // end method invokeBindingAsync
     
     public Message invoke(Message msg) {
         return invoke(msg.getOperation(), msg);
@@ -183,10 +198,13 @@ public class RuntimeInvoker implements Invoker{
      * @param msg the response message
      */
     public void invokeAsyncResponse(Message msg) {  
-        
-        InvocationChain chain = invocable.getInvocationChain(msg.getOperation());
+    	InvocationChain chain = invocable.getInvocationChain(msg.getOperation());
         Invoker tailInvoker = chain.getTailInvoker();
-        
         ((InvokerAsyncResponse)tailInvoker).invokeAsyncResponse(msg);       
-    }
+    } // end method invokeAsyncResponse
+
+	@Override
+	public void invokeAsyncRequest(Message msg) throws Throwable {
+		invokeAsync(msg);
+	} // end method invokeAsyncRequest
 }

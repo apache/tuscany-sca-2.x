@@ -248,9 +248,22 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         invoker.invokeAsync(msg);
     }
     
+    public void invokeAsync(Message msg){
+        invoker.invokeAsync(msg);
+    }
+    
     public void invokeAsyncResponse(Message msg){
-        invoker.invokeAsyncResponse(msg);
-    }    
+    	// If there is a Binding Chain, invoke it first...
+        InvocationChain chain = this.getBindingInvocationChain();
+        if( chain != null ) {
+        	Invoker tailInvoker = chain.getTailInvoker();
+        	((InvokerAsyncResponse)tailInvoker).invokeAsyncResponse(msg);
+        } // end if
+        
+        chain = this.getInvocationChain(msg.getOperation());
+        Invoker tailInvoker = chain.getTailInvoker();
+        ((InvokerAsyncResponse)tailInvoker).invokeAsyncResponse(msg);   
+    } // end method invokeAsyncResponse     
 
     /**
      * Navigate the component/componentType inheritence chain to find the leaf contract
