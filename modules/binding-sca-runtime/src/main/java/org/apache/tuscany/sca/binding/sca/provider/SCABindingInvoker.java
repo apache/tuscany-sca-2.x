@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.sca.provider;
 
+import org.apache.tuscany.sca.core.invocation.AsyncResponseInvoker;
 import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -73,14 +74,24 @@ public class SCABindingInvoker extends InterceptorAsyncImpl {
     public Message processRequest(Message msg){
         if (passByValue) {
             msg.setBody(mediator.copyInput(msg.getBody(), sourceOperation, targetOperation));
-        }
-        
+        } // end if
+         
         ep.getInvocationChains();
         if ( !ep.getCallbackEndpointReferences().isEmpty() ) {
             RuntimeEndpointReference asyncEPR = (RuntimeEndpointReference) ep.getCallbackEndpointReferences().get(0);
             // Place a link to the callback EPR into the message headers...
             msg.getHeaders().put("ASYNC_CALLBACK", asyncEPR );
-        }
+        } // end if
+        
+        if( ep.isAsyncInvocation() ) {
+            // Get the message ID 
+            String msgID = (String)msg.getHeaders().get("MESSAGE_ID");
+            
+            // Create a response invoker and add it to the message headers
+            AsyncResponseInvoker<RuntimeEndpointReference> respInvoker = 
+            	new AsyncResponseInvoker<RuntimeEndpointReference>(ep, null, epr, msgID);
+            msg.getHeaders().put("ASYNC_RESPONSE_INVOKER", respInvoker);
+        } // end if
         
         return msg;
     }
@@ -93,12 +104,23 @@ public class SCABindingInvoker extends InterceptorAsyncImpl {
             } else {
                 if (sourceOperation.getOutputType() != null) {
                     msg.setBody(mediator.copyOutput(msg.getBody(), sourceOperation, targetOperation));
-                }
-            }
-        }
+                } // end if
+            } // end if
+        } // end if
+        
+        // Handle async response Relates_To message ID value
+        @SuppressWarnings("unchecked")
+		AsyncResponseInvoker<RuntimeEndpointReference> respInvoker = 
+        	(AsyncResponseInvoker<RuntimeEndpointReference>)msg.getHeaders().get("ASYNC_RESPONSE_INVOKER");
+        if( respInvoker != null ) {
+	        RuntimeEndpointReference responseEPR = respInvoker.getResponseTargetAddress();
+	        msg.setFrom(responseEPR);
+        	String msgID = respInvoker.getRelatesToMsgID();
+	        msg.getHeaders().put("RELATES_TO", msgID);
+        } // end if
         
         return msg;
-    }
+    } // end method processResponse
     
     public boolean isLocalSCABIndingInvoker() {
         return true;
