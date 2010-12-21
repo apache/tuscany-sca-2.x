@@ -257,7 +257,9 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         InvocationChain chain = this.getBindingInvocationChain();
         if( chain != null ) {
         	Invoker tailInvoker = chain.getTailInvoker();
-        	((InvokerAsyncResponse)tailInvoker).invokeAsyncResponse(msg);
+        	if (tailInvoker != null) {
+        		((InvokerAsyncResponse)tailInvoker).invokeAsyncResponse(msg);
+			} // end if
         } // end if
         
         chain = this.getInvocationChain(msg.getOperation());
