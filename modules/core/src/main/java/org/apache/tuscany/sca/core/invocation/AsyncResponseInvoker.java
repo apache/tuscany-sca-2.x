@@ -31,8 +31,11 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
  * A class that wraps the mechanics for sending async responses
  * and hides the decision about whether the response will be processed
  * natively or non-natively
+ * 
+ * This class is generic, based on the type of targetAddress information required by
+ * the Binding that creates it
  */
-public class AsyncResponseInvoker implements InvokerAsyncResponse, Serializable {
+public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializable {
     
     /**
 	 * 
@@ -41,12 +44,12 @@ public class AsyncResponseInvoker implements InvokerAsyncResponse, Serializable 
 	
 	RuntimeEndpoint requestEndpoint;
     RuntimeEndpointReference responseEndpointReference; 
-    String responseTargetAddress;
+    T responseTargetAddress;
     String relatesToMsgID;
     
     public AsyncResponseInvoker(RuntimeEndpoint requestEndpoint,
 			RuntimeEndpointReference responseEndpointReference,
-			String responseTargetAddress, String relatesToMsgID) {
+			T responseTargetAddress, String relatesToMsgID) {
 		super();
 		this.requestEndpoint = requestEndpoint;
 		this.responseEndpointReference = responseEndpointReference;
@@ -69,11 +72,11 @@ public class AsyncResponseInvoker implements InvokerAsyncResponse, Serializable 
         }
     } // end method invokeAsyncReponse(Message)
     
-    public String getResponseTargetAddress() {
+    public T getResponseTargetAddress() {
 		return responseTargetAddress;
 	}
 
-	public void setResponseTargetAddress(String responseTargetAddress) {
+	public void setResponseTargetAddress(T responseTargetAddress) {
 		this.responseTargetAddress = responseTargetAddress;
 	}
 
