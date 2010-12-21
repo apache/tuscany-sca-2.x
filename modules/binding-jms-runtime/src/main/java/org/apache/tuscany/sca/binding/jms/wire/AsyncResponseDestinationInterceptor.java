@@ -105,7 +105,7 @@ public class AsyncResponseDestinationInterceptor extends InterceptorAsyncImpl {
             String msgID = (String)msg.getHeaders().get("MESSAGE_ID");
             
             // Create a response invoker and add it to the message headers
-            AsyncResponseInvoker respInvoker = new AsyncResponseInvoker(endpoint, null, asyncRespAddr, msgID);
+            AsyncResponseInvoker<String> respInvoker = new AsyncResponseInvoker<String>(endpoint, null, asyncRespAddr, msgID);
             msg.getHeaders().put("ASYNC_RESPONSE_INVOKER", respInvoker);
 
         } catch (JMSException e) {
@@ -130,7 +130,8 @@ public class AsyncResponseDestinationInterceptor extends InterceptorAsyncImpl {
 	 * @returns - the updated Tuscany message
 	 */
 	public Message processResponse(Message msg) {
-		AsyncResponseInvoker respInvoker = (AsyncResponseInvoker)msg.getHeaders().get("ASYNC_RESPONSE_INVOKER");
+		@SuppressWarnings("unchecked")
+		AsyncResponseInvoker<String> respInvoker = (AsyncResponseInvoker<String>)msg.getHeaders().get("ASYNC_RESPONSE_INVOKER");
 		if ( respInvoker == null ) return msg;
 		
 		String responseAddress = respInvoker.getResponseTargetAddress();
