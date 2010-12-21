@@ -22,6 +22,8 @@ package sample.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -50,7 +52,7 @@ class SampleWSDLProxy implements WSDLReference {
         this.ep = ep;
         mf = ep.getExtensionPoint(MessageFactory.class);
         repr = (RuntimeEndpointReference)epr;
-        ops = new HashMap<String, Operation>();
+        ops = new ConcurrentHashMap<String, Operation>();
         for(Operation o: wi.getOperations())
             ops.put(o.getName(), o);
     }
@@ -71,9 +73,9 @@ class SampleWSDLProxy implements WSDLReference {
         Message message = mf.createMessage();
         message.setBody(new Object[]{e});
         
-        // We could MESSAGE_ID here if required. If not the infrastructure
-        // will generate a UUID
-        String messageID = "myuniqueid";
+        // Generate MESSAGE_ID here. 
+        // String messageID = "myuniqueid";
+        String messageID = UUID.randomUUID().toString();
         message.getHeaders().put(Constants.MESSAGE_ID, messageID);
         
         // save the message id ready for when we process the response        
@@ -88,9 +90,5 @@ class SampleWSDLProxy implements WSDLReference {
             ex.printStackTrace();
         }
         
-        // if we don't provide a message id we can get the one the 
-        // infrastructure generates
-        //String messageID = (String) message.getHeaders().get(Constants.MESSAGE_ID);
-        //asyncMessageMap.put(messageID, op);
     }    
 }

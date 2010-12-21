@@ -49,7 +49,11 @@ class SampleAsyncResponseInvoker implements InvokerAsyncResponse {
 
     public void invokeAsyncResponse(final Message msg) {
         try {
-            String messageID = (String) msg.getHeaders().get(Constants.MESSAGE_ID);
+        	String messageID = (String) msg.getHeaders().get("RELATES_TO");
+            if (messageID == null ) {
+            	messageID = (String) msg.getHeaders().get(Constants.MESSAGE_ID);
+			} // end if
+            
             String forwardOpName = (String)asyncMessageMap.get(messageID);
             
             // process the async response

@@ -21,11 +21,13 @@ package sample.impl;
 
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.sca.core.invocation.AsyncResponseInvoker;
 import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLOperation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.oasisopen.sca.ServiceRuntimeException;
 import org.w3c.dom.Element;
 
 /**
@@ -55,6 +57,10 @@ class SampleWSDLInvoker extends InterceptorAsyncImpl {
     }
     
     public void invokeAsyncRequest(Message msg) {
+    	// Retrieve the async callback information
+    	AsyncResponseInvoker respInvoker = (AsyncResponseInvoker)msg.getHeaders().get("ASYNC_RESPONSE_INVOKER");
+    	if( respInvoker == null ) throw new ServiceRuntimeException("Async Implementation invoked with no response invoker");
+    	
         Message responseMsg = processRequest(msg);
         
         // in this sample programming model we make the async
@@ -62,11 +68,12 @@ class SampleWSDLInvoker extends InterceptorAsyncImpl {
         // component implementation itself doesn't get a chance to 
         // do async responses. 
         
-        // At this point we could serialize the ??? and pick it up again 
+        // At this point we could serialize the AsyncResponseInvoker and pick it up again 
         // later to send the async response
         
-        ((RuntimeEndpoint)msg.getTo()).invokeAsyncResponse(responseMsg);
-    }
+        //((RuntimeEndpoint)msg.getTo()).invokeAsyncResponse(responseMsg);
+        respInvoker.invokeAsyncResponse(responseMsg);
+    } // end method invokeAsyncRequest
     
     public Message processRequest(Message msg) {
         try {

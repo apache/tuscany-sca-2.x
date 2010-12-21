@@ -24,8 +24,12 @@ import static sample.Xutil.elem;
 import static sample.Xutil.text;
 import static sample.Xutil.xdom;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.w3c.dom.Element;
 
+import sample.Xutil.NodeBuilder;
 import sample.api.Java;
 import sample.api.WSDL;
 import sample.api.WSDLReference;
@@ -42,6 +46,7 @@ public class UpperSampleAsyncReferenceImpl {
     WSDLReference upper;
     
     Element response;
+    CountDownLatch latch = new CountDownLatch( 1 );
     
     public String upper(String s) {
         out.println("UpperSampleAsyncReferenceImpl.upper(" + s + ")");
@@ -49,16 +54,20 @@ public class UpperSampleAsyncReferenceImpl {
         // TODO - I'm passing in the non-wrapped version of the parameter
         //        here which doesn't seem right. Need to test that databinding
         //        wraps it correctly
-        final Element ureq = xdom("http://sample/upper-async", "s", text(s));
+        //final Element ureq = xdom("http://sample/upper-async", "s", text(s));
+        NodeBuilder node1 = elem("s", text(s));
+        final Element ureq = xdom("http://sample/upper-async", "upper", node1);
         upper.callAsync("upper", ureq);
         
         try {
             Thread.sleep(500);
+            latch.await(500, TimeUnit.SECONDS);
         } catch (Exception ex) {
             // do nothing
         }
         
-        return response.getTextContent();
+        if( response != null ) return response.getTextContent();
+        else return "upper did not get called back";
     }
     
     /**
@@ -69,5 +78,6 @@ public class UpperSampleAsyncReferenceImpl {
     public void upperCallback(Element response) {
         out.println("UpperSampleAsyncReferenceImpl.upperCallback(" + response.getTextContent() + ")");
         this.response = response;
+        latch.countDown();
     }
 }
