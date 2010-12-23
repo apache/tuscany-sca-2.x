@@ -279,21 +279,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                     endpointReference.getTargetEndpoint().setBinding(endpointReference.getBinding());
                     endpointReference.setStatus(EndpointReference.Status.RESOLVED_BINDING);
                 } else {
-                    Binding b = null;
-                    if (unknownEndpointHandler != null) {
-                        b = unknownEndpointHandler.handleUnknownEndpoint(endpointReference);
-                    }
-                    if (b != null) {
-                        Endpoint matchedEndpoint = new RuntimeEndpointImpl(extensionPoints);
-                        matchedEndpoint.setBinding(b);
-                        matchedEndpoint.setRemote(true);
-                        endpointReference.setTargetEndpoint(matchedEndpoint);
-                        endpointReference.setBinding(b);
-                        endpointReference.setUnresolved(false);
-                        endpointReference.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
-                        matchAudit.append("Match because the UnknownEndpointHandler provided a binding: " + b.getType() + " uri: " + b.getURI());
-                        matchAudit.appendSeperator();
-                    } else {
+                    processUnknownEndpoint(endpointReference, matchAudit);
+                    
+                    if (!endpointReference.getStatus().equals(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED)){
                         Monitor.error(monitor, 
                                       this, 
                                       "endpoint-validation-messages", 
@@ -303,7 +291,11 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                                                           monitor.getLastProblem().toString());
                     }
                 }
-            }             
+            } else {
+                // it's build time so just give the UnknownEndpoint code a chance
+                // without regard for the result
+                processUnknownEndpoint(endpointReference, matchAudit);
+            }
         } 
         
         logger.fine(matchAudit.toString());
@@ -366,6 +358,24 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
     
         // System.out.println("MATCH AUDIT:" + matchAudit.toString());
     }       
+        
+    private void processUnknownEndpoint(EndpointReference endpointReference, Audit matchAudit){
+        Binding b = null;
+        if (unknownEndpointHandler != null) {
+            b = unknownEndpointHandler.handleUnknownEndpoint(endpointReference);
+        }
+        if (b != null) {
+            Endpoint matchedEndpoint = new RuntimeEndpointImpl(extensionPoints);
+            matchedEndpoint.setBinding(b);
+            matchedEndpoint.setRemote(true);
+            endpointReference.setTargetEndpoint(matchedEndpoint);
+            endpointReference.setBinding(b);
+            endpointReference.setUnresolved(false);
+            endpointReference.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
+            matchAudit.append("Match because the UnknownEndpointHandler provided a binding: " + b.getType() + " uri: " + b.getURI());
+            matchAudit.appendSeperator();
+        }
+    }
    
     /**
      * Returns true if the reference has a callback
