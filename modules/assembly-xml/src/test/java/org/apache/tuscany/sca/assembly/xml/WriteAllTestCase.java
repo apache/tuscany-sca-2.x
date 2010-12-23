@@ -89,6 +89,7 @@ public class WriteAllTestCase {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(composite, bos, context);
         bos.close();
+        System.out.println("Writtent ouput is:\n" + bos);
         
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
         composite = staxProcessor.read(bis, Composite.class, context);
