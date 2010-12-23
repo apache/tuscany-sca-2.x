@@ -223,6 +223,9 @@ The following components come under Apache Software License 2.0
  abdera-i18n-1.1.1.jar
  abdera-parser-1.1.1.jar
  abdera-server-1.1.1.jar
+ activeio-core-3.1.2.jar
+ activemq-core-5.3.0.jar
+ activemq-protobuf-1.0.jar
  addressing-1.3.mar
  aopalliance-1.0.jar
  aspectjrt-1.6.8.jar
@@ -240,6 +243,8 @@ The following components come under Apache Software License 2.0
  commons-httpclient-3.1.jar
  commons-lang-2.3.jar
  commons-logging-1.1.1.jar
+ commons-logging-api-1.1.jar
+ commons-net-2.0.jar
  commons-pool-1.3.jar
  derby-10.4.1.3.jar
  dwr-2.0.3.jar
@@ -251,6 +256,8 @@ The following components come under Apache Software License 2.0
  geronimo-jpa_3.0_spec-1.1.1.jar
  geronimo-jta_1.1_spec-1.1.1.jar
  geronimo-j2ee-connector_1.5_spec-2.0.0.jar
+ geronimo-j2ee-management_1.0_spec-1.0.jar
+ geronimo-j2ee-management_1.1_spec-1.0.1.jar
  geronimo-kernel-2.0.1.jar
  geronimo-transaction-2.1.4.jar
  groovy-all-1.7.1.jar
@@ -267,6 +274,7 @@ The following components come under Apache Software License 2.0
  jetty-6.1.19.jar
  jetty-util-6.1.19.jar
  juli-6.0.26.jar
+ kahadb-5.3.0.jar
  log4j-1.2.15.jar
  myfaces-api-1.2.2.jar
  myfaces-impl-1.2.2.jar
