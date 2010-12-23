@@ -52,8 +52,8 @@ public interface Phase {
     // Service operation chains
     
     String SERVICE_BINDING = "service.binding"; // The first phase for incoming invocations via a service
-    String SERVICE_POLICY = "service.policy"; // service policy handling
     String SERVICE_INTERFACE = "service.interface"; // data validation and transformation
+    String SERVICE_POLICY = "service.policy"; // service policy handling
     String SERVICE = "component.service"; // TODO: not sure if we need to have this phase
     String IMPLEMENTATION_POLICY = "implementation.policy"; // implementation policy handling
     String IMPLEMENTATION = "component.implementation"; // implementation invoker

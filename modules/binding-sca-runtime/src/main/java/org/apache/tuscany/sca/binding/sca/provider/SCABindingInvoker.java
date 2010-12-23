@@ -61,7 +61,7 @@ public class SCABindingInvoker extends InterceptorAsyncImpl {
      * @see org.apache.tuscany.sca.invocation.Interceptor#getNext()
      */
     public Invoker getNext() {
-        return chain.getHeadInvoker(Phase.SERVICE_POLICY);
+        return chain.getHeadInvoker(Phase.SERVICE_INTERFACE);
     }
 
     /**
