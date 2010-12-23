@@ -15,9 +15,9 @@ Bundle-Description: Apache Tuscany SCA Extensibility for Eclipse Equin
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Import-Package: org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.extensibility;version="2.0.0",
- org.osgi.framework;version="1.4",
+ org.osgi.framework,
  org.osgi.framework.launch;version="1.0.0";resolution:=optional,
- org.osgi.util.tracker;version="1.4.2"
+ org.osgi.util.tracker
 Tuscany-Comment2: The system bundle exports javax.transaction* packages that only
  contains a subset of the classes
 DynamicImport-Package: org.apache.tuscany.sca.extensibility.equinox,

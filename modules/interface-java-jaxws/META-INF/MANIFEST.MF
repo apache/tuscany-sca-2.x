@@ -42,8 +42,8 @@ Import-Package: javax.jws,
  org.apache.tuscany.sca.policy;version="2.0.0",
  org.oasisopen.sca;version="2.0.0",
  org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional,
- org.objectweb.asm;version="3.1",
- org.objectweb.asm.util;version="3.1";resolution:=optional
+ org.objectweb.asm;resolution:=optional,
+ org.objectweb.asm.util;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.interface.java.jaxws
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
