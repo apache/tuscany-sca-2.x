@@ -44,7 +44,7 @@ public class RunTestCase {
     @BeforeClass
     public static void setUp() throws Exception {
         final NodeFactory nf = NodeFactory.newInstance();
-        node = nf.createNode(new Contribution("test", here()));
+        node = nf.createNode("test.composite", new Contribution("test", here()));
         node.start();
     }
 
