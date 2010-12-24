@@ -44,6 +44,24 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-sca-runtime</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws-runtime-jaxws-ri</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-data-api</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-domain-node</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -99,18 +117,6 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-wink</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-ws-runtime-jaxws-ri</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-data-api</artifactId>
             <version>${pom.version}</version>
         </dependency>
 
