@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-binding-sca-runtime</artifactId>
-    <name>Apache Tuscany SCA Binding SCA Model</name>
+    <name>Apache Tuscany SCA Binding SCA Runtime</name>
 
     <dependencies>
       

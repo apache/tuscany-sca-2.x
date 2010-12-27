@@ -96,6 +96,7 @@
          <groupId>org.apache.maven.plugins</groupId>
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
+           <argLine>-Xms256m -Xmx1024m</argLine>
            <excludes>
               <!-- exclude>**/POJO_8011_TestCase.java</exclude -->
            </excludes>

@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSText;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -39,7 +40,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  *
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSTextServiceInterceptor implements Interceptor {
+public class WireFormatJMSTextServiceInterceptor extends InterceptorAsyncImpl {
     private Invoker next;
     private RuntimeEndpoint endpoint;
     private JMSResourceFactory jmsResourceFactory;
@@ -112,4 +113,13 @@ public class WireFormatJMSTextServiceInterceptor implements Interceptor {
     public void setNext(Invoker next) {
         this.next = next;
     }
+    
+	public Message processRequest(Message msg) {
+		return invokeRequest(msg);
+	} // end method processRequest
+
+	public Message processResponse(Message msg) {
+		return invokeResponse(msg);
+	} // end method processResponse
+
 }

@@ -44,6 +44,7 @@ import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
@@ -73,13 +74,17 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.InterceptorAsync;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
 import org.apache.tuscany.sca.provider.EndpointProvider;
+import org.apache.tuscany.sca.provider.ImplementationAsyncProvider;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProviderFactory;
@@ -209,7 +214,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 
     public synchronized InvocationChain getBindingInvocationChain() {
         if (bindingInvocationChain == null) {
-            bindingInvocationChain = new InvocationChainImpl(null, null, false, phaseManager);
+            bindingInvocationChain = new InvocationChainImpl(null, null, false, phaseManager, isAsyncInvocation());
             initServiceBindingInvocationChains();
         }
         
@@ -224,7 +229,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     /**
      * A dummy invocation chain representing null as ConcurrentHashMap doesn't allow null values
      */
-    private static final InvocationChain NULL_CHAIN = new InvocationChainImpl(null, null, false, null);
+    private static final InvocationChain NULL_CHAIN = new InvocationChainImpl(null, null, false, null, false);
 
     public InvocationChain getInvocationChain(Operation operation) {
         InvocationChain cached = invocationChainMap.get(operation);
@@ -286,13 +291,21 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         return invoker.invoke(operation, msg);
     }
     
-    public void invokeAsync(Operation operation, Message msg) {
+    public void invokeAsync(Message msg){
+        invoker.invokeBindingAsync(msg);
+    } // end method invokeAsync(Message)
+    
+    public void invokeAsync(Operation operation, Message msg){
         msg.setOperation(operation);
         invoker.invokeAsync(msg);
+    } // end method invokeAsync(Operation, Message)
+    
+    public void invokeAsyncResponse(Message msg){
+        invoker.invokeAsyncResponse(msg);
     }
 
     /**
-     * Navigate the component/componentType inheritence chain to find the leaf contract
+     * Navigate the component/componentType inheritance chain to find the leaf contract
      * @param contract
      * @return
      */
@@ -344,7 +357,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                     + "#"
                     + service.getName());
             }
-            InvocationChain chain = new InvocationChainImpl(operation, targetOperation, false, phaseManager);
+            InvocationChain chain = new InvocationChainImpl(operation, targetOperation, false, phaseManager, isAsyncInvocation());
             if (operation.isNonBlocking()) {
                 addNonBlockingInterceptor(chain);
             }
@@ -359,6 +372,31 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         }
 
         wireProcessor.process(this);
+        
+        // If we have to support async and there is no binding chain
+        // then set the response path to point directly to the 
+        // binding provided async response handler
+        if (isAsyncInvocation() && 
+            bindingInvocationChain == null){
+            // fix up the operation chain response path to point back to the 
+            // binding provided async response handler
+            ServiceBindingProvider serviceBindingProvider = getBindingProvider();
+            if (serviceBindingProvider instanceof EndpointAsyncProvider){
+                EndpointAsyncProvider asyncEndpointProvider = (EndpointAsyncProvider)serviceBindingProvider;
+                InvokerAsyncResponse asyncResponseInvoker = asyncEndpointProvider.createAsyncResponseInvoker();
+                
+                for (InvocationChain chain : getInvocationChains()){
+                    Invoker invoker = chain.getHeadInvoker();
+                    if (invoker instanceof InterceptorAsync){
+                        ((InterceptorAsync)invoker).setPrevious(asyncResponseInvoker);
+                    } else {
+                        //TODO - throw error once the old async code is removed
+                    }
+                }
+            } else {
+                // TODO - throw error once the old async code is removed
+            }
+        }
     }
     
     /**
@@ -390,7 +428,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         
         // Create pseudo-reference
         ComponentReference reference = assemblyFactory.createComponentReference();
-    	ExtensionPointRegistry registry = compositeContext.getExtensionPointRegistry();
+    	  ExtensionPointRegistry registry = compositeContext.getExtensionPointRegistry();
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         JavaInterfaceFactory javaInterfaceFactory = (JavaInterfaceFactory)modelFactories.getFactory(JavaInterfaceFactory.class);
         JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
@@ -403,6 +441,14 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         String referenceName = endpoint.getService().getName() + "_asyncCallback";
         reference.setName(referenceName);
         reference.setForCallback(true);
+        // Add in "implementation" reference (really a dummy, but with correct interface)
+        Reference implReference = assemblyFactory.createReference();
+        implReference.setInterfaceContract(interfaceContract);
+        implReference.setName(referenceName);
+        implReference.setForCallback(true);
+        
+        reference.setReference(implReference);
+        // Set the created ComponentReference into the EPR
         epr.setReference(reference);
         
         // Create a binding
@@ -563,12 +609,45 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             }
 
         }
-
-        // TODO - add something on the end of the wire to invoke the
-        //        invocation chain. Need to split out the runtime
-        //        wire invoker into conversation, callback interceptors etc
-        bindingInvocationChain.addInvoker(invoker);
-
+        
+        // This is strategically placed before the RuntimeInvoker is added to the end of the
+        // binding chain as the RuntimeInvoker doesn't need to take part in the response
+        // processing and doesn't implement InvokerAsyncResponse
+        if (isAsyncInvocation()){
+            // fix up the invocation chains to point back to the 
+            // binding chain so that async response messages 
+            // are processed correctly
+            for (InvocationChain chain : getInvocationChains()){
+                Invoker invoker = chain.getHeadInvoker();
+                if (invoker instanceof InterceptorAsync){
+                    ((InterceptorAsync)invoker).setPrevious((InvokerAsyncResponse)bindingInvocationChain.getTailInvoker());
+                } else {
+                    // TODO - raise an error. Not doing that while
+                    //        we have the old async mechanism in play
+                }
+            }
+            
+            // fix up the binding chain response path to point back to the 
+            // binding provided async response handler
+            ServiceBindingProvider serviceBindingProvider = getBindingProvider();
+            if (serviceBindingProvider instanceof EndpointAsyncProvider){
+                EndpointAsyncProvider asyncEndpointProvider = (EndpointAsyncProvider)serviceBindingProvider;
+                InvokerAsyncResponse asyncResponseInvoker = asyncEndpointProvider.createAsyncResponseInvoker();
+                if (bindingInvocationChain.getHeadInvoker() instanceof  InterceptorAsync){
+                    ((InterceptorAsync)bindingInvocationChain.getHeadInvoker()).setPrevious(asyncResponseInvoker);
+                } else {
+                  //TODO - throw error once the old async code is removed
+                }
+            } else {
+                //TODO - throw error once the old async code is removed
+            }
+        }
+        
+        // Add the runtime invoker to the end of the binding chain. 
+        // It mediates between the binding chain and selects the 
+        // correct invocation chain based on the operation that's
+        // been selected
+        bindingInvocationChain.addInvoker(invoker);        
     }
 
     /**
@@ -630,7 +709,30 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 
         if (provider != null) {
             Invoker invoker = null;
-            invoker = provider.createInvoker((RuntimeComponentService)service, operation);
+            RuntimeComponentService runtimeService = (RuntimeComponentService)service;
+            if (runtimeService.getName().endsWith("_asyncCallback")){
+                if (provider instanceof ImplementationAsyncProvider){
+                    invoker = (Invoker)((ImplementationAsyncProvider)provider).createAsyncResponseInvoker(operation);
+                } else {
+                    // TODO - This should be an error but taking account of the 
+                    // existing non-native async support
+                    invoker = provider.createInvoker((RuntimeComponentService)service, operation); 
+/*                    
+                    throw new ServiceRuntimeException("Component " +
+                            this.getComponent().getName() +
+                            " Service " +
+                            getService().getName() +
+                            " implementation provider doesn't implement ImplementationAsyncProvider but the implementation uses a " + 
+                            "refrence interface with the asyncInvocation intent set" +
+                            " - [" + this.toString() + "]");
+*/
+                }
+            } else if (isAsyncInvocation() && 
+                       provider instanceof ImplementationAsyncProvider){
+                invoker = (Invoker)((ImplementationAsyncProvider)provider).createAsyncInvoker((RuntimeComponentService)service, operation);
+            } else {
+                invoker = provider.createInvoker((RuntimeComponentService)service, operation);
+            }
             chain.addInvoker(invoker);
         }
         // TODO - EPR - don't we need to get the policy from the right level in the 

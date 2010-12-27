@@ -58,7 +58,7 @@ public class RunWSTestCase {
     public static void setUp() throws Exception {
         // Start test composite on a Tuscany node
         final NodeFactory nf = NodeFactory.newInstance();
-        node = nf.createNode(new Contribution("test", here()));
+        node = nf.createNode("test.composite", new Contribution("test", here()));
         node.start();
         
         // Mock up a test Web service on http://localhost:8086/wsupper

@@ -43,13 +43,4 @@
 
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>jdk15</id>
-            <activation>
-                <jdk>1.5</jdk>
-            </activation>
-        </profile>
-    </profiles>
-
 </project>

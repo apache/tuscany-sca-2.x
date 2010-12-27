@@ -21,9 +21,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-samples</artifactId>
+        <artifactId>tuscany-samples-extending-tuscany</artifactId>
         <version>2.0-Beta2-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>sample-implementation-extension</artifactId>
     <name>Apache Tuscany SCA Sample Implementation Extension</name>
@@ -32,13 +32,20 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-base-runtime</artifactId>
+            <artifactId>tuscany-base-runtime-pom</artifactId>
+            <type>pom</type>
             <version>2.0-Beta2-SNAPSHOT</version>
         </dependency>  
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
+            <version>2.0-Beta2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-jms-runtime</artifactId>
             <version>2.0-Beta2-SNAPSHOT</version>
         </dependency>
         

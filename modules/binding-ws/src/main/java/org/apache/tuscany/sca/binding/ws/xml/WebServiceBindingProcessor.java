@@ -45,6 +45,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -78,6 +79,7 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
     private PolicyFactory policyFactory;
     private PolicySubjectProcessor policyProcessor;
     //private PolicyFactory intentAttachPointTypeFactory;
+    private StAXHelper staxHelper;
     
     
     public WebServiceBindingProcessor(ExtensionPointRegistry extensionPoints) {
@@ -87,6 +89,7 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
         this.wsFactory = modelFactories.getFactory(WebServiceBindingFactory.class);
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
+        staxHelper = StAXHelper.getInstance(extensionPoints);
     }
     
     /**
@@ -358,7 +361,7 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
         }
 
         if (wsBinding.getEndPointReference() != null) {
-            EndPointReferenceHelper.writeEndPointReference(wsBinding.getEndPointReference(), writer);
+            EndPointReferenceHelper.writeEndPointReference(wsBinding.getEndPointReference(), writer, staxHelper);
         }
 
         writer.writeEndElement();

@@ -29,14 +29,18 @@ import org.apache.tuscany.sca.binding.jms.host.JMSServiceListener;
 import org.apache.tuscany.sca.binding.jms.host.JMSServiceListenerDetails;
 import org.apache.tuscany.sca.binding.jms.host.JMSServiceListenerFactory;
 import org.apache.tuscany.sca.binding.jms.transport.TransportServiceInterceptor;
+import org.apache.tuscany.sca.binding.jms.wire.AsyncResponseDestinationInterceptor;
 import org.apache.tuscany.sca.binding.jms.wire.CallbackDestinationInterceptor;
 import org.apache.tuscany.sca.binding.jms.wire.OperationPropertiesInterceptor;
+import org.apache.tuscany.sca.binding.sca.provider.SCABindingAsyncResponseInvoker;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
 import org.apache.tuscany.sca.provider.EndpointProvider;
 import org.apache.tuscany.sca.provider.OperationSelectorProvider;
 import org.apache.tuscany.sca.provider.OperationSelectorProviderFactory;
@@ -52,7 +56,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  * 
  * @version $Rev$ $Date$
  */
-public class JMSBindingServiceBindingProvider implements EndpointProvider, JMSServiceListenerDetails {
+public class JMSBindingServiceBindingProvider implements EndpointAsyncProvider, JMSServiceListenerDetails {
     private static final Logger logger = Logger.getLogger(JMSBindingServiceBindingProvider.class.getName());
 
     private ExtensionPointRegistry registry;
@@ -202,7 +206,11 @@ public class JMSBindingServiceBindingProvider implements EndpointProvider, JMSSe
                                     new CallbackDestinationInterceptor(endpoint));
 
         bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT, new HeaderServiceInterceptor(jmsBinding));
-        
+
+        // add async response interceptor after header interceptor
+        bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT,
+                                    new AsyncResponseDestinationInterceptor(endpoint));
+
         // add request wire format
         bindingChain.addInterceptor(requestWireFormatProvider.getPhase(), 
                                     requestWireFormatProvider.createInterceptor());
@@ -242,5 +250,16 @@ public class JMSBindingServiceBindingProvider implements EndpointProvider, JMSSe
     public RuntimeEndpoint getEndpoint() {
         return endpoint;
     }
+
+    /**
+     * Indicates that this service binding does support native async service invocations
+     */
+	public boolean supportsNativeAsync() {
+		return true;
+	} // end method supportsNativeAsync
+
+	public InvokerAsyncResponse createAsyncResponseInvoker() {
+		return new JMSBindingAsyncResponseInvoker(null, endpoint);
+	} // end method createAsyncResponseInvoker
 
 }

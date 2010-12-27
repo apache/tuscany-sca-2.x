@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.jms.wire;
 import java.util.List;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
+import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -28,7 +29,7 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
-public class OperationPropertiesInterceptor implements Interceptor {
+public class OperationPropertiesInterceptor extends InterceptorAsyncImpl {
     private Invoker next;
     private JMSBinding jmsBinding;
     private RuntimeComponentService service;
@@ -65,5 +66,12 @@ public class OperationPropertiesInterceptor implements Interceptor {
         }
         return msg;
     }
+    
+	public Message processRequest(Message msg) {
+		return invokeRequest(msg);
+	} // end method processRequest
 
+	public Message processResponse(Message msg) {
+		return msg;
+	} // end method processResponse
 }

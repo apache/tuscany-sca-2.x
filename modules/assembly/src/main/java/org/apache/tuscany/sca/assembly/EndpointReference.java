@@ -165,8 +165,8 @@ public interface EndpointReference extends Base, PolicySubject, Cloneable, Seria
     
     /**
      * When true this endpoint reference is able to process the invocation
-     * as being asynchronous. The forward call is effectively one-way
-     * and the response will arrive asynchronously via the CallbackEndpoint
+     * asynchronously. The forward call is effectively one-way
+     * and the response will arrive asynchronously
      * 
      * @return true if the reference is asynchronous
      */

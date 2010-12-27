@@ -29,7 +29,9 @@ import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
@@ -77,8 +79,15 @@ public class ReadWriteTestCase {
     public void testReadWrite() throws Exception {
         final InputStream is = getClass().getClassLoader().getResourceAsStream("test.composite");
         final Composite c = (Composite)xproc.read(xif.createXMLStreamReader(is), ctx);
+        System.out.println("Composite : " + c.getURI());
+        for (Component component : c.getComponents()){
+            System.out.println("  Component : " + component.getName());
+        }
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        xproc.write(c, xof.createXMLStreamWriter(bos), ctx);
+        XMLStreamWriter writer = xof.createXMLStreamWriter(bos);
+        xproc.write(c, writer, ctx);
+        writer.close();
+        System.out.println("Written XML = " + bos.toString());
         assertTrue(bos.toString().contains("class=\"sample.WelloTest\""));
     }
 }

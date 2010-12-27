@@ -38,7 +38,7 @@ public class InvocationChainImplTestCase {
     @Test
     public void testInsertAtEnd() throws Exception {
         Operation op = newOperation("foo");
-        InvocationChain chain = new InvocationChainImpl(op, op, true, new PhaseManager(new DefaultExtensionPointRegistry()));
+        InvocationChain chain = new InvocationChainImpl(op, op, true, new PhaseManager(new DefaultExtensionPointRegistry()), false);
         Interceptor inter2 = new MockInterceptor();
         Interceptor inter1 = new MockInterceptor();
         chain.addInterceptor(inter1);
@@ -51,7 +51,7 @@ public class InvocationChainImplTestCase {
     @Test
     public void testAddByPhase() throws Exception {
         Operation op = newOperation("foo");
-        InvocationChain chain = new InvocationChainImpl(op, op, false, new PhaseManager(new DefaultExtensionPointRegistry()));
+        InvocationChain chain = new InvocationChainImpl(op, op, false, new PhaseManager(new DefaultExtensionPointRegistry()), false);
         Interceptor inter1 = new MockInterceptor();
         Interceptor inter2 = new MockInterceptor();
         Interceptor inter3 = new MockInterceptor();

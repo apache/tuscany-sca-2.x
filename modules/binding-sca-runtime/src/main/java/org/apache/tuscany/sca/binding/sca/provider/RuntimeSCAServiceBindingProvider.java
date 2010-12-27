@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.binding.sca.provider;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
+import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
@@ -34,7 +36,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  *
  * @version $Rev$ $Date$
  */
-public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider {
+public class RuntimeSCAServiceBindingProvider implements EndpointAsyncProvider {
     private RuntimeEndpoint endpoint;
     private RuntimeComponentService service;
 
@@ -51,7 +53,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
         // then we need to create a remote endpoint 
         if (service.getInterfaceContract().getInterface().isRemotable()) {
 
-            if (scaBindingMapper.isRemotable()) {
+            if (scaBindingMapper.isRemotable(endpoint)) {
                 distributedProvider = new DelegatingSCAServiceBindingProvider(endpoint, scaBindingMapper);
             }
         }
@@ -98,4 +100,16 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
         }
     }
 
+    public void configure() {
+        // TODO Auto-generated method stub   
+    }
+    
+    public boolean supportsNativeAsync() {
+        return true;
+    }
+    
+    public InvokerAsyncResponse createAsyncResponseInvoker() {
+        return new SCABindingAsyncResponseInvoker(null, null);
+    }
+    
 }

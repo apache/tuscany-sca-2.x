@@ -23,8 +23,8 @@ import java.util.Date;
 
 import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Content;
-import org.apache.abdera.model.Link;
 import org.apache.abdera.model.Content.Type;
+import org.apache.abdera.model.Link;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.data.collection.Item;
 import org.apache.tuscany.sca.databinding.Mediator;
@@ -78,9 +78,11 @@ class AtomBindingUtil {
                 }
 
                 // Create the item from XML
+                /*
                 if (feedEntry.getContentElement().getElements().size() == 0) {
                     return null;
                 }
+                */
 
                 String value = feedEntry.getContent();
                 Object data = mediator.mediate(value, itemXMLType, itemClassType, null);

@@ -768,7 +768,7 @@ public class EndpointReferenceBuilderImpl {
      * to present the callback services and references. These are identifiable as their names
      * will match the name of the forward reference or service to which they relate. In the general
      * endpoint reference and endpoint processing we will have created endpoints and endpoint references 
-     * for these callback services and references. We now need to related forward enspoint references with
+     * for these callback services and references. We now need to related forward endpoint references with
      * callback endpoints and forward endpoints with callback endpoint references. Here's the model...
      * 
      *    Client Component                                     Target Component

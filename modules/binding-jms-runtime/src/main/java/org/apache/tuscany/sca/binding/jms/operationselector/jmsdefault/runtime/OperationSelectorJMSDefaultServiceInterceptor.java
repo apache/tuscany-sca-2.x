@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextXML;
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -50,7 +51,7 @@ import org.xml.sax.SAXException;
  *
  * @version $Rev$ $Date$
  */
-public class OperationSelectorJMSDefaultServiceInterceptor implements Interceptor {
+public class OperationSelectorJMSDefaultServiceInterceptor extends InterceptorAsyncImpl {
     
     private static final String ON_MESSAGE_METHOD_NAME = "onMessage";
     
@@ -193,6 +194,13 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
 
     public void setNext(Invoker next) {
         this.next = next;
-    }    
-   
+    }  
+    
+	public Message processRequest(Message msg) {
+		return invokeRequest(msg);
+	} // end method processRequest
+
+	public Message processResponse(Message msg) {
+		return msg;
+	} // end method processResponse   
 }

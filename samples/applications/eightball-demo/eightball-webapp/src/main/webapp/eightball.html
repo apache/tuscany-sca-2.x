@@ -1,0 +1,48 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<html>
+
+<head>
+<title>The Magic Eight Ball</title>
+</head>
+
+<body>
+
+<h2>The Magic Eight Ball</h2>
+
+The Tuscany Magic Eight Ball reaches into the future to find the answers to your questions. It knows what will be, and is willing to share this with you. <p>
+Just type in your question that can be answered "Yes" or "No", concentrate very, very hard, and click on the "Ask" button.<p>
+
+<form action="EightBallServlet" method="post">
+    <table>
+        <tr>
+            <td>
+                <input type="text" name="question" size="100">
+            </td>
+        </tr>
+        <tr>
+            <td align="left">
+                <button name="submit" type="submit">Ask</button>
+            </td>
+        </tr>
+    </table>
+</form>
+
+</body>
+</html>

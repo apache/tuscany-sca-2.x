@@ -58,7 +58,22 @@
       	  <version>2.0.0</version>    
            <scope>provided</scope>
    	   </dependency>
-    
+   	   
+   	<!-- Add the dependency for ActiveMQ as the JMS runtime to use -->
+        <!-- TODO - why is this here and not in the ActiveMQ specific module?-->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-core</artifactId>
+            <version>5.3.0</version>
+            <exclusions>
+               <exclusion>
+                   <groupId>org.springframework</groupId>
+	           <artifactId>spring-context</artifactId>
+               </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- end of addition for ActiveMQ -->
+   	   
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

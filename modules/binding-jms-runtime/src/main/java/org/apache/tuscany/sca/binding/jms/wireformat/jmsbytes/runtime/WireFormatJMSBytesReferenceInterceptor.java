@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytes;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -41,7 +42,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
  *
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSBytesReferenceInterceptor implements Interceptor {
+public class WireFormatJMSBytesReferenceInterceptor extends InterceptorAsyncImpl {
 
     private Invoker next;
     private RuntimeEndpointReference endpointReference;
@@ -120,4 +121,13 @@ public class WireFormatJMSBytesReferenceInterceptor implements Interceptor {
     public void setNext(Invoker next) {
         this.next = next;
     }
+    
+	public Message processRequest(Message msg) {
+		return invokeRequest(msg);
+	} // end method processRequest
+
+	public Message processResponse(Message msg) {
+		return invokeResponse(msg);
+	} // end method processResponse
+
 }

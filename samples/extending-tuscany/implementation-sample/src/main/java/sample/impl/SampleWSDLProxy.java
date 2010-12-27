@@ -22,10 +22,16 @@ package sample.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.w3c.dom.Element;
 
@@ -37,10 +43,16 @@ import sample.api.WSDLReference;
 class SampleWSDLProxy implements WSDLReference {
     final RuntimeEndpointReference repr;
     final Map<String, Operation> ops;
+    final ExtensionPointRegistry ep;
+    final MessageFactory mf;
+    Map<String, Object> asyncMessageMap;
 
-    SampleWSDLProxy(EndpointReference epr, Interface wi) {
+    SampleWSDLProxy(Map<String, Object> asyncMessageMap, EndpointReference epr, Interface wi, ExtensionPointRegistry ep) {
+        this.asyncMessageMap = asyncMessageMap; 
+        this.ep = ep;
+        mf = ep.getExtensionPoint(MessageFactory.class);
         repr = (RuntimeEndpointReference)epr;
-        ops = new HashMap<String, Operation>();
+        ops = new ConcurrentHashMap<String, Operation>();
         for(Operation o: wi.getOperations())
             ops.put(o.getName(), o);
     }
@@ -54,4 +66,29 @@ class SampleWSDLProxy implements WSDLReference {
             throw new RuntimeException(ex);
         }
     }
+    
+    @Override
+    public void callAsync(String op, Element e) {
+        // Asynchronously invoke the named operation on the endpoint reference
+        Message message = mf.createMessage();
+        message.setBody(new Object[]{e});
+        
+        // Generate MESSAGE_ID here. 
+        // String messageID = "myuniqueid";
+        String messageID = UUID.randomUUID().toString();
+        message.getHeaders().put(Constants.MESSAGE_ID, messageID);
+        
+        // save the message id ready for when we process the response        
+        asyncMessageMap.put(messageID, op);
+        
+        // We could add implementation specific headers here if required
+        //message.getHeaders().put(Constants.???, ???);
+        
+        try {
+            repr.invokeAsync(ops.get(op), message);
+        } catch (Throwable ex) {
+            ex.printStackTrace();
+        }
+        
+    }    
 }

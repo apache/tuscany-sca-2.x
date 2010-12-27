@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright(C) OASIS(R) 2005,2009. All Rights Reserved. 
+<!-- Copyright(C) OASIS(R) 2005,2010. All Rights Reserved. 
      OASIS trademark, IPR and other policies apply. -->
 <schema 
    targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912"
@@ -9,7 +9,7 @@
    elementFormDefault="qualified">
 
    <!-- SCA-Assembly XML Schema -->
-   <include schemaLocation="sca-core-1.1-cd05.xsd" />
+   <include schemaLocation="sca-core-1.1-cd06.xsd" />
 
    <!-- SCA-BPEL Component Implementation Type -->
    <element name="implementation.bpel" 

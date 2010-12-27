@@ -1,0 +1,36 @@
+Manifest-Version: 1.0
+Specification-Title: Axiom Impl
+Service-Component: OSGI-INF/serviceComponents.xml
+Built-By: veithen
+Created-By: Apache Maven Bundle Plugin
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.activation,javax.xml.namespace,javax.xml.stream,
+ org.apache.axiom.attachments,org.apache.axiom.attachments.utils,org.a
+ pache.axiom.ext.stax.datahandler,org.apache.axiom.om,org.apache.axiom
+ .om.impl,org.apache.axiom.om.impl.builder,org.apache.axiom.om.impl.ex
+ ception,org.apache.axiom.om.impl.serialize,org.apache.axiom.om.impl.t
+ raverse,org.apache.axiom.om.impl.util,org.apache.axiom.om.util,org.ap
+ ache.axiom.soap,org.apache.axiom.soap.impl.builder,org.apache.axiom.u
+ til,org.apache.axiom.util.base64,org.apache.axiom.util.namespace,org.
+ apache.axiom.util.stax,org.apache.commons.logging
+Specification-Version: 1.2.10
+Implementation-Vendor-Id: org.apache.ws.commons.axiom
+Bnd-LastModified: 1288443136116
+Bundle-Version: 1.2.10
+Bundle-Name: Axiom Impl
+Bundle-Description: The Axiom default implementation.
+Build-Jdk: 1.5.0_24
+Bundle-DocURL: http://www.apache.org/
+Export-Package: org.apache.axiom.om.impl.llom;version=1.2.10,org.apach
+ e.axiom.om.impl.llom.factory;version=1.2.10,org.apache.axiom.om.impl.
+ llom.util;version=1.2.10,org.apache.axiom.soap.impl.llom;version=1.2.
+ 10,org.apache.axiom.soap.impl.llom.soap11;version=1.2.10,org.apache.a
+ xiom.soap.impl.llom.soap12;version=1.2.10
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.ws.commons.axiom.axiom-impl
+Implementation-Title: Axiom Impl
+Tool: Bnd-0.0.238
+Specification-Vendor: The Apache Software Foundation
+Implementation-Version: 1.2.10
+Implementation-Vendor: The Apache Software Foundation

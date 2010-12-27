@@ -61,14 +61,19 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.InterceptorAsync;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
+import org.apache.tuscany.sca.provider.ImplementationAsyncProvider;
+import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
@@ -198,7 +203,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
 
     public synchronized InvocationChain getBindingInvocationChain() {
         if (bindingInvocationChain == null) {
-            bindingInvocationChain = new InvocationChainImpl(null, null, true, phaseManager);
+            bindingInvocationChain = new InvocationChainImpl(null, null, true, phaseManager, isAsyncInvocation());
             initReferenceBindingInvocationChains();
         }
         return bindingInvocationChain;
@@ -238,10 +243,29 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         return invoker.invoke(operation, msg);
     }
     
-    public void invokeAsync(Operation operation, Message msg) {
+    public void invokeAsync(Operation operation, Message msg){
         msg.setOperation(operation);
         invoker.invokeAsync(msg);
     }
+    
+    public void invokeAsync(Message msg){
+        invoker.invokeAsync(msg);
+    }
+    
+    public void invokeAsyncResponse(Message msg){
+    	// If there is a Binding Chain, invoke it first...
+        InvocationChain chain = this.getBindingInvocationChain();
+        if( chain != null ) {
+        	Invoker tailInvoker = chain.getTailInvoker();
+        	if (tailInvoker != null) {
+        		((InvokerAsyncResponse)tailInvoker).invokeAsyncResponse(msg);
+			} // end if
+        } // end if
+        
+        chain = this.getInvocationChain(msg.getOperation());
+        Invoker tailInvoker = chain.getTailInvoker();
+        ((InvokerAsyncResponse)tailInvoker).invokeAsyncResponse(msg);   
+    } // end method invokeAsyncResponse     
 
     /**
      * Navigate the component/componentType inheritence chain to find the leaf contract
@@ -309,7 +333,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
                         + "#"
                         + reference.getName());
                 }
-                InvocationChain chain = new InvocationChainImpl(operation, targetOperation, true, phaseManager);
+                InvocationChain chain = new InvocationChainImpl(operation, targetOperation, true, phaseManager, isAsyncInvocation());
                 if (operation.isNonBlocking()) {
                     addNonBlockingInterceptor(chain);
                 }
@@ -318,10 +342,27 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
             }            
         }
 
-        // Set the chains until it's fully populated. If we initialize too early, any exeception could
+        // Set the chains until it's fully populated. If we initialize too early, any exception could
         // leave this endpoint reference in a wrong state with an empty chain.
         chains = chainList;
         wireProcessor.process(this);
+        
+        if (isAsyncInvocation()){
+            // fix up all of the operation chain response paths
+            // to point back to the implementation provided
+            // async response handler
+            ImplementationProvider implementationProvider = ((RuntimeComponent)getComponent()).getImplementationProvider();
+            if (implementationProvider instanceof ImplementationAsyncProvider){
+                for (InvocationChain chain : getInvocationChains()){
+                    InvokerAsyncResponse asyncResponseInvoker = ((ImplementationAsyncProvider)implementationProvider).createAsyncResponseInvoker(chain.getSourceOperation());
+                    if (chain.getHeadInvoker() instanceof InterceptorAsync){
+                        ((InterceptorAsync)chain.getHeadInvoker()).setPrevious(asyncResponseInvoker);
+                    } else {
+                        //TODO - throw error once the old async code is removed
+                    }
+                }
+            }
+        }
     }
     
     /**
@@ -653,6 +694,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         } // end try
         
         service.setInterfaceContract(interfaceContract);
+        
         String serviceName = getReference().getName() + "_asyncCallback";
         service.setName(serviceName);
         service.getEndpoints().add(endpoint);
@@ -661,6 +703,13 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         
         // Set pseudo-service onto the component
         getComponent().getServices().add(service);
+        
+        // if the reference has a WSDL contract reset the response endpoint to be WSDL also
+        InterfaceContract referenceInterfaceContract = getComponentTypeReferenceInterfaceContract();
+        if (referenceInterfaceContract instanceof WSDLInterfaceContract){
+            WSDLInterfaceContract wsdlInterfaceContract = (WSDLInterfaceContract)endpoint.getGeneratedWSDLContract(interfaceContract);
+            service.setInterfaceContract(wsdlInterfaceContract);
+        }         
 
         // Create a binding
         // Mike had to go via the XML but I don't remember why

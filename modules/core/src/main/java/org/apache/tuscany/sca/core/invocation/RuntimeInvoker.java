@@ -32,18 +32,20 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.InvokerAsync;
+import org.apache.tuscany.sca.invocation.InvokerAsyncRequest;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.Invocable;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.work.WorkScheduler;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Invoker for a endpoint or endpoint reference
  * @version $Rev$ $Date$
  */
-public class RuntimeInvoker implements Invoker, InvokerAsync {
+public class RuntimeInvoker implements Invoker, InvokerAsyncRequest {
     protected ExtensionPointRegistry registry;
     protected MessageFactory messageFactory;
     protected Invocable invocable;
@@ -68,7 +70,22 @@ public class RuntimeInvoker implements Invoker, InvokerAsync {
         } finally {
             ThreadMessageContext.setMessageContext(context);
         }
-    }
+    } // end method invokeBinding
+    
+    /**
+     * Async Invoke of the Binding Chain 
+     * @param msg - the message to use in the invocation
+     */
+    public void invokeBindingAsync(Message msg) {
+        Message context = ThreadMessageContext.setMessageContext(msg);
+        try {
+            ((InvokerAsyncRequest)invocable.getBindingInvocationChain().getHeadInvoker()).invokeAsyncRequest(msg);
+        } catch (Throwable t ) {
+        	// TODO - consider what best to do with exception
+        } finally {
+            ThreadMessageContext.setMessageContext(context);
+        } // end try
+    } // end method invokeBindingAsync
     
     public Message invoke(Message msg) {
         return invoke(msg.getOperation(), msg);
@@ -111,15 +128,31 @@ public class RuntimeInvoker implements Invoker, InvokerAsync {
         }
     }
     
+    /**
+     * Initiate the sending of the forward part of an asynchronous
+     * exchange along the request part of the wire. 
+     * 
+     * @param msg the request message
+     */
     public void invokeAsync(Message msg) {
         if (invocable instanceof Endpoint) {
-            msg.setTo((Endpoint)invocable);
+            Endpoint ep = (Endpoint)invocable;
+            msg.setTo(ep);
+            if (!ep.isAsyncInvocation()){
+                throw new ServiceRuntimeException("Calling invokeAsync on a non-async endpoint - " + 
+                                                  ep);
+            }
         } else if (invocable instanceof EndpointReference) {
             RuntimeEndpointReference epr = (RuntimeEndpointReference)invocable;
+            if (!epr.isAsyncInvocation()){
+                throw new ServiceRuntimeException("Calling invokeAsync on a non-async endpoint reference - " + 
+                                                  epr);
+            }
             if (epr.isOutOfDate()) {
                 epr.rebuild();
             }
-            msg.setFrom((EndpointReference)invocable);
+            msg.setFrom(epr);
+            msg.setTo(epr.getTargetEndpoint());
         }
         
         Operation operation = msg.getOperation();
@@ -135,17 +168,44 @@ public class RuntimeInvoker implements Invoker, InvokerAsync {
         }
 
         // Perform the async invocation
-        InvokerAsync headInvoker = (InvokerAsync)chain.getHeadInvoker();
+        Invoker headInvoker = chain.getHeadInvoker();
 
         Message msgContext = ThreadMessageContext.setMessageContext(msg);
         try {
-            // TODO - is this the way we'll pass async messages down the chain?
-            headInvoker.invokeAsync(msg);
+            try {
+                ((InvokerAsyncRequest)headInvoker).invokeAsyncRequest(msg);
+            } catch (Throwable ex) {
+                // temporary fix to swallow the dummy exception that's
+                // thrown back to get past the response chain processing. 
+                if (!(ex instanceof AsyncResponseException)){
+                    throw new ServiceRuntimeException(ex);
+                }
+            }
         } finally {
             ThreadMessageContext.setMessageContext(msgContext);
         }
 
         return;
     }
+    
+    /**
+     * Initiate the sending of the response part of an asynchronous
+     * exchange along the response part of the wire. 
+     * 
+     * @param msg the response message
+     */
+    public void invokeAsyncResponse(Message msg) {  
+    	InvocationChain chain = invocable.getInvocationChain(msg.getOperation());
+        Invoker tailInvoker = chain.getTailInvoker();
+        try {
+            ((InvokerAsyncResponse)tailInvoker).invokeAsyncResponse(msg);   
+        } catch (Throwable ex) {
+            throw new ServiceRuntimeException(ex);
+        }    
+    } // end method invokeAsyncResponse
 
+    @Override
+    public void invokeAsyncRequest(Message msg) throws Throwable {
+        invokeAsync(msg);
+    } // end method invokeAsyncRequest
 }

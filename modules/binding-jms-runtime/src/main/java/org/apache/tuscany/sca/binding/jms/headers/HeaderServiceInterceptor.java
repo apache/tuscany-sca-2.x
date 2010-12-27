@@ -24,12 +24,13 @@ import javax.jms.JMSException;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
+import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 
-public class HeaderServiceInterceptor implements Interceptor {
+public class HeaderServiceInterceptor extends InterceptorAsyncImpl {
 
     private Invoker next;
     private JMSBinding jmsBinding;
@@ -40,8 +41,29 @@ public class HeaderServiceInterceptor implements Interceptor {
     }
 
     public Message invoke(Message msg) {
+    	msg = invokeRequest( msg );
         return invokeResponse(next.invoke(msg));
     }
+    
+    public Message invokeRequest(Message tuscanyMsg) {
+    	
+    	try {
+    	
+	    	javax.jms.Message jmsMsg = tuscanyMsg.getBody();
+	        
+	        // Handle MESSAGE_ID field of the JMS message, which is used to correlate async callbacks
+	        String msgID = (String)jmsMsg.getObjectProperty("MESSAGE_ID");
+	        if( msgID != null ) {
+	        	tuscanyMsg.getHeaders().put("MESSAGE_ID", msgID);
+	        } // end if 
+	        //
+        
+		} catch (JMSException e) {
+		    throw new JMSBindingException(e);
+		} // end try
+        
+        return tuscanyMsg;
+    } // end method invokeRequest
     
     public Message invokeResponse(Message tuscanyMsg) {
         try {
@@ -54,30 +76,43 @@ public class HeaderServiceInterceptor implements Interceptor {
             for (String propName : jmsBinding.getPropertyNames()) {
                 Object value = jmsBinding.getProperty(propName);
                 jmsMsg.setObjectProperty(propName, value);
-            }
+            } // end for
     
             Map<String, Object> operationProperties = jmsBinding.getOperationProperties(operationName);
             if (operationProperties != null) {
                 for (String propName : operationProperties.keySet()) {
                     Object value = operationProperties.get(propName);
                     jmsMsg.setObjectProperty(propName, value);
-                }
-            }
+                } // end for
+            } // end if
+            
+            // Put a "RELATES_TO" property into the response message
+            String relatesTo = (String)tuscanyMsg.getHeaders().get("RELATES_TO");
+            if( relatesTo != null ) {
+            	jmsMsg.setStringProperty("RELATES_TO", relatesTo);
+            } // end if
             
             return tuscanyMsg;
 
         } catch (JMSException e) {
             throw new JMSBindingException(e);
-        } 
-    }
+        } // end try 
+    } // end method invokeResponse
 
     public Invoker getNext() {
         return next;
-    }
+    } // end method getNext
 
     public void setNext(Invoker next) {
         this.next = next;
     }
-    
-  
-}
+
+	public Message processRequest(Message msg) {
+		return invokeRequest(msg);
+	} // end method processRequest
+
+	public Message processResponse(Message msg) {
+		return invokeResponse(msg);
+	} // end method processResponse
+
+} // end class

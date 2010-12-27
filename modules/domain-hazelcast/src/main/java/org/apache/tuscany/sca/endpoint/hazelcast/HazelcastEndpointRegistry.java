@@ -154,6 +154,8 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
                 throw new IllegalArgumentException(configFile, e);
             }
         } else {
+            // TUSCANY-3675 - domainRegistryURI properties don't seem to be copied into the
+            //                properties collection anywhere
             config = new XmlConfigBuilder().build();
             RegistryConfig rc = new RegistryConfig(properties);
             config.setPort(rc.getBindPort());

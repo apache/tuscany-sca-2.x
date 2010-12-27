@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.EndpointReferenceAsyncProvider;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -49,7 +50,7 @@ import org.oasisopen.sca.ServiceUnavailableException;
  *
  * @version $Rev$ $Date$
  */
-public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceProvider {
+public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceAsyncProvider {
 
     private RuntimeEndpointReference endpointReference;
     private RuntimeComponent component;
@@ -95,7 +96,7 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceProv
                         + reference.getName());
                 }
 
-                if (scaBindingMapper.isRemotable()) {
+                if (scaBindingMapper.isRemotable(endpointReference)) {
                     distributedProvider =
                         new DelegatingSCAReferenceBindingProvider(endpointReference, scaBindingMapper);
                 }
@@ -209,7 +210,10 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceProv
         if (distributedProvider instanceof EndpointReferenceProvider) {
             ((EndpointReferenceProvider)distributedProvider).configure();
         }
-
+    }
+    
+    public boolean supportsNativeAsync() {
+        return true;
     }
 
 }

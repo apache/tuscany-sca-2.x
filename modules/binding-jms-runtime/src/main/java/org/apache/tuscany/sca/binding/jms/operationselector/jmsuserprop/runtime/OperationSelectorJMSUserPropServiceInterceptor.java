@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.operationselector.OperationSelectorJMSUserProp;
+import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -39,7 +40,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  * <operationSelector.jmsUser propertName="MyHeaderProperty"/>
  * 
  */
-public class OperationSelectorJMSUserPropServiceInterceptor implements Interceptor {
+public class OperationSelectorJMSUserPropServiceInterceptor extends InterceptorAsyncImpl {
 
     private Invoker next;
     private RuntimeEndpoint endpoint;
@@ -104,4 +105,11 @@ public class OperationSelectorJMSUserPropServiceInterceptor implements Intercept
         this.next = next;
     }
 
+	public Message processRequest(Message msg) {
+		return invokeRequest(msg);
+	} // end method processRequest
+
+	public Message processResponse(Message msg) {
+		return msg;
+	} // end method processResponse
 }

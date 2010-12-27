@@ -82,6 +82,13 @@ public interface InvocationChain {
     Invoker getHeadInvoker();
     
     /**
+     * Returns the last invoker in the chain.
+     *
+     * @return The last invoker in the chain
+     */
+    Invoker getTailInvoker();    
+    
+    /**
      * Get the first invoker that is on the same or later phase 
      * @param phase
      * @return The first invoker that is on the same or later phase
@@ -105,4 +112,16 @@ public interface InvocationChain {
      * @param allowsPBR
      */
     void setAllowsPassByReference(boolean allowsPBR);
+    
+    /** 
+     * Returns true if this chain must be able to support async 
+     * invocation. This will be as a consequence of the EPR/EP 
+     * detecting the asyncInvocation intent. The flag is set on
+     * construction and used as an internal guard against non
+     * async interceptors being added to a chain that expect to 
+     * be able to handle async calls
+     * 
+     * @return true is the chain supports async invocation.
+     */
+    boolean isAsyncInvocation();
 }

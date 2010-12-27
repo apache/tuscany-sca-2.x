@@ -22,11 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.InterceptorAsync;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.InvokerAsyncRequest;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 
@@ -43,12 +47,14 @@ public class InvocationChainImpl implements InvocationChain {
     private final PhaseManager phaseManager;
     private boolean forReference;
     private boolean allowsPassByReference;
+    private boolean isAsyncInvocation;
 
-    public InvocationChainImpl(Operation sourceOperation, Operation targetOperation, boolean forReference, PhaseManager phaseManager) {
+    public InvocationChainImpl(Operation sourceOperation, Operation targetOperation, boolean forReference, PhaseManager phaseManager, boolean isAsyncInvocation) {
         this.targetOperation = targetOperation;
         this.sourceOperation = sourceOperation;
         this.forReference = forReference;
         this.phaseManager = phaseManager;
+        this.isAsyncInvocation = isAsyncInvocation;
     }
 
     public Operation getTargetOperation() {
@@ -87,6 +93,40 @@ public class InvocationChainImpl implements InvocationChain {
         return nodes.isEmpty() ? null : nodes.get(0).getInvoker();
     }
     
+    public Invoker getTailInvoker() {
+    	// ***
+    	int nodeCount = nodes.size();
+    	if( nodeCount > 0 ) {
+    		return nodes.get( nodeCount - 1).getInvoker();
+    	} // end if
+    	// ***
+    	
+        // find the tail invoker 
+        Invoker next = getHeadInvoker();
+        Invoker tail = null;
+        while (next != null){
+            tail = next;
+            if (next instanceof Interceptor){
+                // TODO - hack to get round SCA binding optimization
+                //        On the reference side this loop will go all the way 
+                //        across to the service invoker so stop looking if we find 
+                //        an invoker with no "previous" pointer. This will be the point
+                //        where the SCA binding invoker points to the head of the 
+                //        service chain
+                if (!(next instanceof InterceptorAsync) || 
+                     ((InterceptorAsyncImpl)next).isLocalSCABIndingInvoker()){
+                    break;
+                }
+                
+                next = ((Interceptor)next).getNext();
+            } else {
+                next = null;
+            }
+        }
+
+        return tail;
+    }
+    
     public Invoker getHeadInvoker(String phase) {
         int index = phaseManager.getAllPhases().indexOf(phase);
         if (index == -1) {
@@ -119,6 +159,18 @@ public class InvocationChainImpl implements InvocationChain {
     }
 
     private void addInvoker(String phase, Invoker invoker) {
+        if (isAsyncInvocation &&
+            !(invoker instanceof InvokerAsyncRequest) &&
+            !(invoker instanceof InvokerAsyncResponse) ){
+            // TODO - should raise an error but don't want to break
+            //        the existing non-native async support
+/*            
+            throw new IllegalArgumentException("Trying to add synchronous invoker " +
+                                               invoker.getClass().getName() +
+                                               " to asynchronous chain");
+*/                                             
+        }
+        
         int index = phaseManager.getAllPhases().indexOf(phase);
         if (index == -1) {
             throw new IllegalArgumentException("Invalid phase name: " + phase);
@@ -149,11 +201,19 @@ public class InvocationChainImpl implements InvocationChain {
         if (before != null) {
             if (before.getInvoker() instanceof Interceptor) {
                 ((Interceptor)before.getInvoker()).setNext(invoker);
+                if ((invoker instanceof InterceptorAsync) &&
+                    (before.getInvoker() instanceof InvokerAsyncResponse)) {
+                    ((InterceptorAsync) invoker).setPrevious((InvokerAsyncResponse)before.getInvoker());
+                }
             }
         }
         if (after != null) {
             if (invoker instanceof Interceptor) {
                 ((Interceptor)invoker).setNext(after.getInvoker());
+                if ((after.getInvoker() instanceof InterceptorAsync) &&
+                    (invoker instanceof InvokerAsyncResponse)){
+                    ((InterceptorAsync) after.getInvoker()).setPrevious((InvokerAsyncResponse)invoker);
+                }
             }
         }
 
@@ -203,6 +263,10 @@ public class InvocationChainImpl implements InvocationChain {
         public String toString() {
             return "(" + phaseIndex + ")" + invoker;
         }
+    }
+    
+    public boolean isAsyncInvocation() {
+        return isAsyncInvocation;
     }
 
 }

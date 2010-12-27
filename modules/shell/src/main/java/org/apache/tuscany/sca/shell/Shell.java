@@ -319,12 +319,7 @@ public class Shell {
             while ((l = r.readLine()) != null) {
                 out.println(l);
                 String[] toks = l != null ? l.trim().split(" ") : "".split(" ");
-                List<String> toksList = new ArrayList<String>();
-                for (String s : toks) {
-                    if (s != null && s.trim().length() > 0) {
-                        toksList.add(s);
-                    }
-                }
+                List<String> toksList = getTokens(toks);
                 apply(eval(toksList));
             }
         } finally {
@@ -488,14 +483,46 @@ public class Shell {
             l = ((BufferedReader)r).readLine();
             history.add(l);
         }
+        
         String[] toks = l != null ? l.trim().split(" ") : "bye".split(" ");
+        return getTokens(toks);
+    }
+
+    /**
+     * Parse the string into tokens, which may include quoted strings
+     */
+    List<String> getTokens(String[] toks) {
         List<String> toksList = new ArrayList<String>();
-        for (String s : toks) {
-            if (s != null && s.trim().length() > 0) {
-                toksList.add(s);
+        for (int i=0; i<toks.length; i++) {
+            if (toks[i] != null && toks[i].trim().length() > 0) {
+                int j = quotedString(toks, i);
+                if (j > -1) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(toks[i]);
+                    for (int k=i+1; k<=j; k++) {
+                        sb.append(" ");
+                        sb.append(toks[k]);
+                    }
+                    i = j;
+                    String s = sb.toString();
+                    toksList.add(s.substring(1, s.length()-1));
+                } else {
+                    toksList.add(toks[i]);
+                }
             }
         }
         return toksList;
+    }
+    
+    int quotedString(String[] toks, int i) {
+        if (toks[i].startsWith("\"") || toks[i].startsWith("'")) {
+            for (int j=i+1; j<toks.length; j++) {
+                if (toks[j].endsWith(toks[i].substring(0,0))) {
+                    return j;
+                }
+            }
+        }
+        return -1;
     }
 
     Callable<Boolean> eval(final List<String> toks) {

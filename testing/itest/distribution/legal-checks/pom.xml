@@ -64,6 +64,7 @@
                               <exclude>**/DEPENDENCIES</exclude>
                               <exclude>**/target/**/*.log</exclude>
                               <exclude>**/config.ini</exclude>
+                              <exclude>**/*.odg</exclude>
                               <exclude>tuscany-sca-2.0-Beta2-SNAPSHOT/features/configuration/config.ini</exclude>
                            </excludes>
                         </configuration>

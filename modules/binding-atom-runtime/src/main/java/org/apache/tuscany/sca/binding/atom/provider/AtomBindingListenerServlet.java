@@ -145,13 +145,13 @@ class AtomBindingListenerServlet extends HttpServlet {
         // Determine the collection item type
         if (getOperation != null) {
             itemXMLType = new DataTypeImpl<Class<?>>(String.class.getName(), String.class, String.class);
-            Class<?> itemClass = getOperation.getOutputType().getPhysical();
+            Class<?> itemClass = getOperation.getOutputType().getLogical().get(0).getPhysical();
             if (itemClass == org.apache.abdera.model.Entry.class) {
                 supportsFeedEntries = true;
             }
             //We assume that the item type is the same for both input and 
             //ouput for all operations on the interface
-            itemClassType = ((List<DataType>)getOperation.getOutputType().getLogical()).get(0);
+            itemClassType = getOperation.getOutputType().getLogical().get(0);
         }
     }
 

@@ -1,6 +1,10 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.host.http;uses:="javax.servlet,
- javax.servlet.http";version="2.0.0"
+Export-Package: org.apache.tuscany.sca.host.http;version="2.0.0";
+  uses:="javax.servlet,
+   org.apache.tuscany.sca.core,
+   org.apache.tuscany.sca.extensibility,
+   javax.servlet.http",
+ org.apache.tuscany.sca.host.http.client;version="2.0.0";uses:="org.apache.http.client"
 SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA HTTP Servlet Host Extension Point
 Bundle-Vendor: The Apache Software Foundation
@@ -11,6 +15,16 @@ Bundle-Description: Apache Tuscany SCA HTTP Servlet Host Extension Poi
  nt
 Import-Package: javax.servlet,
  javax.servlet.http,
+ org.apache.http;resolution:=optional,
+ org.apache.http.client;resolution:=optional,
+ org.apache.http.conn;resolution:=optional,
+ org.apache.http.conn.params;resolution:=optional,
+ org.apache.http.conn.scheme;resolution:=optional,
+ org.apache.http.conn.ssl;resolution:=optional,
+ org.apache.http.impl.client;resolution:=optional,
+ org.apache.http.impl.conn.tsccm;resolution:=optional,
+ org.apache.http.params;resolution:=optional,
+ org.apache.http.protocol;resolution:=optional,
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.extensibility;version="2.0.0",
  org.apache.tuscany.sca.host.http;version="2.0.0"

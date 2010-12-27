@@ -28,6 +28,7 @@ import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -82,7 +83,9 @@ public class ReadWriteTestCase {
         final InputStream is = getClass().getClassLoader().getResourceAsStream("domain-test.composite");
         final Composite c = (Composite)xproc.read(xif.createXMLStreamReader(is), ctx);
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        xproc.write(c, xof.createXMLStreamWriter(bos), ctx);
+        XMLStreamWriter writer = xof.createXMLStreamWriter(bos);
+        xproc.write(c, writer, ctx);
+        writer.close();
         assertTrue(bos.toString().contains("script=\"server_test.py\""));
     }
 }

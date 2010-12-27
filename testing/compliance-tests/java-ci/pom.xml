@@ -55,6 +55,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+           <groupId>org.codehaus.woodstox</groupId>
+           <artifactId>wstx-asl</artifactId>
+           <version>3.2.9</version>
+        </dependency>
+
     </dependencies>
 
   <build>
@@ -65,6 +71,7 @@
          <groupId>org.apache.maven.plugins</groupId>
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
+           <argLine>-Xms256m -Xmx1024m</argLine>
            <excludes>
            </excludes>
          </configuration>

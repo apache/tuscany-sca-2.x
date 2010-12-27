@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-api</artifactId>
-            <version>1.2.8</version>			
+            <version>1.2.10</version>			
             <exclusions>
                 <exclusion>
                     <groupId>xerces</groupId>
@@ -54,18 +54,42 @@
                     <groupId>xml-apis</groupId>
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-activation_1.1_spec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-javamail_1.4_spec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jaxen</groupId>
+                    <artifactId>jaxen</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-stax-api_1.0_spec</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-impl</artifactId>
-            <version>1.2.8</version>
+            <version>1.2.10</version>
             <scope>runtime</scope>
             <exclusions>
                 <exclusion>
                     <groupId>stax</groupId>
                     <artifactId>stax-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-activation_1.1_spec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-javamail_1.4_spec</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

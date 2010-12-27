@@ -206,7 +206,9 @@ public class TestRuntimeWire implements RuntimeEndpoint {
     }
     
     public void invokeAsync(Operation operation, Message msg) {
-        return;
+    }
+    
+    public void invokeAsyncResponse(Message msg) {
     }
 
     public void unbind() {
@@ -311,4 +313,15 @@ public class TestRuntimeWire implements RuntimeEndpoint {
         return null;
     }
 
+    public boolean isAsyncInvocation() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+
+	@Override
+	public void invokeAsync(Message msg) {
+		// TODO Auto-generated method stub
+		
+	}
 }

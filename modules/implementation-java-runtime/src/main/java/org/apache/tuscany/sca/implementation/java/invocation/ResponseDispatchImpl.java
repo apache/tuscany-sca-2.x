@@ -80,14 +80,11 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 	
 	// Service Reference used for the callback
 	private ServiceReference<AsyncResponseHandler<?>> callbackRef;
-	private String callbackAddress;
 	private String messageID;
 	
 	public ResponseDispatchImpl( Message msg ) {
 		super();
 		callbackRef = getAsyncCallbackRef( msg );
-    	
-		callbackAddress = msg.getFrom().getCallbackEndpoint().getURI();
 		
 		// TODO - why is WS stuff bleeding into general code?
     	messageID = (String) msg.getHeaders().get(MESSAGE_ID);

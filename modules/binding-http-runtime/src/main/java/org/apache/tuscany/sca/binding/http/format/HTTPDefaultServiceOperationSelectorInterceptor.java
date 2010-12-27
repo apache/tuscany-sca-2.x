@@ -23,7 +23,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.tuscany.sca.binding.http.provider.HTTPContext;
+import org.apache.tuscany.sca.common.http.HTTPContext;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -56,7 +56,7 @@ public class HTTPDefaultServiceOperationSelectorInterceptor implements Intercept
     @Override
     public Message invoke(Message msg) {
         HTTPContext context = msg.getBindingContext();
-        HttpServletRequest request = context.getRequest();
+        HttpServletRequest request = context.getHttpRequest();
         String path = request.getPathInfo();
         if (path.startsWith("/")) {
             path = path.substring(1);

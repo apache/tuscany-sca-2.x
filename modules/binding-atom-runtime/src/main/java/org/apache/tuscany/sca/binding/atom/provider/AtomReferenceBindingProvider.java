@@ -19,18 +19,11 @@
 
 package org.apache.tuscany.sca.binding.atom.provider;
 
-import java.net.URI;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpConnectionManager;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.http.client.HttpClient;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.atom.AtomBinding;
 import org.apache.tuscany.sca.databinding.Mediator;
+import org.apache.tuscany.sca.host.http.client.HttpClientFactory;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -76,11 +69,6 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
         //String authorization = "admin" + ":" + "admin";
         //authorizationHeader = "Basic " + new String(Base64.encodeBase64(authorization.getBytes()));
 
-        // Create an HTTP client
-        HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
-        connectionManager.getParams().setDefaultMaxConnectionsPerHost(10);
-        connectionManager.getParams().setConnectionTimeout(60000);
-        httpClient = new HttpClient(connectionManager);
     }
 
     public Invoker createInvoker(Operation operation) {
@@ -90,7 +78,6 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
 
             // Determine the collection item type
             itemXMLType = new DataTypeImpl<Class<?>>(String.class.getName(), String.class, String.class);
-            Class<?> itemClass = operation.getOutputType().getPhysical();
             DataType<XMLType> outputType = operation.getOutputType().getLogical().get(0);
             itemClassType = outputType;
             if (itemClassType.getPhysical() == org.apache.abdera.model.Entry.class) {
@@ -133,13 +120,15 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
         //httpClient.getState().setCredentials(new AuthScope(uri.getHost(), uri.getPort()), credentials);
 
         // Find the get operation on the reference interface
-        if (true) {
-            return;
-        }
+        // Create an HTTP client
+        HttpClientFactory clientFactory = new HttpClientFactory();
+        httpClient = clientFactory.createHttpClient();
     }
 
     public void stop() {
-    	
+        if (httpClient != null) {
+            httpClient.getConnectionManager().shutdown();
+        }    	
     }
     
     public boolean supportsOneWayInvocation() {

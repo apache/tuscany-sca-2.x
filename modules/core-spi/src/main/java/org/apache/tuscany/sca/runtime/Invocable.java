@@ -137,6 +137,22 @@ public interface Invocable {
      * @throws InvocationTargetException
      */
     void invokeAsync(Operation operation, Message msg);
+    
+    /**
+     * Asynchronously invoke an operation with a context message
+     * This invoke method assumes that the binding invocation chain is in force
+     * and that there will be an operation selector element there to
+     * determine which operation to call
+     * @param msg The request message
+     */
+    void invokeAsync(Message msg);
+    
+    /**
+     * Asynchronously invoke an operation with a context message
+     * @param tailInvoker the  invoker at the end of the chain
+     * @param msg The request message
+     */
+    void invokeAsyncResponse(Message msg);    
 
     /**
      * Get a list of policy providers

@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tuscany.sca.common.http.HTTPContext;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
@@ -44,8 +45,8 @@ public class HTTPBindingServiceServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HTTPContext bindingContext = new HTTPContext();
-        bindingContext.setRequest(request);
-        bindingContext.setResponse(response);
+        bindingContext.setHttpRequest(request);
+        bindingContext.setHttpResponse(response);
         Message msg = messageFactory.createMessage();
         msg.setBindingContext(bindingContext);
         wire.invoke(msg);

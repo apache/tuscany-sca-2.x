@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the Javascript Proxy Factory
-org.apache.tuscany.sca.binding.jsonrpc.js.dojo.JSONRPCBindingJavascriptProxyFactoryImpl;qname=http://tuscany.apache.org/xmlns/sca/1.1#binding.jsonrpc,model=org.apache.tuscany.sca.binding.atom.JSONRPCBinding
+org.apache.tuscany.sca.binding.jsonrpc.js.dojo.JSONRPCBindingJavascriptProxyFactoryImpl;qname=http://tuscany.apache.org/xmlns/sca/1.1#binding.jsonrpc,model=org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding

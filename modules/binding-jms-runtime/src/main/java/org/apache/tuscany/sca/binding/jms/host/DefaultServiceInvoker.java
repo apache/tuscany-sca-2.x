@@ -90,9 +90,15 @@ public class DefaultServiceInvoker implements MessageListener {
         
         // call the runtime wire - the response is handled by the 
         // transport interceptor
-        getEndpoint(targetBinding).invoke(tuscanyMsg);
+        //getEndpoint(targetBinding).invoke(tuscanyMsg);
+        RuntimeEndpoint endpoint = getEndpoint(targetBinding);
+        if( endpoint.isAsyncInvocation() ) {
+        	endpoint.invokeAsync(tuscanyMsg);
+        } else {
+        	endpoint.invoke(tuscanyMsg);
+        } // end if
             
-    } 
+    } // end method invokeService
     
     private RuntimeEndpoint getEndpoint(Binding targetBinding) {
         for(Endpoint ep: service.getEndpoints()) {

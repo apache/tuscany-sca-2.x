@@ -64,9 +64,9 @@ public class NodeConfigurationProcessorTestCase {
         InputStream is = getClass().getResourceAsStream("/org/apache/tuscany/sca/node/configuration/node1.xml");
         XMLInputFactory xmlInputFactory = factories.getFactory(XMLInputFactory.class);
         XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(is);
-        is.close();
         reader.nextTag();
         NodeConfiguration config = (NodeConfiguration) processor.read(reader, context);
+        is.close();        
         StringWriter sw = new StringWriter();
         XMLOutputFactory xmlOutputFactory = factories.getFactory(XMLOutputFactory.class);
         xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);

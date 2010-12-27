@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointReferenceImpl;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -55,11 +56,14 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.Qualifier;
+import org.apache.tuscany.sca.provider.EndpointReferenceAsyncProvider;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
+import org.apache.tuscany.sca.runtime.UnknownEndpointHandler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -81,6 +85,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
     protected BuilderExtensionPoint builders;
     protected CompositeActivator compositeActivator;
     protected Monitor monitor;
+    protected UnknownEndpointHandler unknownEndpointHandler;
 
 
     public EndpointReferenceBinderImpl(ExtensionPointRegistry extensionPoints) {
@@ -94,6 +99,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         
         MonitorFactory monitorFactory = utils.getUtility(MonitorFactory.class);
         monitor = monitorFactory.createMonitor();
+
+        this.unknownEndpointHandler = utils.getUtility(UnknownEndpointHandler.class);
         
         this.builders = extensionPoints.getExtensionPoint(BuilderExtensionPoint.class);
         this.compositeActivator = extensionPoints.getExtensionPoint(CompositeActivator.class);
@@ -272,15 +279,23 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                     endpointReference.getTargetEndpoint().setBinding(endpointReference.getBinding());
                     endpointReference.setStatus(EndpointReference.Status.RESOLVED_BINDING);
                 } else {
-                    Monitor.error(monitor, 
-                                  this, 
-                                  "endpoint-validation-messages", 
-                                  "NoEndpointsFound", 
-                                  endpointReference.toString()); 
-                    throw new ServiceRuntimeException("Unable to bind " + 
-                                                      monitor.getLastProblem().toString());
+                    processUnknownEndpoint(endpointReference, matchAudit);
+                    
+                    if (!endpointReference.getStatus().equals(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED)){
+                        Monitor.error(monitor, 
+                                      this, 
+                                      "endpoint-validation-messages", 
+                                      "NoEndpointsFound", 
+                                      endpointReference.toString()); 
+                        throw new ServiceRuntimeException("Unable to bind " + 
+                                                          monitor.getLastProblem().toString());
+                    }
                 }
-            }             
+            } else {
+                // it's build time so just give the UnknownEndpoint code a chance
+                // without regard for the result
+                processUnknownEndpoint(endpointReference, matchAudit);
+            }
         } 
         
         logger.fine(matchAudit.toString());
@@ -330,14 +345,37 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             }
         }
         
-        // if the reference is an async reference fluff up the 
-        // response service/endpoint
-        if (endpointReference.isAsyncInvocation()){
+        // TUSCANY-3783
+        // if the reference is an async reference and the binding doesn't support
+        // async natively fluff up the response service/endpoint
+        ReferenceBindingProvider referenceBindingProvider = ((RuntimeEndpointReference)endpointReference).getBindingProvider();
+        if ( referenceBindingProvider instanceof EndpointReferenceAsyncProvider &&
+             !((EndpointReferenceAsyncProvider)referenceBindingProvider).supportsNativeAsync() &&
+             endpointReference.isAsyncInvocation() && 
+             endpointReference.getCallbackEndpoint() == null) {
             ((RuntimeEndpointReference)endpointReference).createAsyncCallbackEndpoint();
         }
     
         // System.out.println("MATCH AUDIT:" + matchAudit.toString());
     }       
+        
+    private void processUnknownEndpoint(EndpointReference endpointReference, Audit matchAudit){
+        Binding b = null;
+        if (unknownEndpointHandler != null) {
+            b = unknownEndpointHandler.handleUnknownEndpoint(endpointReference);
+        }
+        if (b != null) {
+            Endpoint matchedEndpoint = new RuntimeEndpointImpl(extensionPoints);
+            matchedEndpoint.setBinding(b);
+            matchedEndpoint.setRemote(true);
+            endpointReference.setTargetEndpoint(matchedEndpoint);
+            endpointReference.setBinding(b);
+            endpointReference.setUnresolved(false);
+            endpointReference.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
+            matchAudit.append("Match because the UnknownEndpointHandler provided a binding: " + b.getType() + " uri: " + b.getURI());
+            matchAudit.appendSeperator();
+        }
+    }
    
     /**
      * Returns true if the reference has a callback
