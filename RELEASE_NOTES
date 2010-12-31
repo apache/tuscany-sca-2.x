@@ -1,5 +1,5 @@
-Apache Tuscany SCA 2.0-Beta1 June 2010 Release Notes
-=====================================================
+Apache Tuscany SCA 2.0-Beta2 January 2010 Release Notes
+=======================================================
 
 Apache Tuscany provides a runtime based on the Service Component
 Architecture. SCA is a set of specifications aimed at simplifying SOA
@@ -9,7 +9,7 @@ of Open Composite Services Architecture (Open CSA) - http://www.oasis-opencsa.or
 Overview
 --------
 
-The Apache Tuscany SCA 2.0-Beta1 release includes implementations of the
+The Apache Tuscany SCA 2.0-Beta2 release includes implementations of the
 main SCA specifications and recent updates from Open CSA drafts including:
 
         * SCA Assembly Model V1.1 
@@ -39,7 +39,7 @@ yet defined by SCA specifications, including:
 
 The Tuscany SCA Runtime can be configured as a single node SCA domain.
  
-For this Beta1 release the remote Domain support is disabled pending 
+For this Beta2 release the remote Domain support is disabled pending 
 some up-coming changes in the way that domains are addressed and accessed. 
 This means that the scaclient-* samples don't work and cross JVM applications 
 that rely on binding-sca won't work. 
