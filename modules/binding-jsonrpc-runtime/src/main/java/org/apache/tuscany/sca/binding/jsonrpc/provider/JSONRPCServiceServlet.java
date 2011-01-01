@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
@@ -24,9 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.net.URLDecoder;
-import java.security.MessageDigest;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +35,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.common.http.HTTPUtil;
 import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
@@ -52,7 +51,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Servlet that handles JSON-RPC requests invoking SCA services.
- * 
+ *
  * There is an instance of this Servlet for each <binding.jsonrpc>
  *
  * @version $Rev$ $Date$
@@ -61,14 +60,14 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
     private static final long serialVersionUID = 1L;
 
     transient MessageFactory messageFactory;
-    
+
     transient Binding binding;
     transient String serviceName;
     transient Object serviceInstance;
     transient RuntimeEndpoint endpoint;
     transient Class<?> serviceInterface;
 
-    public JSONRPCServiceServlet(MessageFactory messageFactory, 
+    public JSONRPCServiceServlet(MessageFactory messageFactory,
                                  RuntimeEndpoint endpoint,
                                  Class<?> serviceInterface,
                                  Object serviceInstance) {
@@ -95,7 +94,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         } else {
             try {
                 handleServiceRequest(request, response);
-                
+
             } catch(RuntimeException re) {
                 if (re.getCause() instanceof javax.security.auth.login.LoginException) {
                     response.setHeader("WWW-Authenticate", "BASIC realm=\"" + "ldap-realm" + "\"");
@@ -122,7 +121,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         if (charset == null) {
             charset = "UTF-8";
         }
-        
+
         CharArrayWriter data = new CharArrayWriter();
         if (request.getMethod().equals("GET")) {
             // if using GET Support (see http://groups.google.com/group/json-rpc/web/json-rpc-over-http)
@@ -144,9 +143,9 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
                 // JavaScript exceptions.
                 throw new RuntimeException("Unable to parse request", e);
             }
-            
+
         } else {
-            // default POST style 
+            // default POST style
             BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), charset));
 
             // Read the request into charArray
@@ -156,7 +155,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
                 data.write(buf, 0, ret);
             }
         }
-        
+
         JSONObject jsonReq = null;
         String method = null;
         //parse the JSON payload
@@ -170,7 +169,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
             throw new RuntimeException("Unable to parse request", e);
         }
 
-        // check if it's a system request 
+        // check if it's a system request
         // or a method invocation
         byte[] bout;
         try {
@@ -190,17 +189,17 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         // needed to support naughty browsers such as Konqueror and Safari
         // which do not honour the charset set in the response
         response.setContentType("text/plain;charset=utf-8");
-        
+
         //set Cache-Control to no-cache to avoid intermediary
         //proxy/reverse-proxy caches and always hit the server
         //that would identify if the value was current or not
         response.setHeader("Cache-Control", "no-cache");
         response.setHeader("Expires", new Date(0).toGMTString());
-        
+
         //handle etag if using GET
         if( request.getMethod().equals("GET")) {
-            String eTag = calculateETag(bout);
-            
+            String eTag = HTTPUtil.calculateHashETag(bout);
+
             // Test request for predicates.
             String predicate = request.getHeader( "If-Match" );
             if (( predicate != null ) && ( !predicate.equals(eTag) )) {
@@ -214,10 +213,10 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
                 response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
                 return;
             }
-            
+
             response.addHeader("ETag", eTag);
         }
-        
+
         OutputStream out = response.getOutputStream();
         out.write(bout);
         out.flush();
@@ -238,11 +237,11 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         out.flush();
         out.close();
     }
-    
+
     protected byte[] handleJSONRPCSystemInvocation(HttpServletRequest request, HttpServletResponse response, String requestData) throws IOException,
     UnsupportedEncodingException, JSONException {
         /*
-         * Create a new bridge for every request to avoid all the problems with 
+         * Create a new bridge for every request to avoid all the problems with
          * JSON-RPC-Java storing the bridge in the session
          */
         HttpSession session = request.getSession();
@@ -250,7 +249,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         JSONRPCBridge jsonrpcBridge = new JSONRPCBridge();
         jsonrpcBridge.registerObject("Service", serviceInstance, serviceInterface);
         session.setAttribute("JSONRPCBridge", jsonrpcBridge);
-        
+
         org.json.JSONObject jsonReq = null;
         JSONRPCResult jsonResp = null;
         jsonReq = new org.json.JSONObject(requestData);
@@ -265,7 +264,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
 
         return jsonResp.toString().getBytes("UTF-8");
     }
-    
+
     protected byte[] handleJSONRPCMethodInvocation(HttpServletRequest request, HttpServletResponse response, JSONObject jsonReq) throws IOException,
     UnsupportedEncodingException {
 
@@ -278,7 +277,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
             if ((method != null) && (method.indexOf('.') < 0)) {
                 jsonReq.putOpt("method", "Service" + "." + method);
             }
-            
+
             // Extract the arguments
             JSONArray array = jsonReq.getJSONArray("params");
             args = new Object[array.length()];
@@ -294,7 +293,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         // invoke the request
         Operation jsonOperation = findOperation(method);
         Object result = null;
-      
+
 
         // Invoke the get operation on the service implementation
         Message requestMessage = messageFactory.createMessage();
@@ -337,7 +336,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
                         return jsonResponse.toString().getBytes("UTF-8");
                     } catch (Exception e) {
                         throw new ServiceRuntimeException("Unable to create JSON response", e);
-                    }                    
+                    }
 
                 } else {
                     // regular operation returning some value
@@ -356,7 +355,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
                         return jsonResponse.toString().getBytes("UTF-8");
                     } catch (Exception e) {
                         throw new ServiceRuntimeException("Unable to create JSON response", e);
-                    }                    
+                    }
                 }
             }
         } else {
@@ -365,7 +364,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
             JSONRPCResult errorResult = new JSONRPCResult(JSONRPCResult.CODE_REMOTE_EXCEPTION, id, exception );
             return errorResult.toString().getBytes("UTF-8");
         }
- 
+
    }
 
     /**
@@ -378,12 +377,12 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         if (method.contains(".")) {
             method = method.substring(method.lastIndexOf(".") + 1);
         }
-    
-        List<Operation> operations = endpoint.getComponentServiceInterfaceContract().getInterface().getOperations(); 
+
+        List<Operation> operations = endpoint.getComponentServiceInterfaceContract().getInterface().getOperations();
             //endpoint.getComponentTypeServiceInterfaceContract().getInterface().getOperations();
             //componentService.getBindingProvider(binding).getBindingInterfaceContract().getInterface().getOperations();
 
-        
+
         Operation result = null;
         for (Operation o : operations) {
         	if (o.isDynamic())
@@ -395,21 +394,5 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         }
 
         return result;
-    } 
-    
-    private String calculateETag(byte[] content) {
-        String eTag = "invalid";
-        try {
-            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-            byte[] digest = messageDigest.digest(content);
-            BigInteger number = new BigInteger(1, digest);
-            StringBuffer sb = new StringBuffer('0');
-            sb.append(number.toString(16));
-            eTag = sb.toString();
-        } catch(Exception e) {
-            //ignore, we will return random etag
-            eTag =  Integer.toString((new java.util.Random()).nextInt(Integer.MAX_VALUE));
-        }
-        return eTag;
     }
 }
