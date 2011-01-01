@@ -35,7 +35,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.common.http.HTTPUtil;
+import org.apache.tuscany.sca.common.http.HTTPUtils;
 import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
@@ -198,7 +198,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
 
         //handle etag if using GET
         if( request.getMethod().equals("GET")) {
-            String eTag = HTTPUtil.calculateHashETag(bout);
+            String eTag = HTTPUtils.calculateHashETag(bout);
 
             // Test request for predicates.
             String predicate = request.getHeader( "If-Match" );

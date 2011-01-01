@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tuscany.sca.common.http.HTTPConstants;
 import org.apache.tuscany.sca.common.http.HTTPContentTypeMapper;
-import org.apache.tuscany.sca.common.http.HTTPUtil;
+import org.apache.tuscany.sca.common.http.HTTPUtils;
 
 
 /**
@@ -47,7 +47,7 @@ public class DojoResourceServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String contextRoot = URLDecoder.decode(HTTPUtil.getContextRoot(request), HTTPConstants.CHARACTER_ENCODING_UTF8);
+        String contextRoot = URLDecoder.decode(HTTPUtils.getContextRoot(request), HTTPConstants.CHARACTER_ENCODING_UTF8);
         String path = URLDecoder.decode(request.getRequestURI(), HTTPConstants.CHARACTER_ENCODING_UTF8);
 
         if( path.startsWith(contextRoot + "/dojo") ) {

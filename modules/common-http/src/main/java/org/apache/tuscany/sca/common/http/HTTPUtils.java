@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  *  @tuscany.spi.extension.asclient
  *
  */
-public class HTTPUtil {
+public class HTTPUtils {
 
     /**
      * Calculate the relative request path taking in consideration if

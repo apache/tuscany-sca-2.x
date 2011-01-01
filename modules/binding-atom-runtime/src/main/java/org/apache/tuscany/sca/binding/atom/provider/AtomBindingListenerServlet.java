@@ -52,7 +52,7 @@ import org.apache.abdera.parser.Parser;
 import org.apache.abdera.writer.WriterFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.sca.common.http.HTTPCacheContext;
-import org.apache.tuscany.sca.common.http.HTTPUtil;
+import org.apache.tuscany.sca.common.http.HTTPUtils;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -172,7 +172,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         //int servletPathLength = request.getContextPath().length() + request.getServletPath().length();
         //String path = URLDecoder.decode(request.getRequestURI().substring(servletPathLength), "UTF-8");
 
-        String path = URLDecoder.decode(HTTPUtil.getRequestPath(request), "UTF-8");
+        String path = URLDecoder.decode(HTTPUtils.getRequestPath(request), "UTF-8");
         
         logger.fine("get " + request.getRequestURI());
 
@@ -554,7 +554,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         }
 
         // Get the request path
-        String path = URLDecoder.decode(HTTPUtil.getRequestPath(request), "UTF-8");
+        String path = URLDecoder.decode(HTTPUtils.getRequestPath(request), "UTF-8");
 
         if (path == null || path.length() == 0 || path.equals("/")) {
             org.apache.abdera.model.Entry createdFeedEntry = null;
@@ -679,7 +679,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         }
 
         // Get the request path
-        String path = URLDecoder.decode(HTTPUtil.getRequestPath(request), "UTF-8");
+        String path = URLDecoder.decode(HTTPUtils.getRequestPath(request), "UTF-8");
 
         if (path != null && path.startsWith("/")) {
             String id = path.substring(1);
@@ -766,7 +766,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         }
 
         // Get the request path
-        String path = URLDecoder.decode(HTTPUtil.getRequestPath(request), "UTF-8");
+        String path = URLDecoder.decode(HTTPUtils.getRequestPath(request), "UTF-8");
 
         String id;
         if (path != null && path.startsWith("/")) {

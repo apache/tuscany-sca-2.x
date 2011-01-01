@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.QueryParam;
 
 import org.apache.tuscany.sca.common.http.HTTPContext;
-import org.apache.tuscany.sca.common.http.HTTPUtil;
+import org.apache.tuscany.sca.common.http.HTTPUtils;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
@@ -91,7 +91,7 @@ public class RPCOperationSelectorInterceptor implements Interceptor {
                 throw new RuntimeException("RPC Invocation only allowed over HTTP GET operations");
             }
 
-            String path = URLDecoder.decode(HTTPUtil.getRequestPath(bindingContext.getHttpRequest()), "UTF-8");
+            String path = URLDecoder.decode(HTTPUtils.getRequestPath(bindingContext.getHttpRequest()), "UTF-8");
 
             if (path.startsWith("/")) {
                 path = path.substring(1);
@@ -155,7 +155,7 @@ public class RPCOperationSelectorInterceptor implements Interceptor {
             bindingContext.getHttpResponse().setHeader("Expires", new Date(0).toGMTString());
 
 
-            String eTag = HTTPUtil.calculateHashETag(responseMessage.getBody().toString().getBytes("UTF-8"));
+            String eTag = HTTPUtils.calculateHashETag(responseMessage.getBody().toString().getBytes("UTF-8"));
 
             // Test request for predicates.
             String predicate = bindingContext.getHttpRequest().getHeader( "If-Match" );

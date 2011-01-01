@@ -37,7 +37,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 
 import org.apache.tuscany.sca.common.http.HTTPContext;
-import org.apache.tuscany.sca.common.http.HTTPUtil;
+import org.apache.tuscany.sca.common.http.HTTPUtils;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -89,7 +89,7 @@ public class JAXRSOperationSelectorInterceptor implements Interceptor {
                 return getNext().invoke(msg);
             }
 
-            String path = URLDecoder.decode(HTTPUtil.getRequestPath(bindingContext.getHttpRequest()), "UTF-8");
+            String path = URLDecoder.decode(HTTPUtils.getRequestPath(bindingContext.getHttpRequest()), "UTF-8");
 
             if (path.startsWith("/")) {
                 path = path.substring(1);
