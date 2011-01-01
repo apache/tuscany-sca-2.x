@@ -81,18 +81,18 @@ public class HTTPUtils {
      * @return
      */
     public static String calculateHashETag(byte[] content) {
-            String eTag = "invalid";
-            try {
-                MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-                byte[] digest = messageDigest.digest(content);
-                BigInteger number = new BigInteger(1, digest);
-                StringBuffer sb = new StringBuffer('0');
-                sb.append(number.toString(16));
-                eTag = sb.toString();
-            } catch(Exception e) {
-                //ignore, we will return random etag
-                eTag =  Integer.toString((new java.util.Random()).nextInt(Integer.MAX_VALUE));
-            }
-            return eTag;
+        String eTag = "invalid";
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            byte[] digest = messageDigest.digest(content);
+            BigInteger number = new BigInteger(1, digest);
+            StringBuffer sb = new StringBuffer('0');
+            sb.append(number.toString(16));
+            eTag = sb.toString();
+        } catch(Exception e) {
+            //ignore, we will return random etag
+            eTag =  Integer.toString((new java.util.Random()).nextInt(Integer.MAX_VALUE));
+        }
+        return eTag;
     }
 }
