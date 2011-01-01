@@ -23,6 +23,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -30,6 +31,17 @@ import javax.servlet.http.HttpServletRequest;
  *
  */
 public class HTTPUtils {
+
+    /**
+     * Utility method to set common http headers and other stuff in a
+     * default http response. Applications / Extensions can then override and
+     * tweak as they see fit.
+     *
+     * @param response
+     */
+    public static void prepareHTTPResponse(HttpServletResponse response) {
+        response.setDateHeader("Date", System.currentTimeMillis());
+    }
 
     /**
      * Calculate the relative request path taking in consideration if

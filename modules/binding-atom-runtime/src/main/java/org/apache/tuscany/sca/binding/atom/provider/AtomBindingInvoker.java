@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.binding.atom.provider;
 
@@ -50,7 +50,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Invoker for the Atom binding.
- * 
+ *
  * @version $Rev$ $Date$
  */
 class AtomBindingInvoker implements Invoker {
@@ -205,7 +205,7 @@ class AtomBindingInvoker implements Invoker {
                 // Write the Atom entry
                 StringWriter writer = new StringWriter();
                 feedEntry.writeTo(writer);
-                // postMethod.setHeader("Content-type", "application/atom+xml; charset=utf-8");
+                // postMethod.setHeader("Content-type", "application/atom+xml; charset=utf-8"); - TUSCANY-3734
                 postMethod.setHeader("Content-type", "application/atom+xml;type=entry");
                 postMethod.setEntity(new StringEntity(writer.toString()));
 
@@ -228,7 +228,7 @@ class AtomBindingInvoker implements Invoker {
 
                     } else {
 
-                        // Returns the id of the created entry 
+                        // Returns the id of the created entry
                         msg.setBody(createdEntry.getId().toString());
                     }
 
@@ -304,7 +304,8 @@ class AtomBindingInvoker implements Invoker {
                 // Write the Atom entry
                 StringWriter writer = new StringWriter();
                 feedEntry.writeTo(writer);
-                putMethod.setHeader("Content-type", "application/atom+xml; charset=utf-8");
+                //putMethod.setHeader("Content-type", "application/atom+xml; charset=utf-8"); - TUSCANY-3734
+                putMethod.setHeader("Content-type", "application/atom+xml;type=entry");
                 putMethod.setEntity(new StringEntity(writer.toString()));
 
                 response = httpClient.execute(putMethod);
