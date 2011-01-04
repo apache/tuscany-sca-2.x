@@ -52,6 +52,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 public class StoreTestCase {
     private static Node nodeStore;
 
+    public static void main(String[] args) throws Exception {
+       setUp();
+       testWaitForInput();
+       tearDown();
+    }
+
     @BeforeClass
     public static void setUp() throws Exception {
         String storeLocation = ContributionLocationHelper.getContributionLocation("store.composite");
@@ -66,9 +72,7 @@ public class StoreTestCase {
         nodeStore.stop();
     }
 
-    @Test
-    @Ignore
-    public void testWaitForInput() {
+    public static void testWaitForInput() {
         try {
             System.out.println("press enter to continue)");
             System.in.read();
