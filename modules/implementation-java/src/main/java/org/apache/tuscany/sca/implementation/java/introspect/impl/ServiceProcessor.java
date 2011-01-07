@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.JavaScopeImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -51,6 +52,9 @@ import org.oasisopen.sca.annotation.Remotable;
  * Processes an {@link org.oasisopen.sca.annotation.Service} annotation and updates
  * the component type with corresponding {@link Service}s. Also processes
  * related {@link org.oasisopen.sca.annotation.Callback} annotations.
+ * 
+ * This Visitor MUST follow the ScopeProcessor in the sequence of visitors, since processing of
+ * the Callback annotations depends on knowing the Scope of the implementation
  * 
  * @version $Rev$ $Date$
  */
@@ -149,6 +153,9 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         if (annotation == null) {
             return;
         }
+        if( type.getJavaScope() == JavaScopeImpl.COMPOSITE ) {
+        	throw new IllegalCallbackReferenceException("[JCA90057] @Callback on field or method cannot be used for a class with @Scope(COMPOSITE): " + type.getName() + "." + method.getName());
+        }
         
         if (!(annotation.value() == null || annotation.value() == Void.class)) {
             throw new IllegalCallbackReferenceException("[JCA90046] @Callback on field of method must not have any parameters: " + type.getName() + "." + method.getName());
@@ -170,6 +177,9 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         Callback annotation = field.getAnnotation(Callback.class);
         if (annotation == null) {
             return;
+        }
+        if( type.getJavaScope() == JavaScopeImpl.COMPOSITE ) {
+        	throw new IllegalCallbackReferenceException("[JCA90057] @Callback on field or method cannot be used for a class with @Scope(COMPOSITE): " + type.getName() + "." + field.getName());
         }
         if (!(annotation.value() == null || annotation.value() == Void.class)) {
             throw new IllegalCallbackReferenceException("[JCA90046] @Callback on field of method must not have any parameters: " + type.getName() + "." + field.getName());
