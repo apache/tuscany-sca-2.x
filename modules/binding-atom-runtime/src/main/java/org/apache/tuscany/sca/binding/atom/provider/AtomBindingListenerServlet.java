@@ -520,7 +520,7 @@ class AtomBindingListenerServlet extends HttpServlet {
                 }
                 // All feeds must provide Id and updated elements.
                 // However, some do not, so provide some program protection.
-                feed.setId( "Feed" + feed.hashCode());
+                feed.setId(request.getRequestURI());
                 Date responseLastModified = new Date( 0 );
 
                 // Add entries to the feed
