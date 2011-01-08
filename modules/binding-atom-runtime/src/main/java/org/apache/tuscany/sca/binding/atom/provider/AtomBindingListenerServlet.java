@@ -169,9 +169,6 @@ class AtomBindingListenerServlet extends HttpServlet {
         // System.out.println( "AtomBindingListener.doGet cache context=" + cacheContext );
 
         // Get the request path
-        //int servletPathLength = request.getContextPath().length() + request.getServletPath().length();
-        //String path = URLDecoder.decode(request.getRequestURI().substring(servletPathLength), "UTF-8");
-
         String path = URLDecoder.decode(HTTPUtils.getRequestPath(request), "UTF-8");
 
         logger.fine("get " + request.getRequestURI());
@@ -185,7 +182,7 @@ class AtomBindingListenerServlet extends HttpServlet {
                    <atom:title type="text">resource</atom:title>
                    <collection href="http://luck.ibm.com:8084/customer">
                       <atom:title type="text">entries</atom:title>
-                      <accept>application/atom+xml;type=entry</accept>
+                      <accept>application/atom+xml</accept>
                       <categories />
                    </collection>
                 </workspace>
@@ -225,10 +222,8 @@ class AtomBindingListenerServlet extends HttpServlet {
                 } else {
                     collection.setTitle("entries");
                 }
-                collection.addAccepts("application/atom+xml;type=feed");
-                collection.addAccepts("application/json;type=feed");
-                collection.addAccepts("application/atom+xml;type=entry");
-                collection.addAccepts("application/json;type=entry");
+                collection.addAccepts("application/atom+xml");
+                collection.addAccepts("application/json");
                 List<Category> categories = feed.getCategories();
                 if ( categories != null ) {
                     collection.addCategories(categories, false, null);
@@ -239,8 +234,8 @@ class AtomBindingListenerServlet extends HttpServlet {
             } else {
                 collection.setTitle("entries");
 
-                collection.addAccepts("application/atom+xml;type=entry");
-                collection.addAccepts("application/json;type=entry");
+                collection.addAccepts("application/atom+xml");
+                collection.addAccepts("application/json");
                 collection.addCategories().setFixed(false);
             }
             workspace.addCollection(collection);
@@ -319,7 +314,7 @@ class AtomBindingListenerServlet extends HttpServlet {
                 String preferredType = getContentPreference( acceptType );
                 if (( preferredType != null ) && ((preferredType.indexOf( "json") > -1) || (preferredType.indexOf( "JSON") > -1 ))) {
                     // JSON response body
-                    response.setContentType("application/json;type=feed");
+                    response.setContentType("application/json");
 
                     try {
                         Abdera abdera = new Abdera();
@@ -332,7 +327,7 @@ class AtomBindingListenerServlet extends HttpServlet {
 
                 } else {
                     // Write the Atom feed
-                    response.setContentType("application/atom+xml;type=feed");
+                    response.setContentType("application/atom+xml");
                     try {
                         feed.getDocument().writeTo(response.getOutputStream());
                     } catch (IOException ioe) {
@@ -449,7 +444,7 @@ class AtomBindingListenerServlet extends HttpServlet {
                 String preferredType = getContentPreference( acceptType );
                 if (( preferredType != null ) && ((preferredType.indexOf( "json") > -1) || (preferredType.indexOf( "JSON") > -1 ))) {
                     // JSON response body
-                    response.setContentType("application/json;type=entry");
+                    response.setContentType("application/json");
                     try {
                         Abdera abdera = new Abdera();
                         WriterFactory wf = abdera.getWriterFactory();
@@ -460,7 +455,7 @@ class AtomBindingListenerServlet extends HttpServlet {
                     }
                 } else {
                     // XML response body
-                    response.setContentType("application/atom+xml;type=entry");
+                    response.setContentType("application/atom+xml");
                     try {
                         feedEntry.writeTo(getWriter(response));
                     } catch (IOException ioe) {
@@ -657,7 +652,7 @@ class AtomBindingListenerServlet extends HttpServlet {
 
                 // Write the created Atom entry
                 response.setStatus(HttpServletResponse.SC_CREATED);
-                response.setContentType("application/atom+xml;type=entry");
+                response.setContentType("application/atom+xml");
                 try {
                     createdFeedEntry.writeTo(getWriter(response));
                 } catch (ParseException pe) {

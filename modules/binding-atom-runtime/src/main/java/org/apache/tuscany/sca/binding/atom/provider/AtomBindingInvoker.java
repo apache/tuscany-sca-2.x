@@ -206,7 +206,7 @@ class AtomBindingInvoker implements Invoker {
                 StringWriter writer = new StringWriter();
                 feedEntry.writeTo(writer);
                 // postMethod.setHeader("Content-type", "application/atom+xml; charset=utf-8"); - TUSCANY-3734
-                postMethod.setHeader("Content-type", "application/atom+xml;type=entry");
+                postMethod.setHeader("Content-type", "application/atom+xml");
                 postMethod.setEntity(new StringEntity(writer.toString()));
 
                 response = httpClient.execute(postMethod);
@@ -305,7 +305,7 @@ class AtomBindingInvoker implements Invoker {
                 StringWriter writer = new StringWriter();
                 feedEntry.writeTo(writer);
                 //putMethod.setHeader("Content-type", "application/atom+xml; charset=utf-8"); - TUSCANY-3734
-                putMethod.setHeader("Content-type", "application/atom+xml;type=entry");
+                putMethod.setHeader("Content-type", "application/atom+xml");
                 putMethod.setEntity(new StringEntity(writer.toString()));
 
                 response = httpClient.execute(putMethod);

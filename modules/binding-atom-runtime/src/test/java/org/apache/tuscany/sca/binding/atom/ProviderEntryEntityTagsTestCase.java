@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.binding.atom;
 
@@ -44,10 +44,10 @@ import org.junit.Test;
 /**
  * Tests use of server provided entry entity tags for Atom binding in Tuscany.
  * Tests conditional gets (e.g. get if-none-match) or conditional posts (post if-match)
- * using entity tags or last modified header entries. 
+ * using entity tags or last modified header entries.
  * Uses the SCA provided Provider composite to act as a server.
  * Uses the Abdera provided Client to act as a client.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class ProviderEntryEntityTagsTestCase {
@@ -58,7 +58,7 @@ public class ProviderEntryEntityTagsTestCase {
     protected static CustomerClient testService;
     protected static Abdera abdera;
     protected static AbderaClient client;
-    protected static Parser abderaParser;    
+    protected static Parser abderaParser;
     protected static String eTag;
     protected static Date lastModified;
     protected static final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss Z" ); // RFC 822 date time
@@ -94,10 +94,10 @@ public class ProviderEntryEntityTagsTestCase {
     public void testEmptyCachePost() throws Exception {
         // Pseudo-code
         // 1) Example HTTP POST request (new entry put, new etag response)
-        // User client post request       
+        // User client post request
         //        POST /myblog/entries HTTP/1.1
         //        Slug: First Post
-        //        
+        //
         //        <?xml version="1.0" ?>
         //        <entry xmlns="http://www.w3.org/2005/Atom">
         //          <title>Atom-Powered Robots Run Amok</title>
@@ -116,7 +116,7 @@ public class ProviderEntryEntityTagsTestCase {
         //       Content-Location: http://example.org/edit/first-post.atom
         //       ETag: "e180ee84f0671b1"
         //       Last-Modified: Fri, 25 Jul 2008 14:36:44 -0500
-        // 
+        //
         //        <?xml version="1.0" ?>
         //        <entry xmlns="http://www.w3.org/2005/Atom">
         //          <title>Atom-Powered Robots Run Amok</title>
@@ -124,7 +124,7 @@ public class ProviderEntryEntityTagsTestCase {
         //          <updated>2007-02-123T17:09:02Z</updated>
         //          <author><name>Captain Lansing</name></author>
         //          <content>It's something moving... solid metal</content>
-        //        </entry>		
+        //        </entry>
 
         // Testing of entry creation
         Factory factory = abdera.getFactory();
@@ -143,7 +143,7 @@ public class ProviderEntryEntityTagsTestCase {
         entry.setContentElement(content);
 
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml; type=entry"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         // AtomTestCaseUtils.printRequestHeaders( "Post request headers", "   ", opts );
         IRI colUri = new IRI(providerURI).resolve("customer");
@@ -155,7 +155,7 @@ public class ProviderEntryEntityTagsTestCase {
         // Assert response header Location: http://example.org/edit/first-post.atom
         // Assert response header Content-Location: http://example.org/edit/first-post.atom
         // Assert response header ETag: "e180ee84f0671b1"
-        // Assert response header Last-Modified: Fri, 25 Jul 2008 14:36:44 -0500	    
+        // Assert response header Last-Modified: Fri, 25 Jul 2008 14:36:44 -0500
         // Assert collection size is 1.
         Assert.assertEquals(201, res.getStatus());
         Assert.assertEquals(contentType, res.getContentType().toString().trim());
@@ -163,7 +163,7 @@ public class ProviderEntryEntityTagsTestCase {
         // Assert.assertEquals( "", res.getContentLocation().toString() );
         // Save eTag for subsequent tests;
         eTag = res.getHeader( "ETag" );
-        Assert.assertNotNull( eTag );     	
+        Assert.assertNotNull( eTag );
         lastModified = res.getLastModified();
         Assert.assertNotNull(lastModified);
     }
@@ -174,7 +174,7 @@ public class ProviderEntryEntityTagsTestCase {
         // User client PUT request
         //        PUT /edit/first-post.atom HTTP/1.1
         // >      If-Match: "e180ee84f0671b1"
-        // 
+        //
         //        <?xml version="1.0" ?>
         //        <entry xmlns="http://www.w3.org/2005/Atom">
         //         <title>Atom-Powered Robots Run Amok</title>
@@ -200,7 +200,7 @@ public class ProviderEntryEntityTagsTestCase {
         entry.setContentElement(content);
 
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml; type=entry"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         opts.setHeader( "If-None-Match", eTag);
 
@@ -230,7 +230,7 @@ public class ProviderEntryEntityTagsTestCase {
         // >      If-None-Match: "e180ee84f0671b1"
 
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml; type=entry"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         opts.setHeader( "If-None-Match", "123456");
         opts.setHeader( "Pragma", "no-cache"); // turn off client caching
@@ -261,7 +261,7 @@ public class ProviderEntryEntityTagsTestCase {
         Assert.assertEquals(contentType, res.getContentType().toString().trim());
         // Assert.assertNotNull( res.getLocation().toString() );
         // Assert.assertEquals( "", res.getContentLocation().toString() );
-        Assert.assertNotNull( res.getHeader( "ETag" ) );     	
+        Assert.assertNotNull( res.getHeader( "ETag" ) );
         lastModified = res.getLastModified();
         Assert.assertNotNull(lastModified);
         res.release();
@@ -275,10 +275,10 @@ public class ProviderEntryEntityTagsTestCase {
         // >      If-None-Match: "e180ee84f0671b1"
 
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml; type=entry"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         opts.setHeader( "If-None-Match", eTag);
-        opts.setHeader( "Pragma", "no-cache"); // turn off client caching		
+        opts.setHeader( "Pragma", "no-cache"); // turn off client caching
 
         IRI colUri = new IRI(providerURI).resolve("customer");
         // res = client.post(colUri.toString() + "?test=foo", entry, opts);
@@ -294,7 +294,7 @@ public class ProviderEntryEntityTagsTestCase {
         // Assert header ETag: "e180ee84f0671b1"
         // Assert header Last-Modified: Fri, 25 Jul 2008 14:36:44 -0500
         // Assert.assertEquals(304, res.getStatus());
-        res.release();	    
+        res.release();
     }
 
 
@@ -305,7 +305,7 @@ public class ProviderEntryEntityTagsTestCase {
         //       GET /edit/first-post.atom HTTP/1.1
         // >      If-Modified-Since: Sat, 29 Oct 2025 19:43:31 GMT
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml; type=entry"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         opts.setHeader( "If-Modified-Since", "Sat, 29 Oct 2025 19:43:31 GMT"); // "EEE, dd MMM yyyy HH:mm:ss Z // RFC 822 Date
         opts.setHeader( "Pragma", "no-cache"); // turn off client caching
@@ -325,7 +325,7 @@ public class ProviderEntryEntityTagsTestCase {
 
         // Assert response status code is 304 Not Modified.
         Assert.assertEquals(304, res.getStatus());
-        res.release();	    
+        res.release();
     }
 
     @Test
@@ -335,7 +335,7 @@ public class ProviderEntryEntityTagsTestCase {
         //       GET /edit/first-post.atom HTTP/1.1
         // >      If-Modified-Since: Sat, 29 Oct 1844 19:43:31 GMT
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml; type=entry"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         opts.setHeader( "If-Modified-Since", "Sat, 29 Oct 1844 19:43:31 GMT"); // "EEE, dd MMM yyyy HH:mm:ss Z // RFC 822 Date
         opts.setHeader( "Pragma", "no-cache"); // turn off client caching
@@ -355,12 +355,12 @@ public class ProviderEntryEntityTagsTestCase {
 
         // Assert response status code is 200 OK.
         // Assert header ETag: "e180ee84f0671b1"
-        // Assert header Last-Modified: Greater than If-Mod	    
+        // Assert header Last-Modified: Greater than If-Mod
         Assert.assertEquals(200, res.getStatus());
         Assert.assertEquals(contentType, res.getContentType().toString().trim());
         // Assert.assertNotNull( res.getLocation().toString() );
         // Assert.assertEquals( "", res.getContentLocation().toString() );
-        Assert.assertNotNull( res.getHeader( "ETag" ) );     	
+        Assert.assertNotNull( res.getHeader( "ETag" ) );
         lastModified = res.getLastModified();
         Assert.assertNotNull(lastModified);
         res.release();
@@ -373,7 +373,7 @@ public class ProviderEntryEntityTagsTestCase {
         //       GET /edit/first-post.atom HTTP/1.1
         // >      If-Unmodified-Since: Sat, 29 Oct 2025 19:43:31 GMT
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml; type=entry"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         opts.setHeader( "If-Unmodified-Since", "Sat, 29 Oct 2050 19:43:31 GMT" );
         opts.setHeader( "Pragma", "no-cache"); // turn off client caching
@@ -396,9 +396,9 @@ public class ProviderEntryEntityTagsTestCase {
         // Assert header Location: http://example.org/edit/first-post.atom
         // Assert header Content-Location: http://example.org/edit/first-post.atom
         // Assert header ETag: "e180ee84f0671b1"
-        // Assert header Last-Modified: Less than If-Unmod	    
+        // Assert header Last-Modified: Less than If-Unmod
         Assert.assertEquals(200, res.getStatus());
-        res.release();	        
+        res.release();
     }
 
     @Test
@@ -409,7 +409,7 @@ public class ProviderEntryEntityTagsTestCase {
         //        Host: example.org
         // >      If-Unmodified-Since: Sat, 29 Oct 1844 19:43:31 GMT
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml; type=entry"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         opts.setHeader( "If-Unmodified-Since", "Sat, 29 Oct 1844 19:43:31 GMT" );
         opts.setHeader( "Pragma", "no-cache"); // turn off client caching
@@ -427,6 +427,6 @@ public class ProviderEntryEntityTagsTestCase {
 
         // Assert response status code is 304 Not Modified.
         Assert.assertEquals(304, res.getStatus());
-        res.release();	    
+        res.release();
     }
 }

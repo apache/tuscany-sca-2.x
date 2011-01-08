@@ -42,8 +42,8 @@ public class AtomBindingHttpUtils {
         //set Cache-Control to no-cache to avoid intermediary
         //proxy/reverse-proxy caches and always hit the server
         //that would identify if the value was current or not
-        response.setHeader("Cache-Control", "no-cache");
-        response.setHeader("Expires", new Date(0).toGMTString());
+        //response.setHeader("Cache-Control", "no-cache");
+        //response.setHeader("Expires", new Date(0).toGMTString());
 
     }
 
