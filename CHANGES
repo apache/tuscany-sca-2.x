@@ -2,6 +2,9 @@ Changes With Apache Tuscany SCA 2.0-Beta2 January 2010
 ======================================================
 
 Highlights include:
+- Addition of an interactive Shell to work with SCA domains, contributions, and services
+- More reorganization of modules to support base-runtime and extension runtime jars
+- Tidying and simplification of the Web Services binding dependencies 
 
 
 
