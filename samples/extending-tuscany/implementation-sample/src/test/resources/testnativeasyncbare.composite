@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,16 +16,21 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
- */
-
-package sample.api;
-
-import org.w3c.dom.Element;
-
-public interface WSDLReference {
-
-    Element call(String op, Element e);
-    public Element callBare(String op, Element... e);
-    void callAsync(String op, Element e);
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+  xmlns:t="http://tuscany.apache.org/xmlns/sca/1.1"
+  targetNamespace="http://test"
+  name="testnativeasyncbare">
+      
+    <component name="SampleNativeAsyncReference">
+        <t:implementation.sample class="sample.UpperSampleAsyncReferenceBareImpl"/>
+        <reference name="upper" target="SampleNativeAsyncService">
+            <interface.wsdl interface="http://sample/upper-async-wrapped#wsdl.interface(UpperWrapped)"/>
+        </reference>
+    </component>  
     
-}
+    <component name="SampleNativeAsyncService">
+        <t:implementation.sample class="sample.UpperSampleAsyncServiceWrappedImpl"/>
+    </component>
+ 
+</composite>

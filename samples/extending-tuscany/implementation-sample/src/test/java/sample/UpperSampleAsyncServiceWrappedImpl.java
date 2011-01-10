@@ -17,14 +17,29 @@
  * under the License.    
  */
 
-package sample.api;
+package sample;
+
+import static java.lang.System.out;
+import static sample.Xutil.elem;
+import static sample.Xutil.text;
+import static sample.Xutil.xdom;
 
 import org.w3c.dom.Element;
 
-public interface WSDLReference {
+import sample.api.WSDL;
 
-    Element call(String op, Element e);
-    public Element callBare(String op, Element... e);
-    void callAsync(String op, Element e);
-    
+/**
+ * Sample component implementation that uses Java interfaces.
+ * 
+ * @version $Rev$ $Date$
+ */
+@WSDL("http://sample/upper-async-wrapped#UpperWrapped")
+public class UpperSampleAsyncServiceWrappedImpl {
+
+    public Element call(String op, Element e) {
+        String input = e.getTextContent();
+        out.println("UpperSampleAsyncServiceImpl.upper(" + input + ")");
+        String output = input.toUpperCase();
+        return xdom("http://sample/upper-async", "upperResponse", elem("result", text(output)));
+    }
 }

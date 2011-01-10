@@ -68,6 +68,16 @@ class SampleWSDLProxy implements WSDLReference {
     }
     
     @Override
+    public Element callBare(String op, Element... e) {
+        try {
+            // Invoke the named operation on the endpoint reference
+            return (Element)repr.invoke(ops.get(op), e);
+        } catch(InvocationTargetException ex) {
+            throw new RuntimeException(ex);
+        }
+    }    
+    
+    @Override
     public void callAsync(String op, Element e) {
         // Asynchronously invoke the named operation on the endpoint reference
         Message message = mf.createMessage();

@@ -17,21 +17,22 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<wsdl:definitions targetNamespace="http://sample/upper-async" 
-                  xmlns:tns="http://sample/upper-async"
+<wsdl:definitions targetNamespace="http://sample/upper-async-wrapped" 
+                  xmlns:tns="http://sample/upper-async-wrapped"
                   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
                   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                   xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-	              name="UpperAsync">
+	              name="UpperAsyncWrapped">
 
     <wsdl:types>
         <schema elementFormDefault="qualified" 
-                targetNamespace="http://sample/upper-async"
+                targetNamespace="http://sample/upper-async-wrapped"
                 xmlns="http://www.w3.org/2001/XMLSchema">
             <element name="upper">
                 <complexType>
                     <sequence>
-                        <element name="s" type="xsd:string" />
+                        <element name="arg0" type="xsd:string" />
+                        <element name="arg1" type="xsd:string" />
                     </sequence>
                 </complexType>
             </element>
@@ -55,7 +56,7 @@
         <wsdl:part element="tns:upperResponse" name="parameters" />
     </wsdl:message>
 
-    <wsdl:portType name="Upper" sca:requires="sca:asyncInvocation">
+    <wsdl:portType name="UpperWrapped" sca:requires="sca:asyncInvocation">
         <wsdl:operation name="upper">
             <wsdl:input message="tns:upperRequest" name="upperRequest" />
             <wsdl:output message="tns:upperResponse" name="upperResponse" />

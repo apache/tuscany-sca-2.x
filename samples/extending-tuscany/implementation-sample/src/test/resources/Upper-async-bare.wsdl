@@ -17,45 +17,34 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<wsdl:definitions targetNamespace="http://sample/upper-async" 
-                  xmlns:tns="http://sample/upper-async"
+<wsdl:definitions targetNamespace="http://sample/upper-async-bare" 
+                  xmlns:tns="http://sample/upper-async-bare"
                   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
                   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                   xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-	              name="UpperAsync">
+	              name="UpperAsyncBare">
 
     <wsdl:types>
         <schema elementFormDefault="qualified" 
-                targetNamespace="http://sample/upper-async"
+                targetNamespace="http://sample/upper-async-bare"
                 xmlns="http://www.w3.org/2001/XMLSchema">
-            <element name="upper">
-                <complexType>
-                    <sequence>
-                        <element name="s" type="xsd:string" />
-                    </sequence>
-                </complexType>
-            </element>
+            <element name="arg0" type="xsd:string" />
+            <element name="arg1" type="xsd:string" />
 
-            <element name="upperResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="xsd:string" />
-                    </sequence>
-                </complexType>
-            </element>
-
+            <element name="result" type="xsd:string" />
         </schema>
     </wsdl:types>
 
     <wsdl:message name="upperRequest">
-        <wsdl:part element="tns:upper" name="parameters" />
+        <wsdl:part element="tns:arg0" name="arg0" />
+        <wsdl:part element="tns:arg1" name="arg1" />
     </wsdl:message>
 
     <wsdl:message name="upperResponse">
-        <wsdl:part element="tns:upperResponse" name="parameters" />
+        <wsdl:part element="tns:result" name="result" />
     </wsdl:message>
 
-    <wsdl:portType name="Upper" sca:requires="sca:asyncInvocation">
+    <wsdl:portType name="UpperBare" sca:requires="sca:asyncInvocation">
         <wsdl:operation name="upper">
             <wsdl:input message="tns:upperRequest" name="upperRequest" />
             <wsdl:output message="tns:upperResponse" name="upperResponse" />
