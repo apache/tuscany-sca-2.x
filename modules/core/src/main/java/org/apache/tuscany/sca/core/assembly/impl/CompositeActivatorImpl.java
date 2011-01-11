@@ -477,6 +477,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 RuntimeEndpoint ep = (RuntimeEndpoint) endpoint;
                 stop(ep);
             }
+            service.getEndpoints().clear();
         }
         for (ComponentReference reference : component.getReferences()) {
             if (logger.isLoggable(Level.FINE)) {
