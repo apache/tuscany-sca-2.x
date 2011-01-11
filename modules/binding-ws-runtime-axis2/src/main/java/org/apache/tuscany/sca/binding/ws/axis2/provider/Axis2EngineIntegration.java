@@ -232,7 +232,18 @@ public class Axis2EngineIntegration {
         QName serviceQName = wsBinding.getService().getQName();
         Definition def = getDefinition(definition, serviceQName);
 
-        final WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(def, serviceQName, port.getName());
+        ClassLoader oldTCCL = axis2Config.classLoaderContext.setContextClassLoader();
+        final WSDLToAxisServiceBuilder builder;
+        try {
+        	builder = new WSDL11ToAxisServiceBuilder(def, serviceQName, port.getName());
+        } finally {
+            if (oldTCCL != null) {
+                Thread.currentThread().setContextClassLoader(oldTCCL);
+            }
+        }
+        //final WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(def, serviceQName, port.getName());
+        
+        
         builder.setServerSide(true);
         // [rfeng] Add a custom resolver to work around WSCOMMONS-228
         // TODO - 228 is resolved, is this still required
