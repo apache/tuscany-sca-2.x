@@ -475,6 +475,7 @@ public class Shell {
     }
 
     List<String> read(Object r) throws IOException {
+        out.println();
         out.print(currentDomain + "> ");
         final String l;
         if (useJline) {
@@ -722,7 +723,6 @@ public class Shell {
         } else if ("bye".equalsIgnoreCase(command)) {
             helpBye();
         }
-        out.println();
         return true;
     }
 
@@ -756,7 +756,6 @@ public class Shell {
         if (useJline)
             out.println("Use Tab key for command and argument completion");
         out.println("For detailed help on each command do 'help <command>', for help of startup options do 'help startup'");
-        out.println();
         return true;
     }
 
