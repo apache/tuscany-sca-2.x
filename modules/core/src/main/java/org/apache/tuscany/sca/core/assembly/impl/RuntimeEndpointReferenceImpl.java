@@ -48,7 +48,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
-import org.apache.tuscany.sca.core.invocation.AsyncResponseHandler;
+import org.apache.tuscany.sca.core.invocation.AsyncResponseService;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.core.invocation.RuntimeInvoker;
@@ -348,10 +348,12 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         wireProcessor.process(this);
         
         if (isAsyncInvocation()){
-            // fix up all of the operation chain response paths
-            // to point back to the implementation provided
+            // Fix up all of the operation chain response paths to point back to the implementation provided
             // async response handler
-            ImplementationProvider implementationProvider = ((RuntimeComponent)getComponent()).getImplementationProvider();
+            //ImplementationProvider implementationProvider = ((RuntimeComponent)getComponent()).getImplementationProvider();
+        	RuntimeComponentReference theReference = (RuntimeComponentReference)this.getReference();
+        	RuntimeComponent theComponent = theReference.getComponent();
+            ImplementationProvider implementationProvider = theComponent.getImplementationProvider();
             if (implementationProvider instanceof ImplementationAsyncProvider){
                 for (InvocationChain chain : getInvocationChains()){
                     InvokerAsyncResponse asyncResponseInvoker = ((ImplementationAsyncProvider)implementationProvider).createAsyncResponseInvoker(chain.getSourceOperation());
@@ -359,11 +361,11 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
                         ((InterceptorAsync)chain.getHeadInvoker()).setPrevious(asyncResponseInvoker);
                     } else {
                         //TODO - throw error once the old async code is removed
-                    }
-                }
-            }
-        }
-    }
+                    } // end if
+                } // end for
+            } // end if
+        } // end if
+    } // end method initInvocationChains
     
     /**
      * Check that endpoint reference has compatible interface at the component and binding ends. 
@@ -688,7 +690,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
             (JavaInterfaceFactory)modelFactories.getFactory(JavaInterfaceFactory.class);
         JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         try {
-            interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(AsyncResponseHandler.class));
+            interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(AsyncResponseService.class));
         } catch (InvalidInterfaceException e1) {
             // Nothing to do here - will not happen
         } // end try

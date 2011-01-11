@@ -314,7 +314,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
      * @param newMsg
      * @param oldMsg
      */
-    private void transferMessageHeaders( Message newMsg, Message oldMsg ) {
+    protected void transferMessageHeaders( Message newMsg, Message oldMsg ) {
     	if( oldMsg == null ) return;
     	// For the present, simply copy all the headers 
     	if( !oldMsg.getHeaders().isEmpty() ) newMsg.getHeaders().putAll( oldMsg.getHeaders() );

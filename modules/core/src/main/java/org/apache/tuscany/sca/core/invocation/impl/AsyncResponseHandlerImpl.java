@@ -144,7 +144,9 @@ public class AsyncResponseHandlerImpl<V> implements AsyncResponseHandler<V>,
 
 	public void setExtensionType(ExtensionType type) {}
 
-	public void setFault(AsyncFaultWrapper e) {}
+	public void setWrappedFault(AsyncFaultWrapper e) {}
+	
+	public void setFault(Throwable e) {}
 
 	public void setResponse(V res) { }
 
@@ -181,7 +183,7 @@ public class AsyncResponseHandlerImpl<V> implements AsyncResponseHandler<V>,
 		                response = payload;
 		            } // end if
 		            if( response.getClass().equals(AsyncFaultWrapper.class)) {
-		            	future.setFault((AsyncFaultWrapper) response );
+		            	future.setWrappedFault((AsyncFaultWrapper) response );
 		            } else {
 		            	future.setResponse(response);
 		            } // end if

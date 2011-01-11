@@ -20,12 +20,21 @@
 package org.apache.tuscany.sca.core.invocation;
 
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
 
+import org.apache.tuscany.sca.context.CompositeContext;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
+import org.oasisopen.sca.ComponentContext;
 
 /**
  * A class that wraps the mechanics for sending async responses
@@ -42,19 +51,25 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
 	 */
 	private static final long serialVersionUID = -7992598227671386588L;
 	
-	RuntimeEndpoint requestEndpoint;
-    RuntimeEndpointReference responseEndpointReference; 
-    T responseTargetAddress;
-    String relatesToMsgID;
+	private RuntimeEndpoint requestEndpoint;
+    private RuntimeEndpointReference responseEndpointReference; 
+    private T responseTargetAddress;
+    private String relatesToMsgID;
+    private String operationName;
+    private MessageFactory messageFactory;
+    private String bindingType = "";
     
     public AsyncResponseInvoker(RuntimeEndpoint requestEndpoint,
 			RuntimeEndpointReference responseEndpointReference,
-			T responseTargetAddress, String relatesToMsgID) {
+			T responseTargetAddress, String relatesToMsgID, 
+			String operationName, MessageFactory messageFactory) {
 		super();
 		this.requestEndpoint = requestEndpoint;
 		this.responseEndpointReference = responseEndpointReference;
 		this.responseTargetAddress = responseTargetAddress;
 		this.relatesToMsgID = relatesToMsgID;
+		this.operationName = operationName;
+		this.messageFactory = messageFactory;
 	} // end constructor
 
     /** 
@@ -95,10 +110,34 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
      * @param args the response data
      */
     public void invokeAsyncResponse(Object args) {
-        // TODO - how to get at the code that translates from args to msg?
         
-        // turn args into a message
-        Message responseMessage = null;
-        invokeAsyncResponse(responseMessage);
+        Message msg = messageFactory.createMessage();
+
+        msg.setOperation(getOperation());
+        if( args instanceof Throwable ) {
+        	msg.setFaultBody(args);
+        } else {
+        	msg.setBody(args);
+        } // end if
+        
+        invokeAsyncResponse(msg);
+        
     } // end method invokeAsyncResponse(Object)
+
+	private Operation getOperation() {
+		List<Operation> ops = requestEndpoint.getService().getInterfaceContract().getInterface().getOperations();
+		for (Operation op : ops) {
+			if( operationName.equals(op.getName()) ) return op;
+		} // end for
+		return null;
+	} // end getOperation
+
+	public void setBindingType(String bindingType) {
+		this.bindingType = bindingType;
+	} // end method setBindingType
+
+	public String getBindingType() {
+		return bindingType;
+	} // end method getBindingType
+
 } // end class

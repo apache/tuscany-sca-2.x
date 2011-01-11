@@ -60,7 +60,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
-import org.apache.tuscany.sca.core.invocation.AsyncResponseHandler;
+import org.apache.tuscany.sca.core.invocation.AsyncResponseService;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.core.invocation.RuntimeInvoker;
@@ -86,6 +86,7 @@ import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
 import org.apache.tuscany.sca.provider.EndpointProvider;
 import org.apache.tuscany.sca.provider.ImplementationAsyncProvider;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
+import org.apache.tuscany.sca.provider.OptimisingBindingProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
@@ -391,13 +392,20 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                         ((InterceptorAsync)invoker).setPrevious(asyncResponseInvoker);
                     } else {
                         //TODO - throw error once the old async code is removed
-                    }
-                }
+                    } // end if
+                } // end for
             } else {
                 // TODO - throw error once the old async code is removed
-            }
-        }
-    }
+            } // end if
+        } // end if
+        
+        ServiceBindingProvider provider = getBindingProvider();
+        if ((provider != null) && (provider instanceof OptimisingBindingProvider)) {
+        	//TODO - remove this comment once optimisation codepath is tested
+            ((OptimisingBindingProvider)provider).optimiseBinding( this );
+        } // end if
+
+    } // end method initInvocationChains
     
     /**
      * Creates the async callback for the supplied Endpoint and Operation, if it does not already exist
@@ -406,6 +414,9 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
      * @param operation - the Operation
      */
     private void createAsyncServerCallback( RuntimeEndpoint endpoint, Operation operation ) {
+    	// No need to create a callback if the Binding supports async natively...
+    	if( hasNativeAsyncBinding(endpoint) ) return;
+    	
     	// Check to see if the callback already exists
     	if( asyncCallbackExists( endpoint ) ) return;
     	
@@ -416,6 +427,20 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     } // end method createAsyncServerCallback
     
     /**
+     * Indicates if a given endpoint has a Binding that supports native async invocation
+     * @param endpoint - the endpoint
+     * @return - true if the endpoint has a binding that supports native async, false otherwise
+     */
+    private boolean hasNativeAsyncBinding(RuntimeEndpoint endpoint) {
+    	ServiceBindingProvider provider = endpoint.getBindingProvider();
+    	if( provider instanceof EndpointAsyncProvider ) {
+    		EndpointAsyncProvider asyncProvider = (EndpointAsyncProvider) provider;
+    		if( asyncProvider.supportsNativeAsync()  ) return true;
+    	} // end if
+		return false;
+	} // end method hasNativeAsyncBinding
+
+	/**
      * Creates the Endpoint object for the async callback
      * @param endpoint - the endpoint which has the async server operations
      * @return the EndpointReference object representing the callback
@@ -433,7 +458,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         JavaInterfaceFactory javaInterfaceFactory = (JavaInterfaceFactory)modelFactories.getFactory(JavaInterfaceFactory.class);
         JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         try {
-			interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(AsyncResponseHandler.class));
+			interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(AsyncResponseService.class));
 		} catch (InvalidInterfaceException e1) {
 			// Nothing to do here - will not happen
 		} // end try
@@ -605,10 +630,9 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 Interceptor interceptor = p.createBindingInterceptor();
                 if (interceptor != null) {
                     bindingInvocationChain.addInterceptor(interceptor);
-                }
-            }
-
-        }
+                } // end if
+            } // end for
+        } // end if
         
         // This is strategically placed before the RuntimeInvoker is added to the end of the
         // binding chain as the RuntimeInvoker doesn't need to take part in the response
@@ -625,7 +649,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                     // TODO - raise an error. Not doing that while
                     //        we have the old async mechanism in play
                 }
-            }
+            } // end for
             
             // fix up the binding chain response path to point back to the 
             // binding provided async response handler
@@ -640,15 +664,16 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 }
             } else {
                 //TODO - throw error once the old async code is removed
-            }
-        }
+            } // end if
+        } // end if
         
         // Add the runtime invoker to the end of the binding chain. 
         // It mediates between the binding chain and selects the 
         // correct invocation chain based on the operation that's
         // been selected
-        bindingInvocationChain.addInvoker(invoker);        
-    }
+        bindingInvocationChain.addInvoker(invoker); 
+        
+    } // end method initServiceBindingInvocationChains
 
     /**
      * Add the interceptor for a binding

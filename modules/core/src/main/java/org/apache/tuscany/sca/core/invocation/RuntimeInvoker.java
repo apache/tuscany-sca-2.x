@@ -178,7 +178,10 @@ public class RuntimeInvoker implements Invoker, InvokerAsyncRequest {
                 // temporary fix to swallow the dummy exception that's
                 // thrown back to get past the response chain processing. 
                 if (!(ex instanceof AsyncResponseException)){
-                    throw new ServiceRuntimeException(ex);
+                  // send the exception in through the 
+                  // async response processing path
+                  msg.setFaultBody(ex);
+                  invokeAsyncResponse(msg);
                 }
             }
         } finally {
@@ -197,15 +200,11 @@ public class RuntimeInvoker implements Invoker, InvokerAsyncRequest {
     public void invokeAsyncResponse(Message msg) {  
     	InvocationChain chain = invocable.getInvocationChain(msg.getOperation());
         Invoker tailInvoker = chain.getTailInvoker();
-        try {
-            ((InvokerAsyncResponse)tailInvoker).invokeAsyncResponse(msg);   
-        } catch (Throwable ex) {
-            throw new ServiceRuntimeException(ex);
-        }    
+        ((InvokerAsyncResponse)tailInvoker).invokeAsyncResponse(msg);       
     } // end method invokeAsyncResponse
 
-    @Override
-    public void invokeAsyncRequest(Message msg) throws Throwable {
-        invokeAsync(msg);
-    } // end method invokeAsyncRequest
+	@Override
+	public void invokeAsyncRequest(Message msg) throws Throwable {
+		invokeAsync(msg);
+	} // end method invokeAsyncRequest
 }
