@@ -17,28 +17,18 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.runtime;
+package org.apache.tuscany.sca.provider;
 
-import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
- * The runtime component reference. Provides the bridge between the 
- * assembly model representation of a component reference and its runtime 
- * realization
- * 
- * @version $Rev$ $Date$
- * @tuscany.spi.extension.asclient
+ * Defines the extra operation that binding providers implement 
+ * when they provide local optimisation of reference to service invocations
  */
-public interface RuntimeComponentReference extends ComponentReference {
+public interface OptimisingBindingProvider {
     /**
-     * Set the owning component
-     * @param component
+     * Optimise the binding chain for a service endpoint
      */
-    void setComponent(RuntimeComponent component);
+    void optimiseBinding( RuntimeEndpoint ep );
     
-    /**
-     * Get the owning component
-     * @return the owning component
-     */
-    RuntimeComponent getComponent();
-}
+} // end interface OptimisingBindingProvider

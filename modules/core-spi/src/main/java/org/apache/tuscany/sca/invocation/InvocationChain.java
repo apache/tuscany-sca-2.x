@@ -60,15 +60,35 @@ public interface InvocationChain {
     void setSourceOperation(Operation operation);
 
     /**
-     * Adds an interceptor to the chain. For reference side, it will be added to
+     * Adds an interceptor to the end of the chain. For reference side, it will be added to
      * Phase.REFERENCE. For service side, it will be added to Phase.SERVICE 
      *
      * @param interceptor The interceptor to add
      */
     void addInterceptor(Interceptor interceptor);
+    
+    /**
+     * Add an interceptor to the end of the given phase
+     * @param phase - the phase
+     * @param interceptor - the interceptor
+     */
+    void addInterceptor(String phase, Interceptor interceptor);
+    
+    /**
+     * Adds an interceptor to the head of the chain
+     * @param interceptor - the interceptor
+     */
+    void addHeadInterceptor(Interceptor interceptor);
+    
+    /**
+     * Adds an interceptor to the head of the given phase
+     * @param phase - the phase
+     * @param interceptor - the interceptor
+     */
+    void addHeadInterceptor(String phase, Interceptor interceptor);
 
     /**
-     * Adds an invoker to the chain
+     * Adds an invoker to the end of the chain
      *
      * @param invoker The invoker to add
      */
@@ -95,13 +115,6 @@ public interface InvocationChain {
      */
     Invoker getHeadInvoker(String phase);
 
-    /**
-     * Add an interceptor to the given phase
-     * @param phase
-     * @param interceptor
-     */
-    void addInterceptor(String phase, Interceptor interceptor);
-    
     /**
      * Indicate if the data can be passed in by reference as they won't be mutated.
      * @return true if pass-by-reference is allowed
