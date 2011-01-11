@@ -95,6 +95,7 @@ public class RuntimeSCAServiceBindingProvider implements EndpointAsyncProvider {
     }
 
     public void stop() {
+        endpoint.getBinding().setURI(null);
         if (distributedProvider != null) {
             distributedProvider.stop();
         }
