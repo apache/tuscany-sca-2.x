@@ -19,11 +19,16 @@
 
 package org.apache.tuscany.sca.binding.sca.provider;
 
+import java.util.Iterator;
+
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
+import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
+import org.apache.tuscany.sca.provider.OptimisingBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
@@ -36,7 +41,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  *
  * @version $Rev$ $Date$
  */
-public class RuntimeSCAServiceBindingProvider implements EndpointAsyncProvider {
+public class RuntimeSCAServiceBindingProvider implements EndpointAsyncProvider, OptimisingBindingProvider {
     private RuntimeEndpoint endpoint;
     private RuntimeComponentService service;
 
@@ -112,5 +117,23 @@ public class RuntimeSCAServiceBindingProvider implements EndpointAsyncProvider {
     public InvokerAsyncResponse createAsyncResponseInvoker() {
         return new SCABindingAsyncResponseInvoker(null, null);
     }
+
+    /**
+     * Handles the optimisation for the service side chain, which provides a mechanism for direct local
+     * invocation of the service in cases where the component reference is in the same JVM as the 
+     * component service.  Effectively, this means skipping any Remote Binding listener and its associated
+     * binding chain and data binding processors.
+     * 
+     * This means inserting a SCABindingLocalInvocationInterceptor into the chains for the Endpoint,
+     * which is placed immediately before the Policy processors (and after any Databinding processors)
+     */
+	public void optimiseBinding(RuntimeEndpoint ep) {
+		// To optimise, place an SCA binding Local Invocation interceptor at the start of the POLICY phase
+		// of the service chain...
+		for (InvocationChain chain : ep.getInvocationChains()) {
+			chain.addHeadInterceptor( Phase.SERVICE_POLICY, new SCABindingLocalInvocationInterceptor() );
+		} // end for
+			
+	} // end method optimiseBinding
     
-}
+} // end class RuntimeSCAServiceBinding

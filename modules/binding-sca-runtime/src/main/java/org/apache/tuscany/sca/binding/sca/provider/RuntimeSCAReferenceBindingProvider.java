@@ -63,10 +63,12 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceAsyn
     private Mediator mediator;
     private InterfaceContractMapper interfaceContractMapper;
     private SCABindingMapper scaBindingMapper;
+    private ExtensionPointRegistry registry;
 
     public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
                                               RuntimeEndpointReference endpointReference) {
-        this.endpointReference = endpointReference;
+        this.registry = extensionPoints;
+    	this.endpointReference = endpointReference;
         this.component = (RuntimeComponent)endpointReference.getComponent();
         this.reference = (RuntimeComponentReference)endpointReference.getReference();
         this.binding = (SCABinding)endpointReference.getBinding();
@@ -155,7 +157,7 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceAsyn
                 // it turns out that the chain source and target operations are the same, and are the operation 
                 // from the target, not sure if thats by design or a bug. The SCA binding invoker needs to know 
                 // the source and target class loaders so pass in the real source operation in the constructor 
-                return chain == null ? null : new SCABindingInvoker(chain, operation, mediator, passByValue, epr);
+                return chain == null ? null : new SCABindingInvoker(chain, operation, mediator, passByValue, epr, registry);
             }
         }
         return null;
