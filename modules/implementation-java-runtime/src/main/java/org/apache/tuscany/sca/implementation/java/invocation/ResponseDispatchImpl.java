@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.AsyncFaultWrapper;
 import org.apache.tuscany.sca.core.invocation.AsyncResponseHandler;
+import org.apache.tuscany.sca.core.invocation.AsyncResponseInvoker;
 import org.apache.tuscany.sca.core.invocation.CallbackReferenceObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
@@ -45,6 +46,7 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ResponseDispatch;
 import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Implementation of the ResponseDispatch interface of the OASIS SCA Java API
@@ -80,11 +82,15 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 	
 	// Service Reference used for the callback
 	private ServiceReference<AsyncResponseHandler<?>> callbackRef;
-	private String messageID;
+	private AsyncResponseInvoker<?> 	respInvoker;
+	private String 						messageID;
 	
 	public ResponseDispatchImpl( Message msg ) {
 		super();
 		callbackRef = getAsyncCallbackRef( msg );
+		
+    	respInvoker = (AsyncResponseInvoker)msg.getHeaders().get("ASYNC_RESPONSE_INVOKER");
+    	//if( respInvoker == null ) throw new ServiceRuntimeException("Async Implementation invoked with no response invoker");
 		
 		// TODO - why is WS stuff bleeding into general code?
     	messageID = (String) msg.getHeaders().get(MESSAGE_ID);
@@ -122,10 +128,18 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 		} else {
 			throw new IllegalStateException("sendResponse() or sendFault() has been called previously");
 		} // end if
+		
+		// Use response invoker if present
+		if( respInvoker != null ) {
+			//respInvoker.invokeAsyncResponse(new AsyncFaultWrapper(e));
+			respInvoker.invokeAsyncResponse(e);
+			return;
+		} // end if
+		
 		// Now dispatch the response to the callback...
 		AsyncResponseHandler<T> handler = (AsyncResponseHandler<T>) callbackRef.getService();
 		setResponseHeaders();
-		handler.setFault(new AsyncFaultWrapper(e));
+		handler.setWrappedFault(new AsyncFaultWrapper(e));
 	} // end method sendFault
 
 	/**
@@ -145,6 +159,13 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 		} else {
 			throw new IllegalStateException("sendResponse() or sendFault() has been called previously");
 		} // end if
+		
+		// Use response invoker if present
+		if( respInvoker != null ) {
+			respInvoker.invokeAsyncResponse(res);
+			return;
+		} // end if
+		
 		// Now dispatch the response to the callback...
 		AsyncResponseHandler<T> handler = (AsyncResponseHandler<T>) callbackRef.getService();
 		setResponseHeaders();
