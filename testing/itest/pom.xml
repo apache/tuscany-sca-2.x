@@ -45,9 +45,7 @@
                 <module>callback-basic</module>
                 <module>callback-complex-type</module>
                 <module>callback-multiple-wires</module>
-		<!-- Callback SeparateThread disabled due to problem described in TUSCANY-3816
-                <module>callback-separatethread</module>
-            -->
+		    <module>callback-separatethread</module>
                 <module>callback-two-composites</module>
                 <module>callback-two-nodes</module>
                 <module>component-type</module>
