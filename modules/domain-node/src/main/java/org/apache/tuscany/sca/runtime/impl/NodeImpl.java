@@ -17,11 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node2.impl;
+package org.apache.tuscany.sca.runtime.impl;
 
 import java.io.File;
 import java.io.Reader;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +32,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -42,14 +42,13 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.ValidationException;
-import org.apache.tuscany.sca.node2.Node;
-import org.apache.tuscany.sca.node2.NodeFactory;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
-import org.oasisopen.sca.NoSuchDomainException;
+import org.apache.tuscany.sca.runtime.Node;
+import org.apache.tuscany.sca.runtime.NodeFactory;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.oasisopen.sca.NoSuchServiceException;
-import org.oasisopen.sca.client.SCAClientFactory;
 
 public class NodeImpl implements Node {
 
@@ -61,6 +60,8 @@ public class NodeImpl implements Node {
     private ExtensionPointRegistry extensionPointRegistry;
     private NodeFactory nodeFactory;
     
+    private static Map<String, Node> allNodes = new HashMap<String, Node>();
+    
     public NodeImpl(String domainName, Deployer deployer, CompositeActivator compositeActivator, EndpointRegistry endpointRegistry, ExtensionPointRegistry extensionPointRegistry, NodeFactory nodeFactory) {
         this.domainName = domainName;
         this.deployer = deployer;
@@ -68,6 +69,7 @@ public class NodeImpl implements Node {
         this.endpointRegistry = endpointRegistry;
         this.extensionPointRegistry = extensionPointRegistry;
         this.nodeFactory = nodeFactory;
+        allNodes.put(domainName, this);
     }
 
     public String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException {
@@ -254,15 +256,25 @@ public class NodeImpl implements Node {
         if (nodeFactory != null) {
             nodeFactory.stop();
         }
+        allNodes.remove(this.domainName);
     }
 
     public <T> T getService(Class<T> interfaze, String serviceURI) throws NoSuchServiceException {
-        try {
-            return SCAClientFactory.newInstance(URI.create(getDomainName())).getService(interfaze, serviceURI);
-        } catch (NoSuchDomainException e) {
-            // shouldn't ever happen as we know this is the domain so it must exist
-            throw new IllegalStateException(e);
+        
+        List<Endpoint> endpoints = endpointRegistry.findEndpoint(serviceURI);
+        if (endpoints.size() < 1) {
+            throw new NoSuchServiceException(serviceURI);
         }
+
+        String serviceName = null;
+        if (serviceURI.contains("/")) {
+            int i = serviceURI.indexOf("/");
+            if (i < serviceURI.length()-1) {
+                serviceName = serviceURI.substring(i+1);
+            }
+        }
+
+        return ((RuntimeComponent)endpoints.get(0).getComponent()).getServiceReference(interfaze, serviceName).getService();        
     }
    
     public String getDomainName() {
@@ -356,6 +368,10 @@ public class NodeImpl implements Node {
 
     public EndpointRegistry getEndpointRegistry() {
         return endpointRegistry;
+    }
+    
+    public static Node nodeExists(String domainName) {
+        return allNodes.get(domainName);
     }
 
 }

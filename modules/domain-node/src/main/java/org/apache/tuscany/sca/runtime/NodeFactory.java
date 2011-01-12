@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node2;
+package org.apache.tuscany.sca.runtime;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,12 +40,12 @@ import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
-import org.apache.tuscany.sca.node2.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
+import org.apache.tuscany.sca.runtime.impl.NodeImpl;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -72,7 +72,7 @@ public class NodeFactory {
      * @param dependentContributionURLs  optional URLs of dependent contributions
      * @return a Node with installed contributions
      */
-    public static Node newStandaloneNode(String compositeURI, String contributionURL, String... dependentContributionURLs) {
+    public static Node createStandaloneNode(String compositeURI, String contributionURL, String... dependentContributionURLs) {
         try {
             NodeFactory nodeFactory = newInstance();
             EndpointRegistry endpointRegistry = new EndpointRegistryImpl(nodeFactory.extensionPointRegistry, null, null);

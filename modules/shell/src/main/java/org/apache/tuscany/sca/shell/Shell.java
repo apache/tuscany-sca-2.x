@@ -46,13 +46,13 @@ import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
-import org.apache.tuscany.sca.node2.Node;
-import org.apache.tuscany.sca.node2.NodeFactory;
-import org.apache.tuscany.sca.node2.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.Node;
+import org.apache.tuscany.sca.runtime.NodeFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.Version;
+import org.apache.tuscany.sca.runtime.impl.NodeImpl;
 import org.apache.tuscany.sca.shell.jline.JLine;
 
 /**
@@ -405,7 +405,7 @@ public class Shell {
 
     boolean start(String nodeName, String compositeURI, String contributionURL, String... dependentContributionURLs)
         throws ActivationException, ValidationException {
-        Node node = NodeFactory.newStandaloneNode(compositeURI, contributionURL, dependentContributionURLs);
+        Node node = NodeFactory.createStandaloneNode(compositeURI, contributionURL, dependentContributionURLs);
         standaloneNodes.put(nodeName, node);
         return true;
     }

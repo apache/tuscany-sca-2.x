@@ -25,6 +25,8 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
+import org.apache.tuscany.sca.runtime.Node;
+import org.apache.tuscany.sca.runtime.NodeFactory;
 import org.junit.Test;
 
 public class NodeXMLTestCase {

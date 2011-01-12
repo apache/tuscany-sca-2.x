@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node2;
+package org.apache.tuscany.sca.runtime;
 
 import java.io.Reader;
 import java.util.List;
