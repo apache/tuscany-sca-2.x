@@ -215,4 +215,23 @@ public class NodeImplTestCase {
             System.out.println(attrs);
         }
     }
+
+    @Test
+    public void testAutoDestroy() throws Exception {
+        NodeFactory nf = NodeFactory.newInstance();
+        Node node = nf.createNode();
+        node.start();
+        Assert.assertTrue(((NodeFactoryImpl)nf).inited);
+        node.stop();
+        Assert.assertFalse(((NodeFactoryImpl)nf).inited);
+        
+        nf = NodeFactory.newInstance();
+        nf.setAutoDestroy(false);
+        node = nf.createNode();
+        node.start();
+        Assert.assertTrue(((NodeFactoryImpl)nf).inited);
+        node.stop();
+        Assert.assertTrue(((NodeFactoryImpl)nf).inited);
+        
+    }
 }

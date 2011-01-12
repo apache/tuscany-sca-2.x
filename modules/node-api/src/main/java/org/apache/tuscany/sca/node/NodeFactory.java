@@ -627,4 +627,7 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
     public abstract <T> T getExtensionPointRegistry();
 
     public abstract void init();
+
+    public void setAutoDestroy(boolean b) {
+    }
 }
