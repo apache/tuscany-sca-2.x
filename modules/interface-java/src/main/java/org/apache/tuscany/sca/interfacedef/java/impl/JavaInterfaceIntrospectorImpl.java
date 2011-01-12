@@ -140,10 +140,40 @@ public class JavaInterfaceIntrospectorImpl {
 
         for (JavaInterfaceVisitor extension : visitors) {
             extension.visitInterface(javaInterface);
-        }
-    }
+        } // end for
+        
+        // Check if any methods have disallowed annotations
+        // Check if any private methods have illegal annotations that should be raised as errors
+        Set<Method> methods = JavaIntrospectionHelper.getMethods(clazz);
+        for (Method method : methods) {
+            checkMethodAnnotations(method, javaInterface);
+        } // end for 
+    } // end method introspectInterface
 
-    private Class<?>[] getActualTypes(Type[] types, Class<?>[] rawTypes, Map<String, Type> typeBindings) {
+    private void checkMethodAnnotations(Method method, JavaInterface javaInterface) throws InvalidAnnotationException {
+    	for ( Annotation a : method.getAnnotations() ) {
+    		if( a instanceof Remotable ) {
+				// [JCA90053] @Remotable annotation cannot be on a method that is not a setter method
+    			if( !JavaIntrospectionHelper.isSetter(method) ) {
+    				throw new InvalidAnnotationException("[JCA90053] @Remotable annotation present on an interface method" +
+    						" which is not a Setter method: " + javaInterface.getName() + "/" + method.getName(), Remotable.class);
+    			} // end if
+			} // end if		
+		} // end for
+    	
+    	// Parameter annotations
+    	for (Annotation[] parmAnnotations : method.getParameterAnnotations()) {
+    		for (Annotation annotation : parmAnnotations) {
+				if (annotation instanceof Remotable ) {
+    				throw new InvalidAnnotationException("[JCA90053] @Remotable annotation present on an interface method" +
+    						" parameter: " + javaInterface.getName() + "/" + method.getName(), Remotable.class);
+				} // end if
+			} // end for		
+		} // end for
+    	method.getParameterAnnotations();
+	} // end method checkMethodAnnotations
+
+	private Class<?>[] getActualTypes(Type[] types, Class<?>[] rawTypes, Map<String, Type> typeBindings) {
         Class<?>[] actualTypes = new Class<?>[types.length];
         for (int i = 0; i < actualTypes.length; i++) {
             actualTypes[i] = getActualType(types[i], rawTypes[i], typeBindings);
