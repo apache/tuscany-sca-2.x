@@ -25,8 +25,11 @@ import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.RequestContext;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Context;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.Scope;
 import org.oasisopen.sca.annotation.Service;
@@ -39,10 +42,21 @@ import org.oasisopen.sca.annotation.Service;
 public class EventProcessorServiceImpl implements EventProcessorService {
 
     /**
-     * Reference to the call back
+     * Reference to the callback
+     * 
+     * **NB** This test makes the *DANGEROUS* assumption that there is only one client to
+     * this component and thus only one callback location. For a "real" COMPOSITE component,
+     * each client would need to be uniquely identified - this would need to be done using something
+     * like an ID on the service methods, which could be set by the client and used to identify 
+     * a "session"
      */
-    @Callback
-    protected ServiceReference<EventProcessorCallBack> clientCallback;
+    private ServiceReference<EventProcessorCallBack> clientCallback = null;
+    
+    /**
+     * Component context (injected)
+     */
+    @Context
+    protected ComponentContext componentContext;
 
     /**
      * This map contains the call backs for each of the registered Event names
@@ -73,13 +87,21 @@ public class EventProcessorServiceImpl implements EventProcessorService {
      */
     public void registerForEvent(String aEventName) {
         // Register for the Event
-        eventListeners.put(aEventName, clientCallback);
+        eventListeners.put(aEventName, getClientCallback());
 
         // Send the "register" started event to the client
         receiveEvent(aEventName, "SameThread: Registered to receive notifications for " + aEventName);
     }
 
-    /**
+    private ServiceReference<EventProcessorCallBack> getClientCallback() {
+		if(clientCallback == null) {
+    		RequestContext requestContext = componentContext.getRequestContext();
+    		clientCallback = requestContext.getCallbackReference();
+    	}
+		return clientCallback;
+	} // end method getClientCallback
+
+	/**
      * Unregisters the client so it no longer receives notifications for the specified event
      * 
      * @param aEventName The name of the Event to unregister
