@@ -54,6 +54,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.Version;
 import org.apache.tuscany.sca.runtime.impl.NodeImpl;
 import org.apache.tuscany.sca.shell.jline.JLine;
+import org.oasisopen.sca.NoSuchServiceException;
 
 /**
  * A little SCA command shell.
@@ -218,26 +219,12 @@ public class Shell {
         return true;
     }
 
-    boolean invoke(final List<String> toks) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    boolean invoke(final List<String> toks) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchServiceException {
         String endpointName = toks.get(1);
-        String serviceName = null;
-        if (endpointName.contains("/")) {
-            int i = endpointName.indexOf("/");
-            if (i < endpointName.length()-1) {
-                serviceName = endpointName.substring(i+1);
-            }
-        }
         String operationName = toks.get(2);
         String params[] = new String[toks.size()- 3];
         System.arraycopy(toks.toArray(), 3, params, 0, params.length);
-        
-        EndpointRegistry reg = ((NodeImpl)getNode()).getEndpointRegistry();
-        List<Endpoint> endpoints = reg.findEndpoint(endpointName);
-        if (endpoints.size() < 1) {
-            out.println(" no service found: " + endpointName);
-            return true;
-        }
-        Object proxy = ((RuntimeComponent)endpoints.get(0).getComponent()).getServiceReference(null, serviceName).getService();        
+        Object proxy = getNode().getService(null, endpointName);
         Object result = invoke(proxy, operationName, params);
         if (result != null && result.getClass().isArray()) {
             out.println(Arrays.toString((Object[])result));
