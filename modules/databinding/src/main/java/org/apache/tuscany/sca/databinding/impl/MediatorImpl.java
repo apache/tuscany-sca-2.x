@@ -64,8 +64,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * @tuscany.spi.extension.asclient
  */
 public class MediatorImpl implements Mediator {
-    private static final String TARGET_OPERATION = "target.operation";
-    private static final String SOURCE_OPERATION = "source.operation";
+
     private ExtensionPointRegistry registry;
     private DataBindingExtensionPoint dataBindings;
     private TransformerExtensionPoint transformers;
@@ -327,6 +326,10 @@ public class MediatorImpl implements Mediator {
         if (sourceOperation != null) {
             context.put(TARGET_OPERATION, sourceOperation);
         }
+        if (context.get(BODY_TYPE) == null) {
+        	context.put(BODY_TYPE, BODY_TYPE_FAULT);
+        }
+
 
         Object newResult =
             transformException(result, targetDataType, sourceDataType, targetFaultType, sourceFaultType, context);
@@ -403,6 +406,10 @@ public class MediatorImpl implements Mediator {
         if (sourceOperation != null) {
             context.put(TARGET_OPERATION, sourceOperation);
         }
+        if (context.get(BODY_TYPE) == null) {
+        	context.put(BODY_TYPE, BODY_TYPE_OUTPUT);
+        }
+
         return mediate(output, targetType, sourceType, context);
     }
 
@@ -429,6 +436,10 @@ public class MediatorImpl implements Mediator {
         if (targetOperation != null) {
             context.put(TARGET_OPERATION, targetOperation);
         }
+        if (context.get(BODY_TYPE) == null) {
+        	context.put(BODY_TYPE, BODY_TYPE_INPUT);
+        }
+        
         return mediate(input, sourceType, targetType, context);
     }
 
