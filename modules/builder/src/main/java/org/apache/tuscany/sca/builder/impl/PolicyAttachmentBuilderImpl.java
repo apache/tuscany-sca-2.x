@@ -236,11 +236,11 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
         // Write the composite into a DOM document
         processor.write(composite, writer, new ProcessorContext(registry));
         writer.close();
-
-        Document document = domHelper.load(sw.toString());
         
         // Debugging
-        //System.out.println("<!-- DOM to which XPath will be applies is -->\n" + sw.toString());
+        //System.out.println("<!-- DOM to which XPath will be applied is -->\n" + sw.toString());
+        
+        Document document = domHelper.load(sw.toString());
         
         return document;
     }
