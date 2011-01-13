@@ -40,7 +40,8 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-base-runtime</artifactId>
+            <artifactId>tuscany-base-runtime-pom</artifactId>
+            <type>pom</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
@@ -58,22 +59,9 @@
         </dependency>
 
         <dependency>
-           <groupId>org.codehaus.woodstox</groupId>
-           <artifactId>wstx-asl</artifactId>
-           <version>3.2.9</version>
-        </dependency>
-
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.5</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.16</version>
             <scope>test</scope>
         </dependency>
 
