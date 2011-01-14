@@ -148,4 +148,11 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
 		return bindingType;
 	} // end method getBindingType
 
+    public RuntimeEndpoint getRequestEndpoint() {
+	return this.requestEndpoint;
+    }
+
+    public RuntimeEndpointReference getResponseEndpointReference() {
+	return this.responseEndpointReference;
+    }
 } // end class
