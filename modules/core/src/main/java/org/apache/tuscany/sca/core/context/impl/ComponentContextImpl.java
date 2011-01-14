@@ -481,13 +481,6 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         return interfaceContract;
     }
 
-    /**
-     * @see org.apache.tuscany.sca.runtime.RuntimeComponentContext#start(org.apache.tuscany.sca.runtime.RuntimeComponentReference)
-     */
-    public void start(RuntimeComponentReference reference) {
-        compositeActivator.start(compositeContext, component, reference);
-    }
-
     /* ******************** Contribution for issue TUSCANY-2281 ******************** */
 
     /**

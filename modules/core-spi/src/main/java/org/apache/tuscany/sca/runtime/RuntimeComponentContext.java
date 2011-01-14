@@ -29,11 +29,6 @@ import org.oasisopen.sca.ServiceReference;
  * @version $Rev$ $Date$
  */
 public interface RuntimeComponentContext extends ComponentContext {
-    /**
-     * Activate the reference (creating runtime wires)
-     * @param reference
-     */
-    void start(RuntimeComponentReference reference);
 
     /**
      * Get the CallableReference for a given component reference
