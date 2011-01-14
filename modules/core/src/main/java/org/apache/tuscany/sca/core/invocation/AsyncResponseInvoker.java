@@ -76,7 +76,9 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
      * If you have a Tuscany message you can call this
      */
     public void invokeAsyncResponse(Message responseMessage) {
-    	responseMessage.getHeaders().put("ASYNC_RESPONSE_INVOKER", this);
+    	responseMessage.getHeaders().put(Constants.ASYNC_RESPONSE_INVOKER, this);
+    	responseMessage.getHeaders().put(Constants.RELATES_TO, relatesToMsgID);
+    	
         if ((requestEndpoint.getBindingProvider() instanceof EndpointAsyncProvider) &&
              (((EndpointAsyncProvider)requestEndpoint.getBindingProvider()).supportsNativeAsync())){
             // process the response as a native async response
@@ -114,6 +116,12 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
         Message msg = messageFactory.createMessage();
 
         msg.setOperation(getOperation());
+        
+        // on the the following will be null depending
+        // on whether this is native or non-native async
+        msg.setTo(requestEndpoint);
+        msg.setFrom(responseEndpointReference);
+        
         if( args instanceof Throwable ) {
         	msg.setFaultBody(args);
         } else {
