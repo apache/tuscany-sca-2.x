@@ -38,8 +38,15 @@ public class UpperSampleAsyncServiceImpl {
 
     public Element call(String op, Element e) {
         String input = e.getTextContent();
-        out.println("UpperSampleAsyncServiceImpl.upper(" + input + ")");
+        out.println("UpperSampleAsyncServiceImpl." + op + "(" + input + ")");
         String output = input.toUpperCase();
-        return xdom("http://sample/upper-async", "upperResponse", elem("result", text(output)));
+        
+        if (!op.equals("upperVoid")){
+            return xdom("http://sample/upper-async", "upperResponse", elem("result", text(output)));
+        } else {
+            out.println("No response as void return type");
+            UpperSampleAsyncReferenceImpl.responseVoid = output;
+            return null;
+        }
     }
 }

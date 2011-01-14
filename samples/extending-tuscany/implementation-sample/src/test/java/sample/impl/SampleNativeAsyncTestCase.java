@@ -54,11 +54,29 @@ public class SampleNativeAsyncTestCase {
     }
 
     @Test
-    public void testReference() {
-        System.out.println("SampleNaiveAsyncTestCase.testReference");
+    public void testUpper() {
+        System.out.println("SampleNaiveAsyncTestCase.testUpper");
         Upper upper = node.getService(Upper.class, "SampleNativeAsyncReference");
         final String r = upper.upper("async"); 
         System.out.println(r);
         assertEquals("ASYNC", r);
     }
+    
+    @Test
+    public void testUpper2() {
+        System.out.println("SampleNaiveAsyncTestCase.testUpper2");
+        Upper upper = node.getService(Upper.class, "SampleNativeAsyncReference");
+        final String r = upper.upper2("async2"); 
+        System.out.println(r);
+        assertEquals("ASYNC2", r);
+    }   
+    
+    @Test
+    public void testVoid() {
+        System.out.println("SampleNaiveAsyncTestCase.testUpperVoid");
+        Upper upper = node.getService(Upper.class, "SampleNativeAsyncReference");
+        final String r = upper.upperVoid("asyncVoid");
+        System.out.println(r);
+        assertEquals("ASYNCVOID", r);
+    }    
 }

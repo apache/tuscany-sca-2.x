@@ -34,4 +34,13 @@ public class UpperTest {
         out.println("UpperTest.upper(" + s + ")");
         return s.toUpperCase();
     }
+    
+    public String upper2(String s) {
+        out.println("UpperTest.upper2(" + s + ")");
+        return s.toUpperCase();
+    }
+    
+    public void upperVoid(String s) {
+        out.println("UpperTest.upperVoid(" + s + ")");
+    }
 }

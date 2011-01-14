@@ -30,4 +30,8 @@ import org.oasisopen.sca.annotation.Remotable;
 public interface Upper {
 
     String upper(String s);
+    
+    String upper2(String s);
+    
+    String upperVoid(String s);
 }

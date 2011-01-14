@@ -71,8 +71,9 @@ class SampleWSDLInvoker extends InterceptorAsyncImpl {
         // At this point we could serialize the AsyncResponseInvoker and pick it up again 
         // later to send the async response
         
-        //((RuntimeEndpoint)msg.getTo()).invokeAsyncResponse(responseMsg);
-        respInvoker.invokeAsyncResponse(responseMsg);
+        if (responseMsg.getBody() != null){
+            respInvoker.invokeAsyncResponse(responseMsg);
+        }
     } // end method invokeAsyncRequest
     
     public Message processRequest(Message msg) {

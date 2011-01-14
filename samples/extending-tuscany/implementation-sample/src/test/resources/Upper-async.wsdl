@@ -60,6 +60,13 @@
             <wsdl:input message="tns:upperRequest" name="upperRequest" />
             <wsdl:output message="tns:upperResponse" name="upperResponse" />
         </wsdl:operation>
+        <wsdl:operation name="upper2">
+            <wsdl:input message="tns:upperRequest" name="upperRequest" />
+            <wsdl:output message="tns:upperResponse" name="upperResponse" />
+        </wsdl:operation>
+        <wsdl:operation name="upperVoid">
+            <wsdl:input message="tns:upperRequest" name="upperRequest" />
+        </wsdl:operation>
     </wsdl:portType>
 
 </wsdl:definitions>
