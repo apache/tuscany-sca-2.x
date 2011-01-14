@@ -38,7 +38,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  *
  * @version $Rev$ $Date$
  */
-public class NonBlockingInterceptor implements Interceptor {
+public class NonBlockingInterceptor extends InterceptorAsyncImpl {
 
     private static final Message RESPONSE = new ImmutableMessage();
 
@@ -48,7 +48,6 @@ public class NonBlockingInterceptor implements Interceptor {
     private static final Logger LOGGER = Logger.getLogger(NonBlockingInterceptor.class.getName());
 
     private WorkScheduler workScheduler;
-    private Invoker next;
 
     public NonBlockingInterceptor(WorkScheduler workScheduler) {
         this.workScheduler = workScheduler;
@@ -69,6 +68,11 @@ public class NonBlockingInterceptor implements Interceptor {
         this.workScheduler = workScheduler;
     }
 
+    /**
+     * For request/response messages use the workScheduler to break the connection between
+     * requests and the void response
+     */
+    @Override
     public Message invoke(final Message msg) {
         // Schedule the invocation of the next interceptor in a new Work instance
         try {
@@ -107,13 +111,21 @@ public class NonBlockingInterceptor implements Interceptor {
         }
         return RESPONSE;
     }
-
-    public Invoker getNext() {
-        return next;
+    
+    /**
+     * For forward async responses we just pass the message along
+     * as this is naturally one way
+     */
+    public Message processRequest(Message msg) {
+        return msg;
     }
-
-    public void setNext(Invoker next) {
-        this.next = next;
+    
+    /**
+     * This should never be called as a one way message won't
+     * expect a response
+     */
+    public Message processResponse(Message msg) {
+        return null;
     }
 
     /**
