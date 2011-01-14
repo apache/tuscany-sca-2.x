@@ -224,22 +224,27 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
             Endpoint endpoint = (Endpoint)v;
             logger.fine("Matching against - " + endpoint);
             if (endpoint.matches(uri)) {
-                if (!isLocal(endpoint)) {
-                    endpoint.setRemote(true);
-                    ((RuntimeEndpoint)endpoint).bind(registry, this);
-                } else {
-                    // get the local version of the endpoint
-                    // this local version won't have been serialized
-                    // won't be marked as remote and will have the 
-                    // full interface contract information
-                    endpoint = localEndpoints.get(endpoint.getURI());
-                }
-                
+                endpoint = localizeEndpoint(endpoint);
                 foundEndpoints.add(endpoint);
                 logger.fine("Found endpoint with matching service  - " + endpoint);
             }
         }
         return foundEndpoints;
+    }
+
+    private Endpoint localizeEndpoint(Endpoint endpoint) {
+        if (endpoint == null) return null;
+        if (!isLocal(endpoint)) {
+            endpoint.setRemote(true);
+            ((RuntimeEndpoint)endpoint).bind(registry, this);
+        } else {
+            // get the local version of the endpoint
+            // this local version won't have been serialized
+            // won't be marked as remote and will have the 
+            // full interface contract information
+            endpoint = localEndpoints.get(endpoint.getURI());
+        }
+        return endpoint;
     }
     
 
@@ -248,11 +253,15 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     }
 
     public Endpoint getEndpoint(String uri) {
-        return (Endpoint)endpointMap.get(uri);
+        return localizeEndpoint((Endpoint)endpointMap.get(uri));
     }
 
     public List<Endpoint> getEndpoints() {
-        return new ArrayList(endpointMap.values());
+        ArrayList<Endpoint> eps = new ArrayList();
+        for (Object ep : endpointMap.values()) {
+            eps.add(localizeEndpoint((Endpoint)ep));
+        }
+        return eps;
     }
 
     public void removeEndpoint(Endpoint endpoint) {
