@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -81,6 +82,7 @@ import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
 import org.apache.tuscany.sca.provider.EndpointProvider;
@@ -91,8 +93,10 @@ import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointSerializer;
+import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
@@ -892,18 +896,63 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 if (compositeContext != null) {
                     bind(compositeContext);
                 }
-            }
+            } // end if
             if (serializer != null) {
                 RuntimeEndpointImpl ep = (RuntimeEndpointImpl)serializer.readEndpoint(xml);
                 copyFrom(ep);
             } else {
-                // FIXME: [rfeng] What should we do here?
-            }
-        }
+            	// In this case, we assume that we're running on a detached (non Tuscany) thread and
+            	// as a result we need to connect back to the Tuscany environment...
+            	for( NodeFactory factory : NodeFactory.getNodeFactories() ) {
+            		ExtensionPointRegistry registry = factory.getExtensionPointRegistry();
+            		if( registry != null ) {
+            			this.registry = registry;
+            			UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+                        this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
+                        this.serializer = utilities.getUtility(EndpointSerializer.class);
+                        RuntimeEndpointImpl ep = (RuntimeEndpointImpl)serializer.readEndpoint(xml);
+                        // Find the actual Endpoint in the EndpointRegistry
+                        ep = findActualEP( ep, registry );
+                        
+                        if( ep != null ){
+                        	copyFrom( ep );
+                        	break;
+                        } // end if
+            		} // end if
+                } // end for
+            } // end if
+        } // end if
         super.resolve();
-    }
+    } // end method resolve
 
-    public InterfaceContract getBindingInterfaceContract() {
+    /**
+     * Find the actual Endpoint in the EndpointRegistry which corresponds to the configuration described
+     * in a deserialized Endpoint 
+     * @param ep The deserialized endpoint
+     * @param registry - the main extension point Registry
+     * @return the corresponding Endpoint from the EndpointRegistry, or null if no match can be found
+     */
+    private RuntimeEndpointImpl findActualEP(RuntimeEndpointImpl ep,
+			ExtensionPointRegistry registry) {
+		// Get the EndpointRegistry
+        DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(registry);
+        
+        if( domainRegistryFactory == null ) return null;
+        
+        // TODO: For the moment, just use the first (and only!) EndpointRegistry...
+        EndpointRegistry endpointRegistry = (EndpointRegistry) domainRegistryFactory.getEndpointRegistries().toArray()[0];
+        
+        if( endpointRegistry == null ) return null;
+        
+        for( Endpoint endpoint : endpointRegistry.findEndpoint(ep.getURI()) ) {
+        	// TODO: For the present, simply return the first matching endpoint
+        	return (RuntimeEndpointImpl) endpoint;
+        } // end for
+        
+		return null;
+	} // end method findActualEP
+
+	public InterfaceContract getBindingInterfaceContract() {
         resolve();
         if (bindingInterfaceContract != null) {
             return bindingInterfaceContract;

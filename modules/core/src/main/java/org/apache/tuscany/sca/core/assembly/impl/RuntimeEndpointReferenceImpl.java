@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
@@ -70,6 +71,7 @@ import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
 import org.apache.tuscany.sca.provider.ImplementationAsyncProvider;
@@ -78,9 +80,11 @@ import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointSerializer;
+import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
@@ -633,11 +637,59 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
                     bind(compositeContext);
                 }
             }
-            RuntimeEndpointReferenceImpl epr = (RuntimeEndpointReferenceImpl)serializer.readEndpointReference(xml);
-            copyFrom(epr);
+            if (serializer != null) {
+                RuntimeEndpointReferenceImpl epr = (RuntimeEndpointReferenceImpl)serializer.readEndpointReference(xml);
+                copyFrom(epr);
+            } else {
+            	// In this case, we assume that we're running on a detached (non Tuscany) thread and
+            	// as a result we need to connect back to the Tuscany environment...
+            	for( NodeFactory factory : NodeFactory.getNodeFactories() ) {
+            		ExtensionPointRegistry registry = factory.getExtensionPointRegistry();
+            		if( registry != null ) {
+            			this.registry = registry;
+            			UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+                        this.serializer = utilities.getUtility(EndpointSerializer.class);
+                        RuntimeEndpointReferenceImpl epr = (RuntimeEndpointReferenceImpl)serializer.readEndpointReference(xml);
+                        // Find the actual Endpoint in the EndpointRegistry
+                        epr = findActualEPR( epr, registry );
+                        
+                        if( epr != null ){
+                        	copyFrom( epr );
+                        	break;
+                        } // end if
+            		} // end if
+                } // end for
+            } // end if            
         }
         super.resolve();
-    }
+    } // end method resolve
+    
+    /**
+     * Find the actual EndpointReference in the EndpointRegistry which corresponds to the configuration described
+     * in a deserialized EndpointReference 
+     * @param ep The deserialized endpointReference
+     * @param registry - the main extension point Registry
+     * @return the corresponding EndpointReference from the EndpointRegistry, or null if no match can be found
+     */
+    private RuntimeEndpointReferenceImpl findActualEPR(RuntimeEndpointReferenceImpl epr,
+			ExtensionPointRegistry registry) {
+		// Get the EndpointRegistry
+        DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(registry);
+        if( domainRegistryFactory == null ) return null;
+        
+        // TODO: For the moment, just use the first (and only!) EndpointRegistry...
+        EndpointRegistry endpointRegistry = (EndpointRegistry) domainRegistryFactory.getEndpointRegistries().toArray()[0];
+        if( endpointRegistry == null ) return null;
+        
+        for( EndpointReference epReference : endpointRegistry.getEndpointReferences() ) {
+        	// TODO: For the present, simply return the first matching endpointReference
+        	if( epReference.getURI().equals(epr.getURI()) ) {
+        	    return (RuntimeEndpointReferenceImpl) epReference;
+        	} // end if
+        } // end for
+        
+		return null;
+	} // end method findActualEPR
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.uri = in.readUTF();
