@@ -69,14 +69,14 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 	
 	// A latch used to ensure that the sendResponse() and sendFault() operations are used at most once
 	// The latch is initialized with the value "false"
-	private AtomicBoolean latch = new AtomicBoolean();
+	private transient AtomicBoolean latch = new AtomicBoolean();
 	
-	private final Lock lock = new ReentrantLock();
-    private final Condition completed  = lock.newCondition(); 
+	private transient final Lock lock = new ReentrantLock();
+    private transient final Condition completed  = lock.newCondition(); 
 	
 	// The result
-	private volatile T response = null;
-	private volatile Throwable fault = null; 
+	private transient volatile T response = null;
+	private transient volatile Throwable fault = null; 
 	
 	private ExtensionPointRegistry registry;
 	
