@@ -505,7 +505,7 @@ public class Shell {
     int quotedString(String[] toks, int i) {
         if (toks[i].startsWith("\"") || toks[i].startsWith("'")) {
             for (int j=i+1; j<toks.length; j++) {
-                if (toks[j].endsWith(toks[i].substring(0,0))) {
+                if (toks[j].endsWith(toks[i].substring(0,1))) {
                     return j;
                 }
             }
