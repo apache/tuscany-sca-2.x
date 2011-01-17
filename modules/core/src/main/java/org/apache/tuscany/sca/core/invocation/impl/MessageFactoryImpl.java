@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.core.invocation.impl;
 
+import java.io.Serializable;
+
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 
@@ -27,9 +29,14 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
  *
  * @version $Rev$ $Date$
  */
-public class MessageFactoryImpl implements MessageFactory {
+public class MessageFactoryImpl implements MessageFactory, Serializable {
 
-    public Message createMessage() {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2112289169275106977L;
+
+	public Message createMessage() {
         return new MessageImpl();
     }
 
