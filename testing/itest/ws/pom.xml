@@ -36,6 +36,7 @@
     <module>wsdl</module>
     <module>endpoints</module>
     <module>endpoint-references</module>
+    <module>holder-ws-service-multiple-outputs</module>
 <!--
     <module>jms</module>
     <module>mtom</module>
