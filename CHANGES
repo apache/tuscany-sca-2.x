@@ -5,8 +5,10 @@ Highlights include:
 - Addition of an interactive Shell to work with SCA domains, contributions, and services
 - More reorganization of modules to support base-runtime and extension runtime jars
 - Tidying and simplification of the Web Services binding dependencies 
-
-
+- Upgrade to Axis2 1.5.3, Axiom 1.2.10, Abdera 1.1.1 and Jackson 1.6.2 
+- Improve jaxb/json databindings and jsonrpc binding to better handle interfaces
+- Update to latest OASIS XSDs
+- quite a few changes in the async area
 
 
 Changes With Apache Tuscany SCA 2.0-Beta1 November 2010
