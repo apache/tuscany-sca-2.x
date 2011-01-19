@@ -40,16 +40,9 @@ import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
-import org.apache.tuscany.sca.runtime.ActivationException;
-import org.apache.tuscany.sca.runtime.CompositeActivator;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
-import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
-import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.apache.tuscany.sca.runtime.impl.NodeImpl;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
-
-import sun.security.jca.GetInstance;
 
 public class TuscanyRuntime {
 

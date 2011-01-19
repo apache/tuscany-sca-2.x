@@ -22,9 +22,6 @@ import junit.framework.Assert;
 
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
-import org.apache.tuscany.sca.runtime.ActivationException;
-import org.apache.tuscany.sca.runtime.Node;
-import org.apache.tuscany.sca.runtime.TuscanyRuntime;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;

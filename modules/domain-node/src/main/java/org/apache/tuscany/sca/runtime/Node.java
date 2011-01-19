@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
-import org.apache.tuscany.sca.runtime.ActivationException;
 import org.oasisopen.sca.NoSuchServiceException;
 
 public interface Node {
