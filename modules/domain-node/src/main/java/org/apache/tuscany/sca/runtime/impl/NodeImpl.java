@@ -63,7 +63,7 @@ import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.Node;
-import org.apache.tuscany.sca.runtime.NodeFactory;
+import org.apache.tuscany.sca.runtime.TuscanyRuntime;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
@@ -78,17 +78,17 @@ public class NodeImpl implements Node {
     private CompositeActivator compositeActivator;
     private EndpointRegistry endpointRegistry;
     private ExtensionPointRegistry extensionPointRegistry;
-    private NodeFactory nodeFactory;
+    private TuscanyRuntime tuscanyRuntime;
     
     private static Map<String, Node> allNodes = new HashMap<String, Node>();
     
-    public NodeImpl(String domainName, Deployer deployer, CompositeActivator compositeActivator, EndpointRegistry endpointRegistry, ExtensionPointRegistry extensionPointRegistry, NodeFactory nodeFactory) {
+    public NodeImpl(String domainName, Deployer deployer, CompositeActivator compositeActivator, EndpointRegistry endpointRegistry, ExtensionPointRegistry extensionPointRegistry, TuscanyRuntime tuscanyRuntime) {
         this.domainName = domainName;
         this.deployer = deployer;
         this.compositeActivator = compositeActivator;
         this.endpointRegistry = endpointRegistry;
         this.extensionPointRegistry = extensionPointRegistry;
-        this.nodeFactory = nodeFactory;
+        this.tuscanyRuntime = tuscanyRuntime;
         allNodes.put(domainName, this);
     }
 
@@ -273,8 +273,8 @@ public class NodeImpl implements Node {
                 e.printStackTrace();
             }
         }
-        if (nodeFactory != null) {
-            nodeFactory.stop();
+        if (tuscanyRuntime != null) {
+            tuscanyRuntime.stop();
         }
         allNodes.remove(this.domainName);
     }

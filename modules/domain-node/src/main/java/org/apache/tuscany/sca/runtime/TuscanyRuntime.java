@@ -49,7 +49,7 @@ import org.apache.tuscany.sca.runtime.impl.NodeImpl;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
-public class NodeFactory {
+public class TuscanyRuntime {
 
     private Deployer deployer;
     private ExtensionPointRegistry extensionPointRegistry;
@@ -57,26 +57,39 @@ public class NodeFactory {
     private ExtensibleDomainRegistryFactory domainRegistryFactory;
     private RuntimeAssemblyFactory assemblyFactory;
 
-    public static NodeFactory newInstance() {
-        return new NodeFactory(null);
+    public static TuscanyRuntime newInstance() {
+        return new TuscanyRuntime(null);
     }
-    public static NodeFactory newInstance(Properties config) {
-        return new NodeFactory(config);
+    public static TuscanyRuntime newInstance(Properties config) {
+        return new TuscanyRuntime(config);
     }
 
     /**
-     * A helper method to simplify creating a standalone Node 
+     * A helper method to run a standalone SCA composite 
      * @param compositeURI  URI within the contribution of a composite to run 
      *         if compositeURI is null then all deployable composites in the contribution will be run 
      * @param contributionURL  URL of the contribution
      * @param dependentContributionURLs  optional URLs of dependent contributions
      * @return a Node with installed contributions
      */
-    public static Node createStandaloneNode(String compositeURI, String contributionURL, String... dependentContributionURLs) {
+    public static Node runComposite(String compositeURI, String contributionURL, String... dependentContributionURLs) {
+        return runComposite(newInstance(), compositeURI, contributionURL, dependentContributionURLs);
+    }
+
+    /**
+     * A helper method to run a standalone SCA composite 
+     * @param runtime a TuscanyRuntime instance which will be used to run the composite
+     *                 this allows sharing a runtime instance to run multiple composites
+     * @param compositeURI  URI within the contribution of a composite to run 
+     *         if compositeURI is null then all deployable composites in the contribution will be run 
+     * @param contributionURL  URL of the contribution
+     * @param dependentContributionURLs  optional URLs of dependent contributions
+     * @return a Node with installed contributions
+     */
+    public static Node runComposite(TuscanyRuntime runtime, String compositeURI, String contributionURL, String... dependentContributionURLs) {
         try {
-            NodeFactory nodeFactory = newInstance();
-            EndpointRegistry endpointRegistry = new EndpointRegistryImpl(nodeFactory.extensionPointRegistry, null, null);
-            NodeImpl node = new NodeImpl("default", nodeFactory.deployer, nodeFactory.compositeActivator, endpointRegistry, nodeFactory.extensionPointRegistry, nodeFactory);
+            EndpointRegistry endpointRegistry = new EndpointRegistryImpl(runtime.extensionPointRegistry, null, null);
+            NodeImpl node = new NodeImpl("default", runtime.deployer, runtime.compositeActivator, endpointRegistry, runtime.extensionPointRegistry, runtime);
 
             if (dependentContributionURLs != null) {
                 for (int i=dependentContributionURLs.length-1; i>-1; i--) {
@@ -95,7 +108,7 @@ public class NodeFactory {
         }
     }
 
-    protected NodeFactory(Properties config) {
+    protected TuscanyRuntime(Properties config) {
         init(config);
     }
     
@@ -122,7 +135,6 @@ public class NodeFactory {
     }
 
     public void stop() {
-        deployer.stop();
         extensionPointRegistry.stop();
     }
 
@@ -152,6 +164,15 @@ public class NodeFactory {
         this.domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionPointRegistry);
 
     }
+    
+    /**
+     * Get the ExtensionPointRegistry used by this runtime
+     * @return extensionPointRegistry
+     */
+    public ExtensionPointRegistry getExtensionPointRegistry() {
+        return extensionPointRegistry;
+    }
+    
     /**
      * Get the Deployer. The Deployer can be used to create contribution artifacts 
      * when configuring a Node programatically.

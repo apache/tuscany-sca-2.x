@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.node2;
+package org.apache.tuscany.sca.runtime;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.Node;
-import org.apache.tuscany.sca.runtime.NodeFactory;
+import org.apache.tuscany.sca.runtime.TuscanyRuntime;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -44,10 +44,10 @@ public class DeployerTestCase {
 
     @Test
     public void testInstalledContribution() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, MalformedURLException {
-        NodeFactory nodeFactory = NodeFactory.newInstance();
-        Node node = nodeFactory.createNode("myDomain");
+        TuscanyRuntime tuscanyRuntime = TuscanyRuntime.newInstance();
+        Node node = tuscanyRuntime.createNode("myDomain");
         
-        Deployer deployer = nodeFactory.getDeployer();
+        Deployer deployer = tuscanyRuntime.getDeployer();
         Monitor monitor = deployer.createMonitor();
         Contribution contribution = deployer.loadContribution(URI.create("foo"), new File("src/test/resources/sample-helloworld-nodeployable.jar").toURI().toURL(), monitor);
         monitor.analyzeProblems();
@@ -60,12 +60,12 @@ public class DeployerTestCase {
 
     @Test
     public void testAddDeploymentComposite() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, MalformedURLException, XMLStreamException {
-        NodeFactory nodeFactory = NodeFactory.newInstance();
-        Node node = nodeFactory.createNode("myDomain");
+        TuscanyRuntime tuscanyRuntime = TuscanyRuntime.newInstance();
+        Node node = tuscanyRuntime.createNode("myDomain");
         
         node.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
 
-        Deployer deployer = nodeFactory.getDeployer();
+        Deployer deployer = tuscanyRuntime.getDeployer();
         Monitor monitor = deployer.createMonitor();
         Composite composite = deployer.loadXMLDocument(new File("src/test/resources/helloworld2.composite").toURI().toURL(), monitor);
         monitor.analyzeProblems();

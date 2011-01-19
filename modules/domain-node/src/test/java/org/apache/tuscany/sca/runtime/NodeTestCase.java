@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.node2;
+package org.apache.tuscany.sca.runtime;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.Node;
-import org.apache.tuscany.sca.runtime.NodeFactory;
+import org.apache.tuscany.sca.runtime.TuscanyRuntime;
 import org.apache.tuscany.sca.runtime.impl.NodeImpl;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class NodeTestCase {
 
     @Test
     public void testInstallDeployable() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        Node node = NodeFactory.newInstance().createNode("default");
+        Node node = TuscanyRuntime.newInstance().createNode("default");
         node.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null, true);
 
         Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
@@ -49,7 +49,7 @@ public class NodeTestCase {
 
     @Test
     public void testStopStart() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        Node node = NodeFactory.newInstance().createNode("default");
+        Node node = TuscanyRuntime.newInstance().createNode("default");
         node.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null, true);
         String ci = node.getStartedCompositeURIs("helloworld").get(0);
 
@@ -72,7 +72,7 @@ public class NodeTestCase {
     @Test
     @Ignore("Depdends on itest/T3558 which isn't in the build?")
     public void testInstallWithDependent() throws NoSuchServiceException, ContributionReadException, ActivationException, ValidationException {
-        Node node = NodeFactory.newInstance().createNode("default");
+        Node node = TuscanyRuntime.newInstance().createNode("default");
         node.installContribution("store", "../../itest/T3558/src/test/resources/sample-store.jar", null, null, true);
         node.installContribution("store-client", "../../itest/T3558/src/test/resources/sample-store-client.jar", null, null, true);
 
@@ -82,7 +82,7 @@ public class NodeTestCase {
 
     @Test
     public void testInstallNoDeployable() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        Node node = NodeFactory.newInstance().createNode("default");
+        Node node = TuscanyRuntime.newInstance().createNode("default");
         node.installContribution("helloworld", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
 
         try {
@@ -99,7 +99,7 @@ public class NodeTestCase {
 
     @Test
     public void testGetInstalledContributions() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        Node node = NodeFactory.newInstance().createNode("default");
+        Node node = TuscanyRuntime.newInstance().createNode("default");
         node.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
         List<String> ics = node.getInstalledContributionURIs();
         Assert.assertEquals(1, ics.size());
@@ -108,7 +108,7 @@ public class NodeTestCase {
 
     @Test
     public void testGetDeployedCompostes() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, MalformedURLException, ActivationException, ValidationException {
-        Node node = NodeFactory.newInstance().createNode("default");
+        Node node = TuscanyRuntime.newInstance().createNode("default");
         node.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
         List<String> dcs = node.getStartedCompositeURIs("foo");
         Assert.assertEquals(1, dcs.size());
@@ -117,7 +117,7 @@ public class NodeTestCase {
 
     @Test
     public void testRemoveComposte() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, MalformedURLException, ActivationException, ValidationException {
-        Node node = NodeFactory.newInstance().createNode("default");
+        Node node = TuscanyRuntime.newInstance().createNode("default");
         node.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
         node.stop("foo", "helloworld.composite");
         List<String> dcs = node.getStartedCompositeURIs("foo");
@@ -126,7 +126,7 @@ public class NodeTestCase {
 
     @Test
     public void testInstallWithMetaData() throws ContributionReadException, ActivationException, ValidationException, NoSuchServiceException {
-        Node node = NodeFactory.newInstance().createNode("default");
+        Node node = TuscanyRuntime.newInstance().createNode("default");
         ((NodeImpl)node).installContribution("helloworld", "src/test/resources/sample-helloworld-nodeployable.jar", "src/test/resources/sca-contribution-generated.xml", null, true);
 
         List<String> dcs = node.getStartedCompositeURIs("helloworld");
@@ -139,14 +139,14 @@ public class NodeTestCase {
 
     @Test
     public void testURI() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        Node node = NodeFactory.newInstance().createNode("default");
+        Node node = TuscanyRuntime.newInstance().createNode("default");
         String uri = node.installContribution("src/test/resources/sample-helloworld.jar");
         Assert.assertEquals("sample-helloworld", uri);
     }
 
     @Test
     public void testStaticCreate() {
-        Node node = NodeFactory.createStandaloneNode("helloworld.composite", "src/test/resources/sample-helloworld.jar");
+        Node node = TuscanyRuntime.runComposite("helloworld.composite", "src/test/resources/sample-helloworld.jar");
         List<String> cs = node.getInstalledContributionURIs();
         Assert.assertEquals(1, cs.size());
         List<String> dcs = node.getStartedCompositeURIs(cs.get(0));
@@ -156,7 +156,7 @@ public class NodeTestCase {
 
     @Test
     public void testStaticCreateWithNullComposite() {
-        Node node = NodeFactory.createStandaloneNode(null, "src/test/resources/sample-helloworld.jar");
+        Node node = TuscanyRuntime.runComposite(null, "src/test/resources/sample-helloworld.jar");
         List<String> cs = node.getInstalledContributionURIs();
         Assert.assertEquals(1, cs.size());
         List<String> dcs = node.getStartedCompositeURIs(cs.get(0));

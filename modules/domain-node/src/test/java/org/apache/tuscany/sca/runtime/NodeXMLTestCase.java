@@ -16,7 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.node2;
+package org.apache.tuscany.sca.runtime;
+
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -24,26 +26,21 @@ import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.Node;
-import org.apache.tuscany.sca.runtime.NodeFactory;
+import org.apache.tuscany.sca.runtime.TuscanyRuntime;
 import org.junit.Test;
-import org.oasisopen.sca.NoSuchDomainException;
-import org.oasisopen.sca.NoSuchServiceException;
 
-import sample.Helloworld;
-
-public class TwoNodesTestCase {
+public class NodeXMLTestCase {
 
     @Test
-    public void testInstallDeployable() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-//        Node node1 = NodeFactory.newInstance().createNode("uri:TwoNodesTestCase?multicast=off&bind=127.0.0.1:44331");
-        Node node1 = NodeFactory.newInstance().createNode("uri:TwoNodesTestCase");
-        node1.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null, true);
-
-//        Node node2 = NodeFactory.newInstance().createNode("uri:TwoNodesTestCase?multicast=off&bind=127.0.0.1:44332&wka=127.0.0.1:44331");
-        Node node2 = NodeFactory.newInstance().createNode("uri:TwoNodesTestCase");
-
-        Helloworld helloworldService = node2.getService(Helloworld.class, "HelloworldComponent");
-        Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
+    public void testHelloworldXML() throws ContributionReadException, ActivationException, ValidationException {
+        Node node = TuscanyRuntime.newInstance().createNodeFromXML("src/test/resources/helloworldNode.xml");
+        Assert.assertEquals("helloworld", node.getDomainName());
+        List<String> cs = node.getInstalledContributionURIs();
+        Assert.assertEquals(1, cs.size());
+        Assert.assertEquals("sample-helloworld", cs.get(0));
+        List<String> compsoites = node.getStartedCompositeURIs("sample-helloworld");
+        Assert.assertEquals(1, compsoites.size());
+        Assert.assertEquals("helloworld.composite", compsoites.get(0));
     }
 
 }
