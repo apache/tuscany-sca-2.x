@@ -49,8 +49,7 @@ import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.Node;
-import org.apache.tuscany.sca.runtime.NodeFactory;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.TuscanyRuntime;
 import org.apache.tuscany.sca.runtime.Version;
 import org.apache.tuscany.sca.runtime.impl.NodeImpl;
 import org.apache.tuscany.sca.shell.jline.JLine;
@@ -63,7 +62,7 @@ public class Shell {
 
     private boolean useJline;
     final List<String> history = new ArrayList<String>();
-    private NodeFactory factory;
+    private TuscanyRuntime runtime;
     private String currentDomain = "";
     private Map<String, Node> standaloneNodes = new HashMap<String, Node>();
     private Map<String, Node> nodes = new HashMap<String, Node>();
@@ -95,7 +94,7 @@ public class Shell {
     }
 
     public Shell(String domainURI, boolean useJLine) {
-        this.factory = NodeFactory.newInstance();
+        this.runtime = TuscanyRuntime.newInstance();
         this.useJline = useJLine;
         if (domainURI != null) {
             domain(domainURI);
@@ -112,7 +111,7 @@ public class Shell {
                     return true;
                 }
             }
-            Node node = factory.createNode(domainURI);
+            Node node = runtime.createNode(domainURI);
             currentDomain = node.getDomainName();
             nodes.put(currentDomain, node);
         }
@@ -284,7 +283,7 @@ public class Shell {
     }
 
     boolean load(final String configXmlUrl) throws ContributionReadException, ActivationException, ValidationException {
-        Node node = factory.createNodeFromXML(configXmlUrl);
+        Node node = runtime.createNodeFromXML(configXmlUrl);
         currentDomain = node.getDomainName();
         nodes.put(currentDomain, node);
         return true;
@@ -362,7 +361,7 @@ public class Shell {
         for (Node node : nodes.values()) {
             node.stop();
         }
-        factory.stop();
+        runtime.stop();
         for (Node node : standaloneNodes.values()) {
             node.stop();
         }
@@ -392,7 +391,7 @@ public class Shell {
 
     boolean start(String nodeName, String compositeURI, String contributionURL, String... dependentContributionURLs)
         throws ActivationException, ValidationException {
-        Node node = NodeFactory.createStandaloneNode(compositeURI, contributionURL, dependentContributionURLs);
+        Node node = TuscanyRuntime.runComposite(compositeURI, contributionURL, dependentContributionURLs);
         standaloneNodes.put(nodeName, node);
         return true;
     }
