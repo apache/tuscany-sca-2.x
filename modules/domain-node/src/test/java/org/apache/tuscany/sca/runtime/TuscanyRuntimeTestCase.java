@@ -36,7 +36,7 @@ import org.oasisopen.sca.NoSuchServiceException;
 
 import sample.Helloworld;
 
-public class NodeTestCase {
+public class TuscanyRuntimeTestCase {
 
     @Test
     public void testInstallDeployable() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
@@ -162,5 +162,28 @@ public class NodeTestCase {
         List<String> dcs = node.getStartedCompositeURIs(cs.get(0));
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("helloworld.composite", dcs.get(0));
+    }
+    @Test
+    public void testRunComposite() throws NoSuchServiceException {
+        Node node = TuscanyRuntime.runComposite("helloworld.composite", "src/test/resources/sample-helloworld.jar");
+        try {
+        Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
+        Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
+        } finally {
+            node.stop();
+        }
+    }
+
+    @Test
+    public void testRunCompositeSharedRuntime() throws NoSuchServiceException {
+        TuscanyRuntime runtime = TuscanyRuntime.newInstance();
+        Node node = TuscanyRuntime.runComposite(runtime, "helloworld.composite", "src/test/resources/sample-helloworld.jar");
+        try {
+        Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
+        Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
+        } finally {
+            node.stop();
+        }
+        runtime.stop();
     }
 }

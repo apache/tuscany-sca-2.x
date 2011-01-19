@@ -49,6 +49,8 @@ import org.apache.tuscany.sca.runtime.impl.NodeImpl;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
+import sun.security.jca.GetInstance;
+
 public class TuscanyRuntime {
 
     private Deployer deployer;
@@ -73,7 +75,7 @@ public class TuscanyRuntime {
      * @return a Node with installed contributions
      */
     public static Node runComposite(String compositeURI, String contributionURL, String... dependentContributionURLs) {
-        return runComposite(newInstance(), compositeURI, contributionURL, dependentContributionURLs);
+        return runComposite(null, compositeURI, contributionURL, dependentContributionURLs);
     }
 
     /**
@@ -88,8 +90,12 @@ public class TuscanyRuntime {
      */
     public static Node runComposite(TuscanyRuntime runtime, String compositeURI, String contributionURL, String... dependentContributionURLs) {
         try {
+            boolean sharedRuntime = runtime != null;
+            if (runtime == null) {
+                runtime = newInstance();
+            }
             EndpointRegistry endpointRegistry = new EndpointRegistryImpl(runtime.extensionPointRegistry, null, null);
-            NodeImpl node = new NodeImpl("default", runtime.deployer, runtime.compositeActivator, endpointRegistry, runtime.extensionPointRegistry, runtime);
+            NodeImpl node = new NodeImpl("default", runtime.deployer, runtime.compositeActivator, endpointRegistry, runtime.extensionPointRegistry, sharedRuntime? null : runtime);
 
             if (dependentContributionURLs != null) {
                 for (int i=dependentContributionURLs.length-1; i>-1; i--) {
