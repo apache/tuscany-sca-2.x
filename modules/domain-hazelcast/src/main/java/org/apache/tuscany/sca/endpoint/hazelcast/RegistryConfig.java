@@ -20,7 +20,9 @@
 package org.apache.tuscany.sca.endpoint.hazelcast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 
@@ -133,5 +135,43 @@ public class RegistryConfig {
     }
     public String getPassword() {
         return password;
+    }
+
+    /**
+     * Parse the config string into a Properties object.
+     * The config URI has the following format:
+     * uri:<domainName>?name=value&...
+     */
+    public static RegistryConfig parseConfigURI(String configURI) {
+        Properties properties = new Properties();
+        int c = configURI.indexOf(':');
+        if (c > -1) {
+           configURI = configURI.substring(c+1); 
+        }
+        int qm = configURI.indexOf('?');
+        if (qm < 0) {
+            properties.setProperty("defaultDomainName", configURI);
+        } else {
+            if (qm == 0) {
+                properties.setProperty("defaultDomainName", "default");
+            } else {
+                properties.setProperty("defaultDomainName", configURI.substring(0, qm));
+            }
+            if (configURI.length() > qm+1) {
+                Map<String, String> params = new HashMap<String, String>();
+                for (String param : configURI.substring(qm+1).split("&")) {
+                    String[] px = param.split("=");
+                    if (px.length == 2) {
+                        params.put(px[0], px[1]);
+                    } else {
+                        params.put(px[0], "");
+                    }
+                }
+                for (String name : params.keySet()) {
+                    properties.setProperty(name, params.get(name));
+                }
+            }
+        }
+        return new RegistryConfig(properties);
     }
 }

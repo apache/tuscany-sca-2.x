@@ -34,12 +34,10 @@ public class TwoNodesTestCase {
 
     @Test
     public void testInstallDeployable() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-//        Node node1 = NodeFactory.newInstance().createNode("uri:TwoNodesTestCase?multicast=off&bind=127.0.0.1:44331");
-        Node node1 = TuscanyRuntime.newInstance().createNode("uri:TwoNodesTestCase");
+        Node node1 = TuscanyRuntime.newInstance().createNode("uri:TwoNodesTestCase?multicast=off&bind=127.0.0.1:44331");
         node1.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null, true);
 
-//        Node node2 = NodeFactory.newInstance().createNode("uri:TwoNodesTestCase?multicast=off&bind=127.0.0.1:44332&wka=127.0.0.1:44331");
-        Node node2 = TuscanyRuntime.newInstance().createNode("uri:TwoNodesTestCase");
+        Node node2 = TuscanyRuntime.newInstance().createNode("uri:TwoNodesTestCase?multicast=off&bind=127.0.0.1:44332&wka=127.0.0.1:44331");
 
         Helloworld helloworldService = node2.getService(Helloworld.class, "HelloworldComponent");
         Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));

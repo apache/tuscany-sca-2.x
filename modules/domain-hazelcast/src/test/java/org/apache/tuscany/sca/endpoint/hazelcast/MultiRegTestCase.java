@@ -55,7 +55,7 @@ public class MultiRegTestCase {
     public void testReplication() throws Exception {
 
         System.out.println("Starting reg1");
-        HazelcastEndpointRegistry reg1 = new HazelcastEndpointRegistry(extensionPoints, null, null, "bar");
+        HazelcastEndpointRegistry reg1 = new HazelcastEndpointRegistry(extensionPoints, (Properties)null, "tuscany:foo?bind=127.0.0.1:9876&multicast=off", "bar");
         reg1.start();
 
         System.out.println("Adding ep1");
@@ -64,11 +64,11 @@ public class MultiRegTestCase {
         reg1.addEndpoint(ep1);
 
         System.out.println("Starting reg3");
-        HazelcastEndpointRegistry reg2 = new HazelcastEndpointRegistry(extensionPoints, null, "tuscany:foo?listen=127.0.0.1:9877&multicast=off&remotes=127.0.0.1:9876", "bar");
+        HazelcastEndpointRegistry reg2 = new HazelcastEndpointRegistry(extensionPoints, (Properties)null, "tuscany:foo?bind=127.0.0.1:9877&multicast=off&wka=127.0.0.1:9876", "bar");
         reg2.start();
 
         System.out.println("Starting reg2");
-        HazelcastEndpointRegistry reg3 = new HazelcastEndpointRegistry(extensionPoints, null, "tuscany:foo?listen=127.0.0.1:9878&multicast=off&remotes=127.0.0.1:9877", "bar");
+        HazelcastEndpointRegistry reg3 = new HazelcastEndpointRegistry(extensionPoints, (Properties)null, "tuscany:foo?bind=127.0.0.1:9878&multicast=off&wka=127.0.0.1:9877", "bar");
         reg3.start();
 
         assertExists(reg1, "ep1uri");
@@ -116,13 +116,13 @@ public class MultiRegTestCase {
 
     @Test
     public void testDuplicates() throws Exception {
-        HazelcastEndpointRegistry reg1 = new HazelcastEndpointRegistry(extensionPoints, null, "tuscany:foo?listen=127.0.0.1:9876&multicast=off", "bar");
+        HazelcastEndpointRegistry reg1 = new HazelcastEndpointRegistry(extensionPoints, (Properties)null, "tuscany:foo?bind=127.0.0.1:9876&multicast=off", "bar");
         reg1.start();
         RuntimeEndpoint ep1 = createEndpoint("ep1uri");
         ep1.bind(extensionPoints, reg1);
         reg1.addEndpoint(ep1);
 
-        HazelcastEndpointRegistry reg2 = new HazelcastEndpointRegistry(extensionPoints, null, "tuscany:foo?listen=127.0.0.1:9877&multicast=off&remotes=127.0.0.1:9876", "bar");
+        HazelcastEndpointRegistry reg2 = new HazelcastEndpointRegistry(extensionPoints, (Properties)null, "tuscany:foo?bind=127.0.0.1:9877&multicast=off&wka=127.0.0.1:9876", "bar");
         reg2.start();
 
         try {

@@ -24,11 +24,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.net.URI;
-
+import org.apache.tuscany.sca.Node;
+import org.apache.tuscany.sca.TuscanyRuntime;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointImpl;
-import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,8 +44,9 @@ public class ClientTestCase{
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        node = NodeFactory.newInstance(domainURI).createNode((String)null, new String[]{"../helloworld-service/target/classes", "../helloworld-client/target/classes"});
-        node.start();
+        node = TuscanyRuntime.newInstance().createNode(domainURI);
+        node.installContribution("../helloworld-service/target/classes");
+        node.installContribution("../helloworld-client/target/classes");
     }
 
     @Test

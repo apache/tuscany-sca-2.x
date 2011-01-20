@@ -72,8 +72,8 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     protected Object shutdownMutex = new Object();
     protected Properties properties;
 
-    public HazelcastEndpointRegistry(ExtensionPointRegistry registry, Properties properties, String domainURI) {
-        super(registry, null, null, domainURI);
+    public HazelcastEndpointRegistry(ExtensionPointRegistry registry, Properties properties, String endpointRegistryURI, String domainURI) {
+        super(registry, null, endpointRegistryURI, domainURI);
         this.assemblyFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(AssemblyFactory.class);
         this.properties = properties;
     }
@@ -157,7 +157,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
             // TUSCANY-3675 - domainRegistryURI properties don't seem to be copied into the
             //                properties collection anywhere
             config = new XmlConfigBuilder().build();
-            RegistryConfig rc = new RegistryConfig(properties);
+            RegistryConfig rc = RegistryConfig.parseConfigURI(domainRegistryURI);
             config.setPort(rc.getBindPort());
             //config.setPortAutoIncrement(false);
 
