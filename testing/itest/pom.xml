@@ -38,6 +38,7 @@
     </dependencies>
 
   <modules>
+                <module>async-services</module>
                 <module>base</module>
                 <module>builder</module>
                 <module>bpel</module>
