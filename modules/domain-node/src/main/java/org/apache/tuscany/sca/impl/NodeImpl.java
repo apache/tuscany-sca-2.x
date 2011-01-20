@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.runtime.impl;
+package org.apache.tuscany.sca.impl;
 
 import java.io.File;
 import java.io.Reader;
@@ -31,6 +31,8 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.tuscany.sca.Node;
+import org.apache.tuscany.sca.TuscanyRuntime;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -62,11 +64,9 @@ import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
-import org.apache.tuscany.sca.runtime.Node;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
-import org.apache.tuscany.sca.runtime.TuscanyRuntime;
 import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.ServiceRuntimeException;
 

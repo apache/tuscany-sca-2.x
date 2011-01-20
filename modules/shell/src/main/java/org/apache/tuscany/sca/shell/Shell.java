@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.apache.tuscany.sca.Node;
+import org.apache.tuscany.sca.TuscanyRuntime;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
@@ -45,13 +47,11 @@ import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
-import org.apache.tuscany.sca.runtime.Node;
-import org.apache.tuscany.sca.runtime.TuscanyRuntime;
 import org.apache.tuscany.sca.runtime.Version;
-import org.apache.tuscany.sca.runtime.impl.NodeImpl;
 import org.apache.tuscany.sca.shell.jline.JLine;
 import org.oasisopen.sca.NoSuchServiceException;
 

@@ -22,6 +22,8 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.Node;
+import org.apache.tuscany.sca.TuscanyRuntime;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.junit.Test;

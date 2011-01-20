@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.runtime;
+package org.apache.tuscany.sca;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,10 +37,15 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.assembly.impl.EndpointRegistryImpl;
 import org.apache.tuscany.sca.deployment.Deployer;
+import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
-import org.apache.tuscany.sca.runtime.impl.NodeImpl;
+import org.apache.tuscany.sca.runtime.ActivationException;
+import org.apache.tuscany.sca.runtime.CompositeActivator;
+import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
+import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
