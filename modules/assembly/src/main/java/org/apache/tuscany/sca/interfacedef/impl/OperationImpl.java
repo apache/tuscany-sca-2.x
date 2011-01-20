@@ -64,7 +64,7 @@ public class OperationImpl implements Operation {
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private ExtensionType type;
     private DataType<List<DataType>> outputType;
-    private boolean hasMultipleOutputs;
+    private boolean hasArrayWrappedOutput;
 
     /**
      * @param name
@@ -301,11 +301,11 @@ public class OperationImpl implements Operation {
     }
 
     public boolean hasArrayWrappedOutput() {
-        return this.hasMultipleOutputs;
+        return this.hasArrayWrappedOutput;
     }
 
     public void setHasArrayWrappedOutput(boolean value) {
-        this.hasMultipleOutputs = value;
+        this.hasArrayWrappedOutput = value;
     }
 
 }

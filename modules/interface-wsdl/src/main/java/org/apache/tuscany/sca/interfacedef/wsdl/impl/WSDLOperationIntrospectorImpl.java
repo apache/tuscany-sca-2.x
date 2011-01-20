@@ -38,6 +38,8 @@ import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.ParameterMode;
+
 import static org.apache.tuscany.sca.interfacedef.Operation.IDL_INPUT;
 import static org.apache.tuscany.sca.interfacedef.Operation.IDL_OUTPUT;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -209,7 +211,12 @@ public class WSDLOperationIntrospectorImpl {
             operationModel.setName(operation.getName());
             operationModel.setFaultTypes(getFaultTypes());
             operationModel.setNonBlocking(oneway);
-            operationModel.setInputType(getInputType());
+            DataType<List<DataType>> inputType = getInputType(); 
+            operationModel.setInputType(inputType);
+            List<ParameterMode> modes = operationModel.getParameterModes();
+            for (DataType dt : inputType.getLogical()) {
+                modes.add(ParameterMode.IN);                
+            }
             operationModel.setOutputType(getOutputType());
 
             operationModel.setWrapperStyle(isWrapperStyle());

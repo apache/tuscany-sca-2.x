@@ -298,13 +298,13 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
      */
     private boolean isAsyncServerOperation( Operation operation ) {
     	// Async form operations have:
-    	// 1) void return type
+    	// 1) void return type (equivalent to an output logical List of size '0')
     	// 2) name ending in "Async"
     	// 3) final parameter which is of ResponseDispatch<?> type
-    	DataType<?> response = operation.getOutputType().getLogical().get(0);
-    	if( response != null ) {
-    	   if ( response.getPhysical() != void.class ) return false;
-    	} // end if
+    	int size = operation.getOutputType().getLogical().size();
+    	if (size != 0) {
+    	    return false;
+    	}
     	
     	if ( !operation.getName().endsWith("Async") ) return false;
     	
