@@ -30,8 +30,8 @@ import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -39,12 +39,11 @@ import org.junit.Test;
  */
 public class OrderServiceTestCase {
 
-    private Node node;
+    private static Node node;
 
-    @Before
-    public void startServer() throws Exception {
+    @BeforeClass
+    public static void startServer() throws Exception {
         try {
-
             NodeFactory factory = NodeFactory.newInstance();
             String contribution = ContributionLocationHelper.getContributionLocation(OrderService.class);
             node = factory.createNode("ordersca.composite", new Contribution("order", contribution)).start();
@@ -295,9 +294,9 @@ public class OrderServiceTestCase {
         assertEquals("retval2", returnValue[1]);
         assertTrue(outParam.value.floatValue() == 97);
     }
-    
-    @After
-    public void stopServer() throws Exception {
+
+    @AfterClass
+    public static void stopServer() throws Exception {
         if (node != null)
             node.stop();
     }

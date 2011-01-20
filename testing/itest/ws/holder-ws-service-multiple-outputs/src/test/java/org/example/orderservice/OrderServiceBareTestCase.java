@@ -30,8 +30,8 @@ import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -39,10 +39,10 @@ import org.junit.Test;
  */
 public class OrderServiceBareTestCase {
 
-    private Node node;
+    private static Node node;
 
-    @Before
-    public void startServer() throws Exception {
+    @BeforeClass
+    public static void startServer() throws Exception {
         try {
 
             NodeFactory factory = NodeFactory.newInstance();
@@ -120,7 +120,7 @@ public class OrderServiceBareTestCase {
     }    
     
     @Test
-    public void testOrderReviewOutHolderSCA() throws IOException {
+    public void testOrderReviewBareOutHolderSCA() throws IOException {
         OrderServiceBare orderServiceBare =
             node.getService(OrderServiceBare.class, "OrderServiceBareComponent/OrderServiceBare");
         assertNotNull(orderServiceBare);            
@@ -128,7 +128,7 @@ public class OrderServiceBareTestCase {
     }
 
     @Test
-    public void testOrderReviewOutHolderWS() throws IOException {
+    public void testOrderReviewBareOutHolderWS() throws IOException {
         OrderServiceBare orderServiceBare =
             node.getService(OrderServiceBare.class, "OrderServiceBareForwardComponent/OrderServiceBare");
         assertNotNull(orderServiceBare);            
@@ -195,8 +195,9 @@ public class OrderServiceBareTestCase {
     }        
 
     
-    @After
-    public void stopServer() throws Exception {
+    
+    @AfterClass
+    public static void stopServer() throws Exception {
         if (node != null)
             node.stop();
     }
