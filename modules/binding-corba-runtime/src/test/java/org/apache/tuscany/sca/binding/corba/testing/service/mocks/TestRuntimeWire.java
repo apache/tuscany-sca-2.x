@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * Mock RuntimeWire implementation. Only few methods needs to be implemented.
@@ -323,5 +324,19 @@ public class TestRuntimeWire implements RuntimeEndpoint {
 	public void invokeAsync(Message msg) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public void createAsyncServerCallback() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public RuntimeEndpointReference getAsyncServerCallback() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
