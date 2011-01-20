@@ -19,10 +19,7 @@
 
 package org.apache.tuscany.sca.endpoint.hazelcast;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
@@ -30,8 +27,7 @@ import java.util.Properties;
 /**
  * Utility to parse the config properties.
  * 
- * bind - ip[:port] - defines the local bind address and port, it defaults to the network interface with the widest 
- *                    class (ie class A is wider than class B) on port 14820 and if that port in use it will try 
+ * bind - ip[:port] - defines the local bind address and port, it defaults port 14820 and if that port in use it will try 
  *                    incrementing by one till a free port is found.
  *             
  * multicast - groupip:port | off - defines if multicast discovery is used and if so what multicast ip group and port is used 
@@ -65,12 +61,7 @@ public class RegistryConfig {
     private void init(Properties properties) {
    
         String bindValue = properties.getProperty("bind");
-        if (bindValue == null) {
-            InetAddress addr = chooseLocalAddress();
-            if (addr != null) {
-                this.bindAddress = addr.getHostAddress();
-            }
-        } else {
+        if (bindValue != null) {
             if (bindValue.indexOf(":") == -1) {
                 this.bindAddress = bindValue;
             } else {
@@ -142,38 +133,5 @@ public class RegistryConfig {
     }
     public String getPassword() {
         return password;
-    }
-
-    /**
-     * Use the NIC address with the widest class, ie class A instead of class B or C.
-     * Bit crude but in a lot of environments a class A address (eg 10.x.x.x) is likely
-     * a better choice than a class C address (eg 192.x.x.x). And the alternative to 
-     * this is to just choose the first address of the first network interface which 
-     * likely isn't a better choice than this approach.
-     */
-    protected InetAddress chooseLocalAddress() {
-        InetAddress chosen = null;
-        try {
-            Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
-            while (nis.hasMoreElements()) {
-                NetworkInterface ni = nis.nextElement();
-                Enumeration<InetAddress> ips = ni.getInetAddresses();
-                while (ips.hasMoreElements()) {
-                    InetAddress addr = ips.nextElement();
-                    if (!addr.isLoopbackAddress()) {
-                        if (chosen == null) {
-                            chosen = addr;
-                        } else {
-                            if (((int) addr.getAddress()[0] & 0xFF) < ((int) chosen.getAddress()[0] & 0xFF)) {
-                                chosen = addr;
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            // ignore
-        }
-        return chosen;
     }
 }
