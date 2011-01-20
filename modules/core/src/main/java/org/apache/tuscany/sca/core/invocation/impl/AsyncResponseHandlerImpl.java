@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.core.invocation.AsyncFaultWrapper;
 import org.apache.tuscany.sca.core.invocation.AsyncResponseHandler;
+import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -155,13 +156,10 @@ public class AsyncResponseHandlerImpl<V> implements AsyncResponseHandler<V>,
 	 * @param msg - the Tuscany message containing the response from the async service invocation
 	 * which is either the Response message or an exception of some kind
 	 */
-    private static final String WS_MESSAGE_ID = "WS_MESSAGE_ID";
-    public Message invoke(Message msg) {
-		// Get the unique ID from the message header
-		String idValue = (String)msg.getHeaders().get(WS_MESSAGE_ID);
-		if (idValue == null){
-		    idValue = (String)msg.getHeaders().get("MESSAGE_ID");
-		}
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public Message invoke(Message msg) {
+		// Get the unique ID from the RELATES_TO message header
+		String idValue = (String)msg.getHeaders().get(Constants.RELATES_TO);
 		
 		if( idValue == null ) { 
 			System.out.println( "Async message ID not found ");

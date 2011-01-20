@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -58,6 +59,7 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
     private String operationName;
     private MessageFactory messageFactory;
     private String bindingType = "";
+    private boolean isNativeAsync;
     
     public AsyncResponseInvoker(RuntimeEndpoint requestEndpoint,
 			RuntimeEndpointReference responseEndpointReference,
@@ -70,6 +72,13 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
 		this.relatesToMsgID = relatesToMsgID;
 		this.operationName = operationName;
 		this.messageFactory = messageFactory;
+		
+        if ((requestEndpoint.getBindingProvider() instanceof EndpointAsyncProvider) &&
+                (((EndpointAsyncProvider)requestEndpoint.getBindingProvider()).supportsNativeAsync())){
+        	isNativeAsync = true;
+        } else {
+        	isNativeAsync = false;
+        } // end if
 	} // end constructor
 
     /** 
@@ -79,8 +88,7 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
     	responseMessage.getHeaders().put(Constants.ASYNC_RESPONSE_INVOKER, this);
     	responseMessage.getHeaders().put(Constants.RELATES_TO, relatesToMsgID);
     	
-        if ((requestEndpoint.getBindingProvider() instanceof EndpointAsyncProvider) &&
-             (((EndpointAsyncProvider)requestEndpoint.getBindingProvider()).supportsNativeAsync())){
+        if (isNativeAsync){
             // process the response as a native async response
             requestEndpoint.invokeAsyncResponse(responseMessage);
         } else {
@@ -106,8 +114,8 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
 	}
 
 	/**
-     * If you have Java beans you can call this and we'll create
-     * a Tuscany message
+     * Invokes the async response where the parameter is Java bean(s) 
+     * - this method creates a Tuscany message
      * 
      * @param args the response data
      */
@@ -115,10 +123,22 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
         
         Message msg = messageFactory.createMessage();
 
-        msg.setOperation(getOperation());
+        msg.setOperation(getOperation( args ));
         
-        // on the the following will be null depending
-        // on whether this is native or non-native async
+        // If this is not native async, then any Throwable is being passed as a parameter and
+        // requires wrapping
+        if( !isNativeAsync && args instanceof Throwable ) {
+        	args = new AsyncFaultWrapper( (Throwable) args ); 
+        } // end if
+        
+        // If this is not native async, then the message must contain an array of args since
+        // this is what is expected when invoking an EPR for the async response...
+        if( !isNativeAsync ) {
+        	Object[] objs = new Object[1];
+        	objs[0] = args;
+        	args = objs;
+        } // end if
+
         msg.setTo(requestEndpoint);
         msg.setFrom(responseEndpointReference);
         
@@ -132,12 +152,22 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
         
     } // end method invokeAsyncResponse(Object)
 
-	private Operation getOperation() {
-		List<Operation> ops = requestEndpoint.getService().getInterfaceContract().getInterface().getOperations();
-		for (Operation op : ops) {
-			if( operationName.equals(op.getName()) ) return op;
-		} // end for
-		return null;
+	private Operation getOperation( Object args ) {
+		if( isNativeAsync ) {
+			List<Operation> ops = requestEndpoint.getService().getInterfaceContract().getInterface().getOperations();
+			for (Operation op : ops) {
+				if( operationName.equals(op.getName()) ) return op;
+			} // end for
+			return null;
+		} else {
+			operationName = "setResponse";
+			if( args instanceof Throwable ) { operationName = "setWrappedFault"; }
+			List<Operation> ops = responseEndpointReference.getReference().getInterfaceContract().getInterface().getOperations();
+			for (Operation op : ops) {
+				if( operationName.equals(op.getName()) ) return op;
+			} // end for
+			return null;
+		} // end if 
 	} // end getOperation
 
 	public void setBindingType(String bindingType) {
@@ -155,4 +185,9 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
     public RuntimeEndpointReference getResponseEndpointReference() {
 	return this.responseEndpointReference;
     }
+
+	public void setResponseEndpointReference(
+			RuntimeEndpointReference responseEndpointReference) {
+		this.responseEndpointReference = responseEndpointReference;
+	}
 } // end class
