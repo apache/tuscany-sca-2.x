@@ -56,6 +56,7 @@ import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.ParameterMode;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
@@ -240,7 +241,9 @@ public class Interface2WSDLGenerator {
             if (useOutputWrapper) {
                 addDataType(dataTypes, dt2, helpers);
             } else {
-                dt2 = op.getOutputType().getLogical().get(0);
+                if (op.getOutputType().getLogical().size() != 0) {
+                    dt2 = op.getOutputType().getLogical().get(0);
+                } 
                 addDataType(dataTypes, dt2, helpers);
             }
             
@@ -646,7 +649,7 @@ public class Interface2WSDLGenerator {
                 outputMsg.addPart(generateWrapperPart(definition, op, helpers, wrappers, false));
             } else {
                 
-                if ((op.getOutputType() != null) && ( op.getOutputType().getLogical().get(0) != null)) {
+                if ((op.getOutputType() != null) && ( op.getOutputType().getLogical().size() != 0)) {
                 	DataType outputType = op.getOutputType().getLogical().get(0);
                     outputMsg.addPart(generatePart(definition, outputType, "return"));
                     elements = new ArrayList<ElementInfo>();
@@ -748,18 +751,41 @@ public class Interface2WSDLGenerator {
             */
 
             Method method = ((JavaOperation)operation).getJavaMethod();
+            
+            /*
+             * Making this change, though not understanding:
+             * 
+             * 1. Whether we can assume JAXWSJavaInterfaceProcessor was already used to process
+             * 
+             * 2. What the purpose is of calling getElementInfo() when we already have an ElementInfo
+             * 
+             */
             if (input) {
                 Class<?>[] paramTypes = method.getParameterTypes();
-                for (int i = 0; i < paramTypes.length; i++) {
-                    DataType dataType = operation.getInputType().getLogical().get(i);
-                    elements.set(i, getElementInfo(paramTypes[i], dataType, elements.get(i).getQName(), helpers));
+                for (int i = 0, inputsSeen = 0; i < paramTypes.length; i++) {
+                	ParameterMode mode = operation.getParameterModes().get(i);
+                	if (!mode.equals(ParameterMode.OUT)) {
+                		DataType dataType = operation.getInputType().getLogical().get(i);
+                		elements.set(inputsSeen, getElementInfo(paramTypes[i], dataType, elements.get(inputsSeen).getQName(), helpers));
+                		inputsSeen++;
+                	}
                 }
             } else {
+            	int outputsSeen = 0;
                 Class<?> returnType = method.getReturnType();
                 if (returnType != Void.TYPE) {
                     DataType dataType = operation.getOutputType().getLogical().get(0);
-                    elements.set(0, getElementInfo(returnType, dataType, elements.get(0).getQName(), helpers));
+                    elements.set(outputsSeen++, getElementInfo(returnType, dataType, elements.get(0).getQName(), helpers));
                 }
+                Class<?>[] paramTypes = method.getParameterTypes();
+                for (int i = 0; i < paramTypes.length; i++) {
+                	ParameterMode mode = operation.getParameterModes().get(i);
+                	if (!mode.equals(ParameterMode.IN)) {
+                		DataType dataType = operation.getOutputType().getLogical().get(i);
+                		elements.set(outputsSeen, getElementInfo(paramTypes[i], dataType, elements.get(outputsSeen).getQName(), helpers));
+                		outputsSeen++;
+                	}
+                }                
             }
         }
         return part;

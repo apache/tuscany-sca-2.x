@@ -63,14 +63,15 @@ public class OperationImpl implements Operation {
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private ExtensionType type;
-	private DataType<List<DataType>> outputType;
-	private boolean hasHolders;
+    private DataType<List<DataType>> outputType;
+    private boolean hasMultipleOutputs;
 
     /**
      * @param name
      */
     public OperationImpl() {
-        inputType = new DataTypeImpl<List<DataType>>("idl:input", Object[].class, new ArrayList<DataType>());
+        inputType = new DataTypeImpl<List<DataType>>(IDL_INPUT, Object[].class, new ArrayList<DataType>());
+        outputType = new DataTypeImpl<List<DataType>>(IDL_OUTPUT, Object[].class, new ArrayList<DataType>());
         faultTypes = new ArrayList<DataType>();
         faultBeans = new HashMap<QName, List<DataType<XMLType>>>();
     }
@@ -123,15 +124,15 @@ public class OperationImpl implements Operation {
      * @return the outputType
      */
     public DataType<List<DataType>> getOutputType() {
-    	return this.outputType;
+        return this.outputType;
     }     
 
-    
+
     /**
      * @param outputType the outputType to set
      */
     public void setOutputType(DataType<List<DataType>> outputType) {
-       this.outputType = outputType;
+        this.outputType = outputType;
     }
 
     /**
@@ -237,24 +238,24 @@ public class OperationImpl implements Operation {
         copy.inputType = clonedInputType;
 
         if ( outputType != null ) {
-        	List<DataType> clonedLogicalOutputTypes = new ArrayList<DataType>();
-        	for ( DataType t : outputType.getLogical()) {
-        		if ( t == null ) {
-        			clonedLogicalOutputTypes.add(null);
-        		} else {
-        			DataType type = (DataType) t.clone();
-        			clonedLogicalOutputTypes.add(type);
-        		}
-        	}
-        	DataType<List<DataType>> clonedOutputType = 
-        		new DataTypeImpl<List<DataType>>(outputType.getPhysical(), clonedLogicalOutputTypes);
-       		 clonedOutputType.setDataBinding(outputType.getDataBinding());
-       		 copy.outputType = clonedOutputType;    
+            List<DataType> clonedLogicalOutputTypes = new ArrayList<DataType>();
+            for ( DataType t : outputType.getLogical()) {
+                if ( t == null ) {
+                    clonedLogicalOutputTypes.add(null);
+                } else {
+                    DataType type = (DataType) t.clone();
+                    clonedLogicalOutputTypes.add(type);
+                }
+            }
+            DataType<List<DataType>> clonedOutputType = 
+                new DataTypeImpl<List<DataType>>(outputType.getPhysical(), clonedLogicalOutputTypes);
+            clonedOutputType.setDataBinding(outputType.getDataBinding());
+            copy.outputType = clonedOutputType;    
         }
 
         copy.attributes = new ConcurrentHashMap<Object, Object>();
         copy.attributes.putAll(attributes);
-        
+
         // [rfeng] We need to clone the wrapper as it holds the databinding information
         if (wrapper != null) {
             copy.wrapper = (WrapperInfo)wrapper.clone();
@@ -287,24 +288,24 @@ public class OperationImpl implements Operation {
         return attributes;
     }
 
-	/**
-	 * Indicates if this operation is an async server style of operation
-	 * @return true if the operation is async server style
-	 */
-	public boolean isAsyncServer() {
-		return false;
-	}
+    /**
+     * Indicates if this operation is an async server style of operation
+     * @return true if the operation is async server style
+     */
+    public boolean isAsyncServer() {
+        return false;
+    }
 
-	public List<ParameterMode> getParameterModes() {
-		return this.parameterModes;
-	}
-	
-	public boolean hasHolders() {
-		return this.hasHolders;
-	}
-	
-	public void setHasHolders(boolean value) {
-		this.hasHolders = value;
-	}
+    public List<ParameterMode> getParameterModes() {
+        return this.parameterModes;
+    }
+
+    public boolean hasArrayWrappedOutput() {
+        return this.hasMultipleOutputs;
+    }
+
+    public void setHasArrayWrappedOutput(boolean value) {
+        this.hasMultipleOutputs = value;
+    }
 
 }

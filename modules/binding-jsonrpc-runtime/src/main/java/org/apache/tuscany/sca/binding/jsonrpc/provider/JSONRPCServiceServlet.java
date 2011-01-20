@@ -327,7 +327,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
                 result = responseMessage.getBody();
             	return result.toString().getBytes("UTF-8");
             } else {
-                if (jsonOperation.getOutputType().getLogical().get(0) == null) {
+                if (jsonOperation.getOutputType().getLogical().size() == 0) {
                     // void operation (json-rpc notification)
                     try {
                         JSONObject jsonResponse = new JSONObject();

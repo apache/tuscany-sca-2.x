@@ -82,7 +82,7 @@ public class JAXWSAsyncInterfaceProcessor implements JavaInterfaceVisitor {
      */
     private static boolean isJAXWSAsyncPoolingOperation(Operation operation, Operation asyncOperation) {
 
-        if (asyncOperation.getOutputType().getLogical().get(0) == null || Response.class != asyncOperation.getOutputType().getLogical().get(0).getPhysical()) {
+        if (asyncOperation.getOutputType().getLogical().size() == 0 || Response.class != asyncOperation.getOutputType().getLogical().get(0).getPhysical()) {
             // The return type is not Response<T>
             return false;
         }
@@ -149,7 +149,7 @@ public class JAXWSAsyncInterfaceProcessor implements JavaInterfaceVisitor {
      */
     private static boolean isJAXWSAsyncCallbackOperation(Operation operation, Operation asyncOperation) {
 
-        if (asyncOperation.getOutputType().getLogical().get(0) == null || Future.class != asyncOperation.getOutputType().getLogical().get(0).getPhysical()) {
+        if (asyncOperation.getOutputType().getLogical().size() == 0 || Future.class != asyncOperation.getOutputType().getLogical().get(0).getPhysical()) {
             // The return type is not Future<?>
             return false;
         }

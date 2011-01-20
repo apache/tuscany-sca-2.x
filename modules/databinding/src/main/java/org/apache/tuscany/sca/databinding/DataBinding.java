@@ -30,18 +30,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  * @tuscany.spi.extension.asclient
  */
 public interface DataBinding {
-    /**
-     * A special databinding for input message of an operation
-     */
-    String IDL_INPUT = "idl:input";
-    /**
-     * A special databinding for output message of an operation
-     */
-    String IDL_OUTPUT = "idl:output";
-    /**
-     * A special databinding for fault message of an operation
-     */
-    String IDL_FAULT = "idl:fault";
+
     /**
      * The name of a databinding should be case-insensitive and unique
      * 

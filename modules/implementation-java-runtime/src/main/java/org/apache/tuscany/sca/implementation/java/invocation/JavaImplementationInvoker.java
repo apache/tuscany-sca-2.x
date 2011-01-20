@@ -133,22 +133,28 @@ public class JavaImplementationInvoker implements Invoker {
             // Only check Holder for remotable interfaces
             if (imethod != null && op.getInterface().isRemotable()) {
                 List<DataType> inputTypes = op.getInputType().getLogical();
-                for (int i = 0, size = inputTypes.size(); i < size; i++) {
-                    if (ParameterMode.IN != op.getParameterModes().get(i)) {
-                        // Promote array params from [<T>] to [Holder<T>]
-                        Object[] payloadArray = (Object[])payload;
-                  
-                        if ( ParameterMode.INOUT == op.getParameterModes().get(i)) {
-                        	Object item = payloadArray[i];                           
-                        	payloadArray[i] = new Holder(item);
-                        } else {
-                        	// Create an empty Holder since we should not pass values for OUT parameters
-                        	payloadArray[i] = new Holder();
-                        }
-                        
+                Object[] payloadArray = (Object[])payload;
+                List<Object> payloadList = new ArrayList<Object>();
+                for (int i = 0, nextIndex = 0; i < inputTypes.size(); i++) {
+                    ParameterMode mode = op.getParameterModes().get(i);
+                    if (ParameterMode.IN == mode ) {
+                        payloadList.add(payloadArray[nextIndex++]);
+                    } else if (ParameterMode.INOUT == mode ) {
+                        // Promote array params from [<T>] to [Holder<T>]                  
+                        Object item = payloadArray[nextIndex++];                           
+                        Holder itemHolder = new Holder(item);
+                        payloadList.add(itemHolder);
                         argumentHolderCount++;
-                    }
+                    } else {
+                        // Create an empty Holder since we should not pass values for OUT parameters
+                        payloadList.add(new Holder());
+                        argumentHolderCount++;
+                    }                        
                 }
+                
+                // Maybe a bit odd to do but this way I don't have to worry about how the invoke if/else
+                // immediately following might need to be changed.
+                payload = payloadList.toArray();
             }
 
             Object ret;
@@ -164,18 +170,47 @@ public class JavaImplementationInvoker implements Invoker {
             if (argumentHolderCount > 0) {
             	
                 // Holder pattern. Any payload Holder<T> types are returned as part of the message body.
-            	Object[] payloadArray = (Object[])payload;           
+            	Object[] payloadArray = (Object[])payload;
+            	
+            	ArrayList<Object> holderOutputs = new ArrayList<Object>();
             	ArrayList<Object> result = new ArrayList<Object>();
-                if (imethod != null) {
-                	
-                	result.add(ret);
+                if (imethod != null) {                	
+                    
                     for (int i = 0, size = op.getParameterModes().size(); i < size; i++) {                       
                         if (ParameterMode.IN != op.getParameterModes().get(i)) {                        	
                         	// Demote array params from Holder<T> to <T>.                                                   
                         	Holder<Object> item = (Holder<Object>)payloadArray[i];
                         	payloadArray[i] = item.value;
-                        	result.add(payloadArray[i]);                        	                      
+                        	holderOutputs.add(payloadArray[i]);                        	                      
                         }
+                    }
+                    
+                    //
+                    // Now we account for the fact that we may have a null because of a void return type,
+                    // which is not part of the output DataType, and so should not be returned with the array
+                    // of outputs, or we may have a null as value returned
+                    // from a method with signature with return type other than void, which should be returned 
+                    // in the output array.
+                    // 
+                    // The logic here is if we already have as many outputs in holders as we have outputs
+                    // altogether, then we don't worry about the return value (which should be null).  Might
+                    // be simpler to just check for void, but the code in the Java introspector has a lot
+                    // of quirks for handling parameterized types, and this seems simpler for now.
+                    //
+                    int holderOutputSize = holderOutputs.size();
+                    int numberOperationOutputs = op.getOutputType().getLogical().size();
+                    if (holderOutputSize == numberOperationOutputs) {
+                        if (ret != null) {
+                            throw new IllegalStateException("Number of holder outputs equal to number of operations outputs." +
+                                                            "\nNum = " + holderOutputSize + ", but non-null return value seen: " + ret);
+                        }
+                        result = holderOutputs;
+                    } else if (holderOutputSize == numberOperationOutputs - 1) {
+                        result.add(ret);
+                        result.addAll(1, holderOutputs);
+                    } else {
+                        throw new IllegalStateException("Number of holder outputs seen: " + holderOutputSize +  
+                                                        "\nNumber of operation outputs: " + numberOperationOutputs);
                     }
                 }
 

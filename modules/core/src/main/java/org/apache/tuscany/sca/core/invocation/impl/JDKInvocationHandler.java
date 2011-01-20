@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import org.apache.tuscany.sca.context.ThreadMessageContext;
 import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.ParameterMode;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -109,15 +111,29 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
         // Holder pattern. Items stored in a Holder<T> are promoted to T.
         // After the invoke, the returned data <T> are placed back in Holder<T>.
-        Object [] promotedArgs = promoteHolderArgs( args );
-                
+        Object [] promotedArgs = promoteHolderArgs( args ); 
+        
+        // Strip out OUT-only arguments.  Not too sure if the presence
+        // of a sourceOperation is exactly the right check to use to 
+        // know whether or not to do this, but will assume it is until
+        // learning otherwise.
+        Operation sourceOp = chain.getSourceOperation();        
+        if (sourceOp != null) {
+            promotedArgs = removeOutOnlyArgs(sourceOp, promotedArgs );
+        } 
+        
         Object result = invoke(chain, promotedArgs, source);
         
+        // TODO - Based on the code in JavaInterfaceIntrospectorImpl, it seems there are
+        // some cases involving generics that we're not taking into account.
+        boolean voidReturnType = (void.class == method.getReturnType() ? true : false);
+
         // Returned Holder data <T> are placed back in Holder<T>.
         boolean holderPattern = false;
         Class [] parameters = method.getParameterTypes();
         if ( parameters != null ) {
-        	for ( int i = 0, resultIdx = 0; i < parameters.length; i++ ) {
+                int resultIdx = (voidReturnType ?  0 : 1);
+        	for ( int i = 0; i < parameters.length; i++ ) {
         		Class parameterType = parameters[ i ];              
         		if ( isHolder( parameterType ) ) {
         			holderPattern = true;
@@ -126,15 +142,20 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         		
         			Object[] results = (Object[])result;
         			if ( result != null ) {
-        				holder.value =  results[++resultIdx]; 
+        				holder.value =  results[resultIdx++]; 
         			}
         		}            
         	}
         }
-        if ( holderPattern && result != null) 
-        	return ((Object[])result)[0];
-        else
-        	return result;
+        if (holderPattern && result != null) {
+            if (voidReturnType) {
+                return null;
+            } else {
+                return ((Object[])result)[0];
+            }
+        } else {
+            return result;
+        }
     }
 
     /**
@@ -358,6 +379,24 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     		}
     	}
     	return promotedArgs;
+    }
+    
+    /**
+     * Given an argument array, filters out (removes) OUT-only parameters
+     * @param sourceOp
+     * @return array of filtered arguments
+     */    
+    Object[] removeOutOnlyArgs(Operation sourceOp, Object[] args) {
+        if ( args == null )
+            return args;
+        ArrayList<Object> retValList = new ArrayList<Object>();
+        List<ParameterMode> parmList = sourceOp.getParameterModes();
+        for (int i = 0; i < args.length; i++) {
+            if (parmList.get(i) != ParameterMode.OUT) {
+                retValList.add(args[i]);
+            }
+        }
+        return retValList.toArray();
     }
     
     /**

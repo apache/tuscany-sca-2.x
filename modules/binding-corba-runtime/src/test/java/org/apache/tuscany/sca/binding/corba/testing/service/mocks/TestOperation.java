@@ -186,12 +186,12 @@ public class TestOperation implements Operation {
 	}
 
 
-	public boolean hasHolders() {
+	public boolean hasArrayWrappedOutput() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public void setHasHolders(boolean arg0) {
+	public void setHasArrayWrappedOutput(boolean arg0) {
 		// TODO Auto-generated method stub
 		
 	}

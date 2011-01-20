@@ -44,6 +44,8 @@ import org.apache.tuscany.sca.interfacedef.InvalidCallbackException;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.InvalidOperationException;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_INPUT;
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_OUTPUT;
 import org.apache.tuscany.sca.interfacedef.OverloadedOperationException;
 import org.apache.tuscany.sca.interfacedef.ParameterMode;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -63,8 +65,6 @@ import org.oasisopen.sca.annotation.Remotable;
  * @version $Rev$ $Date$
  */
 public class JavaInterfaceIntrospectorImpl {
-    public static final String IDL_INPUT = "idl:input";
-    public static final String IDL_OUTPUT = "idl:output";
 
     private static final String UNKNOWN_DATABINDING = null;
 
@@ -216,7 +216,7 @@ public class JavaInterfaceIntrospectorImpl {
         List<Operation> operations = new ArrayList<Operation>(methods.length);
         Set<String> names = remotable ? new HashSet<String>() : null;
         for (Method method : methods) {
-        	boolean hasHolders = false;
+        	boolean hasMultipleOutputs = false;
             if (method.getDeclaringClass() == Object.class) {
                 // Skip the methods on the Object.class
                 continue;
@@ -279,7 +279,7 @@ public class JavaInterfaceIntrospectorImpl {
                 ParameterMode mode = ParameterMode.IN;
                 // Holder pattern. Physical types of Holder<T> classes are updated to <T> to aid in transformations.
                 if ( Holder.class == paramType) {
-                	hasHolders = true;
+                	hasMultipleOutputs = true;
                 	genericHolderTypes.add(genericParamTypes[i]);
                 	Type firstActual = getFirstActualType( genericParamTypes[ i ] );
                 	if ( firstActual != null ) {
@@ -293,26 +293,22 @@ public class JavaInterfaceIntrospectorImpl {
                 paramDataTypes.add( xmlDataType);
                 operation.getParameterModes().add(mode);
             }
-            
-            
-            // Get Output Types                     
-        	List<DataType> outputDataTypes = new ArrayList<DataType>(allOutputTypes.length);
-    		Type genericReturnType = method.getGenericReturnType();
-    		
-    		for ( int i=0; i <= genericHolderTypes.size(); i++ ) {
-    			Class<?> paramType = allOutputTypes[i];
-    			XMLType xmlOutputType = new XMLType(new QName(ns, "out" + i), null);
-    			
-    			if ( i == 0 ) {
-    				outputDataTypes.add(returnDataType);
-    			} else {
-    				DataTypeImpl<XMLType> xmlDataType = xmlDataType = new DataTypeImpl<XMLType>(
-    						UNKNOWN_DATABINDING, physicalHolderTypes.get(i-1), genericHolderTypes.get(i-1), xmlOutputType);
-    				outputDataTypes.add(xmlDataType);
-    			}
-    			
-    		}
-    		
+                       
+            // Get Output Types, but skip over void return type                
+            List<DataType> outputDataTypes = new ArrayList<DataType>();
+            if (returnDataType != null) {
+                outputDataTypes.add(returnDataType);
+            }
+
+            // Start at 1, for the first holder, since we already accounted for the return type itself
+            for ( int i=1; i < allOutputTypes.length; i++ ) {
+                Class<?> paramType = allOutputTypes[i];
+                XMLType xmlOutputType = new XMLType(new QName(ns, "out" + i), null);
+                DataTypeImpl<XMLType> xmlDataType = xmlDataType = new DataTypeImpl<XMLType>(
+                    UNKNOWN_DATABINDING, physicalHolderTypes.get(i-1), genericHolderTypes.get(i-1), xmlOutputType);
+                outputDataTypes.add(xmlDataType);
+            }
+
             // Fault types                                                          
             List<DataType> faultDataTypes = new ArrayList<DataType>(faultTypes.length);
             Type[] genericFaultTypes = method.getGenericExceptionTypes();
@@ -344,7 +340,7 @@ public class JavaInterfaceIntrospectorImpl {
             operation.setFaultTypes(faultDataTypes);
             operation.setNonBlocking(nonBlocking);
             operation.setJavaMethod(method);
-            operation.setHasHolders(hasHolders);     
+            operation.setHasArrayWrappedOutput(hasMultipleOutputs);     
             operations.add(operation);
         }
         return operations;
@@ -352,15 +348,15 @@ public class JavaInterfaceIntrospectorImpl {
     
 
 	private Class<?>[] getOutputTypes(Class<?> returnType, Class<?>[] parameterTypes) {
-		Class<?>[] returnTypes = new Class<?>[parameterTypes.length + 1];
-		returnTypes[0] = returnType;
-		int idx = 1;
+	    
+		ArrayList<Class<?>> returnTypes = new ArrayList<Class<?>>();
+		returnTypes.add(returnType);
 		for ( Class<?> clazz : parameterTypes ) {
 			if ( Holder.class == clazz )
-				returnTypes[idx++] = clazz;
+			    returnTypes.add(clazz);
 		}
-		
-		return returnTypes;
+		Class[] arrayType = new Class[0];
+		return returnTypes.toArray(arrayType);
 	}
 
 

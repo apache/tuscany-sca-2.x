@@ -38,6 +38,8 @@ import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_INPUT;
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_OUTPUT;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
@@ -132,52 +134,29 @@ public class WSDLOperationIntrospectorImpl {
 
     /**
      * @return
-     * @throws InvalidServiceContractException
+     * @throws InvalidWSDLException
      */
     public DataType<List<DataType>> getInputType() throws InvalidWSDLException {
         if (inputType == null) {
             Input input = operation.getInput();
             Message message = (input == null) ? null : input.getMessage();
             inputType = getMessageType(message);
-            inputType.setDataBinding("idl:input");
+            inputType.setDataBinding(IDL_INPUT);
         }
         return inputType;
     }
 
     /**
      * @return
-     * @throws NotSupportedWSDLException
+     * @throws InvalidWSDLException
      */
     @SuppressWarnings("unchecked")
     public DataType<List<DataType>> getOutputType() throws InvalidWSDLException {
         if (outputType == null) {
             Output output = operation.getOutput();
             Message outputMsg = (output == null) ? null : output.getMessage();
-
-            operation.getInput();
-            List<Part> outputParts = (outputMsg == null) ? null : outputMsg.getOrderedParts(null);
-            ArrayList<DataType> partTypes = new ArrayList<DataType>();
-            if (outputParts != null && outputParts.size() > 0) {
-//                if (outputParts.size() > 1) {
-//                    // We don't support output with multiple parts
-//                    if (logger.isLoggable(Level.WARNING)) {
-//                        logger.warning("Multi-part output is not supported, please use BARE parameter style.");
-//                    }
-//                    // throw new InvalidWSDLException("Multi-part output is not supported");
-//                }
-                for ( Part part : outputParts ) {               
-                	DataType partType = new WSDLPart(part, Object.class).getDataType();                
-                	partTypes.add(partType);
-                }
-                
-                // outputType.setMetadata(WSDLOperation.class.getName(), this);
-            } else {
-            	partTypes.add(null);
-            }
-         
-          
-            outputType = 
-            	new DataTypeImpl<List<DataType>>(dataBinding, Object[].class, partTypes);          
+            outputType = getMessageType(outputMsg);
+            outputType.setDataBinding(IDL_OUTPUT);
         }
         return outputType;
     }

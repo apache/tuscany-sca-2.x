@@ -60,8 +60,8 @@ public class WrapperInfo implements Cloneable {
     // The data type of the unwrapped input child elements 
     private DataType<List<DataType>> unwrappedInputType;
 
-    // The data type of the unwrapped output child element (we only supports one child)
-    private DataType<XMLType> unwrappedOutputType;
+    // The data type of the unwrapped output child elements
+    private DataType<List<DataType>> unwrappedOutputType;
 
     // The data for the input/output wrappers
     private String dataBinding;
@@ -141,21 +141,16 @@ public class WrapperInfo implements Cloneable {
     /**
      * @return the unwrappedOutputType
      */
-    public DataType getUnwrappedOutputType() {
+    public DataType<List<DataType>> getUnwrappedOutputType() {
         if (unwrappedOutputType == null) {
-            List<ElementInfo> elements = getOutputChildElements();
-            if (elements != null && elements.size() > 0) {
-                if (elements.size() > 1) {
-                    // We don't support output with multiple parts
-                    // throw new IllegalArgumentException("Multi-part output is not supported");
-                }
-                ElementInfo element = elements.get(0);
-
-                unwrappedOutputType = getDataType(element);
+            List<DataType> childTypes = new ArrayList<DataType>();
+            for (ElementInfo element : getOutputChildElements()) {
+                DataType type = getDataType(element);
+                childTypes.add(type);
             }
+            unwrappedOutputType = new DataTypeImpl<List<DataType>>("idl:unwrapped.input", Object[].class, childTypes);
         }
-        return unwrappedOutputType;
-    }
+        return unwrappedOutputType;    }
 
     public Class<?> getInputWrapperClass() {
         return inputWrapperType == null ? null : inputWrapperType.getPhysical();
