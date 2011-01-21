@@ -62,14 +62,17 @@ public class UpperSampleAsyncReferenceImpl {
         upper.callAsync("upper", ureq);
         
         try {
-            Thread.sleep(500);
-            latch.await(500, TimeUnit.SECONDS);
+            //Thread.sleep(500);
+            latch.await(5, TimeUnit.SECONDS);
         } catch (Exception ex) {
             // do nothing
         }
         
-        if( response != null ) return response.getTextContent();
-        else return "upper did not get called back";
+        if( response != null ) {
+            return response.getTextContent();
+        } else {
+            return "upper did not get called back";
+        }
     }
     
     /**
@@ -95,14 +98,19 @@ public class UpperSampleAsyncReferenceImpl {
         upper.callAsync("upper2", ureq);
         
         try {
-            Thread.sleep(500);
-            latch.await(500, TimeUnit.SECONDS);
+            //Thread.sleep(500);
+            latch.await(5, TimeUnit.SECONDS);
         } catch (Exception ex) {
             // do nothing
         }
         
-        if( response2 != null ) return response2.getTextContent();
-        else return "upper did not get called back";
+        // because we serialize the upper request and re-use it in upper2
+        // the response to upper2 comes back to the upper callback
+        if( response != null ) {
+            return response.getTextContent();
+        } else {
+            return "upper2 did not get called back";
+        }
     }
     
     /**

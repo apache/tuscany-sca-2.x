@@ -19,6 +19,10 @@
 
 package sample.impl;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.core.invocation.AsyncResponseInvoker;
@@ -57,23 +61,58 @@ class SampleWSDLInvoker extends InterceptorAsyncImpl {
     }
     
     public void invokeAsyncRequest(Message msg) {
-    	// Retrieve the async callback information
-    	AsyncResponseInvoker respInvoker = (AsyncResponseInvoker)msg.getHeaders().get("ASYNC_RESPONSE_INVOKER");
-    	if( respInvoker == null ) throw new ServiceRuntimeException("Async Implementation invoked with no response invoker");
-    	
-        Message responseMsg = processRequest(msg);
+        if (msg.getOperation().getName().equals("upper")){
+        	// Retrieve the async callback information
+        	AsyncResponseInvoker respInvoker = (AsyncResponseInvoker)msg.getHeaders().get("ASYNC_RESPONSE_INVOKER");
+        	if( respInvoker == null ) throw new ServiceRuntimeException("Async Implementation invoked with no response invoker");
+        	
+            Message responseMsg = processRequest(msg);
+            
+            // in this sample programming model we make the async
+            // response from the implementation provider. The 
+            // component implementation itself doesn't get a chance to 
+            // do async responses. 
         
-        // in this sample programming model we make the async
-        // response from the implementation provider. The 
-        // component implementation itself doesn't get a chance to 
-        // do async responses. 
-        
-        // At this point we could serialize the AsyncResponseInvoker and pick it up again 
-        // later to send the async response
-        
-        if (responseMsg.getBody() != null){
-            respInvoker.invokeAsyncResponse(responseMsg);
+            // At this point we could serialize the AsyncResponseInvoker and pick it up again 
+            // later to send the async response
+            
+            try {
+                FileOutputStream fos = new FileOutputStream("ari.dat");
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(respInvoker);
+                oos.close();
+                respInvoker.invokeAsyncResponse(responseMsg);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        } else if (msg.getOperation().getName().equals("upper2")){
+            Message responseMsg = processRequest(msg);
+            
+            // read the async response invoker back in and call it
+            FileInputStream fis = null;
+            ObjectInputStream ois = null;
+            try {
+                fis = new FileInputStream("ari.dat");
+                ois = new ObjectInputStream(fis);
+                AsyncResponseInvoker respInvoker = (AsyncResponseInvoker) ois.readObject();
+                ois.close();
+                respInvoker.invokeAsyncResponse(responseMsg);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            // Retrieve the async callback information
+            AsyncResponseInvoker respInvoker = (AsyncResponseInvoker)msg.getHeaders().get("ASYNC_RESPONSE_INVOKER");
+            if( respInvoker == null ) throw new ServiceRuntimeException("Async Implementation invoked with no response invoker");
+            
+            Message responseMsg = processRequest(msg);
+            
+            if (responseMsg.getBody() != null){
+                respInvoker.invokeAsyncResponse(responseMsg);
+            }
         }
+        
     } // end method invokeAsyncRequest
     
     public Message processRequest(Message msg) {

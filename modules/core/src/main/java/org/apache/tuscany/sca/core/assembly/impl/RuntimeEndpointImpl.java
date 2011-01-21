@@ -308,6 +308,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     } // end method invokeAsync(Operation, Message)
     
     public void invokeAsyncResponse(Message msg){
+        resolve();
         invoker.invokeAsyncResponse(msg);
     }
 

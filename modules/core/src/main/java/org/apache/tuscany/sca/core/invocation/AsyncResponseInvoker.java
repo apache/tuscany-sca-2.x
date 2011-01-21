@@ -19,11 +19,15 @@
 
 package org.apache.tuscany.sca.core.invocation;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -32,7 +36,11 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
+import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ComponentContext;
@@ -189,5 +197,29 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
 	public void setResponseEndpointReference(
 			RuntimeEndpointReference responseEndpointReference) {
 		this.responseEndpointReference = responseEndpointReference;
-	}
+    }
+	
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+	    in.defaultReadObject();
+	    
+	    // find the real endpoint
+	    ExtensionPointRegistry extensionPointRegistry = NodeFactory.getInstance().getExtensionPointRegistry();
+	    DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionPointRegistry);
+	    Collection<EndpointRegistry> endpointRegistries = domainRegistryFactory.getEndpointRegistries();
+	    EndpointRegistry endpointRegistry = endpointRegistries.iterator().next();
+	    List<Endpoint> endpoints = endpointRegistry.findEndpoint(requestEndpoint.getURI()); 
+	    requestEndpoint = (RuntimeEndpoint)endpoints.get(0);
+	    
+	    if (responseTargetAddress instanceof EndpointReference){
+	        // fix the target as in this case it will be an EPR
+	        EndpointReference epr = (EndpointReference)responseTargetAddress;
+	        List<EndpointReference> endpointReferences = endpointRegistry.getEndpointReferences();
+	        for (EndpointReference endpointReference : endpointReferences){
+	            if (endpointReference.getURI().equals(epr.getURI())){
+	                responseTargetAddress = (T)endpointReference;
+	            }
+	        }
+	    }     
+    }	
 } // end class
