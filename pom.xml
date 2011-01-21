@@ -105,6 +105,18 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+  	  <!-- Material for the OASIS SVN repo which holds the standard versions of some JARs -->
+        <repository>
+           <id>oasis.svn</id>
+           <url>http://tools.oasis-open.org/version-control/svn/sca-j/Release/</url>
+           <releases>
+               <enabled>true</enabled>
+           </releases>
+           <snapshots>
+               <enabled>true</enabled>
+           </snapshots>
+       </repository>
+       <!-- End of material for OASIS SVN repo -->
         <repository>
             <id>apache.ws.zone</id>
             <name>Apache WS Zone Repository</name>
