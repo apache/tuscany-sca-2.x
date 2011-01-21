@@ -27,7 +27,7 @@
     </parent>
 
     <packaging>jar</packaging>
-    <artifactId>holder-ws-service-multiple-outputs</artifactId>
+    <artifactId>itest-holder-ws-service-multiple-outputs</artifactId>
     <name>Apache Tuscany SCA Itest - Holder Input/MultipleOutputs</name>
 
     <dependencies>
