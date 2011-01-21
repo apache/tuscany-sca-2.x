@@ -192,7 +192,8 @@ public class JavaInterfaceIntrospectorImpl {
         return rawType;
     }
 
-    private <T> List<Operation> getOperations(Class<T> clazz,
+    @SuppressWarnings("rawtypes")
+	private <T> List<Operation> getOperations(Class<T> clazz,
                                               boolean remotable,
                                               String ns) throws InvalidInterfaceException {
 

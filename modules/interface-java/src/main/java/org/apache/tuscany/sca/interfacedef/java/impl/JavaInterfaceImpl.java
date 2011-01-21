@@ -38,6 +38,9 @@ import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.policy.Intent;
 
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_INPUT;
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_OUTPUT;
+
 import org.oasisopen.sca.ResponseDispatch;
 
 /**
@@ -246,7 +249,8 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
      * @param requestParams - - async method input parameters
      * @return - the sync method return parameter
      */
-    private DataType<List<DataType>> prepareSyncReturnParam( DataType<List<DataType>> requestParams ) {
+    @SuppressWarnings("rawtypes")
+	private DataType<List<DataType>> prepareSyncReturnParam( DataType<List<DataType>> requestParams ) {
     	List<DataType> requestLogical = requestParams.getLogical();
     	int paramCount = requestLogical.size();
     	
@@ -275,8 +279,7 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
         returnTypes.add(returnDataType);
         
         DataType<List<DataType>> outputType =
-            new DataTypeImpl<List<DataType>>(requestParams.getDataBinding(),
-            		                         requestParams.getPhysical(), returnTypes);
+            new DataTypeImpl<List<DataType>>(IDL_OUTPUT, requestParams.getPhysical(), returnTypes);
     
         return outputType;
     } // end method prepareSyncReturnParam
