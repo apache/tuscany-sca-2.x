@@ -32,11 +32,13 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Tests that the order server responds.
  */
+@Ignore
 public class OrderServiceBareTestCase {
 
     private static Node node;
