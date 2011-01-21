@@ -30,9 +30,10 @@
     <version>2.0-SNAPSHOT</version>
 
     <dependencies>
-         <dependency>
+        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-base-runtime</artifactId>
+            <artifactId>tuscany-base-runtime-pom</artifactId>
+            <type>pom</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>
         
