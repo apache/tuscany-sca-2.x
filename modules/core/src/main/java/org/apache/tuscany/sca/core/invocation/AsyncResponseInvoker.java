@@ -70,7 +70,7 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
     private T responseTargetAddress;
     private String relatesToMsgID;
     private String operationName;
-    private MessageFactory messageFactory;
+    private transient MessageFactory messageFactory;
     private String bindingType = "";
     private boolean isNativeAsync;
     
@@ -79,6 +79,7 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
     private String domainURI;
 
 	private transient EndpointRegistry endpointRegistry;
+	private transient ExtensionPointRegistry registry;
     
     public AsyncResponseInvoker(RuntimeEndpoint requestEndpoint,
 			RuntimeEndpointReference responseEndpointReference,
@@ -104,6 +105,7 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
 		
 		if( context != null ) {
 			domainURI = context.getDomainURI();
+			registry = context.getExtensionPointRegistry();
 		} // end if
 		
         if ((requestEndpoint.getBindingProvider() instanceof EndpointAsyncProvider) &&
@@ -237,6 +239,8 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
 	    requestEndpoint = retrieveEndpoint(endpointURI);
 	    responseEndpointReference = retrieveEndpointReference(endpointReferenceURI);
 	    
+	    messageFactory = getMessageFactory();
+	    
 	    if (responseTargetAddress instanceof EndpointReference){
 	        // fix the target as in this case it will be an EPR
 	        EndpointReference epr = (EndpointReference)responseTargetAddress;
@@ -245,6 +249,14 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
     } // end method readObject	
 
     /**
+     * Gets a message factory
+     * @return
+     */
+    private MessageFactory getMessageFactory() {
+    	return registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(MessageFactory.class);
+	} // end method getMessageFactory
+
+	/**
      * Fetches the EndpointReference identified by an endpoint reference URI
      * @param uri - the URI of the endpoint reference
      * @return - the EndpointReference matching the supplied URI - null if no EPR is found which
@@ -290,7 +302,10 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
 		if( context != null ) {
 			registry = context.getExtensionPointRegistry();
 			endpointRegistry = getEndpointRegistry( registry );
-			if( endpointRegistry != null ) return endpointRegistry;
+			if( endpointRegistry != null ) {
+				this.registry = registry;
+				return endpointRegistry;
+			} // end if
 		} // end if
 		
 		// Deal with the case where there is no context available
@@ -303,6 +318,7 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
                 if( endpointRegistry != null ) {
                     for( Endpoint endpoint : endpointRegistry.findEndpoint(uri) ) {
                     	// TODO: For the present, simply return the first registry with a matching endpoint
+                    	this.registry = registry;
                     	return endpointRegistry;
                     } // end for
                 } // end if 
