@@ -142,4 +142,17 @@ public class OrderServiceImpl implements OrderService {
         return returnVal;
     }
 
+    @Override
+    public void reviewOrderTwoInOutsVoid(Holder<Order> myData, Holder<Float> myOutParam) {
+        double total = myData.value.getTotal();
+        Order retOrder = new Order();        
+        if (total < 50.1 && myOutParam.value < 50) {
+            myOutParam.value = new Float("1");
+            retOrder.setStatus(Status.APPROVED);
+        } else {
+            myOutParam.value = new Float("-1");
+            retOrder.setStatus(Status.REJECTED);
+        }
+        myData.value = retOrder;
+    }
 }

@@ -8,34 +8,39 @@ import org.oasisopen.sca.annotation.Service;
 @Service(OrderService.class)
 public class OrderServiceForwardImpl implements OrderService {
 
-	@Reference
-	public OrderService ref;
-	
-	public String[] reviewOrder(Holder<Order> myData, Holder<Float> myOutParam) {
-		String[] retVal = ref.reviewOrder(myData, myOutParam);
-		return retVal;
-	}
+    @Reference
+    public OrderService ref;
 
-	@Override
-	public String[] reviewOrderTwoInOuts(Holder<Order> myData,
-			Holder<Float> myOutParam) {
-		String[] retVal = ref.reviewOrderTwoInOuts(myData, myOutParam);
-		return retVal;
-	}
+    public String[] reviewOrder(Holder<Order> myData, Holder<Float> myOutParam) {
+        String[] retVal = ref.reviewOrder(myData, myOutParam);
+        return retVal;
+    }
 
-	@Override
-	public String[] reviewOrderTwoOutHolders(Holder<Order> myData,
-			Holder<Float> myOutParam) {
-		String[] retVal = ref.reviewOrderTwoOutHolders(myData, myOutParam);
-		return retVal;
-	}
+    @Override
+    public String[] reviewOrderTwoInOuts(Holder<Order> myData,
+                                         Holder<Float> myOutParam) {
+        String[] retVal = ref.reviewOrderTwoInOuts(myData, myOutParam);
+        return retVal;
+    }
 
-	@Override
-	public String[] reviewOrderTwoInOutsThenIn(Holder<Order> myData,
-			Holder<Float> myOutParam, Integer myCode) {
-		String[] retVal = ref.reviewOrderTwoInOutsThenIn(myData, myOutParam, myCode);
-		return retVal;
-	}
+    @Override
+    public String[] reviewOrderTwoOutHolders(Holder<Order> myData,
+                                             Holder<Float> myOutParam) {
+        String[] retVal = ref.reviewOrderTwoOutHolders(myData, myOutParam);
+        return retVal;
+    }
+
+    @Override
+    public String[] reviewOrderTwoInOutsThenIn(Holder<Order> myData,
+                                               Holder<Float> myOutParam, Integer myCode) {
+        String[] retVal = ref.reviewOrderTwoInOutsThenIn(myData, myOutParam, myCode);
+        return retVal;
+    }
+
+    @Override
+    public void reviewOrderTwoInOutsVoid(Holder<Order> myData, Holder<Float> myOutParam) {
+        ref.reviewOrderTwoInOutsVoid(myData, myOutParam);
+    }
 
 
 }

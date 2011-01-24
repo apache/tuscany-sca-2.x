@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -195,6 +196,44 @@ public class OrderServiceTestCase {
         testOrderReviewOrderTwoInOutsThenIn(orderService);
     }
     
+    @Ignore
+    @Test
+    public void testOrderReviewVoidApprovedSCA() throws IOException {
+        OrderService orderService =
+            node.getService(OrderService.class, "OrderServiceComponent/OrderService");
+        assertNotNull(orderService);     
+        testOrderReviewVoidApproved(orderService);
+    }
+    
+    @Ignore
+    @Test
+    public void testOrderReviewVoidApprovedWS() throws IOException {
+        OrderService orderService =
+            node.getService(OrderService.class, "OrderServiceForwardComponent/OrderService");
+        assertNotNull(orderService);      
+        testOrderReviewVoidApproved(orderService);
+    }
+ 
+    @Ignore
+    @Test
+    public void testOrderReviewVoidRejectedSCA() throws IOException {
+        OrderService orderService =
+            node.getService(OrderService.class, "OrderServiceComponent/OrderService");
+        assertNotNull(orderService);        
+        testOrderReviewVoidRejected(orderService);
+    }
+
+    @Ignore
+    @Test
+    public void testOrderReviewVoidRejectedWS() throws IOException {
+        OrderService orderService =
+            node.getService(OrderService.class, "OrderServiceForwardComponent/OrderService");
+        assertNotNull(orderService);        
+        testOrderReviewVoidRejected(orderService);
+    }
+
+    
+    
     private void testOrderReviewApproved(OrderService orderService, Holder<Float> outParam) throws IOException {    
         Order order = new Order();
         order.setStatus( Status.CREATED );
@@ -295,6 +334,43 @@ public class OrderServiceTestCase {
         assertTrue(outParam.value.floatValue() == 97);
     }
 
+    private void testOrderReviewVoidApproved(OrderService orderService) throws IOException {    
+        Order order = new Order();
+        order.setStatus( Status.CREATED );
+        order.setCustomerId("cust1234");
+        order.setTotal( 50.0 );
+
+        System.out.println( ">>> Order submitted=" + order );
+        Holder<Order> holder = new Holder<Order>(order);
+        
+        Float parm2 = new Float("45");
+        Holder<Float> outParam = new Holder<Float>(parm2);
+        
+        orderService.reviewOrderTwoInOutsVoid(holder, outParam );
+        
+        assertTrue( holder.value.getStatus() == Status.APPROVED );
+        assertEquals(outParam.value, new Float("1"));
+    }
+
+    private void testOrderReviewVoidRejected(OrderService orderService) throws IOException {
+        Order order = new Order();
+        order.setStatus( Status.CREATED );
+        order.setCustomerId("cust2345");
+        order.setTotal( 50000.0 );
+
+        System.out.println( ">>> Order submitted=" + order );
+        Holder<Order> holder = new Holder<Order>(order);
+        
+        Float parm2 = new Float("76");
+        Holder<Float> outParam = new Holder<Float>(parm2);
+        
+        orderService.reviewOrderTwoInOutsVoid(holder, outParam );
+        
+        assertTrue( holder.value.getStatus() == Status.REJECTED );
+        assertEquals(outParam.value, new Float("-1"));
+    }
+
+    
     @AfterClass
     public static void stopServer() throws Exception {
         if (node != null)

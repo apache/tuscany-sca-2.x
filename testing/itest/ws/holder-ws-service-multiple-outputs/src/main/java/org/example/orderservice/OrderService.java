@@ -55,4 +55,12 @@ public interface OrderService {
             @WebParam(name = "myOutParam", targetNamespace = "", mode = WebParam.Mode.INOUT)
             Holder<Float> myOutParam,
             Integer myCode);   
+    
+    public void reviewOrderTwoInOutsVoid(
+            @WebParam(name = "myData", targetNamespace = "", mode = WebParam.Mode.INOUT)
+            Holder<Order> myData, 
+            @WebParam(name = "myOutParam", targetNamespace = "", mode = WebParam.Mode.INOUT)
+            Holder<Float> myOutParam);
+    
+    
 }
