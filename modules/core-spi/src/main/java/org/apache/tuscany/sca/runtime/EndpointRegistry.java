@@ -63,6 +63,14 @@ public interface EndpointRegistry {
     void removeEndpointReference(EndpointReference endpointReference);
     // List<EndpointReference> findEndpointReference(Endpoint endpoint);
     List<EndpointReference> getEndpointReferences();
+    
+    /** 
+     * Returns a list of EndpointReferences that have a URI that matches a given URI
+     * @param uri - the URI to match
+     * @return a List of EndpointReferences that match the supplied URI - if there are none
+     * an *empty* list is returned (not null)
+     */
+    public List<EndpointReference> findEndpointReferences( String uri );
 
     void addListener(EndpointListener listener);
     void removeListener(EndpointListener listener);

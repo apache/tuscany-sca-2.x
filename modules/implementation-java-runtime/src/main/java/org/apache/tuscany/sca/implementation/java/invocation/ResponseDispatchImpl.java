@@ -138,7 +138,7 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 		// Use response invoker if present
 		if( respInvoker != null ) {
 			//respInvoker.invokeAsyncResponse(new AsyncFaultWrapper(e));
-			respInvoker.invokeAsyncResponse(e);
+			respInvoker.invokeAsyncResponse(e, null);
 			return;
 		} // end if
 		
@@ -153,6 +153,7 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 	 * @throws IllegalStateException if either the sendResponse method or the sendFault method have been called previously
 	 * @param res - the response message, which is of type T
 	 */
+	@SuppressWarnings("unchecked")
 	public void sendResponse(T res) {
 		if( sendOK() ) {
 			lock.lock();
@@ -175,7 +176,7 @@ public class ResponseDispatchImpl<T> implements ResponseDispatch<T>, Serializabl
 		
 		// Use response invoker if present
 		if( respInvoker != null ) {
-			respInvoker.invokeAsyncResponse(res);
+			respInvoker.invokeAsyncResponse(res, null);
 			return;
 		} // end if
 	} // end method sendResponse
