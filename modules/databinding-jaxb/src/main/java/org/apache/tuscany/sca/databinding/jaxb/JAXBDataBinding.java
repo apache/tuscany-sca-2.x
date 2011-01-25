@@ -92,7 +92,15 @@ public class JAXBDataBinding extends BaseDataBinding {
         if (xmlType == null) {
             return false;
         }
-        dataType.setLogical(xmlType);
+        
+        // If DataType is already an XMLType it might have an element name that we wish to preserve
+        Object logical = dataType.getLogical();
+        if (logical instanceof XMLType) {
+            ((XMLType)logical).setTypeName(xmlType.getTypeName());
+        } else {
+            dataType.setLogical(xmlType);            
+        }
+
         dataType.setDataBinding(NAME);
         return true;
     }

@@ -184,16 +184,25 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                         }
                         operation.getParameterModes().set(i, getParameterMode(param.mode()));
                     }
+                    ParameterMode mode = operation.getParameterModes().get(i);
                 }
+                
+                // 
+                // Note for BARE mapping this will NOT be WS-I compliant, but let's assume this is not the place to 
+                // worry about non-compliance, and keep on going. 
+                //                 
                 WebResult result = method.getAnnotation(WebResult.class);
                 if (result != null) {
                     String ns = getValue(result.targetNamespace(), tns);
                     // Default to <operationName>Response for doc-bare
                     String name = getValue(result.name(), documentStyle ? operationName + "Response" : "return");
                     QName element = new QName(ns, name);
-                    Object logical = operation.getOutputType().getLogical();
-                    if (logical instanceof XMLType) {
-                        ((XMLType)logical).setElementName(element);
+                    if (!operation.hasReturnTypeVoid()) {
+                        List<DataType> outputDataTypes = operation.getOutputType().getLogical();                    
+                        DataType returnDataType = outputDataTypes.get(0);
+                        if (returnDataType instanceof XMLType) {
+                            ((XMLType)returnDataType).setElementName(element);
+                        }
                     }
                 }
                 // FIXME: [rfeng] For the BARE mapping, do we need to create a Wrapper?
@@ -290,8 +299,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 name = getValue(name, "return");
                 QName element = new QName(ns, name);
 
-                // This must be a check for void? 
-                if ((operation.getOutputType() != null) && (operation.getOutputType().getLogical().size() != 0)) {
+                if (!operation.hasReturnTypeVoid()) {
                     Object logical = operation.getOutputType().getLogical().get(0).getLogical();
                     QName type = null;
                     if (logical instanceof XMLType) {
