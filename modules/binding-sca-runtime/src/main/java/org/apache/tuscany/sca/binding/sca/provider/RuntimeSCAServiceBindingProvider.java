@@ -115,7 +115,11 @@ public class RuntimeSCAServiceBindingProvider implements EndpointAsyncProvider, 
     }
     
     public InvokerAsyncResponse createAsyncResponseInvoker() {
-        return new SCABindingAsyncResponseInvoker(null, null);
+        if (distributedProvider != null) {
+            return ((EndpointAsyncProvider)distributedProvider).createAsyncResponseInvoker();
+        } else {
+            return new SCABindingAsyncResponseInvoker(null, null);
+        }
     }
 
     /**
