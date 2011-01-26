@@ -410,11 +410,7 @@ Tuscany SDO dependencies on Eclipse:
     common-2.2.3.jar
     xsd-2.2.3.jar
     runtime-3.4.0-v20080512.jar, 
-    app-1.2.0-v20090520-1800.jar
     contenttype-3.3.0-v20080604-1400.jar
-    jobs-3.4.0-v20080512.jar 
-    preferences-3.2.300-v20090520-1800.jar
-    registry-3.4.100-v20090520-1800.jar
 
 Eclipse Public License - v 1.0
 

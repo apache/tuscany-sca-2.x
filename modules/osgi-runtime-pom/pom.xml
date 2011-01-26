@@ -60,6 +60,12 @@
             <version>${pom.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-osgi-runtime</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

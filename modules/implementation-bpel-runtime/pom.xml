@@ -27,6 +27,21 @@
     </parent>
     <artifactId>tuscany-implementation-bpel-runtime</artifactId>
     <name>Apache Tuscany SCA BPEL ODE Implementation Extension</name>
+
+    <!-- for Saxon 9.x -->
+    <repositories>
+        <repository>
+            <id>intalio.org</id>
+            <url>http://www.intalio.org/public/maven2</url>
+           <releases>
+               <enabled>true</enabled>
+           </releases>
+           <snapshots>
+               <enabled>false</enabled>
+           </snapshots>
+        </repository>     
+    </repositories>     
+
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>

@@ -94,7 +94,62 @@
             <scope>test</scope>
         </dependency-->
 
+        <dependency>
+            <groupId>org.eclipse.core</groupId>
+            <artifactId>runtime</artifactId>
+            <version>3.4.0-v20080512</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.core</groupId>
+                    <artifactId>contenttype</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>registry</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>preferences</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.core</groupId>
+                    <artifactId>jobs</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>app</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.core</groupId>
+            <artifactId>contenttype</artifactId>
+            <version>3.3.0-v20080604-1400</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>registry</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>preferences</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
     </dependencies>
+    <repositories>
+        <!-- Tuscany repository to hold artifacts that are not published in the public maven repos -->
+        <repository>
+            <id>tuscany.repo</id>
+            <name>Tuscany Maven 2.x Repository</name>
+            <url>http://svn.apache.org/repos/asf/tuscany/maven</url>
+        </repository>
+
+    </repositories>
+
 
     <build>
         <plugins>

@@ -33,13 +33,6 @@
 
     <dependencies>
     
-        <!-- This is the SCA API bundle: published by OASIS -->
-        <dependency>
-            <groupId>org.oasis-open.sca.j</groupId>
-            <artifactId>sca-caa-apis</artifactId>
-            <version>1.1-CD04</version>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-base-runtime-pom</artifactId>

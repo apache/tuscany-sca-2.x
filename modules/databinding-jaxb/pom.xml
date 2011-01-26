@@ -47,26 +47,6 @@
 
     </dependencies>
 
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>java.net</id>
-            <name>java.net Maven 1.x Repository</name>
-            <url>http://download.java.net/maven/1</url>
-            <layout>legacy</layout>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>java.net2</id>
-            <name>java.net Maven 2.x Repository</name>
-            <url>http://download.java.net/maven/2</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <build>
         <plugins>
             <plugin>
@@ -99,7 +79,7 @@
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
                 <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.7.1</version>
+                <version>0.7.4</version>
                 <executions>
                     <execution>
                         <id>generate-jaxb</id>
