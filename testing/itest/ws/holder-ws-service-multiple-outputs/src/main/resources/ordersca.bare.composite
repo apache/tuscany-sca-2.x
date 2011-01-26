@@ -26,7 +26,9 @@
         <implementation.java class="org.example.orderservice.OrderServiceBareImpl" />
 	    <service name="OrderServiceBare">
 	        <interface.java interface="org.example.orderservice.OrderServiceBare"/>
+<!--  TODO - start mailing list discussion about implications of @SOAPBinding plus binding.sca not being supported in OASIS.	        
 	        <binding.sca name="sca"/>
+ -->	        
             <binding.ws/>
 	    </service>
     </component>
@@ -36,6 +38,9 @@
 	    <reference name="ref">
 	        <binding.ws uri="http://localhost:8080/OrderServiceBareComponent/OrderServiceBare"/>	      
 	    </reference>
+	    <service name="OrderServiceBare">
+	        <binding.ws/>
+	    </service>
     </component>
     
 </composite>

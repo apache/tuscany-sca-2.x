@@ -196,7 +196,6 @@ public class OrderServiceTestCase {
         testOrderReviewOrderTwoInOutsThenIn(orderService);
     }
     
-    @Ignore
     @Test
     public void testOrderReviewVoidApprovedSCA() throws IOException {
         OrderService orderService =
@@ -205,7 +204,6 @@ public class OrderServiceTestCase {
         testOrderReviewVoidApproved(orderService);
     }
     
-    @Ignore
     @Test
     public void testOrderReviewVoidApprovedWS() throws IOException {
         OrderService orderService =
@@ -214,7 +212,6 @@ public class OrderServiceTestCase {
         testOrderReviewVoidApproved(orderService);
     }
  
-    @Ignore
     @Test
     public void testOrderReviewVoidRejectedSCA() throws IOException {
         OrderService orderService =
@@ -223,7 +220,6 @@ public class OrderServiceTestCase {
         testOrderReviewVoidRejected(orderService);
     }
 
-    @Ignore
     @Test
     public void testOrderReviewVoidRejectedWS() throws IOException {
         OrderService orderService =
@@ -232,7 +228,26 @@ public class OrderServiceTestCase {
         testOrderReviewVoidRejected(orderService);
     }
 
-    
+    @Test
+    public void testOrderReviewOutThenInOutApprovedWS() throws IOException {
+        OrderService orderService =
+            node.getService(OrderService.class, "OrderServiceForwardComponent/OrderService");
+        assertNotNull(orderService);
+        Order order = new Order();
+        order.setStatus( Status.CREATED );
+        order.setCustomerId("cust1234");
+        order.setTotal( 50.0 );
+        System.out.println( ">>> Order submitted=" + order );
+        Holder<Float> outParam = new Holder<Float>(new Float(57.4));
+        Holder<Order> holder = new Holder<Order>( order );
+        String[] returnValue = null;
+        returnValue = orderService.reviewOrderOutThenInOut(outParam, holder);
+        assertTrue( holder.value.getStatus() == Status.APPROVED );
+        assertEquals("retval1", returnValue[0]);
+        assertEquals("retval2", returnValue[1]);
+        assertTrue(outParam.value.floatValue() == 97);
+    }
+ 
     
     private void testOrderReviewApproved(OrderService orderService, Holder<Float> outParam) throws IOException {    
         Order order = new Order();

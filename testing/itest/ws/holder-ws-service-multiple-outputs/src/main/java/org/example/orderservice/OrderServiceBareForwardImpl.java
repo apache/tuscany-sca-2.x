@@ -24,6 +24,6 @@ public class OrderServiceBareForwardImpl implements OrderServiceBare {
 
     @Override
     public void bareReviewOrderOutHolder(Holder<Order> myData) {
-        ref.bareReviewOrderInOutHolder(myData);
+        ref.bareReviewOrderOutHolder(myData);
     }
 }

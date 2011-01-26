@@ -155,4 +155,11 @@ public class OrderServiceImpl implements OrderService {
         }
         myData.value = retOrder;
     }
+
+    @Override
+    // Simply delegate to existing test method with parms reversed.
+    public String[] reviewOrderOutThenInOut(Holder<Float> myOutParam, Holder<Order> myData) {
+        String[] retVal = reviewOrder(myData, myOutParam);     
+        return retVal;
+    }
 }

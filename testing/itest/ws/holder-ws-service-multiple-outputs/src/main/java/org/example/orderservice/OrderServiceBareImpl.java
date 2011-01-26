@@ -46,24 +46,30 @@ public class OrderServiceBareImpl implements OrderServiceBare {
 
     @Override
     public void bareReviewOrderInOutHolder(Holder<Order> myData) {
+        String customerId = "cust1234";
         double total = myData.value.getTotal();
-        myData.value = new Order();
+         Order newOrder = new Order();
+        
         if ( total < 100.0 ) {
-            myData.value.setStatus( Status.APPROVED );
+            newOrder.setStatus( Status.APPROVED );
         } else if ( total > 1100.0 ) {
-            myData.value.setStatus( Status.REJECTED );
-        }    
+            newOrder.setStatus( Status.REJECTED );
+        }
+        newOrder.setCustomerId(customerId);
+        myData.value = newOrder;
     }
 
     @Override
     public void bareReviewOrderOutHolder(Holder<Order> myData) {
         boolean holderEmpty = (myData.value == null ? true : false);
-        myData.value = new Order();
+        Order newOrder = new Order();
+
         if (holderEmpty) {
-            myData.value.setStatus( Status.APPROVED );
-            myData.value.setCustomerId("approved.1234");
+            newOrder.setStatus( Status.APPROVED );
+            newOrder.setCustomerId("approved.1234");
         } else {
-            myData.value.setStatus( Status.REJECTED );
+            newOrder.setStatus( Status.REJECTED );
         }
+        myData.value = newOrder;
     }
 }

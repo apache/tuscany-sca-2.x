@@ -46,11 +46,11 @@ public interface OrderService {
     public String[] reviewOrderTwoOutHolders(
             @WebParam(name = "myData", targetNamespace = "", mode = WebParam.Mode.OUT)
             Holder<Order> myData, 
-            @WebParam(name = "myOutParam", targetNamespace = "", mode = WebParam.Mode.OUT)
+            @WebParam(targetNamespace = "", mode = WebParam.Mode.OUT)
             Holder<Float> myOutParam);
     
     public String[] reviewOrderTwoInOutsThenIn(
-            @WebParam(name = "myData", targetNamespace = "", mode = WebParam.Mode.INOUT)
+            @WebParam(targetNamespace = "", mode = WebParam.Mode.INOUT)
             Holder<Order> myData, 
             @WebParam(name = "myOutParam", targetNamespace = "", mode = WebParam.Mode.INOUT)
             Holder<Float> myOutParam,
@@ -62,5 +62,11 @@ public interface OrderService {
             @WebParam(name = "myOutParam", targetNamespace = "", mode = WebParam.Mode.INOUT)
             Holder<Float> myOutParam);
     
+    public String[] reviewOrderOutThenInOut(
+            @WebParam(name = "myOutParam", targetNamespace = "", mode = WebParam.Mode.OUT)
+            Holder<Float> myOutParam,
+            @WebParam(name = "myData", targetNamespace = "", mode = WebParam.Mode.INOUT)
+            Holder<Order> myData); 
+
     
 }

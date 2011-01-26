@@ -42,5 +42,11 @@ public class OrderServiceForwardImpl implements OrderService {
         ref.reviewOrderTwoInOutsVoid(myData, myOutParam);
     }
 
+    @Override
+    public String[] reviewOrderOutThenInOut(Holder<Float> myOutParam, Holder<Order> myData) {
+        String[] retVal = ref.reviewOrderOutThenInOut(myOutParam, myData);
+        return retVal;
+    }
+
 
 }
