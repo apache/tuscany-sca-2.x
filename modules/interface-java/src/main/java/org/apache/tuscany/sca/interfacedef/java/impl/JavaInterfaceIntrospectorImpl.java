@@ -259,6 +259,8 @@ public class JavaInterfaceIntrospectorImpl {
             JavaOperation operation = new JavaOperationImpl();
             operation.setName(name);
 
+            // Given details of Holder mapping, it's easier to handle output first.                
+            List<DataType> outputDataTypes = new ArrayList<DataType>();
             XMLType xmlReturnType = new XMLType(new QName(ns, "return"), null);            
             DataType<XMLType> returnDataType = null;
             if (returnType == void.class) {
@@ -267,12 +269,11 @@ public class JavaInterfaceIntrospectorImpl {
                  returnDataType = new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, returnType, 
                      method.getGenericReturnType(), xmlReturnType);
                  operation.setReturnTypeVoid(false);
+                 outputDataTypes.add(returnDataType);
             }
 
             // Handle Input Types
             List<DataType> paramDataTypes = new ArrayList<DataType>(parameterTypes.length);
-            List<Type> genericHolderTypes = new ArrayList<Type>();
-            List<Class<?>> physicalHolderTypes = new ArrayList<Class<?>>();
             Type[] genericParamTypes = method.getGenericParameterTypes();
             for (int i = 0; i < parameterTypes.length; i++) {
                 Class<?> paramType = parameterTypes[i];
@@ -284,33 +285,15 @@ public class JavaInterfaceIntrospectorImpl {
                 // Holder pattern. Physical types of Holder<T> classes are updated to <T> to aid in transformations.
                 if ( Holder.class == paramType) {
                     hasMultipleOutputs = true;
-                    genericHolderTypes.add(genericParamTypes[i]);
                     Type firstActual = getFirstActualType( genericParamTypes[ i ] );
                     if ( firstActual != null ) {
-                        physicalHolderTypes.add((Class<?>)firstActual);
                         xmlDataType.setPhysical( (Class<?>)firstActual );
                         mode = ParameterMode.INOUT;
-                    } else {
-                        physicalHolderTypes.add(xmlDataType.getPhysical());
-                    }
+                    } 
+                    outputDataTypes.add(xmlDataType);
                 }
                 paramDataTypes.add( xmlDataType);
                 operation.getParameterModes().add(mode);
-            }
-
-            // Get Output Types, but skip over void return type                
-            List<DataType> outputDataTypes = new ArrayList<DataType>();
-            if (!operation.hasReturnTypeVoid()) {
-                outputDataTypes.add(returnDataType);
-            }
-
-            // Start at 1, for the first holder, since we already accounted for the return type itself
-            for ( int i=1; i < allOutputTypes.length; i++ ) {
-                Class<?> paramType = allOutputTypes[i];
-                XMLType xmlOutputType = new XMLType(new QName(ns, "out" + i), null);
-                DataTypeImpl<XMLType> xmlDataType = xmlDataType = new DataTypeImpl<XMLType>(
-                    UNKNOWN_DATABINDING, physicalHolderTypes.get(i-1), genericHolderTypes.get(i-1), xmlOutputType);
-                outputDataTypes.add(xmlDataType);
             }
 
             // Fault types                                                          

@@ -559,30 +559,26 @@ public class MediatorImpl implements Mediator {
         List<DataType> inputTypesTarget = targetOperation == null ? null : targetOperation.getInputType().getLogical();
         Object[] copy = new Object[data.length];
         Map<Object, Object> map = new IdentityHashMap<Object, Object>();
-        for (int i = 0, nextIndex = 0; i < inputTypes.size(); i++) {
-            // Account for OUT-only parameters.  Would be more thorough to look at targetOperation
-            // and ensure it has the same parameter mode, but we'll let that go for now.
-            ParameterMode mode = sourceOperation.getParameterModes().get(i);
-            if (!mode.equals(ParameterMode.OUT)) {
-                Object arg = data[nextIndex];
-                if (arg == null) {
-                    copy[nextIndex] = null;
+        
+        // OUT-only parameters have already been filtered out of the inputTypes List.
+        for (int i = 0; i < inputTypes.size(); i++) {
+            Object arg = data[i];
+            if (arg == null) {
+                copy[i] = null;
+            } else {
+                Object copiedArg = map.get(arg);
+                if (copiedArg != null) {
+                    copy[i] = copiedArg;
                 } else {
-                    Object copiedArg = map.get(arg);
-                    if (copiedArg != null) {
-                        copy[nextIndex] = copiedArg;
-                    } else {
-                        copiedArg =
-                            copy(arg,
-                                 inputTypes.get(i),
-                                 inputTypesTarget == null ? null : inputTypesTarget.get(i),
-                                     sourceOperation,
-                                     targetOperation);
-                        map.put(arg, copiedArg);
-                        copy[nextIndex] = copiedArg;
-                    }
+                    copiedArg =
+                        copy(arg,
+                             inputTypes.get(i),
+                             inputTypesTarget == null ? null : inputTypesTarget.get(i),
+                                 sourceOperation,
+                                 targetOperation);
+                    map.put(arg, copiedArg);
+                    copy[i] = copiedArg;
                 }
-                nextIndex++;
             }
         }
         return copy;

@@ -132,14 +132,13 @@ public class JavaImplementationInvoker implements Invoker {
             // Holder pattern. Any payload parameters <T> which are should be in holders are placed in Holder<T>.
             // Only check Holder for remotable interfaces
             if (imethod != null && op.getInterface().isRemotable()) {
-                List<DataType> inputTypes = op.getInputType().getLogical();
                 Object[] payloadArray = (Object[])payload;
                 List<Object> payloadList = new ArrayList<Object>();
-                for (int i = 0, nextIndex = 0; i < inputTypes.size(); i++) {
-                    ParameterMode mode = op.getParameterModes().get(i);
-                    if (ParameterMode.IN == mode ) {
+                int nextIndex = 0;
+                for (ParameterMode mode : op.getParameterModes()) {                    
+                    if (mode.equals(ParameterMode.IN)) {
                         payloadList.add(payloadArray[nextIndex++]);
-                    } else if (ParameterMode.INOUT == mode ) {
+                    } else if (mode.equals(ParameterMode.INOUT)) {
                         // Promote array params from [<T>] to [Holder<T>]                  
                         Object item = payloadArray[nextIndex++];                           
                         Holder itemHolder = new Holder(item);

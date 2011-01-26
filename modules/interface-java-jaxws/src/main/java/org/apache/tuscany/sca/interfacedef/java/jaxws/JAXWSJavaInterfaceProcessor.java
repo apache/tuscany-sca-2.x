@@ -186,11 +186,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                     }
                     ParameterMode mode = operation.getParameterModes().get(i);
                 }
-                
-                // 
-                // Note for BARE mapping this will NOT be WS-I compliant, but let's assume this is not the place to 
-                // worry about non-compliance, and keep on going. 
-                //                 
+        
                 WebResult result = method.getAnnotation(WebResult.class);
                 if (result != null) {
                     String ns = getValue(result.targetNamespace(), tns);
@@ -351,6 +347,19 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
 
                 operation.setWrapper(wrapperInfo);
             }
+            
+            // In both bare and wrapped cases, remove OUT-only parameters from input DataType.
+            // This is a key point then because it's the last time in which the number of parameters in 
+            // Java matches the number of logical inputs.  After this, things will be out of synch, for
+            // example the number of parameter modes won't match the number of inputs.
+            List<ParameterMode> parmModes = operation.getParameterModes();
+            List<DataType> inputDTs = operation.getInputType().getLogical();
+            for (int i = parmModes.size() - 1; i>=0; i--) {
+                if (parmModes.get(i).equals(ParameterMode.OUT)) {
+                    inputDTs.remove(i);
+                }
+            }
+            
         }
     }
 

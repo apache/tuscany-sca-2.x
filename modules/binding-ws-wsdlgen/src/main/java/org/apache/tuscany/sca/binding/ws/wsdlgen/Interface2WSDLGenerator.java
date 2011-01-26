@@ -753,39 +753,22 @@ public class Interface2WSDLGenerator {
             Method method = ((JavaOperation)operation).getJavaMethod();
             
             /*
-             * Making this change, though not understanding:
-             * 
-             * 1. Whether we can assume JAXWSJavaInterfaceProcessor was already used to process
-             * 
-             * 2. What the purpose is of calling getElementInfo() when we already have an ElementInfo
-             * 
+             * Making this change, though not understanding
+             * whether we can assume JAXWSJavaInterfaceProcessor was already used to process
              */
             if (input) {
-                Class<?>[] paramTypes = method.getParameterTypes();
-                for (int i = 0, inputsSeen = 0; i < paramTypes.length; i++) {
-                	ParameterMode mode = operation.getParameterModes().get(i);
-                	if (!mode.equals(ParameterMode.OUT)) {
-                		DataType dataType = operation.getInputType().getLogical().get(i);
-                		elements.set(inputsSeen, getElementInfo(paramTypes[i], dataType, elements.get(inputsSeen).getQName(), helpers));
-                		inputsSeen++;
-                	}
+                List<DataType> inputDTs = operation.getInputType().getLogical();
+                for (int i = 0; i < inputDTs.size(); i++) {
+                    DataType nextInput = inputDTs.get(i);
+                    elements.set(i, getElementInfo(nextInput.getPhysical(), nextInput, elements.get(i).getQName(), helpers));
                 }
+
             } else {
-            	int outputsSeen = 0;
-                Class<?> returnType = method.getReturnType();
-                if (returnType != Void.TYPE) {
-                    DataType dataType = operation.getOutputType().getLogical().get(0);
-                    elements.set(outputsSeen++, getElementInfo(returnType, dataType, elements.get(0).getQName(), helpers));
+                List<DataType> outputDTs = operation.getOutputType().getLogical();
+                for (int i = 0; i < outputDTs.size(); i++) {
+                    DataType nextOutput = outputDTs.get(i);
+                    elements.set(i, getElementInfo(nextOutput.getPhysical(), nextOutput, elements.get(i).getQName(), helpers));
                 }
-                Class<?>[] paramTypes = method.getParameterTypes();
-                for (int i = 0; i < paramTypes.length; i++) {
-                	ParameterMode mode = operation.getParameterModes().get(i);
-                	if (!mode.equals(ParameterMode.IN)) {
-                		DataType dataType = operation.getOutputType().getLogical().get(i);
-                		elements.set(outputsSeen, getElementInfo(paramTypes[i], dataType, elements.get(outputsSeen).getQName(), helpers));
-                		outputsSeen++;
-                	}
-                }                
             }
         }
         return part;
