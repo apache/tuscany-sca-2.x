@@ -22,14 +22,19 @@ package org.apache.tuscany.sca.core.assembly.impl;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.RuntimeProperties;
 
 /**
  * A EndpointRegistry implementation that sees registrations from the same JVM
@@ -38,9 +43,13 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
     private final Logger logger = Logger.getLogger(EndpointRegistryImpl.class.getName());
 
     private List<Endpoint> endpoints = new ArrayList<Endpoint>();
+    
+    protected boolean quietLogging;
 
     public EndpointRegistryImpl(ExtensionPointRegistry extensionPoints, String endpointRegistryURI, String domainURI) {
         super(extensionPoints, null, endpointRegistryURI, domainURI);
+        Properties runtimeProps = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
+        quietLogging = Boolean.parseBoolean(runtimeProps.getProperty(RuntimeProperties.QUIET_LOGGING));
     }
 
     public synchronized void addEndpoint(Endpoint endpoint) {
@@ -48,7 +57,22 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
         for (EndpointListener listener : listeners) {
             listener.endpointAdded(endpoint);
         }
-        logger.info("Add endpoint - " + endpoint.toString());
+        if (logger.isLoggable(quietLogging ? Level.FINE : Level.INFO)) {
+            String uri = null;
+            Binding b = endpoint.getBinding();
+            if (b != null) {
+                uri = b.getURI();
+                if (uri != null && uri.startsWith("/")) {
+                    uri = uri.substring(1);
+                }
+            }
+            String msg = "Add endpoint - " + (uri == null ? endpoint.getURI() : b.getType().getLocalPart()+" - " + uri);
+            if (quietLogging) {
+                logger.fine(msg);
+            } else {
+                logger.info(msg);
+            }
+        }
     }
 
     public List<Endpoint> findEndpoint(String uri) {
@@ -66,7 +90,22 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
     public synchronized void removeEndpoint(Endpoint endpoint) {
         endpoints.remove(endpoint);
         endpointRemoved(endpoint);
-        logger.info("Remove endpoint - " + endpoint.toString());
+        if (logger.isLoggable(quietLogging ? Level.FINE : Level.INFO)) {
+            String uri = null;
+            Binding b = endpoint.getBinding();
+            if (b != null) {
+                uri = b.getURI();
+                if (uri != null && uri.startsWith("/")) {
+                    uri = uri.substring(1);
+                }
+            }
+            String msg = "Remove endpoint - " + (uri == null ? endpoint.getURI() : b.getType().getLocalPart()+" - "+uri);
+            if (quietLogging) {
+                logger.fine(msg);
+            } else {
+                logger.info(msg);
+            }
+        }
     }
 
     public synchronized List<Endpoint> getEndpoints() {
