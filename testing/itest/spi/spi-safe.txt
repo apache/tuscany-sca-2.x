@@ -1,0 +1,690 @@
+Compiled from "AbstractContract.java"
+public interface org.apache.tuscany.sca.assembly.AbstractContract extends org.apache.tuscany.sca.assembly.Base,org.apache.tuscany.sca.assembly.Extensible,org.apache.tuscany.sca.policy.PolicySubject{
+    public abstract java.lang.String getName();
+    public abstract void setName(java.lang.String);
+    public abstract org.apache.tuscany.sca.interfacedef.InterfaceContract getInterfaceContract();
+    public abstract void setInterfaceContract(org.apache.tuscany.sca.interfacedef.InterfaceContract);
+    public abstract boolean isForCallback();
+    public abstract void setForCallback(boolean);
+}
+
+Compiled from "AbstractProperty.java"
+public interface org.apache.tuscany.sca.assembly.AbstractProperty extends org.apache.tuscany.sca.assembly.Base,org.apache.tuscany.sca.assembly.Extensible{
+    public abstract java.lang.String getName();
+    public abstract void setName(java.lang.String);
+    public abstract java.lang.Object getValue();
+    public abstract void setValue(java.lang.Object);
+    public abstract boolean isMany();
+    public abstract void setMany(boolean);
+    public abstract boolean isMustSupply();
+    public abstract void setMustSupply(boolean);
+    public abstract javax.xml.namespace.QName getXSDType();
+    public abstract void setXSDType(javax.xml.namespace.QName);
+    public abstract javax.xml.namespace.QName getXSDElement();
+    public abstract void setXSDElement(javax.xml.namespace.QName);
+    public abstract org.apache.tuscany.sca.interfacedef.DataType getDataType();
+    public abstract void setDataType(org.apache.tuscany.sca.interfacedef.DataType);
+    public abstract java.lang.Object getXSDDefinition();
+    public abstract void setXSDDefinition(java.lang.Object);
+}
+
+Compiled from "AbstractReference.java"
+public interface org.apache.tuscany.sca.assembly.AbstractReference extends org.apache.tuscany.sca.assembly.AbstractContract{
+    public abstract org.apache.tuscany.sca.assembly.Multiplicity getMultiplicity();
+    public abstract void setMultiplicity(org.apache.tuscany.sca.assembly.Multiplicity);
+}
+
+Compiled from "AbstractService.java"
+public interface org.apache.tuscany.sca.assembly.AbstractService extends org.apache.tuscany.sca.assembly.AbstractContract{
+}
+
+Compiled from "AssemblyFactory.java"
+public interface org.apache.tuscany.sca.assembly.AssemblyFactory{
+    public abstract org.apache.tuscany.sca.assembly.AbstractProperty createAbstractProperty();
+    public abstract org.apache.tuscany.sca.assembly.AbstractReference createAbstractReference();
+    public abstract org.apache.tuscany.sca.assembly.AbstractService createAbstractService();
+    public abstract org.apache.tuscany.sca.assembly.Callback createCallback();
+    public abstract org.apache.tuscany.sca.assembly.Component createComponent();
+    public abstract org.apache.tuscany.sca.assembly.ComponentProperty createComponentProperty();
+    public abstract org.apache.tuscany.sca.assembly.ComponentReference createComponentReference();
+    public abstract org.apache.tuscany.sca.assembly.ComponentService createComponentService();
+    public abstract org.apache.tuscany.sca.assembly.ComponentType createComponentType();
+    public abstract org.apache.tuscany.sca.assembly.Composite createComposite();
+    public abstract org.apache.tuscany.sca.assembly.CompositeReference createCompositeReference();
+    public abstract org.apache.tuscany.sca.assembly.CompositeService createCompositeService();
+    public abstract org.apache.tuscany.sca.assembly.Property createProperty();
+    public abstract org.apache.tuscany.sca.assembly.Reference createReference();
+    public abstract org.apache.tuscany.sca.assembly.Service createService();
+    public abstract org.apache.tuscany.sca.assembly.Wire createWire();
+    public abstract org.apache.tuscany.sca.assembly.Extension createExtension();
+    public abstract org.apache.tuscany.sca.assembly.Endpoint createEndpoint();
+    public abstract org.apache.tuscany.sca.assembly.EndpointReference createEndpointReference();
+    public abstract org.apache.tuscany.sca.assembly.ConfiguredOperation createConfiguredOperation();
+}
+
+Compiled from "Base.java"
+public interface org.apache.tuscany.sca.assembly.Base{
+    public static final java.lang.String SCA11_NS;
+    public static final java.lang.String SCA11_TUSCANY_NS;
+    public abstract boolean isUnresolved();
+    public abstract void setUnresolved(boolean);
+}
+
+Compiled from "Binding.java"
+public interface org.apache.tuscany.sca.assembly.Binding extends org.apache.tuscany.sca.assembly.Base,java.lang.Cloneable{
+    public abstract java.lang.String getURI();
+    public abstract void setURI(java.lang.String);
+    public abstract java.lang.String getName();
+    public abstract void setName(java.lang.String);
+    public abstract java.lang.Object clone()       throws java.lang.CloneNotSupportedException;
+    public abstract javax.xml.namespace.QName getType();
+    public abstract org.apache.tuscany.sca.assembly.WireFormat getRequestWireFormat();
+    public abstract void setRequestWireFormat(org.apache.tuscany.sca.assembly.WireFormat);
+    public abstract org.apache.tuscany.sca.assembly.WireFormat getResponseWireFormat();
+    public abstract void setResponseWireFormat(org.apache.tuscany.sca.assembly.WireFormat);
+    public abstract org.apache.tuscany.sca.assembly.OperationSelector getOperationSelector();
+    public abstract void setOperationSelector(org.apache.tuscany.sca.assembly.OperationSelector);
+}
+
+Compiled from "Callback.java"
+public interface org.apache.tuscany.sca.assembly.Callback extends org.apache.tuscany.sca.assembly.Base,org.apache.tuscany.sca.assembly.Extensible,org.apache.tuscany.sca.policy.PolicySubject{
+    public abstract java.util.List getBindings();
+    public abstract org.apache.tuscany.sca.assembly.Contract getParentContract();
+    public abstract void setParentContract(org.apache.tuscany.sca.assembly.Contract);
+}
+
+Compiled from "Component.java"
+public interface org.apache.tuscany.sca.assembly.Component extends org.apache.tuscany.sca.assembly.Base,org.apache.tuscany.sca.assembly.Extensible,org.apache.tuscany.sca.policy.PolicySubject,java.lang.Cloneable{
+    public abstract java.lang.String getURI();
+    public abstract void setURI(java.lang.String);
+    public abstract java.lang.String getName();
+    public abstract void setName(java.lang.String);
+    public abstract org.apache.tuscany.sca.assembly.Implementation getImplementation();
+    public abstract void setImplementation(org.apache.tuscany.sca.assembly.Implementation);
+    public abstract java.util.List getReferences();
+    public abstract org.apache.tuscany.sca.assembly.ComponentReference getReference(java.lang.String);
+    public abstract java.util.List getServices();
+    public abstract org.apache.tuscany.sca.assembly.ComponentService getService(java.lang.String);
+    public abstract java.util.List getProperties();
+    public abstract org.apache.tuscany.sca.assembly.ComponentProperty getProperty(java.lang.String);
+    public abstract java.lang.Boolean getAutowire();
+    public abstract void setAutowire(java.lang.Boolean);
+    public abstract java.lang.Object clone()       throws java.lang.CloneNotSupportedException;
+}
+
+Compiled from "ComponentProperty.java"
+public interface org.apache.tuscany.sca.assembly.ComponentProperty extends org.apache.tuscany.sca.assembly.Property{
+    public abstract org.apache.tuscany.sca.assembly.Property getProperty();
+    public abstract void setProperty(org.apache.tuscany.sca.assembly.Property);
+    public abstract java.lang.String getSource();
+    public abstract void setSource(java.lang.String);
+    public abstract javax.xml.xpath.XPathExpression getSourceXPathExpression();
+    public abstract void setSourceXPathExpression(javax.xml.xpath.XPathExpression);
+    public abstract java.lang.String getFile();
+    public abstract void setFile(java.lang.String);
+}
+
+Compiled from "ComponentReference.java"
+public interface org.apache.tuscany.sca.assembly.ComponentReference extends org.apache.tuscany.sca.assembly.Reference{
+    public abstract org.apache.tuscany.sca.assembly.Reference getReference();
+    public abstract void setReference(org.apache.tuscany.sca.assembly.Reference);
+    public abstract java.lang.Boolean getAutowire();
+    public abstract void setAutowire(java.lang.Boolean);
+    public abstract org.apache.tuscany.sca.assembly.ComponentService getCallbackService();
+    public abstract void setCallbackService(org.apache.tuscany.sca.assembly.ComponentService);
+    public abstract boolean isNonOverridable();
+    public abstract void setNonOverridable(boolean);
+    public abstract void setPromoted(boolean);
+    public abstract boolean isPromoted();
+}
+
+Compiled from "ComponentService.java"
+public interface org.apache.tuscany.sca.assembly.ComponentService extends org.apache.tuscany.sca.assembly.Service{
+    public abstract org.apache.tuscany.sca.assembly.Service getService();
+    public abstract void setService(org.apache.tuscany.sca.assembly.Service);
+    public abstract org.apache.tuscany.sca.assembly.ComponentReference getCallbackReference();
+    public abstract void setCallbackReference(org.apache.tuscany.sca.assembly.ComponentReference);
+}
+
+Compiled from "ComponentType.java"
+public interface org.apache.tuscany.sca.assembly.ComponentType extends org.apache.tuscany.sca.assembly.Base,org.apache.tuscany.sca.policy.PolicySubject{
+    public abstract java.lang.String getURI();
+    public abstract void setURI(java.lang.String);
+    public abstract java.util.List getServices();
+    public abstract org.apache.tuscany.sca.assembly.Service getService(java.lang.String);
+    public abstract java.util.List getReferences();
+    public abstract org.apache.tuscany.sca.assembly.Reference getReference(java.lang.String);
+    public abstract java.util.List getProperties();
+    public abstract org.apache.tuscany.sca.assembly.Property getProperty(java.lang.String);
+}
+
+Compiled from "Composite.java"
+public interface org.apache.tuscany.sca.assembly.Composite extends org.apache.tuscany.sca.assembly.Implementation,org.apache.tuscany.sca.assembly.Extensible,java.lang.Cloneable,org.apache.tuscany.sca.policy.PolicySubject{
+    public static final javax.xml.namespace.QName DOMAIN_COMPOSITE;
+    public static final javax.xml.namespace.QName TYPE;
+    public abstract java.lang.String getSpecVersion();
+    public abstract void setSpecVersion(java.lang.String);
+    public abstract javax.xml.namespace.QName getName();
+    public abstract void setName(javax.xml.namespace.QName);
+    public abstract java.util.List getIncludes();
+    public abstract java.util.List getComponents();
+    public abstract org.apache.tuscany.sca.assembly.Component getComponent(java.lang.String);
+    public abstract java.util.List getWires();
+    public abstract boolean isLocal();
+    public abstract void setLocal(boolean);
+    public abstract java.lang.Boolean getAutowire();
+    public abstract void setAutowire(java.lang.Boolean);
+    public abstract java.lang.Object clone()       throws java.lang.CloneNotSupportedException;
+    static {};
+}
+
+Compiled from "CompositeReference.java"
+public interface org.apache.tuscany.sca.assembly.CompositeReference extends org.apache.tuscany.sca.assembly.Reference{
+    public abstract java.util.List getPromotedComponents();
+    public abstract java.util.List getPromotedReferences();
+}
+
+Compiled from "CompositeService.java"
+public interface org.apache.tuscany.sca.assembly.CompositeService extends org.apache.tuscany.sca.assembly.Service{
+    public abstract org.apache.tuscany.sca.assembly.Component getPromotedComponent();
+    public abstract void setPromotedComponent(org.apache.tuscany.sca.assembly.Component);
+    public abstract org.apache.tuscany.sca.assembly.ComponentService getPromotedService();
+    public abstract void setPromotedService(org.apache.tuscany.sca.assembly.ComponentService);
+}
+
+Compiled from "ConfiguredOperation.java"
+public interface org.apache.tuscany.sca.assembly.ConfiguredOperation extends org.apache.tuscany.sca.assembly.Base,org.apache.tuscany.sca.policy.PolicySubject{
+    public abstract java.lang.String getName();
+    public abstract void setName(java.lang.String);
+    public abstract java.lang.String getContractName();
+    public abstract void setContractName(java.lang.String);
+}
+
+Compiled from "Contract.java"
+public interface org.apache.tuscany.sca.assembly.Contract extends org.apache.tuscany.sca.assembly.AbstractContract,org.apache.tuscany.sca.policy.PolicySubject,java.lang.Cloneable{
+    public abstract java.util.List getBindings();
+    public abstract java.lang.Object getBinding(java.lang.Class);
+    public abstract java.lang.Object getCallbackBinding(java.lang.Class);
+    public abstract org.apache.tuscany.sca.assembly.Callback getCallback();
+    public abstract void setCallback(org.apache.tuscany.sca.assembly.Callback);
+    public abstract java.lang.Object clone()       throws java.lang.CloneNotSupportedException;
+    public abstract org.apache.tuscany.sca.interfacedef.InterfaceContract getInterfaceContract(org.apache.tuscany.sca.assembly.Binding);
+    public abstract boolean isOverridingBindings();
+    public abstract void setOverridingBindings(boolean);
+}
+
+Compiled from "DefaultAssemblyFactory.java"
+public class org.apache.tuscany.sca.assembly.DefaultAssemblyFactory extends org.apache.tuscany.sca.assembly.impl.AssemblyFactoryImpl implements org.apache.tuscany.sca.assembly.AssemblyFactory{
+    public org.apache.tuscany.sca.assembly.DefaultAssemblyFactory(org.apache.tuscany.sca.core.ExtensionPointRegistry);
+    public org.apache.tuscany.sca.assembly.DefaultAssemblyFactory();
+}
+
+Compiled from "Endpoint.java"
+public interface org.apache.tuscany.sca.assembly.Endpoint extends org.apache.tuscany.sca.assembly.Base,org.apache.tuscany.sca.policy.PolicySubject,java.lang.Cloneable,java.io.Serializable{
+    public abstract java.lang.String getURI();
+    public abstract void setURI(java.lang.String);
+    public abstract org.apache.tuscany.sca.assembly.Component getComponent();
+    public abstract void setComponent(org.apache.tuscany.sca.assembly.Component);
+    public abstract org.apache.tuscany.sca.assembly.ComponentService getService();
+    public abstract void setService(org.apache.tuscany.sca.assembly.ComponentService);
+    public abstract org.apache.tuscany.sca.assembly.Binding getBinding();
+    public abstract void setBinding(org.apache.tuscany.sca.assembly.Binding);
+    public abstract org.apache.tuscany.sca.interfacedef.InterfaceContract getComponentServiceInterfaceContract();
+    public abstract java.util.List getCallbackEndpointReferences();
+    public abstract boolean isRemote();
+    public abstract void setRemote(boolean);
+    public abstract java.lang.Object clone()       throws java.lang.CloneNotSupportedException;
+    public abstract boolean matches(java.lang.String);
+    public abstract boolean isAsyncInvocation();
+}
+
+Compiled from "EndpointReference.java"
+public interface org.apache.tuscany.sca.assembly.EndpointReference extends org.apache.tuscany.sca.assembly.Base,org.apache.tuscany.sca.policy.PolicySubject,java.lang.Cloneable,java.io.Serializable{
+    public abstract java.lang.String getURI();
+    public abstract void setURI(java.lang.String);
+    public abstract java.lang.Object clone()       throws java.lang.CloneNotSupportedException;
+    public abstract org.apache.tuscany.sca.assembly.Component getComponent();
+    public abstract void setComponent(org.apache.tuscany.sca.assembly.Component);
+    public abstract org.apache.tuscany.sca.assembly.ComponentReference getReference();
+    public abstract void setReference(org.apache.tuscany.sca.assembly.ComponentReference);
+    public abstract org.apache.tuscany.sca.assembly.Binding getBinding();
+    public abstract void setBinding(org.apache.tuscany.sca.assembly.Binding);
+    public abstract org.apache.tuscany.sca.assembly.Endpoint getTargetEndpoint();
+    public abstract void setTargetEndpoint(org.apache.tuscany.sca.assembly.Endpoint);
+    public abstract org.apache.tuscany.sca.interfacedef.InterfaceContract getComponentReferenceInterfaceContract();
+    public abstract org.apache.tuscany.sca.assembly.Endpoint getCallbackEndpoint();
+    public abstract void setCallbackEndpoint(org.apache.tuscany.sca.assembly.Endpoint);
+    public abstract org.apache.tuscany.sca.assembly.EndpointReference$Status getStatus();
+    public abstract void setStatus(org.apache.tuscany.sca.assembly.EndpointReference$Status);
+    public abstract boolean isAsyncInvocation();
+}
+
+Compiled from "Extensible.java"
+public interface org.apache.tuscany.sca.assembly.Extensible extends org.apache.tuscany.sca.assembly.Base{
+    public abstract java.util.List getExtensions();
+    public abstract java.util.List getAttributeExtensions();
+}
+
+Compiled from "Extension.java"
+public interface org.apache.tuscany.sca.assembly.Extension{
+    public abstract javax.xml.namespace.QName getQName();
+    public abstract void setQName(javax.xml.namespace.QName);
+    public abstract java.lang.Object getValue();
+    public abstract void setValue(java.lang.Object);
+    public abstract boolean isAttribute();
+    public abstract void setAttribute(boolean);
+}
+
+Compiled from "Implementation.java"
+public interface org.apache.tuscany.sca.assembly.Implementation extends org.apache.tuscany.sca.assembly.ComponentType{
+    public abstract javax.xml.namespace.QName getType();
+    public abstract java.util.List getOperations();
+}
+
+Compiled from "Multiplicity.java"
+public final class org.apache.tuscany.sca.assembly.Multiplicity extends java.lang.Enum{
+    public static final org.apache.tuscany.sca.assembly.Multiplicity ZERO_ONE;
+    public static final org.apache.tuscany.sca.assembly.Multiplicity ONE_ONE;
+    public static final org.apache.tuscany.sca.assembly.Multiplicity ZERO_N;
+    public static final org.apache.tuscany.sca.assembly.Multiplicity ONE_N;
+    public static org.apache.tuscany.sca.assembly.Multiplicity[] values();
+    public static org.apache.tuscany.sca.assembly.Multiplicity valueOf(java.lang.String);
+    static {};
+}
+
+Compiled from "OperationSelector.java"
+public interface org.apache.tuscany.sca.assembly.OperationSelector extends org.apache.tuscany.sca.assembly.Base,java.lang.Cloneable{
+}
+
+Compiled from "OperationsConfigurator.java"
+public interface org.apache.tuscany.sca.assembly.OperationsConfigurator{
+    public abstract java.util.List getConfiguredOperations();
+}
+
+Compiled from "Property.java"
+public interface org.apache.tuscany.sca.assembly.Property extends org.apache.tuscany.sca.assembly.AbstractProperty,java.lang.Cloneable{
+    public abstract java.lang.Object clone()       throws java.lang.CloneNotSupportedException;
+}
+
+Compiled from "Reference.java"
+public interface org.apache.tuscany.sca.assembly.Reference extends org.apache.tuscany.sca.assembly.AbstractReference,org.apache.tuscany.sca.assembly.Contract{
+    public abstract boolean isWiredByImpl();
+    public abstract void setWiredByImpl(boolean);
+    public abstract java.util.List getTargets();
+    public abstract java.util.List getEndpointReferences();
+}
+
+Compiled from "SCABinding.java"
+public interface org.apache.tuscany.sca.assembly.SCABinding extends org.apache.tuscany.sca.assembly.Binding{
+    public static final javax.xml.namespace.QName TYPE;
+    static {};
+}
+
+Compiled from "SCABindingFactory.java"
+public interface org.apache.tuscany.sca.assembly.SCABindingFactory{
+    public abstract org.apache.tuscany.sca.assembly.SCABinding createSCABinding();
+}
+
+Compiled from "Service.java"
+public interface org.apache.tuscany.sca.assembly.Service extends org.apache.tuscany.sca.assembly.AbstractService,org.apache.tuscany.sca.assembly.Contract{
+    public abstract java.util.List getEndpoints();
+    public abstract boolean isJAXWSService();
+    public abstract void setJAXWSService(boolean);
+}
+
+Compiled from "Wire.java"
+public interface org.apache.tuscany.sca.assembly.Wire extends org.apache.tuscany.sca.assembly.Base,org.apache.tuscany.sca.assembly.Extensible,org.apache.tuscany.sca.policy.PolicySubject,java.lang.Cloneable{
+    public abstract org.apache.tuscany.sca.assembly.ComponentReference getSource();
+    public abstract void setSource(org.apache.tuscany.sca.assembly.ComponentReference);
+    public abstract org.apache.tuscany.sca.assembly.ComponentService getTarget();
+    public abstract void setTarget(org.apache.tuscany.sca.assembly.ComponentService);
+    public abstract boolean isReplace();
+    public abstract void setReplace(boolean);
+    public abstract java.lang.Object clone()       throws java.lang.CloneNotSupportedException;
+}
+
+Compiled from "WireFormat.java"
+public interface org.apache.tuscany.sca.assembly.WireFormat extends org.apache.tuscany.sca.assembly.Base,java.lang.Cloneable{
+    public abstract javax.xml.namespace.QName getSchemaName();
+}
+
+Compiled from "DefaultDefinitionsFactory.java"
+public class org.apache.tuscany.sca.definitions.DefaultDefinitionsFactory extends java.lang.Object implements org.apache.tuscany.sca.definitions.DefinitionsFactory{
+    public org.apache.tuscany.sca.definitions.DefaultDefinitionsFactory();
+    public org.apache.tuscany.sca.definitions.Definitions createDefinitions();
+}
+
+Compiled from "Definitions.java"
+public interface org.apache.tuscany.sca.definitions.Definitions{
+    public abstract java.lang.String getTargetNamespace();
+    public abstract void setTargetNamespace(java.lang.String);
+    public abstract java.util.List getIntents();
+    public abstract java.util.List getPolicySets();
+    public abstract java.util.List getBindingTypes();
+    public abstract java.util.List getImplementationTypes();
+    public abstract java.util.List getBindings();
+    public abstract java.util.List getExternalAttachments();
+}
+
+Compiled from "DefinitionsBuilder.java"
+public interface org.apache.tuscany.sca.definitions.DefinitionsBuilder{
+    public abstract void build(org.apache.tuscany.sca.definitions.Definitions)       throws org.apache.tuscany.sca.definitions.DefinitionsBuilderException;
+}
+
+Compiled from "DefinitionsBuilderException.java"
+public class org.apache.tuscany.sca.definitions.DefinitionsBuilderException extends java.lang.Exception{
+    public org.apache.tuscany.sca.definitions.DefinitionsBuilderException();
+    public org.apache.tuscany.sca.definitions.DefinitionsBuilderException(java.lang.String);
+    public org.apache.tuscany.sca.definitions.DefinitionsBuilderException(java.lang.Throwable);
+    public org.apache.tuscany.sca.definitions.DefinitionsBuilderException(java.lang.String, java.lang.Throwable);
+}
+
+Compiled from "DefinitionsFactory.java"
+public interface org.apache.tuscany.sca.definitions.DefinitionsFactory{
+    public abstract org.apache.tuscany.sca.definitions.Definitions createDefinitions();
+}
+
+Compiled from "Compatibility.java"
+public final class org.apache.tuscany.sca.interfacedef.Compatibility extends java.lang.Enum{
+    public static final org.apache.tuscany.sca.interfacedef.Compatibility SUPERSET;
+    public static final org.apache.tuscany.sca.interfacedef.Compatibility SUBSET;
+    public static final org.apache.tuscany.sca.interfacedef.Compatibility MUTUAL;
+    public static final org.apache.tuscany.sca.interfacedef.Compatibility INCOMPATIBLE;
+    public static org.apache.tuscany.sca.interfacedef.Compatibility[] values();
+    public static org.apache.tuscany.sca.interfacedef.Compatibility valueOf(java.lang.String);
+    static {};
+}
+
+Compiled from "DataType.java"
+public interface org.apache.tuscany.sca.interfacedef.DataType extends java.lang.Cloneable{
+    public abstract void setPhysical(java.lang.Class);
+    public abstract java.lang.Class getPhysical();
+    public abstract java.lang.reflect.Type getGenericType();
+    public abstract void setGenericType(java.lang.reflect.Type);
+    public abstract java.lang.Object getLogical();
+    public abstract java.lang.String getDataBinding();
+    public abstract void setDataBinding(java.lang.String);
+    public abstract java.lang.Object clone()       throws java.lang.CloneNotSupportedException;
+    public abstract void setLogical(java.lang.Object);
+    public abstract java.lang.Object getMetaData(java.lang.Class);
+    public abstract void setMetaData(java.lang.Class, java.lang.Object);
+}
+
+Compiled from "FaultExceptionMapper.java"
+public interface org.apache.tuscany.sca.interfacedef.FaultExceptionMapper{
+    public abstract boolean introspectFaultDataType(org.apache.tuscany.sca.interfacedef.DataType, org.apache.tuscany.sca.interfacedef.Operation, boolean);
+    public abstract java.lang.Throwable wrapFaultInfo(org.apache.tuscany.sca.interfacedef.DataType, java.lang.String, java.lang.Object, java.lang.Throwable, org.apache.tuscany.sca.interfacedef.Operation);
+    public abstract java.lang.Object getFaultInfo(java.lang.Throwable, java.lang.Class, org.apache.tuscany.sca.interfacedef.Operation);
+}
+
+Compiled from "IncompatibleInterfaceContractException.java"
+public class org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException extends java.lang.Exception{
+    public org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException(java.lang.String, org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.InterfaceContract);
+    public org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException(java.lang.String, org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.Operation, org.apache.tuscany.sca.interfacedef.Operation);
+    public org.apache.tuscany.sca.interfacedef.InterfaceContract getTarget();
+    public org.apache.tuscany.sca.interfacedef.InterfaceContract getSource();
+    public org.apache.tuscany.sca.interfacedef.Operation getSourceOperation();
+    public org.apache.tuscany.sca.interfacedef.Operation getTargetOperation();
+}
+
+Compiled from "Interface.java"
+public interface org.apache.tuscany.sca.interfacedef.Interface extends java.lang.Cloneable,org.apache.tuscany.sca.policy.PolicySubject{
+    public abstract boolean isRemotable();
+    public abstract void setRemotable(boolean);
+    public abstract boolean isRemotableSet();
+    public abstract java.util.List getOperations();
+    public abstract void setDefaultDataBinding(java.lang.String);
+    public abstract void resetDataBinding(java.lang.String);
+    public abstract void resetInterfaceInputTypes(org.apache.tuscany.sca.interfacedef.Interface);
+    public abstract void resetInterfaceOutputTypes(org.apache.tuscany.sca.interfacedef.Interface);
+    public abstract boolean isDynamic();
+    public abstract java.util.Map getAttributes();
+    public abstract java.lang.Object clone()       throws java.lang.CloneNotSupportedException;
+}
+
+Compiled from "InterfaceContract.java"
+public interface org.apache.tuscany.sca.interfacedef.InterfaceContract extends java.lang.Cloneable{
+    public abstract org.apache.tuscany.sca.interfacedef.Interface getInterface();
+    public abstract void setInterface(org.apache.tuscany.sca.interfacedef.Interface);
+    public abstract org.apache.tuscany.sca.interfacedef.Interface getCallbackInterface();
+    public abstract void setCallbackInterface(org.apache.tuscany.sca.interfacedef.Interface);
+    public abstract org.apache.tuscany.sca.interfacedef.InterfaceContract makeUnidirectional(boolean);
+    public abstract java.lang.Object clone()       throws java.lang.CloneNotSupportedException;
+    public abstract org.apache.tuscany.sca.interfacedef.InterfaceContract getNormalizedWSDLContract();
+    public abstract void setNormailizedWSDLContract(org.apache.tuscany.sca.interfacedef.InterfaceContract);
+}
+
+Compiled from "InterfaceContractMapper.java"
+public interface org.apache.tuscany.sca.interfacedef.InterfaceContractMapper{
+    public abstract boolean checkCompatibility(org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.Compatibility, boolean, boolean)       throws org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
+    public abstract boolean checkCompatibility(org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.Compatibility, boolean, boolean, org.apache.tuscany.sca.interfacedef.util.Audit)       throws org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
+    public abstract boolean isCompatible(org.apache.tuscany.sca.interfacedef.DataType, org.apache.tuscany.sca.interfacedef.DataType, boolean);
+    public abstract boolean isCompatible(org.apache.tuscany.sca.interfacedef.Operation, org.apache.tuscany.sca.interfacedef.Operation, org.apache.tuscany.sca.interfacedef.Compatibility);
+    public abstract boolean isCompatibleByReference(org.apache.tuscany.sca.interfacedef.Operation, org.apache.tuscany.sca.interfacedef.Operation, org.apache.tuscany.sca.interfacedef.Compatibility);
+    public abstract boolean isCompatibleByValue(org.apache.tuscany.sca.interfacedef.Operation, org.apache.tuscany.sca.interfacedef.Operation, org.apache.tuscany.sca.interfacedef.Compatibility);
+    public abstract boolean isCompatibleSubset(org.apache.tuscany.sca.interfacedef.Interface, org.apache.tuscany.sca.interfacedef.Interface);
+    public abstract boolean isCompatibleSubset(org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.InterfaceContract);
+    public abstract boolean isCompatibleSubset(org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.util.Audit);
+    public abstract boolean isMutuallyCompatible(org.apache.tuscany.sca.interfacedef.Interface, org.apache.tuscany.sca.interfacedef.Interface);
+    public abstract boolean isMutuallyCompatible(org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.InterfaceContract);
+    public abstract org.apache.tuscany.sca.interfacedef.Operation map(org.apache.tuscany.sca.interfacedef.Interface, org.apache.tuscany.sca.interfacedef.Operation);
+}
+
+Compiled from "InvalidAnnotationException.java"
+public class org.apache.tuscany.sca.interfacedef.InvalidAnnotationException extends org.apache.tuscany.sca.interfacedef.InvalidInterfaceException{
+    public org.apache.tuscany.sca.interfacedef.InvalidAnnotationException(java.lang.String, java.lang.Class);
+    public java.lang.Class getAnnotation();
+}
+
+Compiled from "InvalidCallbackException.java"
+public class org.apache.tuscany.sca.interfacedef.InvalidCallbackException extends org.apache.tuscany.sca.interfacedef.InvalidInterfaceException{
+    public org.apache.tuscany.sca.interfacedef.InvalidCallbackException(java.lang.String);
+}
+
+Compiled from "InvalidInterfaceException.java"
+public abstract class org.apache.tuscany.sca.interfacedef.InvalidInterfaceException extends java.lang.Exception{
+    public org.apache.tuscany.sca.interfacedef.InvalidInterfaceException();
+    public org.apache.tuscany.sca.interfacedef.InvalidInterfaceException(java.lang.String);
+    public org.apache.tuscany.sca.interfacedef.InvalidInterfaceException(java.lang.String, java.lang.Throwable);
+    public org.apache.tuscany.sca.interfacedef.InvalidInterfaceException(java.lang.Throwable);
+}
+
+Compiled from "InvalidOperationException.java"
+public class org.apache.tuscany.sca.interfacedef.InvalidOperationException extends org.apache.tuscany.sca.interfacedef.InvalidInterfaceException{
+    public org.apache.tuscany.sca.interfacedef.InvalidOperationException(java.lang.String, java.lang.reflect.Method);
+    public java.lang.reflect.Method getOperation();
+}
+
+Compiled from "Operation.java"
+public interface org.apache.tuscany.sca.interfacedef.Operation extends java.lang.Cloneable,org.apache.tuscany.sca.policy.PolicySubject{
+    public static final java.lang.String IDL_INPUT;
+    public static final java.lang.String IDL_OUTPUT;
+    public static final java.lang.String IDL_FAULT;
+    public abstract java.lang.String getName();
+    public abstract void setName(java.lang.String);
+    public abstract boolean isUnresolved();
+    public abstract void setUnresolved(boolean);
+    public abstract org.apache.tuscany.sca.interfacedef.DataType getInputType();
+    public abstract void setInputType(org.apache.tuscany.sca.interfacedef.DataType);
+    public abstract org.apache.tuscany.sca.interfacedef.DataType getOutputType();
+    public abstract void setOutputType(org.apache.tuscany.sca.interfacedef.DataType);
+    public abstract java.util.List getFaultTypes();
+    public abstract void setFaultTypes(java.util.List);
+    public abstract org.apache.tuscany.sca.interfacedef.Interface getInterface();
+    public abstract void setInterface(org.apache.tuscany.sca.interfacedef.Interface);
+    public abstract boolean isNonBlocking();
+    public abstract boolean isAsyncServer();
+    public abstract void setNonBlocking(boolean);
+    public abstract org.apache.tuscany.sca.interfacedef.util.WrapperInfo getWrapper();
+    public abstract void setWrapper(org.apache.tuscany.sca.interfacedef.util.WrapperInfo);
+    public abstract boolean isWrapperStyle();
+    public abstract void setWrapperStyle(boolean);
+    public abstract java.lang.String getDataBinding();
+    public abstract void setDataBinding(java.lang.String);
+    public abstract boolean isDynamic();
+    public abstract void setDynamic(boolean);
+    public abstract java.util.Map getFaultBeans();
+    public abstract void setFaultBeans(java.util.Map);
+    public abstract java.util.Map getAttributes();
+    public abstract java.lang.Object clone()       throws java.lang.CloneNotSupportedException;
+    public abstract java.util.List getParameterModes();
+    public abstract boolean hasArrayWrappedOutput();
+    public abstract void setHasArrayWrappedOutput(boolean);
+}
+
+Compiled from "OverloadedOperationException.java"
+public class org.apache.tuscany.sca.interfacedef.OverloadedOperationException extends org.apache.tuscany.sca.interfacedef.InvalidInterfaceException{
+    public org.apache.tuscany.sca.interfacedef.OverloadedOperationException(java.lang.reflect.Method);
+    public java.lang.reflect.Method getOperation();
+}
+
+Compiled from "ParameterMode.java"
+public final class org.apache.tuscany.sca.interfacedef.ParameterMode extends java.lang.Enum{
+    public static final org.apache.tuscany.sca.interfacedef.ParameterMode IN;
+    public static final org.apache.tuscany.sca.interfacedef.ParameterMode OUT;
+    public static final org.apache.tuscany.sca.interfacedef.ParameterMode INOUT;
+    public static org.apache.tuscany.sca.interfacedef.ParameterMode[] values();
+    public static org.apache.tuscany.sca.interfacedef.ParameterMode valueOf(java.lang.String);
+    static {};
+}
+
+Compiled from "BindingType.java"
+public interface org.apache.tuscany.sca.policy.BindingType extends org.apache.tuscany.sca.policy.ExtensionType{
+}
+
+Compiled from "DefaultPolicyFactory.java"
+public class org.apache.tuscany.sca.policy.DefaultPolicyFactory extends org.apache.tuscany.sca.policy.impl.PolicyFactoryImpl implements org.apache.tuscany.sca.policy.PolicyFactory{
+    public org.apache.tuscany.sca.policy.DefaultPolicyFactory();
+}
+
+Compiled from "ExtensionType.java"
+public interface org.apache.tuscany.sca.policy.ExtensionType{
+    public static final javax.xml.namespace.QName BINDING_BASE;
+    public static final javax.xml.namespace.QName IMPLEMENTATION_BASE;
+    public abstract javax.xml.namespace.QName getType();
+    public abstract void setType(javax.xml.namespace.QName);
+    public abstract javax.xml.namespace.QName getBaseType();
+    public abstract java.util.List getAlwaysProvidedIntents();
+    public abstract java.util.List getMayProvidedIntents();
+    public abstract boolean isUnresolved();
+    public abstract void setUnresolved(boolean);
+    static {};
+}
+
+Compiled from "ExternalAttachment.java"
+public interface org.apache.tuscany.sca.policy.ExternalAttachment{
+    public abstract java.lang.String getAttachTo();
+    public abstract void setAttachTo(java.lang.String);
+    public abstract javax.xml.xpath.XPathExpression getAttachToXPathExpression();
+    public abstract void setAttachToXPathExpression(javax.xml.xpath.XPathExpression);
+    public abstract java.util.List getPolicySets();
+    public abstract java.util.List getIntents();
+    public abstract boolean isUnresolved();
+    public abstract void setUnresolved(boolean);
+}
+
+Compiled from "ImplementationType.java"
+public interface org.apache.tuscany.sca.policy.ImplementationType extends org.apache.tuscany.sca.policy.ExtensionType{
+}
+
+Compiled from "Intent.java"
+public interface org.apache.tuscany.sca.policy.Intent{
+    public abstract javax.xml.namespace.QName getName();
+    public abstract void setName(javax.xml.namespace.QName);
+    public abstract java.util.List getConstrainedTypes();
+    public abstract java.util.List getRequiredIntents();
+    public abstract java.util.List getExcludedIntents();
+    public abstract java.util.List getQualifiedIntents();
+    public abstract org.apache.tuscany.sca.policy.Intent getDefaultQualifiedIntent();
+    public abstract void setDefaultQualifiedIntent(org.apache.tuscany.sca.policy.Intent);
+    public abstract org.apache.tuscany.sca.policy.Intent$Type getType();
+    public abstract void setType(org.apache.tuscany.sca.policy.Intent$Type);
+    public abstract boolean isMutuallyExclusive();
+    public abstract void setMutuallyExclusive(boolean);
+    public abstract java.lang.String getDescription();
+    public abstract void setDescription(java.lang.String);
+    public abstract org.apache.tuscany.sca.policy.Intent getQualifiableIntent();
+    public abstract void setQualifiableIntent(org.apache.tuscany.sca.policy.Intent);
+    public abstract boolean isUnresolved();
+    public abstract void setUnresolved(boolean);
+}
+
+Compiled from "IntentMap.java"
+public interface org.apache.tuscany.sca.policy.IntentMap{
+    public abstract org.apache.tuscany.sca.policy.Intent getProvidedIntent();
+    public abstract void setProvidedIntent(org.apache.tuscany.sca.policy.Intent);
+    public abstract java.util.List getQualifiers();
+}
+
+Compiled from "PolicyAttachment.java"
+public interface org.apache.tuscany.sca.policy.PolicyAttachment{
+    public abstract org.apache.tuscany.sca.policy.PolicySet getPolicySet();
+    public abstract void setPolicySet(org.apache.tuscany.sca.policy.PolicySet);
+    public abstract java.util.List getPolicySubjects();
+}
+
+Compiled from "PolicyContainer.java"
+public interface org.apache.tuscany.sca.policy.PolicyContainer{
+    public abstract java.lang.Object getChildPolicy(java.lang.Class);
+}
+
+Compiled from "PolicyExpression.java"
+public interface org.apache.tuscany.sca.policy.PolicyExpression{
+    public abstract javax.xml.namespace.QName getName();
+    public abstract void setName(javax.xml.namespace.QName);
+    public abstract java.lang.Object getPolicy();
+    public abstract void setPolicy(java.lang.Object);
+    public abstract void setUnresolved(boolean);
+    public abstract boolean isUnresolved();
+}
+
+Compiled from "PolicyFactory.java"
+public interface org.apache.tuscany.sca.policy.PolicyFactory{
+    public abstract org.apache.tuscany.sca.policy.Intent createIntent();
+    public abstract org.apache.tuscany.sca.policy.PolicySet createPolicySet();
+    public abstract org.apache.tuscany.sca.policy.IntentMap createIntentMap();
+    public abstract org.apache.tuscany.sca.policy.Qualifier createQualifier();
+    public abstract org.apache.tuscany.sca.policy.PolicyExpression createPolicyExpression();
+    public abstract org.apache.tuscany.sca.policy.ExtensionType createExtensionType();
+    public abstract org.apache.tuscany.sca.policy.BindingType createBindingType();
+    public abstract org.apache.tuscany.sca.policy.ImplementationType createImplementationType();
+    public abstract org.apache.tuscany.sca.policy.ExternalAttachment createExternalAttachment();
+}
+
+Compiled from "PolicySet.java"
+public interface org.apache.tuscany.sca.policy.PolicySet{
+    public abstract javax.xml.namespace.QName getName();
+    public abstract void setName(javax.xml.namespace.QName);
+    public abstract java.util.List getReferencedPolicySets();
+    public abstract java.util.List getProvidedIntents();
+    public abstract java.util.List getPolicies();
+    public abstract boolean isUnresolved();
+    public abstract void setUnresolved(boolean);
+    public abstract java.lang.String getAppliesTo();
+    public abstract void setAppliesTo(java.lang.String);
+    public abstract java.lang.String getAttachTo();
+    public abstract void setAttachTo(java.lang.String);
+    public abstract javax.xml.xpath.XPathExpression getAttachToXPathExpression();
+    public abstract void setAttachToXPathExpression(javax.xml.xpath.XPathExpression);
+    public abstract java.util.List getIntentMaps();
+    public abstract javax.xml.xpath.XPathExpression getAppliesToXPathExpression();
+    public abstract void setAppliesToXPathExpression(javax.xml.xpath.XPathExpression);
+    public abstract boolean isExternalAttachment();
+    public abstract void setIsExternalAttachment(boolean);
+}
+
+Compiled from "PolicySubject.java"
+public interface org.apache.tuscany.sca.policy.PolicySubject{
+    public abstract java.util.List getRequiredIntents();
+    public abstract java.util.List getPolicySets();
+    public abstract org.apache.tuscany.sca.policy.ExtensionType getExtensionType();
+    public abstract void setExtensionType(org.apache.tuscany.sca.policy.ExtensionType);
+}
+
+Compiled from "Qualifier.java"
+public interface org.apache.tuscany.sca.policy.Qualifier{
+    public abstract org.apache.tuscany.sca.policy.Intent getIntent();
+    public abstract void setIntent(org.apache.tuscany.sca.policy.Intent);
+    public abstract java.util.List getPolicies();
+}
+

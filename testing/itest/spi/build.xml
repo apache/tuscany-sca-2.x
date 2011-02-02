@@ -1,0 +1,72 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<project name="itest-spi" default="run">
+	
+    <target name="run"> 
+        
+        <dirname property="modules.dir" file="${basedir}/../../../modules/pom.xml"/>
+        
+        <property name="assembly.dir" location="${modules.dir}/assembly/src/main/java"/>
+
+        <fileset id="file.names"
+                 dir="${modules.dir}">
+            <patternset id="assembly">
+                <include name="assembly/src/main/java/org/apache/tuscany/sca/assembly/*"/>
+                <include name="assembly/src/main/java/org/apache/tuscany/sca/assembly.impl/*"/>
+                <include name="assembly/src/main/java/org/apache/tuscany/sca/definitions/*"/>
+                <include name="assembly/src/main/java/org/apache/tuscany/sca/interfacedef/*"/>
+                <include name="assembly/src/main/java/org/apache/tuscany/sca/interfacedef.impl/*"/>
+                <include name="assembly/src/main/java/org/apache/tuscany/sca/interfacedef.util/*"/>
+                <include name="assembly/src/main/java/org/apache/tuscany/sca/policy/*"/>
+            </patternset>
+            <patternset id="contribution">
+                <include name="contribution/src/main/java/org/apache/tuscany/sca/contribution/*"/>
+                <include name="contribution/src/main/java/org/apache/tuscany/sca/contribution/processor/*"/>
+                <include name="contribution/src/main/java/org/apache/tuscany/sca/contribution/resolver/*"/>
+            </patternset>
+            <patternset id="core-spi">
+                <include name="core-spi/src/main/java/org/apache/tuscany/sca/context/*"/>
+                <include name="core-spi/src/main/java/org/apache/tuscany/sca/invocation/*"/>
+                <include name="core-spi/src/main/java/org/apache/tuscany/sca/provider/*"/>
+                <include name="core-spi/src/main/java/org/apache/tuscany/sca/runtime/*"/>
+                <include name="core-spi/src/main/java/org/apache/tuscany/sca/work/*"/>
+            </patternset>            
+        </fileset>
+
+        <pathconvert pathsep=" " 
+                 property="class.names" 
+                 refid="file.names">  
+            <chainedmapper>         
+                <regexpmapper from="^.*/src/main/java/(.*)\.java" to="\1" handledirsep="yes"/>
+                <packagemapper from="*" to="*"/>
+            </chainedmapper>       
+        </pathconvert>
+        	
+        <echo>${class.names}</echo> 
+       
+        <exec executable="javap"
+              output="spi.txt">
+          <arg value="-classpath"/>
+          <arg value="${runtime_classpath}"/>
+          <arg line="${class.names}"/>
+        </exec>
+
+    </target>
+
+</project>
