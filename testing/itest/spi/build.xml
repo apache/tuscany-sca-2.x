@@ -19,20 +19,17 @@
 <project name="itest-spi" default="run">
 	
     <target name="run"> 
-        
-        <dirname property="modules.dir" file="${basedir}/../../../modules/pom.xml"/>
-        
-        <property name="assembly.dir" location="${modules.dir}/assembly/src/main/java"/>
 
+        <!-- create a fileset containing the file name of each SPI class or interface -->
         <fileset id="file.names"
-                 dir="${modules.dir}">
+                 dir="${basedir}/../../../modules">
             <patternset id="assembly">
                 <include name="assembly/src/main/java/org/apache/tuscany/sca/assembly/*"/>
-                <include name="assembly/src/main/java/org/apache/tuscany/sca/assembly.impl/*"/>
+                <!--include name="assembly/src/main/java/org/apache/tuscany/sca/assembly/impl/*"/-->
                 <include name="assembly/src/main/java/org/apache/tuscany/sca/definitions/*"/>
                 <include name="assembly/src/main/java/org/apache/tuscany/sca/interfacedef/*"/>
-                <include name="assembly/src/main/java/org/apache/tuscany/sca/interfacedef.impl/*"/>
-                <include name="assembly/src/main/java/org/apache/tuscany/sca/interfacedef.util/*"/>
+                <!--include name="assembly/src/main/java/org/apache/tuscany/sca/interfacedef/impl/*"/-->
+                <!--include name="assembly/src/main/java/org/apache/tuscany/sca/interfacedef.util/*"/-->
                 <include name="assembly/src/main/java/org/apache/tuscany/sca/policy/*"/>
             </patternset>
             <patternset id="contribution">
@@ -46,9 +43,52 @@
                 <include name="core-spi/src/main/java/org/apache/tuscany/sca/provider/*"/>
                 <include name="core-spi/src/main/java/org/apache/tuscany/sca/runtime/*"/>
                 <include name="core-spi/src/main/java/org/apache/tuscany/sca/work/*"/>
-            </patternset>            
+            </patternset>    
+            <patternset id="core">
+                <include name="core/src/main/java/org/apache/tuscany/sca/core/assembly/*"/>
+                <include name="core/src/main/java/org/apache/tuscany/sca/core/assembly/impl/*"/>
+                <include name="core/src/main/java/org/apache/tuscany/sca/core/context/*"/>
+                <include name="core/src/main/java/org/apache/tuscany/sca/core/factory/*"/>
+                <include name="core/src/main/java/org/apache/tuscany/sca/core/invocation/*"/>
+                <include name="core/src/main/java/org/apache/tuscany/sca/core/scope/*"/>
+            </patternset> 
+            <patternset id="databinding">
+                <include name="databinding/src/main/java/org/apache/tuscany/sca/databinding/*"/>
+                <include name="databinding/src/main/java/org/apache/tuscany/sca/databinding/annotation/*"/>
+                <include name="databinding/src/main/java/org/apache/tuscany/sca/databinding/impl/*"/>
+                <include name="databinding/src/main/java/org/apache/tuscany/sca/databinding/xml/*"/>
+            </patternset> 
+            <patternset id="deployment">
+                <include name="deployment/src/main/java/org/apache/tuscany/sca/deployment/*"/>
+            </patternset>      
+            <patternset id="extensibility">
+                <include name="extensibility/src/main/java/org/apache/tuscany/sca/core/*"/>
+                <include name="extensibility/src/main/java/org/apache/tuscany/sca/extensibility/*"/>                
+            </patternset>   
+            <patternset id="interface-java">
+                <include name="interface-java/src/main/java/org/apache/tuscany/sca/interfacedef/java/*"/>                
+            </patternset>   
+            <patternset id="interface-wsdl">
+                <include name="interface-wsdl/src/main/java/org/apache/tuscany/sca/interfacedef/wsdl/*"/>                
+            </patternset>   
+            <patternset id="monitor">
+                <include name="monitor/src/main/java/org/apache/tuscany/sca/monitor/*"/>                
+            </patternset>   
+            <patternset id="node-api">
+                <include name="node-api/src/main/java/org/apache/tuscany/sca/node/*"/>                
+                <include name="node-api/src/main/java/org/apache/tuscany/sca/node/configuration/*"/>
+            </patternset>
+            <patternset id="sca-api">
+                <include name="sca-api/src/main/java/org/oasisopen/sca/*"/>                
+                <include name="sca-api/src/main/java/org/oasisopen/sca/annotation/*"/>
+            </patternset>  
+            <patternset id="xsd">
+                <include name="xsd/src/main/java/org/apache/tuscany/sca/xsd/*"/>                
+                <include name="xsd/src/main/java/org/apache/tuscany/sca/xsd/xml/*"/>
+            </patternset>                                             
         </fileset>
 
+        <!-- convert the filename into class names -->
         <pathconvert pathsep=" " 
                  property="class.names" 
                  refid="file.names">  
@@ -57,9 +97,8 @@
                 <packagemapper from="*" to="*"/>
             </chainedmapper>       
         </pathconvert>
-        	
-        <echo>${class.names}</echo> 
        
+        <!-- create a single file containing all the decompile SPI classes -->
         <exec executable="javap"
               output="spi.txt">
           <arg value="-classpath"/>
