@@ -88,7 +88,7 @@
             </patternset>                                             
         </fileset>
 
-        <!-- convert the filename into class names -->
+        <!-- convert the filenames into class names -->
         <pathconvert pathsep=" " 
                  property="class.names" 
                  refid="file.names">  
@@ -98,7 +98,7 @@
             </chainedmapper>       
         </pathconvert>
        
-        <!-- create a single file containing all the decompile SPI classes -->
+        <!-- create a single file containing all the decompiled SPI classes -->
         <exec executable="javap"
               output="spi.txt">
           <arg value="-classpath"/>
