@@ -1270,10 +1270,10 @@ $Id: LICENSE.txt,v 1.11 2004/02/06 09:32:57 jhunter Exp $
 ================================================================================
 
 For Saxon including 
-   saxon-9.x.jar
-   saxon-dom-9.x.jar
-   saxon-xpath-9.x.jar
-   saxon-xqj-9.x.jar
+   saxon-9.1.0.8.jar
+   saxon-9.1.0.8-dom.jar
+   saxon-9.1.0.8-xpath.jar
+   saxon-9.1.0.8-xqj.jar
 
  MOZILLA PUBLIC LICENSE
 Version 1.0
