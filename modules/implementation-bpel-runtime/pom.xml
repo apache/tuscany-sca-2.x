@@ -366,24 +366,27 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>net.sf.saxon</groupId>
+            <groupId>net.sourceforge.saxon</groupId>
             <artifactId>saxon</artifactId>
-            <version>9.x</version>
+            <version>9.1.0.8</version>
         </dependency>
         <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon-dom</artifactId>
-            <version>9.x</version>
+            <groupId>net.sourceforge.saxon</groupId>
+            <artifactId>saxon</artifactId>
+            <classifier>dom</classifier>
+            <version>9.1.0.8</version>
         </dependency>
         <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon-xpath</artifactId>
-            <version>9.x</version>
+            <groupId>net.sourceforge.saxon</groupId>
+            <artifactId>saxon</artifactId>
+            <classifier>xpath</classifier>
+            <version>9.1.0.8</version>
         </dependency>
         <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon-xqj</artifactId>
-            <version>9.x</version>
+            <groupId>net.sourceforge.saxon</groupId>
+            <artifactId>saxon</artifactId>
+            <classifier>xqj</classifier>
+            <version>9.1.0.8</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
