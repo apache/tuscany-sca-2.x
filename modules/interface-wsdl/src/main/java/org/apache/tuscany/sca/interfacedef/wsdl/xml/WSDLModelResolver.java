@@ -493,7 +493,7 @@ public class WSDLModelResolver implements ModelResolver {
             reader.setExtensionRegistry(wsdlExtensionRegistry);  // use a custom registry
 
             // Collection of namespace,location for wsdl:import definition
-            Map<String, String> wsdlImports = indexRead(wsdlDef.getLocation().toURL());
+            Map<String, String> wsdlImports = indexRead(artifactURL);
             wsdlImports.putAll(wsdlDef.getWsdliLocations());
             WSDLLocatorImpl locator = new WSDLLocatorImpl(context, artifactURL, is, wsdlImports);
             Definition definition = reader.readWSDL(locator);
