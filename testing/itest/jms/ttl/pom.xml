@@ -30,6 +30,6 @@
     <name>Apache Tuscany SCA iTest JMS Time To Live</name>
 
     <build>
-       <finalName>${artifactId}</finalName>
+       <finalName>${project.artifactId}</finalName>
     </build>
 </project>

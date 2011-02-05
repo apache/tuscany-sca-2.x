@@ -74,7 +74,7 @@
                         </goals>
                         <configuration>
                             <tasks> 
-                                <property name="tuscany.version" value="${version}" />
+                                <property name="tuscany.version" value="${project.version}" />
                                 <property name="java.home" value="${java.home}"/>
                                 <ant antfile="./build.xml" target="run"/>
                             </tasks>

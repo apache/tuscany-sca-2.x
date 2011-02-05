@@ -62,7 +62,7 @@
                                 <configuration>
                                     <tasks>
                                         <property name="java.home" value="${java.home}"/>
-                                        <property name="tuscany.version" value="${version}" />
+                                        <property name="tuscany.version" value="${project.version}" />
                                         <ant antfile="./build.xml" />
                                     </tasks>
                                 </configuration>
@@ -113,7 +113,7 @@
                                 <configuration>
                                     <tasks>
                                         <property name="java.home" value="${java.home}"/>
-                                        <property name="tuscany.version" value="${version}" />
+                                        <property name="tuscany.version" value="${project.version}" />
                                         <ant antfile="./build.xml" />
                                     </tasks>
                                 </configuration>

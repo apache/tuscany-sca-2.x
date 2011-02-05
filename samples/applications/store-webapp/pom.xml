@@ -95,7 +95,7 @@
     </dependencies>
     
     <build>
-       <finalName>${artifactId}</finalName>
+       <finalName>${project.artifactId}</finalName>
        <plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -106,7 +106,7 @@
 
 					<server>tomcat</server>
 					<!-- context for the webapp, as finalName is not being honored -->
-					<path>/${artifactId}</path>
+					<path>/${project.artifactId}</path>
 				</configuration>
 			</plugin>       
                   <plugin>

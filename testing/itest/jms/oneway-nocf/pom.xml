@@ -29,6 +29,6 @@
     <name>Apache Tuscany SCA iTest JMS for a oneway service</name>
 
     <build>
-       <finalName>${artifactId}</finalName>
+       <finalName>${project.artifactId}</finalName>
     </build>
 </project>

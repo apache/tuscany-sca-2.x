@@ -22,9 +22,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>${groupId}</groupId>
-	<artifactId>${artifactId}</artifactId>
-	<version>${version}</version>
-	<name>${artifactId}</name>
+	<artifactId>${project.artifactId}</artifactId>
+	<version>${project.version}</version>
+	<name>${project.artifactId}</name>
 
 	<dependencies>
 
@@ -46,7 +46,7 @@
 
 	<build>
             <defaultGoal>install</defaultGoal>
-            <finalName>${artifactId}</finalName>
+            <finalName>${project.artifactId}</finalName>
 
 		<plugins>
 			<plugin>

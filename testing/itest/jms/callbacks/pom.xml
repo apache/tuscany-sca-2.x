@@ -29,6 +29,6 @@
     <name>Apache Tuscany SCA iTest JMS Tests For Callbacks</name>
 
     <build>
-       <finalName>${artifactId}</finalName>
+       <finalName>${project.artifactId}</finalName>
     </build>
 </project>

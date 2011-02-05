@@ -121,7 +121,7 @@
                                          <descriptor>src/main/assembly/bin-default.xml</descriptor>
                                      </descriptors>
                                      <tarLongFileMode>gnu</tarLongFileMode>
-                                     <finalName>apache-tuscany-sca-all-${version}</finalName>
+                                     <finalName>apache-tuscany-sca-all-${project.version}</finalName>
                                      <appendAssemblyId>true</appendAssemblyId>
                                      <ignoreDirFormatExtensions>false</ignoreDirFormatExtensions>
                                  </configuration>
@@ -163,7 +163,7 @@
                                          <descriptor>src/main/assembly/src.xml</descriptor>
                                      </descriptors>
                                      <tarLongFileMode>gnu</tarLongFileMode>
-                                     <finalName>apache-tuscany-sca-all-${version}</finalName>
+                                     <finalName>apache-tuscany-sca-all-${project.version}</finalName>
                                      <appendAssemblyId>true</appendAssemblyId>
                                      <ignoreDirFormatExtensions>true</ignoreDirFormatExtensions>
                                     <attach>true</attach>
@@ -470,7 +470,7 @@
                                 <descriptor>src/main/assembly/src.xml</descriptor>
                             </descriptors>
                             <tarLongFileMode>gnu</tarLongFileMode>
-                            <finalName>apache-tuscany-sca-all-${version}</finalName>
+                            <finalName>apache-tuscany-sca-all-${project.version}</finalName>
                             <appendAssemblyId>true</appendAssemblyId>
                             <ignoreDirFormatExtensions>true</ignoreDirFormatExtensions>
                         </configuration>

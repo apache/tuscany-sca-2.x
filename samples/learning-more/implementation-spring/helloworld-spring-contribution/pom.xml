@@ -45,7 +45,7 @@
     </dependencies>
 
     <build>
-       <finalName>${artifactId}</finalName>
+       <finalName>${project.artifactId}</finalName>
        <plugins>
 
          <!-- plugin to support using mvn tuscany:run to run this contribution -->

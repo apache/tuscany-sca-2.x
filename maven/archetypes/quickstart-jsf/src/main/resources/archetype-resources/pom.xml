@@ -22,9 +22,9 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>${groupId}</groupId>
-	<artifactId>${artifactId}</artifactId>
+	<artifactId>${project.artifactId}</artifactId>
 	<packaging>war</packaging>
-	<version>${version}</version>
+	<version>${project.version}</version>
 	#literal()<!-- TODO project name  -->
 	<name>quickstart-jsf</name>
 	<description></description>
@@ -89,7 +89,7 @@
 
 	<build>
             <defaultGoal>install</defaultGoal>
-            <finalName>${artifactId}</finalName>
+            <finalName>${project.artifactId}</finalName>
 		<resources>
 			<resource>
 				<filtering>false</filtering>

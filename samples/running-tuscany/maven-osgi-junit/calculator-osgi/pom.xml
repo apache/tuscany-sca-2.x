@@ -52,7 +52,7 @@
     </dependencies>
 
     <build>
-        <finalName>${artifactId}</finalName>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>
@@ -90,7 +90,7 @@
                    <dependency>
                       <groupId>org.apache.tuscany.sca</groupId>
                       <artifactId>tuscany-node-launcher-equinox</artifactId>
-                      <version>${pom.version}</version>
+                      <version>${project.version}</version>
                    </dependency>
                 </dependencies>
                 <executions>

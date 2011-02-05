@@ -30,6 +30,6 @@
     <name>Apache Tuscany SCA iTest JMS Message Format jmsbytesxml</name>
 
     <build>
-       <finalName>${artifactId}</finalName>
+       <finalName>${project.artifactId}</finalName>
     </build>
 </project>

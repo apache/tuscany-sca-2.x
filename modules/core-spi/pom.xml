@@ -86,7 +86,7 @@
                 <phase>process-resources</phase>
                 <configuration>
                     <tasks>
-                        <filter token="version" value="${pom.version}"/>
+                        <filter token="version" value="${project.version}"/>
                         <filter token="svnRevision" value="${sources.version}"/>
                         <filter token="buildtime" value="${build.timestamp}"/>
                         <copy toDir="${basedir}/target/classes/org/apache/tuscany/sca/runtime" overwrite="true"

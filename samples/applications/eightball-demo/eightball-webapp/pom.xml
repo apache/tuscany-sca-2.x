@@ -133,19 +133,19 @@
                      <artifactItem>
                        <groupId>demo</groupId>
                        <artifactId>eightball</artifactId>
-                       <version>${pom.version}</version>
+                       <version>${project.version}</version>
                        <outputDirectory>src/main/webapp/WEB-INF/sca-contributions</outputDirectory>
                      </artifactItem>
                      <artifactItem>
                        <groupId>demo</groupId>
                        <artifactId>eightball-process</artifactId>
-                       <version>${pom.version}</version>
+                       <version>${project.version}</version>
                        <outputDirectory>src/main/webapp/WEB-INF/sca-contributions</outputDirectory>
                      </artifactItem>
                      <artifactItem>
                        <groupId>demo</groupId>
                        <artifactId>translator</artifactId>
-                       <version>${pom.version}</version>
+                       <version>${project.version}</version>
                        <outputDirectory>src/main/webapp/WEB-INF/sca-contributions</outputDirectory>
                      </artifactItem>
                    </artifactItems>
