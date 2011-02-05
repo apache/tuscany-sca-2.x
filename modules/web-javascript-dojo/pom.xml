@@ -93,7 +93,7 @@
                             <tasks>
                                 <ant antfile="./build-dojo.xml" target="unpack-dojo-files">
                                     <property name="localRepository" value="${settings.localRepository}"/>
-                                    <property name="artifactId" value="${artifactId}"/>
+                                    <property name="artifactId" value="${project.artifactId}"/>
                                 </ant>
                             </tasks>
                         </configuration>
@@ -108,7 +108,7 @@
                             <tasks>
                                 <ant antfile="./build-dojo.xml" target="clean-dojo-files">
                                     <property name="localRepository" value="${settings.localRepository}"/>
-                                    <property name="artifactId" value="${artifactId}"/>
+                                    <property name="artifactId" value="${project.artifactId}"/>
                                 </ant>
                             </tasks>
                         </configuration>
