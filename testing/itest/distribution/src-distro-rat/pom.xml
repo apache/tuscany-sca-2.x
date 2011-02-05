@@ -61,6 +61,7 @@
                            <excludes> 
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/CHANGES</exclude>
                               <exclude>**/*.MF</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/testing/itest/spi/spi-safe.txt</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/testing/compliance-tests/binding-ws/sca_variables.dtd</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/testing/itest/implementation-spring/src/main/resources/implementation/policies/CalculatorJass.config</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/binding-ws-runtime-axis2/src/main/resources/org/apache/tuscany/sca/binding/ws/axis2/engine/repository/modules/modules.list</exclude>
