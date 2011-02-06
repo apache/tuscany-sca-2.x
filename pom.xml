@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
-        <version>7</version>
+        <version>8</version>
     </parent>
 
     <!-- ====================================================================== -->
@@ -48,6 +48,7 @@
     <properties>
         <notice.dir>.</notice.dir>
         <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
+        <dojo.version>1.5.0</dojo.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>        
     </properties>
@@ -73,7 +74,17 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-
+        <repository>
+            <id>maven.org</id>
+            <name>Maven.org</name> <!-- dojo.dojotoolit repository -->
+            <url>http://repo2.maven.org/maven2/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>        
     </repositories>
 
     <!-- ====================================================================== -->
