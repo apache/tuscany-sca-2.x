@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.binding.jsonrpc.js.dojo;
+package org.apache.tuscany.sca.binding.rest.js.dojo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,15 +29,15 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
+import org.apache.tuscany.sca.binding.rest.RESTBinding;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.web.javascript.JavascriptProxyFactory;
 
-public class JSONRPCBindingJavascriptProxyFactoryImpl implements JavascriptProxyFactory {
-    private static final QName NAME = JSONRPCBinding.TYPE;
+public class RESTBindingJavascriptProxyFactory implements JavascriptProxyFactory {
+    private static final QName NAME = RESTBinding.TYPE;
 
     public Class<?> getModelType() {
-        return JSONRPCBinding.class;
+        return RESTBinding.class;
     }
 
     public QName getQName() {
@@ -53,7 +53,7 @@ public class JSONRPCBindingJavascriptProxyFactoryImpl implements JavascriptProxy
     }
 
     public String createJavascriptHeader(ComponentReference componentReference) throws IOException {
-        return "dojo.require('dojo.rpc.JsonService');";
+        return "dojo.require('tuscany.RestService');";
     }
 
     public String createJavascriptReference(ComponentReference componentReference) throws IOException {
@@ -71,7 +71,7 @@ public class JSONRPCBindingJavascriptProxyFactoryImpl implements JavascriptProxy
         URI targetURI = URI.create(binding.getURI());
         String targetPath = targetURI.getPath();
 
-        return "dojo.rpc.JsonService(\"" + targetPath + "?smd\")";
+        return "tuscany.RestService(\"" + targetPath + "\")";
     }
 
 }

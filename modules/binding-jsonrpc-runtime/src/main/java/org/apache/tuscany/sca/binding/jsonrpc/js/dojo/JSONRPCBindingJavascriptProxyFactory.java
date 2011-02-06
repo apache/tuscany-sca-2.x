@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.binding.atom.js.dojo;
+package org.apache.tuscany.sca.binding.jsonrpc.js.dojo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,15 +29,15 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.binding.atom.AtomBinding;
+import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.web.javascript.JavascriptProxyFactory;
 
-public class AtomBindingJavascriptProxyFactoryImpl implements JavascriptProxyFactory {
-    private static final QName NAME = AtomBinding.TYPE;
+public class JSONRPCBindingJavascriptProxyFactory implements JavascriptProxyFactory {
+    private static final QName NAME = JSONRPCBinding.TYPE;
 
     public Class<?> getModelType() {
-        return AtomBinding.class;
+        return JSONRPCBinding.class;
     }
 
     public QName getQName() {
@@ -53,7 +53,7 @@ public class AtomBindingJavascriptProxyFactoryImpl implements JavascriptProxyFac
     }
 
     public String createJavascriptHeader(ComponentReference componentReference) throws IOException {
-        return "dojo.require('tuscany.AtomService');";
+        return "dojo.require('dojo.rpc.JsonService');";
     }
 
     public String createJavascriptReference(ComponentReference componentReference) throws IOException {
@@ -71,7 +71,7 @@ public class AtomBindingJavascriptProxyFactoryImpl implements JavascriptProxyFac
         URI targetURI = URI.create(binding.getURI());
         String targetPath = targetURI.getPath();
 
-        return "tuscany.AtomService(\"" + targetPath + "\")";
+        return "dojo.rpc.JsonService(\"" + targetPath + "?smd\")";
     }
 
 }

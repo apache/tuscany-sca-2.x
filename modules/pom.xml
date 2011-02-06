@@ -34,7 +34,6 @@
         <module>assembly-xml</module>
         <module>assembly-xsd</module>
         <module>binding-atom</module>
-        <module>binding-atom-js-dojo</module>        
         <module>binding-atom-runtime</module>
         <module>binding-comet</module>
         <module>binding-comet-runtime</module>
@@ -47,10 +46,8 @@
         <module>binding-jsonp</module>
         <module>binding-jsonp-runtime</module>
         <module>binding-jsonrpc</module>        
-        <module>binding-jsonrpc-js-dojo</module>        
         <module>binding-jsonrpc-runtime</module>
         <module>binding-rest</module>
-        <module>binding-rest-js-dojo</module>        
         <module>binding-rest-runtime</module>
         <module>binding-rmi</module>
         <module>binding-rmi-runtime</module>
