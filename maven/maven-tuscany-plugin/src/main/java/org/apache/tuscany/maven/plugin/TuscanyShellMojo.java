@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.shell.Shell;
 /**
  * Maven Mojo to run the Tuscany Shell
  * 
- * Invoked with mvn org.apache.tuscany.maven.plugin:maven-tuscany-plugins:shell [-Ddomain=uri:myDomain] -Dcontributions=path\to\scacontribution,...
+ * Invoked with mvn org.apache.tuscany.maven.plugin:maven-tuscany-plugins:shell [-Ddomain=uri:myDomain] [-Dcontributions=path\to\scacontribution,...]
  * 
  * @goal shell
  * @requiresProject false
