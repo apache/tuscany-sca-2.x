@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.shell.Shell;
  * 
  * @goal run
  * @requiresDependencyResolution runtime
- * @execute phase="package"
+ * @execute phase="test-compile"
  * @description Runs Tuscany directly from a SCA conribution maven project
  */
 public class TuscanyRunMojo extends AbstractMojo {
