@@ -18,31 +18,31 @@
  */
 package sample;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Assert;
 
-import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.Node;
+import org.apache.tuscany.sca.TuscanyRuntime;
 import org.junit.Test;
+import org.oasisopen.sca.NoSuchServiceException;
 
 public class HelloworldTestCase {
 
     @Test
-    public void testSayHello() {
-        // Start up the Tuscany runtime with this modules as the contribution 
-        Node node = NodeFactory.newInstance().createNode(new Contribution("c1", "target/classes"));
-        node.start();
-        
-        // This contribution is configured to deploy the helloworld.composite file 
-        // automatically. This defines the HelloworldComponent. Get a local proxy to it 
-        // and call the sayHello service operation. 
-        Helloworld helloworld = node.getService(Helloworld.class, "HelloworldComponent");
-        String response = helloworld.sayHello("Petra");
-        System.out.println("Response from helloworld.sayHello(\"Petra\") = " + response);
-        assertEquals("Hello Petra", response);
-        
-        // Stop the Tuscany runtime
-        node.stop();        
-    }
+    public void testSayHello() throws NoSuchServiceException {
 
+        // Run the SCA composite in a Tuscany runtime
+        Node node = TuscanyRuntime.runComposite("helloworld.composite", "target/classes");
+        try {
+            
+            // Get the Helloworld service proxy
+            Helloworld helloworld = node.getService(Helloworld.class, "HelloworldComponent");
+            
+            // test that it works as expected
+            Assert.assertEquals("Hello Amelia", helloworld.sayHello("Amelia"));
+            
+        } finally {
+            // Stop the Tuscany runtime Node
+            node.stop();        
+        }
+    }
 }

@@ -19,8 +19,7 @@
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:sample="http://sample">
-
-   <deployable composite="sample:helloworld"/>
-   <deployable composite="sample:helloworldws"/>
+   
+   <deployable composite="sample:helloworld-contribution" />
 
 </contribution>
