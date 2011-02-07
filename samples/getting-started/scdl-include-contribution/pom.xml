@@ -66,7 +66,7 @@
              <configuration>
                 <contributions>
                    <!-- add the dependee contribution that this contribution uses -->
-                   <param>..\helloworld-contribution\target\sample-helloworld-contribution.jar</param>
+                   <param>../helloworld-contribution/target/helloworld-contribution.jar</param>
                 </contributions>
              </configuration>
          </plugin>
