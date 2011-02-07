@@ -210,8 +210,8 @@ public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
                             // Ignore
                         }
                         if (xmlAdapter != null) {
-                            XmlAdapterJsonDeserializer deserializer = new XmlAdapterJsonDeserializer(xmlAdapter);
-                            XmlAdapterJsonSerializer serializer = new XmlAdapterJsonSerializer(xmlAdapter);
+                            XmlAdapterJsonDeserializer deserializer = new XmlAdapterJsonDeserializer(xmlAdapter, null);
+                            XmlAdapterJsonSerializer serializer = new XmlAdapterJsonSerializer(xmlAdapter, null);
                             deserializerFactory.addSpecificMapping(a.type(), deserializer);
                             serializerFactory.addGenericMapping(a.type(), serializer);
                             StdDeserializerProvider deserializerProvider =
