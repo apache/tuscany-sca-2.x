@@ -146,7 +146,8 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceAsyn
                     }
                 } else {
                     Reference ref = epr.getReference().getReference();
-                    boolean allowsPBR = (ref != null && ref.isAllowsPassByReference()) || chain.allowsPassByReference();
+                    // The spec says both ref and service needs to allowsPassByReference
+                    boolean allowsPBR = (ref != null && ref.isAllowsPassByReference()) && chain.allowsPassByReference();
                     
                     if (allowsPBR && interfaceContractMapper.isCompatibleByReference(operation,
                                                                                      targetOp,
