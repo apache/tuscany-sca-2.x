@@ -71,8 +71,8 @@
              <configuration>
                 <contributions>
                    <!-- add the dependee contribution that this contribution uses -->
-                   <param>..\helloworld-recursive\target\sample-helloworld-recursive.jar</param>
-                   <param>..\..\..\getting-started\helloworld\target\helloworld-contribution.jar</param>
+                   <param>../helloworld-recursive/target/sample-implementation-composite-helloworld-contribution.zip</param>
+                   <param>../../../getting-started/helloworld-contribution/target/helloworld-contribution.jar</param>
                 </contributions>
              </configuration>
          </plugin>
