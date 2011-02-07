@@ -105,9 +105,9 @@ public class InterfacesTestCase {
             assertEquals("BBComponent1", remote.foo2(1, "B"));
 
 // TODO: TUSCANY-3479, investigate Node/SCAClient pass by reference            
-//            // Test allowsPassByReference
-//            assertEquals("BComponent", remote.foo3(po));
-//            assertEquals("BComponent", po.field1);
+            // Test allowsPassByReference
+            assertEquals("BComponent", remote.foo3(po));
+            assertEquals("BComponent", po.field1);
         } catch (Exception e) {
             e.printStackTrace();
             fail();

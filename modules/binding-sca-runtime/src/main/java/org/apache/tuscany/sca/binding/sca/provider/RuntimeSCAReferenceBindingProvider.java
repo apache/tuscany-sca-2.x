@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.binding.sca.provider;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -144,8 +145,9 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceAsyn
                         passByValue = false;
                     }
                 } else {
-//                    boolean allowsPBR = chain.allowsPassByReference(); TODO: TUSCANY-3479 this breaks the conformance tests as it needs to consider _both_ ends
-                    boolean allowsPBR = false;
+                    Reference ref = epr.getReference().getReference();
+                    boolean allowsPBR = (ref != null && ref.isAllowsPassByReference()) || chain.allowsPassByReference();
+                    
                     if (allowsPBR && interfaceContractMapper.isCompatibleByReference(operation,
                                                                                      targetOp,
                                                                                      Compatibility.SUBSET)) {

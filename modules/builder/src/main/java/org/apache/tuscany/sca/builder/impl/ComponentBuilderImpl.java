@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.builder.impl;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URI;
@@ -77,11 +76,9 @@ import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
-import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -1236,6 +1233,8 @@ public class ComponentBuilderImpl {
                 } catch (CloneNotSupportedException e) {
                     // will not happen
                 }
+                // FIXME: We need to set the allowsPassByReference flag based on the annotations on the implementation and callback
+                // implReference.setAllowsPassByReference(allowsPassByReference);
                 callbackReference.setReference(implReference);
             }
             component.getReferences().add(callbackReference);
