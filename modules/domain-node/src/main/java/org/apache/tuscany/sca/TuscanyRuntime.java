@@ -145,8 +145,6 @@ public class TuscanyRuntime {
     protected void init(Properties config) {
         if (config == null) {
             config = new Properties();
-            config.setProperty("defaultScheme", "vm");
-            config.setProperty("defaultDomainName", "default");
         }
         this.extensionPointRegistry = new DefaultExtensionPointRegistry();
         extensionPointRegistry.start();

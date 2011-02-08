@@ -203,8 +203,6 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
 
     protected NodeFactory() {
         this.properties = new Properties();
-        properties.setProperty("defaultScheme", "vm");
-        properties.setProperty("defaultDomainName", "default");
     }
 
     public static NodeFactory newInstance(Properties configProperties) {
