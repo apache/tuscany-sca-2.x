@@ -100,6 +100,8 @@ public class NodeFactoryImpl extends NodeFactory {
      */
     protected boolean autoDestroy = true;
 
+    protected boolean quietLogging;
+
     @Override
     public Node createNode(NodeConfiguration configuration) {
         if (configuration.getURI() == null) {
@@ -243,6 +245,7 @@ public class NodeFactoryImpl extends NodeFactory {
         monitorFactory = utilities.getUtility(MonitorFactory.class);
 
         utilities.getUtility(RuntimeProperties.class).setProperties(properties);
+        quietLogging = Boolean.parseBoolean(properties.getProperty(RuntimeProperties.QUIET_LOGGING));
         
         // Use the runtime-enabled assembly factory
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
@@ -339,7 +342,7 @@ public class NodeFactoryImpl extends NodeFactory {
             URL contributionURL = uri.toURL();
 
             // Load the contribution
-            logger.log(Level.INFO, "Loading contribution: " + contributionURL);
+            logger.log(quietLogging? Level.FINE : Level.INFO, "Loading contribution: " + contributionURL);
             Contribution contribution = deployer.loadContribution(contributionURI, contributionURL, context.getMonitor());
             contributions.add(contribution);
 
