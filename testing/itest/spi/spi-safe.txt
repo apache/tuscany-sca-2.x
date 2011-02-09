@@ -312,6 +312,8 @@ public interface org.apache.tuscany.sca.assembly.Reference extends org.apache.tu
     public abstract void setWiredByImpl(boolean);
     public abstract java.util.List getTargets();
     public abstract java.util.List getEndpointReferences();
+    public abstract boolean isAllowsPassByReference();
+    public abstract void setAllowsPassByReference(boolean);
 }
 
 Compiled from "SCABinding.java"

@@ -84,7 +84,9 @@
                 <module>scdl</module>
                 <module>services</module>
                 <module>service-reference</module>
+<!--
                 <module>spi</module>
+-->
                 <module>wires</module>              
                 <module>ws</module>
                 <module>ws-jaxws</module>
