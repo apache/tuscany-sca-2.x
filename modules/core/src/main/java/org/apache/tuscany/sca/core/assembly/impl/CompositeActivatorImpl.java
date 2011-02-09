@@ -479,16 +479,24 @@ public class CompositeActivatorImpl implements CompositeActivator {
         } else {
             final ImplementationProvider implementationProvider = ((RuntimeComponent)component).getImplementationProvider();
             if (implementationProvider != null) {
-                // Allow bindings to read properties. Requires PropertyPermission read in security policy.
-                AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                    public Object run() {
-                        implementationProvider.stop();
-                        return null;
-                      }
-                });
+                try {
+                    // Allow bindings to read properties. Requires PropertyPermission read in security policy.
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            implementationProvider.stop();
+                            return null;
+                          }
+                    });
+                } catch (Throwable ex){
+                    logger.log(Level.SEVERE, ex.getMessage(), ex);
+                }                  
             }
             for (PolicyProvider policyProvider : ((RuntimeComponent)component).getPolicyProviders()) {
-                policyProvider.stop();
+                try {
+                    policyProvider.stop();
+                } catch (Throwable ex){
+                    logger.log(Level.SEVERE, ex.getMessage(), ex);
+                }  
             }
         }
 
@@ -496,7 +504,11 @@ public class CompositeActivatorImpl implements CompositeActivator {
             ScopedRuntimeComponent runtimeComponent = (ScopedRuntimeComponent)component;
             if (runtimeComponent.getScopeContainer() != null &&
                     runtimeComponent.getScopeContainer().getLifecycleState() != ScopeContainer.STOPPED) {
-                runtimeComponent.getScopeContainer().stop();
+                try {
+                    runtimeComponent.getScopeContainer().stop();
+                } catch (Throwable ex){
+                    logger.log(Level.SEVERE, ex.getMessage(), ex);
+                }                      
             }
         }
 
@@ -549,16 +561,24 @@ public class CompositeActivatorImpl implements CompositeActivator {
         ep.getCompositeContext().getEndpointRegistry().removeEndpoint(ep);
         final ServiceBindingProvider bindingProvider = ep.getBindingProvider();
         if (bindingProvider != null) {
-            // Allow bindings to read properties. Requires PropertyPermission read in security policy.
-            AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                public Object run() {
-                    bindingProvider.stop();
-                    return null;
-                  }
-            });
+            try {
+                // Allow bindings to read properties. Requires PropertyPermission read in security policy.
+                AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                    public Object run() {
+                        bindingProvider.stop();
+                        return null;
+                      }
+                });
+            } catch (Throwable ex){
+                logger.log(Level.SEVERE, ex.getMessage(), ex);
+            }  
         }
         for (PolicyProvider policyProvider : ep.getPolicyProviders()) {
-            policyProvider.stop();
+            try {
+                policyProvider.stop();
+            } catch (Throwable ex){
+                logger.log(Level.SEVERE, ex.getMessage(), ex);
+            }                  
         }
     }
 
@@ -622,10 +642,18 @@ public class CompositeActivatorImpl implements CompositeActivator {
             compositeContext.getEndpointRegistry().removeEndpointReference(epr);
             ReferenceBindingProvider bindingProvider = epr.getBindingProvider();
             if (bindingProvider != null) {
-                bindingProvider.stop();
+                try {
+                    bindingProvider.stop();
+                } catch (Throwable ex){
+                    logger.log(Level.SEVERE, ex.getMessage(), ex);
+                }  
             }
             for (PolicyProvider policyProvider : epr.getPolicyProviders()) {
-                policyProvider.stop();
+                try {
+                    policyProvider.stop();
+                } catch (Throwable ex){
+                    logger.log(Level.SEVERE, ex.getMessage(), ex);
+                }                      
             }
         }
     }

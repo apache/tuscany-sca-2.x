@@ -46,21 +46,19 @@
                 <module>callback-basic</module>
                 <module>callback-complex-type</module>
                 <module>callback-multiple-wires</module>
-		    <module>callback-separatethread</module>
+                <module>callback-separatethread</module>
                 <module>callback-two-composites</module>
                 <module>callback-two-nodes</module>
                 <module>component-type</module>
                 <module>contribution-folder</module>
                 <module>contribution-zip</module>
-<!-- why commented out?              
-                <module>definitions-multiple</module>
--->
                 <module>databindings</module>
                 <module>distribution</module>
                 <module>exceptions</module>
                 <module>implementation-spring</module>
                 <module>import-export</module>
                 <module>interfaces</module>
+                <module>java-lifecycle-exceptions</module>
                 <module>jms</module>
                 <module>nodes</module>
                 <module>node-launcher-equinox</module>
@@ -86,6 +84,7 @@
                 <module>scdl</module>
                 <module>services</module>
                 <module>service-reference</module>
+                <module>spi</module>
                 <module>wires</module>              
                 <module>ws</module>
                 <module>ws-jaxws</module>
