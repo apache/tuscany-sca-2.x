@@ -100,7 +100,7 @@ public class NodeFactoryImpl extends NodeFactory {
      */
     protected boolean autoDestroy = true;
 
-    protected boolean quietLogging;
+    boolean quietLogging;
 
     @Override
     public Node createNode(NodeConfiguration configuration) {
@@ -460,6 +460,7 @@ public class NodeFactoryImpl extends NodeFactory {
                 discovery.setAttribute(serviceType, attribute, properties.getProperty(p));
             }
         }
+        quietLogging = Boolean.parseBoolean(properties.getProperty(RuntimeProperties.QUIET_LOGGING));
         super.configure(attributes);
     }
     

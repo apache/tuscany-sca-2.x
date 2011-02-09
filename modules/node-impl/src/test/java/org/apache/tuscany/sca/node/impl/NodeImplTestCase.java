@@ -233,4 +233,17 @@ public class NodeImplTestCase {
         Assert.assertTrue(((NodeFactoryImpl)nf).inited);
         
     }
+
+    @Test
+    public void testQuietLogging() throws Exception {
+        Properties props = new Properties();
+        props.setProperty(RuntimeProperties.QUIET_LOGGING, "true");
+        NodeFactory nf = NodeFactory.newInstance(props);
+        Node node = nf.createNode();
+        node.start();
+        node.stop();
+        // This doesn't actually check the logging yet, need to figure out a 
+        // way to get the log output so for now has to be run manually
+    }
+
 }
