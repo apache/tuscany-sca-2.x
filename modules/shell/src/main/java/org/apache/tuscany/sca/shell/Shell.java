@@ -74,10 +74,13 @@ public class Shell {
         boolean useJline = true;
         String domainURI = "default";
         
+        boolean showHelp = false;
         String contribution = null;
         for (String s : args) {
             if ("-nojline".equals(s)) {
                 useJline = false;
+            } else if ("-help".equals(s)) {
+                showHelp = true;
             } else {
                 if (s.startsWith("uri:") || s.startsWith("properties:")) {
                     domainURI = s;
@@ -90,7 +93,9 @@ public class Shell {
         if (contribution != null) {
             shell.install(Arrays.asList(new String[]{"install", contribution, "-start"}));
         }
-        shell.run(contribution==null);
+        
+        
+        shell.run(showHelp || contribution==null);
     }
 
     public Shell(String domainURI, boolean useJLine) {
