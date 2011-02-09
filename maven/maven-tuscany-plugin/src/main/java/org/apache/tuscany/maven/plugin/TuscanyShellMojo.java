@@ -58,6 +58,7 @@ public class TuscanyShellMojo extends AbstractMojo {
             while (st.hasMoreTokens()) {
                 cs.add(st.nextToken());
             }
+            cs.add(0, "-help");
             cs.add(0, domain);
             args = cs.toArray(new String[cs.size()]);
         } else {

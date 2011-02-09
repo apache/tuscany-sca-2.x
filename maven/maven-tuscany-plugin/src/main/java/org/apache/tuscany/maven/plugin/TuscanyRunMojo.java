@@ -104,6 +104,7 @@ public class TuscanyRunMojo extends AbstractMojo {
 
         addAdditionalContributions(contributionList);
 
+        contributionList.add(0, "-help");
         contributionList.add(0, config);
         
         try {
