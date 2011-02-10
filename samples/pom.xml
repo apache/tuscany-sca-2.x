@@ -32,11 +32,6 @@
     <name>Apache Tuscany SCA Samples</name>
 
             <modules>
-                <module>getting-started</module>
-                <module>learning-more</module>
-                <module>running-tuscany</module>
-                <module>applications</module>
-                <module>extending-tuscany</module>
             </modules>
 
           <build>
