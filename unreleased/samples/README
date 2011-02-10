@@ -1,0 +1,154 @@
+The Apache Tuscany SCA Samples
+==============================
+
+Welcome to the Apache Tuscany SCA Java runtime. You can find more general 
+documentation about the runtime at:
+
+http://tuscany.apache.org/documentation-2x/ 
+
+Here we give a short overview of what you can find in the samples directory. 
+More detail on the individual sample contributions can be found at:
+
+http://tuscany.apache.org/documentation-2x/20-beta-samples-documentation.html
+
+There are several samples subdirectories in the distribution; 
+  
+getting-started
+===============
+     
+This is a good place to start if you've not tried Tuscany SCA Java before. This 
+directory contains a number of simple "SCA Contributions" that can be run using 
+the Tuscany SCA runtime. An SCA Contribution is the way that SCA composite
+applications are packaged so they can be run. For general information on SCA
+see http://tuscany.apache.org/documentation-2x/sca-introduction.html
+
+learning-more
+=============
+
+This directory contains many more SCA Contributions that you can try with 
+the Tuscany SCA Java runtime. Some demonstrate particular features of the 
+runtime, or example, the contributions under the async directory demonstrate
+the asynchronous programming model that the runtime supports. 
+
+SCA is extensible. You can plug in extensions to support many different types
+of technology. The Tuscany SCA Java runtime comes with lots of extensions
+and the majority of contributions here demonstrate these extensions. They are
+organized under directories following the name of the extension, for example, 
+contributions that demonstrate the web services binding in operation can
+be found in the binding-ws directory. When you want to use the web service
+binding with an SCA service a reference it appears in the composite XML in 
+the following way:
+
+<service>
+  <binding.ws/>
+</service> 
+
+Hence it should be easy to map between extensions, as they appear in 
+composite files and other samples that demonstrate various features of the 
+extension. 
+
+The contributions here can be run with using the approach that you find
+most convenient from the running-tuscany directory. 
+
+running-tuscany
+===============
+
+The Tuscany SCA Java runtime can be used directly from the command line. It can
+also be embedded in other programs. As such there are many different ways that 
+you can start the Tuscany SCA runtime and deploy contributions to it. Each 
+directory here describes a different way of running Tuscany. In most cases these 
+different approaches can be used to run any of the contributions from the 
+getting-started or learning-more directories.
+
+applications
+============
+
+The contributions here demonstrate more fully formed applications when 
+compared to the contributions found the getting-started or learning-more 
+directories.
+
+extending-tuscany
+=================
+
+Once you're familiar with Tuscany and SCA you're likely to find that to 
+implement you're application you need particular bindings, implementation 
+types, policies or databindings. The examples in this directory show you
+how to extend the Tuscany runtime to include the technologies you need to use.
+
+Running samples
+---------------
+
+Running a samples contribution involves 3 basic steps
+
+1) build the contribution
+
+Using ant, maven or eclipse (see below)
+
+2) launch the contribution
+
+Using one of the approaches described in the running-tuscany directory
+
+3) send a test message to the a component service 
+
+When you want to exercise an SCA composite application you have to send a 
+message to a component service. There are several ways of doing this depending
+on how the sample contribution has been configured. For example, you could
+send a SOAP message using the Web Services explorer in Eclipse, you could 
+use a separate client program that uses the SCA client API, the sample
+contribution itself may even include initialization code that sends a test
+message when the contribution is started. The documentation for each sample
+describes what to do to send a test message.  
+
+Building the sample contributions using Ant
+--------------------------------------------
+Most sample contributions are provided with a build.xml file. When you see one
+you can build it using Ant. 
+
+These build.xml files are designed to work with the Tuscany SCA Java binary
+distribution and build a classpath that, by various means, refers to the 
+jars that are shipped in the modules directory. For them to work properly
+they should be run from the directory in which you find the build.xml file. 
+
+cd <sampledir>
+ant
+
+The result of this process will be the built contribution (a jar file) in the 
+target subdirectory of the sample contribution directory. 
+
+Once the sample is built you have the option of running the sample in whatever 
+way best suits you.  
+
+Building SCA Samples Using Maven
+--------------------------------
+All sample contributions are provided with a pom.xml Maven build file. The 
+Maven build process will work from both source and binary distributions. 
+
+cd <sampledir>
+mvn
+
+This will take a little while to complete. Experience with Maven tells us that 
+sometimes there are problems downloading the dependencies that Apache Tuscany 
+SCA requires. If Maven reports that it cannot download required dependencies 
+try running the Maven build again. 
+
+When using Maven the samples are unit tested using JUnit test cases and so you 
+will sometimes see test output during the build process.  
+
+The result of this process will be the built contribution (a jar file) in the 
+target subdirectory of the sample contribution directory. 
+
+Once the sample is built you have the option of running the sample in whatever 
+way best suits you. 
+
+Building Samples In An IDE
+---------------------------
+
+The easiest way to use the samples in an IDE is to use Maven to generate all 
+of the IDE project files for you automatically. You don't have to do this 
+though and can use a series of manual steps in order to import the Tuscany
+samples into an IDE. 
+
+Both approaches to importing SCA contribution projects into Eclipse are 
+documented at:
+
+http://tuscany.apache.org/import-existing-tuscany-sca-projects-into-eclipse.html
