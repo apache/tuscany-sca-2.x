@@ -145,11 +145,30 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 	} // end method isDone
 	
 	/**
-	 * Async process completed with a Fault.  Must only be invoked once
+	 * Async process completed with a Fault.  Must only be invoked once.
 	 * @param e - the Fault to send
 	 * @throws IllegalStateException if either the setResponse method or the setFault method have been called previously
 	 */
-	public void setFault(AsyncFaultWrapper w) {
+	public void setFault( Throwable e ) {
+		lock.lock();
+		try {
+			if( notSetYet() ) {
+				fault = e;
+				isDone.signalAll();
+			} else {
+				throw new IllegalStateException("setResponse() or setFault() has been called previously");
+			} // end if 
+		} finally {
+			lock.unlock();
+		} // end try
+	} // end method setFault( Throwable )
+	
+	/**
+	 * Async process completed with a wrapped Fault.  Must only be invoked once.
+	 * @param w - the wrapped Fault to send
+	 * @throws IllegalStateException if either the setResponse method or the setFault method have been called previously
+	 */
+	public void setWrappedFault(AsyncFaultWrapper w) {
 
 		ClassLoader tccl = Thread.currentThread().getContextClassLoader();
 		Throwable e;
@@ -162,19 +181,9 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 		} // end try
 		
 		if( e == null ) throw new IllegalArgumentException("AsyncFaultWrapper did not return an Exception");
-		lock.lock();
-		try {
-			if( notSetYet() ) {
-				fault = e;
-				isDone.signalAll();
-			} else {
-				throw new IllegalStateException("setResponse() or setFault() has been called previously");
-			} // end if 
-		} finally {
-			lock.unlock();
-		} // end try
+		setFault( e );
 
-	} // end method setFault
+	} // end method setFault( AsyncFaultWrapper )
 
 	/**
 	 * Async process completed with a response message.  Must only be invoked once

@@ -29,6 +29,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -53,6 +54,7 @@ import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.context.CompositeContext;
+import org.apache.tuscany.sca.context.ThreadMessageContext;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -65,15 +67,24 @@ import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.invocation.AsyncFaultWrapper;
 import org.apache.tuscany.sca.core.invocation.AsyncResponseException;
 import org.apache.tuscany.sca.core.invocation.AsyncResponseHandler;
+import org.apache.tuscany.sca.core.invocation.AsyncResponseService;
+import org.apache.tuscany.sca.core.invocation.JDKAsyncResponseInvoker;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
+import org.apache.tuscany.sca.invocation.InterceptorAsync;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
+import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.provider.EndpointReferenceAsyncProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.Invocable;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -104,13 +115,13 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
 
     private static int invocationCount = 10; // # of threads to use
     private static long maxWaitTime = 30; // Max wait time for completion = 30sec
-
+    
     // Run the async service invocations using a ThreadPoolExecutor
     private ExecutorService theExecutor;
 
     public AsyncJDKInvocationHandler(ExtensionPointRegistry registry,
                                      MessageFactory messageFactory,
-                                     ServiceReference<?> callableReference) {
+                                     ServiceReference<?> callableReference ) {
         super(messageFactory, callableReference);
         initExecutorService(registry);
     }
@@ -118,7 +129,7 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
     public AsyncJDKInvocationHandler(ExtensionPointRegistry registry,
                                      MessageFactory messageFactory,
                                      Class<?> businessInterface,
-                                     Invocable source) {
+                                     Invocable source ) {
         super(messageFactory, businessInterface, source);
         initExecutorService(registry);
     }
@@ -128,18 +139,7 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
         WorkScheduler scheduler = utilities.getUtility(WorkScheduler.class);
         theExecutor = scheduler.getExecutorService();
 
-        /*
-        synchronized (AsyncJDKInvocationHandler.class) {
-            theExecutor = utilities.getUtility(ExecutorService.class);
-            if (theExecutor == null) {
-                theExecutor =
-                    new ThreadPoolExecutor(invocationCount, invocationCount, maxWaitTime, TimeUnit.SECONDS,
-                                           new ArrayBlockingQueue<Runnable>(invocationCount));
-                utilities.addUtility(ExecutorService.class, theExecutor);
-            }
-        }
-        */
-    }
+    } // end method initExecutorService
 
     /**
      * Perform the invocation of the operation
@@ -202,13 +202,13 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
         try {
             invokeAsync(proxy, method, args, future, asyncMethod);
         } catch (Exception e) {
-            future.setFault(new AsyncFaultWrapper(e));
+            future.setWrappedFault(new AsyncFaultWrapper(e));
         } catch (Throwable t) {
             Exception e =
                 new ServiceRuntimeException("Received Throwable: " + t.getClass().getName()
                     + " when invoking: "
                     + asyncMethod.getName(), t);
-            future.setFault(new AsyncFaultWrapper(e));
+            future.setWrappedFault(new AsyncFaultWrapper(e));
         } // end try 
         return future;
     } // end method doInvokeAsyncPoll
@@ -279,10 +279,10 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
      * @throws Throwable - if an exception is thrown during the invocation
      */
     @SuppressWarnings("unchecked")
-    private void invokeAsync(Object proxy,
+    private void invokeAsync(Object proxy, 
                              Method method,
                              Object[] args,
-                             AsyncInvocationFutureImpl future,
+                             AsyncInvocationFutureImpl<?> future,
                              Method asyncMethod) throws Throwable {
         if (source == null) {
             throw new ServiceRuntimeException("No runtime source is available");
@@ -306,12 +306,22 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
         RuntimeEndpoint theEndpoint = getAsyncCallback(source);
         boolean isAsyncService = false;
         if (theEndpoint != null) {
-            // ... the service is asynchronous ...
+            // ... the service is asynchronous but binding does not support async natively ...
             attachFuture(theEndpoint, future);
-            isAsyncService = true;
-        } else {
-            // ... the service is synchronous ...
         } // end if
+        
+        if( isAsyncInvocation((RuntimeEndpointReference)source ) ) { 
+        	isAsyncService = true; 
+        	// Get hold of the JavaAsyncResponseHandler from the chain dealing with the async response
+        	Invoker theInvoker = chain.getHeadInvoker();
+        	if( theInvoker instanceof InterceptorAsync ) {
+        		InvokerAsyncResponse responseInvoker = ((InterceptorAsync)theInvoker).getPrevious();
+        		if( responseInvoker instanceof JDKAsyncResponseInvoker ) {
+        			// Register the future as the response object with its ID
+        			((JDKAsyncResponseInvoker)responseInvoker).registerAsyncResponse(future.getUniqueID(), future);
+        		} // end if
+        	} // end if      	        	
+        } // end if   
 
         // Perform the invocations on separate thread...
         theExecutor.submit(new separateThreadInvoker(chain, args, source, future, asyncMethod, isAsyncService));
@@ -354,23 +364,29 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
 
             try {
                 if (isAsyncService) {
-                    invoke(chain, args, invocable, future.getUniqueID());
+                	if( supportsNativeAsync(invocable) ) {
+                		// Binding supports native async invocations
+                		invokeAsync(chain, args, invocable, future.getUniqueID());
+                	} else {
+                		// Binding does not support native async invocations
+                		invoke(chain, args, invocable, future.getUniqueID());
+                	} // end if
                     // The result is returned asynchronously via the future...
                 } else {
                     // ... the service is synchronous ...
                     result = invoke(chain, args, invocable);
                     Type type = null;
                     if (asyncMethod.getReturnType() == Future.class) {
-                        // For callback async menthod
+                        // For callback async method, where a Future is returned
                         Type[] types = asyncMethod.getGenericParameterTypes();
                         if (types.length > 0 && asyncMethod.getParameterTypes()[types.length - 1] == AsyncHandler.class) {
-                            // Last paremeter, AsyncHandler<T>
+                            // Last parameter is AsyncHandler<T>
                             type = types[types.length - 1];
-                        }
+                        } // end if
                     } else if (asyncMethod.getReturnType() == Response.class) {
                         // For the polling method, Response<T>
                         type = asyncMethod.getGenericReturnType();
-                    }
+                    } // end if 
                     if (type instanceof ParameterizedType) {
                         // Check if the parameterized type of Response<T> is a doc-lit-wrapper class
                         Class<?> wrapperClass = (Class<?>)((ParameterizedType)type).getActualTypeArguments()[0];
@@ -382,16 +398,15 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
                                 if (p.getWriteMethod() == null) {
                                     // There is a "class" property ...
                                     continue;
-                                }
+                                } // end if
                                 if (p.getWriteMethod().getParameterTypes()[0].isInstance(result)) {
                                     p.getWriteMethod().invoke(wrapper, result);
                                     result = wrapper;
                                     break;
-                                }
-                            }
-
-                        }
-                    }
+                                } // end if 
+                            } // end for
+                        } // end if
+                    } // end if
                     future.setResponse(result);
                 } // end if
             } catch (ServiceRuntimeException s) {
@@ -400,14 +415,16 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
                     if ("AsyncResponse".equals(e.getMessage())) {
                         // Do nothing...
                     } else {
-                        future.setFault(new AsyncFaultWrapper(s));
+                        future.setWrappedFault(new AsyncFaultWrapper(s));
                     } // end if 
                 } // end if
             } catch (AsyncResponseException ar) {
-                // do nothing			
+                // This exception is received in the case where the Binding does not support async invocation
+            	// natively - the initial invocation is effectively synchronous with this exception thrown to
+            	// indicate that the service received the request but will send the response separately - do nothing			
             } catch (Throwable t) {
-                System.out.println("Async invoke got exception: " + t.toString());
-                future.setFault(new AsyncFaultWrapper(t));
+                //System.out.println("Async invoke got exception: " + t.toString());
+                future.setWrappedFault(new AsyncFaultWrapper(t));
             } // end try
 
         } // end method run
@@ -427,6 +444,49 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
     } // end method attachFuture
 
     /**
+     * Perform an async invocation on the reference
+     * @param chain - the chain
+     * @param args - parameters for the invocation
+     * @param invocable - the reference
+     * @param msgID - a message ID
+     */
+    public void invokeAsync(InvocationChain chain, Object[] args, Invocable invocable, String msgID) {
+        Message msg = messageFactory.createMessage();
+        if (invocable instanceof RuntimeEndpointReference) {
+            msg.setFrom((RuntimeEndpointReference)invocable);
+        } // end if
+        if (target != null) {
+            msg.setTo(target);
+        } else if (source instanceof RuntimeEndpointReference) {
+            msg.setTo(((RuntimeEndpointReference)invocable).getTargetEndpoint());
+        } // end if
+        
+        Operation operation = chain.getTargetOperation();
+        msg.setOperation(operation);
+        msg.setBody(args);
+
+        Message msgContext = ThreadMessageContext.getMessageContext();
+        
+        // Deal with header information that needs to be copied from the message context to the new message...
+        transferMessageHeaders( msg, msgContext);
+        
+        ThreadMessageContext.setMessageContext(msg);
+        
+        // If there is a supplied message ID, place its value into the Message Header under "MESSAGE_ID"
+        if( msgID != null ){
+        	msg.getHeaders().put("MESSAGE_ID", msgID);
+        } // end if
+
+        try {
+            // Invoke the reference
+            invocable.invokeAsync(msg);
+            return;
+        } finally {
+            ThreadMessageContext.setMessageContext(msgContext);
+        } // end try
+	} // end method invokeAsync
+
+	/**
      * Get the async callback endpoint - if not already created, create and start it
      * @param source - the RuntimeEndpointReference which needs an async callback endpoint
      * @param future 
@@ -436,8 +496,14 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
         if (!(source instanceof RuntimeEndpointReference))
             return null;
         RuntimeEndpointReference epr = (RuntimeEndpointReference)source;
-        if (!isAsyncInvocation(epr))
-            return null;
+        if (!isAsyncInvocation(epr)) return null;
+        
+        // Check to see if the binding supports async invocation natively
+        ReferenceBindingProvider eprProvider = epr.getBindingProvider();
+        if( eprProvider instanceof EndpointReferenceAsyncProvider) {
+        	if( ((EndpointReferenceAsyncProvider)eprProvider).supportsNativeAsync() ) return null;
+        } // end if
+        
         RuntimeEndpoint endpoint;
         synchronized (epr) {
             endpoint = (RuntimeEndpoint)epr.getCallbackEndpoint();
@@ -509,7 +575,7 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
             (JavaInterfaceFactory)modelFactories.getFactory(JavaInterfaceFactory.class);
         JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         try {
-            interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(AsyncResponseHandler.class));
+            interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(AsyncResponseService.class));
         } catch (InvalidInterfaceException e1) {
             // Nothing to do here - will not happen
         } // end try
@@ -647,6 +713,21 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
         } // end for
         return false;
     } // end isAsyncInvocation
+    
+    private boolean supportsNativeAsync(Invocable source) {
+    	if (!(source instanceof RuntimeEndpointReference))
+            return false;
+        RuntimeEndpointReference epr = (RuntimeEndpointReference)source;
+        
+        // TODO - need to update this once BindingProvider interface is refactored to contain
+        // supportsNativeAsync directly...
+        ReferenceBindingProvider provider = epr.getBindingProvider();
+        if( provider instanceof EndpointReferenceAsyncProvider ) {
+        	return ((EndpointReferenceAsyncProvider)provider).supportsNativeAsync();
+        } else {
+        	return false;
+        } // end if
+    } // end method supportsNativeAsync
 
     /**
      * Return the synchronous method that is the equivalent of an async method

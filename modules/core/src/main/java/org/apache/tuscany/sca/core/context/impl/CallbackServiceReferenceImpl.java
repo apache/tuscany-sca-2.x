@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.context.ThreadMessageContext;
+import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -32,8 +33,18 @@ public class CallbackServiceReferenceImpl<B> extends ServiceReferenceImpl<B> {
     private RuntimeEndpointReference callbackEPR;
     private List<? extends EndpointReference> callbackEPRs;
     private Endpoint resolvedEndpoint;
+    // Holds the ID of the Message that caused the creation of this CallbackServiceReference
+    private String msgID;
 
-    /*
+    /** 
+     * Gets the message ID associated with this callback reference
+     * @return the message ID
+     */
+    public String getMsgID() {
+		return msgID;
+	}
+
+	/*
      * Public constructor for Externalizable serialization/deserialization
      */
     public CallbackServiceReferenceImpl() {
@@ -62,6 +73,9 @@ public class CallbackServiceReferenceImpl<B> extends ServiceReferenceImpl<B> {
             throw new ServiceRuntimeException("No callback binding found for " + msgContext.getTo().toString());
         }
         resolvedEndpoint = msgContext.getFrom().getCallbackEndpoint();
+        
+        // Capture the Message ID from the message which caused the creation of this CallBackServiceReference
+        this.msgID = (String) msgContext.getHeaders().get(Constants.MESSAGE_ID);
     }
 
     @Override

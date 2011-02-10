@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.AllowsPassByReference;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -88,7 +89,7 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
 	        removeReference(ref, type);
 	
 	        JavaElementImpl element = new JavaElementImpl(method, 0);
-	        org.apache.tuscany.sca.assembly.Reference reference = createReference(element, name);
+	        org.apache.tuscany.sca.assembly.Reference reference = createReference(type, element, name);
 	        type.getReferences().add(reference);
 	        type.getReferenceMembers().put(name, element);
         }
@@ -128,7 +129,7 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         // Setter method override field
         if (ref == null) {
             JavaElementImpl element = new JavaElementImpl(field);
-            org.apache.tuscany.sca.assembly.Reference reference = createReference(element, name);
+            org.apache.tuscany.sca.assembly.Reference reference = createReference(type, element, name);
             type.getReferences().add(reference);
             type.getReferenceMembers().put(name, element);
         }
@@ -160,7 +161,7 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         }
 
         removeReference(ref, type);
-        org.apache.tuscany.sca.assembly.Reference reference = createReference(parameter, name);
+        org.apache.tuscany.sca.assembly.Reference reference = createReference(type, parameter, name);
         type.getReferences().add(reference);
         type.getReferenceMembers().put(name, parameter);
         parameter.setClassifer(Reference.class);
@@ -169,16 +170,24 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
 
     /**
      * Create a SCA reference for a java Element
+     * @param implementation TODO
      * @param element
      * @param name
      * @return
      * @throws IntrospectionException
      */
-    private org.apache.tuscany.sca.assembly.Reference createReference(JavaElementImpl element, String name)
+    private org.apache.tuscany.sca.assembly.Reference createReference(JavaImplementation implementation, JavaElementImpl element, String name)
         throws IntrospectionException {
         org.apache.tuscany.sca.assembly.Reference reference = assemblyFactory.createReference();
         JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         reference.setInterfaceContract(interfaceContract);
+        
+        AllowsPassByReference pbr = element.getAnnotation(AllowsPassByReference.class);
+        if (pbr != null) {
+            reference.setAllowsPassByReference(true);
+        } else {
+            reference.setAllowsPassByReference(implementation.isAllowsPassByReference());
+        }
 
         // reference.setMember((Member)element.getAnchor());
         boolean required = true;

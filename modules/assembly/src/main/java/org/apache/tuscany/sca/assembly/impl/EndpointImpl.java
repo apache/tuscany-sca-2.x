@@ -281,11 +281,11 @@ public class EndpointImpl implements Endpoint {
     }
     
     public boolean isAsyncInvocation() {
-        if (service.getName().endsWith("_asyncCallback")){
+    	if( service != null && service.getName().endsWith("_asyncCallback")){
             // this is a response service at the reference component so don't create a
             // response reference. 
             return false;
-        }
+        } // end if
         
         for(Intent intent : getRequiredIntents()){
             if (intent.getName().getLocalPart().equals("asyncInvocation")){

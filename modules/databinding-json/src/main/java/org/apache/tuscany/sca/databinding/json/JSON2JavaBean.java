@@ -41,7 +41,7 @@ public class JSON2JavaBean implements PullTransformer<Object, Object> {
             throw new TransformationException(e);
         }
         serializer.setMarshallClassHints(true);
-        serializer.setMarshallNullAttributes(true);
+        serializer.setMarshallNullAttributes(false);
     }
 
     public Object transform(Object source, TransformationContext context) {

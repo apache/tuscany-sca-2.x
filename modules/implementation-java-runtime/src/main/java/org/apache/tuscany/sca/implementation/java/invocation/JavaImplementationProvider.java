@@ -40,6 +40,9 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.InvokerAsyncRequest;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
+import org.apache.tuscany.sca.provider.ImplementationAsyncProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.oasisopen.sca.ComponentContext;
@@ -48,7 +51,7 @@ import org.oasisopen.sca.RequestContext;
 /**
  * @version $Rev$ $Date$
  */
-public class JavaImplementationProvider implements ScopedImplementationProvider {
+public class JavaImplementationProvider implements ScopedImplementationProvider, ImplementationAsyncProvider {
     private JavaImplementation implementation;
     private JavaComponentContextProvider componentContextProvider;
     private RequestContextFactory requestContextFactory;
@@ -165,5 +168,15 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
     public boolean isEagerInit() {
         return implementation.isEagerInit();
     }
+
+	public InvokerAsyncRequest createAsyncInvoker(RuntimeComponentService service, Operation operation) {
+		// createInvoker should automatically create a JavaAsyncImplementationInvoker - if not, then it means 
+		// that the service is not async and the result will be an exception caused by the class cast.
+		return (InvokerAsyncRequest) createInvoker( service, operation );
+	} // end method createAsyncInvoker
+
+	public InvokerAsyncResponse createAsyncResponseInvoker(Operation operation) {
+		return new JavaAsyncResponseInvokerImpl();
+	} // end method createAsyncResponseInvoker
 
 }

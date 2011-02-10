@@ -42,6 +42,7 @@ public class JavaBean2JSONTestCase {
         private String friends[];
         private List<String> books;
         private YourBean you;
+        private String note;
 
         public String getName() {
             return name;
@@ -89,6 +90,14 @@ public class JavaBean2JSONTestCase {
 
         public void setYou(YourBean you) {
             this.you = you;
+        }
+
+        public String getNote() {
+            return note;
+        }
+
+        public void setNote(String note) {
+            this.note = note;
         }
 
     }

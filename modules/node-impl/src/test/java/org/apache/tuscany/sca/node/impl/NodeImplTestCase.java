@@ -154,8 +154,7 @@ public class NodeImplTestCase {
         factory.init();
         UtilityExtensionPoint utilities = factory.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
         Properties ps = utilities.getUtility(RuntimeProperties.class).getProperties();
-        Assert.assertEquals(2, ps.size());
-        Assert.assertEquals("vm", ps.getProperty("defaultScheme"));
+        Assert.assertEquals(0, ps.size());
 
         Properties properties = new Properties();
         properties.setProperty("defaultScheme", "vm");
@@ -214,5 +213,24 @@ public class NodeImplTestCase {
         for (Map<String, String> attrs : items) {
             System.out.println(attrs);
         }
+    }
+
+    @Test
+    public void testAutoDestroy() throws Exception {
+        NodeFactory nf = NodeFactory.newInstance();
+        Node node = nf.createNode();
+        node.start();
+        Assert.assertTrue(((NodeFactoryImpl)nf).inited);
+        node.stop();
+        Assert.assertFalse(((NodeFactoryImpl)nf).inited);
+        
+        nf = NodeFactory.newInstance();
+        nf.setAutoDestroy(false);
+        node = nf.createNode();
+        node.start();
+        Assert.assertTrue(((NodeFactoryImpl)nf).inited);
+        node.stop();
+        Assert.assertTrue(((NodeFactoryImpl)nf).inited);
+        
     }
 }

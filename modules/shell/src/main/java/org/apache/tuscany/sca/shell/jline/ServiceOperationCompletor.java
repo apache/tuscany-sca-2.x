@@ -27,7 +27,7 @@ import java.util.List;
 import jline.SimpleCompletor;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.node2.impl.NodeImpl;
+import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.shell.Shell;

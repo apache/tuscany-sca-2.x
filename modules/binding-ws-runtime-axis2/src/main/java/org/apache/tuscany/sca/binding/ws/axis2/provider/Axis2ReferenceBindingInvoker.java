@@ -49,13 +49,23 @@ import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.sca.context.CompositeContext;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
+import org.apache.tuscany.sca.core.invocation.AsyncResponseInvoker;
+import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -209,9 +219,16 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
         // Axis2 operationClients can not be shared so create a new one for each request
         final OperationClient operationClient = serviceClient.createClient(wsdlOperationName);
         operationClient.setOptions(options);
-
-        Endpoint callbackEndpoint = msg.getFrom().getCallbackEndpoint();
-
+        
+        Endpoint callbackEndpoint;
+        AsyncResponseInvoker<String> respInvoker = (AsyncResponseInvoker<String>) msg.getHeaders().get(Constants.ASYNC_RESPONSE_INVOKER);
+        if( respInvoker != null ) {
+        	callbackEndpoint = createAsyncResponseEndpoint( msg, respInvoker );
+        	msg.setTo(callbackEndpoint);
+        } else {
+        	callbackEndpoint = msg.getFrom().getCallbackEndpoint();
+        } // end if 
+        
         SOAPEnvelope sev = requestMC.getEnvelope();
         SOAPHeader sh = sev.getHeader();
         
@@ -251,7 +268,36 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
         return operationClient;
     } // end method createOperationClient
     
-    private String getToAddress( Message msg ) throws ServiceRuntimeException {
+    /**
+     * Create an Async Response Endpoint
+     * @param msg - the Tuscany message
+     * @param respInvoker - the AsyncResponseInvoker for the async response
+     * @return - an Endpoint which embodies the callback address
+     */
+    private Endpoint createAsyncResponseEndpoint(Message msg,
+			AsyncResponseInvoker<String> respInvoker) {
+		String callbackAddress = respInvoker.getResponseTargetAddress();
+		if( callbackAddress == null ) return null;
+		
+		// Get the necessary factories
+		ExtensionPointRegistry registry = endpointReference.getCompositeContext().getExtensionPointRegistry();
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        RuntimeAssemblyFactory assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
+        WebServiceBindingFactory webServiceBindingFactory = (WebServiceBindingFactory)modelFactories.getFactory(WebServiceBindingFactory.class);
+		
+        // Create the endpoint
+        RuntimeEndpoint callbackEndpoint = (RuntimeEndpoint)assemblyFactory.createEndpoint();
+        // Add a binding
+        WebServiceBinding cbBinding = webServiceBindingFactory.createWebServiceBinding();
+        cbBinding.setURI(callbackAddress);
+        callbackEndpoint.setBinding(cbBinding);
+        // Embed the response Address URI
+        callbackEndpoint.setURI(callbackAddress);
+        callbackEndpoint.setUnresolved(true);
+		return callbackEndpoint;
+	} // end method createAsyncResponseEndpoint
+
+	private String getToAddress( Message msg ) throws ServiceRuntimeException {
     	String address = null;
     	
         // if target endpoint was not specified when this invoker was created, 
@@ -292,11 +338,11 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
      * @throws AxisFault - if an error occurs setting the wsa:From into the header
      */
     private void addWSAMessageIDHeader( SOAPHeader sh, String msgID ) throws AxisFault {
+    	if( msgID == null ) return;
         OMElement idHeader = sh.getOMFactory().createOMElement(QNAME_WSA_MESSAGEID);
         idHeader.setText( msgID );
         
         sh.addChild(idHeader);
-
     } // end method addWSAMessageIDHeader
     
     private static String WS_REF_PARMS = "WS_REFERENCE_PARAMETERS";
@@ -353,7 +399,7 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
      * @param msg - the message
      */
     private void addWSARelatesTo( SOAPHeader sh, Message msg ) {
-    	String idValue = (String) msg.getHeaders().get(WS_MESSAGE_ID);
+    	String idValue = (String) msg.getHeaders().get("RELATES_TO");
     	if( idValue != null ){
             OMElement relatesToOM = sh.getOMFactory().createOMElement( QNAME_WSA_RELATESTO );
             OMAttribute relType = sh.getOMFactory().createOMAttribute("RelationshipType", null, SCA_CALLBACK_REL);

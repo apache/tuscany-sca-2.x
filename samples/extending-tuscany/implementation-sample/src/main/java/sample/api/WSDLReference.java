@@ -24,6 +24,7 @@ import org.w3c.dom.Element;
 public interface WSDLReference {
 
     Element call(String op, Element e);
+    public Element callBare(String op, Element... e);
     void callAsync(String op, Element e);
     
 }

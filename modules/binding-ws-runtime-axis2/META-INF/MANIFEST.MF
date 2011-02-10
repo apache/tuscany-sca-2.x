@@ -102,6 +102,7 @@ Import-Package: javax.servlet,
  org.apache.tuscany.sca.assembly.xml;version="2.0.0",
  org.apache.tuscany.sca.binding.ws;version="2.0.0",
  org.apache.tuscany.sca.common.xml;version="2.0.0",
+ org.apache.tuscany.sca.context;version="2.0.0",
  org.apache.tuscany.sca.contribution.processor;version="2.0.0",
  org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
@@ -132,3 +133,4 @@ Bundle-SymbolicName: org.apache.tuscany.sca.binding.ws.axis2
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,
  JavaSE-1.6
+Require-Bundle: org.apache.tuscany.sca.core

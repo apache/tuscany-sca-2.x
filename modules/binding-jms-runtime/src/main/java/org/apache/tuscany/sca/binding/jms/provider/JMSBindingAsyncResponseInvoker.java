@@ -38,6 +38,7 @@ public class JMSBindingAsyncResponseInvoker implements InvokerAsyncResponse {
     } // end constructor
     
     public void invokeAsyncResponse(Message msg) {
-         // TODO
+         // Deliberately left null since in JMS the TransportServiceInterceptor does all the work
     } // end method invokeAsyncResponse
+    
 } // end class JMSBindingAsyncResponseInvoker

@@ -98,7 +98,7 @@ public class NodeImpl implements Node {
     }
 
     public Node start() {
-        logger.log(Level.INFO, "Starting node: " + configuration.getURI() + " domain: " + configuration.getDomainURI());
+        logger.log(nodeFactory.quietLogging? Level.FINE : Level.INFO, "Starting node: " + configuration.getURI() + " domain: " + configuration.getDomainURI());
 
         nodeFactory.init();
         nodeFactory.addNode(configuration, this);
@@ -172,7 +172,7 @@ public class NodeImpl implements Node {
     }
 
     public void stop() {
-        logger.log(Level.INFO, "Stopping node: " + configuration.getURI());
+        logger.log(nodeFactory.quietLogging? Level.FINE : Level.INFO, "Stopping node: " + configuration.getURI());
 
         try {
             if (compositeActivator == null) {

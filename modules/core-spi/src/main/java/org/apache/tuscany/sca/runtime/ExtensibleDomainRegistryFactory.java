@@ -37,7 +37,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 public class ExtensibleDomainRegistryFactory implements DomainRegistryFactory {
     private final DomainRegistryFactoryExtensionPoint factories;
     private String[] allSchemes;
-    private String defaultScheme = "tuscany";
+    private String defaultScheme = "vm";
 
     public ExtensibleDomainRegistryFactory(ExtensionPointRegistry registry) {
         this.factories = registry.getExtensionPoint(DomainRegistryFactoryExtensionPoint.class);

@@ -75,7 +75,7 @@ public class InvocationChainImpl implements InvocationChain {
         }
         String phase = forReference ? Phase.REFERENCE : Phase.SERVICE;
         addInterceptor(phase, interceptor);
-    }
+    } // end method addInterceptor
 
     public void addInvoker(Invoker invoker) {
         if (invoker instanceof PhasedInterceptor) {
@@ -94,38 +94,13 @@ public class InvocationChainImpl implements InvocationChain {
     }
     
     public Invoker getTailInvoker() {
-    	// ***
     	int nodeCount = nodes.size();
     	if( nodeCount > 0 ) {
     		return nodes.get( nodeCount - 1).getInvoker();
     	} // end if
-    	// ***
     	
-        // find the tail invoker 
-        Invoker next = getHeadInvoker();
-        Invoker tail = null;
-        while (next != null){
-            tail = next;
-            if (next instanceof Interceptor){
-                // TODO - hack to get round SCA binding optimization
-                //        On the reference side this loop will go all the way 
-                //        across to the service invoker so stop looking if we find 
-                //        an invoker with no "previous" pointer. This will be the point
-                //        where the SCA binding invoker points to the head of the 
-                //        service chain
-                if (!(next instanceof InterceptorAsync) || 
-                     ((InterceptorAsyncImpl)next).isLocalSCABIndingInvoker()){
-                    break;
-                }
-                
-                next = ((Interceptor)next).getNext();
-            } else {
-                next = null;
-            }
-        }
-
-        return tail;
-    }
+        return null;
+    } // end method getTailInvoker
     
     public Invoker getHeadInvoker(String phase) {
         int index = phaseManager.getAllPhases().indexOf(phase);
@@ -268,5 +243,71 @@ public class InvocationChainImpl implements InvocationChain {
     public boolean isAsyncInvocation() {
         return isAsyncInvocation;
     }
+
+	public void addHeadInterceptor(Interceptor interceptor) {
+		String phase = forReference ? Phase.REFERENCE : Phase.SERVICE_BINDING;
+        if (interceptor instanceof PhasedInterceptor) {
+            PhasedInterceptor pi = (PhasedInterceptor)interceptor;
+            if (pi.getPhase() != null) {
+            	phase = pi.getPhase();
+            } // end if
+        } // end if
+       
+        addHeadInterceptor(phase, interceptor);
+	} // end method addHeadInterceptor
+
+	public void addHeadInterceptor(String phase, Interceptor interceptor) {
+		// TODO Auto-generated method stub
+		Invoker invoker = (Invoker)interceptor;
+		
+        int index = phaseManager.getAllPhases().indexOf(phase);
+        if (index == -1) {
+            throw new IllegalArgumentException("Invalid phase name: " + phase);
+        } // end if 
+        Node node = new Node(index, invoker);
+        
+        ListIterator<Node> li = nodes.listIterator();
+        Node before = null, after = null;
+        boolean found = false;
+        while (li.hasNext()) {
+            before = after;
+            after = li.next();
+            // Look for the first node with a phase index equal to or greater than the one provided
+            if (after.getPhaseIndex() >= index) {
+                // Move back
+                li.previous();
+                li.add(node);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            // Add to the end
+            nodes.add(node);
+            before = after;
+            after = null;
+        }
+
+        // Relink the interceptors
+        if (before != null) {
+            if (before.getInvoker() instanceof Interceptor) {
+                ((Interceptor)before.getInvoker()).setNext(invoker);
+                if ((invoker instanceof InterceptorAsync) &&
+                    (before.getInvoker() instanceof InvokerAsyncResponse)) {
+                    ((InterceptorAsync) invoker).setPrevious((InvokerAsyncResponse)before.getInvoker());
+                }
+            }
+        }
+        if (after != null) {
+            if (invoker instanceof Interceptor) {
+                ((Interceptor)invoker).setNext(after.getInvoker());
+                if ((after.getInvoker() instanceof InterceptorAsync) &&
+                    (invoker instanceof InvokerAsyncResponse)){
+                    ((InterceptorAsync) after.getInvoker()).setPrevious((InvokerAsyncResponse)invoker);
+                }
+            }
+        }
+
+	} // end method addHeadInterceptor
 
 }

@@ -22,6 +22,9 @@ package org.apache.tuscany.sca.binding.sca.provider;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
+import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
+import org.apache.tuscany.sca.provider.EndpointProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
@@ -31,7 +34,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  *
  * @version $Rev$ $Date$
  */
-public class DelegatingSCAServiceBindingProvider implements ServiceBindingProvider {
+public class DelegatingSCAServiceBindingProvider implements EndpointAsyncProvider {
 
     private static final Logger logger = Logger.getLogger(DelegatingSCAServiceBindingProvider.class.getName());
 
@@ -49,12 +52,39 @@ public class DelegatingSCAServiceBindingProvider implements ServiceBindingProvid
 
     }
 
+    @Override
     public InterfaceContract getBindingInterfaceContract() {
         return provider.getBindingInterfaceContract();
     }
 
+    @Override
     public boolean supportsOneWayInvocation() {
         return provider.supportsOneWayInvocation();
+    }
+    
+    @Override
+    public void configure() {  
+        if (provider instanceof EndpointProvider){
+            ((EndpointProvider)provider).configure();
+        }
+    }    
+    
+    @Override
+    public boolean supportsNativeAsync() {
+        if (provider instanceof EndpointAsyncProvider){
+            return ((EndpointAsyncProvider)provider).supportsNativeAsync();
+        } else {
+            return false;
+        }
+    }
+    
+    @Override
+    public InvokerAsyncResponse createAsyncResponseInvoker() {
+        if (provider instanceof EndpointAsyncProvider){
+            return ((EndpointAsyncProvider)provider).createAsyncResponseInvoker();
+        } else {
+            return null;
+        }
     }
 
     public void start() {

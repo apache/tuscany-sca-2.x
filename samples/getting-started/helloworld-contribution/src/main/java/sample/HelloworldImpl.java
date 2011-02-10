@@ -26,7 +26,6 @@ import org.oasisopen.sca.annotation.EagerInit;
 public class HelloworldImpl implements Helloworld {
 
     public String sayHello(String name) {
-        System.out.println("HelloworldImpl.sayHello " + name);
         return "Hello " + name;
     }
 

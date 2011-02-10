@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-modules</artifactId>
-        <version>2.0-Beta2-SNAPSHOT</version>
+        <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -44,33 +44,11 @@
             <scope>compile</scope>
         </dependency>
 
-<!--
-        <dependency>
-            <groupId>org.eclipse.core</groupId>
-            <artifactId>runtime</artifactId>
-            <version>3.3.100-v20070530</version>
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.eclipse.equinox</groupId>
-                    <artifactId>app</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.equinox</groupId>
-            <artifactId>app</artifactId>
-            <version>1.2.0-v20090520-1800</version>
-            <scope>runtime</scope>
-        </dependency>
--->
-
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-base-runtime-pom</artifactId>
             <type>pom</type>
-            <version>2.0-Beta2-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
@@ -83,18 +61,103 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-extensibility-equinox</artifactId>
-            <version>2.0-Beta2-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
-        <!-- dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-http-runtime</artifactId>
-            <version>2.0-Beta2-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency-->
+<!--
+* 03/02/2011 - It is hard to understand the complex web of dependencies related to the eclipse packages
+* that contain the OSGi implementation - however, this is what it takes to ensure that the dependencies
+* are satisfied. 
+-->
+        <dependency>
+            <groupId>org.eclipse.core</groupId>
+            <artifactId>runtime</artifactId>
+            <version>3.4.0-v20080512</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.core</groupId>
+                    <artifactId>contenttype</artifactId>
+                </exclusion>             
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>registry</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>preferences</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.core</groupId>
+                    <artifactId>jobs</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>app</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.core</groupId>
+            <artifactId>contenttype</artifactId>
+            <version>3.3.0-v20080604-1400</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>registry</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>preferences</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>registry</artifactId>
+            <version>3.4.100-v20090520-1800</version>
+            <scope>runtime</scope>
+        </dependency>        
+        <dependency>
+            <groupId>org.eclipse.core</groupId>
+            <artifactId>jobs</artifactId>
+            <version>3.4.0-v20080512</version>
+            <scope>runtime</scope>
+        </dependency>     
+        <dependency>
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>common</artifactId>
+            <version>3.5.0-v20090520-1800</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>app</artifactId>
+            <version>1.2.0-v20090520-1800</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>preferences</artifactId>
+            <version>3.2.300-v20090520-1800</version>
+            <scope>runtime</scope>
+        </dependency>
 
+               
     </dependencies>
+    
+    <repositories>
+        <!-- Tuscany repository to hold artifacts that are not published in the public maven repos -->
+        <repository>
+            <id>tuscany.repo</id>
+            <name>Tuscany Maven 2.x Repository</name>
+            <url>http://svn.apache.org/repos/asf/tuscany/maven</url>
+        </repository>
+
+    </repositories>
+
 
     <build>
         <plugins>

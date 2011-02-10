@@ -44,6 +44,8 @@ import org.apache.tuscany.sca.interfacedef.InvalidCallbackException;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.InvalidOperationException;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_INPUT;
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_OUTPUT;
 import org.apache.tuscany.sca.interfacedef.OverloadedOperationException;
 import org.apache.tuscany.sca.interfacedef.ParameterMode;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -63,8 +65,6 @@ import org.oasisopen.sca.annotation.Remotable;
  * @version $Rev$ $Date$
  */
 public class JavaInterfaceIntrospectorImpl {
-    public static final String IDL_INPUT = "idl:input";
-    public static final String IDL_OUTPUT = "idl:output";
 
     private static final String UNKNOWN_DATABINDING = null;
 
@@ -77,11 +77,11 @@ public class JavaInterfaceIntrospectorImpl {
     }
 
     public void introspectInterface(JavaInterface javaInterface, Class<?> clazz) throws InvalidInterfaceException {
-        
+
         if(!loadedVisitors) {
             this.visitors = javaFactory.getInterfaceVisitors();
         }
-        
+
         javaInterface.setJavaClass(clazz);
 
         boolean remotable = clazz.isAnnotationPresent(Remotable.class);
@@ -104,7 +104,7 @@ public class JavaInterfaceIntrospectorImpl {
                 }
             }
         }
-        
+
         if (remotable) {
             if (javaInterface.isRemotableSet() && javaInterface.isRemotable() == false) {
                 throw new InvalidAnnotationException("[JCA30005] @Remotable annotation present in a interface marked as not remotable in the SCDL", Remotable.class);
@@ -123,11 +123,11 @@ public class JavaInterfaceIntrospectorImpl {
             callbackClass = callback.value();
             if (remotable && !callbackClass.isAnnotationPresent(Remotable.class)) {
                 throw new InvalidCallbackException("Callback " + callbackClass.getName() + 
-                		" must be remotable on remotable interface " + clazz.getName());
+                                                   " must be remotable on remotable interface " + clazz.getName());
             }
             if (!remotable && callbackClass.isAnnotationPresent(Remotable.class)) {
                 throw new InvalidCallbackException("Callback" + callbackClass.getName() + 
-                		" must not be remotable on local interface " + clazz.getName());
+                                                   " must not be remotable on local interface " + clazz.getName());
             }
         } else if (callback != null && Void.class.equals(callback.value())) {
             throw new InvalidCallbackException("No callback interface specified on callback annotation in " + clazz.getName());
@@ -140,8 +140,38 @@ public class JavaInterfaceIntrospectorImpl {
 
         for (JavaInterfaceVisitor extension : visitors) {
             extension.visitInterface(javaInterface);
-        }
-    }
+        } // end for
+
+        // Check if any methods have disallowed annotations
+        // Check if any private methods have illegal annotations that should be raised as errors
+        Set<Method> methods = JavaIntrospectionHelper.getMethods(clazz);
+        for (Method method : methods) {
+            checkMethodAnnotations(method, javaInterface);
+        } // end for 
+    } // end method introspectInterface
+
+    private void checkMethodAnnotations(Method method, JavaInterface javaInterface) throws InvalidAnnotationException {
+        for ( Annotation a : method.getAnnotations() ) {
+            if( a instanceof Remotable ) {
+                // [JCA90053] @Remotable annotation cannot be on a method that is not a setter method
+                if( !JavaIntrospectionHelper.isSetter(method) ) {
+                    throw new InvalidAnnotationException("[JCA90053] @Remotable annotation present on an interface method" +
+                                                         " which is not a Setter method: " + javaInterface.getName() + "/" + method.getName(), Remotable.class);
+                } // end if
+            } // end if		
+        } // end for
+
+        // Parameter annotations
+        for (Annotation[] parmAnnotations : method.getParameterAnnotations()) {
+            for (Annotation annotation : parmAnnotations) {
+                if (annotation instanceof Remotable ) {
+                    throw new InvalidAnnotationException("[JCA90053] @Remotable annotation present on an interface method" +
+                                                         " parameter: " + javaInterface.getName() + "/" + method.getName(), Remotable.class);
+                } // end if
+            } // end for		
+        } // end for
+        method.getParameterAnnotations();
+    } // end method checkMethodAnnotations
 
     private Class<?>[] getActualTypes(Type[] types, Class<?>[] rawTypes, Map<String, Type> typeBindings) {
         Class<?>[] actualTypes = new Class<?>[types.length];
@@ -162,6 +192,7 @@ public class JavaInterfaceIntrospectorImpl {
         return rawType;
     }
 
+    @SuppressWarnings("rawtypes")
     private <T> List<Operation> getOperations(Class<T> clazz,
                                               boolean remotable,
                                               String ns) throws InvalidInterfaceException {
@@ -186,7 +217,7 @@ public class JavaInterfaceIntrospectorImpl {
         List<Operation> operations = new ArrayList<Operation>(methods.length);
         Set<String> names = remotable ? new HashSet<String>() : null;
         for (Method method : methods) {
-        	boolean hasHolders = false;
+            boolean hasMultipleOutputs = false;
             if (method.getDeclaringClass() == Object.class) {
                 // Skip the methods on the Object.class
                 continue;
@@ -205,10 +236,10 @@ public class JavaInterfaceIntrospectorImpl {
             Class<?>[] faultTypes =
                 getActualTypes(method.getGenericExceptionTypes(), method.getExceptionTypes(), typeBindings);
             Class<?>[] allOutputTypes = getOutputTypes(returnType, parameterTypes);
-            
+
             // For async server interfaces, faults are described using the @AsyncFaults annotation
             if( method.isAnnotationPresent(AsyncFault.class) ) {
-            	faultTypes = readAsyncFaultTypes( method );
+                faultTypes = readAsyncFaultTypes( method );
             } // end if 
 
             boolean nonBlocking = method.isAnnotationPresent(OneWay.class);
@@ -227,67 +258,49 @@ public class JavaInterfaceIntrospectorImpl {
 
             JavaOperation operation = new JavaOperationImpl();
             operation.setName(name);
-            
-            // Set outputType to null for void
-            XMLType xmlReturnType = new XMLType(new QName(ns, "return"), null);
-            DataType<XMLType> returnDataType =
-                returnType == void.class ? null : new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, returnType, method
-                    .getGenericReturnType(), xmlReturnType);
-            
-            
+
+            // Given details of Holder mapping, it's easier to handle output first.                
+            List<DataType> outputDataTypes = new ArrayList<DataType>();
+            XMLType xmlReturnType = new XMLType(new QName(ns, "return"), null);            
+            DataType<XMLType> returnDataType = null;
+            if (returnType == void.class) {
+                operation.setReturnTypeVoid(true);
+            } else {
+                 returnDataType = new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, returnType, 
+                     method.getGenericReturnType(), xmlReturnType);
+                 operation.setReturnTypeVoid(false);
+                 outputDataTypes.add(returnDataType);
+            }
+
             // Handle Input Types
-          	List<DataType> paramDataTypes = new ArrayList<DataType>(parameterTypes.length);
-          	List<Type> genericHolderTypes = new ArrayList<Type>();
-          	List<Class<?>> physicalHolderTypes = new ArrayList<Class<?>>();
+            List<DataType> paramDataTypes = new ArrayList<DataType>(parameterTypes.length);
             Type[] genericParamTypes = method.getGenericParameterTypes();
             for (int i = 0; i < parameterTypes.length; i++) {
                 Class<?> paramType = parameterTypes[i];
                 XMLType xmlParamType = new XMLType(new QName(ns, "arg" + i), null);                            
-     
+
                 DataTypeImpl<XMLType> xmlDataType = new DataTypeImpl<XMLType>(
-                		UNKNOWN_DATABINDING, paramType, genericParamTypes[i],xmlParamType);
+                    UNKNOWN_DATABINDING, paramType, genericParamTypes[i],xmlParamType);
                 ParameterMode mode = ParameterMode.IN;
                 // Holder pattern. Physical types of Holder<T> classes are updated to <T> to aid in transformations.
                 if ( Holder.class == paramType) {
-                	hasHolders = true;
-                	genericHolderTypes.add(genericParamTypes[i]);
-                	Type firstActual = getFirstActualType( genericParamTypes[ i ] );
-                	if ( firstActual != null ) {
-                		physicalHolderTypes.add((Class<?>)firstActual);
-                		xmlDataType.setPhysical( (Class<?>)firstActual );
-                		mode = ParameterMode.INOUT;
-                	} else {
-                		physicalHolderTypes.add(xmlDataType.getPhysical());
-                	}
+                    hasMultipleOutputs = true;
+                    Type firstActual = getFirstActualType( genericParamTypes[ i ] );
+                    if ( firstActual != null ) {
+                        xmlDataType.setPhysical( (Class<?>)firstActual );
+                        mode = ParameterMode.INOUT;
+                    } 
+                    outputDataTypes.add(xmlDataType);
                 }
                 paramDataTypes.add( xmlDataType);
                 operation.getParameterModes().add(mode);
             }
-            
-            
-            // Get Output Types                     
-        	List<DataType> outputDataTypes = new ArrayList<DataType>(allOutputTypes.length);
-    		Type genericReturnType = method.getGenericReturnType();
-    		
-    		for ( int i=0; i <= genericHolderTypes.size(); i++ ) {
-    			Class<?> paramType = allOutputTypes[i];
-    			XMLType xmlOutputType = new XMLType(new QName(ns, "out" + i), null);
-    			
-    			if ( i == 0 ) {
-    				outputDataTypes.add(returnDataType);
-    			} else {
-    				DataTypeImpl<XMLType> xmlDataType = xmlDataType = new DataTypeImpl<XMLType>(
-    						UNKNOWN_DATABINDING, physicalHolderTypes.get(i-1), genericHolderTypes.get(i-1), xmlOutputType);
-    				outputDataTypes.add(xmlDataType);
-    			}
-    			
-    		}
-    		
+
             // Fault types                                                          
             List<DataType> faultDataTypes = new ArrayList<DataType>(faultTypes.length);
             Type[] genericFaultTypes = method.getGenericExceptionTypes();
             if( method.isAnnotationPresent(AsyncFault.class) ) {
-            	genericFaultTypes = readAsyncGenericFaultTypes( method );
+                genericFaultTypes = readAsyncGenericFaultTypes( method );
             } // end if
             for (int i = 0; i < faultTypes.length; i++) {
                 Class<?> faultType = faultTypes[i];
@@ -299,62 +312,62 @@ public class JavaInterfaceIntrospectorImpl {
                     DataType<XMLType> faultDataType =
                         new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, faultType, genericFaultTypes[i], xmlFaultType);
                     faultDataTypes.add(new DataTypeImpl<DataType>(UNKNOWN_DATABINDING, faultType, genericFaultTypes[i],
-                                                                  faultDataType));
+                        faultDataType));
                 }
             }
 
             DataType<List<DataType>> inputType =
                 new DataTypeImpl<List<DataType>>(IDL_INPUT, Object[].class, paramDataTypes);
             DataType<List<DataType>> outputType = 
-            	new DataTypeImpl<List<DataType>>(IDL_OUTPUT, Object[].class, outputDataTypes);
+                new DataTypeImpl<List<DataType>>(IDL_OUTPUT, Object[].class, outputDataTypes);
 
             operation.setOutputType(outputType);
-            	
+
             operation.setInputType(inputType);                     
             operation.setFaultTypes(faultDataTypes);
             operation.setNonBlocking(nonBlocking);
             operation.setJavaMethod(method);
-            operation.setHasHolders(hasHolders);     
+            operation.setHasArrayWrappedOutput(hasMultipleOutputs);     
             operations.add(operation);
         }
         return operations;
     }
-    
-
-	private Class<?>[] getOutputTypes(Class<?> returnType, Class<?>[] parameterTypes) {
-		Class<?>[] returnTypes = new Class<?>[parameterTypes.length + 1];
-		returnTypes[0] = returnType;
-		int idx = 1;
-		for ( Class<?> clazz : parameterTypes ) {
-			if ( Holder.class == clazz )
-				returnTypes[idx++] = clazz;
-		}
-		
-		return returnTypes;
-	}
 
 
+    private Class<?>[] getOutputTypes(Class<?> returnType, Class<?>[] parameterTypes) {
 
-	/**
+        ArrayList<Class<?>> returnTypes = new ArrayList<Class<?>>();
+        returnTypes.add(returnType);
+        for ( Class<?> clazz : parameterTypes ) {
+            if ( Holder.class == clazz )
+                returnTypes.add(clazz);
+        }
+        Class[] arrayType = new Class[0];
+        return returnTypes.toArray(arrayType);
+    }
+
+
+
+    /**
      * Reads the fault types declared in an @AsyncFault annotation on an async server method
      * @param method - the Method
      * @return - an array of fault/exception classes
      */
     private  Class<?>[] readAsyncFaultTypes( Method method ) {
-    	AsyncFault theFaults = method.getAnnotation(AsyncFault.class);
-    	if ( theFaults == null ) return null;
-    	return theFaults.value();
+        AsyncFault theFaults = method.getAnnotation(AsyncFault.class);
+        if ( theFaults == null ) return null;
+        return theFaults.value();
     } // end method readAsyncFaultTypes
-    
+
     /**
      * Reads the generic fault types declared in an @AsyncFault annotation on an async server method
      * @param method - the Method
      * @return - an array of fault/exception classes
      */
     private  Type[] readAsyncGenericFaultTypes( Method method ) {
-    	AsyncFault theFaults = method.getAnnotation(AsyncFault.class);
-    	if ( theFaults == null ) return null;
-    	return theFaults.value();
+        AsyncFault theFaults = method.getAnnotation(AsyncFault.class);
+        if ( theFaults == null ) return null;
+        return theFaults.value();
     } // end method readAsyncFaultTypes
 
     private boolean jaxwsAsyncMethod(Method method) {
@@ -372,7 +385,7 @@ public class JavaInterfaceIntrospectorImpl {
         }
         return false;
     }
-    
+
 
     /**
      * Given a Class<T>, returns T, otherwise null.

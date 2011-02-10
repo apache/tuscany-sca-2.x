@@ -23,6 +23,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.ParameterStyle;
+import org.apache.tuscany.sca.binding.ws.other.Other;
 
 import org.oasisopen.sca.annotation.OneWay;
 import org.oasisopen.sca.annotation.Remotable;
@@ -64,4 +65,8 @@ public interface TestJavaInterface {
     @WebMethod
     @SOAPBinding(parameterStyle=ParameterStyle.BARE)
     int m9(String str);
+
+    @WebMethod
+    @SOAPBinding(parameterStyle=ParameterStyle.BARE)
+    Other m10(Other other);
 }

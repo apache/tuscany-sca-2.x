@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
-        <version>7</version>
+        <version>8</version>
     </parent>
 
     <!-- ====================================================================== -->
@@ -33,7 +33,7 @@
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Implementation Project (2.x)</name>
     <url>http://tuscany.apache.org</url>
-    <version>2.0-Beta2-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
 
     <scm>
         <connection>scm:svn:http://svn.apache.org/repos/asf/tuscany/sca-java-2.x/trunk</connection>
@@ -48,6 +48,7 @@
     <properties>
         <notice.dir>.</notice.dir>
         <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
+        <dojo.version>1.5.0</dojo.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>        
     </properties>
@@ -61,38 +62,6 @@
     <!-- Maven Repositories                                                     -->
     <!-- ====================================================================== -->
     <repositories>
-       <repository>
-          <id>maven.central</id>
-          <url>http://repo2.maven.org/maven2</url>
-           <releases>
-               <enabled>true</enabled>
-           </releases>
-           <snapshots>
-               <enabled>false</enabled>
-           </snapshots>
-       </repository>
-       <repository>
-          <id>apache.incubator</id>
-          <url>http://people.apache.org/repo/m2-incubating-repository</url>
-           <releases>
-               <enabled>true</enabled>
-           </releases>
-           <snapshots>
-               <enabled>false</enabled>
-           </snapshots>
-       </repository>
-       <!-- Apache SNAPSHOT repository for unreleased artifacts -->
-       <repository>
-            <id>apache.snapshots</id>
-            <name>Apache SNAPSHOT Repository</name>
-            <url>http://repository.apache.org/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
         <!-- Tuscany repository to hold artifacts that are not published in the public maven repos -->
         <repository>
             <id>tuscany.repo</id>
@@ -105,146 +74,8 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <repository>
-            <id>apache.ws.zone</id>
-            <name>Apache WS Zone Repository</name>
-            <url>http://ws.zones.apache.org/repository2</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>indiana</id>
-            <url>http://ftp.ussg.iu.edu/eclipse/modeling/emf/emf/maven2/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>osuosl.org</id>
-            <url>http://ftp.osuosl.org/pub/eclipse/tools/emf/maven2</url>
-           <releases>
-               <enabled>true</enabled>
-           </releases>
-           <snapshots>
-               <enabled>false</enabled>
-           </snapshots>
-        </repository> 
-
-        <!-- for Saxon 9.x -->
-        <repository>
-            <id>intalio.org</id>
-            <url>http://www.intalio.org/public/maven2</url>
-           <releases>
-               <enabled>true</enabled>
-           </releases>
-           <snapshots>
-               <enabled>false</enabled>
-           </snapshots>
-        </repository>     
-
-        <!-- for java.net -->
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>java.net</id>
-            <name>java.net Maven 1.x Repository</name>
-            <url>http://download.java.net/maven/1</url>
-            <layout>legacy</layout>
-        </repository>
-
-        <repository>
-            <id>java.net2</id>
-            <name>java.net Maven 2.x Repository</name>
-            <url>http://download.java.net/maven/2</url>
-            <snapshots>
-              <enabled>false</enabled>
-            </snapshots>
-        </repository>
     </repositories>
 
-    <!-- ====================================================================== -->
-    <!-- Maven Plugin-Repositories                                              -->
-    <!-- ====================================================================== -->
-    <pluginRepositories>
-        <!-- Apache repository for artifacts released by Apache TLP projects -->
-        <pluginRepository>
-            <id>apache</id>
-            <name>Apache Repository</name>
-            <url>http://people.apache.org/repo/m2-ibiblio-rsync-repository</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-
-        <!-- Apache Incubator repository for artifacts released by Incubator projects -->
-        <pluginRepository>
-            <id>apache.incubator</id>
-            <name>Apache Incubator Repository</name>
-            <url>http://people.apache.org/repo/m2-incubating-repository</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-
-        <!-- Apache SNAPSHOT repository for unreleased artifacts -->
-        <pluginRepository>
-            <id>apache.snapshots</id>
-            <name>Apache SNAPSHOT Repository</name>
-            <url>http://repository.apache.org/snapshots</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-
-        <!-- Codehaus SNAPSHOT repository -->
-        <!--
-        <pluginRepository>
-            <id>codehaus-snapshot</id>
-            <name>Codehaus Snapshot Repository</name>
-            <url>http://snapshots.repository.codehaus.org</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-        -->
-
-       <!-- Maven central repository -->
-       <pluginRepository>
-          <id>maven.central</id>
-          <name>Maven Central Repository</name>
-          <url>http://repo2.maven.org/maven2</url>
-          <releases>
-              <enabled>true</enabled>
-          </releases>
-          <snapshots>
-              <enabled>false</enabled>
-          </snapshots>
-       </pluginRepository>
-
-        <pluginRepository>
-            <id>java.net2</id>
-            <name>java.net Maven 2.x Repository</name>
-            <url>http://download.java.net/maven/2</url>
-            <snapshots>
-              <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
-    
     <!-- ====================================================================== -->
     <!-- Distribution Management configuration                                  -->
     <!-- ====================================================================== -->
@@ -489,7 +320,7 @@
                     <plugin>
                         <groupId>org.apache.tuscany.sca</groupId>
                         <artifactId>tuscany-maven-dependency-lister</artifactId>
-                        <version>2.0-Beta2-SNAPSHOT</version>
+                        <version>2.0-SNAPSHOT</version>
                         <executions>
                             <execution>
                                 <phase>process-resources</phase>
@@ -945,13 +776,13 @@ org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apac
                         <archive>
                             <manifestEntries>
                                 <Extension-Name>${project.artifactId}</Extension-Name>
-                                <Specification-Title>${name}</Specification-Title>
+                                <Specification-Title>${project.name}</Specification-Title>
                                 <Specification-Vendor>The Apache Software Foundation</Specification-Vendor>
-                                <Specification-Version>${version}</Specification-Version>
-                                <Implementation-Title>${name}</Implementation-Title>
+                                <Specification-Version>${project.version}</Specification-Version>
+                                <Implementation-Title>${project.name}</Implementation-Title>
                                 <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
                                 <Implementation-Vendor>The Apache Software Foundation</Implementation-Vendor>
-                                <Implementation-Version>${version}</Implementation-Version>
+                                <Implementation-Version>${project.version}</Implementation-Version>
                             </manifestEntries>
                          </archive>
                     </configuration>

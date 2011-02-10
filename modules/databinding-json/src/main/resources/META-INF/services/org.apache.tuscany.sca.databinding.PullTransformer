@@ -16,7 +16,7 @@
 # under the License.
 
 # Implementation classes for the transformers
-org.apache.tuscany.sca.databinding.json.JSON2XMLStreamReader;source=JSON,target=javax.xml.stream.XMLStreamReader,weight=5000
+org.apache.tuscany.sca.databinding.json.JSON2XMLStreamReader;source=JSON,target=javax.xml.stream.XMLStreamReader,weight=5000,public=false
 org.apache.tuscany.sca.databinding.json.XMLStreamReader2JSON;source=javax.xml.stream.XMLStreamReader,target=JSON,weight=5000,public=false
 org.apache.tuscany.sca.databinding.json.jackson.Object2JSON;source=java:complexType,target=JSON,weight=90000,public=true
 org.apache.tuscany.sca.databinding.json.jackson.Object2JSON;source=java:simpleType,target=JSON,weight=90000,public=false

@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.apache.tuscany.sca.Node;
+import org.apache.tuscany.sca.TuscanyRuntime;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
@@ -45,15 +47,13 @@ import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.monitor.ValidationException;
-import org.apache.tuscany.sca.node2.Node;
-import org.apache.tuscany.sca.node2.NodeFactory;
-import org.apache.tuscany.sca.node2.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.Version;
 import org.apache.tuscany.sca.shell.jline.JLine;
+import org.oasisopen.sca.NoSuchServiceException;
 
 /**
  * A little SCA command shell.
@@ -62,7 +62,7 @@ public class Shell {
 
     private boolean useJline;
     final List<String> history = new ArrayList<String>();
-    private NodeFactory factory;
+    private TuscanyRuntime runtime;
     private String currentDomain = "";
     private Map<String, Node> standaloneNodes = new HashMap<String, Node>();
     private Map<String, Node> nodes = new HashMap<String, Node>();
@@ -74,10 +74,13 @@ public class Shell {
         boolean useJline = true;
         String domainURI = "default";
         
+        boolean showHelp = false;
         String contribution = null;
         for (String s : args) {
             if ("-nojline".equals(s)) {
                 useJline = false;
+            } else if ("-help".equals(s)) {
+                showHelp = true;
             } else {
                 if (s.startsWith("uri:") || s.startsWith("properties:")) {
                     domainURI = s;
@@ -90,11 +93,13 @@ public class Shell {
         if (contribution != null) {
             shell.install(Arrays.asList(new String[]{"install", contribution, "-start"}));
         }
-        shell.run(contribution==null);
+        
+        
+        shell.run(showHelp || contribution==null);
     }
 
     public Shell(String domainURI, boolean useJLine) {
-        this.factory = NodeFactory.newInstance();
+        this.runtime = TuscanyRuntime.newInstance();
         this.useJline = useJLine;
         if (domainURI != null) {
             domain(domainURI);
@@ -111,7 +116,7 @@ public class Shell {
                     return true;
                 }
             }
-            Node node = factory.createNode(domainURI);
+            Node node = runtime.createNode(domainURI);
             currentDomain = node.getDomainName();
             nodes.put(currentDomain, node);
         }
@@ -218,26 +223,12 @@ public class Shell {
         return true;
     }
 
-    boolean invoke(final List<String> toks) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    boolean invoke(final List<String> toks) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchServiceException {
         String endpointName = toks.get(1);
-        String serviceName = null;
-        if (endpointName.contains("/")) {
-            int i = endpointName.indexOf("/");
-            if (i < endpointName.length()-1) {
-                serviceName = endpointName.substring(i+1);
-            }
-        }
         String operationName = toks.get(2);
         String params[] = new String[toks.size()- 3];
         System.arraycopy(toks.toArray(), 3, params, 0, params.length);
-        
-        EndpointRegistry reg = ((NodeImpl)getNode()).getEndpointRegistry();
-        List<Endpoint> endpoints = reg.findEndpoint(endpointName);
-        if (endpoints.size() < 1) {
-            out.println(" no service found: " + endpointName);
-            return true;
-        }
-        Object proxy = ((RuntimeComponent)endpoints.get(0).getComponent()).getServiceReference(null, serviceName).getService();        
+        Object proxy = getNode().getService(null, endpointName);
         Object result = invoke(proxy, operationName, params);
         if (result != null && result.getClass().isArray()) {
             out.println(Arrays.toString((Object[])result));
@@ -297,7 +288,7 @@ public class Shell {
     }
 
     boolean load(final String configXmlUrl) throws ContributionReadException, ActivationException, ValidationException {
-        Node node = factory.createNodeFromXML(configXmlUrl);
+        Node node = runtime.createNodeFromXML(configXmlUrl);
         currentDomain = node.getDomainName();
         nodes.put(currentDomain, node);
         return true;
@@ -375,7 +366,7 @@ public class Shell {
         for (Node node : nodes.values()) {
             node.stop();
         }
-        factory.stop();
+        runtime.stop();
         for (Node node : standaloneNodes.values()) {
             node.stop();
         }
@@ -405,7 +396,7 @@ public class Shell {
 
     boolean start(String nodeName, String compositeURI, String contributionURL, String... dependentContributionURLs)
         throws ActivationException, ValidationException {
-        Node node = NodeFactory.newStandaloneNode(compositeURI, contributionURL, dependentContributionURLs);
+        Node node = TuscanyRuntime.runComposite(compositeURI, contributionURL, dependentContributionURLs);
         standaloneNodes.put(nodeName, node);
         return true;
     }
@@ -475,6 +466,7 @@ public class Shell {
     }
 
     List<String> read(Object r) throws IOException {
+        out.println();
         out.print(currentDomain + "> ");
         final String l;
         if (useJline) {
@@ -517,7 +509,7 @@ public class Shell {
     int quotedString(String[] toks, int i) {
         if (toks[i].startsWith("\"") || toks[i].startsWith("'")) {
             for (int j=i+1; j<toks.length; j++) {
-                if (toks[j].endsWith(toks[i].substring(0,0))) {
+                if (toks[j].endsWith(toks[i].substring(0,1))) {
                     return j;
                 }
             }
@@ -722,7 +714,6 @@ public class Shell {
         } else if ("bye".equalsIgnoreCase(command)) {
             helpBye();
         }
-        out.println();
         return true;
     }
 
@@ -756,7 +747,6 @@ public class Shell {
         if (useJline)
             out.println("Use Tab key for command and argument completion");
         out.println("For detailed help on each command do 'help <command>', for help of startup options do 'help startup'");
-        out.println();
         return true;
     }
 

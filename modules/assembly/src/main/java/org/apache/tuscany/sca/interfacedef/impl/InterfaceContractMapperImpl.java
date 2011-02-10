@@ -260,16 +260,14 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         List<DataType> sourceInputType = source.getInputType().getLogical();
         if (source.isWrapperStyle() && source.getWrapper() != null) {
             sourceInputType = source.getWrapper().getUnwrappedInputType().getLogical();
-            sourceOutputType = new ArrayList<DataType>();
-            sourceOutputType.add(source.getWrapper().getUnwrappedOutputType());
+            sourceOutputType = source.getWrapper().getUnwrappedOutputType().getLogical();
             checkSourceWrapper = false;
         }
         boolean checkTargetWrapper = true;
         List<DataType> targetInputType = target.getInputType().getLogical();
         if (target.isWrapperStyle() && target.getWrapper() != null) {
             targetInputType = target.getWrapper().getUnwrappedInputType().getLogical();
-            targetOutputType = new ArrayList<DataType>();
-            targetOutputType.add(target.getWrapper().getUnwrappedOutputType());
+            targetOutputType = target.getWrapper().getUnwrappedOutputType().getLogical();
             checkTargetWrapper = false;
         }
 
@@ -278,8 +276,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             return true;
         }
 */
-
-        
+       
         if ( sourceOutputType.size() != targetOutputType.size()) {
         	  if (audit != null){
                   audit.append("different number of output types");

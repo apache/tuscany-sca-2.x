@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.binding.atom;
 
@@ -49,7 +49,7 @@ import org.junit.Test;
  * Tests use of content negotiation for Atom binding in Tuscany.
  * Uses the SCA provided Provider composite to act as a server.
  * Uses the Abdera provided Client to act as a client.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class ContentNegotiationTest {
@@ -60,7 +60,7 @@ public class ContentNegotiationTest {
     protected static CustomerClient testService;
     protected static Abdera abdera;
     protected static AbderaClient client;
-    protected static Parser abderaParser;    
+    protected static Parser abderaParser;
     protected static String lastId;
 
     @BeforeClass
@@ -111,7 +111,7 @@ public class ContentNegotiationTest {
         entry.setContentElement(content);
 
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml; type=entry"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         // AtomTestCaseUtils.printRequestHeaders( "Post request headers", "   ", opts );
         IRI colUri = new IRI(providerURI).resolve("customer");
@@ -144,7 +144,7 @@ public class ContentNegotiationTest {
         Assert.assertEquals(200, res.getStatus());
         String returnedContentType = res.getContentType().toString().trim();
         // Assert.assertEquals(contentType, returnedContentType );
-        res.release();	    
+        res.release();
     }
 
     @Test
@@ -157,7 +157,7 @@ public class ContentNegotiationTest {
         ClientResponse res = client.get(colUri.toString() + "/" + lastId, opts);
         try {
             Assert.assertEquals(200, res.getStatus());
-            // Abdera 0.4 throws exception on getContentType with application/json.    	
+            // Abdera 0.4 throws exception on getContentType with application/json.
             // System.out.println( "ContentNegotiationTest.testJSONEntryGet contentType=" + res.getContentType());
             String contentType = res.getHeader( "Content-Type");
             Assert.assertTrue( -1 < contentType.indexOf( "application/json" ));
@@ -173,12 +173,12 @@ public class ContentNegotiationTest {
             // AtomTestCaseUtils.printResponseHeaders( "JSON Entry response headers:", "   ", res );
             // System.out.println( "ContentNegotiationTest.testJSONEntryGet JSON entry body=" + responseBody );
         } finally {
-            res.release();	    			
+            res.release();
         }
     }
 
     @Test
-    public void testXMLFeedGet() throws Exception {		
+    public void testXMLFeedGet() throws Exception {
         //System.out.println(">>>ContentNegotiationTest.testXMLFeedGet");
         RequestOptions opts = new RequestOptions();
         opts.setHeader( "Accept", "application/atom+xml" );
@@ -207,10 +207,10 @@ public class ContentNegotiationTest {
         } finally {
             res.release();
         }
-    }		
+    }
 
     @Test
-    public void testJSONFeedGet() throws Exception {		
+    public void testJSONFeedGet() throws Exception {
         //System.out.println(">>>ContentNegotiationTest.testJSONFeedGet");
         RequestOptions opts = new RequestOptions();
         opts.setHeader( "Accept", "application/json" );
@@ -221,7 +221,7 @@ public class ContentNegotiationTest {
         try {
             // Assert feed provided since no predicates
             Assert.assertEquals(200, res.getStatus());
-            // Abdera 0.4 throws exception on getContentType with application/json.    	
+            // Abdera 0.4 throws exception on getContentType with application/json.
             // System.out.println( "ContentNegotiationTest.testJSONEntryGet contentType=" + res.getContentType());
             String contentType = res.getHeader( "Content-Type");
             Assert.assertTrue( -1 < contentType.indexOf( "application/json" ));
@@ -243,7 +243,7 @@ public class ContentNegotiationTest {
     }
 
     protected String readResponse( Reader responseReader ) {
-        if ( responseReader == null ) return ""; 
+        if ( responseReader == null ) return "";
         StringBuffer sb = new StringBuffer(1024);
         try {
             int charValue = 0;

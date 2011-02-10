@@ -56,6 +56,7 @@ import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.ParameterMode;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
@@ -240,7 +241,9 @@ public class Interface2WSDLGenerator {
             if (useOutputWrapper) {
                 addDataType(dataTypes, dt2, helpers);
             } else {
-                dt2 = op.getOutputType().getLogical().get(0);
+                if (op.getOutputType().getLogical().size() != 0) {
+                    dt2 = op.getOutputType().getLogical().get(0);
+                } 
                 addDataType(dataTypes, dt2, helpers);
             }
             
@@ -646,7 +649,7 @@ public class Interface2WSDLGenerator {
                 outputMsg.addPart(generateWrapperPart(definition, op, helpers, wrappers, false));
             } else {
                 
-                if ((op.getOutputType() != null) && ( op.getOutputType().getLogical().get(0) != null)) {
+                if ((op.getOutputType() != null) && ( op.getOutputType().getLogical().size() != 0)) {
                 	DataType outputType = op.getOutputType().getLogical().get(0);
                     outputMsg.addPart(generatePart(definition, outputType, "return"));
                     elements = new ArrayList<ElementInfo>();
@@ -748,17 +751,23 @@ public class Interface2WSDLGenerator {
             */
 
             Method method = ((JavaOperation)operation).getJavaMethod();
+            
+            /*
+             * Making this change, though not understanding
+             * whether we can assume JAXWSJavaInterfaceProcessor was already used to process
+             */
             if (input) {
-                Class<?>[] paramTypes = method.getParameterTypes();
-                for (int i = 0; i < paramTypes.length; i++) {
-                    DataType dataType = operation.getInputType().getLogical().get(i);
-                    elements.set(i, getElementInfo(paramTypes[i], dataType, elements.get(i).getQName(), helpers));
+                List<DataType> inputDTs = operation.getInputType().getLogical();
+                for (int i = 0; i < inputDTs.size(); i++) {
+                    DataType nextInput = inputDTs.get(i);
+                    elements.set(i, getElementInfo(nextInput.getPhysical(), nextInput, elements.get(i).getQName(), helpers));
                 }
+
             } else {
-                Class<?> returnType = method.getReturnType();
-                if (returnType != Void.TYPE) {
-                    DataType dataType = operation.getOutputType().getLogical().get(0);
-                    elements.set(0, getElementInfo(returnType, dataType, elements.get(0).getQName(), helpers));
+                List<DataType> outputDTs = operation.getOutputType().getLogical();
+                for (int i = 0; i < outputDTs.size(); i++) {
+                    DataType nextOutput = outputDTs.get(i);
+                    elements.set(i, getElementInfo(nextOutput.getPhysical(), nextOutput, elements.get(i).getQName(), helpers));
                 }
             }
         }

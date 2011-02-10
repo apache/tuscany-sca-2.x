@@ -21,14 +21,13 @@ package org.apache.tuscany.sca.databinding.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.apache.tuscany.sca.databinding.Mediator.SOURCE_OPERATION;
+import static org.apache.tuscany.sca.databinding.Mediator.TARGET_OPERATION;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 
 public class TransformationContextImpl implements TransformationContext {
-    private static final String SOURCE_OPERATION = "source.operation";
-
-    private static final String TARGET_OPERATION = "target.operation";
 
     private DataType sourceDataType;
 

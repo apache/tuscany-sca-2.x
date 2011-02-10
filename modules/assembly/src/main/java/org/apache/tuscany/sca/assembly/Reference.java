@@ -67,5 +67,14 @@ public interface Reference extends AbstractReference, Contract {
      * @return the endpoint references implied by this reference
      */
     List<EndpointReference> getEndpointReferences();
-
+    
+    /**
+     * Indicate if the reference allows pass by reference for remotable operations
+     */
+    boolean isAllowsPassByReference();
+    
+    /**
+     * @param allowsPassByReference the allowsPassByReference to set
+     */
+    void setAllowsPassByReference(boolean allowsPassByReference);
 }

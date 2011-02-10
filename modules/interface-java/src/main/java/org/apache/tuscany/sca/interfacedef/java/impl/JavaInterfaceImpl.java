@@ -38,6 +38,9 @@ import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.policy.Intent;
 
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_INPUT;
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_OUTPUT;
+
 import org.oasisopen.sca.ResponseDispatch;
 
 /**
@@ -246,7 +249,8 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
      * @param requestParams - - async method input parameters
      * @return - the sync method return parameter
      */
-    private DataType<List<DataType>> prepareSyncReturnParam( DataType<List<DataType>> requestParams ) {
+    @SuppressWarnings("rawtypes")
+	private DataType<List<DataType>> prepareSyncReturnParam( DataType<List<DataType>> requestParams ) {
     	List<DataType> requestLogical = requestParams.getLogical();
     	int paramCount = requestLogical.size();
     	
@@ -275,8 +279,7 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
         returnTypes.add(returnDataType);
         
         DataType<List<DataType>> outputType =
-            new DataTypeImpl<List<DataType>>(requestParams.getDataBinding(),
-            		                         requestParams.getPhysical(), returnTypes);
+            new DataTypeImpl<List<DataType>>(IDL_OUTPUT, requestParams.getPhysical(), returnTypes);
     
         return outputType;
     } // end method prepareSyncReturnParam
@@ -298,13 +301,13 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
      */
     private boolean isAsyncServerOperation( Operation operation ) {
     	// Async form operations have:
-    	// 1) void return type
+    	// 1) void return type (equivalent to an output logical List of size '0')
     	// 2) name ending in "Async"
     	// 3) final parameter which is of ResponseDispatch<?> type
-    	DataType<?> response = operation.getOutputType().getLogical().get(0);
-    	if( response != null ) {
-    	   if ( response.getPhysical() != void.class ) return false;
-    	} // end if
+    	int size = operation.getOutputType().getLogical().size();
+    	if (size != 0) {
+    	    return false;
+    	}
     	
     	if ( !operation.getName().endsWith("Async") ) return false;
     	

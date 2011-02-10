@@ -46,10 +46,14 @@ import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointImpl;
+import org.apache.tuscany.sca.core.invocation.AsyncResponseInvoker;
+import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 public class TuscanyServiceProvider {
@@ -151,6 +155,9 @@ public class TuscanyServiceProvider {
 
         // Create a from EPR to hold the details of the callback endpoint, if any
         createCallbackEPR( callbackAddress, inMC, msg );
+        
+        // Set up any async response EPR
+        setupAsyncResponse( msg, callbackAddress );
 
         Message response = endpoint.invoke(msg);
         
@@ -199,6 +206,26 @@ public class TuscanyServiceProvider {
     } // end method 
     
     /**
+     * Setup the necessary infrastructure for the Async response handling
+     * @param msg
+     * @param callbackAddress 
+     */
+    private void setupAsyncResponse(Message msg, String callbackAddress) {
+    	if( !endpoint.isAsyncInvocation() ) return;
+
+    	endpoint.createAsyncServerCallback();
+    	RuntimeEndpointReference asyncCallback = endpoint.getAsyncServerCallback();
+    	
+    	// Create a response invoker, containing the callback address and add it to the message headers
+        AsyncResponseInvoker<String> respInvoker = 
+        	new AsyncResponseInvoker<String>(endpoint, asyncCallback,
+        			callbackAddress, 
+        			(String)msg.getHeaders().get(Constants.MESSAGE_ID),
+        			msg.getOperation().getName(), messageFactory);
+        msg.getHeaders().put(Constants.ASYNC_RESPONSE_INVOKER, respInvoker);
+	} // end method setupAsyncResponse
+
+	/**
      * If there is a callback address, create an EPR for the callback with a referenced endpoint that contains
      * the binding and the target callback address
      * @param callbackAddress - the callback address - may be null
@@ -216,7 +243,7 @@ public class TuscanyServiceProvider {
             from.setTargetEndpoint(fromEndpoint);
             from.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
             msg.setFrom(from);
-            Endpoint callbackEndpoint = assemblyFactory.createEndpoint();
+            RuntimeEndpoint callbackEndpoint = (RuntimeEndpoint)assemblyFactory.createEndpoint();
             //
             WebServiceBinding cbBinding = webServiceBindingFactory.createWebServiceBinding();
             cbBinding.setURI(callbackAddress);
@@ -262,7 +289,6 @@ public class TuscanyServiceProvider {
     	return callbackAddress;
     } // end method handleCallbackAddress
     
-    private static String WS_MESSAGE_ID = "WS_MESSAGE_ID";
     /**
      * Handle a SOAP wsa:MessageID header - place the contents into the Tuscany message for use by any callback
      * @param header - the SOAP Headers
@@ -274,11 +300,10 @@ public class TuscanyServiceProvider {
         if (messageID != null) {
         	String idValue = messageID.getText();
         	// Store the value of the message ID element into the message under "WS_MESSAGE_ID"...
-        	msg.getHeaders().put(WS_MESSAGE_ID, idValue);
+        	msg.getHeaders().put(Constants.MESSAGE_ID, idValue);
         } // end if
     } // end method handleMessageID
     
-    private static String WS_RELATES_TO = "WS_RELATES_TO";
     /**
      * Handle a SOAP wsa:RelatesTo header - place the contents into the Tuscany message for use by any callback
      * @param header - the SOAP Headers
@@ -289,8 +314,8 @@ public class TuscanyServiceProvider {
         OMElement messageID = header.getFirstChildWithName(QNAME_WSA_RELATESTO);
         if (messageID != null) {
         	String idValue = messageID.getText();
-        	// Store the value of the message ID element into the message under "WS_MESSAGE_ID"...
-        	msg.getHeaders().put(WS_MESSAGE_ID, idValue);
+        	// Store the value of the message ID element into the message under "RELATES_TO"...
+        	msg.getHeaders().put(Constants.RELATES_TO, idValue);
         } // end if
     } // end method handleMessageID
 } // end class AsyncResponseHandler

@@ -1173,15 +1173,21 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 writer.writeStartElement(name.getPrefix(), name.getLocalPart(), name.getNamespaceURI());
 
                                 int namespaces = reader.getNamespaceCount();
+                                boolean elementNamespaceAdded = false;
                                 for (int i = 0; i < namespaces; i++) {
                                     String prefix = reader.getNamespacePrefix(i);
                                     String ns = reader.getNamespaceURI(i);
                                     writer.writeNamespace(prefix, ns);
+                                    if(ns.equals(name.getNamespaceURI())){
+                                        elementNamespaceAdded = true;
+                                    }
                                 }
-
-                                if (!"".equals(name.getNamespaceURI())) {
+                                
+                                if (!"".equals(name.getNamespaceURI()) && 
+                                    !elementNamespaceAdded) {
                                     writer.writeNamespace(name.getPrefix(), name.getNamespaceURI());
                                 }
+                                
 
                                 // add the attributes for this element
                                 namespaces = reader.getAttributeCount();

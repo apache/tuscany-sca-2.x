@@ -222,9 +222,11 @@ public class InterfaceImpl implements Interface {
                             setDataBinding(d, dataBinding);
                         }
                     }
-                    DataType unwrappedOutputType = wrapper.getUnwrappedOutputType();
+                    DataType<List<DataType>> unwrappedOutputType = wrapper.getUnwrappedOutputType();
                     if (unwrappedOutputType != null) {
-                        setDataBinding(unwrappedOutputType, dataBinding);
+                        for (DataType d : unwrappedOutputType.getLogical()) {
+                            setDataBinding(d, dataBinding);
+                        }
                     }
                 }
             }

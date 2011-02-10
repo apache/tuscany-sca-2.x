@@ -27,6 +27,7 @@ import org.oasisopen.sca.annotation.Service;
 public class RemoteClientComponentImpl implements RemoteClientComponent, RemoteCallbackInterface {
 
     @Reference
+    @AllowsPassByReference
     protected RemoteServiceComponent aCallBackService;
     private static String callbackValue;
     private static String onewayValue;

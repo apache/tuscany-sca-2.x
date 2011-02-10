@@ -26,6 +26,12 @@ import java.util.Properties;
  *
  */
 public interface RuntimeProperties {
+    
+    /**
+     *  When true log with Level.FINE instead of Level.INFO
+     */
+    public static final String QUIET_LOGGING = "org.apache.tuscany.sca.quietLogging";
+    
     Properties getProperties();
     void setProperties(Properties properties);
 }

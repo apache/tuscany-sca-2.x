@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.ParameterMode;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 
@@ -64,6 +65,17 @@ public final class JavaInterfaceUtil {
         }
         Interface interface1 = operation.getInterface();
         int numParams = operation.getInputType().getLogical().size();
+        
+        // Account for OUT-only in matching. (Should we cache this number in JavaOperation?) 
+        List<ParameterMode> parmModes = operation.getParameterModes();
+        int numOutOnlyHolders = 0;
+        for (ParameterMode mode : parmModes) {
+            if (mode.equals(ParameterMode.OUT)) {
+                numOutOnlyHolders++;
+            }
+        }
+        numParams += numOutOnlyHolders;
+        
         if (interface1 != null && interface1.isRemotable()) {
             List<Method> matchingMethods = new ArrayList<Method>();
             for (Method m : implClass.getMethods()) {
@@ -138,6 +150,7 @@ public final class JavaInterfaceUtil {
     /**
      * @Deprecated
      */
+    //TODO - account for Holder(s)
     private static Class<?>[] getPhysicalTypes(Operation operation) {
         DataType<List<DataType>> inputType = operation.getInputType();
         if (inputType == null) {
@@ -178,6 +191,7 @@ public final class JavaInterfaceUtil {
      * 
      * @return true if the operation matches, false if does not
      */
+    //TODO - account for Holder(s)    
     private static boolean match(Operation operation, Method method) {
         Class<?>[] params = method.getParameterTypes();
         DataType<List<DataType>> inputType = operation.getInputType();

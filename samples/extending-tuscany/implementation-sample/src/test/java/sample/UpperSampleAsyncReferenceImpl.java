@@ -46,6 +46,8 @@ public class UpperSampleAsyncReferenceImpl {
     WSDLReference upper;
     
     Element response;
+    Element response2;
+    public static String responseVoid;
     CountDownLatch latch = new CountDownLatch( 1 );
     
     public String upper(String s) {
@@ -60,14 +62,17 @@ public class UpperSampleAsyncReferenceImpl {
         upper.callAsync("upper", ureq);
         
         try {
-            Thread.sleep(500);
-            latch.await(500, TimeUnit.SECONDS);
+            //Thread.sleep(500);
+            latch.await(5, TimeUnit.SECONDS);
         } catch (Exception ex) {
             // do nothing
         }
         
-        if( response != null ) return response.getTextContent();
-        else return "upper did not get called back";
+        if( response != null ) {
+            return response.getTextContent();
+        } else {
+            return "upper did not get called back";
+        }
     }
     
     /**
@@ -80,4 +85,56 @@ public class UpperSampleAsyncReferenceImpl {
         this.response = response;
         latch.countDown();
     }
+    
+    public String upper2(String s) {
+        out.println("UpperSampleAsyncReferenceImpl.upper2(" + s + ")");
+        
+        // TODO - I'm passing in the non-wrapped version of the parameter
+        //        here which doesn't seem right. Need to test that databinding
+        //        wraps it correctly
+        //final Element ureq = xdom("http://sample/upper-async", "s", text(s));
+        NodeBuilder node1 = elem("s", text(s));
+        final Element ureq = xdom("http://sample/upper-async", "upper", node1);
+        upper.callAsync("upper2", ureq);
+        
+        try {
+            //Thread.sleep(500);
+            latch.await(5, TimeUnit.SECONDS);
+        } catch (Exception ex) {
+            // do nothing
+        }
+        
+        // because we serialize the upper request and re-use it in upper2
+        // the response to upper2 comes back to the upper callback
+        if( response != null ) {
+            return response.getTextContent();
+        } else {
+            return "upper2 did not get called back";
+        }
+    }
+    
+    /**
+     *  In this implementation the convention is that the 
+     *  async callback arrives at an operation named
+     *  operationName + Callback
+     */
+    public void upper2Callback(Element response) {
+        out.println("UpperSampleAsyncReferenceImpl.upper2Callback(" + response.getTextContent() + ")");
+        this.response2 = response;
+        latch.countDown();
+    }    
+    
+    public String upperVoid(String s) {
+        out.println("UpperSampleAsyncReferenceImpl.upperVoid(" + s + ")");
+        
+        // TODO - I'm passing in the non-wrapped version of the parameter
+        //        here which doesn't seem right. Need to test that databinding
+        //        wraps it correctly
+        //final Element ureq = xdom("http://sample/upper-async", "s", text(s));
+        NodeBuilder node1 = elem("s", text(s));
+        final Element ureq = xdom("http://sample/upper-async", "upper", node1);
+        upper.callAsync("upperVoid", ureq);
+        return responseVoid;
+    }
+    
 }

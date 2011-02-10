@@ -80,4 +80,16 @@ public interface RuntimeEndpoint extends Endpoint, Invocable, Serializable {
      */
     public InterfaceContract getGeneratedWSDLContract(InterfaceContract interfaceContract);    
     
+    /**
+     * Creates the async callback for this Endpoint, if it does not already exist
+     * and stores it into the Endpoint
+     */
+    public void createAsyncServerCallback( );
+    
+    /**
+     * Gets the async callback reference for this Endpoint, if it exists
+     * @return
+     */
+    public RuntimeEndpointReference getAsyncServerCallback();
+    
 }

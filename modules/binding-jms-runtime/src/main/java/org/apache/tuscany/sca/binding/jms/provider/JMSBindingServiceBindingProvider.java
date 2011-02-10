@@ -205,11 +205,11 @@ public class JMSBindingServiceBindingProvider implements EndpointAsyncProvider, 
         bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT,
                                     new CallbackDestinationInterceptor(endpoint));
 
-        bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT, new HeaderServiceInterceptor(jmsBinding));
+        bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT, new HeaderServiceInterceptor(registry, jmsBinding));
 
         // add async response interceptor after header interceptor
         bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT,
-                                    new AsyncResponseDestinationInterceptor(endpoint));
+                                    new AsyncResponseDestinationInterceptor(endpoint, registry) );
 
         // add request wire format
         bindingChain.addInterceptor(requestWireFormatProvider.getPhase(), 

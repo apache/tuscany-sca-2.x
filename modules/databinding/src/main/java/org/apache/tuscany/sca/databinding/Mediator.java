@@ -33,6 +33,17 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  */
 public interface Mediator {
 
+	// Constants used by the databinding framework's TransformationContext metadata
+    public final static String SOURCE_OPERATION = "source.operation";
+    public final static String TARGET_OPERATION = "target.operation";
+
+    // Use String constants rather than an enum, in case the dependency isn't factored 
+    // out well enough and someone needs to use the String values. 
+    public static final String BODY_TYPE = "body.type";
+    public static final String BODY_TYPE_INPUT = "input";
+    public static final String BODY_TYPE_OUTPUT = "output";
+    public static final String BODY_TYPE_FAULT = "fault";
+    
     /**
      * Mediate the data from the source type to the target type
      * @param source The data to be mediated
@@ -201,4 +212,5 @@ public interface Mediator {
     TransformationContext createTransformationContext(DataType sourceDataType,
                                                       DataType targetDataType,
                                                       Map<String, Object> metadata);
+    
 }

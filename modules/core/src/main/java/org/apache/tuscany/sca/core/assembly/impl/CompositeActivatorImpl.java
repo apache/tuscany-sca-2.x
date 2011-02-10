@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.provider.EndpointReferenceAsyncProvider;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.provider.PolicyProvider;
@@ -345,6 +346,18 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 start(compositeContext, (ScopedRuntimeComponent)component);
             }
         }
+        
+        // start reference last. In allowing references to start at "start" time
+        // as well as when they are first used (for late bound references) we need
+        // to make sure that all potential target services and component implementations 
+        // are started first to take account of the default binding optimization case
+        for (Component component : composite.getComponents()) {
+            for (ComponentReference reference : component.getReferences()) {        
+                start(compositeContext, 
+                      (RuntimeComponent)component, 
+                      (RuntimeComponentReference)reference);
+            }
+        }
     }
 
     public void stop(CompositeContext compositeContext, Composite composite) {
@@ -396,9 +409,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 }
             }
 
-            // Reference bindings aren't started until the wire is first used although this may
-            // happen when the scope container is started in the case of @EagerInit
-
             for (ComponentService service : component.getServices()) {
                 if (logger.isLoggable(Level.FINE)) {
                     logger.fine("Starting component service: " + component.getURI() + "#" + service.getName());
@@ -408,6 +418,10 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     startEndpoint(compositeContext, ep, providers);
                 }
             }
+            
+            // Reference start is done after all components have been started to make sure everything
+            // is up and running before we try and connect references to services
+            
         } catch (Throwable e) {
             for (int i = providers.size() - 1; i >= 0; i--) {
                 try {
@@ -431,6 +445,87 @@ public class CompositeActivatorImpl implements CompositeActivator {
             throw (Error) e;
         }
     }
+
+    public void stop(CompositeContext compositeContext, Component component) {
+        if (!((RuntimeComponent)component).isStarted()) {
+            return;
+        }
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Stopping component: " + component.getURI());
+        }
+        for (ComponentService service : component.getServices()) {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Stopping component service: " + component.getURI() + "#" + service.getName());
+            }
+            for (Endpoint endpoint : service.getEndpoints()) {
+                RuntimeEndpoint ep = (RuntimeEndpoint) endpoint;
+                stop(ep);
+            }
+            service.getEndpoints().clear();
+        }
+        for (ComponentReference reference : component.getReferences()) {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Stopping component reference: " + component.getURI() + "#" + reference.getName());
+            }
+
+            for (EndpointReference endpointReference : reference.getEndpointReferences()) {
+                RuntimeEndpointReference epr = (RuntimeEndpointReference) endpointReference;
+                stop(epr);
+            }
+        }
+        Implementation implementation = component.getImplementation();
+        if (implementation instanceof Composite) {
+            stop(compositeContext, (Composite)implementation);
+        } else {
+            final ImplementationProvider implementationProvider = ((RuntimeComponent)component).getImplementationProvider();
+            if (implementationProvider != null) {
+                try {
+                    // Allow bindings to read properties. Requires PropertyPermission read in security policy.
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            implementationProvider.stop();
+                            return null;
+                          }
+                    });
+                } catch (Throwable ex){
+                    logger.log(Level.SEVERE, ex.getMessage(), ex);
+                }                  
+            }
+            for (PolicyProvider policyProvider : ((RuntimeComponent)component).getPolicyProviders()) {
+                try {
+                    policyProvider.stop();
+                } catch (Throwable ex){
+                    logger.log(Level.SEVERE, ex.getMessage(), ex);
+                }  
+            }
+        }
+
+        if (component instanceof ScopedRuntimeComponent) {
+            ScopedRuntimeComponent runtimeComponent = (ScopedRuntimeComponent)component;
+            if (runtimeComponent.getScopeContainer() != null &&
+                    runtimeComponent.getScopeContainer().getLifecycleState() != ScopeContainer.STOPPED) {
+                try {
+                    runtimeComponent.getScopeContainer().stop();
+                } catch (Throwable ex){
+                    logger.log(Level.SEVERE, ex.getMessage(), ex);
+                }                      
+            }
+        }
+
+        ((RuntimeComponent)component).setStarted(false);
+    }
+
+
+    // Scope container start/stop
+    // separate off from component start that all endpoints are 
+    // registered before any @EagerInit takes place
+    public void start(CompositeContext compositeContext, ScopedRuntimeComponent scopedRuntimeComponent) {
+        if (scopedRuntimeComponent.getScopeContainer() != null) {
+            scopedRuntimeComponent.getScopeContainer().start();
+        }
+    }
+    
+    // Service start/stop
 
     public void start(CompositeContext compositeContext, RuntimeEndpoint ep) {
         startEndpoint(compositeContext, ep, null);
@@ -461,120 +556,62 @@ public class CompositeActivatorImpl implements CompositeActivator {
             compositeContext.getEndpointRegistry().addEndpoint(ep);
         }
     }
-
-    public void stop(CompositeContext compositeContext, Component component) {
-        if (!((RuntimeComponent)component).isStarted()) {
-            return;
-        }
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine("Stopping component: " + component.getURI());
-        }
-        for (ComponentService service : component.getServices()) {
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine("Stopping component service: " + component.getURI() + "#" + service.getName());
-            }
-            for (Endpoint endpoint : service.getEndpoints()) {
-                RuntimeEndpoint ep = (RuntimeEndpoint) endpoint;
-                stop(ep);
-            }
-        }
-        for (ComponentReference reference : component.getReferences()) {
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine("Stopping component reference: " + component.getURI() + "#" + reference.getName());
-            }
-
-            for (EndpointReference endpointReference : reference.getEndpointReferences()) {
-                RuntimeEndpointReference epr = (RuntimeEndpointReference) endpointReference;
-                stop(epr);
-            }
-        }
-        Implementation implementation = component.getImplementation();
-        if (implementation instanceof Composite) {
-            stop(compositeContext, (Composite)implementation);
-        } else {
-            final ImplementationProvider implementationProvider = ((RuntimeComponent)component).getImplementationProvider();
-            if (implementationProvider != null) {
-                // Allow bindings to read properties. Requires PropertyPermission read in security policy.
-                AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                    public Object run() {
-                        implementationProvider.stop();
-                        return null;
-                      }
-                });
-            }
-            for (PolicyProvider policyProvider : ((RuntimeComponent)component).getPolicyProviders()) {
-                policyProvider.stop();
-            }
-        }
-
-        if (component instanceof ScopedRuntimeComponent) {
-            ScopedRuntimeComponent runtimeComponent = (ScopedRuntimeComponent)component;
-            if (runtimeComponent.getScopeContainer() != null &&
-                    runtimeComponent.getScopeContainer().getLifecycleState() != ScopeContainer.STOPPED) {
-                runtimeComponent.getScopeContainer().stop();
-            }
-        }
-
-        ((RuntimeComponent)component).setStarted(false);
-    }
-
+    
     public void stop(RuntimeEndpoint ep) {
         ep.getCompositeContext().getEndpointRegistry().removeEndpoint(ep);
         final ServiceBindingProvider bindingProvider = ep.getBindingProvider();
         if (bindingProvider != null) {
-            // Allow bindings to read properties. Requires PropertyPermission read in security policy.
-            AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                public Object run() {
-                    bindingProvider.stop();
-                    return null;
-                  }
-            });
+            try {
+                // Allow bindings to read properties. Requires PropertyPermission read in security policy.
+                AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                    public Object run() {
+                        bindingProvider.stop();
+                        return null;
+                      }
+                });
+            } catch (Throwable ex){
+                logger.log(Level.SEVERE, ex.getMessage(), ex);
+            }  
         }
         for (PolicyProvider policyProvider : ep.getPolicyProviders()) {
-            policyProvider.stop();
+            try {
+                policyProvider.stop();
+            } catch (Throwable ex){
+                logger.log(Level.SEVERE, ex.getMessage(), ex);
+            }                  
         }
     }
 
-    // Scope container start/stop
-    // separate off from component start that all endpoints are 
-    // registered before any @EagerInit takes place
-    public void start(CompositeContext compositeContext, ScopedRuntimeComponent scopedRuntimeComponent) {
-        if (scopedRuntimeComponent.getScopeContainer() != null) {
-            scopedRuntimeComponent.getScopeContainer().start();
-        }
-    }
-    
-    // Service start/stop
-
-    // done as part of the component start above
 
     // Reference start/stop
-    // Used by component context start
 
-    public void start(CompositeContext compositeContext, RuntimeComponent component, RuntimeComponentReference componentReference) {
-        synchronized (componentReference) {
-
-            if (!(componentReference instanceof RuntimeComponentReference)) {
-                return;
-            }
-
-            // create a wire for each endpoint reference. An endpoint reference says either that
-            // - a target has been specified and hence the reference has been wired in some way.
-            // - an unwired binding ha been specified
-            // and endpoint reference representing a wired reference may not at this point
-            // be resolved (the service to which it points may not be present in the
-            // current composite). Endpoint reference resolution takes place when the wire
-            // is first used (when the chains are created)
-            for (EndpointReference endpointReference : componentReference.getEndpointReferences()){
-                // addReferenceWire(compositeContext, endpointReference);
-                start(compositeContext, (RuntimeEndpointReference) endpointReference);
-            }
-
+    public void start(CompositeContext compositeContext, RuntimeComponent component, RuntimeComponentReference reference) {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Starting component reference: " + component.getURI() + "#" + reference.getName());
         }
-    }
+        
+        for (EndpointReference endpointReference : reference.getEndpointReferences()){
+            RuntimeEndpointReference epr = (RuntimeEndpointReference)endpointReference;
 
-    public void start(CompositeContext compositeContext, RuntimeEndpointReference endpointReference) {
-        compositeContext.getEndpointRegistry().addEndpointReference(endpointReference);
+            // If the reference is already resolved then start it now. This currently 
+            // important for async references which have native async bindings as the 
+            // reference provider has to register a response listener regardless of 
+            // whether the reference has been used or not. 
+            if (epr.getStatus() == EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED ||
+                epr.getStatus() == EndpointReference.Status.RESOLVED_BINDING){
+                
+                // As we only care about starting references at build time in the
+                // async case at the moment check that the binding supports native async
+                // and that the reference is an async reference
+                ReferenceBindingProvider bindingProvider = epr.getBindingProvider();
+                if (bindingProvider instanceof EndpointReferenceAsyncProvider &&
+                    ((EndpointReferenceAsyncProvider)bindingProvider).supportsNativeAsync() &&
+                    epr.isAsyncInvocation()){
+                    // it's resolved so start it now
+                    start(compositeContext, epr);
+                }
+            }
+        }
     }
 
     public void stop(Component component, ComponentReference reference) {
@@ -587,6 +624,14 @@ public class CompositeActivatorImpl implements CompositeActivator {
             stop(epr);
         }
     }
+    
+    public void start(CompositeContext compositeContext, RuntimeEndpointReference endpointReference) {
+        compositeContext.getEndpointRegistry().addEndpointReference(endpointReference);
+        
+        // The act of getting invocation chains starts the reference in the late binding case
+        // so just use that here
+        endpointReference.getInvocationChains();
+    }
 
     public void stop(RuntimeEndpointReference epr) {
         if (epr.isStarted()) {
@@ -597,10 +642,18 @@ public class CompositeActivatorImpl implements CompositeActivator {
             compositeContext.getEndpointRegistry().removeEndpointReference(epr);
             ReferenceBindingProvider bindingProvider = epr.getBindingProvider();
             if (bindingProvider != null) {
-                bindingProvider.stop();
+                try {
+                    bindingProvider.stop();
+                } catch (Throwable ex){
+                    logger.log(Level.SEVERE, ex.getMessage(), ex);
+                }  
             }
             for (PolicyProvider policyProvider : epr.getPolicyProviders()) {
-                policyProvider.stop();
+                try {
+                    policyProvider.stop();
+                } catch (Throwable ex){
+                    logger.log(Level.SEVERE, ex.getMessage(), ex);
+                }                      
             }
         }
     }

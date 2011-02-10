@@ -111,6 +111,23 @@ public abstract class BaseEndpointRegistry implements EndpointRegistry, LifeCycl
     public List<EndpointReference> findEndpointReference(Endpoint endpoint) {
         return endpointreferences;
     }
+    
+    /** 
+     * Returns a list of EndpointReferences that have a URI that matches a given URI
+     * @param uri - the URI to match
+     * @return a List of EndpointReferences that match the supplied URI - if there are none
+     * an *empty* list is returned (not null)
+     */
+    public List<EndpointReference> findEndpointReferences( String uri ) {
+    	List<EndpointReference> theRefs = new ArrayList<EndpointReference>();
+    	if( uri == null ) return theRefs;
+    	
+    	for( EndpointReference ref : endpointreferences ) {
+    		if( uri.equals(ref.getURI()) ) theRefs.add(ref);
+    	} // end for
+    	
+    	return theRefs;
+    } // end method findEndpointReference
 
     public abstract Endpoint getEndpoint(String uri);
 

@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.databinding.impl;
 
-import static org.apache.tuscany.sca.databinding.DataBinding.IDL_FAULT;
-import static org.apache.tuscany.sca.databinding.DataBinding.IDL_OUTPUT;
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_FAULT;
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_OUTPUT;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -51,6 +51,7 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.ParameterMode;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
@@ -64,8 +65,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * @tuscany.spi.extension.asclient
  */
 public class MediatorImpl implements Mediator {
-    private static final String TARGET_OPERATION = "target.operation";
-    private static final String SOURCE_OPERATION = "source.operation";
+
     private ExtensionPointRegistry registry;
     private DataBindingExtensionPoint dataBindings;
     private TransformerExtensionPoint transformers;
@@ -327,6 +327,10 @@ public class MediatorImpl implements Mediator {
         if (sourceOperation != null) {
             context.put(TARGET_OPERATION, sourceOperation);
         }
+        if (context.get(BODY_TYPE) == null) {
+        	context.put(BODY_TYPE, BODY_TYPE_FAULT);
+        }
+
 
         Object newResult =
             transformException(result, targetDataType, sourceDataType, targetFaultType, sourceFaultType, context);
@@ -387,8 +391,8 @@ public class MediatorImpl implements Mediator {
                                 Operation targetOperation,
                                 Map<String, Object> metadata) {
        
-        DataType sourceType = new DataTypeImpl<DataType>(IDL_OUTPUT, Object.class, sourceOperation.getOutputType());
-        DataType targetType = new DataTypeImpl<DataType>(IDL_OUTPUT, Object.class, targetOperation.getOutputType());
+        DataType sourceType = sourceOperation.getOutputType();
+        DataType targetType = targetOperation.getOutputType();
         
         if (sourceType == targetType || (sourceType != null && sourceType.equals(targetType))) {
             return output;
@@ -403,6 +407,10 @@ public class MediatorImpl implements Mediator {
         if (sourceOperation != null) {
             context.put(TARGET_OPERATION, sourceOperation);
         }
+        if (context.get(BODY_TYPE) == null) {
+        	context.put(BODY_TYPE, BODY_TYPE_OUTPUT);
+        }
+
         return mediate(output, targetType, sourceType, context);
     }
 
@@ -429,6 +437,10 @@ public class MediatorImpl implements Mediator {
         if (targetOperation != null) {
             context.put(TARGET_OPERATION, targetOperation);
         }
+        if (context.get(BODY_TYPE) == null) {
+        	context.put(BODY_TYPE, BODY_TYPE_INPUT);
+        }
+        
         return mediate(input, sourceType, targetType, context);
     }
 
@@ -547,7 +559,9 @@ public class MediatorImpl implements Mediator {
         List<DataType> inputTypesTarget = targetOperation == null ? null : targetOperation.getInputType().getLogical();
         Object[] copy = new Object[data.length];
         Map<Object, Object> map = new IdentityHashMap<Object, Object>();
-        for (int i = 0, size = inputTypes.size(); i < size; i++) {
+        
+        // OUT-only parameters have already been filtered out of the inputTypes List.
+        for (int i = 0; i < inputTypes.size(); i++) {
             Object arg = data[i];
             if (arg == null) {
                 copy[i] = null;
@@ -560,8 +574,8 @@ public class MediatorImpl implements Mediator {
                         copy(arg,
                              inputTypes.get(i),
                              inputTypesTarget == null ? null : inputTypesTarget.get(i),
-                             sourceOperation,
-                             targetOperation);
+                                 sourceOperation,
+                                 targetOperation);
                     map.put(arg, copiedArg);
                     copy[i] = copiedArg;
                 }
@@ -579,7 +593,7 @@ public class MediatorImpl implements Mediator {
     		return null;
     	Object[] output = null;
     	
-    	if ( !sourceOperation.hasHolders() ) {
+    	if ( !sourceOperation.hasArrayWrappedOutput() ) {
     		output = new Object[] {data};
     	} else {
     		output = (Object[])data;    		
@@ -609,7 +623,7 @@ public class MediatorImpl implements Mediator {
                 }
             }
         }
-        if ( !targetOperation.hasHolders()) {
+        if ( !targetOperation.hasArrayWrappedOutput()) {
     		return copy[0];
         } else {
         	return copy;

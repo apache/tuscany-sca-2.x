@@ -38,6 +38,7 @@ import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.MappingJsonFactory;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.deser.CustomDeserializerFactory;
 import org.codehaus.jackson.map.deser.StdDeserializerProvider;
 import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
@@ -76,8 +77,8 @@ public class JacksonHelper {
                             // Ignore
                         }
                         if (xmlAdapter != null) {
-                            XmlAdapterJsonDeserializer deserializer = new XmlAdapterJsonDeserializer(xmlAdapter);
-                            XmlAdapterJsonSerializer serializer = new XmlAdapterJsonSerializer(xmlAdapter);
+                            XmlAdapterJsonDeserializer deserializer = new XmlAdapterJsonDeserializer(xmlAdapter, null);
+                            XmlAdapterJsonSerializer serializer = new XmlAdapterJsonSerializer(xmlAdapter, null);
                             deserializerFactory.addSpecificMapping(a.type(), deserializer);
                             serializerFactory.addGenericMapping(a.type(), serializer);
                             StdDeserializerProvider deserializerProvider =
@@ -100,6 +101,7 @@ public class JacksonHelper {
         // [rfeng] To avoid complaints about javaClass
         mapper.getDeserializationConfig().set(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, Boolean.FALSE);
         mapper.getSerializationConfig().setAnnotationIntrospector(pair);
+        mapper.getSerializationConfig().setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
         return mapper;
     }
 

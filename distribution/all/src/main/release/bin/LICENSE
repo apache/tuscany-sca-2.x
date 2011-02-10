@@ -267,9 +267,9 @@ The following components come under Apache Software License 2.0
  httpclient-4.0.3.jar
  httpcore-4.0.1.jar
  jabsorb-1.3.1.jar
- jackson-core-asl-1.6.3.jar
- jackson-mapper-asl-1.6.3.jar
- jackson-xc-1.6.3.jar
+ jackson-core-asl-1.7.1.jar
+ jackson-mapper-asl-1.7.1.jar
+ jackson-xc-1.7.1.jar
  jettison-1.2.jar
  jetty-6.1.19.jar
  jetty-util-6.1.19.jar
@@ -402,6 +402,10 @@ The Equinox OSGi Runtime jars:
     osgi-3.5.0-v20090520.jar
     common-3.5.0-v20090520-1800.jar
     services-3.2.0-v20090520-1800.jar
+    app-1.2.0-v20090520-1800.jar
+    jobs-3.4.0-v20080512.jar
+    preferences-3.2.300-v20090520-1800.jar
+    registry-3.4.100-v20090520-1800.jar
 
 Tuscany SDO dependencies on Eclipse:
     ecore-2.2.3.jar
@@ -410,11 +414,7 @@ Tuscany SDO dependencies on Eclipse:
     common-2.2.3.jar
     xsd-2.2.3.jar
     runtime-3.4.0-v20080512.jar, 
-    app-1.2.0-v20090520-1800.jar
     contenttype-3.3.0-v20080604-1400.jar
-    jobs-3.4.0-v20080512.jar 
-    preferences-3.2.300-v20090520-1800.jar
-    registry-3.4.100-v20090520-1800.jar
 
 Eclipse Public License - v 1.0
 
@@ -1274,10 +1274,10 @@ $Id: LICENSE.txt,v 1.11 2004/02/06 09:32:57 jhunter Exp $
 ================================================================================
 
 For Saxon including 
-   saxon-9.x.jar
-   saxon-dom-9.x.jar
-   saxon-xpath-9.x.jar
-   saxon-xqj-9.x.jar
+   saxon-9.1.0.8.jar
+   saxon-9.1.0.8-dom.jar
+   saxon-9.1.0.8-xpath.jar
+   saxon-9.1.0.8-xqj.jar
 
  MOZILLA PUBLIC LICENSE
 Version 1.0

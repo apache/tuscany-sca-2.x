@@ -19,10 +19,10 @@
 
 package org.apache.tuscany.sca.databinding.json;
 
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 import org.jabsorb.JSONSerializer;
 import org.jabsorb.serializer.SerializerState;
@@ -38,7 +38,7 @@ public class JavaBean2JSON extends BaseTransformer<Object, Object> implements Pu
             throw new TransformationException(e);
         }
         serializer.setMarshallClassHints(true);
-        serializer.setMarshallNullAttributes(true);
+        serializer.setMarshallNullAttributes(false);
     }
 
     @Override

@@ -20,9 +20,11 @@
 package org.apache.tuscany.sca.binding.sca.provider;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.invocation.AsyncResponseInvoker;
 import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * @version $Rev: 989157 $ $Date: 2010-08-25 16:02:01 +0100 (Wed, 25 Aug 2010) $
@@ -34,8 +36,21 @@ public class SCABindingAsyncResponseInvoker implements InvokerAsyncResponse {
     }
     
     // TODO - this only works for the local case!
-    public void invokeAsyncResponse(Message msg) {
-        RuntimeEndpointReference epr = (RuntimeEndpointReference)msg.getFrom();
-        epr.invokeAsyncResponse(msg); 
-    }
+    @SuppressWarnings("unchecked")
+	public void invokeAsyncResponse(Message msg) {
+    	AsyncResponseInvoker<RuntimeEndpointReference> asyncInvoker = 
+    		(AsyncResponseInvoker<RuntimeEndpointReference>)msg.getHeaders().get("ASYNC_RESPONSE_INVOKER");
+    	RuntimeEndpointReference epr;
+    	if( asyncInvoker != null ) {
+    		epr = asyncInvoker.getResponseTargetAddress();
+    	} else {
+    		epr = (RuntimeEndpointReference)msg.getFrom();
+    	} // end if
+    	if( epr != null ) {
+    		epr.invokeAsyncResponse(msg); 
+    	} else {
+    		throw new ServiceRuntimeException("SCABindingAsyncResponseInvoker - invokeAsyncResponse has null epr");
+    	} // end if
+        
+    } // end method invokeAsyncResponse
 }

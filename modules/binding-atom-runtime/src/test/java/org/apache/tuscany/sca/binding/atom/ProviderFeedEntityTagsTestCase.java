@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.binding.atom;
 
@@ -50,10 +50,10 @@ import org.junit.Test;
 /**
  * Tests use of server provided feed entity tags for Atom binding in Tuscany.
  * Tests conditional gets (e.g. get if-none-match) or conditional posts (post if-match)
- * using entity tags and last modified entries in headers. 
+ * using entity tags and last modified entries in headers.
  * Uses the SCA provided Provider composite to act as a server.
  * Uses the Abdera provided Client to act as a client.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class ProviderFeedEntityTagsTestCase {
@@ -64,7 +64,7 @@ public class ProviderFeedEntityTagsTestCase {
     protected static CustomerClient testService;
     protected static Abdera abdera;
     protected static AbderaClient client;
-    protected static Parser abderaParser;    
+    protected static Parser abderaParser;
     protected static String eTag;
     protected static Date lastModified;
     protected static final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss Z" ); // RFC 822 date time
@@ -97,7 +97,7 @@ public class ProviderFeedEntityTagsTestCase {
     }
 
     @Test
-    public void testFeedBasics() throws Exception {		
+    public void testFeedBasics() throws Exception {
         // System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedBasics");
         // Normal feed request
         ClientResponse res = client.get(providerURI);
@@ -126,14 +126,14 @@ public class ProviderFeedEntityTagsTestCase {
         } finally {
             res.release();
         }
-    }		
+    }
 
     @Test
-    public void testUnmodifiedGetIfMatch() throws Exception {		
+    public void testUnmodifiedGetIfMatch() throws Exception {
         //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfMatch");
         // Feed request with predicates
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         opts.setHeader( "If-Match", eTag);
 
@@ -154,14 +154,14 @@ public class ProviderFeedEntityTagsTestCase {
         } finally {
             res.release();
         }
-    }		
+    }
 
     @Test
-    public void testUnmodifiedGetIfNoneMatch() throws Exception {		
+    public void testUnmodifiedGetIfNoneMatch() throws Exception {
         //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfNoneMatch");
         // Feed request with predicates
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         opts.setHeader( "If-None-Match", eTag);
 
@@ -173,14 +173,14 @@ public class ProviderFeedEntityTagsTestCase {
         } finally {
             res.release();
         }
-    }		
+    }
 
     @Test
-    public void testUnmodifiedGetIfUnModified() throws Exception {		
+    public void testUnmodifiedGetIfUnModified() throws Exception {
         //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfUnModified");
         // Feed request with predicates
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         opts.setHeader( "If-Unmodified-Since", dateFormat.format( new Date() ));
 
@@ -193,14 +193,14 @@ public class ProviderFeedEntityTagsTestCase {
         } finally {
             res.release();
         }
-    }		
+    }
 
     @Test
-    public void testUnmodifiedGetIfModified() throws Exception {		
+    public void testUnmodifiedGetIfModified() throws Exception {
         //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfModified");
         // Feed request with predicates
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         opts.setHeader( "If-Modified-Since", dateFormat.format( new Date( 0 ) ));
 
@@ -214,14 +214,14 @@ public class ProviderFeedEntityTagsTestCase {
             String thisETag = res.getHeader("ETag");
             Assert.assertNotNull( thisETag );
             Date thisLastModified = res.getLastModified();
-            Assert.assertNotNull( thisLastModified );                        
+            Assert.assertNotNull( thisLastModified );
         } finally {
             res.release();
         }
-    }		
+    }
 
     @Test
-    public void testModifiedGetIfNoneMatch() throws Exception {		
+    public void testModifiedGetIfNoneMatch() throws Exception {
         //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedModifiedGetIfNoneMatch");
         // Post some new content to the feed.
         Factory factory = abdera.getFactory();
@@ -236,14 +236,14 @@ public class ProviderFeedEntityTagsTestCase {
         entry.setContentElement(content);
 
         RequestOptions opts = new RequestOptions();
-        String contentType = "application/atom+xml; type=entry"; 
+        String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         IRI colUri = new IRI(providerURI).resolve("customer");
         ClientResponse res = client.post(colUri.toString(), entry, opts);
 
         // Feed request with predicates
         opts = new RequestOptions();
-        contentType = "application/atom+xml"; 
+        contentType = "application/atom+xml";
         opts.setContentType(contentType);
         opts.setHeader( "If-None-Match", eTag);
 
@@ -258,14 +258,14 @@ public class ProviderFeedEntityTagsTestCase {
         } finally {
             res.release();
         }
-    }		
+    }
 
     @Test
-    public void testModifiedGetIfMatch() throws Exception {		
+    public void testModifiedGetIfMatch() throws Exception {
         //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedModifiedGetIfMatch");
         // Feed request with predicates
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         opts.setHeader( "If-Match", eTag);
 
@@ -287,36 +287,36 @@ public class ProviderFeedEntityTagsTestCase {
         } finally {
             res.release();
         }
-    }		
+    }
 
     @Test
-    public void testModifiedGetIfUnModified() throws Exception {		
+    public void testModifiedGetIfUnModified() throws Exception {
         //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedModifiedGetIfUnModified");
         // Feed request with predicates
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         opts.setHeader( "If-Unmodified-Since", dateFormat.format( previousSecond(lastModified) ));
 
         ClientResponse res = client.get(providerURI, opts);
         Assert.assertNotNull(res);
         try {
-            // Should return 412 - Feed not provided since feed is modified since.          
+            // Should return 412 - Feed not provided since feed is modified since.
             Assert.assertEquals(412, res.getStatus());
         } finally {
             res.release();
         }
-    }		
+    }
 
     @Test
-    public void testModifiedGetIfModified() throws Exception {		
+    public void testModifiedGetIfModified() throws Exception {
         //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedModifiedGetIfModified");
         // Feed request with predicates
         RequestOptions opts = new RequestOptions();
-        final String contentType = "application/atom+xml"; 
+        final String contentType = "application/atom+xml";
         opts.setContentType(contentType);
         opts.setHeader( "If-Modified-Since", dateFormat.format( new Date() ));
-        
+
         ClientResponse res = client.get(providerURI, opts);
         Assert.assertNotNull(res);
         try {
@@ -341,11 +341,11 @@ public class ProviderFeedEntityTagsTestCase {
             String thisETag = res.getHeader("ETag");
             Assert.assertNotNull( thisETag );
             Date thisLastModified = res.getLastModified();
-            Assert.assertNotNull( thisLastModified );                        
+            Assert.assertNotNull( thisLastModified );
         } finally {
             res.release();
         }
-    }		
+    }
 
 
     public static void printFeed( String title, String indent, Feed feed ) {

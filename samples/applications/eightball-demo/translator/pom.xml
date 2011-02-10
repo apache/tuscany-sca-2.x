@@ -49,7 +49,7 @@
 	</dependencies>
 	<build>
             <defaultGoal>install</defaultGoal>
-            <finalName>${artifactId}</finalName>
+            <finalName>${project.artifactId}</finalName>
 		<resources>
 			<resource>
 				<filtering>false</filtering>
@@ -104,6 +104,6 @@
 		</plugins>
 	</build>
 	<properties>
-		<tuscany.version>2.0-Beta2-SNAPSHOT</tuscany.version>
+		<tuscany.version>2.0-SNAPSHOT</tuscany.version>
 	</properties>
 	</project>

@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -284,5 +285,22 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
      */
     public Map<String, String> getAttributes(String serviceType) {
         return serviceAttributes.get(serviceType);
+    }
+    
+    /**
+     * Remove the duplicate service declarations. The duplication happens when we have the same jar from more than one entries on the classpath
+     * @param declarations
+     * @return
+     */
+    public static Collection<ServiceDeclaration> removeDuplicateDeclarations(Collection<ServiceDeclaration> declarations) {
+        // Use LinkedHashMap to maintain the insertion order
+        Map<String, ServiceDeclaration> map = new LinkedHashMap<String, ServiceDeclaration>();
+        for (ServiceDeclaration sd : declarations) {
+            ServiceDeclaration existed = map.put(sd.getClassName(), sd);
+            if (existed != null) {
+                logger.warning("Duplicate service declaration is ignored: " + existed + " <-> " + sd);
+            }
+        }
+        return map.values();
     }
 }

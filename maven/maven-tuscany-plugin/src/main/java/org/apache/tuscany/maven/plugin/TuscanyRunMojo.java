@@ -30,15 +30,16 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.shell.Shell;
 
 /**
- * Maven Mojo to run the SCA contribution project in Tuscany.
+ * Maven Mojo to run the Tuscany Shell and install the project as an SCA contribution.
+ * 
  * Invoked with "mvn tuscany:run"
  * 
  * @goal run
  * @requiresDependencyResolution runtime
- * @execute phase="package"
+ * @execute phase="test-compile"
  * @description Runs Tuscany directly from a SCA conribution maven project
  */
 public class TuscanyRunMojo extends AbstractMojo {
@@ -85,16 +86,17 @@ public class TuscanyRunMojo extends AbstractMojo {
     protected File finalName;
 
     /**
-     * @parameter expression="${config}" default-value="uri:default"
+     * @parameter expression="${config}" default-value="default"
      */
     private String config;
+
     /**
      * @parameter expression="${contributions}" 
      */
     private String[] contributions;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        getLog().info("Starting Tuscany Runtime...");
+        getLog().info("Starting Tuscany Shell...");
 
         List<String> contributionList = new ArrayList<String>();
 
@@ -102,9 +104,17 @@ public class TuscanyRunMojo extends AbstractMojo {
 
         addAdditionalContributions(contributionList);
 
-        Node node = NodeFactory.newInstance(config).createNode((String)null, contributionList.toArray(new String[contributionList.size()])).start();
+        contributionList.add(0, "-help");
+        contributionList.add(0, config);
         
-        waitForShutdown(node, getLog());
+        try {
+            Shell.main(contributionList.toArray(new String[contributionList.size()]));
+        } catch (Exception e) {
+            throw new MojoExecutionException("Exception in Shell", e);
+        }
+        
+//        waitForShutdown(new Ob, getLog());
+        getLog().info("Tuscany Shell stopped.");
     }
 
     private void addAdditionalContributions(List<String> contributionList) throws MojoExecutionException {

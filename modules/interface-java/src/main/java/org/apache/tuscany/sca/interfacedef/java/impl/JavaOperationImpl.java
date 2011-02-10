@@ -34,7 +34,8 @@ public class JavaOperationImpl extends OperationImpl implements JavaOperation {
     private Method method;
     private String action;
     private boolean isAsyncServer = false;
-
+    private boolean hasReturnTypeVoid = false;
+    
     public Method getJavaMethod() {
         return method;
     }
@@ -95,6 +96,16 @@ public class JavaOperationImpl extends OperationImpl implements JavaOperation {
     @Override
     public String toString() {
         return method == null ? "null" : method.toGenericString();
+    }
+
+    @Override
+    public boolean hasReturnTypeVoid() {
+        return hasReturnTypeVoid;
+    }
+    
+    @Override
+    public void setReturnTypeVoid(boolean flag) {
+        hasReturnTypeVoid = flag;
     }
 
 }

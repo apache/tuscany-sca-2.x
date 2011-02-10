@@ -231,18 +231,35 @@ public class EndpointReferenceImpl implements EndpointReference {
         this.status = status;
     }
     
+    /**
+     * Indicates whether this EndpointReference is connected to a target service which is asynchronous.
+     * This can be marked in one of 3 ways:
+     * - the EndpointReference has the "asyncInvocation" intent set
+     * - the EndpointReference has a name ending with "_asyncCallback"
+     * - there is a target Endpoint configured that itself is marked as async invocation
+     * @return - true if the service is asynchronous invocation, false otherwise
+     */
     public boolean isAsyncInvocation() {
-        if (reference.getName().endsWith("_asyncCallback")){
+        if (reference != null && reference.getName().endsWith("_asyncCallback")){
             // this is a response reference at the service component so don't create a
             // response service. The response service will be at the reference component
             return false;
-        }
+        } // end if 
         
+        // Check if the EndpointReference is explicitly marked with the asyncInvocation intent
         for(Intent intent : getRequiredIntents()){
             if (intent.getName().getLocalPart().equals("asyncInvocation")){
                 return true;
-            }
-        }
+            } // end if 
+        } // end for
+        
+        // Check if the target Endpoint is marked as asyncInvocation
+        if( targetEndpoint != null ) {
+        	if (targetEndpoint.isAsyncInvocation()) {
+        		return true;
+			} // end if
+        } // end if
         return false;
-    }
-}
+    } // end method isAsyncInvocation
+    
+} // end class EndpointReferenceImpl

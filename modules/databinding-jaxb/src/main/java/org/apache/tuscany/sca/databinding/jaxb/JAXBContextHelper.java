@@ -462,9 +462,8 @@ public final class JAXBContextHelper {
         {
             for (DataType dt1 : op.getInputType().getLogical()) {
                 dataTypes.add(dt1);
-            }
-            DataType dt2 = op.getOutputType();
-            if (dt2 != null) {
+            }            
+            for (DataType dt2 : op.getOutputType().getLogical()) {
                 dataTypes.add(dt2);
             }
         }

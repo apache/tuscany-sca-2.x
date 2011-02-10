@@ -18,64 +18,70 @@
  * under the License.    
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
 
-	<groupId>${groupId}</groupId>
-	<artifactId>${artifactId}</artifactId>
-	<version>${version}</version>
-	<name>${artifactId}</name>
+   <groupId>${groupId}</groupId>
+   <artifactId>${artifactId}</artifactId>
+   <version>${version}</version>
+   <packaging>jar</packaging>
 
-	<dependencies>
+   <name>${artifactId}</name>
 
-            <dependency>
-               <groupId>org.oasis-open.sca.j</groupId>
-               <artifactId>sca-caa-apis</artifactId>
-               <version>1.1-CD04</version>
-               <scope>provided</scope>
-            </dependency>
+   <properties>
+      <tuscany.version>2.0-SNAPSHOT</tuscany.version>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   </properties>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
-			<scope>test</scope>
-		</dependency>
+   <dependencies>
 
-	</dependencies>
+      <dependency>
+         <groupId>org.apache.tuscany.sca</groupId>
+         <artifactId>tuscany-sca-api</artifactId>
+         <version>${tuscany.version}</version>
+         <scope>provided</scope>
+      </dependency>
 
-	<build>
-            <defaultGoal>install</defaultGoal>
-            <finalName>${artifactId}</finalName>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.8.1</version>
+         <scope>test</scope>
+      </dependency>
 
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<optimise>true</optimise>
-					<debug>true</debug>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.tuscany.maven.plugins</groupId>
-				<artifactId>maven-tuscany-plugin</artifactId>
-			</plugin>
-		</plugins>
+      <dependency>
+         <groupId>org.apache.tuscany.sca</groupId>
+         <artifactId>tuscany-base-runtime</artifactId>
+         <version>${tuscany.version}</version>
+         <scope>test</scope>
+      </dependency>
 
-	</build>
+   </dependencies>
 
-      <!-- OASIS SVN repo (for sca-api jar) -->
-      <repositories>
-         <repository>
-            <id>oasis.svn</id>
-            <url>http://tools.oasis-open.org/version-control/svn/sca-j/Release/</url>
-            <releases>
-               <enabled>true</enabled>
-            </releases>
-         </repository>
-      </repositories>
+   <build>
+      <defaultGoal>install</defaultGoal>
+      <finalName>${artifactId}</finalName>
+
+      <plugins>
+         <plugin>
+            <groupId>org.apache.tuscany.maven.plugins</groupId>
+            <artifactId>maven-tuscany-plugin</artifactId>
+            <version>${tuscany.version}</version>
+         </plugin>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>2.3.2</version>
+            <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+               <optimise>true</optimise>
+               <debug>true</debug>
+            </configuration>
+         </plugin>
+      </plugins>
+
+   </build>
 
 </project>

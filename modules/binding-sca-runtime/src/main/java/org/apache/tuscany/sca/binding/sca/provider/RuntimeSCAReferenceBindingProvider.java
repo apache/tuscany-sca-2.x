@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.binding.sca.provider;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -63,10 +64,12 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceAsyn
     private Mediator mediator;
     private InterfaceContractMapper interfaceContractMapper;
     private SCABindingMapper scaBindingMapper;
+    private ExtensionPointRegistry registry;
 
     public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
                                               RuntimeEndpointReference endpointReference) {
-        this.endpointReference = endpointReference;
+        this.registry = extensionPoints;
+    	this.endpointReference = endpointReference;
         this.component = (RuntimeComponent)endpointReference.getComponent();
         this.reference = (RuntimeComponentReference)endpointReference.getReference();
         this.binding = (SCABinding)endpointReference.getBinding();
@@ -142,8 +145,10 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceAsyn
                         passByValue = false;
                     }
                 } else {
-//                    boolean allowsPBR = chain.allowsPassByReference(); TODO: TUSCANY-3479 this breaks the conformance tests as it needs to consider _both_ ends
-                    boolean allowsPBR = false;
+                    Reference ref = epr.getReference().getReference();
+                    // The spec says both ref and service needs to allowsPassByReference
+                    boolean allowsPBR = (ref != null && ref.isAllowsPassByReference()) && chain.allowsPassByReference();
+                    
                     if (allowsPBR && interfaceContractMapper.isCompatibleByReference(operation,
                                                                                      targetOp,
                                                                                      Compatibility.SUBSET)) {
@@ -155,7 +160,7 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceAsyn
                 // it turns out that the chain source and target operations are the same, and are the operation 
                 // from the target, not sure if thats by design or a bug. The SCA binding invoker needs to know 
                 // the source and target class loaders so pass in the real source operation in the constructor 
-                return chain == null ? null : new SCABindingInvoker(chain, operation, mediator, passByValue, epr);
+                return chain == null ? null : new SCABindingInvoker(chain, operation, mediator, passByValue, epr, registry);
             }
         }
         return null;

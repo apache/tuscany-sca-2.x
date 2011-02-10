@@ -27,19 +27,28 @@ import org.oasisopen.sca.annotation.Remotable;
  *
  * @param <V> - the type of the non-fault response
  */
-@Remotable()
-public interface AsyncResponseHandler<V> {
+public interface AsyncResponseHandler<V> extends AsyncResponseService<V> {
 	
 	/**
-	 * Async process completed with a Fault.  Must only be invoked once
+	 * Async process completed with a wrapped Fault.  Must only be invoked once
+	 * <inherited>
 	 * @param e - the wrapper containing the Fault to send
 	 * @throws IllegalStateException if either the setResponse method or the setFault method have been called previously
 	 */
 	@OneWay
-	public void setFault(AsyncFaultWrapper e);
+	public void setWrappedFault(AsyncFaultWrapper w);
+	
+	/**
+	 * Async process completed with a Fault.  Must only be invoked once.
+	 * @param e - the Fault to send
+	 * @throws IllegalStateException if either the setResponse method or the setFault method have been called previously
+	 */
+	@OneWay
+	public void setFault( Throwable e );
 	
 	/**
 	 * Async process completed with a response message.  Must only be invoked once
+	 * <inherited>
 	 * @throws IllegalStateException if either the setResponse method or the setFault method have been called previously
 	 * @param res - the response message, which is of type V
 	 */

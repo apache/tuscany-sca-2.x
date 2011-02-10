@@ -1,0 +1,134 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<project name="itest-spi" default="run">
+       
+    <!-- create a fileset containing the file name of each SPI class or interface -->
+    <fileset id="file.names"
+             dir="${basedir}/../../../modules">
+        <patternset id="assembly">
+            <include name="assembly/src/main/java/org/apache/tuscany/sca/assembly/*"/>
+            <!--include name="assembly/src/main/java/org/apache/tuscany/sca/assembly/impl/*"/-->
+            <include name="assembly/src/main/java/org/apache/tuscany/sca/definitions/*"/>
+            <include name="assembly/src/main/java/org/apache/tuscany/sca/interfacedef/*"/>
+            <!--include name="assembly/src/main/java/org/apache/tuscany/sca/interfacedef/impl/*"/-->
+            <!--include name="assembly/src/main/java/org/apache/tuscany/sca/interfacedef.util/*"/-->
+            <include name="assembly/src/main/java/org/apache/tuscany/sca/policy/*"/>
+        </patternset>
+        <patternset id="contribution">
+            <include name="contribution/src/main/java/org/apache/tuscany/sca/contribution/*"/>
+            <include name="contribution/src/main/java/org/apache/tuscany/sca/contribution/processor/*"/>
+            <include name="contribution/src/main/java/org/apache/tuscany/sca/contribution/resolver/*"/>
+        </patternset>
+        <patternset id="core-spi">
+            <include name="core-spi/src/main/java/org/apache/tuscany/sca/context/*"/>
+            <include name="core-spi/src/main/java/org/apache/tuscany/sca/invocation/*"/>
+            <include name="core-spi/src/main/java/org/apache/tuscany/sca/provider/*"/>
+            <include name="core-spi/src/main/java/org/apache/tuscany/sca/runtime/*"/>
+            <include name="core-spi/src/main/java/org/apache/tuscany/sca/work/*"/>
+        </patternset>    
+        <patternset id="core">
+            <include name="core/src/main/java/org/apache/tuscany/sca/core/assembly/*"/>
+            <include name="core/src/main/java/org/apache/tuscany/sca/core/assembly/impl/*"/>
+            <include name="core/src/main/java/org/apache/tuscany/sca/core/context/*"/>
+            <include name="core/src/main/java/org/apache/tuscany/sca/core/factory/*"/>
+            <include name="core/src/main/java/org/apache/tuscany/sca/core/invocation/*"/>
+            <include name="core/src/main/java/org/apache/tuscany/sca/core/scope/*"/>
+        </patternset> 
+        <patternset id="databinding">
+            <include name="databinding/src/main/java/org/apache/tuscany/sca/databinding/*"/>
+            <include name="databinding/src/main/java/org/apache/tuscany/sca/databinding/annotation/*"/>
+            <include name="databinding/src/main/java/org/apache/tuscany/sca/databinding/impl/*"/>
+            <include name="databinding/src/main/java/org/apache/tuscany/sca/databinding/xml/*"/>
+        </patternset> 
+        <patternset id="deployment">
+            <include name="deployment/src/main/java/org/apache/tuscany/sca/deployment/*"/>
+        </patternset>      
+        <patternset id="extensibility">
+            <include name="extensibility/src/main/java/org/apache/tuscany/sca/core/*"/>
+            <include name="extensibility/src/main/java/org/apache/tuscany/sca/extensibility/*"/>                
+        </patternset>   
+        <patternset id="interface-java">
+            <include name="interface-java/src/main/java/org/apache/tuscany/sca/interfacedef/java/*"/>                
+        </patternset>   
+        <patternset id="interface-wsdl">
+            <include name="interface-wsdl/src/main/java/org/apache/tuscany/sca/interfacedef/wsdl/*"/>                
+        </patternset>   
+        <patternset id="monitor">
+            <include name="monitor/src/main/java/org/apache/tuscany/sca/monitor/*"/>                
+        </patternset>   
+        <patternset id="node-api">
+            <include name="node-api/src/main/java/org/apache/tuscany/sca/node/*"/>                
+            <include name="node-api/src/main/java/org/apache/tuscany/sca/node/configuration/*"/>
+        </patternset>
+        <patternset id="sca-api">
+            <include name="sca-api/src/main/java/org/oasisopen/sca/*"/>                
+            <include name="sca-api/src/main/java/org/oasisopen/sca/annotation/*"/>
+        </patternset>  
+        <patternset id="xsd">
+            <include name="xsd/src/main/java/org/apache/tuscany/sca/xsd/*"/>                
+            <include name="xsd/src/main/java/org/apache/tuscany/sca/xsd/xml/*"/>
+        </patternset>                                             
+    </fileset>
+	
+    <target name="run-javap"> 
+        <!-- convert the filenames into class names -->
+        <pathconvert pathsep=" " 
+                 property="class.names" 
+                 refid="file.names">  
+            <chainedmapper>         
+                <regexpmapper from="^.*/src/main/java/(.*)\.java" to="\1" handledirsep="yes"/>
+                <packagemapper from="*" to="*"/>
+            </chainedmapper>       
+        </pathconvert>
+       
+        <!-- create a single file containing all the decompiled SPI classes -->
+        <exec executable="javap"
+              output="spi.txt">
+          <arg value="-classpath"/>
+          <arg value="${runtime_classpath}"/>
+          <arg line="${class.names}"/>
+        </exec>
+    </target>
+    
+    <target name="run-javadoc"> 
+        <!-- convert the filesnames into a LF seaprated list and exclude anything but.java -->
+        <pathconvert pathsep="${line.separator}" 
+                 property="file.names.separate.lines" 
+                 refid="file.names"> 
+            <globmapper from="*.java" to="*.java"/>   
+        </pathconvert>
+        
+        <!-- write the list out to a file so that the javadoc command line doesn't blow up -->
+        <echo file="target/tuscany-spi-files.txt">${file.names.separate.lines}</echo>
+
+        <!-- use exec rather than the javadoc task so that we can read from a file -->
+        <exec executable="javadoc"
+              output="target/javadoc-generation-report.txt">
+          <arg value="-d"/>
+          <arg value="target/javadoc"/>
+          <arg value="-use"/>
+          <arg value="-windowtitle"/>
+          <arg value="'Tuscany SPI'"/>
+          <arg value="@target/tuscany-spi-files.txt"/>
+        </exec>   
+    </target>  
+    
+    <target name="run" depends="run-javap, run-javadoc"/>  
+
+</project>

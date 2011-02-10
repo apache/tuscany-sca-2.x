@@ -21,13 +21,13 @@ package org.apache.tuscany.sca.core.databinding.transformers;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_FAULT;
 
 /**
  * This is a special transformer to transform the exception from one IDL to the
@@ -56,12 +56,12 @@ public class Exception2ExceptionTransformer extends BaseTransformer<Throwable, T
 
     @Override
     public String getSourceDataBinding() {
-        return DataBinding.IDL_FAULT;
+        return IDL_FAULT;
     }
 
     @Override
     public String getTargetDataBinding() {
-        return DataBinding.IDL_FAULT;
+        return IDL_FAULT;
     }
 
     /**

@@ -66,5 +66,17 @@ public interface JavaOperation extends Operation {
      * @return - true if the operation is async server style
      */
     public boolean isAsyncServer();
+    
+    /** 
+     * Indicates whether the underlying Java method has void return type.
+     * @return - true if the Java method has void return type.
+     */
+    public boolean hasReturnTypeVoid();
+    
+    /**
+     * Sets whether the underlying Java method has void return type.
+     * @param flag - "true" marks this operation as having void return type.
+     */
+    public void setReturnTypeVoid(boolean flag);
 
 }

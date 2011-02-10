@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-compliance-tests</artifactId>
-        <version>2.0-Beta2-SNAPSHOT</version>
+        <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-compliance-test-java-caa</artifactId>
@@ -30,24 +30,26 @@
 
     <dependencies>
 
-            <!-- This is only needed to get the module working in Eclipse which doesn't pick it up from the dependency plugin unpack -->
-            <!-- The dependency plugin unpack is needed as presently the surefire plugin wont run tests in a dependency jar -->
+        <!-- This is only needed to get the module working in Eclipse which doesn't pick it up from the dependency plugin unpack -->
+        <!-- The dependency plugin unpack is needed as presently the surefire plugin wont run tests in a dependency jar -->
+<!--
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-otests-sca-j-caa-tests</artifactId>
-            <version>2.0-Beta2-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
+-->
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-base-runtime</artifactId>
-            <version>2.0-Beta2-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
-            <version>2.0-Beta2-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -55,12 +57,6 @@
             <artifactId>jetty</artifactId>
             <version>6.1.19</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-           <groupId>org.codehaus.woodstox</groupId>
-           <artifactId>wstx-asl</artifactId>
-           <version>3.2.9</version>
         </dependency>
 
         <dependency>
@@ -82,25 +78,19 @@
 
 
   <build>
-    <finalName>${artifactId}</finalName>
+    <finalName>${project.artifactId}</finalName>
     <plugins>
 
       <plugin>
          <groupId>org.apache.maven.plugins</groupId>
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
+
            <argLine>-Xms256m -Xmx1024m</argLine>
+<!-- if you want to connect a debugger to a surefire test you can use this
+           <argLine>-Xms256m -Xmx1024m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000</argLine>
+-->
            <excludes>
-            <exclude>**/JCA_11021_TestCase.java</exclude><!-- TUSCANY-3664 -->
-            <!-- these 8 are new tests that we haven't done yet -->
-            <exclude>**/JCA_10029_TestCase.java</exclude>
-            <exclude>**/JCA_10030_TestCase.java</exclude>
-            <exclude>**/JCA_10031_TestCase.java</exclude>
-            <exclude>**/JCA_10032_TestCase.java</exclude>
-            <exclude>**/JCA_10033_TestCase.java</exclude>
-            <exclude>**/JCA_10034_TestCase.java</exclude>
-            <exclude>**/JCA_10035_TestCase.java</exclude>
-            <exclude>**/JCA_11022_TestCase.java</exclude>
            </excludes>
          </configuration>
       </plugin>
@@ -120,14 +110,14 @@
                  <artifactItem>
                    <groupId>org.apache.tuscany.sca</groupId>
                    <artifactId>oasis-javacaa-contributions</artifactId>
-                   <version>2.0-Beta2-SNAPSHOT</version>
+                   <version>2.0-SNAPSHOT</version>
                    <type>zip</type>
                    <outputDirectory>${project.build.directory}/oasis-contributions</outputDirectory>
                  </artifactItem>
                  <artifactItem>
                    <groupId>org.apache.tuscany.sca</groupId>
                    <artifactId>tuscany-otests-sca-j-caa-tests</artifactId>
-                   <version>2.0-Beta2-SNAPSHOT</version>
+                   <version>2.0-SNAPSHOT</version>
                    <type>jar</type>
                    <excludes>commons-logging.properties,oasis-sca-tests.properties,tuscany-oasis-sca-tests-errors.properties</excludes>
                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>

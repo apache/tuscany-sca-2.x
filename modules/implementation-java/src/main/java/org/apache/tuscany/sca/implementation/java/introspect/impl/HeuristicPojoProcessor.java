@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
@@ -74,7 +74,7 @@ import org.oasisopen.sca.annotation.Remotable;
  * property injection sites. If that service can be exactly mapped to an
  * interface implemented by the class then the service interface will be defined
  * in terms of that interface.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
@@ -83,10 +83,10 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         super(assemblyFactory);
         this.javaInterfaceFactory = javaFactory;
     }
-    
+
     public HeuristicPojoProcessor(ExtensionPointRegistry registry) {
         super(registry);
-    }    
+    }
 
     @Override
     public <T> void visitEnd(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
@@ -96,13 +96,13 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             /**
              * The following is quoted from Java Specification 1.2.1.3. Introspecting services offered by a Java implementation
              * In the cases described below, the services offered by a Java implementation class may be determined
-             * through introspection, eliding the need to specify them using @Service. The following algorithm is used 
+             * through introspection, eliding the need to specify them using @Service. The following algorithm is used
              * to determine how services are introspected from an implementation class:
-             * 
-             * If the interfaces of the SCA services are not specified with the @Service annotation on the 
-             * implementation class, it is assumed that all implemented interfaces that have been annotated 
-             * as @Remotable are the service interfaces provided by the component. If none of the implemented 
-             * interfaces is remotable, then by default the implementation offers a single service whose type 
+             *
+             * If the interfaces of the SCA services are not specified with the @Service annotation on the
+             * implementation class, it is assumed that all implemented interfaces that have been annotated
+             * as @Remotable are the service interfaces provided by the component. If none of the implemented
+             * interfaces is remotable, then by default the implementation offers a single service whose type
              * is the implementation class.
              */
             Set<Class<?>> interfaces = getAllInterfaces(clazz);
@@ -146,12 +146,12 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             throw new IntrospectionException(e);
         }
     }
-    
+
     private static boolean isAnnotatedWithSCA(AnnotatedElement element) {
         for (Annotation a : element.getAnnotations()) {
             // JCI_8023
-            // policy annotations can be added to reference fields that 
-            // don't have @Reference annotations so we need to allow 
+            // policy annotations can be added to reference fields that
+            // don't have @Reference annotations so we need to allow
             // for the fields to be detected as references
             if (isSCAPolicyAnnotation(a)){
                 continue;
@@ -165,7 +165,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     private static boolean isSCAAnnotation(Annotation a) {
         return a.annotationType().getName().startsWith("org.oasisopen.sca.annotation.");
     }
-    
+
     private static boolean isSCAPolicyAnnotation(Annotation a) {
         if (a.annotationType().getName().startsWith("org.oasisopen.sca.annotation.PolicySets") ){
             return true;
@@ -223,7 +223,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             }
             Class<?> param = method.getParameterTypes()[0];
             Type paramType = method.getGenericParameterTypes()[0];
-            
+
             String name = toPropertyName(method.getName());
             setters.add(name);
             // avoid duplicate property or ref names
@@ -271,7 +271,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     /**
      * Determines the constructor to use based on the component type's
      * references and properties
-     * 
+     *
      * @param type the component type
      * @param clazz the implementation class corresponding to the component type
      * @throws NoConstructorException if no suitable constructor is found
@@ -299,7 +299,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             // no definition, heuristically determine constructor
             Constructor[] constructors = clazz.getConstructors();
             if (constructors.length == 0) {
-                throw new NoConstructorException("[JCI50001] No public constructor for class");
+                throw new NoConstructorException("[JCI50001] No public constructor for class :" + type.getName());
             } else if (constructors.length == 1) {
                 // Only one constructor, take it
                 constructor = constructors[0];
@@ -310,7 +310,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
                         selected = ctor;
                         for (Constructor<T> ctor2 : constructors) {
                             if (selected != ctor2 && allArgsAnnotated(ctor2)) {
-                                throw new InvalidConstructorException("[JCI50005] Multiple annotated constructors");
+                                throw new InvalidConstructorException("[JCI50005] Multiple annotated constructors for class :" + type.getName());
                             }
                         }
                     }
@@ -370,7 +370,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             }
         }
     }
-    
+
     private boolean allArgsAnnotated(Constructor<?> ctor) {
         if (ctor.getParameterTypes().length < 1) {
             return false;
@@ -437,7 +437,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     /**
      * Unambiguously finds the reference or property associated with the given
      * type
-     * 
+     *
      * @return the name of the reference or property if found, null if not
      * @throws AmbiguousConstructorException if the constructor parameter cannot
      *             be resolved to a property or reference
@@ -491,7 +491,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
 
     /**
      * Creates a mapped property.
-     * 
+     *
      * @param name the property name
      * @param paramType the property type
      */
@@ -529,7 +529,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             	reference.setMultiplicity(Multiplicity.ONE_N);
             } else {
             	reference.setMultiplicity(Multiplicity.ONE_ONE);
-            } // end if 
+            } // end if
         } catch (InvalidInterfaceException e1) {
             throw new IntrospectionException(e1);
         } // end try
@@ -542,9 +542,9 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         }
         return reference;
     }
-     
+
     /**
-     * Reports if a parameter type is a form of java.util.Collection 
+     * Reports if a parameter type is a form of java.util.Collection
      * @param paramType
      * @return true if paramType is a form of java.util.Collection, false otherwise
      */
@@ -552,7 +552,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     	if( Collection.class.isAssignableFrom(paramType) ) return true;
     	return false;
     }
-    
+
     /**
      * Reports if a parameter type is an array
      * @param paramType
@@ -603,8 +603,8 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     /**
      * Utility methods
      */
-    
-    
+
+
     /**
      * Verify if the method is a public setter
      * @param method
@@ -644,7 +644,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
      * <ol>
      * <li>If its type is simple, then it is a property.
      * <li>If its type is complex, then if the type is an interface marked by
-     * 
+     *
      * @Remotable, then it is a reference; otherwise, it is a property.
      *             <li>Otherwise, if the type associated with the member is an
      *             array or a java.util.Collection, the basetype is the element
@@ -688,7 +688,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     /**
      * Test if the class declares a method which matches the signature of the
      * given method
-     * 
+     *
      * @param clazz
      * @param method
      * @return
@@ -734,7 +734,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         }
         return true;
     }
-    
+
     /**
      * Verify if the annotations are SCA annotation
      * @param annots

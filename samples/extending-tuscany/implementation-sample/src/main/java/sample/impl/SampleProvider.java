@@ -49,7 +49,9 @@ class SampleProvider implements ImplementationAsyncProvider {
     final ProxyFactory pxf;
     final ExtensionPointRegistry ep;
     Object instance;
-    Map<String, Object> asyncMessageMap = new HashMap<String, Object>();
+    
+    // make this static rather than worrying about persistence on the reference side
+    static Map<String, Object> asyncMessageMap = new HashMap<String, Object>();
 
     SampleProvider(final RuntimeComponent comp, final SampleImplementation impl, ProxyFactory pf, ExtensionPointRegistry ep) {
         this.comp = comp;

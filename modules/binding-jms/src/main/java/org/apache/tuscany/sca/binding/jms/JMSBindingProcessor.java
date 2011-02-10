@@ -1005,20 +1005,6 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         	error(monitor, "DestinationURIContradiction", jmsBinding, jmsBinding.getJMSURI(), jmsBinding.getDestinationName());
         }
         
-        // If activation spec and destination are both specified, they have to match
-        if ( ( jmsBinding.getActivationSpecName() != null ) && (jmsBinding.getActivationSpecName().length() > 0 ) &&
-        		(jmsBinding.getDestinationName() != null) && (jmsBinding.getDestinationName().length() > 0 ) ) {
-        	if ( !jmsBinding.getActivationSpecName().equals(jmsBinding.getDestinationName())) {
-        		error(monitor, "ActivationSpecAndDestinationMismatch", jmsBinding, jmsBinding.getActivationSpecName(), jmsBinding.getDestinationName());
-        	}
-        }
-
-        if ( ( jmsBinding.getResponseActivationSpecName() != null ) && (jmsBinding.getResponseActivationSpecName().length() > 0 ) &&
-        		(jmsBinding.getResponseDestinationName() != null ) && (jmsBinding.getResponseDestinationName().length() > 0 ) ) {
-        	if ( !jmsBinding.getResponseActivationSpecName().equals(jmsBinding.getResponseDestinationName())) {
-        		error(monitor, "ActivationSpecAndDestinationMismatch", jmsBinding, jmsBinding.getResponseActivationSpecName(), jmsBinding.getResponseDestinationName());
-        	}
-        }
         // If activation spec exists with create=always, a jndiName must be specified
         if (JMSBindingConstants.CREATE_ALWAYS.equals(jmsBinding.getActivationSpecCreate()) &&
         		(jmsBinding.getActivationSpecName() == null)) {

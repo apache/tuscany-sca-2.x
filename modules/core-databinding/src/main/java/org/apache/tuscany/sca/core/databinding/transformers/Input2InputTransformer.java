@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_INPUT;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
@@ -53,12 +54,12 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
 
     @Override
     public String getSourceDataBinding() {
-        return DataBinding.IDL_INPUT;
+        return IDL_INPUT;
     }
 
     @Override
     public String getTargetDataBinding() {
-        return DataBinding.IDL_INPUT;
+        return IDL_INPUT;
     }
 
     /**

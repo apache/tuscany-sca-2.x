@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.binding.atom.provider;
 
@@ -50,9 +50,9 @@ import org.apache.abdera.model.Workspace;
 import org.apache.abdera.parser.ParseException;
 import org.apache.abdera.parser.Parser;
 import org.apache.abdera.writer.WriterFactory;
-import org.apache.commons.codec.binary.Base64;
+import org.apache.tuscany.sca.binding.atom.utils.AtomBindingHttpUtils;
 import org.apache.tuscany.sca.common.http.HTTPCacheContext;
-import org.apache.tuscany.sca.common.http.HTTPUtil;
+import org.apache.tuscany.sca.common.http.HTTPUtils;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -77,9 +77,9 @@ class AtomBindingListenerServlet extends HttpServlet {
     private static final Factory abderaFactory = Abdera.getNewFactory();
     private static final Parser abderaParser = Abdera.getNewParser();
     private static final String ETAG = "ETag";
-    private static final String LASTMODIFIED = "Last-Modified";    
-    private static final String LOCATION = "Location";    
-    private static final String CONTENTLOCATION = "Content-Location";    
+    private static final String LASTMODIFIED = "Last-Modified";
+    private static final String LOCATION = "Location";
+    private static final String CONTENTLOCATION = "Content-Location";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss Z" ); // RFC 822 date time
 
     private Invocable wire;
@@ -102,7 +102,7 @@ class AtomBindingListenerServlet extends HttpServlet {
 
     /**
      * Constructs a new binding listener.
-     * 
+     *
      * @param wire
      * @param messageFactory
      * @param feedType
@@ -149,7 +149,7 @@ class AtomBindingListenerServlet extends HttpServlet {
             if (itemClass == org.apache.abdera.model.Entry.class) {
                 supportsFeedEntries = true;
             }
-            //We assume that the item type is the same for both input and 
+            //We assume that the item type is the same for both input and
             //ouput for all operations on the interface
             itemClassType = getOperation.getOutputType().getLogical().get(0);
         }
@@ -161,19 +161,16 @@ class AtomBindingListenerServlet extends HttpServlet {
         // No authentication required for a get request
 
         // Test for any cache info in the request
-        HTTPCacheContext cacheContext = null;    	
-        try { 
+        HTTPCacheContext cacheContext = null;
+        try {
             cacheContext = HTTPCacheContext.createCacheContextFromRequest( request );
-        } catch ( java.text.ParseException e ) {    
+        } catch ( java.text.ParseException e ) {
         }
         // System.out.println( "AtomBindingListener.doGet cache context=" + cacheContext );
 
         // Get the request path
-        //int servletPathLength = request.getContextPath().length() + request.getServletPath().length();
-        //String path = URLDecoder.decode(request.getRequestURI().substring(servletPathLength), "UTF-8");
+        String path = URLDecoder.decode(HTTPUtils.getRequestPath(request), "UTF-8");
 
-        String path = URLDecoder.decode(HTTPUtil.getRequestPath(request), "UTF-8");
-        
         logger.fine("get " + request.getRequestURI());
 
         // Handle an Atom request
@@ -185,7 +182,7 @@ class AtomBindingListenerServlet extends HttpServlet {
                    <atom:title type="text">resource</atom:title>
                    <collection href="http://luck.ibm.com:8084/customer">
                       <atom:title type="text">entries</atom:title>
-                      <accept>application/atom+xml;type=entry</accept>
+                      <accept>application/atom+xml</accept>
                       <categories />
                    </collection>
                 </workspace>
@@ -193,7 +190,8 @@ class AtomBindingListenerServlet extends HttpServlet {
              */
 
             // Return the Atom service document
-            response.setContentType("application/atomsvc+xml; charset=utf-8");
+            response.setDateHeader("Date", System.currentTimeMillis());
+            response.setContentType("application/atomsvc+xml");
 
             String href = request.getRequestURL().toString();
             href = href.substring(0, href.length() - "/atomsvc".length());
@@ -224,23 +222,21 @@ class AtomBindingListenerServlet extends HttpServlet {
                 } else {
                     collection.setTitle("entries");
                 }
-                collection.addAccepts("application/atom+xml;type=feed");
-                collection.addAccepts("application/json;type=feed");
-                collection.addAccepts("application/atom+xml;type=entry");
-                collection.addAccepts("application/json;type=entry");
+                collection.addAccepts("application/atom+xml");
+                collection.addAccepts("application/json");
                 List<Category> categories = feed.getCategories();
                 if ( categories != null ) {
-                    collection.addCategories(categories, false, null); 
+                    collection.addCategories(categories, false, null);
                 } else {
                     collection.addCategories().setFixed(false);
                 }
 
             } else {
                 collection.setTitle("entries");
-                // collection.addAccepts("application/atom+xml;type=feed");
-                collection.addAccepts("application/atom+xml; type=entry");
-                collection.addAccepts("application/json;type=entry");
-                collection.addCategories().setFixed(false);            
+
+                collection.addAccepts("application/atom+xml");
+                collection.addAccepts("application/json");
+                collection.addCategories().setFixed(false);
             }
             workspace.addCollection(collection);
             service.addWorkspace(workspace);
@@ -258,8 +254,7 @@ class AtomBindingListenerServlet extends HttpServlet {
             Feed feed = getFeed( request );
             if (feed != null) {
                 String feedETag = null;
-                if (feed.getId() != null)
-                    feedETag = "\"" + feed.getId().toString() + "\"";
+                feedETag = HTTPUtils.calculateHashETag(feed.toString().getBytes("utf-8"));
                 Date feedUpdated = feed.getUpdated();
                 // Test request for predicates.
                 String predicate = request.getHeader( "If-Match" );
@@ -275,28 +270,28 @@ class AtomBindingListenerServlet extends HttpServlet {
                     return;
                 }
                 if ( feedUpdated != null ) {
-                    predicate = request.getHeader( "If-Unmodified-Since" );                
+                    predicate = request.getHeader( "If-Unmodified-Since" );
                     if ( predicate != null ) {
                         try {
-                            Date predicateDate = dateFormat.parse( predicate ); 
+                            Date predicateDate = dateFormat.parse( predicate );
                             if ( predicateDate.compareTo( exactSeconds(feedUpdated) ) < 0 ) {
                                 // Match, should short circuit
                                 response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
                                 return;
-                            }             		
+                            }
                         } catch ( java.text.ParseException e ) {
                             // Ignore and move on
                         }
                     }
-                    predicate = request.getHeader( "If-Modified-Since" );                
+                    predicate = request.getHeader( "If-Modified-Since" );
                     if ( predicate != null ) {
                         try {
-                            Date predicateDate = dateFormat.parse( predicate ); 
+                            Date predicateDate = dateFormat.parse( predicate );
                             if ( predicateDate.compareTo( exactSeconds(feedUpdated) ) >= 0 ) {
                                 // Match, should short circuit
                                 response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
                                 return;
-                            }             		
+                            }
                         } catch ( java.text.ParseException e ) {
                             // Ignore and move on
                         }
@@ -311,12 +306,15 @@ class AtomBindingListenerServlet extends HttpServlet {
                     response.addHeader(LASTMODIFIED, dateFormat.format( feedUpdated ));
                 }
 
+                //default http header for response
+                AtomBindingHttpUtils.prepareHTTPResponse(request, response);
+
                 // Content negotiation
                 String acceptType = request.getHeader( "Accept" );
-                String preferredType = getContentPreference( acceptType ); 
+                String preferredType = getContentPreference( acceptType );
                 if (( preferredType != null ) && ((preferredType.indexOf( "json") > -1) || (preferredType.indexOf( "JSON") > -1 ))) {
                     // JSON response body
-                    response.setContentType("application/json;type=feed");
+                    response.setContentType("application/json");
 
                     try {
                         Abdera abdera = new Abdera();
@@ -325,11 +323,11 @@ class AtomBindingListenerServlet extends HttpServlet {
                         feed.writeTo(json, response.getWriter());
                     } catch (Exception e) {
                         throw new ServletException(e);
-                    }           		
+                    }
 
                 } else {
                     // Write the Atom feed
-                    response.setContentType("application/atom+xml;type=feed");
+                    response.setContentType("application/atom+xml");
                     try {
                         feed.getDocument().writeTo(response.getOutputStream());
                     } catch (IOException ioe) {
@@ -360,23 +358,22 @@ class AtomBindingListenerServlet extends HttpServlet {
 
             }
             if (supportsFeedEntries) {
-                // The service implementation returns a feed entry 
+                // The service implementation returns a feed entry
                 feedEntry = responseMessage.getBody();
             } else {
                 // The service implementation only returns a data item, create an entry
                 // from it
-                Entry<Object, Object> entry = new Entry<Object, Object>(id, responseMessage.getBody()); 
+                Entry<Object, Object> entry = new Entry<Object, Object>(id, responseMessage.getBody());
                 feedEntry = feedEntry(entry, itemClassType, itemXMLType, mediator, abderaFactory);
             }
             // Write the Atom entry
             if (feedEntry != null) {
                 String entryETag = null;
-                if (feedEntry.getId() != null)
-                    entryETag = feedEntry.getId().toString();
+                entryETag = HTTPUtils.calculateHashETag(feedEntry.toString().getBytes("utf-8"));
                 Date entryUpdated = feedEntry.getUpdated();
                 if ( entryUpdated != null )
                     response.addHeader(LASTMODIFIED, dateFormat.format( entryUpdated ));
-                // TODO Check If-Modified-Since If-Unmodified-Since predicates against LASTMODIFIED. 
+                // TODO Check If-Modified-Since If-Unmodified-Since predicates against LASTMODIFIED.
                 // If true return 304 and null body.
 
                 Link link = feedEntry.getSelfLink();
@@ -403,28 +400,28 @@ class AtomBindingListenerServlet extends HttpServlet {
                     return;
                 }
                 if ( entryUpdated != null ) {
-                    predicate = request.getHeader( "If-Unmodified-Since" );                
+                    predicate = request.getHeader( "If-Unmodified-Since" );
                     if ( predicate != null ) {
                         try {
-                            Date predicateDate = dateFormat.parse( predicate ); 
+                            Date predicateDate = dateFormat.parse( predicate );
                             if ( predicateDate.compareTo( entryUpdated ) < 0 ) {
                                 // Match, should short circuit
                                 response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
                                 return;
-                            }             		
+                            }
                         } catch ( java.text.ParseException e ) {
                             // Ignore and move on
                         }
                     }
-                    predicate = request.getHeader( "If-Modified-Since" );                
+                    predicate = request.getHeader( "If-Modified-Since" );
                     if ( predicate != null ) {
                         try {
-                            Date predicateDate = dateFormat.parse( predicate ); 
+                            Date predicateDate = dateFormat.parse( predicate );
                             if ( predicateDate.compareTo( entryUpdated ) > 0 ) {
                                 // Match, should short circuit
                                 response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
                                 return;
-                            }             		
+                            }
                         } catch ( java.text.ParseException e ) {
                             // Ignore and move on
                         }
@@ -439,12 +436,15 @@ class AtomBindingListenerServlet extends HttpServlet {
                     response.addHeader(LASTMODIFIED, dateFormat.format( entryUpdated ));
                 }
 
+                //default http header for response
+                AtomBindingHttpUtils.prepareHTTPResponse(request, response);
+
                 // Content negotiation
                 String acceptType = request.getHeader( "Accept" );
-                String preferredType = getContentPreference( acceptType ); 
+                String preferredType = getContentPreference( acceptType );
                 if (( preferredType != null ) && ((preferredType.indexOf( "json") > -1) || (preferredType.indexOf( "JSON") > -1 ))) {
                     // JSON response body
-                    response.setContentType("application/json;type=entry");
+                    response.setContentType("application/json");
                     try {
                         Abdera abdera = new Abdera();
                         WriterFactory wf = abdera.getWriterFactory();
@@ -452,10 +452,10 @@ class AtomBindingListenerServlet extends HttpServlet {
                         feedEntry.writeTo(json, response.getWriter());
                     } catch (Exception e) {
                         throw new ServletException(e);
-                    }           		
+                    }
                 } else {
-                    // XML response body 
-                    response.setContentType("application/atom+xml;type=entry");
+                    // XML response body
+                    response.setContentType("application/atom+xml");
                     try {
                         feedEntry.writeTo(getWriter(response));
                     } catch (IOException ioe) {
@@ -486,7 +486,7 @@ class AtomBindingListenerServlet extends HttpServlet {
             if (responseMessage.isFault()) {
                 throw new ServletException((Throwable)responseMessage.getBody());
             }
-            return (Feed)responseMessage.getBody();		    
+            return (Feed)responseMessage.getBody();
         } else {
 
             // The service implementation does not support feed entries,
@@ -520,7 +520,7 @@ class AtomBindingListenerServlet extends HttpServlet {
                 }
                 // All feeds must provide Id and updated elements.
                 // However, some do not, so provide some program protection.
-                feed.setId( "Feed" + feed.hashCode());
+                feed.setId(request.getRequestURI());
                 Date responseLastModified = new Date( 0 );
 
                 // Add entries to the feed
@@ -554,7 +554,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         }
 
         // Get the request path
-        String path = URLDecoder.decode(HTTPUtil.getRequestPath(request), "UTF-8");
+        String path = URLDecoder.decode(HTTPUtils.getRequestPath(request), "UTF-8");
 
         if (path == null || path.length() == 0 || path.equals("/")) {
             org.apache.abdera.model.Entry createdFeedEntry = null;
@@ -624,10 +624,11 @@ class AtomBindingListenerServlet extends HttpServlet {
 
             // A new entry for non-media was created successfully.
             if (createdFeedEntry != null) {
+
                 // Set location of the created entry in the Location header
                 IRI feedId = createdFeedEntry.getId();
                 if ( feedId != null ) {
-                    response.addHeader(ETAG, "\"" + feedId.toString() + "\"" );
+                    response.addHeader(ETAG, "\"" + HTTPUtils.calculateHashETag(createdFeedEntry.toString().getBytes("utf-8")) + "\"" );
                 }
                 Date entryUpdated = createdFeedEntry.getUpdated();
                 if ( entryUpdated != null ) {
@@ -636,7 +637,7 @@ class AtomBindingListenerServlet extends HttpServlet {
                 Link link = createdFeedEntry.getSelfLink();
                 if (link != null) {
                     response.addHeader(LOCATION, link.getHref().toString());
-                } 
+                }
                 Link editLink = createdFeedEntry.getEditLink();
                 if (editLink != null) {
                     response.addHeader(LOCATION, editLink.getHref().toString());
@@ -646,9 +647,12 @@ class AtomBindingListenerServlet extends HttpServlet {
                     response.addHeader(CONTENTLOCATION, editMediaLink.getHref().toString());
                 }
 
+                //default http header for response
+                AtomBindingHttpUtils.prepareHTTPResponse(request, response);
+
                 // Write the created Atom entry
                 response.setStatus(HttpServletResponse.SC_CREATED);
-                response.setContentType("application/atom+xml;type=entry");
+                response.setContentType("application/atom+xml");
                 try {
                     createdFeedEntry.writeTo(getWriter(response));
                 } catch (ParseException pe) {
@@ -679,7 +683,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         }
 
         // Get the request path
-        String path = URLDecoder.decode(HTTPUtil.getRequestPath(request), "UTF-8");
+        String path = URLDecoder.decode(HTTPUtils.getRequestPath(request), "UTF-8");
 
         if (path != null && path.startsWith("/")) {
             String id = path.substring(1);
@@ -766,7 +770,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         }
 
         // Get the request path
-        String path = URLDecoder.decode(HTTPUtil.getRequestPath(request), "UTF-8");
+        String path = URLDecoder.decode(HTTPUtils.getRequestPath(request), "UTF-8");
 
         String id;
         if (path != null && path.startsWith("/")) {
@@ -788,20 +792,22 @@ class AtomBindingListenerServlet extends HttpServlet {
             }
         }
     }
-    
+
     /**
      * Process the authorization header
-     * 
+     *
      * @param request
      * @return
      * @throws ServletException
      */
     private String processAuthorizationHeader(HttpServletRequest request) throws ServletException {
 
-        // FIXME temporarily disabling this as it doesn't work with all browsers 
-        if (true)
+        // FIXME temporarily disabling this as it doesn't work with all browsers
+        if (true) {
             return "admin";
+        }
 
+        /*
         try {
             String authorization = request.getHeader("Authorization");
             if (authorization != null) {
@@ -827,12 +833,13 @@ class AtomBindingListenerServlet extends HttpServlet {
         } catch (Exception e) {
             throw new ServletException(e);
         }
+        */
         return null;
     }
 
     /**
      * Authenticate a user.
-     * 
+     *
      * @param user
      * @param password
      * @return
@@ -844,7 +851,7 @@ class AtomBindingListenerServlet extends HttpServlet {
 
     /**
      * Reject an unauthorized request.
-     * 
+     *
      * @param response
      */
     private void unauthorized(HttpServletResponse response) throws IOException {
@@ -859,11 +866,11 @@ class AtomBindingListenerServlet extends HttpServlet {
      */
     private static String getContentPreference( String acceptType ) {
         if (( acceptType == null ) || ( acceptType.length() < 1 )) {
-            return "application/atom+xml";    		
+            return "application/atom+xml";
         }
         StringTokenizer st = new StringTokenizer( acceptType, "," );
         if ( st.hasMoreTokens() ) {
-            return st.nextToken(); 
+            return st.nextToken();
         }
         return "application/atom+xml";
     }
@@ -874,7 +881,7 @@ class AtomBindingListenerServlet extends HttpServlet {
      * @param properties
      */
     private static void addPropertiesToHeader( HttpServletResponse response, String properties  ) {
-        if ( properties == null ) return; 
+        if ( properties == null ) return;
         StringTokenizer props = new StringTokenizer( properties, ",");
         while( props.hasMoreTokens()) {
             String prop = props.nextToken();
@@ -886,7 +893,7 @@ class AtomBindingListenerServlet extends HttpServlet {
             if ( keyVal.hasMoreTokens() )
                 val = keyVal.nextToken();
             if (( key != null ) && ( val != null )) {
-                response.addHeader(key, val);                			
+                response.addHeader(key, val);
             }
         }
     }
@@ -896,7 +903,7 @@ class AtomBindingListenerServlet extends HttpServlet {
      * @param date with millisecond precision
      * @return date rounded down to nearest second
      */
-    private Date exactSeconds(Date date) {
+    private static Date exactSeconds(Date date) {
         return new Date(date.getTime() / 1000 * 1000);
     }
 

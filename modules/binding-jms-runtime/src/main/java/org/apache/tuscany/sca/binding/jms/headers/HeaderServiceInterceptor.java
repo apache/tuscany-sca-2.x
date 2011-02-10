@@ -24,6 +24,9 @@ import javax.jms.JMSException;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
+import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -34,10 +37,12 @@ public class HeaderServiceInterceptor extends InterceptorAsyncImpl {
 
     private Invoker next;
     private JMSBinding jmsBinding;
+    private JMSMessageProcessor responseMessageProcessor;
 
-    public HeaderServiceInterceptor(JMSBinding jmsBinding) {
+    public HeaderServiceInterceptor(ExtensionPointRegistry extensions, JMSBinding jmsBinding) {
         super();
         this.jmsBinding = jmsBinding;
+        this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(extensions, jmsBinding);
     }
 
     public Message invoke(Message msg) {
@@ -72,6 +77,8 @@ public class HeaderServiceInterceptor extends InterceptorAsyncImpl {
             
             Operation operation = tuscanyMsg.getOperation();
             String operationName = operation.getName();
+            
+            responseMessageProcessor.setOperationName(operationName, jmsMsg);
 
             for (String propName : jmsBinding.getPropertyNames()) {
                 Object value = jmsBinding.getProperty(propName);

@@ -184,16 +184,21 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                         }
                         operation.getParameterModes().set(i, getParameterMode(param.mode()));
                     }
+                    ParameterMode mode = operation.getParameterModes().get(i);
                 }
+        
                 WebResult result = method.getAnnotation(WebResult.class);
                 if (result != null) {
                     String ns = getValue(result.targetNamespace(), tns);
                     // Default to <operationName>Response for doc-bare
                     String name = getValue(result.name(), documentStyle ? operationName + "Response" : "return");
                     QName element = new QName(ns, name);
-                    Object logical = operation.getOutputType().getLogical();
-                    if (logical instanceof XMLType) {
-                        ((XMLType)logical).setElementName(element);
+                    if (!operation.hasReturnTypeVoid()) {
+                        List<DataType> outputDataTypes = operation.getOutputType().getLogical();                    
+                        DataType returnDataType = outputDataTypes.get(0);
+                        if (returnDataType instanceof XMLType) {
+                            ((XMLType)returnDataType).setElementName(element);
+                        }
                     }
                 }
                 // FIXME: [rfeng] For the BARE mapping, do we need to create a Wrapper?
@@ -276,27 +281,11 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 });
                 QName outputWrapper = outputWrapperDT.getLogical().getElementName();
 
-                List<ElementInfo> inputElements = new ArrayList<ElementInfo>();
-                for (int i = 0; i < method.getParameterTypes().length; i++) {
-                    WebParam param = getAnnotation(method, i, WebParam.class);
-                    ns = param != null ? param.targetNamespace() : "";
-                    // Default to "" for doc-lit-wrapped && non-header
-                    ns = getValue(ns, documentStyle && (param == null || !param.header()) ? "" : tns);
-                    name = param != null ? param.name() : "";
-                    name = getValue(name, "arg" + i);
-                    QName element = new QName(ns, name);
-                    Object logical = operation.getInputType().getLogical().get(i).getLogical();
-                    QName type = null;
-                    if (logical instanceof XMLType) {
-                        ((XMLType)logical).setElementName(element);
-                        type = ((XMLType)logical).getTypeName();
-                    }
-                    inputElements.add(new ElementInfo(element, new TypeInfo(type, false, null)));
-                    if (param != null) {
-                    	operation.getParameterModes().set(i, getParameterMode(param.mode()));
-                    }
-                }
-
+                
+                //
+                // Since JAX-WS specifies that the output wrapper bean consists of the return type output first followed
+                // by any other outputs carried in Holder(s), let's look at the output first.
+                //
                 List<ElementInfo> outputElements = new ArrayList<ElementInfo>();
                 WebResult result = method.getAnnotation(WebResult.class);
                 // Default to "" for doc-lit-wrapped && non-header
@@ -306,7 +295,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 name = getValue(name, "return");
                 QName element = new QName(ns, name);
 
-                if ((operation.getOutputType() != null) && ( operation.getOutputType().getLogical().get(0) != null)) {
+                if (!operation.hasReturnTypeVoid()) {
                     Object logical = operation.getOutputType().getLogical().get(0).getLogical();
                     QName type = null;
                     if (logical instanceof XMLType) {
@@ -315,7 +304,39 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                     }
                     outputElements.add(new ElementInfo(element, new TypeInfo(type, false, null)));
                 }
+                
+                List<ElementInfo> inputElements = new ArrayList<ElementInfo>();
+                for (int i = 0; i < method.getParameterTypes().length; i++) {
+                    WebParam param = getAnnotation(method, i, WebParam.class);
+                    ns = param != null ? param.targetNamespace() : "";
+                    // Default to "" for doc-lit-wrapped && non-header
+                    ns = getValue(ns, documentStyle && (param == null || !param.header()) ? "" : tns);
+                    name = param != null ? param.name() : "";
+                    name = getValue(name, "arg" + i);
+                    element = new QName(ns, name);
+                    Object logical = operation.getInputType().getLogical().get(i).getLogical();
+                    QName type = null;
+                    if (logical instanceof XMLType) {
+                        ((XMLType)logical).setElementName(element);
+                        type = ((XMLType)logical).getTypeName();
+                    }
+                                        
+                    if (param != null) {
+                        ParameterMode mode = getParameterMode(param.mode());
+                        operation.getParameterModes().set(i, mode);
+                    }
+                    ParameterMode mode = operation.getParameterModes().get(i);
 
+                    if (mode.equals(ParameterMode.INOUT)) {
+                        inputElements.add(new ElementInfo(element, new TypeInfo(type, false, null)));
+                        outputElements.add(new ElementInfo(element, new TypeInfo(type, false, null)));
+                    } else if (mode.equals(ParameterMode.OUT)) {
+                        outputElements.add(new ElementInfo(element, new TypeInfo(type, false, null)));
+                    } else {
+                        inputElements.add(new ElementInfo(element, new TypeInfo(type, false, null)));
+                    }
+                }                                  
+                    
                 String db = inputWrapperDT != null ? inputWrapperDT.getDataBinding() : JAXB_DATABINDING;
                 WrapperInfo wrapperInfo =
                     new WrapperInfo(db, new ElementInfo(inputWrapper, null), new ElementInfo(outputWrapper, null),
@@ -326,6 +347,19 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
 
                 operation.setWrapper(wrapperInfo);
             }
+            
+            // In both bare and wrapped cases, remove OUT-only parameters from input DataType.
+            // This is a key point then because it's the last time in which the number of parameters in 
+            // Java matches the number of logical inputs.  After this, things will be out of synch, for
+            // example the number of parameter modes won't match the number of inputs.
+            List<ParameterMode> parmModes = operation.getParameterModes();
+            List<DataType> inputDTs = operation.getInputType().getLogical();
+            for (int i = parmModes.size() - 1; i>=0; i--) {
+                if (parmModes.get(i).equals(ParameterMode.OUT)) {
+                    inputDTs.remove(i);
+                }
+            }
+            
         }
     }
 

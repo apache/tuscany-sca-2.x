@@ -33,11 +33,14 @@ import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.AsyncResponseInvoker;
 import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
@@ -50,11 +53,13 @@ public class AsyncResponseDestinationInterceptor extends InterceptorAsyncImpl {
     private Invoker next;
     private RuntimeComponentService service;
 	private RuntimeEndpoint endpoint;
+	private ExtensionPointRegistry registry;
           
-    public AsyncResponseDestinationInterceptor(RuntimeEndpoint endpoint) {
+    public AsyncResponseDestinationInterceptor(RuntimeEndpoint endpoint, ExtensionPointRegistry registry) {
         super();
         this.service = (RuntimeComponentService) endpoint.getService();
         this.endpoint = endpoint;
+        this.registry = registry;
     }
 
     public Invoker getNext() {
@@ -104,8 +109,11 @@ public class AsyncResponseDestinationInterceptor extends InterceptorAsyncImpl {
             // than this interceptor
             String msgID = (String)msg.getHeaders().get("MESSAGE_ID");
             
+            String operationName = msg.getOperation().getName();
+            
             // Create a response invoker and add it to the message headers
-            AsyncResponseInvoker<String> respInvoker = new AsyncResponseInvoker<String>(endpoint, null, asyncRespAddr, msgID);
+            AsyncResponseInvoker<String> respInvoker = 
+            	new AsyncResponseInvoker<String>(endpoint, null, asyncRespAddr, msgID, operationName, getMessageFactory());
             msg.getHeaders().put("ASYNC_RESPONSE_INVOKER", respInvoker);
 
         } catch (JMSException e) {
@@ -191,4 +199,10 @@ public class AsyncResponseDestinationInterceptor extends InterceptorAsyncImpl {
     	} // end while
     	return false;
     } // end method isAsync
+    
+	private MessageFactory getMessageFactory() {
+		FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+		return modelFactories.getFactory(MessageFactory.class);
+	} // end method getMessageFactory
+	
 } // end class

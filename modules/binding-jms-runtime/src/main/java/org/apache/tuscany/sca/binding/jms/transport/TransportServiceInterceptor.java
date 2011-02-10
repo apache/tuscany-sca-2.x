@@ -210,10 +210,11 @@ public class TransportServiceInterceptor extends InterceptorAsyncImpl {
         JMSBindingContext context = msg.getBindingContext();
         try {
             Session session = context.getJmsResponseSession();
-            javax.jms.Message requestJMSMsg = context.getJmsMsg();
+            //javax.jms.Message requestJMSMsg = context.getJmsMsg();
             javax.jms.Message responseJMSMsg = msg.getBody();
             
-            Destination replyDest = requestJMSMsg.getJMSReplyTo();
+            //Destination replyDest = requestJMSMsg.getJMSReplyTo();
+            Destination replyDest = context.getReplyToDestination();
             if (replyDest == null) {
                 if (jmsBinding.getResponseDestinationName() != null) {
                     try {
@@ -251,22 +252,24 @@ public class TransportServiceInterceptor extends InterceptorAsyncImpl {
                 }
             }
     
+            /*
             if (correlationScheme == null || 
                 JMSBindingConstants.CORRELATE_MSG_ID.equalsIgnoreCase(correlationScheme)) {
                 responseJMSMsg.setJMSCorrelationID(requestJMSMsg.getJMSMessageID());
             } else if (JMSBindingConstants.CORRELATE_CORRELATION_ID.equalsIgnoreCase(correlationScheme)) {
                 responseJMSMsg.setJMSCorrelationID(requestJMSMsg.getJMSCorrelationID());
-            }                
+            }  
+            */              
                        
             MessageProducer producer = session.createProducer(replyDest);
             
             // Set jms header attributes in producer, not message.
-            int deliveryMode = requestJMSMsg.getJMSDeliveryMode();
-            producer.setDeliveryMode(deliveryMode);
-            int deliveryPriority = requestJMSMsg.getJMSPriority();
-            producer.setPriority(deliveryPriority);
-            long timeToLive = requestJMSMsg.getJMSExpiration();
-            producer.setTimeToLive(timeToLive);
+            //int deliveryMode = requestJMSMsg.getJMSDeliveryMode();
+            //producer.setDeliveryMode(deliveryMode);
+            //int deliveryPriority = requestJMSMsg.getJMSPriority();
+            //producer.setPriority(deliveryPriority);
+            //long timeToLive = requestJMSMsg.getJMSExpiration();
+            //producer.setTimeToLive(timeToLive);
     
             producer.send((javax.jms.Message)msg.getBody());
     

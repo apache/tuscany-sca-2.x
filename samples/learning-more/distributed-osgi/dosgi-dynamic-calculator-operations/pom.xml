@@ -21,9 +21,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-samples-distributed-osgi</artifactId>
-        <version>2.0-Beta2-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <artifactId>tuscany-samples</artifactId>
+        <version>2.0-SNAPSHOT</version>
+        <relativePath>../../../pom.xml</relativePath>
     </parent>
 
     <artifactId>sample-dosgi-dynamic-calculator-operations</artifactId>
@@ -32,22 +32,33 @@
     <dependencies>
        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-all</artifactId>
-            <version>2.0-Beta2-SNAPSHOT</version>
+            <artifactId>tuscany-base-runtime-pom</artifactId>
+            <version>2.0-SNAPSHOT</version>
             <type>pom</type>
+        </dependency>
+       <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-osgi-runtime-pom</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency>
+       <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-rmi-runtime</artifactId>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
 
        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-launcher-equinox</artifactId>
-            <version>2.0-Beta2-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-impl-osgi</artifactId>
-            <version>2.0-Beta2-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -83,7 +94,7 @@
     </dependencies>
 
     <build>
-        <finalName>${artifactId}</finalName>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>
@@ -121,7 +132,7 @@
                    <dependency>
                       <groupId>org.apache.tuscany.sca</groupId>
                       <artifactId>tuscany-node-launcher-equinox</artifactId>
-                      <version>${pom.version}</version>
+                      <version>${project.version}</version>
                    </dependency>
                 </dependencies>
                 <executions>

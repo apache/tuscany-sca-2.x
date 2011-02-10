@@ -1,6 +1,11 @@
 Manifest-Version: 1.0
 Export-Package: 
- org.apache.tuscany.sca.binding.atom.collection
+ org.apache.tuscany.sca.binding.atom.collection,
+ org.apache.tuscany.sca.binding.atom.js.dojo;version="2.0.0";
+  uses:="org.apache.tuscany.sca.assembly,
+   org.apache.tuscany.sca.web.javascript,
+   org.apache.tuscany.sca.binding.atom,
+   javax.xml.namespace"
 SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA Abdera Atom Feed Binding Extension
 Bundle-Vendor: The Apache Software Foundation

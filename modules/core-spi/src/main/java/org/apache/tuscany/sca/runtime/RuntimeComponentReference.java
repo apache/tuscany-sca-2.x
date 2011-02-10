@@ -35,4 +35,10 @@ public interface RuntimeComponentReference extends ComponentReference {
      * @param component
      */
     void setComponent(RuntimeComponent component);
+    
+    /**
+     * Get the owning component
+     * @return the owning component
+     */
+    RuntimeComponent getComponent();
 }

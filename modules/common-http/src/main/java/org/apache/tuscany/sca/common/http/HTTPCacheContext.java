@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.common.http;
@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * A class to store cache settings for Atom and HTTP requests and responses.
- * 
+ *
  * Predicates are statements that work in conjunction with
  * ETags and LastModified dates to determine if a precondition
  * or postcondition is satisfied.
@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletRequest;
  * http://tools.ietf.org/html/rfc2616
  * Example predicates in HTTP include If-Match, If-None-Match,
  * If-Modified-Since, If-Unmodified-Since, If-Range.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class HTTPCacheContext {
@@ -50,42 +50,7 @@ public class HTTPCacheContext {
     public boolean ifNoneMatch;
     public boolean ifRange;
 
-    /**
-     * Gets the cache context information (ETag, LastModified, predicates) from the Http request.
-     * @param request
-     * @return
-     */
-    public static HTTPCacheContext createCacheContextFromRequest( HttpServletRequest request ) throws java.text.ParseException {
-        HTTPCacheContext context = new HTTPCacheContext();
 
-        String eTag = request.getHeader( "If-Match" );          
-        if ( eTag != null ) {
-            context.setETag( eTag );
-            context.setIfMatch( true );
-        }
-        eTag = request.getHeader( "If-None-Match" );            
-        if ( eTag != null ) {
-            context.setETag( eTag );
-            context.setIfNoneMatch( true );
-        }
-        String lastModifiedString = request.getHeader( "If-Modified-Since" );        
-        if ( lastModifiedString != null ) {
-            context.setLastModified( lastModifiedString );
-            context.setIfModifiedSince( true );
-        }
-        lastModifiedString = request.getHeader( "If-Unmodified-Since" );        
-        if ( lastModifiedString != null ) {
-            context.setLastModified( lastModifiedString );
-            context.setIfUnmodifiedSince( true );
-        }
-        lastModifiedString = request.getHeader( "If-Range" );        
-        if ( lastModifiedString != null ) {
-            context.setLastModified( lastModifiedString );
-            context.setIfRange( true );
-        }
-        return context;
-    }
-    
     /**
      * Enabled is true whenever ETag, LastModified, or predicate is set.
      * @return the enabled
@@ -93,14 +58,14 @@ public class HTTPCacheContext {
     public boolean isEnabled() {
         return enabled;
     }
-    
+
     /**
      * @param enabled the enabled to set
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-    
+
     /**
      * An ETag is a unique ID for an item. It changes when
      * a field in the item or the update date changes.
@@ -111,6 +76,7 @@ public class HTTPCacheContext {
     public String getETag() {
         return eTag;
     }
+
     /**
      * @param tag the eTag to set
      */
@@ -118,8 +84,9 @@ public class HTTPCacheContext {
         eTag = tag;
         enabled = true;
     }
+
     /**
-     * The LastModified date is the time the item was last 
+     * The LastModified date is the time the item was last
      * changed. See HTTP specification for how ETags work:
      * http://tools.ietf.org/html/rfc2616
      * @return the lastModified
@@ -127,8 +94,9 @@ public class HTTPCacheContext {
     public String getLastModified() {
         return lastModified;
     }
+
     /**
-     * The LastModified date is the time the item was last 
+     * The LastModified date is the time the item was last
      * changed. See HTTP specification for how ETags work:
      * http://tools.ietf.org/html/rfc2616
      * @return the lastModified
@@ -136,6 +104,7 @@ public class HTTPCacheContext {
     public Date getLastModifiedAsDate() {
         return lastModifiedDate;
     }
+
     /**
      * @param lastModified the lastModified to set
      */
@@ -161,69 +130,119 @@ public class HTTPCacheContext {
     public boolean isIfModifiedSince() {
         return ifModifiedSince;
     }
+
     /**
      * @param ifModifedSince the ifModifedSince to set
      */
     public void setIfModifiedSince(boolean ifModifiedSince) {
         this.ifModifiedSince = ifModifiedSince;
-        if ( ifModifiedSince )
+        if ( ifModifiedSince ) {
             enabled = true;
+        }
     }
+
     /**
      * @return the ifUnModifiedSince
      */
     public boolean isIfUnmodifiedSince() {
         return ifUnmodifiedSince;
     }
+
     /**
      * @param ifUnModifiedSince the ifUnModifiedSince to set
      */
     public void setIfUnmodifiedSince(boolean ifUnmodifiedSince) {
         this.ifUnmodifiedSince = ifUnmodifiedSince;
-        if ( ifUnmodifiedSince )
+        if ( ifUnmodifiedSince ) {
             enabled = true;
+        }
     }
+
     /**
      * @return the ifMatch
      */
     public boolean isIfMatch() {
         return ifMatch;
     }
+
     /**
      * @param ifMatch the ifMatch to set
      */
     public void setIfMatch(boolean ifMatch) {
         this.ifMatch = ifMatch;
-        if ( ifMatch )
+        if ( ifMatch ) {
             enabled = true;
+        }
     }
+
     /**
      * @return the ifNoneMatch
      */
     public boolean isIfNoneMatch() {
         return ifNoneMatch;
     }
+
     /**
      * @param ifNoneMatch the ifNoneMatch to set
      */
     public void setIfNoneMatch(boolean ifNoneMatch) {
         this.ifNoneMatch = ifNoneMatch;
-        if ( ifNoneMatch )
+        if ( ifNoneMatch ) {
             enabled = true;
+        }
     }
+
     /**
      * @return the ifRange
      */
     public boolean isIfRange() {
         return ifRange;
     }
+
     /**
      * @param ifRange the ifRange to set
      */
     public void setIfRange(boolean ifRange) {
         this.ifRange = ifRange;
-        if ( ifRange )
+        if ( ifRange ) {
             enabled = true;
+        }
+    }
+
+    /**
+     * Gets the cache context information (ETag, LastModified, predicates) from the Http request.
+     * @param request
+     * @return
+     */
+    public static HTTPCacheContext createCacheContextFromRequest( HttpServletRequest request ) throws java.text.ParseException {
+        HTTPCacheContext context = new HTTPCacheContext();
+
+        String eTag = request.getHeader( "If-Match" );
+        if ( eTag != null ) {
+            context.setETag( eTag );
+            context.setIfMatch( true );
+        }
+        eTag = request.getHeader( "If-None-Match" );
+        if ( eTag != null ) {
+            context.setETag( eTag );
+            context.setIfNoneMatch( true );
+        }
+        String lastModifiedString = request.getHeader( "If-Modified-Since" );
+        if ( lastModifiedString != null ) {
+            context.setLastModified( lastModifiedString );
+            context.setIfModifiedSince( true );
+        }
+        lastModifiedString = request.getHeader( "If-Unmodified-Since" );
+        if ( lastModifiedString != null ) {
+            context.setLastModified( lastModifiedString );
+            context.setIfUnmodifiedSince( true );
+        }
+        lastModifiedString = request.getHeader( "If-Range" );
+        if ( lastModifiedString != null ) {
+            context.setLastModified( lastModifiedString );
+            context.setIfRange( true );
+        }
+        return context;
     }
 
     public String toString() {

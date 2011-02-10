@@ -18,12 +18,14 @@
  * under the License.
 -->
 <project name="DojoZipInstaller">
-	
 
-    <property name="dojo.version" value="1.3.0"/>
+    <property name="dojo.version" value="${dojoVersion}"/>
+	<echo message="${dojo.version}"/>
 	<property name="dojo.zip" value="${localRepository}/org/dojotoolkit/dojo/${dojo.version}/dojo-${dojo.version}.zip"/>
+	<echo message="${dojo.zip}"/>
     <property name="unpack.location" value="${basedir}/src/main/resources/dojo"/>
-	
+	<echo message="${unpack.location}"/>
+
 
     <target name="check-dojo-installed">
         <condition property="already.installed" >
@@ -40,7 +42,7 @@
     <target name="unpack-dojo-files" depends="check-dojo-installed, check-dojo-unpacked" unless="already.unpacked">
         <fail message="dojo zip file not installed in local repository: ${localRepository}" unless="already.installed"/>
         <mkdir dir="${basedir}/target/dojo-unpack-temp/"/>
-        <unzip src="${localRepository}/org/dojotoolkit/dojo/${dojo.version}/dojo-${dojo.version}.zip"
+        <unzip src="${dojo.zip}"
                dest="${basedir}/target/dojo-unpack-temp/"
                overwrite="false"
         	   encoding="native-encoding">
@@ -57,7 +59,7 @@
               verbose="true"/>
         <delete dir="${basedir}/target/dojo-unpack-temp/"/>
     </target>
-	
+
     <target name="clean-dojo-files">
         <delete dir="${unpack.location}"/>
     </target>

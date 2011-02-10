@@ -22,9 +22,10 @@ package org.apache.tuscany.sca.core.invocation;
 /**
  * Constants used during invocation in the runtime
  *
-
  */
 public interface Constants {
-    String MESSAGE_ID = "MESSAGE_ID";
-
+    String MESSAGE_ID 				= "MESSAGE_ID";
+    String RELATES_TO 				= "RELATES_TO";
+    String ASYNC_RESPONSE_INVOKER 	= "ASYNC_RESPONSE_INVOKER";
+    String ASYNC_CALLBACK 			= "ASYNC_CALLBACK";
 }

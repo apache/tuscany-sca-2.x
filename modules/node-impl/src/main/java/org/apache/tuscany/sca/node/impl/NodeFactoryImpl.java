@@ -44,13 +44,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -80,8 +74,6 @@ import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
-import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.apache.tuscany.sca.work.WorkScheduler;
@@ -107,6 +99,8 @@ public class NodeFactoryImpl extends NodeFactory {
      * can set this flag.
      */
     protected boolean autoDestroy = true;
+
+    boolean quietLogging;
 
     @Override
     public Node createNode(NodeConfiguration configuration) {
@@ -251,6 +245,7 @@ public class NodeFactoryImpl extends NodeFactory {
         monitorFactory = utilities.getUtility(MonitorFactory.class);
 
         utilities.getUtility(RuntimeProperties.class).setProperties(properties);
+        quietLogging = Boolean.parseBoolean(properties.getProperty(RuntimeProperties.QUIET_LOGGING));
         
         // Use the runtime-enabled assembly factory
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
@@ -347,7 +342,7 @@ public class NodeFactoryImpl extends NodeFactory {
             URL contributionURL = uri.toURL();
 
             // Load the contribution
-            logger.log(Level.INFO, "Loading contribution: " + contributionURL);
+            logger.log(quietLogging? Level.FINE : Level.INFO, "Loading contribution: " + contributionURL);
             Contribution contribution = deployer.loadContribution(contributionURI, contributionURL, context.getMonitor());
             contributions.add(contribution);
 
@@ -465,6 +460,7 @@ public class NodeFactoryImpl extends NodeFactory {
                 discovery.setAttribute(serviceType, attribute, properties.getProperty(p));
             }
         }
+        quietLogging = Boolean.parseBoolean(properties.getProperty(RuntimeProperties.QUIET_LOGGING));
         super.configure(attributes);
     }
     
@@ -476,6 +472,11 @@ public class NodeFactoryImpl extends NodeFactory {
      */
     public Deployer getDeployer() {
         return deployer;
+    }
+
+    @Override
+    public void setAutoDestroy(boolean b) {
+        autoDestroy = b;
     }
     
 }

@@ -19,19 +19,17 @@
 
 package org.apache.tuscany.sca.endpoint.hazelcast;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 
 /**
  * Utility to parse the config properties.
  * 
- * bind - ip[:port] - defines the local bind address and port, it defaults to the network interface with the widest 
- *                    class (ie class A is wider than class B) on port 14820 and if that port in use it will try 
+ * bind - ip[:port] - defines the local bind address and port, it defaults port 14820 and if that port in use it will try 
  *                    incrementing by one till a free port is found.
  *             
  * multicast - groupip:port | off - defines if multicast discovery is used and if so what multicast ip group and port is used 
@@ -65,12 +63,7 @@ public class RegistryConfig {
     private void init(Properties properties) {
    
         String bindValue = properties.getProperty("bind");
-        if (bindValue == null) {
-            InetAddress addr = chooseLocalAddress();
-            if (addr != null) {
-                this.bindAddress = addr.getHostAddress();
-            }
-        } else {
+        if (bindValue != null) {
             if (bindValue.indexOf(":") == -1) {
                 this.bindAddress = bindValue;
             } else {
@@ -145,35 +138,40 @@ public class RegistryConfig {
     }
 
     /**
-     * Use the NIC address with the widest class, ie class A instead of class B or C.
-     * Bit crude but in a lot of environments a class A address (eg 10.x.x.x) is likely
-     * a better choice than a class C address (eg 192.x.x.x). And the alternative to 
-     * this is to just choose the first address of the first network interface which 
-     * likely isn't a better choice than this approach.
+     * Parse the config string into a Properties object.
+     * The config URI has the following format:
+     * uri:<domainName>?name=value&...
      */
-    protected InetAddress chooseLocalAddress() {
-        InetAddress chosen = null;
-        try {
-            Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
-            while (nis.hasMoreElements()) {
-                NetworkInterface ni = nis.nextElement();
-                Enumeration<InetAddress> ips = ni.getInetAddresses();
-                while (ips.hasMoreElements()) {
-                    InetAddress addr = ips.nextElement();
-                    if (!addr.isLoopbackAddress()) {
-                        if (chosen == null) {
-                            chosen = addr;
-                        } else {
-                            if (((int) addr.getAddress()[0] & 0xFF) < ((int) chosen.getAddress()[0] & 0xFF)) {
-                                chosen = addr;
-                            }
-                        }
+    public static RegistryConfig parseConfigURI(String configURI) {
+        Properties properties = new Properties();
+        int c = configURI.indexOf(':');
+        if (c > -1) {
+           configURI = configURI.substring(c+1); 
+        }
+        int qm = configURI.indexOf('?');
+        if (qm < 0) {
+            properties.setProperty("defaultDomainName", configURI);
+        } else {
+            if (qm == 0) {
+                properties.setProperty("defaultDomainName", "default");
+            } else {
+                properties.setProperty("defaultDomainName", configURI.substring(0, qm));
+            }
+            if (configURI.length() > qm+1) {
+                Map<String, String> params = new HashMap<String, String>();
+                for (String param : configURI.substring(qm+1).split("&")) {
+                    String[] px = param.split("=");
+                    if (px.length == 2) {
+                        params.put(px[0], px[1]);
+                    } else {
+                        params.put(px[0], "");
                     }
                 }
+                for (String name : params.keySet()) {
+                    properties.setProperty(name, params.get(name));
+                }
             }
-        } catch (Exception e) {
-            // ignore
         }
-        return chosen;
+        return new RegistryConfig(properties);
     }
 }

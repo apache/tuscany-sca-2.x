@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -60,7 +61,8 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
-import org.apache.tuscany.sca.core.invocation.AsyncResponseHandler;
+import org.apache.tuscany.sca.core.invocation.AsyncResponseService;
+import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.core.invocation.RuntimeInvoker;
@@ -81,17 +83,21 @@ import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
 import org.apache.tuscany.sca.provider.EndpointProvider;
 import org.apache.tuscany.sca.provider.ImplementationAsyncProvider;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
+import org.apache.tuscany.sca.provider.OptimisingBindingProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointSerializer;
+import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
@@ -274,10 +280,11 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     	// Deal with async callback
     	// Ensure invocation chains are built...
     	getInvocationChains();
-    	if ( !this.getCallbackEndpointReferences().isEmpty() ) {
+    	// async callback handling
+    	if( this.isAsyncInvocation() && !this.getCallbackEndpointReferences().isEmpty() ) {
     		RuntimeEndpointReference asyncEPR = (RuntimeEndpointReference) this.getCallbackEndpointReferences().get(0);
     		// Place a link to the callback EPR into the message headers...
-    		msg.getHeaders().put("ASYNC_CALLBACK", asyncEPR );
+    		msg.getHeaders().put(Constants.ASYNC_CALLBACK, asyncEPR );
     	} 
     	// end of async callback handling
         return invoker.invokeBinding(msg);
@@ -301,6 +308,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     } // end method invokeAsync(Operation, Message)
     
     public void invokeAsyncResponse(Message msg){
+        resolve();
         invoker.invokeAsyncResponse(msg);
     }
 
@@ -367,7 +375,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             
             // Handle cases where the operation is an async server 
             if( targetOperation.isAsyncServer() ) {
-            	createAsyncServerCallback( this, operation );
+            	createAsyncServerCallback();
             } // end if
         }
 
@@ -391,31 +399,63 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                         ((InterceptorAsync)invoker).setPrevious(asyncResponseInvoker);
                     } else {
                         //TODO - throw error once the old async code is removed
-                    }
-                }
+                    } // end if
+                } // end for
             } else {
                 // TODO - throw error once the old async code is removed
-            }
-        }
-    }
+            } // end if
+        } // end if
+        
+        ServiceBindingProvider provider = getBindingProvider();
+        if ((provider != null) && (provider instanceof OptimisingBindingProvider)) {
+        	//TODO - remove this comment once optimisation codepath is tested
+            ((OptimisingBindingProvider)provider).optimiseBinding( this );
+        } // end if
+
+    } // end method initInvocationChains
     
     /**
-     * Creates the async callback for the supplied Endpoint and Operation, if it does not already exist
+     * Creates the async callback for this Endpoint, if it does not already exist
      * and stores it into the Endpoint
-     * @param endpoint - the Endpoint
-     * @param operation - the Operation
      */
-    private void createAsyncServerCallback( RuntimeEndpoint endpoint, Operation operation ) {
-    	// Check to see if the callback already exists
-    	if( asyncCallbackExists( endpoint ) ) return;
+    public void createAsyncServerCallback( ) {
+    	// No need to create a callback if the Binding supports async natively...
+    	if( hasNativeAsyncBinding(this) ) return;
     	
-    	RuntimeEndpointReference asyncEPR = createAsyncEPR( endpoint );
+    	// Check to see if the callback already exists
+    	if( asyncCallbackExists( this ) ) return;
+    	
+    	RuntimeEndpointReference asyncEPR = createAsyncEPR( this );
     	
     	// Store the new callback EPR into the Endpoint
-    	endpoint.getCallbackEndpointReferences().add(asyncEPR);
+    	this.getCallbackEndpointReferences().add(asyncEPR);
+    	
+    	// Also store the callback EPR into the EndpointRegistry
+    	EndpointRegistry epReg = getEndpointRegistry( registry );
+    	if( epReg != null ) epReg.addEndpointReference(asyncEPR);
     } // end method createAsyncServerCallback
     
+    public RuntimeEndpointReference getAsyncServerCallback() {
+    	
+    	return (RuntimeEndpointReference) this.getCallbackEndpointReferences().get(0);
+    } // end method getAsyncServerCallback
+    
+    
     /**
+     * Indicates if a given endpoint has a Binding that supports native async invocation
+     * @param endpoint - the endpoint
+     * @return - true if the endpoint has a binding that supports native async, false otherwise
+     */
+    private boolean hasNativeAsyncBinding(RuntimeEndpoint endpoint) {
+    	ServiceBindingProvider provider = endpoint.getBindingProvider();
+    	if( provider instanceof EndpointAsyncProvider ) {
+    		EndpointAsyncProvider asyncProvider = (EndpointAsyncProvider) provider;
+    		if( asyncProvider.supportsNativeAsync()  ) return true;
+    	} // end if
+		return false;
+	} // end method hasNativeAsyncBinding
+
+	/**
      * Creates the Endpoint object for the async callback
      * @param endpoint - the endpoint which has the async server operations
      * @return the EndpointReference object representing the callback
@@ -426,6 +466,9 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         RuntimeEndpointReference epr = (RuntimeEndpointReference)assemblyFactory.createEndpointReference();
         epr.bind( compositeContext );
         
+        // Create pseudo-component
+        epr.setComponent(component);
+        
         // Create pseudo-reference
         ComponentReference reference = assemblyFactory.createComponentReference();
     	  ExtensionPointRegistry registry = compositeContext.getExtensionPointRegistry();
@@ -433,7 +476,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         JavaInterfaceFactory javaInterfaceFactory = (JavaInterfaceFactory)modelFactories.getFactory(JavaInterfaceFactory.class);
         JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         try {
-			interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(AsyncResponseHandler.class));
+			interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(AsyncResponseService.class));
 		} catch (InvalidInterfaceException e1) {
 			// Nothing to do here - will not happen
 		} // end try
@@ -458,8 +501,6 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 		// Need to establish policies here (binding has some...)
 		epr.getRequiredIntents().addAll( endpoint.getRequiredIntents() );
 		epr.getPolicySets().addAll( endpoint.getPolicySets() );
-		String eprURI = endpoint.getComponent().getName() + "#reference-binding(" + referenceName + "/" + referenceName + ")";
-		epr.setURI(eprURI);
 		
 		// Attach a dummy endpoint to the epr
 		RuntimeEndpoint ep = (RuntimeEndpoint)assemblyFactory.createEndpoint();
@@ -468,6 +509,10 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 		//epr.setStatus(EndpointReference.Status.RESOLVED_BINDING);
 		epr.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
 		epr.setUnresolved(false);
+		
+		// Set the URI for the EPR
+		String eprURI = endpoint.getComponent().getName() + "#reference-binding(" + referenceName + "/" + referenceName + ")";
+		epr.setURI(eprURI);
         
     	return epr;
     } // end method RuntimeEndpointReference
@@ -507,10 +552,10 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 			XMLStreamReader reader = inputFactory.createXMLStreamReader(source);
 			reader.next();
 			Binding newBinding = (Binding) processor.read(reader, context );
-			newBinding.setName("asyncCallback");
+			newBinding.setName(reference.getName());
 			
 			// Create a URI address for the callback based on the Component_Name/Reference_Name pattern
-			String callbackURI = "/" + component.getName() + "/" + reference.getName();
+			//String callbackURI = "/" + component.getName() + "/" + reference.getName();
 			//newBinding.setURI(callbackURI);
 			
 			BuilderExtensionPoint builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
@@ -605,10 +650,9 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 Interceptor interceptor = p.createBindingInterceptor();
                 if (interceptor != null) {
                     bindingInvocationChain.addInterceptor(interceptor);
-                }
-            }
-
-        }
+                } // end if
+            } // end for
+        } // end if
         
         // This is strategically placed before the RuntimeInvoker is added to the end of the
         // binding chain as the RuntimeInvoker doesn't need to take part in the response
@@ -625,7 +669,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                     // TODO - raise an error. Not doing that while
                     //        we have the old async mechanism in play
                 }
-            }
+            } // end for
             
             // fix up the binding chain response path to point back to the 
             // binding provided async response handler
@@ -640,15 +684,16 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 }
             } else {
                 //TODO - throw error once the old async code is removed
-            }
-        }
+            } // end if
+        } // end if
         
         // Add the runtime invoker to the end of the binding chain. 
         // It mediates between the binding chain and selects the 
         // correct invocation chain based on the operation that's
         // been selected
-        bindingInvocationChain.addInvoker(invoker);        
-    }
+        bindingInvocationChain.addInvoker(invoker); 
+        
+    } // end method initServiceBindingInvocationChains
 
     /**
      * Add the interceptor for a binding
@@ -867,18 +912,73 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 if (compositeContext != null) {
                     bind(compositeContext);
                 }
-            }
+            } // end if
             if (serializer != null) {
                 RuntimeEndpointImpl ep = (RuntimeEndpointImpl)serializer.readEndpoint(xml);
                 copyFrom(ep);
             } else {
-                // FIXME: [rfeng] What should we do here?
-            }
-        }
+            	// In this case, we assume that we're running on a detached (non Tuscany) thread and
+            	// as a result we need to connect back to the Tuscany environment...
+            	for( NodeFactory factory : NodeFactory.getNodeFactories() ) {
+            		ExtensionPointRegistry registry = factory.getExtensionPointRegistry();
+            		if( registry != null ) {
+            			this.registry = registry;
+            			UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+                        this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
+                        this.serializer = utilities.getUtility(EndpointSerializer.class);
+                        RuntimeEndpointImpl ep = (RuntimeEndpointImpl)serializer.readEndpoint(xml);
+                        // Find the actual Endpoint in the EndpointRegistry
+                        ep = findActualEP( ep, registry );
+                        
+                        if( ep != null ){
+                        	copyFrom( ep );
+                        	break;
+                        } // end if
+            		} // end if
+                } // end for
+            } // end if
+        } // end if
         super.resolve();
-    }
+    } // end method resolve
 
-    public InterfaceContract getBindingInterfaceContract() {
+    /**
+     * Find the actual Endpoint in the EndpointRegistry which corresponds to the configuration described
+     * in a deserialized Endpoint 
+     * @param ep The deserialized endpoint
+     * @param registry - the main extension point Registry
+     * @return the corresponding Endpoint from the EndpointRegistry, or null if no match can be found
+     */
+    private RuntimeEndpointImpl findActualEP(RuntimeEndpointImpl ep,
+			ExtensionPointRegistry registry) {
+		EndpointRegistry endpointRegistry = getEndpointRegistry( registry );
+        
+        if( endpointRegistry == null ) return null;
+        
+        for( Endpoint endpoint : endpointRegistry.findEndpoint(ep.getURI()) ) {
+        	// TODO: For the present, simply return the first matching endpoint
+        	return (RuntimeEndpointImpl) endpoint;
+        } // end for
+        
+		return null;
+	} // end method findActualEP
+    
+    /**
+     * Get the EndpointRegistry
+     * @param registry - the ExtensionPoint registry
+     * @return the EndpointRegistry - will be null if the EndpointRegistry cannot be found
+     */
+    private EndpointRegistry getEndpointRegistry( ExtensionPointRegistry registry) {
+        DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(registry);
+        
+        if( domainRegistryFactory == null ) return null;
+        
+        // TODO: For the moment, just use the first (and only!) EndpointRegistry...
+        EndpointRegistry endpointRegistry = (EndpointRegistry) domainRegistryFactory.getEndpointRegistries().toArray()[0];
+    	
+    	return endpointRegistry;
+    } // end method 
+
+	public InterfaceContract getBindingInterfaceContract() {
         resolve();
         if (bindingInterfaceContract != null) {
             return bindingInterfaceContract;
