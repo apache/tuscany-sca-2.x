@@ -46,6 +46,11 @@
           </activation>
           <modules>
             <module>legal-checks</module>
+
+<!--
+
+Take out these sample tests while the sample reorg happens
+
             <module>contribution-binding-sca-calculator</module>
             <module>contribution-binding-ws-calculator</module>
             <module>contribution-binding-rmi-calculator</module>
@@ -53,6 +58,8 @@
             <module>contribution-implementation-java-calculator</module>
             <module>launcher-embedded-jse</module>
             <module>launcher-embedded-osgi</module>
+
+-->
           </modules>
       </profile>
 
