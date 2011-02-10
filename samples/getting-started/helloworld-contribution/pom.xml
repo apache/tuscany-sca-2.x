@@ -20,14 +20,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
-
-   <groupId>org.apache.tuscany.sca.samples</groupId>
-   <artifactId>helloworld-contribution</artifactId>
+   <parent>
+       <groupId>org.apache.tuscany.sca</groupId>
+       <artifactId>tuscany-samples</artifactId>
+       <version>2.0-Beta2-SNAPSHOT</version>
+       <relativePath>../../pom.xml</relativePath>
+   </parent>
+ 
+   <artifactId>sample-helloworld-contribution</artifactId>
    <version>2.0-Beta2-SNAPSHOT</version>
    <packaging>jar</packaging>
 
-   <name>helloworld-contribution</name>
-
+   <name>Apache Tuscany SCA Sample Helloworld Webapp</name>
+ 
    <properties>
       <tuscany.version>2.0-Beta2-SNAPSHOT</tuscany.version>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
