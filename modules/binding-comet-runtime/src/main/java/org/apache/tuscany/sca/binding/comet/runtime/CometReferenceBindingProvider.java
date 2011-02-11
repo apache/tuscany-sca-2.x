@@ -61,7 +61,7 @@ public class CometReferenceBindingProvider implements ReferenceBindingProvider {
 
     @Override
     public InterfaceContract getBindingInterfaceContract() {
-        return null;
+        return endpoint.getReference().getInterfaceContract();
     }
 
     @Override

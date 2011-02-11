@@ -65,7 +65,7 @@ public class CometServiceBindingProvider implements ServiceBindingProvider {
         JavascriptGenerator.generateServiceProxy(service);
         for (final Operation operation : serviceInterface.getOperations()) {
             JavascriptGenerator.generateMethodProxy(service, operation);
-            ServletFactory.addOperation(this.endpoint, operation);
+            ServletFactory.registerOperation(this.endpoint, operation);
         }
     }
 
@@ -79,7 +79,7 @@ public class CometServiceBindingProvider implements ServiceBindingProvider {
 
     @Override
     public InterfaceContract getBindingInterfaceContract() {
-        return null;
+        return endpoint.getService().getInterfaceContract();
     }
 
     @Override

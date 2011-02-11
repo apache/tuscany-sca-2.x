@@ -20,43 +20,36 @@
 package org.apache.tuscany.sca.binding.comet.runtime;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.binding.comet.runtime.handler.CometBindingHandler;
+import org.apache.tuscany.sca.core.invocation.impl.MessageImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 
-/**
- * Invoker for a service binding. Invoking is made from client Javascript so no
- * behavior is needed.
- */
 public class CometInvoker implements Invoker {
 
-    /**
-     * The invoked operation.
-     */
-    protected Operation operation;
+	protected Operation operation;
+	protected EndpointReference endpoint;
 
-    /**
-     * The endpoint to which the operation belongs.
-     */
-    protected EndpointReference endpoint;
+	public CometInvoker(final Operation operation, final EndpointReference endpoint) {
+		this.operation = operation;
+		this.endpoint = endpoint;
+	}
 
-    /**
-     * Default constructor.
-     * 
-     * @param operation the operation
-     * @param endpoint the endpoint
-     */
-    public CometInvoker(final Operation operation, final EndpointReference endpoint) {
-        this.operation = operation;
-        this.endpoint = endpoint;
-    }
-
-    /**
-     * No behavior.
-     */
-    @Override
-    public Message invoke(final Message msg) {
-        return null;
-    }
+	@Override
+	public Message invoke(final Message msg) {
+		String operation = msg.getOperation().getName();
+		CometMessageContext context = msg.getBindingContext();
+		CometBindingHandler handler = context.getCometHandler();
+		Message message = new MessageImpl();
+		if (operation.equals("sendResponse")) {
+			String callbackMethod = context.getCallbackMethod();
+			Object[] body = msg.getBody();
+			handler.respondToClient(callbackMethod, body[0]);
+		} else if (operation.equals("isClientConnected")) {
+			message.setBody(handler.isClientConnected());
+		}
+		return message;
+	}
 
 }
