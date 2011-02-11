@@ -310,6 +310,11 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         // Deal with header information that needs to be copied from the message context to the new message...
         transferMessageHeaders( msg, msgContext);
         
+        // Preserve binding context
+	if (msgContext != null) {
+            msg.setBindingContext(msgContext.getBindingContext());
+	}
+        
         ThreadMessageContext.setMessageContext(msg);
         
         // If there is a supplied message ID, place its value into the Message Header under "MESSAGE_ID"
