@@ -5,12 +5,12 @@ This sample demonstrates a simple helloworld style SCA application and how to ru
 
 See the README in the top-level samples folder for general information on the Tuscany samples.
 
-This project creates a jar format SCA contribution with a deployable composite, helloworld.comosite.
+This project creates an SCA contribution with a deployable composite named helloworld.comosite.
 The composite defines an SCA component, HelloworldComponent, which provides a Helloworld service, 
 the component is implemented by a Java class. 
 
-You can use the contribution by installing it and starting the composite in the Tuscany Shell. To do
-that run the following command in the helloworld-contribution folder:
+You can use the contribution by starting the composite in the Tuscany Shell. To do that run the 
+following command in the helloworld-contribution folder:
 
    mvn tuscany:run 
 
@@ -21,7 +21,7 @@ bin folder. To do that run the following command at the root of a Tuscany binary
 
 Once the Shell has been started with one of those methods you can use Shell commands to explore
 the SCA domain, for example, use the "installed" command to get the status of installed contributions, 
-"services" to see the available component services. You may test calling the helloworld service by 
+"services" to see the available component services, and you may test calling the helloworld service by 
 using the "invoke" command:
 
    invoke HelloworldComponent sayHello yourName
@@ -40,3 +40,4 @@ This project used the following answers:
    Define value for property 'artifactId': : helloworld-contribution
    Define value for property 'version': 1.0-SNAPSHOT: 2.0-SNAPSHOT
    Define value for property 'package': org.apache.tuscany.sca.samples: sample  
+
