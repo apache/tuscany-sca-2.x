@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
+import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
@@ -52,5 +53,15 @@ public class WSDLInterfaceContractImpl extends InterfaceContractImpl implements 
     
     public void setNormailizedWSDLContract(InterfaceContract wsdlInterfaceContract) {
         // do nothing as this already is a WSDL contract
+    }
+    
+    @Override
+    public String toString() {
+    	Interface intf = getInterface();
+    	Interface cbIntf = getCallbackInterface();
+    	StringBuilder b = new StringBuilder(128);
+    	b.append("Interface: " + (intf == null ? "null" : intf.toString()));
+    	b.append(", Callback Interface: " + (cbIntf == null ? "null" : cbIntf.toString()));
+    	return b.toString();
     }
 }

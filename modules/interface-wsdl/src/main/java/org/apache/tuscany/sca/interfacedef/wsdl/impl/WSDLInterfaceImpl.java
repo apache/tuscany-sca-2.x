@@ -120,5 +120,10 @@ public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
 	public void setCallbackInterface(WSDLInterface theInterface) {
 		callbackInterface = theInterface;	
 	}
+	
+    @Override
+    public String toString() {
+    	return name == null ? "null" : name.toString(); 
+    }
 
 } // end class WSDLInterfaceImpl
