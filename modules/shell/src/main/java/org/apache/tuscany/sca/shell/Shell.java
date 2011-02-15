@@ -90,12 +90,17 @@ public class Shell {
             }
         }
         Shell shell = new Shell(domainURI, useJline);
+        if (showHelp || contribution==null) {
+        	shell.help(null);
+        }
         if (contribution != null) {
+        	System.out.println();
+        	System.out.println("install " + contribution + " -start");
             shell.install(Arrays.asList(new String[]{"install", contribution, "-start"}));
         }
         
         
-        shell.run(showHelp || contribution==null);
+        shell.run();
     }
 
     public Shell(String domainURI, boolean useJLine) {
@@ -665,10 +670,7 @@ public class Shell {
         }
     }
 
-    public void run(boolean initialHelp) throws IOException {
-        if (initialHelp) {
-            help(null);
-        }
+    public void run() throws IOException {
         Object reader;
         if (useJline) {
             reader = JLine.createJLineReader(this);
