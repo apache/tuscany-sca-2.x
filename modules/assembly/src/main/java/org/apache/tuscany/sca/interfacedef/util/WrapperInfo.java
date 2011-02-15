@@ -193,6 +193,28 @@ public class WrapperInfo implements Cloneable {
         if (outputWrapperType != null) {
             copy.outputWrapperType = (DataType<XMLType>)outputWrapperType.clone();
         }
+        if (unwrappedInputType != null) {
+            List<DataType> clonedLogicalTypes = new ArrayList<DataType>();
+            for (DataType t : unwrappedInputType.getLogical()) {
+                DataType type = (DataType) t.clone();
+                clonedLogicalTypes.add(type);
+            }
+            DataType<List<DataType>> clonedUnwrappedInputType =
+                new DataTypeImpl<List<DataType>>(unwrappedInputType.getPhysical(), clonedLogicalTypes);
+            clonedUnwrappedInputType.setDataBinding(unwrappedInputType.getDataBinding());
+            copy.unwrappedInputType = clonedUnwrappedInputType;
+        }
+        if (unwrappedOutputType != null) {
+            List<DataType> clonedLogicalTypes = new ArrayList<DataType>();
+            for (DataType t : unwrappedOutputType.getLogical()) {
+                DataType type = (DataType) t.clone();
+                clonedLogicalTypes.add(type);
+            }
+            DataType<List<DataType>> clonedUnwrappedOutputType =
+                new DataTypeImpl<List<DataType>>(unwrappedOutputType.getPhysical(), clonedLogicalTypes);
+            clonedUnwrappedOutputType.setDataBinding(unwrappedOutputType.getDataBinding());
+            copy.unwrappedOutputType = clonedUnwrappedOutputType;
+        }
         return copy;
 
     }
