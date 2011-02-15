@@ -207,12 +207,35 @@ public interface Operation extends Cloneable, PolicySubject {
     List<ParameterMode> getParameterModes();
     
     /**
-     * Returns true 
+     * Returns whether the operation's outputs will flow wrapped in an array
+     * or not.  (Needed to distinguish whether an array represents a single output 
+     * or if it wrappers multiple outputs).
+     * 
      * @return
      */
     public boolean hasArrayWrappedOutput();
-    
+
+    /**
+     * Sets whether the operation's outputs will flow wrapped in an array
+     * or not.  (Needed to distinguish whether an array represents a single output 
+     * or if it wrappers multiple outputs).
+     * @param value
+     */
     public void setHasArrayWrappedOutput(boolean value);
+
+    /**
+     * Sets whether operation data is not subject to wrapping along with
+     * a data transformation.
+     * @param notSubjectToWrapping
+     */  
+	public void setNotSubjectToWrapping(boolean notSubjectToWrapping);
+
+    /**
+     * Returns whether operation data is not subject to wrapping along with
+     * a data transformation.
+     * @return
+     */
+	public boolean isNotSubjectToWrapping();
     
     /**
      * A special databinding for input message of an operation

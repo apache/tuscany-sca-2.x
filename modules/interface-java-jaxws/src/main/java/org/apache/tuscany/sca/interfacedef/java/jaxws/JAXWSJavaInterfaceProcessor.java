@@ -201,8 +201,8 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                         }
                     }
                 }
-                // FIXME: [rfeng] For the BARE mapping, do we need to create a Wrapper?
-                // it's null at this point
+                // Rather than relying on null wrapper, we use a flag with a clearer meaning.
+                operation.setNotSubjectToWrapping(true);
             } else {
 
                 RequestWrapper requestWrapper = method.getAnnotation(RequestWrapper.class);

@@ -126,7 +126,7 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
         DataType<List<DataType>> sourceType = context.getSourceDataType();
         Operation sourceOp = context.getSourceOperation();
         boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle() && sourceOp.getWrapper() != null;
-        boolean sourceBare = sourceOp != null && !sourceOp.isWrapperStyle() && sourceOp.getWrapper() == null;
+        boolean sourceNotSubjectToWrapping = sourceOp != null && sourceOp.isNotSubjectToWrapping();
 
         // Find the wrapper handler for source data
         WrapperHandler sourceWrapperHandler = null;
@@ -137,14 +137,14 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
         DataType<List<DataType>> targetType = context.getTargetDataType();
         Operation targetOp = (Operation)context.getTargetOperation();
         boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle() && targetOp.getWrapper() != null;
-        boolean targetBare = targetOp != null && !targetOp.isWrapperStyle() && targetOp.getWrapper() == null;
+        boolean targetNotSubjectToWrapping = targetOp != null && targetOp.isNotSubjectToWrapping();
 
         // Find the wrapper handler for target data
         WrapperHandler targetWrapperHandler = null;
         String targetDataBinding = getDataBinding(targetOp);
         targetWrapperHandler = getWrapperHandler(targetDataBinding, targetWrapped);
 
-        if ((!sourceWrapped && !sourceBare) && targetWrapped) {
+        if ((!sourceWrapped && !sourceNotSubjectToWrapping) && targetWrapped) {
             // Unwrapped --> Wrapped
             WrapperInfo wrapper = targetOp.getWrapper();
             // ElementInfo wrapperElement = wrapper.getInputWrapperElement();
@@ -201,7 +201,7 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
                                              true);
             return new Object[] {targetWrapper};
 
-        } else if (sourceWrapped && (!targetWrapped && !targetBare)) {
+        } else if (sourceWrapped && (!targetWrapped && !targetNotSubjectToWrapping)) {
             // Wrapped to Unwrapped
             Object sourceWrapper = source[0];
             Object[] target = null;

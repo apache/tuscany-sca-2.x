@@ -114,7 +114,20 @@ public interface InterfaceContractMapper {
     
     boolean isCompatibleByReference(Operation source, Operation target, Compatibility compatibilityType);
     boolean isCompatibleByValue(Operation source, Operation target, Compatibility compatibilityType);
-
+    
+   /**
+    * Similar to isCompatibleByValue with the one difference that isCompatibleByValue will "unwrap" a wrapperStyle
+    * operation to compare it to a non-wrapperStyle operation.  One the other hand, isCompatibleWithoutUnwrapByValue
+    * will return false, i.e. not-compatible, if the source and target operation do not have the same wrapperStyle.
+    * 
+    * 
+    * @param source The source operation
+    * @param target The target operation
+    * @param compatibilityType The type of compatibility
+    * @return true if the source operation is compatible with the target
+    *         operation
+    */
+    boolean isCompatibleWithoutUnwrapByValue(Operation source, Operation target, Compatibility compatibilityType);
     /**
      * An interface A is a Compatible Subset of a second interface B if and only if all of points 1 through 6 
      * in the following list apply:

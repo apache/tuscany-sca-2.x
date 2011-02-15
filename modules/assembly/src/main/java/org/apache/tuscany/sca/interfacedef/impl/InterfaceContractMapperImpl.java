@@ -347,6 +347,15 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         return isCompatible(source, target, compatibilityType, true);
     }
 
+    @Override
+    public boolean isCompatibleWithoutUnwrapByValue(Operation source, Operation target, Compatibility compatibilityType) {
+        if (!source.isWrapperStyle() == target.isWrapperStyle()) {
+            return false; 
+        } else {
+            return isCompatible(source, target, compatibilityType, true);
+        }
+    }
+    
     // FIXME: How to improve the performance for the lookup
     private Operation getOperation(List<Operation> operations, String name) {
         for (Operation op : operations) {

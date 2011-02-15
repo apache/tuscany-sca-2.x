@@ -153,7 +153,7 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceAsyn
                                                                                      targetOp,
                                                                                      Compatibility.SUBSET)) {
                         passByValue = false;
-                    } else if (interfaceContractMapper.isCompatibleByValue(operation, targetOp, Compatibility.SUBSET)) {
+                    } else if (interfaceContractMapper.isCompatibleWithoutUnwrapByValue(operation, targetOp, Compatibility.SUBSET)) {
                         passByValue = true;
                     }
                 }

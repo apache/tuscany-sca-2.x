@@ -54,6 +54,7 @@ public class OperationImpl implements Operation {
     private boolean wrapperStyle;
     private WrapperInfo wrapper;
     private boolean dynamic;
+    private boolean notSubjectToWrapping;
 
     private Map<Object, Object> attributes = new ConcurrentHashMap<Object, Object>();
 
@@ -307,5 +308,13 @@ public class OperationImpl implements Operation {
     public void setHasArrayWrappedOutput(boolean value) {
         this.hasArrayWrappedOutput = value;
     }
+
+	public void setNotSubjectToWrapping(boolean notSubjectToWrapping) {
+		this.notSubjectToWrapping = notSubjectToWrapping;
+	}
+
+	public boolean isNotSubjectToWrapping() {
+		return notSubjectToWrapping;
+	}
 
 }
