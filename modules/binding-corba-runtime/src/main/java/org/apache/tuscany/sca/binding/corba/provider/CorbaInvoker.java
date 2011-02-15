@@ -62,7 +62,8 @@ public class CorbaInvoker implements Invoker {
             request.setOperationsMap(operationsMap);
             if (msg.getOperation().getOutputType() != null) {
                 Annotation[] notes = operationMethodMapping.get(msg.getOperation()).getAnnotations();
-                request.setOutputType(msg.getOperation().getOutputType().getPhysical(), notes);
+                DataType returnType = msg.getOperation().getOutputType().getLogical().get(0);
+                request.setOutputType(returnType.getPhysical(), notes);
             }
             java.lang.Object[] args = msg.getBody();
             if (args != null) {

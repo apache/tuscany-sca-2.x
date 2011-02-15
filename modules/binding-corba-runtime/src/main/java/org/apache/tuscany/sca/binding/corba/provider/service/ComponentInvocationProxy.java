@@ -71,12 +71,16 @@ public class ComponentInvocationProxy implements InvocationProxy {
                 OperationTypes operationTypes = new OperationTypes();
                 List<TypeTree> inputInstances = new ArrayList<TypeTree>();
                 // cache output type tree
-                if (operation.getOutputType() != null && operation.getOutputType().getPhysical() != null
-                    && !operation.getOutputType().getPhysical().equals(void.class)) {
-                    Annotation[] notes = operationMethodMapping.get(operation).getAnnotations();
-                    TypeTree outputType =
-                        TypeTreeCreator.createTypeTree(operation.getOutputType().getPhysical(), notes);
-                    operationTypes.setOutputType(outputType);
+                if (operation.getOutputType() != null) {
+                    // Should only be one output, since this was created when we only supported one output.
+                    DataType returnType = operation.getOutputType().getLogical().get(0);
+                    Class<?> returnClass = returnType.getPhysical();
+                    if (returnClass != null && !returnClass.equals(void.class)) {
+                        Annotation[] notes = operationMethodMapping.get(operation).getAnnotations();                    
+                        TypeTree outputType =
+                            TypeTreeCreator.createTypeTree(returnClass, notes);
+                        operationTypes.setOutputType(outputType);
+                    }
                 }
                 // cache input types trees
                 if (operation.getInputType() != null) {
@@ -89,7 +93,6 @@ public class ComponentInvocationProxy implements InvocationProxy {
                         inputInstances.add(inputType);
                         i++;
                     }
-
                 }
                 operationTypes.setInputType(inputInstances);
                 operationsCache.put(operation, operationTypes);

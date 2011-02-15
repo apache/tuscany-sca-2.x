@@ -58,7 +58,11 @@ public class TestRuntimeComponentService implements RuntimeComponentService {
                 && !methods[i].getName().startsWith("_")) {
                 Operation operation = new TestOperation();
                 DataType returnType = new TestDataType(methods[i].getReturnType());
-                operation.setOutputType(returnType);
+                List<DataType> outputDataTypes = new ArrayList<DataType>();
+                outputDataTypes.add(returnType);
+                TestDataType<List<DataType>> outputDataType = new TestDataType<List<DataType>>(null, outputDataTypes);                
+                operation.setOutputType(outputDataType);
+
                 Class<?>[] argTypes = methods[i].getParameterTypes();
                 List<DataType> argDataTypes = new ArrayList<DataType>();
                 for (int j = 0; j < argTypes.length; j++) {

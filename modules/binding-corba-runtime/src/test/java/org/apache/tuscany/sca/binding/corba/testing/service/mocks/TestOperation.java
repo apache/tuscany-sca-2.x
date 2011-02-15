@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 public class TestOperation implements Operation {
 
     private DataType<List<DataType>> inputType;
-    private DataType outputType;
+    private DataType<List<DataType>> outputType;
     private String name;
 
     public String getDataBinding() {
@@ -123,7 +123,7 @@ public class TestOperation implements Operation {
 
     }
 
-    public void setOutputType(DataType outputType) {
+    public void setOutputType(DataType<List<DataType>>  outputType) {
         this.outputType = outputType;
     }
 
@@ -171,31 +171,40 @@ public class TestOperation implements Operation {
         
     }
 
-	public boolean isAsyncServer() {
-		return false;
-	}
+    public boolean isAsyncServer() {
+        return false;
+    }
 
-	public List<ParameterMode> getParameterModes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public List<ParameterMode> getParameterModes() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public List<DataType> getOutputTypes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public List<DataType> getOutputTypes() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 
-	public boolean hasArrayWrappedOutput() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public boolean hasArrayWrappedOutput() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	public void setHasArrayWrappedOutput(boolean arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void setHasArrayWrappedOutput(boolean arg0) {
+        // TODO Auto-generated method stub
+        
+    }
 
-	
+
+    public void setNotSubjectToWrapping(boolean notSubjectToWrapping) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public boolean isNotSubjectToWrapping() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
 }
