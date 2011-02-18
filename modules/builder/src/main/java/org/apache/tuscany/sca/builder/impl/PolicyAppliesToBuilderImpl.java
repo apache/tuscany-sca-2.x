@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.w3c.dom.Document;
@@ -67,6 +68,11 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
     public Composite build(Composite composite, BuilderContext context)
         throws CompositeBuilderException {
         try {
+
+	    Definitions definitions = context.getDefinitions();
+            if (definitions == null || (definitions.getPolicySets().isEmpty() && definitions.getExternalAttachments().isEmpty()) ) {
+                return composite;
+            }
             // create a DOM for the Domain Composite Infoset
             Document document = saveAsDOM(composite);
             
