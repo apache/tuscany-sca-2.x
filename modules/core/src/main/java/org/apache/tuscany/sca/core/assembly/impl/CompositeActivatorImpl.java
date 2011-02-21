@@ -41,6 +41,8 @@ import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.provider.EndpointReferenceAsyncProvider;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
@@ -66,11 +68,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
     private final ScopeRegistry scopeRegistry;
     private final ProviderFactoryExtensionPoint providerFactories;
+	private Monitor monitor;
 
     public CompositeActivatorImpl(ExtensionPointRegistry extensionPoints) {
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         this.scopeRegistry = utilities.getUtility(ScopeRegistry.class);
         this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        this.monitor = utilities.getUtility(MonitorFactory.class).createMonitor();
     }
 
     //=========================================================================
@@ -393,7 +397,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     try {
                         stop(compositeContext, (Composite) implementation);
                     } catch (Throwable e1) {
-                        logger.log(Level.SEVERE, e1.getMessage(), e1);
+                        Monitor.error(monitor, this, "core-messages", "StopException", e1);
                     }
                     rethrow(e);
                 }
@@ -427,7 +431,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 try {
                     providers.get(i).stop();
                 } catch (Throwable e1) {
-                    logger.log(Level.SEVERE, e1.getMessage(), e1);
+                    Monitor.error(monitor, this, "core-messages", "StopException", e1);
                 }
             }
             rethrow(e);
@@ -488,14 +492,14 @@ public class CompositeActivatorImpl implements CompositeActivator {
                           }
                     });
                 } catch (Throwable ex){
-                    logger.log(Level.SEVERE, ex.getMessage(), ex);
+                    Monitor.error(monitor, this, "core-messages", "StopException", ex);
                 }                  
             }
             for (PolicyProvider policyProvider : ((RuntimeComponent)component).getPolicyProviders()) {
                 try {
                     policyProvider.stop();
                 } catch (Throwable ex){
-                    logger.log(Level.SEVERE, ex.getMessage(), ex);
+                    Monitor.error(monitor, this, "core-messages", "StopException", ex);
                 }  
             }
         }
@@ -507,7 +511,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 try {
                     runtimeComponent.getScopeContainer().stop();
                 } catch (Throwable ex){
-                    logger.log(Level.SEVERE, ex.getMessage(), ex);
+                    Monitor.error(monitor, this, "core-messages", "StopException", ex);
                 }                      
             }
         }
@@ -570,14 +574,14 @@ public class CompositeActivatorImpl implements CompositeActivator {
                       }
                 });
             } catch (Throwable ex){
-                logger.log(Level.SEVERE, ex.getMessage(), ex);
+                Monitor.error(monitor, this, "core-messages", "StopException", ex);
             }  
         }
         for (PolicyProvider policyProvider : ep.getPolicyProviders()) {
             try {
                 policyProvider.stop();
             } catch (Throwable ex){
-                logger.log(Level.SEVERE, ex.getMessage(), ex);
+                Monitor.error(monitor, this, "core-messages", "StopException", ex);
             }                  
         }
     }
@@ -645,14 +649,14 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 try {
                     bindingProvider.stop();
                 } catch (Throwable ex){
-                    logger.log(Level.SEVERE, ex.getMessage(), ex);
+                    Monitor.error(monitor, this, "core-messages", "StopException", ex);
                 }  
             }
             for (PolicyProvider policyProvider : epr.getPolicyProviders()) {
                 try {
                     policyProvider.stop();
                 } catch (Throwable ex){
-                    logger.log(Level.SEVERE, ex.getMessage(), ex);
+                    Monitor.error(monitor, this, "core-messages", "StopException", ex);
                 }                      
             }
         }
