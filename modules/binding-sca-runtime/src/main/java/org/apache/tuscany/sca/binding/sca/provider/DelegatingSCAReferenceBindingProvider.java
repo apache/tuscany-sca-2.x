@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.provider.SCABindingMapper;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**

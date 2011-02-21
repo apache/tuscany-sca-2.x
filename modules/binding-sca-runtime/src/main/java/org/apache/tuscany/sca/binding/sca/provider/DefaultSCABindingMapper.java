@@ -44,6 +44,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDeclarationParser;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.provider.ProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
+import org.apache.tuscany.sca.provider.SCABindingMapper;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
