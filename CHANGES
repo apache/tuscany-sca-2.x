@@ -1,15 +1,16 @@
-Changes With Apache Tuscany SCA 2.0-Beta2 January 2010
-======================================================
+Changes With Apache Tuscany SCA 2.0-Beta2 February 2011
+=======================================================
 
 Highlights include:
 - Addition of an interactive Shell to work with SCA domains, contributions, and services
 - More reorganization of modules to support base-runtime and extension runtime jars
 - Tidying and simplification of the Web Services binding dependencies 
-- Upgrade to Axis2 1.5.3, Axiom 1.2.10, Abdera 1.1.1 and Jackson 1.6.2 
+- Upgrade to Axis2 1.5.3, Axiom 1.2.10, Abdera 1.1.1, Jackson 1.7.1 and Dojo 1.5.0 
 - Improve jaxb/json databindings and jsonrpc binding to better handle interfaces
+- Added support for AllowsByReference for references and implementation classes/methods 
+  based on the specification
 - Update to latest OASIS XSDs
-- quite a few changes in the async area
-
+- Quite a few changes in the async area
 
 Changes With Apache Tuscany SCA 2.0-Beta1 November 2010
 =======================================================
