@@ -49,6 +49,7 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.common.java.reflection.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -81,6 +82,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Introspects a Spring XML application-context configuration file to create <implementation-spring../>
@@ -99,6 +101,8 @@ public class SpringXMLComponentTypeLoader {
     private SpringBeanIntrospector beanIntrospector;
 
     private SpringXMLBeanDefinitionLoader xmlBeanDefinitionLoader;
+    
+    private JavaIntrospectionHelper javaIntrospectionHelper;
 
     public SpringXMLComponentTypeLoader(ExtensionPointRegistry registry) {
         super();
@@ -110,6 +114,7 @@ public class SpringXMLComponentTypeLoader {
         this.contributionFactory = factories.getFactory(ContributionFactory.class);
         this.xmlBeanDefinitionLoader =
             registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(SpringXMLBeanDefinitionLoader.class);
+        this.javaIntrospectionHelper = JavaIntrospectionHelper.getInstance(registry);
     }
 
     /**
@@ -340,7 +345,14 @@ public class SpringXMLComponentTypeLoader {
             Iterator<SpringSCAServiceElement> its = services.iterator();
             while (its.hasNext()) {
                 SpringSCAServiceElement serviceElement = its.next();
-                Class<?> interfaze = resolveClass(resolver, serviceElement.getType(), context);
+
+                Class<?> interfaze;
+                if (serviceElement.getType() != null) {
+                    interfaze = resolveClass(resolver, serviceElement.getType(), context);
+                } else {
+                    interfaze = getBeanInterface(resolver, serviceElement.getTarget(), beans, context);
+                }
+                
                 Service theService = createService(interfaze, serviceElement.getName());
                 // Spring allows duplication of bean definitions in multiple context scenario,
                 // in such cases, the latest bean definition overrides the older ones, hence 
@@ -594,7 +606,31 @@ public class SpringXMLComponentTypeLoader {
         return;
     } // end method generateComponentType
 
-    /*
+    private Class<?> getBeanInterface(ModelResolver resolver, String target, List<SpringBeanElement> beans, ProcessorContext context) throws ClassNotFoundException {
+    	SpringBeanElement bean = null;
+    	for (SpringBeanElement sbe : beans) {
+    		if (sbe.getId().equals(target)) {
+    			bean = sbe;
+    			break;
+    		}
+    	}
+    	if (bean == null) {
+    		error(context.getMonitor(), "TargetBeanDoesNotExist", null, target);
+    		return null;
+    	}
+    	
+        Class<?> beanClass = resolveClass(resolver, bean.getClassName(), context);
+        Set<Class<?>> ifaces = javaIntrospectionHelper.getAllInterfaces(beanClass);
+        for (Class<?> interfaze : ifaces) {
+            if (interfaze.isAnnotationPresent(Remotable.class)) {
+               return interfaze;	
+            }
+        }
+
+        return beanClass;
+	}
+
+	/*
      * Determines whether a reference attribute of a Spring property element is resolved either
      * by a bean in the application context or by an SCA reference element or by an SCA property
      * element
