@@ -64,6 +64,11 @@
             <artifactId>jline</artifactId>
             <version>0.9.95-huynhjl</version>
         </dependency>
+      <dependency>
+          <groupId>org.mortbay.jetty</groupId>
+          <artifactId>jetty</artifactId>
+          <version>6.1.19</version>
+      </dependency>
 
     </dependencies>
 
