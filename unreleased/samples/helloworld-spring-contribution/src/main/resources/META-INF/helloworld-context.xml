@@ -24,6 +24,8 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/sca http://www.osoa.org/xmlns/sca/1.0/spring-sca.xsd">
 
+    <sca:service name="HelloworldService" target="HelloworldBean" />
+
     <bean id="HelloworldBean" class="sample.HelloworldImpl">
     </bean>
 

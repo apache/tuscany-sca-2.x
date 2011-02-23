@@ -31,7 +31,7 @@ public class HelloworldTestCase {
     public void testSayHello() throws NoSuchServiceException {
 
         // Run the SCA composite in a Tuscany runtime
-        Node node = TuscanyRuntime.runComposite("helloworld.composite", "target/classes");
+        Node node = TuscanyRuntime.runComposite(null, "target/classes");
         try {
             
             // Get the Helloworld service proxy
