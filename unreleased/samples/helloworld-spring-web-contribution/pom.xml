@@ -117,6 +117,16 @@
                   <artifactId>tuscany-implementation-spring-runtime</artifactId>
                   <version>${tuscany.version}</version>
                </dependency>
+               <dependency>
+                  <groupId>org.apache.tuscany.sca</groupId>
+                  <artifactId>tuscany-binding-rest-runtime</artifactId>
+                  <version>${tuscany.version}</version>
+               </dependency>
+               <dependency>
+                  <groupId>org.apache.tuscany.sca</groupId>
+                  <artifactId>tuscany-binding-http-runtime</artifactId>
+                  <version>${tuscany.version}</version>
+               </dependency>
             </dependencies>
          </plugin>
       </plugins>
