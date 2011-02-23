@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright(C) OASIS(R) 2005,2009. All Rights Reserved. 
+     OASIS trademark, IPR and other policies apply.  -->
+<xsd:schema 
+  xmlns="http://docs.oasis-open.org/ns/opencsa/sca-j/spring/200810"  
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
+  xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200912
+                      http://docs.oasis-open.org/opencsa/sca-assembly/sca-core-1.1-cd06.xsd" 
+  attributeFormDefault="unqualified" 
+  elementFormDefault="qualified" 
+  targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca-j/spring/200810">
+   
+	<xsd:element name="reference">
+		<xsd:complexType>
+                  <any namespace="##other" processContents="lax"  
+                        minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:attribute name="name" type="xsd:NCName" 
+				use="required"/>
+			<xsd:attribute name="type" type="xsd:NCName" 
+				use="required"/>
+			<xsd:attribute name="default" type="xsd:NCName" 
+				use="optional"/>
+			<xsd:attribute name="requires" type="sca:listOfQNames" 
+				use="optional"/>
+            	<xsd:attribute name="policySets" type="sca:listOfQNames" 
+            		use="optional"/>
+                  <xsd:anyAttribute namespace="##other" processContents="lax"    
+                        use="optional"/>	
+		</xsd:complexType>		
+	</xsd:element>
+
+	<xsd:element name="property">
+		<xsd:complexType>
+                  <any namespace="##other" processContents="lax" 
+                        minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:attribute name="name" type="xsd:NCName" 
+				use="required"/>
+			<xsd:attribute name="type" type="xsd:NCName" 
+				use="required"/>
+                  <xsd:anyAttribute namespace="##other" processContents="lax"    
+                        use="optional"/>	
+		</xsd:complexType>		
+	</xsd:element>
+
+	<xsd:element name="service">
+		<xsd:complexType>
+                  <any namespace="##other" processContents="lax" 
+                        minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:attribute name="name" type="xsd:NCName" 
+				use="required"/>
+			<xsd:attribute name="type" type="xsd:NCName" 
+				use="optional"/>
+			<xsd:attribute name="target" type="xsd:NCName" 
+				use="required"/>
+			<xsd:attribute name="requires" type="sca:listOfQNames" 
+				use="optional"/>
+            	<xsd:attribute name="policySets" type="sca:listOfQNames" 
+            		use="optional"/>
+                  <xsd:anyAttribute namespace="##other" processContents="lax"    
+                        use="optional"/>	
+		</xsd:complexType>		
+	</xsd:element>
+
+</xsd:schema>
