@@ -1,0 +1,28 @@
+Tuscany - Getting Started - Helloworld Sample
+---------------------------------------------
+
+This sample demonstrates a helloworld style SCA application that uses the Spring implementation type.
+
+See the README in the top-level samples folder for general information on the Tuscany samples.
+
+This project creates an SCA contribution with a deployable composite named helloworld-spring.comosite.
+The composite defines an SCA component, HelloworldComponent, which provides a Helloworld service, 
+the component is implemented by a Spring bean.
+
+You can use the contribution by starting the composite in the Tuscany Shell. To do that run the 
+following command in the helloworld-spring-contribution folder:
+
+   mvn tuscany:run 
+
+Alternatively, the Tuscany Shell can be started with the scripts in the Tuscany binary distribution 
+bin folder. To do that run the following command at the root of a Tuscany binary distribution:
+
+   bin\tuscany.bat samples\getting-started\helloworld-spring-contribution  
+
+Once the Shell has been started with one of those methods you can use Shell commands to explore
+the SCA domain, for example, use the "installed" command to get the status of installed contributions, 
+"services" to see the available component services, and you may test calling the helloworld service by 
+using the "invoke" command:
+
+   invoke HelloworldComponent sayHello yourName
+
