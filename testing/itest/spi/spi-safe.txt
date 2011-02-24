@@ -464,6 +464,7 @@ public interface org.apache.tuscany.sca.interfacedef.InterfaceContractMapper{
     public abstract boolean isCompatible(org.apache.tuscany.sca.interfacedef.Operation, org.apache.tuscany.sca.interfacedef.Operation, org.apache.tuscany.sca.interfacedef.Compatibility);
     public abstract boolean isCompatibleByReference(org.apache.tuscany.sca.interfacedef.Operation, org.apache.tuscany.sca.interfacedef.Operation, org.apache.tuscany.sca.interfacedef.Compatibility);
     public abstract boolean isCompatibleByValue(org.apache.tuscany.sca.interfacedef.Operation, org.apache.tuscany.sca.interfacedef.Operation, org.apache.tuscany.sca.interfacedef.Compatibility);
+    public abstract boolean isCompatibleWithoutUnwrapByValue(org.apache.tuscany.sca.interfacedef.Operation, org.apache.tuscany.sca.interfacedef.Operation, org.apache.tuscany.sca.interfacedef.Compatibility);
     public abstract boolean isCompatibleSubset(org.apache.tuscany.sca.interfacedef.Interface, org.apache.tuscany.sca.interfacedef.Interface);
     public abstract boolean isCompatibleSubset(org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.InterfaceContract);
     public abstract boolean isCompatibleSubset(org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.InterfaceContract, org.apache.tuscany.sca.interfacedef.util.Audit);
@@ -532,6 +533,8 @@ public interface org.apache.tuscany.sca.interfacedef.Operation extends java.lang
     public abstract java.util.List getParameterModes();
     public abstract boolean hasArrayWrappedOutput();
     public abstract void setHasArrayWrappedOutput(boolean);
+    public abstract void setNotSubjectToWrapping(boolean);
+    public abstract boolean isNotSubjectToWrapping();
 }
 
 Compiled from "OverloadedOperationException.java"
@@ -1520,6 +1523,14 @@ Compiled from "RuntimeProvider.java"
 public interface org.apache.tuscany.sca.provider.RuntimeProvider{
     public abstract void start();
     public abstract void stop();
+}
+
+Compiled from "SCABindingMapper.java"
+public interface org.apache.tuscany.sca.provider.SCABindingMapper{
+    public abstract org.apache.tuscany.sca.runtime.RuntimeEndpoint map(org.apache.tuscany.sca.runtime.RuntimeEndpoint);
+    public abstract org.apache.tuscany.sca.runtime.RuntimeEndpointReference map(org.apache.tuscany.sca.runtime.RuntimeEndpointReference);
+    public abstract boolean isRemotable(org.apache.tuscany.sca.runtime.RuntimeEndpoint);
+    public abstract boolean isRemotable(org.apache.tuscany.sca.runtime.RuntimeEndpointReference);
 }
 
 Compiled from "ServiceBindingProvider.java"
