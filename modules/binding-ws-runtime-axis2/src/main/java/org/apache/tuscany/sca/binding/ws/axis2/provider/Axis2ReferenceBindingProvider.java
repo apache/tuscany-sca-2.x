@@ -120,11 +120,7 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
                             PolicyHelper.isIntentRequired(wsBinding, Constants.CONFIDENTIALITY_INTENT) ||
                             PolicyHelper.isIntentRequired(wsBinding, Constants.INTEGRITY_INTENT);          
 
-        // Apply the configuration from any other policies
-        
-        for (PolicyProvider pp : this.endpointReference.getPolicyProviders()) {
-            pp.configureBinding(this);
-        }
+        // Validate the configuration for provided policies
         
         // check the WSDL style as we currently only support some of them
         if (wsBinding.isRpcEncoded()){
@@ -168,6 +164,12 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
     
     public void start() {
         configContext = Axis2EngineIntegration.getAxisConfigurationContext(extensionPoints.getServiceDiscovery());
+        
+        // Apply the configuration from any other policies
+        
+        for (PolicyProvider pp : this.endpointReference.getPolicyProviders()) {
+            pp.configureBinding(this);
+        }
         
         try {
             Definition definition = wsBinding.getGeneratedWSDLDocument();
