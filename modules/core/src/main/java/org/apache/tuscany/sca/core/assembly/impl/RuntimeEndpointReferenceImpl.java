@@ -503,7 +503,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         List<PolicyProvider> pps = getPolicyProviders();
         if (pps != null) {
             for (PolicyProvider p : pps) {
-                Interceptor interceptor = p.createBindingInterceptor();
+                Interceptor interceptor = p.createInterceptor(operation);
                 if (interceptor != null) {
                     chain.addInterceptor(interceptor);
                 }
