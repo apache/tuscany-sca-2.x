@@ -728,14 +728,14 @@ public class SpringXMLComponentTypeLoader {
         Iterator<SpringSCAReferenceElement> itr = references.iterator();
         while (itr.hasNext()) {
             SpringSCAReferenceElement referenceElement = itr.next();
-            boolean defaultBeanExists = true;
+            boolean defaultBeanExists = false;
             boolean isUniqueReferenceName = true;
             Iterator<SpringBeanElement> itb = beans.iterator();
             while (itb.hasNext()) {
                 SpringBeanElement beanElement = itb.next();
                 if (referenceElement.getDefaultBean() != null)
                     if (referenceElement.getDefaultBean().equals(beanElement.getId()))
-                        defaultBeanExists = false;
+                        defaultBeanExists = true;
                 if (referenceElement.getName().equals(beanElement.getId()))
                     isUniqueReferenceName = false;
             }
@@ -745,7 +745,7 @@ public class SpringXMLComponentTypeLoader {
                 if (referenceElement.getName().equals(propertyElement.getName()))
                     isUniqueReferenceName = false;
             }
-            if (!defaultBeanExists)
+            if (!defaultBeanExists && referenceElement.getDefaultBean() != null)
                 error(monitor, "DefaultBeanDoesNotExist", beans);
             if (!isUniqueReferenceName)
                 error(monitor, "ScaReferenceNameNotUnique", beans);
