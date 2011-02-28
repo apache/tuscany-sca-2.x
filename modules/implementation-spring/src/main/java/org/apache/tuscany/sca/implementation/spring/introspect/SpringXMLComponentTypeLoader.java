@@ -938,7 +938,7 @@ public class SpringXMLComponentTypeLoader {
         }
 
         throw new ContributionReadException(
-                                            "SpringXMLComponentTypeLoader getApplicationContextResource: " + "unable to read resource file "
+                                            "SpringXMLComponentTypeLoader getApplicationContextResource: " + "unable to process unknown resource type: "
                                                 + url);
     } // end method getApplicationContextResource
 
