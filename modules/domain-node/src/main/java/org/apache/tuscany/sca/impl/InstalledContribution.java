@@ -34,7 +34,7 @@ public class InstalledContribution {
     private String url;
     private Contribution contribution;
     private List<Composite> defaultDeployables = new ArrayList<Composite>();
-    private List<DeployedComposite> startededComposites = new ArrayList<DeployedComposite>();
+    private Map<String, DeployedComposite> startedComposites = new HashMap<String, DeployedComposite>();
     private Map<String, DeployedComposite> stoppedComposites = new HashMap<String, DeployedComposite>();
     private List<String> dependentContributionURIs;
     
@@ -60,33 +60,30 @@ public class InstalledContribution {
     public List<Composite> getDefaultDeployables() {
         return defaultDeployables;
     }
-    public List<DeployedComposite> getDeployedComposites() {
-        return startededComposites;
+    public List<String> getStartedCompositeURIs() {
+        return new ArrayList<String>(startedComposites.keySet());
     }
     public List<String> getDependentContributionURIs() {
         return dependentContributionURIs;
     }
     public void stop(String compositeURI) throws ActivationException {
-        for (DeployedComposite dc : getDeployedComposites()) {
-            if (compositeURI.equals(dc.getURI())) {
-                getDeployedComposites().remove(dc);
-                dc.stop();
-                stoppedComposites.put(compositeURI, dc);
-                return;
-            }
+        DeployedComposite dc = startedComposites.remove(compositeURI);
+        if (dc == null) {
+            throw new IllegalStateException("composite not deployed: " + compositeURI);
         }
-        throw new IllegalStateException("composite not deployed: " + compositeURI);
+        dc.stop();
+        stoppedComposites.put(compositeURI, dc);
     }
     
     public void start(DeployedComposite composite) {
-        startededComposites.add(composite);
+        startedComposites.put(composite.getURI(), composite);
     }
     
     public boolean restart(String compositeURI) throws ActivationException {
         DeployedComposite dc = stoppedComposites.remove(compositeURI);
         if (dc != null) {
             dc.start();
-            startededComposites.add(dc);
+            startedComposites.put(dc.getURI(), dc);
         }
         return dc != null;
     }

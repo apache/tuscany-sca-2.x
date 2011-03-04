@@ -232,10 +232,9 @@ public class NodeImpl implements Node {
                 removedContributionURIs.addAll(removeContribution(dependent));
             }
             installedContributions.remove(contributionURI);
-            for (DeployedComposite dc : ic.getDeployedComposites()) {
-                dc.stop();
+            for (String compositeURI : ic.getStartedCompositeURIs()) {
+                ic.stop(compositeURI);
             }
-            ic.getDeployedComposites().clear();
         }
         return removedContributionURIs;
     }
@@ -404,15 +403,11 @@ public class NodeImpl implements Node {
     }
 
     public List<String> getStartedCompositeURIs(String contributionURI) {
-        ArrayList<String> compositeURIs = new ArrayList<String>();
         InstalledContribution ic = installedContributions.get(contributionURI);
         if (ic == null) {
             throw new IllegalArgumentException("no contribution found for: " + contributionURI);
         }
-        for (DeployedComposite dc : ic.getDeployedComposites()) {
-            compositeURIs.add(dc.getURI());
-        }
-        return compositeURIs;
+        return ic.getStartedCompositeURIs();
     }
 
     public List<String> getInstalledContributionURIs() {
