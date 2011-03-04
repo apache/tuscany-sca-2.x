@@ -79,7 +79,6 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.core.assembly.impl.EndpointRegistryImpl;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.definitions.DefinitionsFactory;
 import org.apache.tuscany.sca.definitions.util.DefinitionsUtil;
@@ -374,7 +373,7 @@ public class DeployerImpl implements Deployer {
         }
     }
 
-    protected Contribution cloneSystemContribution(Monitor monitor) {
+    public Contribution cloneSystemContribution(Monitor monitor) {
         init();
         Contribution contribution = contributionFactory.createContribution();
         contribution.setURI(systemContribution.getURI());
@@ -472,10 +471,17 @@ public class DeployerImpl implements Deployer {
 
     public Composite build(List<Contribution> contributions, List<Contribution> allContributions, Map<QName, List<String>> bindingMap, Monitor monitor)
         throws ContributionResolveException, CompositeBuilderException {
+        return build(contributions, allContributions, null, bindingMap, monitor);
+    }
+    
+    public Composite build(List<Contribution> contributions, List<Contribution> allContributions, Contribution systemContribution, Map<QName, List<String>> bindingMap, Monitor monitor)
+        throws ContributionResolveException, CompositeBuilderException {
         init();
         List<Contribution> contributionList = new ArrayList<Contribution>(contributions);
         
-        Contribution systemContribution = cloneSystemContribution(monitor);
+        if (systemContribution == null) {
+            systemContribution = cloneSystemContribution(monitor);
+        }
         Definitions systemDefinitions = systemContribution.getArtifacts().get(0).getModel();
         // Build an aggregated SCA definitions model. Must be done before we try and
         // resolve any contributions or composites as they may depend on the full

@@ -83,6 +83,9 @@ public interface Deployer extends LifeCycleListener {
     Composite build(List<Contribution> contributions, List<Contribution> allContributions, Map<QName, List<String>> bindingBaseURIs, Monitor monitor)
         throws ContributionResolveException, CompositeBuilderException;
 
+    Composite build(List<Contribution> contributions, List<Contribution> allContributions, Contribution systemContribution, Map<QName, List<String>> bindingBaseURIs, Monitor monitor)
+        throws ContributionResolveException, CompositeBuilderException;
+    
     /**
      * Load an artifact from the given location
      * @param uri
@@ -204,4 +207,6 @@ public interface Deployer extends LifeCycleListener {
      * @throws CompositeBuilderException
      */
     void resolve(Contribution c, List<Contribution> dependentContributions, Monitor monitor) throws ContributionResolveException, CompositeBuilderException;
+
+    public  Contribution cloneSystemContribution(Monitor monitor);
 }
