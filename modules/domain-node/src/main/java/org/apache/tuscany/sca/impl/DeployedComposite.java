@@ -52,6 +52,7 @@ public class DeployedComposite {
     private Deployer deployer;
     private EndpointRegistry endpointRegistry;
     private ExtensionPointRegistry extensionPointRegistry;
+    private Contribution systemContribution;
 
     public DeployedComposite(Composite composite,
                              InstalledContribution ic,
@@ -83,18 +84,14 @@ public class DeployedComposite {
         contribution.get(0).getDeployables().clear();
         contribution.get(0).getDeployables().add(composite);
         
-        Monitor monitor = deployer.createMonitor();
-// TODO: is the ContextMonitor neccessary here?         
-//        Monitor tcm = monitorFactory.setContextMonitor(monitor);
-//        try {
-            
-            domainComposite = deployer.build(contribution, dependedOnContributions, new HashMap<QName, List<String>>(), monitor);
-            monitor.analyzeProblems();
-
-//        } finally {
-//            monitorFactory.setContextMonitor(tcm);
-//        }
         
+        Monitor monitor = deployer.createMonitor();
+        if (systemContribution == null) {
+            this.systemContribution = deployer.cloneSystemContribution(monitor);
+        }
+        domainComposite = deployer.build(contribution, dependedOnContributions, systemContribution, new HashMap<QName, List<String>>(), monitor);
+        monitor.analyzeProblems();
+
         compositeContext = new CompositeContext(extensionPointRegistry, 
                                                 endpointRegistry, 
                                                 domainComposite, 
@@ -102,13 +99,17 @@ public class DeployedComposite {
                                                 null, // don't need node uri
                                                 deployer.getSystemDefinitions());
                        
-        compositeActivator.activate(compositeContext, domainComposite);
-        compositeActivator.start(compositeContext, domainComposite);
+        start();
 
         this.uri = getCompositeURI(composite, installedContribution);
     }
 
-    public void unDeploy() throws ActivationException {
+    public void start() throws ActivationException {
+        compositeActivator.activate(compositeContext, domainComposite);
+        compositeActivator.start(compositeContext, domainComposite);
+    }
+
+    public void stop() throws ActivationException {
         compositeActivator.stop(compositeContext, domainComposite);
         compositeActivator.deactivate(domainComposite);
     }

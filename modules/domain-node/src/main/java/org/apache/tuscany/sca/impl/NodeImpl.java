@@ -188,13 +188,15 @@ public class NodeImpl implements Node {
         if (ic == null) {
             throw new IllegalArgumentException("Contribution not installed: " + contributionURI);
         }
-        for (Artifact a : ic.getContribution().getArtifacts()) {
-            if (a.getURI().equals(compositeURI)) {
-                startComposite((Composite) a.getModel(), ic);
-                return;
+        if (!ic.restart(compositeURI)) {
+            for (Artifact a : ic.getContribution().getArtifacts()) {
+                if (a.getURI().equals(compositeURI)) {
+                    startComposite((Composite) a.getModel(), ic);
+                    return;
+                }
             }
+            throw new IllegalArgumentException("composite not found: " + compositeURI);
         }
-        throw new IllegalArgumentException("composite not found: " + compositeURI);
     }
 
     @Override
@@ -203,14 +205,7 @@ public class NodeImpl implements Node {
         if (ic == null) {
             throw new IllegalArgumentException("Contribution not installed: " + contributionURI);
         }
-        for (DeployedComposite dc : ic.getDeployedComposites()) {
-            if (compositeURI.equals(dc.getURI())) {
-                ic.getDeployedComposites().remove(dc);
-                dc.unDeploy();
-                return;
-            }
-        }
-        throw new IllegalStateException("composite not deployed: " + compositeURI);
+        ic.stop(compositeURI);
     }
 
     public Composite getDomainLevelComposite() {
@@ -238,7 +233,7 @@ public class NodeImpl implements Node {
             }
             installedContributions.remove(contributionURI);
             for (DeployedComposite dc : ic.getDeployedComposites()) {
-                dc.unDeploy();
+                dc.stop();
             }
             ic.getDeployedComposites().clear();
         }
@@ -447,9 +442,8 @@ public class NodeImpl implements Node {
 
     protected void startComposite(Composite c, InstalledContribution ic) throws ActivationException, ValidationException {
         List<Contribution> dependentContributions = calculateDependentContributions(ic);
-
         DeployedComposite dc = new DeployedComposite(c, ic, dependentContributions, deployer, compositeActivator, endpointRegistry, extensionPointRegistry);
-        ic.getDeployedComposites().add(dc);
+        ic.start(dc);
     }
     
     public Set<String> getDependentContributions(String contributionURI) {

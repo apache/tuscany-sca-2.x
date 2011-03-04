@@ -49,6 +49,10 @@ import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
+/**
+ * The TuscanyRuntime is the main class for using Tuscany. It can create Nodes,
+ * run composites, and provides access to various utility APIs
+ */
 public class TuscanyRuntime {
 
     private Deployer deployer;
@@ -57,9 +61,19 @@ public class TuscanyRuntime {
     private ExtensibleDomainRegistryFactory domainRegistryFactory;
     private RuntimeAssemblyFactory assemblyFactory;
 
+    /**
+     * Creates a new TuscanyRuntime 
+     * @return a TuscanyRuntime
+     */
     public static TuscanyRuntime newInstance() {
         return new TuscanyRuntime(null);
     }
+    
+    /**
+     * Creates a new TuscanyRuntime 
+     * @param config  Properties to configure the TuscanyRuntime
+     * @return a TuscanyRuntime
+     */
     public static TuscanyRuntime newInstance(Properties config) {
         return new TuscanyRuntime(config);
     }
@@ -85,6 +99,7 @@ public class TuscanyRuntime {
      * @param contributionURL  URL of the contribution
      * @param dependentContributionURLs  optional URLs of dependent contributions
      * @return a Node with installed contributions
+     * TODO: keep this helper method? Maybe say you should just create/use Node directly
      */
     public static Node runComposite(TuscanyRuntime runtime, String compositeURI, String contributionURL, String... dependentContributionURLs) {
         try {
@@ -116,10 +131,19 @@ public class TuscanyRuntime {
         init(config);
     }
     
+    /**
+     * Creates a Node
+     * @return a Node
+     */
     public Node createNode() {
         return createNode(null);
     }
 
+    /**
+     * Creates a Node in an SCA domain 
+     * @param domainURI  the URI of the SCA domain
+     * @return a Node
+     */
     public Node createNode(String domainURI) {
         String domainName = "default";
         if (domainURI != null){
@@ -129,6 +153,11 @@ public class TuscanyRuntime {
         return new NodeImpl(domainName, deployer, compositeActivator, endpointRegistry, extensionPointRegistry, null);
     }
 
+    /**
+     * Creates a Node from an XML configuration file
+     * @param configURL  the URL to the XML configuration file
+     * @return Node  the configured Node
+     */
     public Node createNodeFromXML(String configURL) throws ContributionReadException, ActivationException, ValidationException {
         NodeConfiguration configuration = loadConfiguration(configURL);
         Node node = createNode(configuration.getDomainURI());
@@ -138,6 +167,9 @@ public class TuscanyRuntime {
         return node;
     }
 
+    /**
+     * Stop the TuscanyRuntime
+     */
     public void stop() {
         extensionPointRegistry.stop();
     }

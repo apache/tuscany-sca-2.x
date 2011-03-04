@@ -20,10 +20,13 @@
 package org.apache.tuscany.sca.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.runtime.ActivationException;
 
 public class InstalledContribution {
 
@@ -31,7 +34,8 @@ public class InstalledContribution {
     private String url;
     private Contribution contribution;
     private List<Composite> defaultDeployables = new ArrayList<Composite>();
-    private List<DeployedComposite> deployedComposites = new ArrayList<DeployedComposite>();
+    private List<DeployedComposite> startededComposites = new ArrayList<DeployedComposite>();
+    private Map<String, DeployedComposite> stoppedComposites = new HashMap<String, DeployedComposite>();
     private List<String> dependentContributionURIs;
     
     public InstalledContribution(String uri, String url, Contribution contribution, List<String> dependentContributionURIs) {
@@ -57,9 +61,33 @@ public class InstalledContribution {
         return defaultDeployables;
     }
     public List<DeployedComposite> getDeployedComposites() {
-        return deployedComposites;
+        return startededComposites;
     }
     public List<String> getDependentContributionURIs() {
         return dependentContributionURIs;
+    }
+    public void stop(String compositeURI) throws ActivationException {
+        for (DeployedComposite dc : getDeployedComposites()) {
+            if (compositeURI.equals(dc.getURI())) {
+                getDeployedComposites().remove(dc);
+                dc.stop();
+                stoppedComposites.put(compositeURI, dc);
+                return;
+            }
+        }
+        throw new IllegalStateException("composite not deployed: " + compositeURI);
+    }
+    
+    public void start(DeployedComposite composite) {
+        startededComposites.add(composite);
+    }
+    
+    public boolean restart(String compositeURI) throws ActivationException {
+        DeployedComposite dc = stoppedComposites.remove(compositeURI);
+        if (dc != null) {
+            dc.start();
+            startededComposites.add(dc);
+        }
+        return dc != null;
     }
 }
