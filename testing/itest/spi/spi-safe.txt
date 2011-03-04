@@ -3231,6 +3231,7 @@ public interface org.apache.tuscany.sca.deployment.Deployer extends org.apache.t
     public abstract void setSchemaValidationEnabled(boolean);
     public abstract java.lang.String attachDeploymentComposite(org.apache.tuscany.sca.contribution.Contribution, org.apache.tuscany.sca.assembly.Composite, boolean);
     public abstract org.apache.tuscany.sca.assembly.Composite build(java.util.List, java.util.List, java.util.Map, org.apache.tuscany.sca.monitor.Monitor)       throws org.apache.tuscany.sca.contribution.processor.ContributionResolveException, org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+    public abstract org.apache.tuscany.sca.assembly.Composite build(java.util.List, java.util.List, org.apache.tuscany.sca.contribution.Contribution, java.util.Map, org.apache.tuscany.sca.monitor.Monitor)       throws org.apache.tuscany.sca.contribution.processor.ContributionResolveException, org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
     public abstract org.apache.tuscany.sca.contribution.Artifact loadArtifact(java.net.URI, java.net.URL, org.apache.tuscany.sca.monitor.Monitor)       throws org.apache.tuscany.sca.contribution.processor.ContributionReadException;
     public abstract org.apache.tuscany.sca.contribution.Contribution loadContribution(java.net.URI, java.net.URL, org.apache.tuscany.sca.monitor.Monitor)       throws org.apache.tuscany.sca.contribution.processor.ContributionReadException;
     public abstract java.lang.Object loadDocument(java.net.URI, java.net.URL, org.apache.tuscany.sca.monitor.Monitor)       throws org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -3245,6 +3246,7 @@ public interface org.apache.tuscany.sca.deployment.Deployer extends org.apache.t
     public abstract org.apache.tuscany.sca.core.ExtensionPointRegistry getExtensionPointRegistry();
     public abstract org.apache.tuscany.sca.definitions.Definitions getSystemDefinitions();
     public abstract void resolve(org.apache.tuscany.sca.contribution.Contribution, java.util.List, org.apache.tuscany.sca.monitor.Monitor)       throws org.apache.tuscany.sca.contribution.processor.ContributionResolveException, org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+    public abstract org.apache.tuscany.sca.contribution.Contribution cloneSystemContribution(org.apache.tuscany.sca.monitor.Monitor);
 }
 
 Compiled from "DefaultExtensionPointRegistry.java"
