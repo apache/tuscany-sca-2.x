@@ -170,7 +170,7 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
     }
 
     public synchronized void start() {
-        // Do nothing
+        ExtensionPointRegistryLocator.addExtensionPointRegistry(this);
     }
 
     public synchronized void stop() {
@@ -184,6 +184,7 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
         }
         ServiceHelper.stop(map.values());
         extensionPoints.clear();
+        ExtensionPointRegistryLocator.removeExtensionPointRegistry(null);
     }
 
     public ServiceDiscovery getServiceDiscovery() {
