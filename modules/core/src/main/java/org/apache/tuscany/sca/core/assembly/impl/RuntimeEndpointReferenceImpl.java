@@ -38,7 +38,6 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
@@ -46,6 +45,7 @@ import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistryLocator;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
@@ -71,7 +71,6 @@ import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
-import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
 import org.apache.tuscany.sca.provider.ImplementationAsyncProvider;
@@ -643,22 +642,18 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
             } else {
             	// In this case, we assume that we're running on a detached (non Tuscany) thread and
             	// as a result we need to connect back to the Tuscany environment...
-            	for( NodeFactory factory : NodeFactory.getNodeFactories() ) {
-            		ExtensionPointRegistry registry = factory.getExtensionPointRegistry();
-            		if( registry != null ) {
-            			this.registry = registry;
-            			UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-                        this.serializer = utilities.getUtility(EndpointSerializer.class);
-                        RuntimeEndpointReferenceImpl epr = (RuntimeEndpointReferenceImpl)serializer.readEndpointReference(xml);
-                        // Find the actual Endpoint in the EndpointRegistry
-                        epr = findActualEPR( epr, registry );
-                        
-                        if( epr != null ){
-                        	copyFrom( epr );
-                        	break;
-                        } // end if
-            		} // end if
-                } // end for
+                ExtensionPointRegistry registry = ExtensionPointRegistryLocator.getExtensionPointRegistry();
+                if( registry != null ) {
+                    this.registry = registry;
+                    UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+                    this.serializer = utilities.getUtility(EndpointSerializer.class);
+                    RuntimeEndpointReferenceImpl epr = (RuntimeEndpointReferenceImpl)serializer.readEndpointReference(xml);
+                    // Find the actual Endpoint in the EndpointRegistry
+                    epr = findActualEPR( epr, registry );
+                    if( epr != null ){
+                        copyFrom( epr );
+                    } // end if
+                } // end if
             } // end if            
         }
         super.resolve();

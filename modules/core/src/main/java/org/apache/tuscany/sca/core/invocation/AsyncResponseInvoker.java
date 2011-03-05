@@ -22,8 +22,6 @@ package org.apache.tuscany.sca.core.invocation;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,24 +29,18 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistryLocator;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointImpl;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
-import org.apache.tuscany.sca.runtime.EndpointSerializer;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
-import org.oasisopen.sca.ComponentContext;
 
 /**
  * A class that wraps the mechanics for sending async responses
@@ -309,8 +301,8 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
 		} // end if
 		
 		// Deal with the case where there is no context available
-    	for( NodeFactory factory : NodeFactory.getNodeFactories() ) {
-    		registry = factory.getExtensionPointRegistry();
+    	for(ExtensionPointRegistry r : ExtensionPointRegistryLocator.getExtensionPointRegistries()) {
+                registry = r;
     		if( registry != null ) {
     			// Find the actual Endpoint in the EndpointRegistry
         		endpointRegistry = getEndpointRegistry( registry );
