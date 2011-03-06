@@ -35,13 +35,9 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.CompositeContext;
-import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -80,26 +76,25 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     private final ExtensionPointRegistry registry;
 
     public ComponentContextImpl(ExtensionPointRegistry registry,
+                                AssemblyFactory assemblyFactory,
+                                JavaInterfaceFactory javaInterfaceFactory,
+                                CompositeActivator compositeActivator,
+                                RequestContextFactory requestContextFactory,
+                                PropertyValueFactory propertyFactory,
+                                EndpointReferenceBinder eprBinder,
+                                ProxyFactory proxyFactory,
                                 CompositeContext compositeContext,
                                 RuntimeComponent component) {
-        this.component = component;
-        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
-        this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
-        this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
-
-        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        this.compositeContext = compositeContext;
-
-        this.compositeActivator = utilities.getUtility(CompositeActivator.class);
-
-        this.requestContextFactory =
-            registry.getExtensionPoint(ContextFactoryExtensionPoint.class).getFactory(RequestContextFactory.class);
-        this.proxyFactory = ExtensibleProxyFactory.getInstance(registry);
-        this.propertyFactory = factories.getFactory(PropertyValueFactory.class);
-
-        this.eprBinder = utilities.getUtility(EndpointReferenceBinder.class);
-
         this.registry = registry;
+        this.assemblyFactory = assemblyFactory;
+        this.javaInterfaceFactory = javaInterfaceFactory;
+        this.compositeActivator = compositeActivator;
+        this.requestContextFactory = requestContextFactory;
+        this.propertyFactory = propertyFactory;
+        this.eprBinder = eprBinder;
+        this.proxyFactory = proxyFactory;
+        this.compositeContext = compositeContext;
+        this.component = component;
     }
 
     public String getURI() {
