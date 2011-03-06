@@ -32,6 +32,10 @@ import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.oasisopen.sca.NoSuchServiceException;
 
+/**
+ * A Node is a collection of contributions and started composites which are part
+ * of an SCA Domain. 
+ */
 public interface Node {
 
     /**
@@ -108,6 +112,29 @@ public interface Node {
      * @throws ValidationException 
      */
     String start(String contributionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException;
+
+    /**
+     * 4599 10.5.2 add Deployment Composite & update Deployment Composite
+     * 4600 Adds or updates a deployment composite using a supplied composite ("composite by value" - a data
+     * 4601 structure, not an existing resource in the Domain) to the contribution identified by a supplied contribution
+     * 4602 URI. The added or updated deployment composite is given a relative URI that matches the @name
+     * 4603 attribute of the composite, with a ".composite" suffix. Since all composites run within the context of a
+     * 4604 installed contribution (any component implementations or other definitions are resolved within that
+     * 4605 contribution), this functionality makes it possible for the deployer to create a composite with final
+     * 4606 configuration and wiring decisions and add it to an installed contribution without having to modify the
+     * 4607 contents of the root contribution.
+     * 4608 Also, in some use cases, a contribution might include only implementation code (e.g. PHP scripts). It is
+     * 4609 then possible for those to be given component names by a (possibly generated) composite that is added
+     * 4610 into the installed contribution, without having to modify the packaging.     * 
+     * 
+     * @param contributionURI the URI of the installed contribution to add the composite to
+     * @param composite the Composite to add to the contribution
+     * @return
+     * @throws XMLStreamException 
+     * @throws ContributionReadException 
+     * @throws ActivationException 
+     * @throws ValidationException 
+     */
     String start(String contributionURI, Composite composite) throws ActivationException, ValidationException;
 
     /**

@@ -66,6 +66,12 @@ public class InstalledContribution {
     public List<String> getDependentContributionURIs() {
         return dependentContributionURIs;
     }
+
+    public void start(DeployedComposite composite) throws ActivationException {
+        composite.start();
+        startedComposites.put(composite.getURI(), composite);
+    }
+    
     public void stop(String compositeURI) throws ActivationException {
         DeployedComposite dc = startedComposites.remove(compositeURI);
         if (dc == null) {
@@ -75,15 +81,11 @@ public class InstalledContribution {
         stoppedComposites.put(compositeURI, dc);
     }
     
-    public void start(DeployedComposite composite) {
-        startedComposites.put(composite.getURI(), composite);
-    }
-    
     public boolean restart(String compositeURI) throws ActivationException {
         DeployedComposite dc = stoppedComposites.remove(compositeURI);
         if (dc != null) {
             dc.start();
-            startedComposites.put(dc.getURI(), dc);
+            startedComposites.put(compositeURI, dc);
         }
         return dc != null;
     }

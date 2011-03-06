@@ -74,11 +74,11 @@ public class NodeImpl implements Node {
 
     private String domainName;
     private Deployer deployer;
-    private Map<String, InstalledContribution> installedContributions = new HashMap<String, InstalledContribution>();
     private CompositeActivator compositeActivator;
     private EndpointRegistry endpointRegistry;
     private ExtensionPointRegistry extensionPointRegistry;
     private TuscanyRuntime tuscanyRuntime;
+    private Map<String, InstalledContribution> installedContributions = new HashMap<String, InstalledContribution>();
     
     private static Map<String, Node> allNodes = new HashMap<String, Node>();
     

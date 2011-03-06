@@ -45,14 +45,13 @@ public class DeployedComposite {
     private Composite composite; 
     private InstalledContribution installedContribution; 
     private List<Contribution> dependedOnContributions;
-    private Composite domainComposite; // TODO: this is misleadingly named
+    private Composite builtComposite;
     
     private CompositeActivator compositeActivator;
     private CompositeContext compositeContext;
     private Deployer deployer;
     private EndpointRegistry endpointRegistry;
     private ExtensionPointRegistry extensionPointRegistry;
-    private Contribution systemContribution;
 
     public DeployedComposite(Composite composite,
                              InstalledContribution ic,
@@ -83,35 +82,29 @@ public class DeployedComposite {
         contribution.add(installedContribution.getContribution());
         contribution.get(0).getDeployables().clear();
         contribution.get(0).getDeployables().add(composite);
-        
-        
+
         Monitor monitor = deployer.createMonitor();
-        if (systemContribution == null) {
-            this.systemContribution = deployer.cloneSystemContribution(monitor);
-        }
-        domainComposite = deployer.build(contribution, dependedOnContributions, systemContribution, new HashMap<QName, List<String>>(), monitor);
+        builtComposite = deployer.build(contribution, dependedOnContributions, new HashMap<QName, List<String>>(), monitor);
         monitor.analyzeProblems();
 
         compositeContext = new CompositeContext(extensionPointRegistry, 
                                                 endpointRegistry, 
-                                                domainComposite, 
+                                                builtComposite, 
                                                 null, // nothing appears to use the domain name in CompositeContext 
                                                 null, // don't need node uri
                                                 deployer.getSystemDefinitions());
                        
-        start();
-
         this.uri = getCompositeURI(composite, installedContribution);
     }
 
     public void start() throws ActivationException {
-        compositeActivator.activate(compositeContext, domainComposite);
-        compositeActivator.start(compositeContext, domainComposite);
+        compositeActivator.activate(compositeContext, builtComposite);
+        compositeActivator.start(compositeContext, builtComposite);
     }
 
     public void stop() throws ActivationException {
-        compositeActivator.stop(compositeContext, domainComposite);
-        compositeActivator.deactivate(domainComposite);
+        compositeActivator.stop(compositeContext, builtComposite);
+        compositeActivator.deactivate(builtComposite);
     }
     
     public String getURI() {
