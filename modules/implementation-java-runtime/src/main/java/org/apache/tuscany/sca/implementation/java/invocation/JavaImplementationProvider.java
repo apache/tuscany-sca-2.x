@@ -55,6 +55,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider,
     private JavaImplementation implementation;
     private JavaComponentContextProvider componentContextProvider;
     private RequestContextFactory requestContextFactory;
+    private Scope scope;
 
     public JavaImplementationProvider(RuntimeComponent component,
                                       JavaImplementation implementation,
@@ -78,8 +79,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider,
                                                  componentContextFactory,
                                                  requestContextFactory);
 
-            Scope scope = getScope();
-
+            this.scope =  new Scope(implementation.getJavaScope().getScope());
             componentContextProvider.configureProperties(component.getProperties());
             handleResources(implementation, proxyService);
         } catch (Exception e) {
@@ -150,7 +150,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider,
     }
 
     public Scope getScope() {
-        return new Scope(implementation.getJavaScope().getScope());
+        return scope;
     }
 
     public void start() {
