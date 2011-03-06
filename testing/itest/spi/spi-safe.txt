@@ -3305,6 +3305,16 @@ public interface org.apache.tuscany.sca.core.ExtensionPointRegistry extends org.
     public abstract org.apache.tuscany.sca.extensibility.ServiceDiscovery getServiceDiscovery();
 }
 
+Compiled from "ExtensionPointRegistryLocator.java"
+public class org.apache.tuscany.sca.core.ExtensionPointRegistryLocator extends java.lang.Object{
+    public org.apache.tuscany.sca.core.ExtensionPointRegistryLocator();
+    public static org.apache.tuscany.sca.core.ExtensionPointRegistry getExtensionPointRegistry();
+    public static java.util.List getExtensionPointRegistries();
+    public static void addExtensionPointRegistry(org.apache.tuscany.sca.core.ExtensionPointRegistry);
+    public static void removeExtensionPointRegistry(org.apache.tuscany.sca.core.ExtensionPointRegistry);
+    static {};
+}
+
 Compiled from "FactoryExtensionPoint.java"
 public interface org.apache.tuscany.sca.core.FactoryExtensionPoint{
     public abstract void addFactory(java.lang.Object);
