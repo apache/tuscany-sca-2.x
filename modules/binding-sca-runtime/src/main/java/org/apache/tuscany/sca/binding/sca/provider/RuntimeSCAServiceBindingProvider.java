@@ -19,10 +19,6 @@
 
 package org.apache.tuscany.sca.binding.sca.provider;
 
-import java.util.Iterator;
-
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
@@ -47,13 +43,10 @@ public class RuntimeSCAServiceBindingProvider implements EndpointAsyncProvider, 
     private RuntimeComponentService service;
 
     private ServiceBindingProvider distributedProvider;
-    private SCABindingMapper scaBindingMapper;
 
-    public RuntimeSCAServiceBindingProvider(ExtensionPointRegistry extensionPoints, RuntimeEndpoint endpoint) {
+    public RuntimeSCAServiceBindingProvider(SCABindingMapper scaBindingMapper, RuntimeEndpoint endpoint) {
         this.endpoint = endpoint;
         this.service = (RuntimeComponentService)endpoint.getService();
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        this.scaBindingMapper = utilities.getUtility(SCABindingMapper.class);
 
         // if there is potentially a wire to this service that crosses the node boundary
         // then we need to create a remote endpoint 

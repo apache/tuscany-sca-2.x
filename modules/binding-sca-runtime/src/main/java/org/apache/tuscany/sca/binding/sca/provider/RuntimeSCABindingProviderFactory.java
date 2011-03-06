@@ -21,8 +21,10 @@ package org.apache.tuscany.sca.binding.sca.provider;
 
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.provider.SCABindingMapper;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
@@ -35,9 +37,12 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 public class RuntimeSCABindingProviderFactory implements BindingProviderFactory<SCABinding> {
     
     private ExtensionPointRegistry extensionPoints;
+    private SCABindingMapper scaBindingMapper;
     
     public RuntimeSCABindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints; 
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        this.scaBindingMapper = utilities.getUtility(SCABindingMapper.class);
     } 
     
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
@@ -45,7 +50,7 @@ public class RuntimeSCABindingProviderFactory implements BindingProviderFactory<
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {
-        return new RuntimeSCAServiceBindingProvider(extensionPoints, endpoint);
+        return new RuntimeSCAServiceBindingProvider(scaBindingMapper, endpoint);
     }
 
     public Class<SCABinding> getModelType() {
