@@ -271,8 +271,8 @@ The following components come under Apache Software License 2.0
  jackson-mapper-asl-1.7.1.jar
  jackson-xc-1.7.1.jar
  jettison-1.2.jar
- jetty-6.1.19.jar
- jetty-util-6.1.19.jar
+ jetty-6.1.26.jar
+ jetty-util-6.1.26.jar
  juli-6.0.26.jar
  kahadb-5.3.0.jar
  log4j-1.2.15.jar
