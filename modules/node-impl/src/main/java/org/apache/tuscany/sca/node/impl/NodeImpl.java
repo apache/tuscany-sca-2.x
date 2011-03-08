@@ -118,18 +118,22 @@ public class NodeImpl implements Node {
             // Set up the thead context monitor
             Monitor tcm = nodeFactory.monitorFactory.setContextMonitor(monitor);
             try {
+                // Use the lack of the contributions collection as an indicator for when the node
+                // is being started for the first time. If it is the first time do all the work 
+                // to read the contributions and create the domain composite
                 if (contributions == null) {
                     contributions = nodeFactory.loadContributions(configuration, context);
+              
+                    domainComposite = nodeFactory.configureNode(configuration, contributions, context);
+    
+                    this.compositeContext =
+                        new CompositeContext(nodeFactory.registry, 
+                                             endpointRegistry, 
+                                             domainComposite, 
+                                             configuration.getDomainURI(), 
+                                             configuration.getURI(),
+                                             nodeFactory.getDeployer().getSystemDefinitions());
                 }
-                domainComposite = nodeFactory.configureNode(configuration, contributions, context);
-
-                this.compositeContext =
-                    new CompositeContext(nodeFactory.registry, 
-                                         endpointRegistry, 
-                                         domainComposite, 
-                                         configuration.getDomainURI(), 
-                                         configuration.getURI(),
-                                         nodeFactory.getDeployer().getSystemDefinitions());
                 
             } finally {
                 // Reset the thread context monitor
@@ -203,10 +207,12 @@ public class NodeImpl implements Node {
             } // end if
 
             nodeFactory.removeNode(configuration);
+/*            
             this.compositeActivator = null;
             this.proxyFactory = null;
             this.domainComposite = null;
             this.compositeContext = null;
+*/            
             
             ThreadMessageContext.removeMessageContext();
 
