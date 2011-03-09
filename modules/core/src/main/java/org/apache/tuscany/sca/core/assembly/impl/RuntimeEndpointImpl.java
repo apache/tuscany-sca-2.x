@@ -600,8 +600,8 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         InterfaceContract serviceContract = getComponentServiceInterfaceContract();
         InterfaceContract bindingContract = getBindingInterfaceContract();
                 
-        if ((serviceContract != null) &&
-            (bindingContract != null)){
+        if ((serviceContract != bindingContract) && 
+            (serviceContract != null) && (bindingContract != null)) {
            
             boolean bindingHasCallback = bindingContract.getCallbackInterface() != null;
             
