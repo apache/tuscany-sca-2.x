@@ -1,0 +1,15 @@
+java -jar bin/felix.jar
+
+
+install file:///D:/sca-java-2.x/modules/sca-api/target/tuscany-sca-api-2.0-SNAPSHOT.jar
+start #
+install file:///D:/sca-java-2.x/unreleased/testing/itest/bundle/target/bundle-2.0-SNAPSHOT.jar
+start #
+
+mvn org.apache.felix:maven-bundle-plugin:2.1.0:install-file -DpomFile=pom.xml -Dfile=target\bundle-2.0-SNAPSHOT.jar
+mvn org.apache.felix:maven-bundle-plugin:2.1.0:install-file -DpomFile=pom.xml -Dfile=target\tuscany-sca-api-2.0-SNAPSHOT.jar
+
+mvn org.apache.felix:maven-bundle-plugin:2.1.0:index  -DurlTemplate=maven
+~/.m2/repository/repository.xml 
+
+
