@@ -185,6 +185,11 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         if (compositeContext == null) {
             compositeContext = new CompositeContext(registry, endpointRegistry);
         }
+
+        // if interfaceContractMapper is already initialized then all the rest will be too
+        if (interfaceContractMapper != null) {
+            return;
+        }
         this.registry = registry;
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
