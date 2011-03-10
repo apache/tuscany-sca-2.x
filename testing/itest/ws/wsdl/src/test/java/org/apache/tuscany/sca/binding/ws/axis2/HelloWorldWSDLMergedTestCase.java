@@ -29,16 +29,22 @@ import org.apache.axiom.om.OMText;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
+import org.junit.Ignore;
 
 public class HelloWorldWSDLMergedTestCase extends TestCase {
 
-    private Node node;
+    private NodeFactory nodeFactory;
+    private NodeImpl node;
     private HelloWorldOM helloWorld;
 
     @Override
     protected void setUp() throws Exception {
         String contribution = "target/classes";
-        node = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/ws/axis2/helloworld-om-merged.composite", new Contribution("test", contribution));
+        nodeFactory = NodeFactory.newInstance();
+        // have to set this to stop the node factory killing itself when we stop and re-start the node
+        nodeFactory.setAutoDestroy(false);
+        node = (NodeImpl)nodeFactory.createNode("org/apache/tuscany/sca/binding/ws/axis2/helloworld-om-merged.composite", new Contribution("test", contribution));
         node.start();
         helloWorld = node.getService(HelloWorldOM.class, "HelloWorldWSDLMergedComponent");
     }
@@ -52,7 +58,26 @@ public class HelloWorldWSDLMergedTestCase extends TestCase {
         OMElement responseOM = helloWorld.getGreetings(requestOM);
         OMElement child = (OMElement)responseOM.getFirstElement();
         Assert.assertEquals("Hello petra", ((OMText)child.getFirstOMChild()).getText());
-    }    
+    }  
+    
+    @Ignore
+    public void testHelloWorldRepeating() throws Exception {
+        for (int i = 0; i < 2; i++){
+            OMFactory fac = OMAbstractFactory.getOMFactory();
+            OMElement requestOM = fac.createOMElement("getGreetings", "http://helloworld-om", "helloworld");
+            OMElement parmE = fac.createOMElement("name", "http://helloworld-om", "helloworld");
+            requestOM.addChild(parmE);
+            parmE.addChild(fac.createOMText("petra"));
+            OMElement responseOM = helloWorld.getGreetings(requestOM);
+            OMElement child = (OMElement)responseOM.getFirstElement();
+            Assert.assertEquals("Hello petra", ((OMText)child.getFirstOMChild()).getText());            
+            
+            node.stop(); 
+            node.start();
+            
+            helloWorld = node.getService(HelloWorldOM.class, "HelloWorldWSDLMergedComponent");
+        }
+    }
     
     @Override
     protected void tearDown() throws Exception {
