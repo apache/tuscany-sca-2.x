@@ -123,7 +123,9 @@ public class NodeImpl implements Node {
                 // to read the contributions and create the domain composite
                 if (contributions == null) {
                     contributions = nodeFactory.loadContributions(configuration, context);
+                }
               
+                if (domainComposite == null) {  
                     domainComposite = nodeFactory.configureNode(configuration, contributions, context);
     
                     this.compositeContext =
