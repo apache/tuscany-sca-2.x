@@ -104,13 +104,6 @@ public class NodeImpl implements Node {
         nodeFactory.addNode(configuration, this);
         this.proxyFactory = nodeFactory.proxyFactory;
         
-        DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(nodeFactory.registry);
-        EndpointRegistry endpointRegistry =
-            domainRegistryFactory.getEndpointRegistry(configuration.getDomainRegistryURI(), configuration
-                .getDomainURI());
-        
-        UtilityExtensionPoint utilities = nodeFactory.registry.getExtensionPoint(UtilityExtensionPoint.class);
-        this.compositeActivator = utilities.getUtility(CompositeActivator.class);
         try {
             Monitor monitor = nodeFactory.monitorFactory.createMonitor();
             ProcessorContext context = new ProcessorContext(monitor);
@@ -126,8 +119,16 @@ public class NodeImpl implements Node {
                 }
               
                 if (domainComposite == null) {  
+                    
+                    UtilityExtensionPoint utilities = nodeFactory.registry.getExtensionPoint(UtilityExtensionPoint.class);
+                    this.compositeActivator = utilities.getUtility(CompositeActivator.class);
+
                     domainComposite = nodeFactory.configureNode(configuration, contributions, context);
     
+                    DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(nodeFactory.registry);
+                    EndpointRegistry endpointRegistry =
+                        domainRegistryFactory.getEndpointRegistry(configuration.getDomainRegistryURI(), configuration.getDomainURI());
+
                     this.compositeContext =
                         new CompositeContext(nodeFactory.registry, 
                                              endpointRegistry, 
