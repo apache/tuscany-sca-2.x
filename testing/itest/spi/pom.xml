@@ -67,13 +67,11 @@
 	                <groupId>org.apache.ant</groupId>
 	                <artifactId>ant-apache-regexp</artifactId>
 	                <version>1.7.0</version>
-	                <scope>test</scope>
 	              </dependency>
 	              <dependency>
 	                <groupId>jakarta-regexp</groupId>
 	                 <artifactId>jakarta-regexp</artifactId>
 	                 <version>1.4</version>
-	                 <scope>test</scope>
 	              </dependency>
 	           </dependencies>
             </plugin>
