@@ -20,14 +20,18 @@ package sample;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.ops4j.pax.exam.CoreOptions.equinox;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+
+import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.workingDirectory;
 
 import org.apache.aries.application.filesystem.IDirectory;
 import org.apache.aries.application.management.spi.repository.RepositoryGenerator;
@@ -44,6 +48,7 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.CoreOptions;
 import org.ops4j.pax.exam.Inject;
 import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.container.def.options.WorkingDirectoryOption;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.options.MavenArtifactProvisionOption;
@@ -82,7 +87,7 @@ public class HelloworldTestCase {
           mavenBundle("org.ops4j.pax.logging", "pax-logging-service"),
           systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("INFO"),
           
-          mavenBundle("org.apache.felix", "org.apache.felix.configadmin"),
+//          mavenBundle("org.apache.felix", "org.apache.felix.configadmin"),
           mavenBundle("org.ops4j.pax.url", "pax-url-mvn"),
          
           mavenBundle("org.apache.aries.blueprint", "org.apache.aries.blueprint"),
@@ -112,6 +117,8 @@ public class HelloworldTestCase {
           waitForFrameworkStartup(),
           */
           
+          workingDirectory("D://sca-java-2.x//unreleased//testing//itest//bundle//target"),
+          
           equinox().version("3.5.0")); 
       
       return options;
@@ -120,6 +127,8 @@ public class HelloworldTestCase {
     @Test
     public void testSayHello() {
         System.out.println("testSayHello - start");
+        System.out.println("test dir = " + System.getProperty("user.dir"));
+        System.out.println("current dir = " + this.getClass().getProtectionDomain().getCodeSource().getLocation());
         
         // get the OBR repository admin service
         RepositoryAdmin respositoryAdminService = getOsgiService(RepositoryAdmin.class);
@@ -132,33 +141,58 @@ public class HelloworldTestCase {
         }
        
         // get the repository generator service
-        System.out.println("XXXXXX get RepositoryGenerator service =");
+        System.out.println("get RepositoryGenerator service =");
         RepositoryGenerator repositoryGenerator = getOsgiService(RepositoryGenerator.class);
-        System.out.println("XXXXXX" + repositoryGenerator);
+        System.out.println(repositoryGenerator);
                 
-        System.out.println("XXXXXX get ModelledResourceManager service =");
+        System.out.println("get ModelledResourceManager service =");
         ModelledResourceManager modelledResourceManager = getOsgiService(ModelledResourceManager.class);
-        System.out.println("XXXXXX" + modelledResourceManager);
+        System.out.println(modelledResourceManager);
         
         Set<ModelledResource> mrs = new HashSet<ModelledResource>();
         
         try {
-            File bundleFile = new File("D:/sca-java-2.x/distribution/all/target/modules/tuscany-assembly-2.0-SNAPSHOT.jar");
-            IDirectory jarDir = FileSystem.getFSRoot(bundleFile);
-            mrs.add(modelledResourceManager.getModelledResource(bundleFile.toURI().toString(), jarDir));
-            File outFile = new File("D://sca-java-2.x//unreleased//testing//itest//bundle//target//myrepository.xml");
-            FileOutputStream fout = new FileOutputStream(outFile);
+            // create mrs based on base runtime
+            populateMRS(modelledResourceManager,
+                        mrs, 
+                        "../../../../../distribution/all/target/features/tuscany-base-runtime-pom/which-jars", 
+                        "../../../../../distribution/all/target/modules");
+            //File outFile = new File("D://sca-java-2.x//unreleased//testing//itest//bundle//target//myrepository.xml");
+            //File outFile = new File(".//target//myrepository.xml");            
+            //FileOutputStream fout = new FileOutputStream(outFile);
+            FileOutputStream fout = new FileOutputStream("myrepository.xml");
             repositoryGenerator.generateRepository("Test repo description", mrs, fout);
             fout.close();
         
         } catch(Exception ex) {
             ex.printStackTrace();
         }
-
-        
-        //repositoryAdmin.addRepository(new File("repository.xml").toURI().toURL());
         
         System.out.println("testSayHello - end");
+    }
+    
+    private void populateMRS(ModelledResourceManager modelledResourceManager,
+                             Set<ModelledResource> mrs, 
+                             String whichJars, 
+                             String modules){
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(whichJars));
+            String line;
+            while ((line = in.readLine()) != null) {
+                if (line.endsWith(".jar")){
+                    int dirSeparatorIndex = line.indexOf("/");
+                    if (dirSeparatorIndex > 0){
+                        line = line.substring(0, dirSeparatorIndex);
+                    }
+                    System.out.println("Processing - " + line);
+                    File bundleFile = new File(modules + "\\" + line);
+                    IDirectory jarDir = FileSystem.getFSRoot(bundleFile);
+                    mrs.add(modelledResourceManager.getModelledResource(bundleFile.toURI().toString(), jarDir));
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
     
     private <T> T getOsgiService(Class<T> type) {
