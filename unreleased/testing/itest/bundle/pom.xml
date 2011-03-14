@@ -221,7 +221,7 @@
 	    <groupId>org.apache.felix</groupId>
 	    <artifactId>maven-bundle-plugin</artifactId>
 	    <extensions>true</extensions>
-<!-- 	    
+<!-- create a repositoy.xml file for this bundle    
 	    <executions>
 	      <execution>
 	        <id>generate-obr</id>

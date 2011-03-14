@@ -160,7 +160,7 @@ public class HelloworldTestCase {
             //File outFile = new File("D://sca-java-2.x//unreleased//testing//itest//bundle//target//myrepository.xml");
             //File outFile = new File(".//target//myrepository.xml");            
             //FileOutputStream fout = new FileOutputStream(outFile);
-            FileOutputStream fout = new FileOutputStream("myrepository.xml");
+            FileOutputStream fout = new FileOutputStream("repository.xml");
             repositoryGenerator.generateRepository("Test repo description", mrs, fout);
             fout.close();
         

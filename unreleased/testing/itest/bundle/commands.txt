@@ -1,15 +1,227 @@
+// Show the test bundle resolving against the Tuscany base repo
+
 java -jar bin/felix.jar
 
+obr:repos add file:///D:/sca-java-2.x/unreleased/testing/itest/bundle/target/repository.xml
 
-install file:///D:/sca-java-2.x/modules/sca-api/target/tuscany-sca-api-2.0-SNAPSHOT.jar
-start #
+obr:list
+
+Apache Felix Bundle Repository (1.4.3, ...)
+Apache Felix Configuration Admin Service (1.2.4, ...)
+Apache Felix Declarative Services (1.6.0, ...)
+Apache Felix EventAdmin (1.0.0)
+Apache Felix File Install (3.0.2, ...)
+Apache Felix Gogo Command (0.8.0, ...)
+Apache Felix Gogo Runtime (0.8.0, ...)
+Apache Felix Gogo Shell (0.8.0, ...)
+Apache Felix Gogo Shell Commands (0.2.0)
+Apache Felix Gogo Shell Console (0.2.0)
+Apache Felix Gogo Shell Launcher (0.2.0)
+Apache Felix Gogo Shell Runtime (0.2.0)
+Apache Felix Http Api (2.0.4)
+Apache Felix Http Base (2.0.4)
+Apache Felix Http Bridge (2.0.4)
+Apache Felix Http Bundle (2.0.4)
+Apache Felix Http Jetty (2.0.4)
+Apache Felix Http Proxy (2.0.4)
+Apache Felix Http Samples - Filter (2.0.4)
+Apache Felix Http Samples - Whiteboard (2.0.4)
+Apache Felix HTTP Service Jetty (1.0.1, ...)
+Apache Felix Http Whiteboard (2.0.4)
+Apache Felix iPOJO (1.8.0, ...)
+Apache Felix iPOJO (0.8.0)
+Apache Felix iPOJO API (1.6.0, ...)
+Apache Felix iPOJO Arch Command (1.6.0, ...)
+Apache Felix iPOJO Composite (1.8.0, ...)
+Apache Felix iPOJO Composite (1.0.0, ...)
+Apache Felix iPOJO Event Admin Handler (1.6.0, ...)
+Apache Felix iPOJO Extender Pattern Handler (1.4.0, ...)
+Apache Felix iPOJO Extender Pattern Handler (1.0.0, ...)
+Apache Felix iPOJO Gogo Command (1.0.1, ...)
+Apache Felix iPOJO JMX Handler (1.4.0, ...)
+Apache Felix iPOJO Temporal Service Dependency Handler (1.6.0,
+Apache Felix iPOJO URL Handler (1.6.0, ...)
+Apache Felix iPOJO WebConsole Plugins (1.6.0, ...)
+Apache Felix iPOJO White Board Pattern Handler (1.2.0, ...)
+Apache Felix iPOJO White Board Pattern Handler (1.4.0)
+Apache Felix Log Service (1.0.0)
+Apache Felix Metatype Service (1.0.2, ...)
+Apache Felix Prefrences Service (1.0.2)
+Apache Felix Remote Shell (1.0.4, ...)
+Apache Felix Remote Shell (1.1.2, ...)
+Apache Felix Shell Service (1.4.2, ...)
+Apache Felix Shell TUI (1.4.1, ...)
+Apache Felix UPnP Base Driver (0.8.0)
+Apache Felix UPnP Extra (0.4.0)
+Apache Felix UPnP Tester (0.4.0)
+Apache Felix Web Console Event Plugin (1.0.2)
+Apache Felix Web Console Memory Usage Plugin (1.0.0)
+Apache Felix Web Console Memory Usage Plugin (1.0.2)
+Apache Felix Web Console UPnP Plugin (1.0.0)
+Apache Felix Web Management Console (3.1.2, ...)
+Apache Felix Web Management Console (3.1.2, ...)
+Apache Tuscany Java Interface for JAXWS (2.0.0)
+Apache Tuscany Launcher (2.0.0)
+Apache Tuscany Python Implementation Model (2.0.0)
+Apache Tuscany SCA API (2.0.0)
+Apache Tuscany SCA Assembly Model (2.0.0)
+Apache Tuscany SCA Assembly Model XML Schemas (2.0.0)
+Apache Tuscany SCA Atom Feed Binding Extension (2.0.0)
+Apache Tuscany SCA BPEL Implementation Model (2.0.0)
+Apache Tuscany SCA Client Impl (2.0.0)
+Apache Tuscany SCA Comet Binding Model (2.0.0)
+Apache Tuscany SCA Common HTTP (2.0.0)
+Apache Tuscany SCA Common Java (2.0.0)
+Apache Tuscany SCA Common XML (2.0.0)
+Apache Tuscany SCA Contribution Model (2.0.0)
+Apache Tuscany SCA CORBA Binding Extension (2.0.0)
+Apache Tuscany SCA CORBA Host Extension Point (2.0.0)
+Apache Tuscany SCA Core Runtime (2.0.0)
+Apache Tuscany SCA Core SPI (2.0.0)
+Apache Tuscany SCA Core/DataBinding Integration (2.0.0)
+Apache Tuscany SCA Data API (2.0.0)
+Apache Tuscany SCA Data Binding for JAXB (2.0.0)
+Apache Tuscany SCA DataBinding Framework (2.0.0)
+Apache Tuscany SCA Default Binding Model (2.0.0)
+Apache Tuscany SCA Deployment (2.0.0)
+Apache Tuscany SCA EJB Binding Model (2.0.0)
+Apache Tuscany SCA Extensibility (2.0.0)
+Apache Tuscany SCA HTTP Binding Model (2.0.0)
+Apache Tuscany SCA HTTP Servlet Host Extension Point (2.0.0)
+Apache Tuscany SCA Java Implementation Model (2.0.0)
+Apache Tuscany SCA Java Implementation Model (2.0.0)
+Apache Tuscany SCA Java Interface Model (2.0.0)
+Apache Tuscany SCA JAX-RS Implementation Model (2.0.0)
+Apache Tuscany SCA JAXWS RI based WS Binding Extension (2.0.0)
+Apache Tuscany SCA JAXWS-based WS Binding Extension (2.0.0)
+Apache Tuscany SCA Jetty Servlet Host Extension (2.0.0)
+Apache Tuscany SCA JMS Binding Model (2.0.0)
+Apache Tuscany SCA JSON-RPC Binding Model (2.0.0)
+Apache Tuscany SCA JSONP Binding Model (2.0.0)
+Apache Tuscany SCA Model Builders (2.0.0)
+Apache Tuscany SCA Monitor (2.0.0)
+Apache Tuscany SCA Node API (2.0.0)
+Apache Tuscany SCA Node Implementation (2.0.0)
+Apache Tuscany SCA REST Binding Model (2.0.0)
+Apache Tuscany SCA RMI Binding Model (2.0.0)
+Apache Tuscany SCA Script Implementation Model (2.0.0)
+Apache Tuscany SCA Shell (2.0.0)
+Apache Tuscany SCA Spring Implementation Model (2.0.0)
+Apache Tuscany SCA Web Implementation Web Model (2.0.0)
+Apache Tuscany SCA Web Implementation Web Runtime (2.0.0)
+Apache Tuscany SCA Web Service binding WSDL Generator (2.0.0)
+Apache Tuscany SCA Webapp Host (2.0.0)
+Apache Tuscany SCA Widget Implementation Model (2.0.0)
+Apache Tuscany SCA Wink (2.0.0)
+Apache Tuscany SCA WS Binding Model (2.0.0)
+Apache Tuscany SCA WSDL Interface Model (2.0.0)
+Apache Tuscany SCA XML Assembly Model (2.0.0)
+Apache Tuscany SCA XSD Model (2.0.0)
+Apache Tuscany Security Policy Model (2.0.0)
+asm.asm (3.1.0)
+cglib.cglib (2.2.0)
+jsr311-api (1.1.1)
+OSGi OBR Service API (1.0.0)
+OSGi R4 Compendium Bundle (4.0.0)
+Servlet 2.1 API (1.0.0)
+wsdl4j.wsdl4j (1.6.2)
+XmlSchema (1.4.3)
+
+obr:repos list
+
+file:/D:/sca-java-2.x/unreleased/testing/itest/bundle/target/repository.xml
+http://felix.apache.org/obr/releases.xml
+
+
+//install file:///D:/sca-java-2.x/modules/sca-api/target/tuscany-sca-api-2.0-SNAPSHOT.jar
+//start #
+
 install file:///D:/sca-java-2.x/unreleased/testing/itest/bundle/target/bundle-2.0-SNAPSHOT.jar
 start #
+
+
+// Create repository.xml for a maven resource or repository
 
 mvn org.apache.felix:maven-bundle-plugin:2.1.0:install-file -DpomFile=pom.xml -Dfile=target\bundle-2.0-SNAPSHOT.jar
 mvn org.apache.felix:maven-bundle-plugin:2.1.0:install-file -DpomFile=pom.xml -Dfile=target\tuscany-sca-api-2.0-SNAPSHOT.jar
 
 mvn org.apache.felix:maven-bundle-plugin:2.1.0:index  -DurlTemplate=maven
 ~/.m2/repository/repository.xml 
+
+
+// problems getting OBR to work
+
+g! obr:info "Apache Tuscany SCA API"
+----------------------
+Apache Tuscany SCA API
+----------------------
+id: org.apache.tuscany.sca.api/2.0.0
+symbolicname: org.apache.tuscany.sca.api
+presentationname: Apache Tuscany SCA API
+uri: file:/D:/sca-java-2.x/unreleased/testing/itest/bundle/target/../../../../..
+/distribution/all/target/modules/tuscany-sca-api-2.0-SNAPSHOT.jar
+version: 2.0.0
+Requires:
+   (&(package=org.oasisopen.sca.annotation)(version>=2.0.0))
+   (&(package=org.oasisopen.sca)(version>=2.0.0))
+   (&(package=org.oasisopen.sca.client)(version>=2.0.0))
+   (&(package=javax.security.auth))
+Capabilities:
+   {symbolicname=org.apache.tuscany.sca.api, presentationname=Apache Tuscany SCA
+ API, bundle-manifestversion=2, version=2.0.0}
+   {bundle-version=2.0.0, package=org.oasisopen.sca, bundle-symbolic-name=org.ap
+ache.tuscany.sca.api, uses:=javax.security.auth, version=2.0.0}
+   {bundle-version=2.0.0, package=org.oasisopen.sca.annotation, bundle-symbolic-
+name=org.apache.tuscany.sca.api, version=2.0.0}
+   {bundle-version=2.0.0, package=org.oasisopen.sca.client, bundle-symbolic-name
+=org.apache.tuscany.sca.api, version=2.0.0}
+g! lb
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle (3.0.8)
+    1|Active     |    1|Apache Felix Bundle Repository (1.6.2)
+    2|Active     |    1|Apache Felix Gogo Command (0.8.0)
+    3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
+    4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
+   20|Installed  |    1|Apache Tuscany SCA iTest Bundle (2.0.0.SNAPSHOT)
+g! start 20
+org.osgi.framework.BundleException: Unresolved constraint in bundle org.apache.t
+uscany.sca.bundle [20]: Unable to resolve 20.0: missing requirement [20.0] packa
+ge; (&(package=org.oasisopen.sca.annotation)(version>=2.0.0))
+g!
+
+
+g! obr:deploy "Apache Tuscany SCA API"
+Target resource(s):
+-------------------
+   Apache Tuscany SCA API (2.0.0)
+
+Deploying...done.
+g! lb
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle (3.0.8)
+    1|Active     |    1|Apache Felix Bundle Repository (1.6.2)
+    2|Active     |    1|Apache Felix Gogo Command (0.8.0)
+    3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
+    4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
+   20|Installed  |    1|Apache Tuscany SCA iTest Bundle (2.0.0.SNAPSHOT)
+   21|Installed  |    1|Apache Tuscany SCA API (2.0.0)
+g! start 21
+g! lb
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle (3.0.8)
+    1|Active     |    1|Apache Felix Bundle Repository (1.6.2)
+    2|Active     |    1|Apache Felix Gogo Command (0.8.0)
+    3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
+    4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
+   20|Installed  |    1|Apache Tuscany SCA iTest Bundle (2.0.0.SNAPSHOT)
+   21|Active     |    1|Apache Tuscany SCA API (2.0.0)
+g! start 20
+14-Mar-2011 14:31:45 sample.impl.SampleActivator start
+INFO: Starting org.apache.tuscany.sca.bundle [20]
+14-Mar-2011 14:31:45 sample.impl.SampleActivator start
+INFO: Hello Fred Bloggs->null
 
 
