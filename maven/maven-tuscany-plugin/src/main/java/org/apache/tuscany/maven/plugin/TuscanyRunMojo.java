@@ -27,9 +27,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.shell.Shell;
 
 /**
@@ -86,9 +84,14 @@ public class TuscanyRunMojo extends AbstractMojo {
     protected File finalName;
 
     /**
-     * @parameter expression="${config}" default-value="default"
+     * @parameter expression="${domainURI}" default-value="default"
      */
-    private String config;
+    private String domainURI;
+
+    /**
+     * @parameter expression="${nodeConfig}"
+     */
+    private String nodeConfig;
 
     /**
      * @parameter expression="${contributions}" 
@@ -105,7 +108,7 @@ public class TuscanyRunMojo extends AbstractMojo {
         addAdditionalContributions(contributionList);
 
         contributionList.add(0, "-help");
-        contributionList.add(0, config);
+        contributionList.add(0, domainURI);
         
         try {
             Shell.main(contributionList.toArray(new String[contributionList.size()]));
@@ -113,7 +116,6 @@ public class TuscanyRunMojo extends AbstractMojo {
             throw new MojoExecutionException("Exception in Shell", e);
         }
         
-//        waitForShutdown(new Ob, getLog());
         getLog().info("Tuscany Shell stopped.");
     }
 
@@ -157,42 +159,6 @@ public class TuscanyRunMojo extends AbstractMojo {
             
         } catch (MalformedURLException e) {
             throw new MojoExecutionException("", e);
-        }
-    }
-
-    protected void waitForShutdown(Node node, Log log) {
-        Runtime.getRuntime().addShutdownHook(new ShutdownThread(node, log));
-        synchronized (this) {
-            try {
-                log.info("Ctrl-C to end...");
-                this.wait();
-            } catch (InterruptedException e) {
-                log.error(e);
-            }
-        }
-    }
-
-    protected static class ShutdownThread extends Thread {
-
-        private Node node;
-        private Log log;
-
-        public ShutdownThread(Node node, Log log) {
-            super();
-            this.node = node;
-            this.log = log;
-        }
-
-        @Override
-        public void run() {
-            try {
-
-                log.info("Stopping Tuscany Runtime...");
-                node.stop();
-
-            } catch (Exception e) {
-                log.error(e);
-            }
         }
     }
 }
