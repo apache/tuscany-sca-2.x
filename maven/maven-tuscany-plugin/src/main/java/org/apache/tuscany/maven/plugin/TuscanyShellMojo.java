@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.shell.Shell;
 /**
  * Maven Mojo to run the Tuscany Shell
  * 
- * Invoked with mvn org.apache.tuscany.maven.plugin:maven-tuscany-plugins:shell [-Ddomain=uri:myDomain] [-Dcontributions=path\to\scacontribution,...]
+ * Invoked with mvn org.apache.tuscany.maven.plugin:maven-tuscany-plugins:shell [-DdomainURI=uri:myDomain] [-Dcontributions=path\to\scacontribution,...]
  * 
  * @goal shell
  * @requiresProject false
@@ -39,9 +39,9 @@ import org.apache.tuscany.sca.shell.Shell;
 public class TuscanyShellMojo extends AbstractMojo {
 
     /**
-     * @parameter expression="${domain}" default-value="default"
+     * @parameter expression="${domainURI}" default-value="default"
      */
-    private String domain;
+    private String domainURI;
     
     /**
      * @parameter expression="${contributions}" 
@@ -59,13 +59,13 @@ public class TuscanyShellMojo extends AbstractMojo {
                 cs.add(st.nextToken());
             }
             cs.add(0, "-help");
-            cs.add(0, domain);
+            cs.add(0, domainURI);
             args = cs.toArray(new String[cs.size()]);
         } else {
-            if ("default".equals(domain)) {
+            if ("default".equals(domainURI)) {
                 args = new String[]{};
             } else {
-                args = new String[]{domain};
+                args = new String[]{domainURI};
             }
         }
 
