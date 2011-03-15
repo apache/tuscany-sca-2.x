@@ -31,12 +31,15 @@ import java.util.logging.Logger;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
 import org.apache.tuscany.sca.common.http.HTTPCacheContext;
+import org.apache.tuscany.sca.common.http.HTTPContext;
 import org.apache.tuscany.sca.common.http.HTTPHeader;
+import org.apache.tuscany.sca.common.http.ThreadHTTPContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
 import org.apache.wink.common.internal.registry.ProvidersRegistry;
@@ -56,7 +59,6 @@ public class TuscanyRESTServlet extends RestServlet {
     private ExtensionPointRegistry registry;
     private RESTBinding binding;
     private Class<?> resourceClass;
-    private boolean fixed;
 
     public TuscanyRESTServlet(ExtensionPointRegistry registry, Binding binding, Class<?> resourceClass) {
         super();
@@ -64,6 +66,25 @@ public class TuscanyRESTServlet extends RestServlet {
         this.binding = (RESTBinding) binding;
         this.resourceClass = resourceClass;
     }
+
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //create context
+        HTTPContext bindingContext = new HTTPContext();
+        bindingContext.setHttpRequest(request);
+        bindingContext.setHttpResponse(response);
+        
+
+        try {
+            //store in thread local
+            ThreadHTTPContext.setHTTPContext(bindingContext);
+            super.service(request, response);
+        } finally {
+            //remove
+            ThreadHTTPContext.removeHTTPContext();
+        }
+    }
+
 
     public void init() throws ServletException {
         ClassLoader cl =
@@ -134,54 +155,10 @@ public class TuscanyRESTServlet extends RestServlet {
         return config;
     }
 
-    /*
-    private synchronized void fixMediaTypes(DeploymentConfiguration config) {
-        if (fixed) {
-            return;
-        }
-        // FIXME: A hacky workaround for https://issues.apache.org/jira/browse/TUSCANY-3572
-        ResourceRecord record = config.getResourceRegistry().getRecord(resourceClass);
-
-        for (MethodMetadata methodMetadata : record.getMetadata().getResourceMethods()) {
-            String method = methodMetadata.getHttpMethod();
-            if (HttpMethod.GET.equals(method) || HttpMethod.HEAD.equals(method) || HttpMethod.DELETE.equals(method)) {
-                methodMetadata.addConsumes(MediaType.APPLICATION_OCTET_STREAM_TYPE);
-                methodMetadata.addConsumes(MediaType.WILDCARD_TYPE);
-            }
-            if (HttpMethod.HEAD.equals(method) || HttpMethod.DELETE.equals(method)) {
-                methodMetadata.addProduces(MediaType.APPLICATION_OCTET_STREAM_TYPE);
-                methodMetadata.addConsumes(MediaType.WILDCARD_TYPE);
-            }
-        }
-        for (MethodMetadata methodMetadata : record.getMetadata().getSubResourceMethods()) {
-            String method = methodMetadata.getHttpMethod();
-            if (HttpMethod.GET.equals(method) || HttpMethod.HEAD.equals(method) || HttpMethod.DELETE.equals(method)) {
-                methodMetadata.addConsumes(MediaType.APPLICATION_OCTET_STREAM_TYPE);
-                methodMetadata.addConsumes(MediaType.WILDCARD_TYPE);
-            }
-            if (HttpMethod.HEAD.equals(method) || HttpMethod.DELETE.equals(method)) {
-                methodMetadata.addProduces(MediaType.APPLICATION_OCTET_STREAM_TYPE);
-                methodMetadata.addConsumes(MediaType.WILDCARD_TYPE);
-            }
-        }
-        fixed = true;
-    }
-
-    @Override
-    public RequestProcessor getRequestProcessor() {
-        RequestProcessor processor = super.getRequestProcessor();
-        // The 1st call returns null
-        if (processor != null) {
-            fixMediaTypes(processor.getConfiguration());
-        }
-        return processor;
-    }
-    */
-
     /**
      * TuscanyResponseHandler
      *
-     * Required to support declartive HTTP Headers
+     * Required to support declarative HTTP Headers
      */
     class TuscanyResponseHandler implements ResponseHandler {
         public void handleResponse(MessageContext context, HandlersChain chain) throws Throwable {
@@ -216,5 +193,4 @@ public class TuscanyRESTServlet extends RestServlet {
 
         }
     }
-
 }
