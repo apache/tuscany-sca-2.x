@@ -337,11 +337,15 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
 	        } // end for
         } // end if
         
-        // if there was no domainName to match, simply return the first EndpointRegistry...
-        EndpointRegistry endpointRegistry = (EndpointRegistry) domainRegistryFactory.getEndpointRegistries().toArray()[0];
+        // if there was no domainName to match, simply return the first EndpointRegistry if there is one...
         
-    	
-    	return endpointRegistry;
+        if (domainRegistryFactory.getEndpointRegistries().size() > 0){
+            EndpointRegistry endpointRegistry = (EndpointRegistry) domainRegistryFactory.getEndpointRegistries().toArray()[0];
+            return endpointRegistry;
+        } else {
+            return null;
+        }
+        
     } // end method 
 	
 } // end class
