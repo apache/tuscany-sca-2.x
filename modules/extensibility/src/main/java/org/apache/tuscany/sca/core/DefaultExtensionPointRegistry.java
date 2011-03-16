@@ -184,7 +184,7 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
         }
         ServiceHelper.stop(map.values());
         extensionPoints.clear();
-        ExtensionPointRegistryLocator.removeExtensionPointRegistry(null);
+        ExtensionPointRegistryLocator.removeExtensionPointRegistry(this);
     }
 
     public ServiceDiscovery getServiceDiscovery() {
