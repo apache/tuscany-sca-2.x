@@ -720,12 +720,7 @@ public class Shell {
     }
 
     boolean helpOverview() {
-        out.println("Apache Tuscany Shell (" + Version.getVersion()
-            + " "
-            + Version.getRevsion()
-            + " "
-            + Version.getBuildTime()
-            + ")");
+        out.println("Apache Tuscany Shell (" + Version.getVersion() + ")");
         out.println("Commands:");
         out.println();
         out.println("   help");
