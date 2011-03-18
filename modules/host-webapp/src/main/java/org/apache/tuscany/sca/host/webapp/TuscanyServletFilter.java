@@ -20,20 +20,19 @@
 package org.apache.tuscany.sca.host.webapp;
 
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.host.webapp.WebAppHelper.Configurator;
 
 /**
  * A Servlet filter that forwards service requests to the Servlets registered with
@@ -45,7 +44,7 @@ public class TuscanyServletFilter implements Filter {
     private static final long serialVersionUID = 1L;
     private Logger logger = Logger.getLogger(TuscanyServletFilter.class.getName());
 
-    private transient ServletContext context;
+    private transient Configurator configurator;
     private transient ServletHost servletHost;
 
     public TuscanyServletFilter() {
@@ -54,22 +53,18 @@ public class TuscanyServletFilter implements Filter {
 
     public void init(final FilterConfig config) throws ServletException {
         try {
-            context = config.getServletContext();
-            for (Enumeration<String> e = config.getInitParameterNames(); e.hasMoreElements();) {
-                String name = e.nextElement();
-                String value = config.getInitParameter(name);
-                context.setAttribute(name, value);
-            }
-            servletHost = WebAppHelper.init(context);
+            configurator = WebAppHelper.getConfigurator(config);
+            WebAppHelper.init(configurator);
+            servletHost = WebAppHelper.getServletHost();
         } catch (Throwable e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
-            context.log(e.getMessage(), e);
+            configurator.getServletContext().log(e.getMessage(), e);
             throw new ServletException(e);
         }
     }
 
     public void destroy() {
-        WebAppHelper.stop(context);
+        WebAppHelper.stop(configurator);
         servletHost = null;
     }
 
@@ -101,7 +96,7 @@ public class TuscanyServletFilter implements Filter {
             }
         } catch (Throwable e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
-            context.log(e.getMessage(), e);
+            configurator.getServletContext().log(e.getMessage(), e);
             throw new ServletException(e);
         }
     }

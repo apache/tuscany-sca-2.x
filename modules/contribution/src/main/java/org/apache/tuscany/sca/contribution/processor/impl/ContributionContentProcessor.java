@@ -62,7 +62,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class ContributionContentProcessor implements ExtendedURLArtifactProcessor<Contribution>{
+public class ContributionContentProcessor implements ExtendedURLArtifactProcessor<Contribution> {
     private ContributionFactory contributionFactory;
     private ModelResolverExtensionPoint modelResolvers;
     private FactoryExtensionPoint modelFactories;
@@ -72,10 +72,12 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
     // Marks pre-resolve phase completed
     private boolean preResolved = false;
 
-    public ContributionContentProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor) {
+    public ContributionContentProcessor(ExtensionPointRegistry extensionPoints,
+                                        StAXArtifactProcessor<Object> extensionProcessor) {
         this.modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        URLArtifactProcessorExtensionPoint artifactProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        URLArtifactProcessorExtensionPoint artifactProcessors =
+            extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         this.artifactProcessor = new ExtensibleURLArtifactProcessor(artifactProcessors);
         this.extensionProcessor = extensionProcessor;
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
@@ -91,12 +93,12 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
     }
 
     private File toFile(URL url) {
-        if("file".equalsIgnoreCase(url.getProtocol())) {
+        if ("file".equalsIgnoreCase(url.getProtocol())) {
             try {
                 return new File(url.toURI());
-            } catch(URISyntaxException e) {
+            } catch (URISyntaxException e) {
                 return new File(url.getPath());
-            } catch(IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 // Hack for file:./a.txt or file:../a/c.wsdl
                 return new File(url.getPath());
             }
@@ -104,102 +106,111 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
         return null;
     }
 
-    public Contribution read(URL parentURL, URI contributionURI, URL contributionURL, ProcessorContext context) throws ContributionReadException {
+    public Contribution read(URL parentURL, URI contributionURI, URL contributionURL, ProcessorContext context)
+        throws ContributionReadException {
 
-        
         // Create contribution model
         Contribution contribution = contributionFactory.createContribution();
         contribution.setURI(contributionURI.toString());
-        contribution.setLocation(contributionURL.toString());
+        if (contributionURL != null) {
+            contribution.setLocation(contributionURL.toString());
+        }
         ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
         contribution.setModelResolver(modelResolver);
         contribution.setUnresolved(true);
-        
+
         Monitor monitor = context.getMonitor();
         monitor.pushContext("Contribution: " + contribution.getURI());
 
         Contribution old = context.setContribution(contribution);
         try {
-            // Create a contribution scanner
-            ContributionScanner scanner = scanners.getContributionScanner(contributionURL.getProtocol());
-            if (scanner == null) {
-                File file = toFile(contributionURL);
-                if (file != null && file.isDirectory()) {
-                    scanner = new DirectoryContributionScanner(contributionFactory);
-                } else {
-                    scanner = new JarContributionScanner(contributionFactory);
-                }
-            }
-    
-            // Scan the contribution and list the artifacts contained in it
-            boolean contributionMetadata = false;
-            List<Artifact> artifacts = scanner.scan(contribution);
-            for (Artifact artifact : artifacts) {
-                // Add the deployed artifact model to the contribution
-                modelResolver.addModel(artifact, context);
-                
-                monitor.pushContext("Artifact: " + artifact.getURI());
-    
-                Artifact oldArtifact = context.setArtifact(artifact);
-                try {
-                    // Read each artifact
-                    URL artifactLocationURL = null;
-                    try {
-                        artifactLocationURL = new URL(artifact.getLocation());
-                    } catch(MalformedURLException e) {
-                        //ignore
+            if (contributionURL != null) {
+                // Create a contribution scanner
+                ContributionScanner scanner = scanners.getContributionScanner(contributionURL.getProtocol());
+                if (scanner == null) {
+                    File file = toFile(contributionURL);
+                    if (file != null && file.isDirectory()) {
+                        scanner = new DirectoryContributionScanner(contributionFactory);
+                    } else {
+                        scanner = new JarContributionScanner(contributionFactory);
                     }
-                    
-                    Object model = artifactProcessor.read(contributionURL, URI.create(artifact.getURI()), artifactLocationURL, context);
-                    if (model != null) {
-                        artifact.setModel(model);
-        
-                        // Add the loaded model to the model resolver
-                        modelResolver.addModel(model, context);
-        
-                        // Merge contribution metadata into the contribution model
-                        if (model instanceof ContributionMetadata) {
-                            contributionMetadata = true;
-                            ContributionMetadata c = (ContributionMetadata)model;
-                            contribution.getImports().addAll(c.getImports());
-                            contribution.getExports().addAll(c.getExports());
-                            contribution.getDeployables().addAll(c.getDeployables());
-                            contribution.getExtensions().addAll(c.getExtensions());
-                            contribution.getAttributeExtensions().addAll(c.getAttributeExtensions());
+                }
+
+                // Scan the contribution and list the artifacts contained in it
+                boolean contributionMetadata = false;
+                List<Artifact> artifacts = scanner.scan(contribution);
+                for (Artifact artifact : artifacts) {
+                    // Add the deployed artifact model to the contribution
+                    modelResolver.addModel(artifact, context);
+
+                    monitor.pushContext("Artifact: " + artifact.getURI());
+
+                    Artifact oldArtifact = context.setArtifact(artifact);
+                    try {
+                        // Read each artifact
+                        URL artifactLocationURL = null;
+                        try {
+                            artifactLocationURL = new URL(artifact.getLocation());
+                        } catch (MalformedURLException e) {
+                            //ignore
+                        }
+
+                        Object model =
+                            artifactProcessor.read(contributionURL,
+                                                   URI.create(artifact.getURI()),
+                                                   artifactLocationURL,
+                                                   context);
+                        if (model != null) {
+                            artifact.setModel(model);
+
+                            // Add the loaded model to the model resolver
+                            modelResolver.addModel(model, context);
+
+                            // Merge contribution metadata into the contribution model
+                            if (model instanceof ContributionMetadata) {
+                                contributionMetadata = true;
+                                ContributionMetadata c = (ContributionMetadata)model;
+                                contribution.getImports().addAll(c.getImports());
+                                contribution.getExports().addAll(c.getExports());
+                                contribution.getDeployables().addAll(c.getDeployables());
+                                contribution.getExtensions().addAll(c.getExtensions());
+                                contribution.getAttributeExtensions().addAll(c.getAttributeExtensions());
+                            }
+                        }
+                    } finally {
+                        monitor.popContext();
+                        context.setArtifact(oldArtifact);
+                    }
+                }
+
+                List<Artifact> contributionArtifacts = contribution.getArtifacts();
+                contributionArtifacts.addAll(artifacts);
+
+                // If no sca-contribution.xml file was provided then just consider
+                // all composites in the contribution as deployables
+                if (!contributionMetadata) {
+                    for (Artifact artifact : artifacts) {
+                        if (artifact.getModel() instanceof Composite) {
+                            contribution.getDeployables().add((Composite)artifact.getModel());
                         }
                     }
-                } finally {
-                    monitor.popContext();
-                    context.setArtifact(oldArtifact);
-                }                    
-            }
-            
-            List<Artifact> contributionArtifacts = contribution.getArtifacts();
-            contributionArtifacts.addAll(artifacts);
-    
-            // If no sca-contribution.xml file was provided then just consider
-            // all composites in the contribution as deployables
-            if (!contributionMetadata) {
-                for (Artifact artifact: artifacts) {
-                    if (artifact.getModel() instanceof Composite) {
-                        contribution.getDeployables().add((Composite)artifact.getModel());
-                    }
-                }
-    
-                // Add default contribution import and export
-                DefaultImport defaultImport = contributionFactory.createDefaultImport();
-                defaultImport.setModelResolver(new DefaultModelResolver());
-                contribution.getImports().add(defaultImport);
-                DefaultExport defaultExport = contributionFactory.createDefaultExport();
-                contribution.getExports().add(defaultExport);
-            } else {
-                if (contribution.getDeployables().size() > 0) {
-                    // Update the deployable Composite objects with the correct Composite object for the artifact
-                    for (Artifact a : contribution.getArtifacts()) {
-                        if (a.getModel() instanceof Composite) {
-                            for (ListIterator<Composite> lit = contribution.getDeployables().listIterator(); lit.hasNext();) {
-                                if (lit.next().getName().equals(((Composite)a.getModel()).getName())) {
-                                    lit.set((Composite)a.getModel());
+
+                    // Add default contribution import and export
+                    DefaultImport defaultImport = contributionFactory.createDefaultImport();
+                    defaultImport.setModelResolver(new DefaultModelResolver());
+                    contribution.getImports().add(defaultImport);
+                    DefaultExport defaultExport = contributionFactory.createDefaultExport();
+                    contribution.getExports().add(defaultExport);
+                } else {
+                    if (contribution.getDeployables().size() > 0) {
+                        // Update the deployable Composite objects with the correct Composite object for the artifact
+                        for (Artifact a : contribution.getArtifacts()) {
+                            if (a.getModel() instanceof Composite) {
+                                for (ListIterator<Composite> lit = contribution.getDeployables().listIterator(); lit
+                                    .hasNext();) {
+                                    if (lit.next().getName().equals(((Composite)a.getModel()).getName())) {
+                                        lit.set((Composite)a.getModel());
+                                    }
                                 }
                             }
                         }
@@ -210,7 +221,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
             monitor.popContext();
             context.setContribution(old);
         }
-        
+
         return contribution;
     }
 
@@ -222,7 +233,8 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
      * @param resolver - the Resolver to use
      * @throws ContributionResolveException
      */
-    public void preResolve(Contribution contribution, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+    public void preResolve(Contribution contribution, ModelResolver resolver, ProcessorContext context)
+        throws ContributionResolveException {
         // Resolve the contribution model itself
         ModelResolver contributionResolver = contribution.getModelResolver();
         contribution.setUnresolved(false);
@@ -236,47 +248,50 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
         preResolved = true;
     } // end method preResolve
 
-    public void resolve(Contribution contribution, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+    public void resolve(Contribution contribution, ModelResolver resolver, ProcessorContext context)
+        throws ContributionResolveException {
 
         Monitor monitor = context.getMonitor();
         Contribution old = context.setContribution(contribution);
-    	try {
-    		monitor.pushContext("Contribution: " + contribution.getURI());
-    		
-	    	if( !preResolved ) preResolve( contribution, resolver, context);
-	    	ModelResolver contributionResolver = contribution.getModelResolver();
-	
-	        // Validate Java Exports: [JCI100007] A Java package that is specified on an export 
-	    	// element MUST be contained within the contribution containing the export element.
-	    	for (Export export: contribution.getExports()) {
-	    		if (export instanceof JavaExport) {
-	    			boolean available = false;
-	    			String packageName = ((JavaExport)export).getPackage();
-		    		for (Artifact artifact : contribution.getArtifacts()) {
-		    			if (packageName.equals(artifact.getURI().replace("/", ".")))
-		    					available = true;
-			    	}
-		    		if (! available)
-		    			throw new ContributionResolveException("[JCI100007] A Java package "+ packageName +" that is specified on an export " +
-		    					"element MUST be contained within the contribution containing the export element.");
-	    		}
-	    	}	    	
-	    	
-	    	// Resolve all artifact models
-	        for (Artifact artifact : contribution.getArtifacts()) {
-	            Object model = artifact.getModel();
-	            if (model != null) {
-	                Artifact oldArtifact = context.setArtifact(artifact);
-	                try {
-	                   artifactProcessor.resolve(model, contributionResolver, context);
-	                } catch (Throwable e) {
-	                    throw new ContributionResolveException(e);
-	                } finally {
-	                    context.setArtifact(oldArtifact);
-	                }
-	            }
-	        }
-	
+        try {
+            monitor.pushContext("Contribution: " + contribution.getURI());
+
+            if (!preResolved)
+                preResolve(contribution, resolver, context);
+            ModelResolver contributionResolver = contribution.getModelResolver();
+
+            // Validate Java Exports: [JCI100007] A Java package that is specified on an export 
+            // element MUST be contained within the contribution containing the export element.
+            for (Export export : contribution.getExports()) {
+                if (export instanceof JavaExport) {
+                    boolean available = false;
+                    String packageName = ((JavaExport)export).getPackage();
+                    for (Artifact artifact : contribution.getArtifacts()) {
+                        if (packageName.equals(artifact.getURI().replace("/", ".")))
+                            available = true;
+                    }
+                    if (!available)
+                        throw new ContributionResolveException("[JCI100007] A Java package " + packageName
+                            + " that is specified on an export "
+                            + "element MUST be contained within the contribution containing the export element.");
+                }
+            }
+
+            // Resolve all artifact models
+            for (Artifact artifact : contribution.getArtifacts()) {
+                Object model = artifact.getModel();
+                if (model != null) {
+                    Artifact oldArtifact = context.setArtifact(artifact);
+                    try {
+                        artifactProcessor.resolve(model, contributionResolver, context);
+                    } catch (Throwable e) {
+                        throw new ContributionResolveException(e);
+                    } finally {
+                        context.setArtifact(oldArtifact);
+                    }
+                }
+            }
+
             // Resolve deployable composites
             List<Composite> deployables = contribution.getDeployables();
             Artifact oldArtifact = context.setArtifact(contribution);
@@ -292,10 +307,10 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
             } finally {
                 context.setArtifact(oldArtifact);
             }
-    	} finally {
-    		monitor.popContext();
-    		context.setContribution(old);
-    	} // end try
+        } finally {
+            monitor.popContext();
+            context.setContribution(old);
+        } // end try
     } // end method resolve
 
     /**
@@ -303,8 +318,9 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
      * @param contribution
      * @param resolver
      */
-    private void resolveExports(Contribution contribution, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
-    	for (Export export: contribution.getExports()) {
+    private void resolveExports(Contribution contribution, ModelResolver resolver, ProcessorContext context)
+        throws ContributionResolveException {
+        for (Export export : contribution.getExports()) {
             if (export instanceof DefaultExport) {
                 // Initialize the default export's resolver
                 export.setModelResolver(resolver);
@@ -320,8 +336,9 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
      * @param contribution
      * @param resolver
      */
-    private void resolveImports(Contribution contribution, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
-        for (Import import_: contribution.getImports()) {
+    private void resolveImports(Contribution contribution, ModelResolver resolver, ProcessorContext context)
+        throws ContributionResolveException {
+        for (Import import_ : contribution.getImports()) {
             extensionProcessor.resolve(import_, resolver, context);
         } // end for
     } // end method resolveImports

@@ -306,7 +306,7 @@ public class WebAppServletHost implements ServletHost {
         }
 
         // Close the SCA domain
-        WebAppHelper.stop(servletContext);
+        WebAppHelper.destroy();
     }
 
     public String getContextPath() {

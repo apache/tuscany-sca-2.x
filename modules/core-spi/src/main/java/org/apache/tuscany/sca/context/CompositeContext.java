@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.context;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
@@ -35,7 +38,6 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
  * @version $Rev$ $Date$
  */
 public class CompositeContext {
-
     protected ExtensionPointRegistry extensionPointRegistry;
     protected EndpointRegistry endpointRegistry;
     protected ComponentContextFactory componentContextFactory;
@@ -43,8 +45,15 @@ public class CompositeContext {
     protected String nodeURI;
     protected String domainURI;
     protected Definitions systemDefinitions;
-    
-    public CompositeContext(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry, Composite domainComposite, String domainURI, String nodeURI, Definitions systemDefinitions) {
+
+    protected Map<String, Object> attributes = new HashMap<String, Object>();
+
+    public CompositeContext(ExtensionPointRegistry registry,
+                            EndpointRegistry endpointRegistry,
+                            Composite domainComposite,
+                            String domainURI,
+                            String nodeURI,
+                            Definitions systemDefinitions) {
         this.extensionPointRegistry = registry;
         this.endpointRegistry = endpointRegistry;
         ContextFactoryExtensionPoint contextFactories = registry.getExtensionPoint(ContextFactoryExtensionPoint.class);
@@ -53,12 +62,12 @@ public class CompositeContext {
         this.domainURI = domainURI;
         this.nodeURI = nodeURI;
         this.systemDefinitions = systemDefinitions;
-    }    
-    
+    }
+
     public CompositeContext(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry) {
         this(registry, endpointRegistry, null, "default", "default", null);
     }
-    
+
     /**
      * @return
      */
@@ -91,13 +100,14 @@ public class CompositeContext {
         RuntimeComponentContext componentContext =
             (RuntimeComponentContext)componentContextFactory.createComponentContext(this, runtimeComponent);
         runtimeComponent.setComponentContext(componentContext);
-    }    
+    }
+
     /**
      * 
      * @param endpointReference
      */
     public void bindEndpointReference(EndpointReference endpointReference) {
-        
+
     }
 
     /**
@@ -113,13 +123,13 @@ public class CompositeContext {
      * @return The EndpointRegistry for this node
      */
     public EndpointRegistry getEndpointRegistry() {
-        return endpointRegistry; 
+        return endpointRegistry;
     }
-    
+
     public Composite getDomainComposite() {
-        return domainComposite; 
+        return domainComposite;
     }
-    
+
     public String getNodeURI() {
         return nodeURI;
     }
@@ -127,7 +137,7 @@ public class CompositeContext {
     public String getDomainURI() {
         return domainURI;
     }
-    
+
     /**
      * The system definitions that result from starting the runtime. 
      * TODO - these can be null when the SCAClient starts the runtime
@@ -136,5 +146,29 @@ public class CompositeContext {
      */
     public Definitions getSystemDefinitions() {
         return systemDefinitions;
+    }
+
+    /**
+     * Look up an attribute value by name
+     * @param <T>
+     * @param name The name of the attribute
+     * @return The value of the attribute
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getAttribute(String name) {
+        return (T)attributes.get(name);
+    }
+
+    /**
+     * Set the value of an attribute
+     * @param name The name of the attribute 
+     * @param value
+     */
+    public void setAttribute(String name, Object value) {
+        attributes.put(name, value);
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 }

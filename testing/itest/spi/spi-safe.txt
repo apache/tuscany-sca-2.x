@@ -1214,6 +1214,7 @@ public class org.apache.tuscany.sca.context.CompositeContext extends java.lang.O
     protected java.lang.String nodeURI;
     protected java.lang.String domainURI;
     protected org.apache.tuscany.sca.definitions.Definitions systemDefinitions;
+    protected java.util.Map attributes;
     public org.apache.tuscany.sca.context.CompositeContext(org.apache.tuscany.sca.core.ExtensionPointRegistry, org.apache.tuscany.sca.runtime.EndpointRegistry, org.apache.tuscany.sca.assembly.Composite, java.lang.String, java.lang.String, org.apache.tuscany.sca.definitions.Definitions);
     public org.apache.tuscany.sca.context.CompositeContext(org.apache.tuscany.sca.core.ExtensionPointRegistry, org.apache.tuscany.sca.runtime.EndpointRegistry);
     public static org.apache.tuscany.sca.runtime.RuntimeComponent getCurrentComponent();
@@ -1226,6 +1227,9 @@ public class org.apache.tuscany.sca.context.CompositeContext extends java.lang.O
     public java.lang.String getNodeURI();
     public java.lang.String getDomainURI();
     public org.apache.tuscany.sca.definitions.Definitions getSystemDefinitions();
+    public java.lang.Object getAttribute(java.lang.String);
+    public void setAttribute(java.lang.String, java.lang.Object);
+    public java.util.Map getAttributes();
 }
 
 Compiled from "ContextFactoryExtensionPoint.java"
