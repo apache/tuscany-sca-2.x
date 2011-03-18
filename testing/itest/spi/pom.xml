@@ -54,24 +54,19 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <tasks unless="maven.test.skip"> 
+                            <target unless="maven.test.skip"> 
                                 <property name="tuscany.version" value="${project.version}" />
                                 <property name="runtime_classpath" refid="maven.runtime.classpath"/>
                                 <ant antfile="./build.xml" target="run"/>
-                            </tasks>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
 	           <dependencies>
 	              <dependency>
 	                <groupId>org.apache.ant</groupId>
-	                <artifactId>ant-apache-regexp</artifactId>
-	                <version>1.7.0</version>
-	              </dependency>
-	              <dependency>
-	                <groupId>jakarta-regexp</groupId>
-	                 <artifactId>jakarta-regexp</artifactId>
-	                 <version>1.4</version>
+	                <artifactId>ant-nodeps</artifactId>
+	                <version>1.8.1</version>
 	              </dependency>
 	           </dependencies>
             </plugin>
