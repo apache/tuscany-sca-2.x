@@ -301,6 +301,7 @@ The following components come under Apache Software License 2.0
  spring-asm-3.0.5.RELEASE.jar
  spring-beans-3.0.5.RELEASE.jar
  spring-context-3.0.5.RELEASE.jar
+ spring-context-support-3.0.5.RELEASE.jar
  spring-core-3.0.5.RELEASE.jar
  spring-expression-3.0.5.RELEASE.jar
  spring-web-3.0.5.RELEASE.jar

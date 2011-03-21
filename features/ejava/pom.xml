@@ -109,6 +109,14 @@
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
+<!--
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-spring-webapp</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+-->
+
         <!-- OSGi Remote Services SCA Configuration Type -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
