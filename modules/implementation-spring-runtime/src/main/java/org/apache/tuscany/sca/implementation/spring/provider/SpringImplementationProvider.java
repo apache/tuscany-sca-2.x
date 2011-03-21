@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.implementation.spring.provider;
 
 import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.implementation.spring.context.SpringApplicationContextAccessor;
 import org.apache.tuscany.sca.implementation.spring.context.SpringContextWrapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -34,6 +35,8 @@ import org.springframework.context.ApplicationContext;
  */
 public class SpringImplementationProvider implements ImplementationProvider {
     private RuntimeComponent component;
+    private SpringImplementationWrapper implementation;
+    private SpringApplicationContextAccessor contextAccessor;
 
     // A Spring application context object
     private SpringContextWrapper springContext;
@@ -46,13 +49,13 @@ public class SpringImplementationProvider implements ImplementationProvider {
      */
     public SpringImplementationProvider(RuntimeComponent component,
                                         SpringImplementationWrapper implementation,
-                                        ApplicationContext parentApplicationContext,
                                         ProxyFactory proxyService,
-                                        PropertyValueFactory propertyValueObjectFactory) {
+                                        PropertyValueFactory propertyValueObjectFactory,
+                                        SpringApplicationContextAccessor contextAccessor) {
         super();
         this.component = component;
-
-        springContext = new SpringContextWrapper(implementation, implementation.getResource());
+        this.implementation = implementation;
+        this.contextAccessor = contextAccessor;
 
     } // end constructor
 
@@ -68,6 +71,10 @@ public class SpringImplementationProvider implements ImplementationProvider {
      * Start this Spring implementation instance
      */
     public void start() {
+        ApplicationContext parentApplicationContext =
+            (contextAccessor == null) ? null : contextAccessor.getParentApplicationContext(component);
+        implementation.setParentApplicationContext(parentApplicationContext);
+        springContext = new SpringContextWrapper(implementation, implementation.getResource());
         springContext.start();
     }
 

@@ -336,10 +336,13 @@ public class NodeFactoryImpl extends NodeFactory {
             URI contributionURI = createURI(contrib.getURI());
 
             URI uri = createURI(contrib.getLocation());
-            if (uri.getScheme() == null) {
+            if (uri != null && uri.getScheme() == null) {
                 uri = new File(contrib.getLocation()).toURI();
             }
-            URL contributionURL = uri.toURL();
+            URL contributionURL = null;
+            if (uri != null) {
+                contributionURL = uri.toURL();
+            }
 
             // Load the contribution
             logger.log(quietLogging? Level.FINE : Level.INFO, "Loading contribution: " + contributionURL);

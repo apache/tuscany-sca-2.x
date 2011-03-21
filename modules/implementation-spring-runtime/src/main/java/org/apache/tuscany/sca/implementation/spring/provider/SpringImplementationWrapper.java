@@ -42,13 +42,11 @@ public class SpringImplementationWrapper {
     private PropertyValueFactory propertyFactory;
 
     public SpringImplementationWrapper(SpringImplementation implementation,
-                                   ApplicationContext parentApplicationContext,
                                    RuntimeComponent component,
                                    PropertyValueFactory propertyFactory) {
         this.implementation = implementation;
         this.component = component;
         this.propertyFactory = propertyFactory;
-        this.parentApplicationContext = parentApplicationContext;
     }
 
     public String getURI() {
@@ -153,6 +151,10 @@ public class SpringImplementationWrapper {
 
     public ApplicationContext getParentApplicationContext() {
         return parentApplicationContext;
+    }
+
+    public void setParentApplicationContext(ApplicationContext parentApplicationContext) {
+        this.parentApplicationContext = parentApplicationContext;
     }
 
 }

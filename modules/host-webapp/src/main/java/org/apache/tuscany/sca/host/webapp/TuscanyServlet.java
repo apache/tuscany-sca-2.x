@@ -46,7 +46,8 @@ public class TuscanyServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         try {
             super.init(config);
-            WebAppHelper.init(WebAppHelper.getConfigurator(this));
+            configurator = WebAppHelper.getConfigurator(this);
+            WebAppHelper.init(configurator);
         } catch (Throwable e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             configurator.getServletContext().log(e.getMessage(), e);

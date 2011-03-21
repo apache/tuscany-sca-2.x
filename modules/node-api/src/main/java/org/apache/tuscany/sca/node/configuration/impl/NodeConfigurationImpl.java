@@ -117,11 +117,19 @@ public class NodeConfigurationImpl implements NodeConfiguration {
     }
 
     public NodeConfiguration addContribution(String contributionURI, URL location) {
-        return addContribution(contributionURI, location.toString());
+        String url = null;
+        if (location != null) {
+            url = location.toString();
+        }
+        return addContribution(contributionURI, url);
     }
 
     public NodeConfiguration addContribution(URI contributionURI, URL location) {
-        return addContribution(contributionURI.toString(), location.toString());
+        String url = null;
+        if (location != null) {
+            url = location.toString();
+        }
+        return addContribution(contributionURI.toString(), url);
     }
 
     public NodeConfiguration addContribution(URL... locations) {

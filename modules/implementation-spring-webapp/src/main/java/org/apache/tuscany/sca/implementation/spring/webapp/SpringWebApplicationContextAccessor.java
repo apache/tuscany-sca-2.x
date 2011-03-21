@@ -42,8 +42,10 @@ public class SpringWebApplicationContextAccessor implements SpringApplicationCon
         ApplicationContext context = null;
         Servlet servlet = component.getComponentContext().getCompositeContext().getAttribute(Servlet.class.getName());
         if (servlet instanceof FrameworkServlet) {
-            context = ((FrameworkServlet)servlet).getWebApplicationContext();
+            FrameworkServlet frameworkServlet = (FrameworkServlet)servlet;
+            context = frameworkServlet.getWebApplicationContext();
             if (context != null) {
+                log.info("Spring application context is found for servlet: " + frameworkServlet.getServletName());
                 return context;
             }
         }

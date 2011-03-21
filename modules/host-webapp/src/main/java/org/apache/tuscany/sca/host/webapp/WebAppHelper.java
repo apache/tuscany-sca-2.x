@@ -196,7 +196,10 @@ public class WebAppHelper {
     }
 
     public static void stop(WebContextConfigurator configurator) {
-        Node node = (Node)configurator.getAttribute(SCA_NODE_ATTRIBUTE);
+        Node node = null;
+        if (configurator != null) {
+            node = (Node)configurator.getAttribute(SCA_NODE_ATTRIBUTE);
+        }
         if (node != null) {
             node.stop();
             configurator.setAttribute(SCA_NODE_ATTRIBUTE, null);
@@ -234,11 +237,6 @@ public class WebAppHelper {
             configuration = factory.loadConfiguration(url.openStream(), url);
         } else {
             configuration = factory.createNodeConfiguration();
-            
-            configuration.setAttribute(ServletContext.class.getName(), servletContext);
-            if(configurator instanceof ServletConfigurator) {
-                configuration.setAttribute(Servlet.class.getName(), ((ServletConfigurator) configurator).servlet);
-            }
 
             boolean explicitContributions = false;
             Enumeration<String> names = configurator.getInitParameterNames();
@@ -321,6 +319,10 @@ public class WebAppHelper {
                     configuration.setDomainRegistryURI(domainURI);
                 }
             }
+        }
+        configuration.setAttribute(ServletContext.class.getName(), servletContext);
+        if(configurator instanceof ServletConfigurator) {
+            configuration.setAttribute(Servlet.class.getName(), ((ServletConfigurator) configurator).servlet);
         }
         return configuration;
     }
@@ -428,11 +430,14 @@ public class WebAppHelper {
 
         public String getInitParameter(String name) {
             String value = config.getInitParameter(name);
+            return value;
+            /*
             if (value == null) {
                 return config.getServletContext().getInitParameter(name);
             } else {
                 return value;
             }
+            */
         }
 
         public Enumeration<String> getInitParameterNames() {

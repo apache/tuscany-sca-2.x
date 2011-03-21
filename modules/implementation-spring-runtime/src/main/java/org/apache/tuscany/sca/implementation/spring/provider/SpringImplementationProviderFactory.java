@@ -28,7 +28,6 @@ import org.apache.tuscany.sca.implementation.spring.context.SpringApplicationCon
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.springframework.context.ApplicationContext;
 
 /**
  * ImplementationProviderFactory for Spring implementation type
@@ -61,11 +60,10 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
      */
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
                                                                SpringImplementation implementation) {
-        ApplicationContext parentApplicationContext =
-            (contextAccessor != null) ? contextAccessor.getParentApplicationContext(component) : null;
+
         SpringImplementationWrapper tie =
-            new SpringImplementationWrapper(implementation, parentApplicationContext, component, propertyFactory);
-        return new SpringImplementationProvider(component, tie, parentApplicationContext, proxyFactory, propertyFactory);
+            new SpringImplementationWrapper(implementation, component, propertyFactory);
+        return new SpringImplementationProvider(component, tie, proxyFactory, propertyFactory, contextAccessor);
     }
 
     /**
