@@ -24,7 +24,9 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -42,6 +44,8 @@ public class NodeConfigurationImpl implements NodeConfiguration {
     private List<ContributionConfiguration> contributions = new ArrayList<ContributionConfiguration>();
     private List<BindingConfiguration> bindings = new ArrayList<BindingConfiguration>();
     private List<Object> extensions = new ArrayList<Object>();
+    
+    private transient Map<String, Object> attributes = new HashMap<String, Object>();
 
     public String getURI() {
         return uri;
@@ -170,6 +174,15 @@ public class NodeConfigurationImpl implements NodeConfiguration {
 
     public NodeConfiguration setDomainRegistryURI(String domainRegistryURI) {
         this.domainRegistryURI = domainRegistryURI;
+        return this;
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+    
+    public NodeConfiguration setAttribute(String name, Object value) {
+        attributes.put(name, value);
         return this;
     }
 

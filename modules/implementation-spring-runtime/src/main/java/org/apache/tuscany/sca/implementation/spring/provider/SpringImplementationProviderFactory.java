@@ -62,7 +62,7 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
                                                                SpringImplementation implementation) {
         ApplicationContext parentApplicationContext =
-            (contextAccessor != null) ? contextAccessor.getParentApplicationContext() : null;
+            (contextAccessor != null) ? contextAccessor.getParentApplicationContext(component) : null;
         SpringImplementationWrapper tie =
             new SpringImplementationWrapper(implementation, parentApplicationContext, component, propertyFactory);
         return new SpringImplementationProvider(component, tie, parentApplicationContext, proxyFactory, propertyFactory);

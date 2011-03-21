@@ -86,13 +86,13 @@
                 <id>process-resources</id>
                 <phase>process-resources</phase>
                 <configuration>
-                    <tasks>
+                    <target>
                         <filter token="version" value="${project.version}"/>
                         <filter token="svnRevision" value="${sources.version}"/>
                         <filter token="buildtime" value="${build.timestamp}"/>
                         <copy toDir="${basedir}/target/classes/org/apache/tuscany/sca/runtime" overwrite="true"
                               filtering="on" file="${basedir}/src/main/resources/org/apache/tuscany/sca/runtime/revision.properties"/>
-                    </tasks>
+                    </target>
                 </configuration>
                 <goals>
                     <goal>run</goal>

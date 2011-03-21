@@ -24,6 +24,7 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -103,6 +104,24 @@ public interface NodeConfiguration {
     NodeConfiguration addBinding(BindingConfiguration binding);
     NodeConfiguration addBinding(QName bindingType, String...baseURIs);
     NodeConfiguration addBinding(QName bindingType, URI...baseURIs);
-
+    
     List<Object> getExtensions();
+
+
+    /**
+     * Allow the hosting environment to pass in a map of attributes as context 
+     * @param name The name of the attribute
+     * @param value The value of the attribute
+     * @return
+     */
+    Map<String, Object> getAttributes();
+    
+    /**
+     * Configure an attribute
+     * @param name
+     * @param value
+     * @return
+     */
+    NodeConfiguration setAttribute(String name, Object value);
+
 }

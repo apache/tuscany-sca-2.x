@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.implementation.spring.context;
 
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -28,14 +29,9 @@ public interface SpringApplicationContextAccessor {
     /**
      * Get the parent Spring application context for the hosting environment. This will be used as the parent 
      * application context for implementation.spring components
+     * @param component The Spring component instance
      * @return The parent application context
      */
-    ApplicationContext getParentApplicationContext();
+    ApplicationContext getParentApplicationContext(RuntimeComponent component);
 
-    /**
-     * Set the root Spring application context. This is particually useful for Spring web integration where Spring
-     * creates WebApplicationContext and keeps it in the ServletContext
-     * @param parentApplicationContext The parent application context
-     */
-    void setParentApplicationContext(ApplicationContext parentApplicationContext);
 }

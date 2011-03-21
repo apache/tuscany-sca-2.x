@@ -32,7 +32,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.host.webapp.WebAppHelper.Configurator;
 
 /**
  * A Servlet filter that forwards service requests to the Servlets registered with
@@ -44,7 +43,7 @@ public class TuscanyServletFilter implements Filter {
     private static final long serialVersionUID = 1L;
     private Logger logger = Logger.getLogger(TuscanyServletFilter.class.getName());
 
-    private transient Configurator configurator;
+    private transient WebContextConfigurator configurator;
     private transient ServletHost servletHost;
 
     public TuscanyServletFilter() {

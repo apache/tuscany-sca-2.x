@@ -17,28 +17,30 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.host.webapp;
+package org.apache.tuscany.sca.host.webapp.spring;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 
+import org.apache.tuscany.sca.host.webapp.WebAppHelper;
+import org.apache.tuscany.sca.host.webapp.WebContextConfigurator;
+import org.springframework.web.servlet.DispatcherServlet;
 
 /**
- * A Servlet that provides a hook to control the lifecycle of Tuscany node
+ * A Servlet that provides a hook to control the lifecycle of Tuscany node and extend Spring Web MVC's DispatcherServlet
  *
  * @version $Rev$ $Date$
  */
-public class TuscanyServlet extends HttpServlet {
+public class TuscanyDispatcherServlet extends DispatcherServlet {
     private static final long serialVersionUID = 1L;
-    private Logger logger = Logger.getLogger(TuscanyServlet.class.getName());
+    private Logger logger = Logger.getLogger(TuscanyDispatcherServlet.class.getName());
 
     private transient WebContextConfigurator configurator;
 
-    public TuscanyServlet() {
+    public TuscanyDispatcherServlet() {
         super();
     }
 
@@ -56,6 +58,7 @@ public class TuscanyServlet extends HttpServlet {
 
     public void destroy() {
         WebAppHelper.stop(configurator);
+        super.destroy();
     }
 
 }

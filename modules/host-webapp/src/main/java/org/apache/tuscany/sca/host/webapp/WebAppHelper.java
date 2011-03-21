@@ -106,7 +106,7 @@ public class WebAppHelper {
         return host;
     }
 
-    public static Node init(final Configurator configurator) {
+    public static Node init(final WebContextConfigurator configurator) {
         synchronized (configurator) {
 
             bootstrapRuntime(configurator);
@@ -127,7 +127,7 @@ public class WebAppHelper {
      * Bootstrap the Tuscany runtime for the given scope
      * @param configurator
      */
-    private synchronized static void bootstrapRuntime(final Configurator configurator) {
+    private synchronized static void bootstrapRuntime(final WebContextConfigurator configurator) {
         if (host == null) {
             try {
 
@@ -154,7 +154,7 @@ public class WebAppHelper {
         }
     }
 
-    private static WebAppServletHost getServletHost(final Configurator configurator) throws ServletException {
+    private static WebAppServletHost getServletHost(final WebContextConfigurator configurator) throws ServletException {
         ExtensionPointRegistry registry = factory.getExtensionPointRegistry();
         WebAppServletHost host =
             (WebAppServletHost)org.apache.tuscany.sca.host.http.ServletHostHelper.getServletHost(registry);
@@ -179,7 +179,7 @@ public class WebAppHelper {
         return host;
     }
 
-    private static Node createAndStartNode(final Configurator configurator) throws ServletException {
+    private static Node createAndStartNode(final WebContextConfigurator configurator) throws ServletException {
         NodeConfiguration configuration = null;
         try {
             configuration = getNodeConfiguration(configurator);
@@ -195,7 +195,7 @@ public class WebAppHelper {
         return node;
     }
 
-    public static void stop(Configurator configurator) {
+    public static void stop(WebContextConfigurator configurator) {
         Node node = (Node)configurator.getAttribute(SCA_NODE_ATTRIBUTE);
         if (node != null) {
             node.stop();
@@ -215,7 +215,7 @@ public class WebAppHelper {
         return factory;
     }
 
-    private static String getDefaultComposite(Configurator configurator) {
+    private static String getDefaultComposite(WebContextConfigurator configurator) {
         String name = configurator.getName();
         if ("".equals(name)) {
             return "/WEB-INF/web.composite";
@@ -224,7 +224,7 @@ public class WebAppHelper {
         }
     }
 
-    private static NodeConfiguration getNodeConfiguration(Configurator configurator) throws IOException,
+    private static NodeConfiguration getNodeConfiguration(WebContextConfigurator configurator) throws IOException,
         URISyntaxException {
         NodeConfiguration configuration = null;
         String nodeConfigURI = configurator.getInitParameter(NODE_CONFIGURATION);
@@ -234,6 +234,11 @@ public class WebAppHelper {
             configuration = factory.loadConfiguration(url.openStream(), url);
         } else {
             configuration = factory.createNodeConfiguration();
+            
+            configuration.setAttribute(ServletContext.class.getName(), servletContext);
+            if(configurator instanceof ServletConfigurator) {
+                configuration.setAttribute(Servlet.class.getName(), ((ServletConfigurator) configurator).servlet);
+            }
 
             boolean explicitContributions = false;
             Enumeration<String> names = configurator.getInitParameterNames();
@@ -320,36 +325,19 @@ public class WebAppHelper {
         return configuration;
     }
 
-    static Configurator getConfigurator(FilterConfig config) {
+    public static WebContextConfigurator getConfigurator(FilterConfig config) {
         return new FilterConfigurator(config);
     }
 
-    static Configurator getConfigurator(ServletContext context) {
+    public static WebContextConfigurator getConfigurator(ServletContext context) {
         return new ServletContextConfigurator(context);
     }
 
-    static Configurator getConfigurator(Servlet context) {
+    public static WebContextConfigurator getConfigurator(Servlet context) {
         return new ServletConfigurator(context);
     }
 
-    /**
-     * The interface that represents a given scope (Webapp vs Servlet) that provides the configuration of the Tuscany node
-     */
-    public static interface Configurator {
-        String getInitParameter(String name);
-
-        Enumeration<String> getInitParameterNames();
-
-        ServletContext getServletContext();
-
-        void setAttribute(String name, Object value);
-
-        <T> T getAttribute(String name);
-
-        String getName();
-    }
-
-    public static class FilterConfigurator implements Configurator {
+    public static class FilterConfigurator implements WebContextConfigurator {
         private FilterConfig config;
 
         public FilterConfigurator(FilterConfig config) {
@@ -395,7 +383,7 @@ public class WebAppHelper {
 
     }
 
-    public static class ServletContextConfigurator implements Configurator {
+    public static class ServletContextConfigurator implements WebContextConfigurator {
         private ServletContext context;
 
         public ServletContextConfigurator(ServletContext context) {
@@ -428,11 +416,13 @@ public class WebAppHelper {
         }
     }
 
-    public static class ServletConfigurator implements Configurator {
+    public static class ServletConfigurator implements WebContextConfigurator {
         private ServletConfig config;
+        private Servlet servlet;
 
         public ServletConfigurator(Servlet servlet) {
             super();
+            this.servlet = servlet;
             this.config = servlet.getServletConfig();
         }
 

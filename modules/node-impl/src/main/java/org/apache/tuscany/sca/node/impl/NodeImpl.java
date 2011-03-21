@@ -136,6 +136,8 @@ public class NodeImpl implements Node {
                                              configuration.getDomainURI(), 
                                              configuration.getURI(),
                                              nodeFactory.getDeployer().getSystemDefinitions());
+                    // Pass down the context attributes
+                    compositeContext.getAttributes().putAll(configuration.getAttributes());
                 }
                 
             } finally {
