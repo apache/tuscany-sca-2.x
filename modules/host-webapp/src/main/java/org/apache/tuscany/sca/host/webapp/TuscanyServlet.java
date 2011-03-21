@@ -26,6 +26,8 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
+import org.apache.tuscany.sca.node.Node;
+
 
 /**
  * A Servlet that provides a hook to control the lifecycle of Tuscany node
@@ -37,6 +39,7 @@ public class TuscanyServlet extends HttpServlet {
     private Logger logger = Logger.getLogger(TuscanyServlet.class.getName());
 
     private transient WebContextConfigurator configurator;
+    private transient Node node;
 
     public TuscanyServlet() {
         super();
@@ -47,7 +50,7 @@ public class TuscanyServlet extends HttpServlet {
         try {
             super.init(config);
             configurator = WebAppHelper.getConfigurator(this);
-            WebAppHelper.init(configurator);
+            node = WebAppHelper.init(configurator);
         } catch (Throwable e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             configurator.getServletContext().log(e.getMessage(), e);
@@ -57,6 +60,13 @@ public class TuscanyServlet extends HttpServlet {
 
     public void destroy() {
         WebAppHelper.stop(configurator);
+        node = null;
+        configurator = null;
+        super.destroy();
+    }
+
+    public Node getNode() {
+        return node;
     }
 
 }

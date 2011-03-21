@@ -27,6 +27,7 @@ import javax.servlet.ServletException;
 
 import org.apache.tuscany.sca.host.webapp.WebAppHelper;
 import org.apache.tuscany.sca.host.webapp.WebContextConfigurator;
+import org.apache.tuscany.sca.node.Node;
 import org.springframework.web.servlet.DispatcherServlet;
 
 /**
@@ -39,6 +40,7 @@ public class TuscanyDispatcherServlet extends DispatcherServlet {
     private Logger logger = Logger.getLogger(TuscanyDispatcherServlet.class.getName());
 
     private transient WebContextConfigurator configurator;
+    private transient Node node;
 
     public TuscanyDispatcherServlet() {
         super();
@@ -49,7 +51,7 @@ public class TuscanyDispatcherServlet extends DispatcherServlet {
         try {
             super.init(config);
             configurator = WebAppHelper.getConfigurator(this);
-            WebAppHelper.init(configurator);
+            node = WebAppHelper.init(configurator);
         } catch (Throwable e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             configurator.getServletContext().log(e.getMessage(), e);
@@ -59,7 +61,13 @@ public class TuscanyDispatcherServlet extends DispatcherServlet {
 
     public void destroy() {
         WebAppHelper.stop(configurator);
+        node = null;
+        configurator = null;
         super.destroy();
+    }
+
+    public Node getNode() {
+        return node;
     }
 
 }

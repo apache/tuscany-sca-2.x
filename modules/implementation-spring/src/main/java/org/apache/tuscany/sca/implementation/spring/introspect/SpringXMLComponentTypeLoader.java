@@ -101,7 +101,7 @@ public class SpringXMLComponentTypeLoader {
     private SpringBeanIntrospector beanIntrospector;
 
     private SpringXMLBeanDefinitionLoader xmlBeanDefinitionLoader;
-    
+
     private JavaIntrospectionHelper javaIntrospectionHelper;
 
     public SpringXMLComponentTypeLoader(ExtensionPointRegistry registry) {
@@ -136,6 +136,7 @@ public class SpringXMLComponentTypeLoader {
             monitor.problem(problem);
         }
     }
+
     /**
      * Report a error.
      *
@@ -155,6 +156,7 @@ public class SpringXMLComponentTypeLoader {
             monitor.problem(problem);
         }
     }
+
     protected Class<SpringImplementation> getImplementationClass() {
         return SpringImplementation.class;
     }
@@ -226,11 +228,11 @@ public class SpringXMLComponentTypeLoader {
 
             if (xmlBeanDefinitionLoader != null) {
                 xmlBeanDefinitionLoader.load(contextResources,
-                                                   appCxtServices,
-                                                   appCxtReferences,
-                                                   appCxtProperties,
-                                                   appCxtBeans,
-                                                   context);
+                                             appCxtServices,
+                                             appCxtReferences,
+                                             appCxtProperties,
+                                             appCxtBeans,
+                                             context);
                 populatePolicies(appCxtServices, appCxtReferences);
             }
             // Validate the beans from individual application context for uniqueness
@@ -266,7 +268,7 @@ public class SpringXMLComponentTypeLoader {
                 e.getPolicySets().add(ps);
             }
         }
-        
+
         for (SpringSCAServiceElement e : appCxtServices) {
             for (QName qn : e.getIntentNames()) {
                 Intent intent = policyFactory.createIntent();
@@ -352,7 +354,7 @@ public class SpringXMLComponentTypeLoader {
                 } else {
                     interfaze = getBeanInterface(resolver, serviceElement.getTarget(), beans, context);
                 }
-                
+
                 Service theService = createService(interfaze, serviceElement.getName());
                 // Spring allows duplication of bean definitions in multiple context scenario,
                 // in such cases, the latest bean definition overrides the older ones, hence 
@@ -381,7 +383,7 @@ public class SpringXMLComponentTypeLoader {
                         }
                     }
                 } // end for
-                
+
                 if (!found) {
                     // REVIEW: Adding a SpringBeanElement "proxy" so that the bean id can be used at runtime to look
                     // up the bean instance from the parent context
@@ -480,118 +482,123 @@ public class SpringXMLComponentTypeLoader {
                 } // end while
             } // end if
 
-            itb = beans.iterator();
-            while (itb.hasNext()) {
-                SpringBeanElement beanElement = itb.next();
+            // [rfeng] We only try to implicitly map Spring beans if no sca:reference or sca:property is present
+            if (references.isEmpty() && scaproperties.isEmpty()) {
+                itb = beans.iterator();
+                while (itb.hasNext()) {
+                    SpringBeanElement beanElement = itb.next();
 
-                // If its not a valid bean for service, ignore it
-                if (!isValidBeanForService(beanElement)) {
-                    continue;
-                }
-                // Ignore if the bean has no properties and constructor arguments
-                if (beanElement.getProperties().isEmpty() && beanElement.getCustructorArgs().isEmpty())
-                    continue;
-
-                ComponentType beanComponentType = assemblyFactory.createComponentType();
-
-                try {
-                    Class<?> beanClass = resolveClass(resolver, beanElement.getClassName(), context);
-                    // Introspect the bean
-                    beanIntrospector = new SpringBeanIntrospector(registry, beanElement.getCustructorArgs());
-                    javaImplementation = beanIntrospector.introspectBean(beanClass, beanComponentType);
-                } catch (Exception e) {
-                    // [rfeng] FIXME: Some Spring beans have constructors that take pararemters injected by Spring and
-                    // Tuscany is not happy with that during the introspection
-                    log.log(Level.SEVERE, e.getMessage(), e);
-                    continue;
-                }
-                Map<String, JavaElementImpl> propertyMap = javaImplementation.getPropertyMembers();
-                JavaConstructorImpl constructor = javaImplementation.getConstructor();
-                // Get the references by this Spring Bean and add the unresolved ones to
-                // the component type of the Spring Assembly
-                List<Reference> beanReferences = beanComponentType.getReferences();
-                List<Property> beanProperties = beanComponentType.getProperties();
-
-                Set<String> excludedNames = new HashSet<String>();
-                Iterator<SpringPropertyElement> itp = beanElement.getProperties().iterator();
-                while (itp.hasNext()) {
-                    SpringPropertyElement propertyElement = itp.next();
-                    // Exclude the reference that is also known as a spring property
-                    excludedNames.add(propertyElement.getName());
-                    for (String propertyRef : propertyElement.getRefs()) {
-                        if (propertyRefUnresolved(propertyRef, beans, references, scaproperties)) {
-                            // This means an unresolved reference from the spring bean...
-                            for (Reference reference : beanReferences) {
-                                if (propertyElement.getName().equals(reference.getName())) {
-                                    // The name of the reference in this case is the string in
-                                    // the @ref attribute of the Spring property element, NOT the
-                                    // name of the field in the Spring bean....
-                                    reference.setName(propertyRef);
-                                    componentType.getReferences().add(reference);
-                                    break;
-                                } // end if
-                            } // end for
-
-                            // Store the unresolved references as unresolvedBeanRef in the Spring Implementation type
-                            for (Property scaproperty : beanProperties) {
-                                if (propertyElement.getName().equals(scaproperty.getName())) {
-                                    // The name of the reference in this case is the string in
-                                    // the @ref attribute of the Spring property element, NOT the
-                                    // name of the field in the Spring bean....
-                                    Class<?> interfaze =
-                                        resolveClass(resolver,
-                                                     (propertyMap.get(propertyElement.getName()).getType()).getName(),
-                                                     context);
-                                    Reference theReference = createReference(interfaze, propertyRef);
-                                    implementation.setUnresolvedBeanRef(propertyRef, theReference);
-                                    break;
-                                } // end if
-                            } // end for
-                        } // end if 
-                    } // end for
-                } // end while
-
-                Iterator<SpringConstructorArgElement> itcr = beanElement.getCustructorArgs().iterator();
-                while (itcr.hasNext()) {
-                    SpringConstructorArgElement conArgElement = itcr.next();
-                    for (String constructorArgRef : conArgElement.getRefs()) {
-                        if (propertyRefUnresolved(constructorArgRef, beans, references, scaproperties)) {
-                            for (JavaParameterImpl parameter : constructor.getParameters()) {
-                                String paramType = parameter.getType().getName();
-                                Class<?> interfaze = resolveClass(resolver, paramType, context);
-                                // Create a component type reference/property if the constructor-arg element has a
-                                // type attribute OR index attribute declared...
-                                if ((conArgElement.getType() != null && paramType.equals(conArgElement.getType())) || (conArgElement
-                                    .getIndex() != -1 && (conArgElement.getIndex() == parameter.getIndex()))) {
-                                    // [rfeng] Commenting out the following code as the constructor parameter based SCA
-                                    // references are added already
-                                    /*
-                                    if (parameter.getClassifer() == org.oasisopen.sca.annotation.Reference.class) {
-                                        Reference theReference = createReference(interfaze, constructorArgRef);
-                                        componentType.getReferences().add(theReference);
-                                    }
-                                    */
-                                    if (parameter.getClassifer() == org.oasisopen.sca.annotation.Property.class) {
-                                        // Store the unresolved references as unresolvedBeanRef in the Spring Implementation type
-                                        // we might need to verify with the component definition later.
-                                        Reference theReference = createReference(interfaze, constructorArgRef);
-                                        implementation.setUnresolvedBeanRef(constructorArgRef, theReference);
-                                    }
-                                }
-                            } // end for
-                        } // end if
-                    } // end for
-                } // end while
-
-                // [rfeng] Add the remaining introspected references (w/ @Reference but without Spring property ref)
-                for (Reference ref : beanReferences) {
-                    if (!excludedNames.contains(ref.getName()) && componentType.getReference(ref.getName()) == null) {
-                        // Only add the ones that not listed by sca:reference
-                        componentType.getReferences().add(ref);
+                    // If its not a valid bean for service, ignore it
+                    if (!isValidBeanForService(beanElement)) {
+                        continue;
                     }
-                }
+                    // Ignore if the bean has no properties and constructor arguments
+                    if (beanElement.getProperties().isEmpty() && beanElement.getCustructorArgs().isEmpty())
+                        continue;
 
-            } // end while
+                    ComponentType beanComponentType = assemblyFactory.createComponentType();
+
+                    try {
+                        Class<?> beanClass = resolveClass(resolver, beanElement.getClassName(), context);
+                        // Introspect the bean
+                        beanIntrospector = new SpringBeanIntrospector(registry, beanElement.getCustructorArgs());
+                        javaImplementation = beanIntrospector.introspectBean(beanClass, beanComponentType);
+                    } catch (Exception e) {
+                        // [rfeng] FIXME: Some Spring beans have constructors that take pararemters injected by Spring and
+                        // Tuscany is not happy with that during the introspection
+                        log.log(Level.SEVERE, e.getMessage(), e);
+                        continue;
+                    }
+                    Map<String, JavaElementImpl> propertyMap = javaImplementation.getPropertyMembers();
+                    JavaConstructorImpl constructor = javaImplementation.getConstructor();
+                    // Get the references by this Spring Bean and add the unresolved ones to
+                    // the component type of the Spring Assembly
+                    List<Reference> beanReferences = beanComponentType.getReferences();
+                    List<Property> beanProperties = beanComponentType.getProperties();
+
+                    Set<String> excludedNames = new HashSet<String>();
+                    Iterator<SpringPropertyElement> itp = beanElement.getProperties().iterator();
+                    while (itp.hasNext()) {
+                        SpringPropertyElement propertyElement = itp.next();
+                        // Exclude the reference that is also known as a spring property
+                        excludedNames.add(propertyElement.getName());
+                        for (String propertyRef : propertyElement.getRefs()) {
+                            if (propertyRefUnresolved(propertyRef, beans, references, scaproperties)) {
+                                // This means an unresolved reference from the spring bean...
+                                for (Reference reference : beanReferences) {
+                                    if (propertyElement.getName().equals(reference.getName())) {
+                                        // The name of the reference in this case is the string in
+                                        // the @ref attribute of the Spring property element, NOT the
+                                        // name of the field in the Spring bean....
+                                        reference.setName(propertyRef);
+                                        // reference.setWiredByImpl(true);
+                                        componentType.getReferences().add(reference);
+                                        break;
+                                    } // end if
+                                } // end for
+
+                                // Store the unresolved references as unresolvedBeanRef in the Spring Implementation type
+                                for (Property scaproperty : beanProperties) {
+                                    if (propertyElement.getName().equals(scaproperty.getName())) {
+                                        // The name of the reference in this case is the string in
+                                        // the @ref attribute of the Spring property element, NOT the
+                                        // name of the field in the Spring bean....
+                                        Class<?> interfaze =
+                                            resolveClass(resolver,
+                                                         (propertyMap.get(propertyElement.getName()).getType())
+                                                             .getName(),
+                                                         context);
+                                        Reference theReference = createReference(interfaze, propertyRef);
+                                        implementation.setUnresolvedBeanRef(propertyRef, theReference);
+                                        break;
+                                    } // end if
+                                } // end for
+                            } // end if 
+                        } // end for
+                    } // end while
+
+                    Iterator<SpringConstructorArgElement> itcr = beanElement.getCustructorArgs().iterator();
+                    while (itcr.hasNext()) {
+                        SpringConstructorArgElement conArgElement = itcr.next();
+                        for (String constructorArgRef : conArgElement.getRefs()) {
+                            if (propertyRefUnresolved(constructorArgRef, beans, references, scaproperties)) {
+                                for (JavaParameterImpl parameter : constructor.getParameters()) {
+                                    String paramType = parameter.getType().getName();
+                                    Class<?> interfaze = resolveClass(resolver, paramType, context);
+                                    // Create a component type reference/property if the constructor-arg element has a
+                                    // type attribute OR index attribute declared...
+                                    if ((conArgElement.getType() != null && paramType.equals(conArgElement.getType())) || (conArgElement
+                                        .getIndex() != -1 && (conArgElement.getIndex() == parameter.getIndex()))) {
+                                        // [rfeng] Commenting out the following code as the constructor parameter based SCA
+                                        // references are added already
+                                        /*
+                                        if (parameter.getClassifer() == org.oasisopen.sca.annotation.Reference.class) {
+                                            Reference theReference = createReference(interfaze, constructorArgRef);
+                                            componentType.getReferences().add(theReference);
+                                        }
+                                        */
+                                        if (parameter.getClassifer() == org.oasisopen.sca.annotation.Property.class) {
+                                            // Store the unresolved references as unresolvedBeanRef in the Spring Implementation type
+                                            // we might need to verify with the component definition later.
+                                            Reference theReference = createReference(interfaze, constructorArgRef);
+                                            implementation.setUnresolvedBeanRef(constructorArgRef, theReference);
+                                        }
+                                    }
+                                } // end for
+                            } // end if
+                        } // end for
+                    } // end while
+
+                    // [rfeng] Add the remaining introspected references (w/ @Reference but without Spring property ref)
+                    for (Reference ref : beanReferences) {
+                        if (!excludedNames.contains(ref.getName()) && componentType.getReference(ref.getName()) == null) {
+                            // Only add the ones that not listed by sca:reference
+                            componentType.getReferences().add(ref);
+                        }
+                    }
+
+                } // end while
+            }
 
         } catch (ClassNotFoundException e) {
             // Means that either an interface class, property class or a bean was not found
@@ -606,31 +613,34 @@ public class SpringXMLComponentTypeLoader {
         return;
     } // end method generateComponentType
 
-    private Class<?> getBeanInterface(ModelResolver resolver, String target, List<SpringBeanElement> beans, ProcessorContext context) throws ClassNotFoundException {
-    	SpringBeanElement bean = null;
-    	for (SpringBeanElement sbe : beans) {
-    		if (sbe.getId().equals(target)) {
-    			bean = sbe;
-    			break;
-    		}
-    	}
-    	if (bean == null) {
-    		error(context.getMonitor(), "TargetBeanDoesNotExist", null, target);
-    		return null;
-    	}
-    	
+    private Class<?> getBeanInterface(ModelResolver resolver,
+                                      String target,
+                                      List<SpringBeanElement> beans,
+                                      ProcessorContext context) throws ClassNotFoundException {
+        SpringBeanElement bean = null;
+        for (SpringBeanElement sbe : beans) {
+            if (sbe.getId().equals(target)) {
+                bean = sbe;
+                break;
+            }
+        }
+        if (bean == null) {
+            error(context.getMonitor(), "TargetBeanDoesNotExist", null, target);
+            return null;
+        }
+
         Class<?> beanClass = resolveClass(resolver, bean.getClassName(), context);
         Set<Class<?>> ifaces = javaIntrospectionHelper.getAllInterfaces(beanClass);
         for (Class<?> interfaze : ifaces) {
             if (interfaze.isAnnotationPresent(Remotable.class)) {
-               return interfaze;	
+                return interfaze;
             }
         }
 
         return beanClass;
-	}
+    }
 
-	/*
+    /*
      * Determines whether a reference attribute of a Spring property element is resolved either
      * by a bean in the application context or by an SCA reference element or by an SCA property
      * element
