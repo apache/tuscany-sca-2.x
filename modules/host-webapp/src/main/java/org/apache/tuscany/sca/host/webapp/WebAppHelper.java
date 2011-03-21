@@ -190,7 +190,7 @@ public class WebAppHelper {
         }
         Node node = null;
         if (configuration != null) {
-            factory.createNode(configuration).start();
+            node = factory.createNode(configuration).start();
         }
         return node;
     }
