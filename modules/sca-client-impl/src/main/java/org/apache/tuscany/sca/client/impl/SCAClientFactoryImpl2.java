@@ -56,8 +56,8 @@ public class SCAClientFactoryImpl2 extends SCAClientFactory {
         }
     
         // Check for remote node
-        SCAClientHandler handler = new SCAClientHandler(domainName, null, null);
-        handler.checkDomain();
+        SCAClientHandler handler = new SCAClientHandler(domainName, null, null, null);
+//        handler.checkDomain();
     }
 
     @SuppressWarnings("unchecked")
@@ -82,7 +82,7 @@ public class SCAClientFactoryImpl2 extends SCAClientFactory {
             throw new NoSuchServiceException(serviceName);
         }
         
-        InvocationHandler handler = new SCAClientHandler(getDomainURI().toString(), serviceName, serviceInterface);
+        InvocationHandler handler = new SCAClientHandler(getDomainURI().toString(), serviceName, serviceInterface, null);
         return (T)Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[]{serviceInterface}, handler);
     }
 
