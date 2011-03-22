@@ -19,184 +19,87 @@
 
 package org.apache.tuscany.sca.client.impl;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.assembly.Multiplicity;
-import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
-import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.interfacedef.Interface;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
-import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistryLocator;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
-import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.client.SCAClientFactory;
 import org.oasisopen.sca.client.SCAClientFactoryFinder;
 
 public class SCAClientFactoryImpl extends SCAClientFactory {
 
+    private ExtensionPointRegistry extensionPointRegistry;
+    private EndpointRegistry endpointRegistry;
+    private boolean remoteClient;
+    
     public static void setSCAClientFactoryFinder(SCAClientFactoryFinder factoryFinder) {
         SCAClientFactory.factoryFinder = factoryFinder;
     }
 
-    private final ExtensionPointRegistry extensionsRegistry;
-    private final AssemblyFactory assemblyFactory;
-    private final JavaInterfaceFactory javaInterfaceFactory;
-    private final ProxyFactory proxyFactory;
-    private final EndpointRegistry endpointRegistry;
-    private final NodeFactoryImpl nodeFactory;
-    private final CompositeContext compositeContext;
-    
     public SCAClientFactoryImpl(URI domainURI) throws NoSuchDomainException {
         super(domainURI);
-        
-        this.nodeFactory = (NodeFactoryImpl)NodeFactory.getInstance();
-        this.nodeFactory.init();
-        this.extensionsRegistry = nodeFactory.getExtensionPointRegistry();
-        DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionsRegistry);
-        
-        String registryURI = getDomainURI().toString();
-        
-        this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(registryURI, getDomainURI().toString()); // TODO: shouldnt use null for reg uri
-        
-        // TODO: if there is not an existing endpoint registry for the domain URI the
-        //       this should create an endpoint registry client for the remote domain (eg hazelcast native client)
-        //       for now just throw an exception 
-        if (endpointRegistry == null) {
-            throw new NoSuchDomainException(domainURI.toString());
-        }
-        FactoryExtensionPoint factories = extensionsRegistry.getExtensionPoint(FactoryExtensionPoint.class);
-        this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
-        this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
-        this.proxyFactory = ExtensibleProxyFactory.getInstance(extensionsRegistry);
-
-        String client = "sca.client." + UUID.randomUUID();
-
-        this.compositeContext =
-            new CompositeContext(extensionsRegistry, 
-                                 endpointRegistry, 
-                                 null, 
-                                 domainURI.toString(), 
-                                 client, 
-                                 this.nodeFactory.getDeployer().getSystemDefinitions());
+        findLocalRuntime();
     }   
     
-    @Override
-    public <T> T getService(Class<T> serviceInterface, String serviceName) throws NoSuchServiceException, NoSuchDomainException {
-        
-        List<Endpoint> eps = endpointRegistry.findEndpoint(serviceName);
-        if (eps == null || eps.size() < 1) {
-            throw new NoSuchServiceException(serviceName);
-        }
-        Endpoint endpoint = eps.get(0); // TODO: what should be done with multiple endpoints?
-       
-        RuntimeEndpointReference epr;
-        try {
-            epr = createEndpointReference(endpoint, serviceInterface);
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
-        }
-        return proxyFactory.createProxy(serviceInterface, epr);
-        
-    }
-    
-    private RuntimeEndpointReference createEndpointReference(Endpoint endpoint, Class<?> businessInterface)
-        throws CloneNotSupportedException, InvalidInterfaceException {
-        Component component = endpoint.getComponent();
-        ComponentService service = endpoint.getService();
-        ComponentReference componentReference = assemblyFactory.createComponentReference();
-        componentReference.setName("sca.client." + service.getName());
-    
-        componentReference.setCallback(service.getCallback());
-        componentReference.getTargets().add(service);
-        componentReference.getPolicySets().addAll(service.getPolicySets());
-        componentReference.getRequiredIntents().addAll(service.getRequiredIntents());
-        componentReference.getBindings().add(endpoint.getBinding());
-    
-        InterfaceContract interfaceContract = service.getInterfaceContract();
-        Service componentTypeService = service.getService();
-        if (componentTypeService != null && componentTypeService.getInterfaceContract() != null) {
-            interfaceContract = componentTypeService.getInterfaceContract();
-        }
-        interfaceContract = getInterfaceContract(interfaceContract, businessInterface);
-        componentReference.setInterfaceContract(interfaceContract);
-        componentReference.setMultiplicity(Multiplicity.ONE_ONE);
-        // component.getReferences().add(componentReference);
-    
-        // create endpoint reference
-        EndpointReference endpointReference = assemblyFactory.createEndpointReference();
-        endpointReference.setComponent(component);
-        endpointReference.setReference(componentReference);
-        endpointReference.setBinding(endpoint.getBinding());
-        endpointReference.setUnresolved(false);
-        endpointReference.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
-    
-        endpointReference.setTargetEndpoint(endpoint);
-    
-        componentReference.getEndpointReferences().add(endpointReference);
-        ((RuntimeComponentReference)componentReference).setComponent((RuntimeComponent)component);
-        ((RuntimeEndpointReference)endpointReference).bind(compositeContext);
-    
-        return (RuntimeEndpointReference) endpointReference;
-    }
-
-    /**
-     * @param interfaceContract
-     * @param businessInterface
-     * @return
-     * @throws CloneNotSupportedException
-     * @throws InvalidInterfaceException
-     */
-    private InterfaceContract getInterfaceContract(InterfaceContract interfaceContract, Class<?> businessInterface)
-        throws CloneNotSupportedException, InvalidInterfaceException {
-        if (businessInterface == null) {
-            return interfaceContract;
-        }
-        boolean compatible = false;
-        if (interfaceContract != null && interfaceContract.getInterface() != null) {
-            Interface interfaze = interfaceContract.getInterface();
-            if (interfaze instanceof JavaInterface) {
-                Class<?> cls = ((JavaInterface)interfaze).getJavaClass();
-                if (cls != null && businessInterface.isAssignableFrom(cls)) {
-                    compatible = true;
+    private void findLocalRuntime() throws NoSuchDomainException {
+        String domainURI = getDomainURI().toString();
+        for (ExtensionPointRegistry xpr : ExtensionPointRegistryLocator.getExtensionPointRegistries()) {
+            ExtensibleDomainRegistryFactory drf = ExtensibleDomainRegistryFactory.getInstance(xpr);
+            for (EndpointRegistry epr : drf.getEndpointRegistries()) {
+                if (domainURI.equals(epr.getDomainURI())) {
+                    this.extensionPointRegistry = xpr;
+                    this.endpointRegistry = epr;
+                    return;
                 }
             }
         }
-    
-        if (!compatible) {
-            // The interface is not assignable from the interface contract
-            interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
-            JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(businessInterface);
-            interfaceContract.setInterface(callInterface);
-            if (callInterface.getCallbackClass() != null) {
-                interfaceContract.setCallbackInterface(javaInterfaceFactory.createJavaInterface(callInterface
-                    .getCallbackClass()));
+
+        remoteClient = true;
+        extensionPointRegistry = RuntimeUtils.createExtensionPointRegistry();
+        endpointRegistry = RuntimeUtils.getClientEndpointRegistry(extensionPointRegistry, domainURI);
+    }
+
+    @Override
+    public <T> T getService(Class<T> serviceInterface, String serviceURI) throws NoSuchServiceException, NoSuchDomainException {
+        
+        String serviceName = null;
+        if (serviceURI.contains("/")) {
+            int i = serviceURI.indexOf("/");
+            if (i < serviceURI.length() - 1) {
+                serviceName = serviceURI.substring(i + 1);
             }
         }
-    
-        return interfaceContract;
-    }    
+        
+        // The service is a component in a local runtime
+        if (!remoteClient) {
+            List<Endpoint> endpoints = endpointRegistry.findEndpoint(serviceURI);
+            if (endpoints.size() < 1) {
+                throw new NoSuchServiceException(serviceURI);
+            }
+            Endpoint ep = endpoints.get(0);
+            if (((RuntimeComponent)ep.getComponent()).getComponentContext() != null) {
+                return ((RuntimeComponent)ep.getComponent()).getServiceReference(serviceInterface, serviceName).getService();
+            }
+        }
 
+        InvocationHandler handler;
+        if (!remoteClient) {
+            // There is a local runtime but the service is a remote component
+            handler = new RemoteServiceInvocationHandler(extensionPointRegistry, endpointRegistry, serviceURI, serviceInterface);
+        } else {
+            // no local runtime
+            handler = new RemoteServiceInvocationHandler(extensionPointRegistry, endpointRegistry, getDomainURI().toString(), serviceURI, serviceInterface);
+        }
+
+        return (T)Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[]{serviceInterface}, handler);
+    }
 }

@@ -23,7 +23,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
@@ -34,12 +33,8 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.CompositeContext;
-import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
@@ -48,103 +43,94 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
-import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
-import org.apache.tuscany.sca.runtime.RuntimeProperties;
-import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.ServiceRuntimeException;
 
-public class SCAClientHandler implements InvocationHandler {
+/**
+ * An InvocationHandler for invoking services where the component is not running locally.
+ * It has two modes of operation for the cases where there either is or is not an existing 
+ * Tuscany runtime locally. The SCAClient API has no close so when there is no existing
+ * local runtime then one must be created and destroyed for each service invocation.
+ */
+public class RemoteServiceInvocationHandler implements InvocationHandler {
 
     private String domainURI;
     private String serviceName;
     private Class<?> serviceInterface;
-    private Properties config;
-    private ExtensionPointRegistry extensionsRegistry;
     
-    public SCAClientHandler(String domainURI, String serviceName, Class<?> serviceInterface, Properties properties) throws NoSuchDomainException {
+    private ExtensionPointRegistry extensionsRegistry;
+    private EndpointRegistry endpointRegistry;
+    
+    private InvocationHandler handler;
+    private boolean reuse;
+
+    /**
+     * Constructor for when there is an existing Tuscany runtime for the domain
+     */
+    public RemoteServiceInvocationHandler(ExtensionPointRegistry extensionsRegistry, EndpointRegistry endpointRegistry, String serviceName, Class<?> serviceInterface) {
+        this.extensionsRegistry = extensionsRegistry;
+        this.endpointRegistry = endpointRegistry;
+        this.domainURI = endpointRegistry.getDomainURI();
+        this.serviceName = serviceName;
+        this.serviceInterface = serviceInterface;
+        this.reuse = true;
+    }
+    
+    /**
+     * Constructor for when there is no existing Tuscany runtime for the domain
+     * @param endpointRegistry2 
+     * @param extensionPointRegistry 
+     */
+    public RemoteServiceInvocationHandler(ExtensionPointRegistry extensionsRegistry, EndpointRegistry endpointRegistry, String domainURI, String serviceName, Class<?> serviceInterface) throws NoSuchDomainException {
+        this.extensionsRegistry = extensionsRegistry;
+        this.endpointRegistry = endpointRegistry;
         this.domainURI = domainURI;
         this.serviceName = serviceName;
         this.serviceInterface = serviceInterface;
-        this.config = properties;
-        initExtensionPointRegistry();
-        extensionsRegistry.stop();
+        this.reuse = false;
     }
 
-    private void initExtensionPointRegistry() throws NoSuchDomainException {
-        this.extensionsRegistry = new DefaultExtensionPointRegistry();
-        extensionsRegistry.start();
-
-        FactoryExtensionPoint modelFactories = extensionsRegistry.getExtensionPoint(FactoryExtensionPoint.class);
-        RuntimeAssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(extensionsRegistry);
-        modelFactories.addFactory(assemblyFactory);
-
-        UtilityExtensionPoint utilities = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class);
-        
-        config.setProperty("client", "true");
-        
-        utilities.getUtility(RuntimeProperties.class).setProperties(config);
-        utilities.getUtility(WorkScheduler.class);
-
-        // Initialize the Tuscany module activators
-        // The module activators will be started
-        extensionsRegistry.getExtensionPoint(ModuleActivatorExtensionPoint.class);
-
-        getEndpointRegistry();
-    }
-
-    private EndpointRegistry getEndpointRegistry() throws NoSuchDomainException {
-        DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionsRegistry);
-        
-        String registryURI = domainURI;
-
-        // TODO: theres better ways to do this but this gets things working for now
-        if (registryURI.indexOf(":") == -1) {
-            registryURI = "tuscanyclient:" + registryURI;
-        }
-        if (registryURI.startsWith("uri:")) {
-            registryURI = "tuscanyclient:" + registryURI.substring(4);
-        }
-        if (registryURI.startsWith("tuscany:")) {
-            registryURI = "tuscanyclient:" + registryURI.substring(8);
-        }
-        
-      
-        try {
-            return domainRegistryFactory.getEndpointRegistry(registryURI, domainURI);
-        } catch (Exception e) {
-            throw new NoSuchDomainException(domainURI, e);
-        }
-    }
-   
-          
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (extensionsRegistry == null) {
-            initExtensionPointRegistry();
-        }
         try {
             
-            EndpointRegistry endpointRegistry = getEndpointRegistry();
+            return getHandler().invoke(proxy, method, args);
             
+        } finally {
+            if (!reuse) {
+                extensionsRegistry.stop();
+                extensionsRegistry = null;
+                handler = null;
+            }
+        }
+    }
+
+    private InvocationHandler getHandler() throws NoSuchDomainException, NoSuchServiceException {
+        if (handler == null) {
+            if (extensionsRegistry == null) {
+                extensionsRegistry = RuntimeUtils.createExtensionPointRegistry();
+            }
+            if (endpointRegistry == null) {
+                endpointRegistry = RuntimeUtils.getClientEndpointRegistry(extensionsRegistry, domainURI);
+            }
+
             FactoryExtensionPoint factories = extensionsRegistry.getExtensionPoint(FactoryExtensionPoint.class);
             AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
             JavaInterfaceFactory javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
             ProxyFactory proxyFactory = new ExtensibleProxyFactory(extensionsRegistry.getExtensionPoint(ProxyFactoryExtensionPoint.class));
 
-            CompositeContext compositeContext = new CompositeContext(extensionsRegistry, endpointRegistry, null, domainURI.toString(), null, null);
+            CompositeContext compositeContext = new CompositeContext(extensionsRegistry, endpointRegistry, null, domainURI, null, null);
 
             List<Endpoint> eps = endpointRegistry.findEndpoint(serviceName);
             if (eps == null || eps.size() < 1) {
                 throw new NoSuchServiceException(serviceName);
             }
             Endpoint endpoint = eps.get(0); // TODO: what should be done with multiple endpoints?
-           
+             
             RuntimeEndpointReference epr;
             try {
                 epr = createEndpointReference(javaInterfaceFactory, compositeContext, assemblyFactory, endpoint, serviceInterface);
@@ -152,13 +138,9 @@ public class SCAClientHandler implements InvocationHandler {
                 throw new ServiceRuntimeException(e);
             }
 
-            InvocationHandler handler = Proxy.getInvocationHandler(proxyFactory.createProxy(serviceInterface, epr));
-            return handler.invoke(proxy, method, args);
-            
-        } finally {
-            extensionsRegistry.stop();
-            extensionsRegistry = null;
+            this.handler = Proxy.getInvocationHandler(proxyFactory.createProxy(serviceInterface, epr));
         }
+        return handler;
     }
 
     private RuntimeEndpointReference createEndpointReference(JavaInterfaceFactory javaInterfaceFactory, CompositeContext compositeContext, AssemblyFactory assemblyFactory, Endpoint endpoint, Class<?> businessInterface) throws CloneNotSupportedException, InvalidInterfaceException {

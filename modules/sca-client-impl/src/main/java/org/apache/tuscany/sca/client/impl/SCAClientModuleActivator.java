@@ -19,13 +19,9 @@
 
 package org.apache.tuscany.sca.client.impl;
 
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 
 public class SCAClientModuleActivator implements ModuleActivator {
-    
-    public SCAClientModuleActivator(ExtensionPointRegistry registry) {
-    }
     
     public void start() { 
         SCAClientFactoryImpl.setSCAClientFactoryFinder(new SCAClientFactoryFinderImpl());
