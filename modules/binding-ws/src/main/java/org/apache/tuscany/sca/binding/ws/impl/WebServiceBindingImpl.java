@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.wsdl.Binding;
+import javax.wsdl.BindingInput;
 import javax.wsdl.BindingOperation;
 import javax.wsdl.Definition;
 import javax.wsdl.Message;
@@ -90,7 +91,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
      * Provide a meaningful representation of this Binding
      */
     public String toString() {
-    	return "Web Service Binding: " + name;
+        return "Web Service Binding: " + name;
     } // end method toString
 
     public String getName() {
@@ -250,7 +251,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
         if (userSpecifiedWSDLDefinition == null) {
             Interface iface = bindingInterfaceContract.getInterface();
             if (iface instanceof WSDLInterface) {
-                userSpecifiedWSDLDefinition = ((WSDLInterface) iface).getWsdlDefinition();
+                userSpecifiedWSDLDefinition = ((WSDLInterface)iface).getWsdlDefinition();
             }
         }
         return userSpecifiedWSDLDefinition;
@@ -312,28 +313,28 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     public QName getType() {
         return TYPE;
     }
-    
+
     public WireFormat getRequestWireFormat() {
         return null;
     }
-    
-    public void setRequestWireFormat(WireFormat wireFormat) {  
+
+    public void setRequestWireFormat(WireFormat wireFormat) {
     }
-    
+
     public WireFormat getResponseWireFormat() {
         return null;
     }
-    
+
     public void setResponseWireFormat(WireFormat wireFormat) {
     }
-    
+
     public OperationSelector getOperationSelector() {
         return null;
     }
-    
+
     public void setOperationSelector(OperationSelector operationSelector) {
-    }   
-    
+    }
+
     /**
      * Some items get calculated and cached as they are used at runtime
      * to decide what message processing is required
@@ -343,55 +344,51 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
         setIsLiteralEncoding();
         setIsMessageWrapped();
     }
-    
+
     protected void setIsDocumentStyle() {
-        
-        if (binding == null){
-            if (userSpecifiedWSDLDefinition != null && userSpecifiedWSDLDefinition.getDefinition() != null){
-                Message firstMessage = (Message)userSpecifiedWSDLDefinition.getDefinition().getMessages().values().iterator().next();
+
+        if (binding == null) {
+            if (userSpecifiedWSDLDefinition != null && userSpecifiedWSDLDefinition.getDefinition() != null) {
+                Message firstMessage =
+                    (Message)userSpecifiedWSDLDefinition.getDefinition().getMessages().values().iterator().next();
                 Part firstPart = (Part)firstMessage.getParts().values().iterator().next();
-                if (firstPart.getTypeName() != null){
+                if (firstPart.getTypeName() != null) {
                     isDocumentStyle = false;
                     return;
                 }
-            } 
-            
+            }
+
             // default to document style
             isDocumentStyle = true;
             return;
         } else {
-           for (Object ext : binding.getExtensibilityElements()){
-               if (ext instanceof SOAPBinding){
-                  if (((SOAPBinding)ext).getStyle().equals("rpc")){
-                      isDocumentStyle = false;
-                      return;
-                  } else {
-                      isDocumentStyle = true;
-                      return;
-                  }
-               }
-           }
-           isDocumentStyle = true;
-           return;
+            for (Object ext : binding.getExtensibilityElements()) {
+                if (ext instanceof SOAPBinding) {
+                    isDocumentStyle = !"rpc".equals(((SOAPBinding)ext).getStyle());
+                    return;
+                }
+            }
+            isDocumentStyle = true;
+            return;
         }
-        
+
     }
-    
+
     protected void setIsLiteralEncoding() {
-        
-        if (binding == null){
+
+        if (binding == null) {
             // default to literal encoding
             isLiteralEncoding = true;
             return;
         } else {
-            for(Object ext : ((BindingOperation)binding.getBindingOperations().get(0)).getBindingInput().getExtensibilityElements()){
-                if (ext instanceof SOAPBody){
-                    if (((SOAPBody)ext).getUse().equals("literal")){
-                        isLiteralEncoding = true;
-                        return;
-                    } else {
-                        isLiteralEncoding = false;
-                        return;
+            for (Object bop : binding.getBindingOperations()) {
+                BindingInput bindingInput = ((BindingOperation)bop).getBindingInput();
+                if (bindingInput != null) {
+                    for (Object ext : bindingInput.getExtensibilityElements()) {
+                        if (ext instanceof SOAPBody) {
+                            isLiteralEncoding = "literal".equals(((SOAPBody)ext).getUse());
+                            return;
+                        }
                     }
                 }
             }
@@ -399,62 +396,62 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
             return;
         }
     }
-    
+
     protected void setIsMessageWrapped() {
-        if (getBindingInterfaceContract() != null){
+        if (getBindingInterfaceContract() != null) {
             isMessageWrapped = getBindingInterfaceContract().getInterface().getOperations().get(0).isWrapperStyle();
         }
     }
-   
+
     public boolean isRpcEncoded() {
         return (!isDocumentStyle) && (!isLiteralEncoding);
     }
-    
+
     public boolean isRpcLiteral() {
         return (!isDocumentStyle) && (isLiteralEncoding);
     }
-    
+
     public boolean isDocEncoded() {
         return (isDocumentStyle) && (!isLiteralEncoding);
     }
-    
+
     public boolean isDocLiteralUnwrapped() {
         setIsMessageWrapped();
         return (isDocumentStyle) && (isLiteralEncoding) && (!isMessageWrapped);
     }
-    
+
     public boolean isDocLiteralWrapped() {
         setIsMessageWrapped();
-        return (isDocumentStyle) && (isLiteralEncoding) &&(isMessageWrapped);
+        return (isDocumentStyle) && (isLiteralEncoding) && (isMessageWrapped);
     }
-    
+
     public boolean isDocLiteralBare() {
         setIsMessageWrapped();
         return (isDocumentStyle) && (isLiteralEncoding);
-    }   
-    
+    }
+
     public boolean isHTTPTransport() {
         return getBindingTransport().equals("http://schemas.xmlsoap.org/soap/http");
     }
-    
+
     public boolean isJMSTransport() {
         return getBindingTransport().equals("http://schemas.xmlsoap.org/soap/jms");
     }
-    
+
     public String getBindingTransport() {
-        if (binding != null){
-            for (Object ext : binding.getExtensibilityElements()){
-                if (ext instanceof SOAPBinding){
+        if (binding != null) {
+            for (Object ext : binding.getExtensibilityElements()) {
+                if (ext instanceof SOAPBinding) {
                     return ((SOAPBinding)ext).getTransportURI();
                 }
             }
         }
-        
+
         // if no binding is explicitly specified by the user then default to http
         return "http://schemas.xmlsoap.org/soap/http";
     }
 
     public Map<String, String> getWsdliLocations() {
-        return wsdliLocations ;
+        return wsdliLocations;
     }
 }
