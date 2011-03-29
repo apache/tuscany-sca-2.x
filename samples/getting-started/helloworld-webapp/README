@@ -15,13 +15,17 @@ Alternatively, you can run it by using the Maven Tomcat plugin by using the foll
 
    mvn tomcat:run
 
+or if you prefer Jetty then:
+
+   mvn jetty:run
+
 Once the web app is running use your browser to visit the following URL;
 
 http://localhost:8080/helloworld-webapp
 
 (The port and hostname will of course vary depending on your local installation) 
 
-You should then see web page return the following:
+You should then see the web page return the following:
 
    Calling HelloworldService sayHello("world") returns:
 
