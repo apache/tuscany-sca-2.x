@@ -22,9 +22,6 @@ package org.apache.tuscany.sca.node;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.oasisopen.sca.ServiceReference;
 
-
-
-
 /**
  * Represents an SCA processing node.
  * A node is loaded with an SCA composites. It can start and stop that composite.
@@ -82,5 +79,5 @@ public interface Node {
      * @param <B> the Java type of the business interface for the service
      * @return a ServiceReference for the designated service
      */
-    <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String serviceName);    
+    <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String serviceName);
 }

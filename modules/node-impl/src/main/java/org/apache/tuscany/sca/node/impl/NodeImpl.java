@@ -44,6 +44,9 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
+import org.apache.tuscany.sca.node.extensibility.NodeActivator;
+import org.apache.tuscany.sca.node.extensibility.NodeActivatorExtensionPoint;
+import org.apache.tuscany.sca.node.extensibility.NodeExtension;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
@@ -58,7 +61,7 @@ import org.oasisopen.sca.ServiceUnavailableException;
 /**
  * An SCA Node that is managed by the NodeManager
  */
-public class NodeImpl implements Node {
+public class NodeImpl implements Node, NodeExtension {
     private static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
     private ProxyFactory proxyFactory;
     private CompositeActivator compositeActivator;
@@ -67,6 +70,7 @@ public class NodeImpl implements Node {
     private NodeConfiguration configuration;
     private NodeFactoryImpl nodeFactory;
     private List<Contribution> contributions;
+    private NodeActivatorExtensionPoint nodeActivators;
     // private NodeManager mbean;
 
     /**
@@ -78,8 +82,9 @@ public class NodeImpl implements Node {
         super();
         this.configuration = configuration;
         this.nodeFactory = nodeFactory;
+        this.nodeActivators = nodeFactory.getExtensionPointRegistry().getExtensionPoint(NodeActivatorExtensionPoint.class);
     }
-    
+
     /**
      * Create a node from the configuration and loaded contributions
      * @param manager
@@ -90,11 +95,16 @@ public class NodeImpl implements Node {
         super();
         this.configuration = configuration;
         this.nodeFactory = manager;
+        this.nodeActivators = nodeFactory.getExtensionPointRegistry().getExtensionPoint(NodeActivatorExtensionPoint.class);
         this.contributions = new ArrayList<Contribution>(contributions);
     }
 
     public String getURI() {
         return getConfiguration().getURI();
+    }
+
+    public String getDomainURI() {
+        return getConfiguration().getDomainURI();
     }
 
     public Node start() {
@@ -103,48 +113,48 @@ public class NodeImpl implements Node {
         nodeFactory.init();
         nodeFactory.addNode(configuration, this);
         this.proxyFactory = nodeFactory.proxyFactory;
-        
+
         try {
             Monitor monitor = nodeFactory.monitorFactory.createMonitor();
             ProcessorContext context = new ProcessorContext(monitor);
-            
+
             // Set up the thead context monitor
             Monitor tcm = nodeFactory.monitorFactory.setContextMonitor(monitor);
             try {
                 // Use the lack of the contributions collection as an indicator for when the node
-                // is being started for the first time. If it is the first time do all the work 
+                // is being started for the first time. If it is the first time do all the work
                 // to read the contributions and create the domain composite
                 if (contributions == null) {
                     contributions = nodeFactory.loadContributions(configuration, context);
                 }
-              
-                if (domainComposite == null) {  
-                    
+
+                if (domainComposite == null) {
+
                     UtilityExtensionPoint utilities = nodeFactory.registry.getExtensionPoint(UtilityExtensionPoint.class);
                     this.compositeActivator = utilities.getUtility(CompositeActivator.class);
 
                     domainComposite = nodeFactory.configureNode(configuration, contributions, context);
-    
+
                     DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(nodeFactory.registry);
                     EndpointRegistry endpointRegistry =
                         domainRegistryFactory.getEndpointRegistry(configuration.getDomainRegistryURI(), configuration.getDomainURI());
 
                     this.compositeContext =
-                        new CompositeContext(nodeFactory.registry, 
-                                             endpointRegistry, 
-                                             domainComposite, 
-                                             configuration.getDomainURI(), 
+                        new CompositeContext(nodeFactory.registry,
+                                             endpointRegistry,
+                                             domainComposite,
+                                             configuration.getDomainURI(),
                                              configuration.getURI(),
                                              nodeFactory.getDeployer().getSystemDefinitions());
                     // Pass down the context attributes
                     compositeContext.getAttributes().putAll(configuration.getAttributes());
                 }
-                
+
             } finally {
                 // Reset the thread context monitor
                 nodeFactory.monitorFactory.setContextMonitor(tcm);
             }
-            
+
             // Activate the composite
             compositeActivator.activate(compositeContext, domainComposite);
 
@@ -172,6 +182,9 @@ public class NodeImpl implements Node {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
 
+            for(NodeActivator activator : nodeActivators.getNodeActivators()) {
+                activator.nodeStarted(this);
+            }
             return this;
 
         } catch (Throwable e) {
@@ -212,13 +225,17 @@ public class NodeImpl implements Node {
             } // end if
 
             nodeFactory.removeNode(configuration);
-/*            
+/*
             this.compositeActivator = null;
             this.proxyFactory = null;
             this.domainComposite = null;
             this.compositeContext = null;
-*/            
-            
+*/
+
+            for(NodeActivator activator : nodeActivators.getNodeActivators()) {
+                activator.nodeStopped(this);
+            }
+
             ThreadMessageContext.removeMessageContext();
 
         } catch (ActivationException e) {
@@ -269,7 +286,7 @@ public class NodeImpl implements Node {
         if (component == null) {
             throw new ServiceUnavailableException("The service " + name + " has not been contributed to the domain");
         }
-        
+
         return ((RuntimeComponent)component).getServiceReference(businessInterface, serviceName);
     }
 
@@ -303,47 +320,47 @@ public class NodeImpl implements Node {
         }
         return endpoints;
     }
-    
+
     public Composite getDomainComposite() {
         return domainComposite;
-    }   
-    
+    }
+
     public String dumpDomainComposite() {
-        
-        StAXArtifactProcessorExtensionPoint xmlProcessors = 
+
+        StAXArtifactProcessorExtensionPoint xmlProcessors =
             getExtensionPointRegistry().getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        StAXArtifactProcessor<Composite>  compositeProcessor = 
-            xmlProcessors.getProcessor(Composite.class);   
-     
+        StAXArtifactProcessor<Composite>  compositeProcessor =
+            xmlProcessors.getProcessor(Composite.class);
+
         return writeComposite(getDomainComposite(), compositeProcessor);
     }
-       
+
     private String writeComposite(Composite composite, StAXArtifactProcessor<Composite> compositeProcessor){
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         XMLOutputFactory outputFactory =
             nodeFactory.getExtensionPointRegistry().getExtensionPoint(FactoryExtensionPoint.class)
                 .getFactory(XMLOutputFactory.class);
-        
+
         try {
             compositeProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), new ProcessorContext(nodeFactory.registry));
         } catch(Exception ex) {
             return ex.toString();
         }
-        
+
         String result = bos.toString();
-        
+
         // write out and nested composites
         for (Component component : composite.getComponents()) {
             if (component.getImplementation() instanceof Composite) {
-                result += "\n<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->\n" + 
+                result += "\n<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->\n" +
                            writeComposite((Composite)component.getImplementation(),
                                           compositeProcessor);
             }
         }
-        
+
         return result;
     }
-    
+
     public List<Contribution> getContributions() {
         return contributions;
     }
