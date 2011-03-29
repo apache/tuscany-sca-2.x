@@ -108,7 +108,7 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
         List<Object> elements = new ArrayList<Object>();
         int i = 0;
         for (ElementInfo e : childElements) {
-            elements.add(getChild(wrapper, e, i));
+            elements.add(getChild(wrapper, e));
             i++;
         }
         return elements;
@@ -152,6 +152,10 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
 
     private static final QName XSI_TYPE_QNAME = new QName("http://www.w3.org/2001/XMLSchema-instance", "type", "xsi");
 
+    /*
+     *  Left this method in the code to show the idea of grouping like wrapper children without
+     *  knowing the QName from the ElementInfo, but this code isn't currently used any more. 
+     */
     private List<List<OMElement>> getElements(OMElement wrapper) {
         List<List<OMElement>> elements = new ArrayList<List<OMElement>>();
         List<OMElement> current = new ArrayList<OMElement>();
@@ -175,21 +179,18 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
         return elements;
     }
 
-    public Object getChild(OMElement wrapper, ElementInfo childElement, int index) {
+    public Object getChild(OMElement wrapper, ElementInfo childElement) {
         Iterator children = wrapper.getChildrenWithName(childElement.getQName());
         if (!children.hasNext()) {
-            // No name match, try by index
-            List<List<OMElement>> list = getElements(wrapper);
-            List<OMElement> elements = list.get(index);
-            if (!childElement.isMany()) {
-                return elements.isEmpty() ? null : attachXSIType(childElement, elements.get(0));
-            } else {
-                Object[] array = elements.toArray();
-                for (Object item : array) {
-                    attachXSIType(childElement, (OMElement)item);
-                }
-                return array;
-            }
+            // We used to at this point call getElements(wrapper) to group children
+            // into like elements and then try to index into this list by integer index.
+            // The problem with this approach is that it ignores the possibility that
+            // we have a wrapper child with schema specifying minOccurs="0", in which case
+            // there are no wrapper children with this QName and so the index would be wrong.
+            // 
+            // It doesn't look like anyone is depending on this function currently, so just remove
+            // it and return "null".
+            return null;
         }
         if (!childElement.isMany()) {
             if (children.hasNext()) {
@@ -211,7 +212,7 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
     }
 
     /**
-     * Create xis:type if required 
+     * Create xsi:type if required 
      * @param childElement
      * @param element
      * @return
