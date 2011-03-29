@@ -89,7 +89,7 @@ public class JettyServer implements ServletHost, LifeCycleListener {
 
     // TODO - this static seems to be set by the JSORPC binding unit test
     //        doesn't look to be a great way of doing things
-    //public static int portDefault = 8080;
+    public static int portDefault = 0;
     private int defaultPort;
     private int defaultSSLPort;
 
@@ -128,6 +128,10 @@ public class JettyServer implements ServletHost, LifeCycleListener {
         this.workScheduler = workScheduler;
 
         this.defaultPort = httpPortAllocator.getDefaultPort(HttpScheme.HTTP);
+        //handle backdoor to set specific default port in tests
+        if(portDefault > 0) {
+            this.defaultPort = portDefault;
+        }
         this.defaultSSLPort = httpPortAllocator.getDefaultPort(HttpScheme.HTTPS);
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
