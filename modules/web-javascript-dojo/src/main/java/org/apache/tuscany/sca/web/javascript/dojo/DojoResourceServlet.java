@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.web.javascript.dojo;
@@ -50,8 +50,12 @@ public class DojoResourceServlet extends HttpServlet {
         String contextRoot = URLDecoder.decode(HTTPUtils.getContextRoot(request), HTTPConstants.CHARACTER_ENCODING_UTF8);
         String path = URLDecoder.decode(request.getRequestURI(), HTTPConstants.CHARACTER_ENCODING_UTF8);
 
-        if( path.startsWith(contextRoot + "/dojo") ) {
-            if( ! path.contains("tuscany/AtomService.js")) {
+        System.out.println("contextRoot " + contextRoot);
+        System.out.println("path " + path);
+
+        if( path.startsWith(contextRoot + "/dojo")||
+            path.startsWith(contextRoot + "/dojox")) {
+            if( ! path.contains("tuscany/")) {
                 //this is a workaround where we need to have dojo files in its own folder
                 //to avoid clean target to clean other non dojo resources
                 path = path.substring(contextRoot.length());
@@ -62,7 +66,7 @@ public class DojoResourceServlet extends HttpServlet {
         } else if( path.startsWith("/")) {
             path = path.substring(1);
         }
-        
+
         if(response.getContentType() == null || response.getContentType().length() == 0){
             // Calculate content-type based on extension
             String contentType = HTTPContentTypeMapper.getContentType(path);
@@ -70,9 +74,9 @@ public class DojoResourceServlet extends HttpServlet {
                 response.setContentType(contentType);
             }
         }
-        
+
         response.setCharacterEncoding(HTTPConstants.CHARACTER_ENCODING_UTF8);
-        
+
         // Write the response from the service implementation to the response
         // output stream
         InputStream is = this.getClass().getClassLoader().getResourceAsStream(path);
@@ -80,7 +84,7 @@ public class DojoResourceServlet extends HttpServlet {
             is = this.getClass().getResourceAsStream(path);
         }
         if(is != null) {
-            OutputStream os = response.getOutputStream(); 
+            OutputStream os = response.getOutputStream();
             byte[] buffer = new byte[2048];
             for (;;) {
                 int n = is.read(buffer);
@@ -89,7 +93,7 @@ public class DojoResourceServlet extends HttpServlet {
                 os.write(buffer, 0, n);
             }
             os.flush();
-            os.close();            
+            os.close();
         }
     }
 }

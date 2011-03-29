@@ -50,7 +50,7 @@
                 <include name="dojo-${dojo.version}/dojo/**"/>
                 <exclude name="dojo-${dojo.version}/dojo/tests/**"/>
                 <exclude name="dojo-${dojo.version}/dijit/**"/>
-                <exclude name="dojo-${dojo.version}/dojox/**"/>
+                <include name="dojo-${dojo.version}/dojox/**"/>
                 <exclude name="dojo-${dojo.version}/util/**"/>
             </patternset>
         </unzip>
