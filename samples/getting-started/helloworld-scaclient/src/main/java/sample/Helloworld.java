@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,23 +15,14 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<project>
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-sca</artifactId>
-        <version>2.0-SNAPSHOT</version>
-    </parent>
+ */
+package sample;
 
-    <artifactId>tuscany-samples</artifactId>
-    <groupId>org.apache.tuscany.sca.samples</groupId>
-    <version>2.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Samples</name>
+import org.oasisopen.sca.annotation.Remotable;
 
-    <modules>
-        <module>getting-started</module>
-    </modules>
+@Remotable
+public interface Helloworld {
 
-</project>
+    String sayHello(String name);
+
+}

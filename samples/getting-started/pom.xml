@@ -20,19 +20,18 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-sca</artifactId>
+        <groupId>org.apache.tuscany.sca.samples</groupId>
+        <artifactId>tuscany-samples</artifactId>
         <version>2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>tuscany-samples</artifactId>
-    <groupId>org.apache.tuscany.sca.samples</groupId>
+    <artifactId>tuscany-samples-getting-started</artifactId>
     <version>2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Samples</name>
+    <name>Apache Tuscany SCA Samples Getting Started</name>
 
     <modules>
-        <module>getting-started</module>
+        <module>helloworld</module>
     </modules>
 
 </project>
