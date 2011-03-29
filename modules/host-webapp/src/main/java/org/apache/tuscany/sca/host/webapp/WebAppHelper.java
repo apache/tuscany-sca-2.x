@@ -52,6 +52,7 @@ public class WebAppHelper {
     private static final String NODE_URI = "node.uri";
     private static final String COMPOSITE_URI = "composite.uri";
     public static final String DOMAIN_NAME_ATTR = "org.apache.tuscany.sca.domain.name";
+    public static final String DOMAIN_URI_PROP = "domainURI";
     public static final String SCA_NODE_ATTRIBUTE = Node.class.getName();
     private static NodeFactory factory;
     private static WebAppServletHost host;
@@ -314,6 +315,9 @@ public class WebAppHelper {
                 configuration.setDomainURI(domainURI);
             } else {
                 domainURI = configurator.getInitParameter("org.apache.tuscany.sca.defaultDomainURI");
+                if (domainURI == null) {
+                    domainURI = System.getProperty(DOMAIN_URI_PROP);
+                }
                 if (domainURI != null) {
                     configuration.setDomainURI(getDomainName(domainURI));
                     configuration.setDomainRegistryURI(domainURI);
