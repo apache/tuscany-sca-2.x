@@ -32,6 +32,8 @@
 
     <modules>
         <module>helloworld</module>
+        <module>helloworld-webapp</module>
+        <module>helloworld-scaclient</module>
     </modules>
 
 </project>
