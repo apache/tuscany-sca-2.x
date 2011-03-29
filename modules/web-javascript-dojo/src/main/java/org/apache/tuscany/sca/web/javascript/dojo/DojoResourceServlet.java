@@ -50,9 +50,6 @@ public class DojoResourceServlet extends HttpServlet {
         String contextRoot = URLDecoder.decode(HTTPUtils.getContextRoot(request), HTTPConstants.CHARACTER_ENCODING_UTF8);
         String path = URLDecoder.decode(request.getRequestURI(), HTTPConstants.CHARACTER_ENCODING_UTF8);
 
-        System.out.println("contextRoot " + contextRoot);
-        System.out.println("path " + path);
-
         if( path.startsWith(contextRoot + "/dojo")||
             path.startsWith(contextRoot + "/dojox")) {
             if( ! path.contains("tuscany/")) {
