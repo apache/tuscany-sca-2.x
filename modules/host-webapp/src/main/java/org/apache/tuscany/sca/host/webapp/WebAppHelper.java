@@ -89,12 +89,12 @@ public class WebAppHelper {
         String domainName;
         if (configURI.startsWith("tuscany:vm:")) {
             domainName = configURI.substring("tuscany:vm:".length());
-        } else if (configURI.startsWith("tuscany:")) {
+        } else if (configURI.startsWith("uri:")) {
             int i = configURI.indexOf('?');
             if (i == -1) {
-                domainName = configURI.substring("tuscany:".length());
+                domainName = configURI.substring("uri:".length());
             } else {
-                domainName = configURI.substring("tuscany:".length(), i);
+                domainName = configURI.substring("uri:".length(), i);
             }
         } else {
             domainName = configURI;
