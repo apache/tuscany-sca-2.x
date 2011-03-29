@@ -41,7 +41,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.DefaultResourceServlet;
+import org.apache.tuscany.sca.host.http.extensibility.ExtensibleHttpPortAllocator;
+import org.apache.tuscany.sca.host.http.extensibility.HttpPortAllocator;
 import org.apache.tuscany.sca.work.NotificationListener;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.junit.Assert;
@@ -73,7 +76,7 @@ public class JettyServerTestCase extends TestCase {
 
     private WorkScheduler workScheduler = new WorkScheduler() {
         private ExecutorService executorService = Executors.newCachedThreadPool();
-        
+
         public <T extends Runnable> void scheduleWork(T work) {
             executorService.submit(work);
         }
@@ -87,11 +90,13 @@ public class JettyServerTestCase extends TestCase {
         }
     };
 
+    private HttpPortAllocator httpPortAllocator = new ExtensibleHttpPortAllocator(new DefaultExtensionPointRegistry());
+
     /**
      * Verifies requests are properly routed according to the Servlet mapping
      */
     public void testRegisterServletMapping() throws Exception {
-        JettyServer service = new JettyServer(workScheduler);
+        JettyServer service = new JettyServer(workScheduler, httpPortAllocator);
         service.start();
         TestServlet servlet = new TestServlet();
         service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/", servlet);
@@ -103,12 +108,12 @@ public class JettyServerTestCase extends TestCase {
         service.stop();
         assertTrue(servlet.invoked);
     }
-    
+
     /**
      * Verifies requests are properly routed according to the Servlet mapping
      */
     public void testDeployedURI() throws Exception {
-        JettyServer service = new JettyServer(workScheduler);
+        JettyServer service = new JettyServer(workScheduler,httpPortAllocator);
         service.setDefaultPort(8085);
         service.start();
         TestServlet servlet = new TestServlet();
@@ -134,7 +139,7 @@ public class JettyServerTestCase extends TestCase {
         System.setProperty("javax.net.ssl.keyStore", "target/test-classes/tuscany.keyStore");
         System.setProperty("javax.net.ssl.keyStorePassword", "apache");
         System.setProperty("jetty.ssl.password", "apache");
-        JettyServer service = new JettyServer(workScheduler);
+        JettyServer service = new JettyServer(workScheduler,httpPortAllocator);
         service.start();
         TestServlet servlet = new TestServlet();
         try {
@@ -156,7 +161,7 @@ public class JettyServerTestCase extends TestCase {
 
         conn.connect();
         read(conn.getInputStream());
-        
+
         service.stop();
         assertTrue(servlet.invoked);
 
@@ -166,7 +171,7 @@ public class JettyServerTestCase extends TestCase {
      * Verifies that Servlets can be registered with multiple ports
      */
     public void testRegisterMultiplePorts() throws Exception {
-        JettyServer service = new JettyServer(workScheduler);
+        JettyServer service = new JettyServer(workScheduler,httpPortAllocator);
         service.start();
         TestServlet servlet = new TestServlet();
         service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/", servlet);
@@ -193,7 +198,7 @@ public class JettyServerTestCase extends TestCase {
     }
 
     public void testUnregisterMapping() throws Exception {
-        JettyServer service = new JettyServer(workScheduler);
+        JettyServer service = new JettyServer(workScheduler,httpPortAllocator);
         service.start();
         TestServlet servlet = new TestServlet();
         String uri = "http://127.0.0.1:" + HTTP_PORT + "/foo";
@@ -213,7 +218,7 @@ public class JettyServerTestCase extends TestCase {
     }
 
     public void testRequestSession() throws Exception {
-        JettyServer service = new JettyServer(workScheduler);
+        JettyServer service = new JettyServer(workScheduler,httpPortAllocator);
         service.start();
         TestServlet servlet = new TestServlet();
         service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/", servlet);
@@ -228,14 +233,14 @@ public class JettyServerTestCase extends TestCase {
     }
 
     public void testRestart() throws Exception {
-        JettyServer service = new JettyServer(workScheduler);
+        JettyServer service = new JettyServer(workScheduler,httpPortAllocator);
         service.start();
         service.stop();
         service.stop();
     }
 
     public void testNoMappings() throws Exception {
-        JettyServer service = new JettyServer(workScheduler);
+        JettyServer service = new JettyServer(workScheduler,httpPortAllocator);
         service.start();
         Exception ex = null;
         try {
@@ -248,7 +253,7 @@ public class JettyServerTestCase extends TestCase {
     }
 
     public void testResourceServlet() throws Exception {
-        JettyServer service = new JettyServer(workScheduler);
+        JettyServer service = new JettyServer(workScheduler,httpPortAllocator);
         service.start();
 
         String documentRoot = getClass().getClassLoader().getResource("content/test.html").toString();
@@ -269,7 +274,7 @@ public class JettyServerTestCase extends TestCase {
     }
 
     public void testDefaultServlet() throws Exception {
-        JettyServer service = new JettyServer(workScheduler);
+        JettyServer service = new JettyServer(workScheduler,httpPortAllocator);
         service.start();
 
         String documentRoot = getClass().getClassLoader().getResource("content/test.html").toString();

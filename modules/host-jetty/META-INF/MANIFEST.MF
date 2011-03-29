@@ -10,6 +10,7 @@ Bundle-Description: Apache Tuscany SCA Jetty Servlet Host Extension
 Import-Package: javax.net.ssl;resolution:=optional,
  javax.servlet,
  javax.servlet.http;resolution:=optional,
+ org.apache.tuscany.sca.host.http.extensibility;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.host.http;version="2.0.0",
  org.apache.tuscany.sca.work;version="2.0.0",

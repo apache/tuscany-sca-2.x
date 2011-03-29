@@ -45,9 +45,12 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.host.http.DefaultResourceServlet;
+import org.apache.tuscany.sca.host.http.HttpScheme;
 import org.apache.tuscany.sca.host.http.SecurityContext;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
+import org.apache.tuscany.sca.host.http.extensibility.ExtensibleHttpPortAllocator;
+import org.apache.tuscany.sca.host.http.extensibility.HttpPortAllocator;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
@@ -82,11 +85,13 @@ public class JettyServer implements ServletHost, LifeCycleListener {
     private boolean sendServerVersion;
     private WorkScheduler workScheduler;
 
+    private HttpPortAllocator httpPortAllocator;
+
     // TODO - this static seems to be set by the JSORPC binding unit test
     //        doesn't look to be a great way of doing things
-    public static int portDefault = 8080;
-    private int defaultPort = portDefault;
-    private int defaultSSLPort = 8443;
+    //public static int portDefault = 8080;
+    private int defaultPort;
+    private int defaultSSLPort;
 
     /**
      * Represents a port and the server that serves it.
@@ -115,12 +120,15 @@ public class JettyServer implements ServletHost, LifeCycleListener {
     private org.mortbay.log.Logger jettyLogger;
 
     public JettyServer(ExtensionPointRegistry registry) {
-        this(registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(WorkScheduler.class));
+        this(registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(WorkScheduler.class), ExtensibleHttpPortAllocator.getInstance(registry));
     }
 
-    protected JettyServer(WorkScheduler workScheduler) {
-        this.defaultPort = portDefault;
+    protected JettyServer(WorkScheduler workScheduler, HttpPortAllocator httpPortAllocator) {
+        this.httpPortAllocator = httpPortAllocator;
         this.workScheduler = workScheduler;
+
+        this.defaultPort = httpPortAllocator.getDefaultPort(HttpScheme.HTTP);
+        this.defaultSSLPort = httpPortAllocator.getDefaultPort(HttpScheme.HTTPS);
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 trustStore = System.getProperty("javax.net.ssl.trustStore");
@@ -182,14 +190,11 @@ public class JettyServer implements ServletHost, LifeCycleListener {
     private void configureSSL(SslSocketConnector connector, SecurityContext securityContext) {
         connector.setProtocol("TLS");
         if (securityContext != null) {
-            keyStoreType =
-                securityContext.getSSLProperties().getProperty("javax.net.ssl.keyStoreType", KeyStore.getDefaultType());
+            keyStoreType = securityContext.getSSLProperties().getProperty("javax.net.ssl.keyStoreType", KeyStore.getDefaultType());
             keyStore = securityContext.getSSLProperties().getProperty("javax.net.ssl.keyStore");
             keyStorePassword = securityContext.getSSLProperties().getProperty("javax.net.ssl.keyStorePassword");
 
-            trustStoreType =
-                securityContext.getSSLProperties().getProperty("javax.net.ssl.trustStoreType",
-                                                               KeyStore.getDefaultType());
+            trustStoreType = securityContext.getSSLProperties().getProperty("javax.net.ssl.trustStoreType", KeyStore.getDefaultType());
             trustStore = securityContext.getSSLProperties().getProperty("javax.net.ssl.trustStore");
             trustStorePassword = securityContext.getSSLProperties().getProperty("javax.net.ssl.trustStorePassword");
         }
@@ -205,7 +210,6 @@ public class JettyServer implements ServletHost, LifeCycleListener {
         if (trustStore != null) {
             connector.setNeedClientAuth(true);
         }
-
     }
 
     public String addServletMapping(String suri, Servlet servlet) throws ServletMappingException {
@@ -254,7 +258,7 @@ public class JettyServer implements ServletHost, LifeCycleListener {
                     //                    httpConnector.setPort(portNumber);
                     SslSocketConnector sslConnector = new SslSocketConnector();
                     sslConnector.setPort(portNumber);
-                    // FIXME: [rfeng] We should set the host to be bound but binding-ws-axis2 is passing 
+                    // FIXME: [rfeng] We should set the host to be bound but binding-ws-axis2 is passing
                     // in an absolute URI with host set to one of the ip addresses
                     sslConnector.setHost(host);
                     configureSSL(sslConnector, securityContext);
@@ -262,7 +266,7 @@ public class JettyServer implements ServletHost, LifeCycleListener {
                 } else {
                     SelectChannelConnector selectConnector = new SelectChannelConnector();
                     selectConnector.setPort(portNumber);
-                    // FIXME: [rfeng] We should set the host to be bound but binding-ws-axis2 is passing 
+                    // FIXME: [rfeng] We should set the host to be bound but binding-ws-axis2 is passing
                     // in an absolute URI with host set to one of the ip addresses
                     selectConnector.setHost(host);
                     server.setConnectors(new Connector[] {selectConnector});
@@ -283,7 +287,7 @@ public class JettyServer implements ServletHost, LifeCycleListener {
                 server.setSendServerVersion(sendServerVersion);
                 server.start();
 
-                // Keep track of the new server and Servlet handler 
+                // Keep track of the new server and Servlet handler
                 port = new Port(server, servletHandler);
                 ports.put(portNumber, port);
 
@@ -432,7 +436,7 @@ public class JettyServer implements ServletHost, LifeCycleListener {
             return null;
         }
 
-        // Remove the Servlet mapping for the given Servlet 
+        // Remove the Servlet mapping for the given Servlet
         ServletHandler servletHandler = port.getServletHandler();
         Servlet servlet = null;
         List<ServletMapping> mappings =
@@ -474,13 +478,13 @@ public class JettyServer implements ServletHost, LifeCycleListener {
         if (port == null) {
             // TODO - EPR - SL commented out exception temporarily as the runtime is shared
             //              between multiple nodes in a VM and shutting down one node blows
-            //              up any other nodes when they shut down. 
+            //              up any other nodes when they shut down.
             //throw new IllegalStateException("No servlet registered at this URI: " + suri);
             logger.warning("No servlet registered at this URI: " + suri);
             return null;
         }
 
-        // Remove the Servlet mapping for the given Servlet 
+        // Remove the Servlet mapping for the given Servlet
         ServletHandler servletHandler = port.getServletHandler();
         Servlet removedServlet = null;
         List<ServletMapping> mappings =
