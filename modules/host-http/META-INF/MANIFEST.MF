@@ -4,7 +4,8 @@ Export-Package: org.apache.tuscany.sca.host.http;version="2.0.0";
    org.apache.tuscany.sca.core,
    org.apache.tuscany.sca.extensibility,
    javax.servlet.http",
- org.apache.tuscany.sca.host.http.client;version="2.0.0";uses:="org.apache.http.client"
+ org.apache.tuscany.sca.host.http.client;version="2.0.0";uses:="org.apache.http.client",
+ org.apache.tuscany.sca.host.http.extensibility;version="2.0.0"
 SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA HTTP Servlet Host Extension Point
 Bundle-Vendor: The Apache Software Foundation
