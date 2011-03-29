@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.util.List;
@@ -81,51 +82,54 @@ public class JAXRSOperationSelectorInterceptor implements Interceptor {
     }
 
     public Message invoke(Message msg) {
-        try {
-            HTTPContext bindingContext = (HTTPContext)msg.getBindingContext();
-            
-            // By-pass the operation selector
-            if (bindingContext == null) {
-                return getNext().invoke(msg);
-            }
 
-            String path = URLDecoder.decode(HTTPUtils.getRequestPath(bindingContext.getHttpRequest()), "UTF-8");
+        HTTPContext bindingContext = (HTTPContext)msg.getBindingContext();
 
-            if (path.startsWith("/")) {
-                path = path.substring(1);
-            }
-
-            List<Operation> operations =
-                filterOperationsByHttpMethod(interfaceContract, bindingContext.getHttpRequest().getMethod());
-
-            Operation operation = findOperation(path, operations);
-
-            final JavaOperation javaOperation = (JavaOperation)operation;
-            final Method method = javaOperation.getJavaMethod();
-
-            if (path != null && path.length() > 0) {
-                if (method.getAnnotation(Path.class) != null) {
-                    msg.setBody(new Object[] {path});
-                }
-            }
-
-            // FIXME: [rfeng] We should follow JAX-RS rules to identify the entity parameter
-            Class<?>[] paramTypes = method.getParameterTypes();
-            if (paramTypes.length == 1) {
-                Class<?> type = paramTypes[0];
-                InputStream is = (InputStream)((Object[])msg.getBody())[0];
-                Object target = convert(is, bindingContext.getHttpRequest().getContentType(), type);
-                msg.setBody(new Object[] {target});
-            } else if (paramTypes.length == 0) {
-                msg.setBody(null);
-            }
-
-            msg.setOperation(operation);
-
+        // By-pass the operation selector
+        if (bindingContext == null) {
             return getNext().invoke(msg);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
+
+        String path = null;
+        try {
+            path = URLDecoder.decode(HTTPUtils.getRequestPath(bindingContext.getHttpRequest()), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(e);
+        }
+
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+
+        List<Operation> operations =
+            filterOperationsByHttpMethod(interfaceContract, bindingContext.getHttpRequest().getMethod());
+
+        Operation operation = findOperation(path, operations);
+
+        final JavaOperation javaOperation = (JavaOperation)operation;
+        final Method method = javaOperation.getJavaMethod();
+
+        if (path != null && path.length() > 0) {
+            if (method.getAnnotation(Path.class) != null) {
+                msg.setBody(new Object[] {path});
+            }
+        }
+
+        // FIXME: [rfeng] We should follow JAX-RS rules to identify the entity parameter
+        Class<?>[] paramTypes = method.getParameterTypes();
+        if (paramTypes.length == 1) {
+            Class<?> type = paramTypes[0];
+            InputStream is = (InputStream)((Object[])msg.getBody())[0];
+            Object target = convert(is, bindingContext.getHttpRequest().getContentType(), type);
+            msg.setBody(new Object[] {target});
+        } else if (paramTypes.length == 0) {
+            msg.setBody(null);
+        }
+
+        msg.setOperation(operation);
+
+        return getNext().invoke(msg);
+
     }
 
     private Object convert(InputStream content, String contentType, Class<?> type) {

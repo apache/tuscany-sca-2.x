@@ -23,7 +23,9 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Scope;
@@ -37,21 +39,26 @@ public class CustomerServiceImpl implements CustomerService {
         customers.put("John", new Customer("John", "John", "john@domain.com"));
     }
 
-    public Customer get() {
-        return customers.values().iterator().next();
+    public Customer get(String name) {
+        Customer c = customers.get(name);
+        if (c == null) {
+            // Not found
+            throw new WebApplicationException(Status.NOT_FOUND);
+        }
+        return c;
     }
-    
+
     public Response getResponse() {
-        return Response.ok(get()).build();
+        return Response.ok(get("John")).build();
     }
 
     public Response addCustomer(Customer customer) {
         customers.put(customer.getName(), customer);
         return Response.created(URI.create("/001")).build();
     }
-    
+
     public void updateCustomer(Customer customer) {
-        if(customers.get(customer.getName()) != null) {
+        if (customers.get(customer.getName()) != null) {
             customers.put(customer.getName(), customer);
         }
     }

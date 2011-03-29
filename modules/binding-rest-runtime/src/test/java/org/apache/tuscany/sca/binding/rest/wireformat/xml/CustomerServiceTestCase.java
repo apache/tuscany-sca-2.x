@@ -73,15 +73,9 @@ public class CustomerServiceTestCase {
     @Test
     public void testGetInvocation() throws Exception {
         WebConversation wc = new WebConversation();
-        WebRequest request = new GetMethodWebRequest(SERVICE_URL);
+        WebRequest request = new GetMethodWebRequest(SERVICE_URL+"/John");
         request.setHeaderField("Content-Type", "application/xml");
         WebResponse response = wc.getResource(request);
-
-        //for debug purposes
-        //list the response headers
-        //for(String headerField : response.getHeaderFieldNames()) {
-        //    System.out.println(">>> Header:" + headerField + " - " + response.getHeaderField(headerField));
-        //}
 
         //for debug purposes
         System.out.println(">>>" + GET_RESPONSE);
@@ -92,6 +86,16 @@ public class CustomerServiceTestCase {
         Assert.assertEquals("tuscany", response.getHeaderField("X-Tuscany"));
         Assert.assertEquals(GET_RESPONSE, response.getText());
 
+    }
+    
+    @Test
+    public void testGetInvocationNotFound() throws Exception {
+        WebConversation wc = new WebConversation();
+        WebRequest request = new GetMethodWebRequest(SERVICE_URL+"/Foo");
+        request.setHeaderField("Content-Type", "application/xml");
+        WebResponse response = wc.getResource(request);
+        
+        Assert.assertEquals(404, response.getResponseCode());
     }
 
     @Test
