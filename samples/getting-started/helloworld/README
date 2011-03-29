@@ -10,14 +10,14 @@ The composite defines an SCA component, HelloworldComponent, which provides a He
 the component is implemented by a Java class. 
 
 You can use the contribution by starting the composite in the Tuscany Shell. To do that run the 
-following command in the helloworld-contribution folder:
+following command in the helloworld folder:
 
    mvn tuscany:run 
 
 Alternatively, the Tuscany Shell can be started with the scripts in the Tuscany binary distribution 
 bin folder. To do that run the following command at the root of a Tuscany binary distribution:
 
-   bin\tuscany.bat samples\getting-started\helloworld-contribution  
+   bin\tuscany.bat samples\getting-started\helloworld
 
 Once the Shell has been started with one of those methods you can use Shell commands to explore
 the SCA domain, for example, use the "installed" command to get the status of installed contributions, 
