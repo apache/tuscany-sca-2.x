@@ -25,6 +25,7 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -40,6 +41,7 @@ import com.hazelcast.core.HazelcastInstance;
  */
 public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
 
+    RegistryConfig rc;
     HazelcastClient hazelcastClient;
 
     public HazelcastClientEndpointRegistry(ExtensionPointRegistry registry,
@@ -55,8 +57,8 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
             throw new IllegalStateException("The registry has already been started");
         }
         initHazelcastClientInstance();
-        endpointMap = hazelcastClient.getMap(domainURI + "/Endpoints");
-        endpointOwners = hazelcastClient.getMultiMap(domainURI + "/EndpointOwners");
+        endpointMap = hazelcastClient.getMap(rc.getUserid() + "/Endpoints");
+        endpointOwners = hazelcastClient.getMultiMap(rc.getUserid() + "/EndpointOwners");
     }
 
     @Override
@@ -69,8 +71,11 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
     }
 
     private void initHazelcastClientInstance() {
-        this.properties = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
-        RegistryConfig rc = new RegistryConfig(properties);
+        if (this.domainURI == null) {
+            this.properties = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
+            this.domainURI = properties.getProperty("defaultDomainName", "default");
+        }
+        this.rc = RegistryConfig.parseConfigURI(domainURI);
         if (rc.getWKAs().size() < 1) {
             String ip = getDefaultWKA();
             if (ip != null) {
@@ -80,7 +85,6 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
         if (rc.getWKAs().size() < 1) {
             throw new IllegalArgumentException("Must specify remote IP address(es) for domain");
         }
-        this.domainURI = properties.getProperty("defaultDomainName", "default");
         this.hazelcastClient = HazelcastClient.newHazelcastClient(rc.getUserid(), rc.getPassword(), rc.getWKAs().toArray(new String[0]));
     }
 
