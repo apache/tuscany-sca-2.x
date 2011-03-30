@@ -25,7 +25,8 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.util.Enumeration;
 import java.util.Map;
-import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -85,6 +86,16 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
         if (rc.getWKAs().size() < 1) {
             throw new IllegalArgumentException("Must specify remote IP address(es) for domain");
         }
+        
+        // Hazelcast is outputs a lot on info level log messages which are unnecessary for us,
+        // so disable info logging for hazelcast client classes unless fine logging is on for tuscany.
+        if (!Logger.getLogger(this.getClass().getName()).isLoggable(Level.CONFIG)) {
+            Logger hzl = Logger.getLogger("com.hazelcast");
+            if (!hzl.isLoggable(Level.FINE)) {
+                hzl.setLevel(Level.WARNING);
+            }
+        }
+
         this.hazelcastClient = HazelcastClient.newHazelcastClient(rc.getUserid(), rc.getPassword(), rc.getWKAs().toArray(new String[0]));
     }
 

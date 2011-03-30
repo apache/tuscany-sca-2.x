@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -121,6 +122,20 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     }
 
     private void initHazelcastInstance() {
+        
+        // Hazelcast is outputs a lot on info level log messages which are unnecessary for us,
+        // so disable info logging for hazelcast client classes unless fine logging is on for tuscany.
+        if (!logger.isLoggable(Level.CONFIG)) {
+            Logger hzl = Logger.getLogger("com.hazelcast");
+            if (!hzl.isLoggable(Level.FINE)) {
+                hzl.setLevel(Level.WARNING);
+                // we want the ClusterManager info messages so we can see nodes come and go
+                Logger.getLogger("com.hazelcast.cluster.ClusterManager").setLevel(Level.INFO);
+                // we don't want any of the XmlConfigBuilder warnings as set the config programatically
+                Logger.getLogger("com.hazelcast.config.XmlConfigBuilder").setLevel(Level.SEVERE);
+                }
+        }
+
         Config config = getHazelcastConfig();
 
         // do this when theres a way to have adders be the key owners
@@ -141,6 +156,9 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
                            "1");
 
         this.hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+        if (logger.isLoggable(Level.INFO)) {
+            logger.info("started node in domain '" + domainURI + "' + at: " + hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress());
+        }
     }
 
     protected Config getHazelcastConfig() {
