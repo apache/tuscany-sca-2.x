@@ -31,7 +31,6 @@
     <name>Apache Tuscany SCA Samples</name>
 
     <modules>
-        <module>applications</module>
         <module>getting-started</module>
     </modules>
 
