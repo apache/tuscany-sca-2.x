@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,23 +15,40 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<project>
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-sca</artifactId>
-        <version>2.0-SNAPSHOT</version>
-    </parent>
+ */
 
-    <artifactId>tuscany-samples</artifactId>
-    <version>2.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Samples</name>
+package services;
 
-    <modules>
-        <module>applications</module>
-        <module>getting-started</module>
-    </modules>
+public class Item {
+    private String name;
+    private String price;
+    
+    public Item() {
+    }
+    
+    public Item(String name, String price) {
+        this.name = name;
+        this.price = price;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public String getPrice() {
+        return price;
+    }
+    
+    public void setPrice(String price) {
+        this.price = price;
+    }
 
-</project>
+    public String toString() {
+       return "Item name: " + name + ", price: " + price;
+    }
+
+}

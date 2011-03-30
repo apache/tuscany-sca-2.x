@@ -17,22 +17,22 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project>
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-sca</artifactId>
-        <version>2.0-SNAPSHOT</version>
-    </parent>
+<composite	xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+		xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
+		targetNamespace="http://store"
+		name="store-client">
+		
+    <component name="StoreClient">
+        <implementation.java class="client.ShopperImpl"/>
+		<reference name="catalog">
+		 	<tuscany:binding.jsonrpc uri="http://localhost:8080/Catalog"/>
+		 </reference>
+		 <reference name="shoppingCart">
+		 	<tuscany:binding.atom uri="http://localhost:8080/ShoppingCart/Cart"/>
+		 </reference>
+		 <reference name="shoppingTotal">
+		 	<tuscany:binding.jsonrpc uri="http://localhost:8080/ShoppingCart/Total"/>
+		 </reference>
+    </component>
 
-    <artifactId>tuscany-samples</artifactId>
-    <version>2.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Samples</name>
-
-    <modules>
-        <module>applications</module>
-        <module>getting-started</module>
-    </modules>
-
-</project>
+</composite>

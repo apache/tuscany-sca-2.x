@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,23 +15,25 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<project>
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-sca</artifactId>
-        <version>2.0-SNAPSHOT</version>
-    </parent>
+ */
 
-    <artifactId>tuscany-samples</artifactId>
-    <version>2.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Samples</name>
+package launch;
 
-    <modules>
-        <module>applications</module>
-        <module>getting-started</module>
-    </modules>
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
-</project>
+public class Launch {
+    public static void main(String[] args) throws Exception {
+        System.out.println("Starting ...");
+        String contribution = ContributionLocationHelper.getContributionLocation(Launch.class);
+        Node node = NodeFactory.newInstance().createNode("store.composite", new Contribution("test", contribution));
+        node.start();
+        System.out.println("store.composite ready for big business !!!");
+        System.in.read();
+        System.out.println("Stopping ...");
+        node.stop();
+        System.out.println();
+    }
+}
