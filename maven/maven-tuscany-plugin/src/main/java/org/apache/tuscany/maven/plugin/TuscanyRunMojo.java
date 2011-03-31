@@ -26,6 +26,12 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletException;
+
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.core.AprLifecycleListener;
+import org.apache.catalina.core.StandardServer;
+import org.apache.catalina.startup.Tomcat;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -114,9 +120,36 @@ public class TuscanyRunMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (mainClass != null) {
             executeMainMethod();
+        } else if (".war".equals(packaging)) {
+            try {
+                executeTomcat();
+            } catch (Exception e) {
+                throw new MojoExecutionException("Exception running Tuscany/Tomcat", e);
+            }
         } else {
             executeShell();
         }
+    }
+
+    private void executeTomcat() throws ServletException, LifecycleException, MalformedURLException {
+        getLog().info("Starting Tuscany/Tomcat...");
+        
+        Tomcat tomcat = new Tomcat();
+        tomcat.setPort(8080);
+
+        tomcat.setBaseDir("target");
+        String appBase = "../src/main/webapp";
+        tomcat.getHost().setAppBase(".");
+        String contextPath = "/" + artifactId;
+
+        StandardServer server = (StandardServer)tomcat.getServer();
+        server.setParentClassLoader(getMainClassLoader());
+        AprLifecycleListener listener = new AprLifecycleListener();
+        server.addLifecycleListener(listener);
+
+        tomcat.addWebapp(contextPath, appBase);
+        tomcat.start();
+        tomcat.getServer().await();
     }
 
     private void executeShell() throws MojoExecutionException {
