@@ -151,8 +151,12 @@ public class TuscanyRunMojo extends AbstractMojo {
 
             File contributionFile = new File(buildDirectory.getParent(), finalName.getName());
             if (!contributionFile.exists()) {
+                contributionFile = new File(buildDirectory.getParent(), "classes");
+            }
+            if (!contributionFile.exists()) {
                 contributionFile = new File(buildDirectory.getParent(), finalName.getName() + packaging);
             }
+            
             String contribution = contributionFile.toURI().toURL().toString();
             getLog().info("Project contribution: " + contribution);
             cs.add(contribution);
