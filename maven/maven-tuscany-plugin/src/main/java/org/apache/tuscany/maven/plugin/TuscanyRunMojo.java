@@ -206,8 +206,13 @@ public class TuscanyRunMojo extends AbstractMojo {
 
     private ClassLoader getMainClassLoader() throws MalformedURLException {
         ClassLoader parent = Thread.currentThread().getContextClassLoader();
-        URL thisProject = new File( project.getBuild().getOutputDirectory()).toURI().toURL(); 
-        return new URLClassLoader(new URL[]{thisProject}, parent );
+        List<URL> classPathEntries = new ArrayList<URL>();
+        classPathEntries.add(new File(project.getBuild().getOutputDirectory()).toURI().toURL());
+        for (Object o : project.getRuntimeArtifacts()) {
+            Artifact a = (Artifact) o;
+            classPathEntries.add( a.getFile().toURI().toURL() );
+        }
+        return new URLClassLoader((URL[])classPathEntries.toArray(new URL[]{}), parent );
     }
 
 }
