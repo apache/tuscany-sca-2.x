@@ -34,6 +34,8 @@ import org.apache.tuscany.sca.endpoint.hazelcast.HazelcastEndpointRegistry;
 import org.apache.tuscany.sca.endpoint.hazelcast.RegistryConfig;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 
+import com.hazelcast.client.ClientProperties;
+import com.hazelcast.client.ClientProperties.ClientPropertyName;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
 
@@ -96,7 +98,9 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
             }
         }
 
-        this.hazelcastClient = HazelcastClient.newHazelcastClient(rc.getUserid(), rc.getPassword(), rc.getWKAs().toArray(new String[0]));
+        ClientProperties clientProps = ClientProperties.crateBaseClientProperties(rc.getUserid(), rc.getPassword());
+        clientProps.setPropertyValue(ClientPropertyName.INIT_CONNECTION_ATTEMPTS_LIMIT, "1");        
+        this.hazelcastClient = HazelcastClient.newHazelcastClient(clientProps, rc.getWKAs().toArray(new String[0]));
     }
 
     @Override
