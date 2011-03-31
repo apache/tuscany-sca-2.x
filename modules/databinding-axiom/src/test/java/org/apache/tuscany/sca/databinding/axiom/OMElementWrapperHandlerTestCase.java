@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -79,6 +80,7 @@ public class OMElementWrapperHandlerTestCase {
     // Would be nice to do a "set" test too.
 
     @Test
+    @Ignore("TUSCANY-3857")
     public void testGetChildren() {
         try {
             OMElement wrapperElem = AXIOMUtil.stringToOM(WRAPPER_XML);
