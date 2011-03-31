@@ -19,7 +19,10 @@
 package org.apache.tuscany.maven.plugin;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +101,25 @@ public class TuscanyRunMojo extends AbstractMojo {
      */
     private String[] contributions;
 
+    /**
+     * @parameter expression="${mainClass}"
+     */
+    private String mainClass;
+
+    /**
+     * @parameter expression="${arguments}"
+     */
+    private String[] arguments;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (mainClass != null) {
+            executeMainMethod();
+        } else {
+            executeShell();
+        }
+    }
+
+    private void executeShell() throws MojoExecutionException {
         getLog().info("Starting Tuscany Shell...");
 
         List<String> contributionList = new ArrayList<String>();
@@ -165,4 +186,28 @@ public class TuscanyRunMojo extends AbstractMojo {
             throw new MojoExecutionException("", e);
         }
     }
+
+    public void executeMainMethod() throws MojoExecutionException, MojoFailureException {
+        getLog().info("Invoking " + mainClass + " class main method...");
+        
+        if (arguments == null) {
+            arguments = new String[0];
+        }
+
+        try {
+            Method main = getMainClassLoader().loadClass(mainClass).getMethod("main", new Class[] {String[].class});
+            main.invoke(main, new Object[] {arguments});
+        } catch (NoSuchMethodException e) {
+            throw new MojoExecutionException("The specified mainClass doesn't contain a main method with appropriate signature", e);
+        } catch (Exception e) {
+            throw new MojoExecutionException("exception invoking main method", e);
+        }
+    }
+
+    private ClassLoader getMainClassLoader() throws MalformedURLException {
+        ClassLoader parent = Thread.currentThread().getContextClassLoader();
+        URL thisProject = new File( project.getBuild().getOutputDirectory()).toURI().toURL(); 
+        return new URLClassLoader(new URL[]{thisProject}, parent );
+    }
+
 }
