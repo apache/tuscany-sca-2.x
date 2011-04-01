@@ -9,12 +9,16 @@ This project has a Java class with a main method which uses the SCAClient API to
 service in a remote SCA domain.
 
 Before running this sample you must have a helloworld service running in a SCA domain somewhere,
-for example, you may do using a separate command prompt and running the Tuscany 
-"Getting Started - Helloworld Sample" with the command "mvn tuscany:run -DdomainURI=uri:default".
+for example, you can do that by using a separate command prompt to run the Tuscany 
+"Getting Started - Helloworld Sample" with the command 
 
+   mvn tuscany:run -DdomainURI=uri:default
+
+(including that domainURI parameter activates the Tuscany distributed domain) 
+ 
 You can then run this SCAClient sample with the Maven command: 
 
-   mvn exec:java
+   mvn tuscany:run
 
 You should see the following oputput:
 
