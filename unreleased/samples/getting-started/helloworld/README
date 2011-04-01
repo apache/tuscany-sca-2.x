@@ -1,0 +1,43 @@
+Tuscany - Getting Started - Helloworld Sample
+---------------------------------------------
+
+This sample demonstrates a simple helloworld style SCA application and how to run that with Tuscany.
+
+See the README in the top-level samples folder for general information on the Tuscany samples.
+
+This project creates an SCA contribution with a deployable composite named helloworld.composite.
+The composite defines an SCA component, HelloworldComponent, which provides a Helloworld service, 
+the component is implemented by a Java class. 
+
+You can use the contribution by starting the composite in the Tuscany Shell. To do that run the 
+following command in the helloworld folder:
+
+   mvn tuscany:run 
+
+Alternatively, the Tuscany Shell can be started with the scripts in the Tuscany binary distribution 
+bin folder. To do that run the following command at the root of a Tuscany binary distribution:
+
+   bin\tuscany.bat samples\getting-started\helloworld
+
+Once the Shell has been started with one of those methods you can use Shell commands to explore
+the SCA domain, for example, use the "installed" command to get the status of installed contributions, 
+"services" to see the available component services, and you may test calling the helloworld service by 
+using the "invoke" command:
+
+   invoke HelloworldComponent sayHello yourName
+
+---
+ 
+This sample was created by the Tuscany contribution-jar Maven archetype. You can use that archetype to 
+create your own SCA contribution projects by running the following Maven command:
+
+   mvn archetype:generate -DarchetypeCatalog=http://tuscany.apache.org
+
+then at the prompt select 1 to choose the contribution-jar archetype and then answer the questions. 
+This project used the following answers:
+
+   Define value for property 'groupId': : org.apache.tuscany.sca.samples
+   Define value for property 'artifactId': : helloworld-contribution
+   Define value for property 'version': 1.0-SNAPSHOT: 2.0-SNAPSHOT
+   Define value for property 'package': org.apache.tuscany.sca.samples: sample  
+

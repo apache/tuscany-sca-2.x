@@ -1,0 +1,32 @@
+Tuscany - Getting Started - Helloworld WebApp Sample
+----------------------------------------------------
+
+This sample demonstrates how to use SCA contributions with Web Applications
+
+See the README in the top-level samples folder for general information on the Tuscany samples.
+
+This sample project creates a .war web application which includes Tuscany. The SCA contribution
+from the helloworld sample is included within the war and its SCA composite started by the webapp,
+and there is a JSP page which shows how to invoke SCA services by using the SCA taglib.
+
+As this sample creates a web application .war archive there is a manual step to deploy the WAR file
+to your web application server. The archive is the helloworld-webapp-<version>.war in the target folder.
+Alternatively, you can run it by using the Maven Tomcat plugin by using the following command:
+
+   mvn tomcat:run
+
+or if you prefer Jetty then:
+
+   mvn jetty:run
+
+Once the web app is running use your browser to visit the following URL;
+
+http://localhost:8080/helloworld-webapp
+
+(The port and hostname will of course vary depending on your local installation) 
+
+You should then see the web page return the following:
+
+   Calling HelloworldService sayHello("world") returns:
+
+   Hello world 
