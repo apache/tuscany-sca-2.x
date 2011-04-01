@@ -64,6 +64,11 @@
           <version>0.9.95-huynhjl</version>
        </dependency>
        <dependency>
+          <groupId>org.mortbay.jetty</groupId>
+          <artifactId>jetty</artifactId>
+          <version>6.1.19</version>
+       </dependency>
+       <dependency>
           <groupId>org.apache.tomcat.embed</groupId>
           <artifactId>tomcat-embed-core</artifactId>
           <version>7.0.8</version>
