@@ -80,7 +80,7 @@
                    <artifactItems>
                      <artifactItem>
                        <groupId>org.apache.tuscany.sca.samples</groupId>
-                       <artifactId>helloworld-contribution</artifactId>
+                       <artifactId>helloworld</artifactId>
                        <version>${project.version}</version>
                        <!-- should really go in the target folder but i can't get jetty:run or tomcat:run to work using that -->
                        <outputDirectory>src/main/webapp/WEB-INF/sca-contributions</outputDirectory>
@@ -90,6 +90,13 @@
               </execution>
             </executions>
           </plugin>
+
+          <!-- to support running thw webapp with mvn tuscany:run -->
+         <plugin>
+            <groupId>org.apache.tuscany.maven.plugins</groupId>
+            <artifactId>maven-tuscany-plugin</artifactId>
+            <version>${tuscany.version}</version>
+         </plugin>
 
           <!-- to support using mvn jetty:run and also to run the webapp for the integration test -->
           <plugin>
