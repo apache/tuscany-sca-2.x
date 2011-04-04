@@ -708,6 +708,16 @@ public class SpringXMLComponentTypeLoader {
                                List<SpringSCAPropertyElement> scaproperties,
                                Monitor monitor) throws ContributionReadException {
 
+        // The value of the @name attribute of an <sca:service/> subelement of a <beans/> element 
+        // MUST be unique amongst the <service/> subelements of the <beans/> element.
+        for (SpringSCAServiceElement serviceElement : services) {
+            for (SpringSCAServiceElement x : services) {
+                if (serviceElement != x && serviceElement.getName().equals(x.getName())) {
+                    error(monitor, "ScaServiceNameNotUnique", beans);
+                }
+            }
+        }
+
         // The @target attribute of a <service/> subelement of a <beans/> element 
         // MUST have the value of the @name attribute of one of the <bean/> 
         // subelements of the <beans/> element.    	
