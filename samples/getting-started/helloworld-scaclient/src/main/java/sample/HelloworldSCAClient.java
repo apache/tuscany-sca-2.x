@@ -32,15 +32,14 @@ public class HelloworldSCAClient {
         if (domainURI == null || domainURI.length() < 1) {
             domainURI = "uri:default";
         }
-        System.out.println("HelloworldSCAClient, using domainURI " + domainURI);
-        
-        String name = args.length < 1 ? "world" : args[0];
 
+        System.out.println("HelloworldSCAClient, using domainURI " + domainURI);
         SCAClientFactory factory = SCAClientFactory.newInstance(URI.create(domainURI));
+
+        String name = args.length < 1 ? "world" : args[0];
+        System.out.println("Calling HelloworldComponent.sayHello(\"" + name + "\"):");
         Helloworld service = factory.getService(Helloworld.class, "HelloworldComponent");
-        
-        System.out.println("Calling HelloworldComponent.sayHello(\"" + name + "\")");
         System.out.println(service.sayHello(name));
-    }
+     }
     
 }
