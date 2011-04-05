@@ -65,6 +65,8 @@
    <build>
 
       <plugins>
+
+         <!-- to support running the composite with mvn tuscany:run -->
          <plugin>
             <groupId>org.apache.tuscany.maven.plugins</groupId>
             <artifactId>maven-tuscany-plugin</artifactId>
