@@ -57,12 +57,15 @@
          <groupId>org.apache.tuscany.sca</groupId>
          <artifactId>tuscany-base-runtime</artifactId>
          <version>${tuscany.version}</version>
+         <scope>test</scope>
       </dependency>
       
+      <!-- this is for the Tuscany distributed domain support -->
       <dependency>
          <groupId>org.apache.tuscany.sca</groupId>
          <artifactId>tuscany-domain-hazelcast</artifactId>
          <version>${tuscany.version}</version>
+         <scope>test</scope>
       </dependency>
 
    </dependencies>
@@ -70,6 +73,18 @@
    <build>
 
       <plugins>
+
+         <!-- to support running the application with mvn tuscany:run -->
+         <plugin>
+            <groupId>org.apache.tuscany.maven.plugins</groupId>
+            <artifactId>maven-tuscany-plugin</artifactId>
+            <version>${tuscany.version}</version>
+            <configuration>
+              <mainClass>sample.HelloworldSCAClient</mainClass>
+            </configuration>
+         </plugin>
+
+         <!-- to support running the application with mvn exec:java -->
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
@@ -83,8 +98,10 @@
             </executions>
             <configuration>
               <mainClass>sample.HelloworldSCAClient</mainClass>
+              <classpathScope>test</classpathScope>
             </configuration>
-          </plugin>
+         </plugin>
+
       </plugins>
     </build>
 </project>
