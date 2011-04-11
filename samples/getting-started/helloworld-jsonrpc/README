@@ -1,0 +1,27 @@
+Tuscany - Getting Started - Helloworld Sample
+---------------------------------------------
+
+This sample demonstrates a simple helloworld style SCA application and how to run that with Tuscany.
+
+See the README in the top-level samples folder for general information on the Tuscany samples.
+
+This project creates an SCA contribution with a deployable composite named helloworld.composite.
+The composite defines an SCA component, HelloworldComponent, which provides a Helloworld service, 
+the component is implemented by a Java class. 
+
+You can use the contribution by starting the composite in the Tuscany Shell. To do that run the 
+following command in the helloworld folder:
+
+   mvn tuscany:run 
+
+
+
+   http://localhost:8080/HelloworldComponent/Helloworld?method=sayHello&params=WyJXb3JsZCJd&id=1
+
+
+
+   {"id":1,"result":"Hello World"}
+
+
+
+
