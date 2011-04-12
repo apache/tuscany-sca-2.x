@@ -24,6 +24,13 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.oasisopen.sca.ServiceReference;
 
@@ -61,6 +68,12 @@ public class ReferenceTag extends TagSupport {
             throw new JspException("Reference '" + name + "' type class not found: " + type);
         }
         
+        try {
+            setInterfaceContract(component, typeClass);
+        } catch (InvalidInterfaceException e) {
+            throw new JspException("Exception creating interface", e);
+        }
+        
         ServiceReference<?> sr = component.getComponentContext().getServiceReference(typeClass, name);
         if (sr == null) {
             throw new JspException("Reference '" + name + "' undefined");
@@ -93,5 +106,23 @@ public class ReferenceTag extends TagSupport {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * Implementation.web components currently don't use introspection to find the component type so unless an interface
+     * is explicitly defined on a refererence with <interface.java> then the InterfaceContract will be null. This will
+     * check for that and set the InterfaceContract from the Java class of the JSP tag.
+     */
+    private void setInterfaceContract(RuntimeComponent component, Class<?> typeClass) throws InvalidInterfaceException {
+        ComponentReference ref = component.getReference(name);
+        if (ref.getInterfaceContract() == null) {
+            ExtensionPointRegistry epr = component.getComponentContext().getExtensionPointRegistry();
+            FactoryExtensionPoint fep = epr.getExtensionPoint(FactoryExtensionPoint.class);
+            JavaInterfaceFactory jif = fep.getFactory(JavaInterfaceFactory.class);
+            JavaInterface javaIface = jif.createJavaInterface(typeClass);
+            InterfaceContract interfaceContract = jif.createJavaInterfaceContract();
+            interfaceContract.setInterface(javaIface);
+            ref.setInterfaceContract(interfaceContract);
+        }
     }
 }
