@@ -24,7 +24,6 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInMessageReceiver;
-import org.apache.tuscany.sca.interfacedef.Operation;
 
 public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
 
