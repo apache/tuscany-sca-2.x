@@ -290,17 +290,16 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
             String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
             String endpointURI = endpoint.getURI();
             
-// TODO: seems to be a txn bug in Hazelcast, see http://code.google.com/p/hazelcast/issues/detail?id=258 
-//            Transaction txn = hazelcastInstance.getTransaction();
-//            txn.begin();
-//            try {
+            Transaction txn = hazelcastInstance.getTransaction();
+            txn.begin();
+            try {
                 endpointOwners.remove(localMemberAddr, endpointURI);
                 endpointMap.remove(endpointURI);
-//                txn.commit();
-//            } catch (Throwable e) {
-//                txn.rollback();
-//                throw new ServiceRuntimeException(e);
-//            }
+                txn.commit();
+            } catch (Throwable e) {
+                txn.rollback();
+                throw new ServiceRuntimeException(e);
+            }
             localEndpoints.remove(endpointURI);
             logger.info("Removed endpoint - " + endpoint);
         }
