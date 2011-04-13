@@ -19,11 +19,6 @@
 
 package org.apache.tuscany.sca.binding.hazelcast;
 
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.Contract;
-import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
-import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
-import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -42,22 +37,15 @@ public class HazelcastBindingProviderFactory implements BindingProviderFactory<H
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
-        InterfaceContract interfaceContract = createDOMInterfaceContract(endpointReference.getComponent(), endpointReference.getReference());       
+        InterfaceContract interfaceContract = endpointReference.getGeneratedWSDLContract(endpointReference.getComponentReferenceInterfaceContract());
+        interfaceContract.getInterface().resetDataBinding(DOMDataBinding.NAME);
         return new HazelcastReferenceBindingProvider(extensionsRegistry, endpointReference.getBinding().getURI(), interfaceContract);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {
-        InterfaceContract interfaceContract = createDOMInterfaceContract(endpoint.getComponent(), endpoint.getService());       
-        return new HazelcastServiceBindingProvider(endpoint, interfaceContract);
-    }
-
-    private InterfaceContract createDOMInterfaceContract(Component component, Contract contract) {
-        WebServiceBindingFactory wsFactory = extensionsRegistry.getExtensionPoint(WebServiceBindingFactory.class);
-        WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
-        BindingWSDLGenerator.generateWSDL(component, contract, wsBinding, extensionsRegistry, null);
-        InterfaceContract interfaceContract = wsBinding.getBindingInterfaceContract();
+        InterfaceContract interfaceContract = endpoint.getGeneratedWSDLContract(endpoint.getComponentServiceInterfaceContract());
         interfaceContract.getInterface().resetDataBinding(DOMDataBinding.NAME);
-        return interfaceContract;
+        return new HazelcastServiceBindingProvider(endpoint, interfaceContract);
     }
 
     public Class<HazelcastBinding> getModelType() {
