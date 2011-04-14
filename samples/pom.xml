@@ -33,6 +33,7 @@
 
     <modules>
         <module>getting-started</module>
+        <module>running-tuscany</module>
     </modules>
 
 </project>
