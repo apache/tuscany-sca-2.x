@@ -66,8 +66,6 @@
                 <exclude>**/implementation-web/**/target</exclude>
                 <exclude>**/implementation-web/**/target/**/*</exclude>
                 <exclude>**/implementation-web/**/src/main/webapp/dojo/**/*</exclude>
-                <exclude>**/running-tuscany/**/target</exclude>
-                <exclude>**/running-tuscany/**/target/**/*</exclude>
             </excludes>
         </fileSet>
     </fileSets>
