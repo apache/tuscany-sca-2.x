@@ -1,0 +1,83 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<project name="running-tuscany-with-ant" default="run-all-manifest-jar"> 
+
+    <property name="tuscany.home" value="../../.."/>
+
+    <import file="${tuscany.home}/features/tuscany-base-runtime-pom/build-path.xml"/>
+    <import file="${tuscany.home}/features/tuscany-binding-ws-runtime-axis2/build-path.xml"/>
+    <import file="${tuscany.home}/features/tuscany-host-jetty/build-path.xml"/>
+
+    <!-- Run using the "all" manifest jar -->
+    <target name="run-all-manifest-jar">
+        <java classname="org.apache.tuscany.sca.shell.Shell"
+              fork="true"
+              failonerror="true">
+            <classpath>  
+                <fileset dir="${tuscany.home}/features">
+                   <include name="tuscany-sca-manifest.jar" />
+                </fileset>
+            </classpath> 
+            <arg value="../calculator-contribution.jar"/>
+        </java>  
+    </target>
+	
+    <!-- Run using the base + extension ant paths -->
+    <target name="run-base-extension-paths">
+        <java classname="org.apache.tuscany.sca.shell.Shell"
+              fork="true"
+              failonerror="true">
+            <classpath>  
+                <path refid="tuscany-base-runtime-pom.path"/>
+            </classpath>
+            <arg value="../calculator-contribution.jar"/> 
+        </java>     
+    </target>	
+	
+    <!-- Run using the base + extension manifest -->
+    <target name="run-base-extension-manifests">
+        <java classname="org.apache.tuscany.sca.shell.Shell"
+              fork="true"
+              failonerror="true">
+            <classpath>  
+                <fileset dir="${tuscany.home}/features/tuscany-base-runtime-pom">
+                   <include name="tuscany-base-runtime-pom-manifest.jar" />
+                </fileset>
+            </classpath> 
+            <arg value="../calculator-contribution.jar"/> 
+        </java>       
+    </target>	
+	
+    <!-- Run using the base + extension jars -->
+<!-- TODO - which jars should we be using here -->
+    <target name="run-base-extension-jars">
+        <java classname="org.apache.tuscany.sca.shell.Shell"
+              fork="true"
+              failonerror="true">
+            <classpath>  
+                <pathelement location="target/${jar.name}"/>
+                <fileset dir="${tuscany.home}/lib">
+                   <include name="tuscany-base-runtime-aggregation-2.0-SNAPSHOT.jar" />
+                </fileset>
+            </classpath> 
+            <arg value="../calculator-contribution.jar"/> 
+        </java>       
+    </target>	
+
+</project>
