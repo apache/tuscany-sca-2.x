@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!--This file was converted to xhtml by OpenOffice.org - see http://xml.openoffice.org/odf2xhtml for more info.--><head profile="http://dublincore.org/documents/dcmi-terms/"><meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/><title xml:lang="en-US">- no title specified</title><meta name="DCTERMS.title" content="" xml:lang="en-US"/><meta name="DCTERMS.language" content="en-US" scheme="DCTERMS.RFC4646"/><meta name="DCTERMS.source" content="http://xml.openoffice.org/odf2xhtml"/><meta name="DCTERMS.creator" content="ant "/><meta name="DCTERMS.issued" content="2011-03-15T09:48:55.71" scheme="DCTERMS.W3CDTF"/><meta name="DCTERMS.modified" content="2011-04-18T12:37:30.13" scheme="DCTERMS.W3CDTF"/><meta name="DCTERMS.provenance" content="" xml:lang="en-US"/><meta name="DCTERMS.subject" content="," xml:lang="en-US"/><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" hreflang="en"/><link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" hreflang="en"/><link rel="schema.DCTYPE" href="http://purl.org/dc/dcmitype/" hreflang="en"/><link rel="schema.DCAM" href="http://purl.org/dc/dcam/" hreflang="en"/><base href="."/><style type="text/css">
+	@page {  }
+	table { border-collapse:collapse; border-spacing:0; empty-cells:show }
+	td, th { vertical-align:top; font-size:12pt;}
+	h1, h2, h3, h4, h5, h6 { clear:both }
+	ol, ul { margin:0; padding:0;}
+	li { list-style: none; margin:0; padding:0;}
+	<!-- "li span.odfLiEnd" - IE 7 issue-->
+	li span. { clear: both; line-height:0; width:0; height:0; margin:0; padding:0; }
+	span.footnodeNumber { padding-right:1em; }
+	span.annotation_style_by_filter { font-size:95%; font-family:Arial; background-color:#fff000;  margin:0; border:0; padding:0;  }
+	* { margin:0;}
+	.Heading_20_1 { font-size:115%; margin-bottom:0.212cm; margin-top:0.423cm; font-family:Arial; writing-mode:page; font-weight:bold; }
+	.P1 { font-size:10pt; font-family:Courier New; writing-mode:page; }
+	.Standard { font-size:12pt; font-family:Times New Roman; writing-mode:page; }
+	.Table_20_Contents { font-size:12pt; font-family:Times New Roman; writing-mode:page; }
+	.Table1 { width:17.013cm; margin-left:0cm; margin-right:-0.012cm; float:none; }
+	.Table1_A1 { padding:0.097cm; border-left-width:0.0133cm; border-left-style:solid; border-left-color:#000000; border-right-style:none; border-top-width:0.0133cm; border-top-style:solid; border-top-color:#000000; border-bottom-width:0.0133cm; border-bottom-style:solid; border-bottom-color:#000000; }
+	.Table1_A2 { padding:0.097cm; border-left-width:0.0133cm; border-left-style:solid; border-left-color:#000000; border-right-style:none; border-top-style:none; border-bottom-width:0.0133cm; border-bottom-style:solid; border-bottom-color:#000000; }
+	.Table1_B1 { padding:0.097cm; border-width:0.0133cm; border-style:solid; border-color:#000000; }
+	.Table1_B2 { padding:0.097cm; border-left-width:0.0133cm; border-left-style:solid; border-left-color:#000000; border-right-width:0.0133cm; border-right-style:solid; border-right-color:#000000; border-top-style:none; border-bottom-width:0.0133cm; border-bottom-style:solid; border-bottom-color:#000000; }
+	.Table1_A { width:5.609cm; }
+	.Table1_B { width:11.404cm; }
+	<!-- ODF styles with no properties representable as CSS -->
+	{ }
+	</style></head><body dir="ltr" style="max-width:21.001cm;margin-top:2cm; margin-bottom:2cm; margin-left:2cm; margin-right:2cm; "><h1 class="Heading_20_1"><a id="a__Running_the_Tuscany_runtime_from_Ant"><span/></a>Running the Tuscany runtime from Ant</h1><p class="Standard"> </p><p class="Standard">If you're an Ant user it's handy to be able to deploy and run a contribution from an Ant script. This sample re-use the calculator-composite.jar and runs it using the Tuscany shell started from an Ant script. </p><p class="Standard"> </p><p class="Standard">To run the sample :</p><p class="Standard"> </p><p class="P1">cd ant</p><p class="P1">ant</p><p class="P1"> </p><p class="Standard">You will of course need to have Ant (<a href="http://ant.apache.org/">http://ant.apache.org/</a>) installed. This sample was created with Ant version 1.8.0.</p><p class="Standard"> </p><p class="Standard">In the build.xml there are several different targets. Each describes a different way of constructing the Java classpath to include the correct Tuscany jars. </p><p class="Standard"> </p><table border="0" cellspacing="0" cellpadding="0" class="Table1"><colgroup><col width="245"/><col width="498"/></colgroup><tr><td style="text-align:left;width:5.609cm; " class="Table1_A1"><p class="Table_20_Contents">Target</p></td><td style="text-align:left;width:11.404cm; " class="Table1_B1"><p class="Table_20_Contents">Description</p></td></tr><tr><td style="text-align:left;width:5.609cm; " class="Table1_A2"><p class="Table_20_Contents">run-all-manifest-jar</p></td><td style="text-align:left;width:11.404cm; " class="Table1_B2"><p class="Table_20_Contents">Includes a single manifest jar on the classpath which in turn references all of the jars in the binary distribution's modules directory</p></td></tr><tr><td style="text-align:left;width:5.609cm; " class="Table1_A2"><p class="Table_20_Contents">run-base-extension-paths</p></td><td style="text-align:left;width:11.404cm; " class="Table1_B2"><p class="Table_20_Contents">For the Ant user Tuscany ships with predefined Ant paths for each of the Tuscany extensions. </p></td></tr><tr><td style="text-align:left;width:5.609cm; " class="Table1_A2"><p class="Table_20_Contents">run-base-extension-manifests</p></td><td style="text-align:left;width:11.404cm; " class="Table1_B2"><p class="Table_20_Contents">For completeness we also ship manifest jars for the Tuscany base and each of the extensions</p></td></tr><tr><td style="text-align:left;width:5.609cm; " class="Table1_A2"><p class="Table_20_Contents">run-base-extension-jars</p></td><td style="text-align:left;width:11.404cm; " class="Table1_B2"><p class="Table_20_Contents">If you want to re-package Tuscany we ship stand-alone jars for the Tuscany base and extensions</p></td></tr></table><p class="Standard"> </p><p class="Standard">The sample build.xml file defaults to running the run-all-manifest-jar target. To run other targets add the name of the target to then end of the command line. For example, </p><p class="Standard"> </p><p class="P1">ant run-base-extension-paths</p><p class="Standard"> </p><p class="Standard"> </p></body></html>
