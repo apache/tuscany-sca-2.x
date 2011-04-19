@@ -1,0 +1,22 @@
+Tuscany - Getting Started - Helloworld JAX-RS Sample
+----------------------------------------------------
+
+This sample extends the helloworld sample to make the helloworld service available as an HTTP endpoint by using JAX-RS and the Tuscany REST binding.
+
+The changes to the helloworld sample are:
+- update the pom.xml with the additional dependencies
+- add a new Java interface which uses JAX-RS annotations
+- update the composite to use the new interface and binding 
+
+As with all the getting-started samples you can run this sample with:
+
+   mvn tuscany:run 
+
+Then at a web browser enter the following URL:
+
+http://localhost:8080/HelloworldComponent/Helloworld/sayHello?name=world
+
+which should return a page saying:
+
+Hello world
+
