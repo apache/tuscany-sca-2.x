@@ -84,6 +84,13 @@
             <groupId>org.apache.tuscany.maven.plugins</groupId>
             <artifactId>maven-tuscany-plugin</artifactId>
             <version>${tuscany.version}</version>
+      <dependencies>
+         <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-jsonrpc-runtime</artifactId>
+            <version>${tuscany.version}</version>
+         </dependency>
+      </dependencies>
          </plugin>
       </plugins>
 
