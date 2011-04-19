@@ -5,11 +5,9 @@ This sample demonstrates using the OASIS SCAClient API to invoke a service in a 
 
 See the README in the top-level samples folder for general information on the Tuscany samples.
 
-This project has a plain Java SE class with a main method which uses the OASIS SCAClient API to 
-invoke a Helloworld service in a remote SCA domain.
+This project has a plain Java SE class with a main method which uses the OASIS SCAClient API to invoke a Helloworld service in a remote SCA domain.
 
-Before running this sample you must have a helloworld service running in a SCA domain somewhere,
-for example, you can do that by using a separate command prompt to run the Tuscany 
+Before running this sample you must have a helloworld service running in a SCA domain somewhere, for example, you can do that by using a separate command prompt to run the Tuscany 
 "Getting Started - Helloworld Sample" with the command 
 
    mvn tuscany:run -DdomainURI=uri:default
