@@ -89,7 +89,6 @@
                   <groupId>org.apache.tuscany.sca</groupId>
                   <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
                   <version>${tuscany.version}</version>
-                  <scope>test</scope>
                </dependency>
             </dependencies>
          </plugin>
