@@ -39,7 +39,7 @@ public class ContributionConfigurationImpl implements ContributionConfiguration 
     private List<DeploymentComposite> deploymentComposites = new ArrayList<DeploymentComposite>();
     private String uri;
     private String location;
-    private boolean startDeployables;
+    private boolean startDeployables = true;
     private List<String> dependentContributionURIs;
     private String metaDataURL;
 
