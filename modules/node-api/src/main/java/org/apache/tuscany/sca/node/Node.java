@@ -80,4 +80,11 @@ public interface Node {
      * @return a ServiceReference for the designated service
      */
     <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String serviceName);
+    
+    /**
+     * Returns the URI for the given service binding endpoint
+     * @param serviceBindingName It can be the componentName/<serviceName>/<bindingName>
+     * @return
+     */
+    String getEndpointAddress(String serviceBindingName);
 }

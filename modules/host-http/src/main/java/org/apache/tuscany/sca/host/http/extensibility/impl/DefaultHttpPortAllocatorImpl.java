@@ -34,21 +34,21 @@ public class DefaultHttpPortAllocatorImpl implements HttpPortAllocator {
 
         if (scheme == null || scheme == HttpScheme.HTTP) {
             try {
-                port = Integer.parseInt(getVariable("HTTP_PORT", "8080"));
+                port = Integer.parseInt(getVariable("HTTP_PORT", String.valueOf(DEFAULT_HTTP_PORT)));
                 if (port == 0) {
-                    port = findFreePort(8080, 9080);
+                    port = findFreePort(DEFAULT_HTTP_PORT, DEFAULT_HTTP_PORT + 1000);
                 }
             } catch (NumberFormatException e) {
-                port = 8080;
+                port = DEFAULT_HTTP_PORT;
             }
         } else if (scheme == HttpScheme.HTTPS) {
             try {
-                port = Integer.parseInt(getVariable("HTTPS_PORT", "8443"));
+                port = Integer.parseInt(getVariable("HTTPS_PORT", String.valueOf(DEFAULT_HTTPS_PORT)));
                 if (port == 0) {
-                    port = findFreePort(8443, 9443);
+                    port = findFreePort(DEFAULT_HTTPS_PORT, DEFAULT_HTTPS_PORT + 1000);
                 }
             } catch (NumberFormatException e) {
-                port = 8443;
+                port = DEFAULT_HTTPS_PORT;
             }
         }
 

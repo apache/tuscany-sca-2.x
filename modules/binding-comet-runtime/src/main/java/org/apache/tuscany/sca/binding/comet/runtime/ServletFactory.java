@@ -91,22 +91,26 @@ public final class ServletFactory {
 	 * @param servletHost
 	 *            the underlying servlet host
 	 */
-	public static synchronized void registerServlet(
+	public static synchronized String registerServlet(
 			final ServletHost servletHost) {
-		registerCometServlet(servletHost);
+		String uri = registerCometServlet(servletHost);
 		registerJavascriptServlet(servletHost);
+		return uri;
 	}
 
-	private static void registerCometServlet(ServletHost servletHost) {
+	private static String registerCometServlet(ServletHost servletHost) {
 		if (ServletFactory.cometServlet == null) {
 			ServletFactory.cometServlet = new AtmosphereServlet();
 			ServletFactory.cometServlet.addInitParameter(
 					ServletFactory.PACKAGE_KEY, ServletFactory.PACKAGE_VALUE);
-			servletHost.addServletMapping(ServletFactory.PATH,
+			String uri = servletHost.addServletMapping(ServletFactory.PATH,
 					ServletFactory.cometServlet);
 			final CometComponentContext context = new CometComponentContext();
 			ServletFactory.cometServlet.getServletContext().setAttribute(
 					ServletFactory.COMET_COMPONENT_CONTEXT_KEY, context);
+			return uri;
+		} else {
+		    return null;
 		}
 	}
 

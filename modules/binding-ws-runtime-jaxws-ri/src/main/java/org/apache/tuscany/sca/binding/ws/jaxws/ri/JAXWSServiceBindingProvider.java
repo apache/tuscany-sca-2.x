@@ -31,9 +31,9 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.ws.Endpoint;
+import javax.xml.ws.Service.Mode;
 import javax.xml.ws.ServiceMode;
 import javax.xml.ws.WebServiceProvider;
-import javax.xml.ws.Service.Mode;
 import javax.xml.ws.soap.SOAPBinding;
 
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
@@ -125,7 +125,8 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider {
         wsEndpoint.publish(wsBinding.getURI());
      
        
-        jaxwsBindingProvider.start();        
+        jaxwsBindingProvider.start();     
+        endpoint.setDeployedURI(wsBinding.getURI());
        
     }
 

@@ -115,6 +115,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
             deployedURI = deployedURI.substring(0, deployedURI.length() - 1);
         }
         binding.setURI(deployedURI);
+        endpoint.setDeployedURI(deployedURI);
         return mappedURI;
     }
 

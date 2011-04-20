@@ -95,6 +95,7 @@ public class DelegatingSCAServiceBindingProvider implements EndpointAsyncProvide
             provider.start();
             // Set the resolved binding URI back to the binding.sca
             endpoint.getBinding().setURI(mappedEndpoint.getBinding().getURI());
+            endpoint.setDeployedURI(mappedEndpoint.getDeployedURI());
             started = true;
         }
     }

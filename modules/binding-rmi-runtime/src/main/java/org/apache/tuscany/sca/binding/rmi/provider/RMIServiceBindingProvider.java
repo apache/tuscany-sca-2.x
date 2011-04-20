@@ -80,6 +80,7 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
             String uri = rmiHost.registerService(binding.getURI(), rmiProxy);
             // Update the binding with the physical URI
             binding.setURI(uri);
+            endpoint.setDeployedURI(uri);
 
         } catch (RMIHostException e) {
             throw new ServiceRuntimeException(e);

@@ -66,6 +66,7 @@ public class CorbaServiceBindingProvider implements ServiceBindingProvider {
             servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             servant.setIds(new String[] {binding.getId()});
             host.registerServant(binding.getCorbaname(), servant);
+            endpoint.setDeployedURI(binding.getCorbaname());
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }

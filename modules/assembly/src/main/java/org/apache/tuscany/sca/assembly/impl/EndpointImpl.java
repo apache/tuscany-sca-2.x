@@ -45,9 +45,10 @@ public class EndpointImpl implements Endpoint {
 
     protected transient ExtensionPointRegistry registry;
     protected transient BuilderExtensionPoint builders;
-    protected transient ContractBuilder contractBuilder; 
+    protected transient ContractBuilder contractBuilder;
     protected boolean unresolved;
     protected String uri;
+    protected String deployedURI;
     protected Component component;
     protected ComponentService service;
     protected Binding binding;
@@ -149,10 +150,10 @@ public class EndpointImpl implements Endpoint {
     public void setExtensionType(ExtensionType type) {
         throw new UnsupportedOperationException();
     }
-    
+
     public String toStringWithoutHash() {
         String output = "Endpoint: ";
-        
+
         if (getURI() != null) {
             output += " URI = " + getURI();
         }
@@ -279,20 +280,30 @@ public class EndpointImpl implements Endpoint {
         }
         return names;
     }
-    
+
     public boolean isAsyncInvocation() {
-    	if( service != null && service.getName().endsWith("_asyncCallback")){
+        if (service != null && service.getName().endsWith("_asyncCallback")) {
             // this is a response service at the reference component so don't create a
             // response reference. 
             return false;
         } // end if
-        
-        for(Intent intent : getRequiredIntents()){
-            if (intent.getName().getLocalPart().equals("asyncInvocation")){
+
+        for (Intent intent : getRequiredIntents()) {
+            if (intent.getName().getLocalPart().equals("asyncInvocation")) {
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public String getDeployedURI() {
+        return deployedURI == null ? (binding == null ? null : binding.getURI()) : deployedURI;
+    }
+
+    @Override
+    public void setDeployedURI(String deployedURI) {
+        this.deployedURI = deployedURI;
     }
 
 }

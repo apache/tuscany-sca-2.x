@@ -339,4 +339,18 @@ public class TestRuntimeWire implements RuntimeEndpoint {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+    @Override
+    public String getDeployedURI() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    @Override
+    public void setDeployedURI(String deployedURI) {
+        // TODO Auto-generated method stub
+        
+    }
 }

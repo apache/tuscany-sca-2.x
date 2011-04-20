@@ -46,6 +46,17 @@ public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
      * or &lt;componentURI&gt;#service(serviceName)
      */
     void setURI(String uri);
+    
+    /**
+     * Get the deployed URI
+     * @return The deployed URI
+     */
+    String getDeployedURI();
+    /**
+     * Set the deployed URI
+     * @param deployedURI
+     */
+    void setDeployedURI(String deployedURI);
 
     /**
      * Get the component model object

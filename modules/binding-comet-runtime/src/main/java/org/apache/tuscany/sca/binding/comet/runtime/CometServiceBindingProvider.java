@@ -59,7 +59,8 @@ public class CometServiceBindingProvider implements ServiceBindingProvider {
      */
     @Override
     public void start() {
-        ServletFactory.registerServlet(this.servletHost);
+        String deployedURI = ServletFactory.registerServlet(this.servletHost);
+        endpoint.setDeployedURI(deployedURI);
         final ComponentService service = this.endpoint.getService();
         final Interface serviceInterface = service.getInterfaceContract().getInterface();
         JavascriptGenerator.generateServiceProxy(service);

@@ -20,20 +20,13 @@ package org.apache.tuscany.sca.binding.ws.axis2.provider;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.wsdl.Port;
 
-import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.description.AxisService;
-import org.apache.axis2.description.Parameter;
-import org.apache.axis2.description.TransportInDescription;
-import org.apache.axis2.description.TransportOutDescription;
-import org.apache.axis2.engine.ListenerManager;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
@@ -198,6 +191,7 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
                     deployedURI = servletHost.addServletMapping(endpointURI, servlet);
                 }
             }
+            endpoint.setDeployedURI(deployedURI);
         } catch (AxisFault e) {
             throw new RuntimeException(e);
         }                                        

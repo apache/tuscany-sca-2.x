@@ -365,4 +365,38 @@ public class NodeImpl implements Node, NodeExtension {
         return contributions;
     }
 
+    @Override
+    public String getEndpointAddress(String serviceBindingName) {
+        if (serviceBindingName == null) {
+            throw new IllegalArgumentException("Service binding name cannot be null");
+        }
+        
+        // Calculate the names for compoment/service/binding
+        String[] parts = serviceBindingName.split("/");
+        String componentName = parts[0];
+        String serviceName = parts.length >= 2 ? parts[1] : null;
+        String bindingName = parts.length >= 3 ? parts[2] : serviceName;
+
+        if (domainComposite != null) {
+            for (Component component : domainComposite.getComponents()) {
+                if (!component.getName().equals(componentName)) {
+                    continue;
+                }
+                for (Service service : component.getServices()) {
+                    if (serviceName != null && !service.getName().equals(serviceName)) {
+                        continue;
+                    }
+                    if (service instanceof RuntimeComponentService) {
+                        for (Endpoint ep : ((RuntimeComponentService)service).getEndpoints()) {
+                            if (bindingName == null || bindingName.equals(ep.getBinding().getName())) {
+                                return ep.getDeployedURI();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
 }

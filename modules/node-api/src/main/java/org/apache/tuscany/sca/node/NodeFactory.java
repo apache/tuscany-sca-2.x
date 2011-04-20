@@ -154,6 +154,17 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
             }
         }
 
+        @Override
+        public String getEndpointAddress(String serviceBindingName) {
+            try {
+                return (String)node.getClass().getMethod("getEndpointAddress", String.class)
+                    .invoke(node, serviceBindingName);
+            } catch (Throwable e) {
+                handleException(e);
+                return null;
+            }
+        }
+
     }
 
     /**

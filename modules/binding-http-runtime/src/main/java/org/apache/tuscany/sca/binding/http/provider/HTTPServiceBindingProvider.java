@@ -126,7 +126,8 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
         if (widget) {
             start1x();
         } else {
-            servletHost.addServletMapping(servletMapping, new HTTPBindingServiceServlet(endpoint, messageFactory));
+            String deployedURI = servletHost.addServletMapping(servletMapping, new HTTPBindingServiceServlet(endpoint, messageFactory));
+            endpoint.setDeployedURI(deployedURI);
         }
     }
     
@@ -189,7 +190,8 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
             servletMapping += "*";
         }
         
-        servletHost.addServletMapping(servletMapping, servlet);
+        String deployedURI = servletHost.addServletMapping(servletMapping, servlet);
+        endpoint.setDeployedURI(deployedURI);
     }
     
     public void stop() {        

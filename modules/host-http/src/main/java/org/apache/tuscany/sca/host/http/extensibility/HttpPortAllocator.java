@@ -27,6 +27,8 @@ import org.apache.tuscany.sca.host.http.HttpScheme;
  * @version $Rev$ $Date$
  */
 public interface HttpPortAllocator {
+    int DEFAULT_HTTP_PORT = 8085;
+    int DEFAULT_HTTPS_PORT = 8443;
     /**
      * Get default port for a given http scheme
      * @param scheme the http scheme in use (http/https)
