@@ -1,7 +1,5 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.node;version="2.0.0";uses:="org.oasisopen.sca",
- org.apache.tuscany.sca.node.configuration;version="2.0.0",
- org.apache.tuscany.sca.node.extensibility
+Export-Package: org.apache.tuscany.sca.node.manager;version="2.0.0"
 SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA Node Manager
 DynamicImport-Package: org.apache.tuscany.sca.node.impl,org.apache.tus
@@ -11,10 +9,12 @@ Bundle-Version: 2.0.0
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Node Manager
-Import-Package: org.apache.tuscany.sca.assembly,
+Import-Package: org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.node;version="2.0.0",
  org.apache.tuscany.sca.node.configuration;version="2.0.0",
- org.oasisopen.sca;version="2.0.0"
+ org.apache.tuscany.sca.node.extensibility;version="2.0.0",
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation
 Bundle-SymbolicName: org.apache.tuscany.sca.node.manager
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
