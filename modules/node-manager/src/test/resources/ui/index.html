@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Tuscany Extensions</title>
+<title>Tuscany SCA Domain Components</title>
 
 <script type="text/javascript" src="/dojo/dojo.js"></script>
 
@@ -18,32 +18,129 @@ body,html {
 
 <body>
 
-<div id="bodydiv" style="position: absolute; top: 0px; left: 0px; right: 0px;">
+	<div id="header" style="border-bottom: solid 1px silver; overflow: hidden;">
+		<img src="http://tuscany.apache.org/images/TuscanyLogo.jpg" style="float:right;"/>
+		<h1>Tuscany SCA Domain</h1>
+	</div> <!-- end header div -->
 
-<div style="position:absolute; top: 40px; left: 240px; right: 0px; height: 5000px;">
-<iframe id="dataFrame" class="databg" style="position: relative; height: 5000px; width: 100%; border: 0px;" scrolling="no" frameborder="0"></iframe>
-</div>
+    <div id="container" style="border:1px solid silver">
+		<div id="navigation" style="position:absolute; float:left; width:30%; height:80%; padding:10px; border:1px solid silver">
+			<div id="treeDomain" /> </div>
+		</div> <!-- end navigation div -->
+			
+		<div id="images" style="position:absolute; float:left; width:60%; height:80%; left:35%; padding:10px; border:1px solid silver">
 
-</div>
-
-
-
+			<table style="margin-left:auto; margin-right:auto;" border="0" cellspacing="0" cellpadding="1">
+			   <tr>
+			      <td><a href="javascript:updatePage(-1)">prev</a></td>
+				  <td><a href="javascript:updatePage(1)">next</a></td>
+			   </tr>
+			   <tr>
+			      <td colspan="4">
+					  <table id="tableImageThumb" style="margin-left:auto; margin-right:auto;" border="0" cellspacing="0" cellpadding="1"></table>
+				  
+			      </td>
+			   </tr>
+			</table>
+		</div> <!-- end images div -->
+			
+	</div> <!-- end container div -->
+		
+</body>
 
 <script type="text/javascript">
+    dojo.require("dojo.data.ItemFileWriteStore");
+    dojo.require("dijit.Tree");
     dojo.require("dojox.xml.parser");
     dojo.require("tuscany.RestService");
     dojo.require("tuscany.Composite");
 
+    var restClient;
+    
+	var store;
+	var treeModel;
+	var treeControl;
+
     var composite;
 
+
+	function prepare() {
+        store = new dojo.data.ItemFileWriteStore({
+            data: {
+                identifier: 'id',
+                label: 'label',
+                items: []
+            }
+        });
+        treeModel = new dijit.tree.ForestStoreModel({
+            store: store
+        });
+        
+        treeControl = new dijit.Tree({
+            model: treeModel,
+            showRoot: false,
+			onClick: showArtifactDocumentation,
+            _createTreeNode: function(/*Object*/ args) {
+                var tnode = new dijit._TreeNode(args);
+                tnode.labelNode.innerHTML = args.label;
+                return tnode;
+            }
+        },"treeDomain");
+
+        restClient = new tuscany.RestService("/domain","text/plain");
+        
+		showDomainArtifacts();			
+    }
+
+    
     function composite_getResponse(xmlResponse, exception) {
     	if(exception){
 			alert(exception.message);
 			return;
 		}
     	
-    	composite = tuscany.Composite(xmlResponse);
-    	alert(composite.components())
+    	
+    	var componentNode = xmlResponse.getElementsByTagName ("component");
+    	//loop trough all components
+        for (c = 0; c < componentNode.length; c++) {
+        	var componentAttributes = componentNode[c].attributes;
+       	 	var componentItem = store.newItem({id:componentAttributes['uri'].value, label:componentAttributes['name'].value, iconClass:"Component.gif"});
+       	 	
+       	 	//loop trough all services
+       	    var serviceNode = componentNode[c].getElementsByTagName ("service");
+       	 	for(s = 0; s < serviceNode.length; s++) {
+            	var serviceAttributes = serviceNode[s].attributes;
+            	var serviceId = componentAttributes['uri'].value + "/" + serviceAttributes['name'].value;
+            	
+            	var parentInfo={
+    					parent: componentItem,
+    					attribute: "children"
+    				};
+            	
+           	 	var serviceItem = store.newItem({id:serviceId, label:serviceAttributes['name'].value}, parentInfo);
+       	 		
+       	 	}
+
+       	 	
+       	 	//loop trough all references
+       	    var referenceNode = componentNode[c].getElementsByTagName ("reference");
+       	 	for(r = 0; r < referenceNode.length; r++) {
+            	var referenceAttributes = referenceNode[r].attributes;
+            	var referenceId = componentAttributes['uri'].value + "/" + referenceAttributes['name'].value;
+            	
+            	var parentInfo={
+    					parent: componentItem,
+    					attribute: "children"
+    				};
+            	
+           	 	var referenceItem = store.newItem({id:serviceId, label:referenceAttributes['name'].value}, parentInfo);
+       	 		
+       	 	}
+       	 	
+        }
+    	
+    	//var composite = new tuscany.Composite(xmlResponse);
+    	
 
     	/*
     	 var itemTags = xmlResponse.getElementsByTagName ("component");
@@ -63,23 +160,20 @@ body,html {
          compositeXML = dojox.xml.parser.innerXML(xmlResponse);
 
 
-    	alert(compositeXML);
+    	//alert(compositeXML);
 
     }
 
-
-    var restClient = new tuscany.RestService("http://localhost:8080/domain","text/plain");
-	restClient.get("default").addCallback(composite_getResponse);
-
-    // Create editor graph area
-    var g = graph.mkgraph(graph.mkpath().move(0,40), 'Domain', 'propValue');
-    var bg = graph.mkgroup(graph.mkpath());
-
-	graph.edit(name, composite, graph.composite('domain', graph.mkpath().move(palcx,0)), oncomposchange, oncompselect, g);
-	//graph.composite('domain', graph.mkpath().move(palcx,0));
-
-
-
+    function showDomainArtifacts() {
+    	restClient.get("default").addCallback(composite_getResponse);
+    }
+    
+    function showArtifactDocumentation(/*dojo.data.Item*/ item) {
+    	alert('showing documentation for' + item.id);
+    }
+    
+    
+    dojo.addOnLoad(prepare);
 </script>
 </body>
 
