@@ -11,13 +11,32 @@ body,html {
 	font-family: helvetica, arial, sans-serif;
 	font-size: 90%;
 }
-</style>
 
+.componentIcon {
+	margin-left: 16px;
+	width: 16px;
+	height: 16px;
+	background: url('/manager/ui/component.gif') no-repeat;
+}
+
+.serviceIcon {
+	margin-left: 16px;
+	width: 16px;
+	height: 16px;
+	background: url('service.gif') no-repeat;
+}
+
+.referenceIcon {
+	margin-left: 16px;
+	width: 16px;
+	height: 16px;
+	background: url('reference.gif') no-repeat;
+}
+</style>
 
 </head>
 
 <body>
-
 	<div id="header" style="border-bottom: solid 1px silver; overflow: hidden;">
 		<img src="http://tuscany.apache.org/images/TuscanyLogo.jpg" style="float:right;"/>
 		<h1>Tuscany SCA Domain</h1>
@@ -69,6 +88,7 @@ body,html {
             data: {
                 identifier: 'id',
                 label: 'label',
+                type: 'type',
                 items: []
             }
         });
@@ -79,6 +99,18 @@ body,html {
         treeControl = new dijit.Tree({
             model: treeModel,
             showRoot: false,
+            getIconClass: function(/*dojo.data.Item*/ item, /*Boolean*/ opened) {
+            	if(item.type != undefined) {
+            		if(item.type == 'component') {
+            			return "componentIcon";
+            		} else if(item.type == 'service') {
+            			return "serviceIcon";
+            		} else if(item.type == 'reference') {
+            			return "referenceIcon";
+            		}
+            	}
+            	return "componentIcon";
+            },
 			onClick: showArtifactDocumentation,
             _createTreeNode: function(/*Object*/ args) {
                 var tnode = new dijit._TreeNode(args);
@@ -104,7 +136,7 @@ body,html {
     	//loop trough all components
         for (c = 0; c < componentNode.length; c++) {
         	var componentAttributes = componentNode[c].attributes;
-       	 	var componentItem = store.newItem({id:componentAttributes['uri'].value, label:componentAttributes['name'].value, iconClass:"Component.gif"});
+       	 	var componentItem = store.newItem({id:componentAttributes['uri'].value, label:componentAttributes['name'].value, type:'component'});
        	 	
        	 	//loop trough all services
        	    var serviceNode = componentNode[c].getElementsByTagName ("service");
@@ -117,7 +149,12 @@ body,html {
     					attribute: "children"
     				};
             	
-           	 	var serviceItem = store.newItem({id:serviceId, label:serviceAttributes['name'].value}, parentInfo);
+           	 	var serviceItem = store.newItem({id:serviceId, label:serviceAttributes['name'].value, type:'service'}, parentInfo);
+           	 	
+           	 	var bindingNode = serviceNode[s].getElementsByTagName ("binding.*");
+           	 	for(sb = 0; sb < bindingNode.length; sb++) {
+           	 		alert(bindingNode[sb].attributes['name'].value);
+           	 	}
        	 		
        	 	}
 
@@ -133,7 +170,7 @@ body,html {
     					attribute: "children"
     				};
             	
-           	 	var referenceItem = store.newItem({id:serviceId, label:referenceAttributes['name'].value}, parentInfo);
+           	 	var referenceItem = store.newItem({id:serviceId, label:referenceAttributes['name'].value, type:'reference'}, parentInfo);
        	 		
        	 	}
        	 	
@@ -175,6 +212,7 @@ body,html {
     
     dojo.addOnLoad(prepare);
 </script>
+
 </body>
 
 </html>

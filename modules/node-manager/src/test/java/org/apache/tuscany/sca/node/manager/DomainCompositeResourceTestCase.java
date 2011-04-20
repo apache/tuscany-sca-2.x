@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -35,7 +36,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//@Ignore
+@Ignore
 public class DomainCompositeResourceTestCase {
     private static final String SERVICE_URL = "http://localhost:8080/domain";
 
@@ -62,7 +63,7 @@ public class DomainCompositeResourceTestCase {
     @Test
     public void testPing() throws Exception {
         new Socket("127.0.0.1", 8080);
-        System.in.read();
+        //System.in.read();
     }
 
     @Test
