@@ -39,6 +39,9 @@ public class DojoWidgetJavascriptProvider implements WidgetImplementationJavascr
     private static final String dojoxBaseUri = URI.create("/dojox").toString();
     private static final String dojoxUri = URI.create("/dojox/*").toString();
 
+    private static final String dijitBaseUri = URI.create("/dijit").toString();
+    private static final String dijitUri = URI.create("/dijit/*").toString();
+    
     private static final String tuscanyBaseUri = URI.create("/tuscany").toString();
     private static final String tuscanyUri = URI.create("/tuscany/*").toString();
 
@@ -84,6 +87,19 @@ public class DojoWidgetJavascriptProvider implements WidgetImplementationJavascr
             }
         }
 
+        servlet = servletHost.getServletMapping(dijitBaseUri);
+        if(servlet == null) {
+            try {
+                DojoResourceServlet baseResourceServlet = new DojoResourceServlet();
+                servletHost.addServletMapping(dijitBaseUri, baseResourceServlet);
+
+                DojoResourceServlet resourceServlet = new DojoResourceServlet();
+                servletHost.addServletMapping(dijitUri, resourceServlet);
+            } catch (ServletMappingException me ) {
+                logger.warning("Dijit already registered at :" + dijitBaseUri);
+            }
+        }
+        
         servlet = servletHost.getServletMapping(tuscanyBaseUri);
         if(servlet == null) {
             try {

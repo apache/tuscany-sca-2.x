@@ -51,7 +51,8 @@ public class DojoResourceServlet extends HttpServlet {
         String path = URLDecoder.decode(request.getRequestURI(), HTTPConstants.CHARACTER_ENCODING_UTF8);
 
         if( path.startsWith(contextRoot + "/dojo")||
-            path.startsWith(contextRoot + "/dojox")) {
+            path.startsWith(contextRoot + "/dojox")||
+            path.startsWith(contextRoot + "/dijit")) {
             if( ! path.contains("tuscany/")) {
                 //this is a workaround where we need to have dojo files in its own folder
                 //to avoid clean target to clean other non dojo resources
