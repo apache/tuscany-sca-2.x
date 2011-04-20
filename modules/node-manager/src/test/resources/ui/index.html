@@ -5,14 +5,6 @@
 <title>Tuscany Extensions</title>
 
 <script type="text/javascript" src="/dojo/dojo.js"></script>
-<script type="text/javascript" src="util.js"></script>
-<script type="text/javascript" src="elemutil.js"></script>
-<script type="text/javascript" src="xmlutil.js"></script>
-<script type="text/javascript" src="atomutil.js"></script>
-<script type="text/javascript" src="scdl.js"></script>
-<script type="text/javascript" src="ui.js"></script>
-<script type="text/javascript" src="component.js"></script>
-<script type="text/javascript" src="graph.js"></script>
 
 <style type="text/css">
 body,html {
@@ -40,6 +32,7 @@ body,html {
 <script type="text/javascript">
     dojo.require("dojox.xml.parser");
     dojo.require("tuscany.RestService");
+    dojo.require("tuscany.Composite");
 
     var composite;
 
@@ -48,6 +41,9 @@ body,html {
 			alert(exception.message);
 			return;
 		}
+    	
+    	composite = tuscany.Composite(xmlResponse);
+    	alert(composite.components())
 
     	/*
     	 var itemTags = xmlResponse.getElementsByTagName ("component");
@@ -64,10 +60,10 @@ body,html {
          }
          */
 
-         composite = dojox.xml.parser.innerXML(xmlResponse);
+         compositeXML = dojox.xml.parser.innerXML(xmlResponse);
 
 
-    	alert(composite);
+    	alert(compositeXML);
 
     }
 
