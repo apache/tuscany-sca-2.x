@@ -38,22 +38,22 @@ public class TuscanyStopMojo extends AbstractMojo {
     private String id;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-    	if (id.length() < 1) {
-    		// if id is set to "" then stop all runtimes
-    		for (String id : TuscanyStartMojo.runtimes.keySet()) {
-            	TuscanyRuntime runtime = TuscanyStartMojo.runtimes.get(id);
-          		runtime.stop();
+        if (id.length() < 1) {
+            // if id is set to "" then stop all runtimes
+            for (String id : TuscanyStartMojo.runtimes.keySet()) {
+                TuscanyRuntime runtime = TuscanyStartMojo.runtimes.get(id);
+                runtime.stop();
                 getLog().info("stopped Tuscany runtime " + id);
-    		}
-        	TuscanyStartMojo.runtimes.clear();
-    	} else {
-        	TuscanyRuntime runtime = TuscanyStartMojo.runtimes.remove(id);
-        	if (runtime == null) {
+            }
+            TuscanyStartMojo.runtimes.clear();
+        } else {
+            TuscanyRuntime runtime = TuscanyStartMojo.runtimes.remove(id);
+            if (runtime == null) {
                 getLog().info("No started runtime found for ID " + id);
-        	} else {
-        		runtime.stop();
+            } else {
+                runtime.stop();
                 getLog().info("stopped Tuscany runtime " + id);
-        	}
-    	}
+            }
+        }
     }
 }

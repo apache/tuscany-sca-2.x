@@ -34,22 +34,23 @@ import org.apache.tuscany.sca.TuscanyRuntime;
 import org.apache.tuscany.sca.shell.Shell;
 
 /**
- * Maven Mojo to start a Tuscany runtime and install the project as an SCA contribution.
- * 
- * Invoked with "mvn tuscany:start" usually from configuration in a module pom.xml
+ * Maven Mojo to start a Tuscany runtime and install the project as an SCA
+ * contribution. Invoked with "mvn tuscany:start" usually from configuration in
+ * a module pom.xml
  * 
  * @goal start
  * @requiresDependencyResolution runtime
  * @execute phase="test-compile"
- * @description Start a Tuscany directly and run composites from a SCA conribution maven project
+ * @description Start a Tuscany directly and run composites from a SCA
+ *              conribution maven project
  */
 public class TuscanyStartMojo extends AbstractMojo {
 
-	public static Map<String, TuscanyRuntime> runtimes = new HashMap<String, TuscanyRuntime>();
-	
+    public static Map<String, TuscanyRuntime> runtimes = new HashMap<String, TuscanyRuntime>();
+
     /**
      * The maven project.
-     *
+     * 
      * @parameter expression="${project}"
      * @required
      * @readonly
@@ -104,7 +105,7 @@ public class TuscanyStartMojo extends AbstractMojo {
     private String nodeConfig;
 
     /**
-     * @parameter expression="${contributions}" 
+     * @parameter expression="${contributions}"
      */
     private String[] contributions;
 
@@ -122,13 +123,13 @@ public class TuscanyStartMojo extends AbstractMojo {
 
         contributionList.add(0, "-help");
         contributionList.add(0, domainURI);
-        
+
         try {
             Shell.main(contributionList.toArray(new String[contributionList.size()]));
         } catch (Exception e) {
             throw new MojoExecutionException("Exception in Shell", e);
         }
-        
+
         getLog().info("Tuscany Shell stopped.");
     }
 
@@ -140,7 +141,7 @@ public class TuscanyStartMojo extends AbstractMojo {
                 } else {
                     boolean found = false;
                     for (Object o : project.getDependencyArtifacts()) {
-                        Artifact a = (Artifact) o;
+                        Artifact a = (Artifact)o;
                         if (a.getId().startsWith(s)) {
                             try {
                                 contributionList.add(a.getFile().toURI().toURL().toString());
@@ -169,11 +170,11 @@ public class TuscanyStartMojo extends AbstractMojo {
             if (!contributionFile.exists()) {
                 contributionFile = new File(buildDirectory.getParent(), finalName.getName() + packaging);
             }
-            
+
             String contribution = contributionFile.toURI().toURL().toString();
             getLog().info("Project contribution: " + contribution);
             cs.add(contribution);
-            
+
         } catch (MalformedURLException e) {
             throw new MojoExecutionException("", e);
         }
