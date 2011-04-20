@@ -30,7 +30,11 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.monitor.ValidationException;
+import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.shell.Shell;
 
 /**
@@ -95,7 +99,7 @@ public class TuscanyStartMojo extends AbstractMojo {
     private String id;
 
     /**
-     * @parameter expression="${domainURI}" default-value="default"
+     * @parameter expression="${domainURI}" default-value="uri:default"
      */
     private String domainURI;
 
@@ -110,27 +114,33 @@ public class TuscanyStartMojo extends AbstractMojo {
     private String[] contributions;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-    }
+        getLog().info("Starting Tuscany Runtime...");
+        
+        TuscanyRuntime runtime = TuscanyRuntime.newInstance();
+        runtimes.put(id, runtime);
 
-    private void executeShell() throws MojoExecutionException {
-        getLog().info("Starting Tuscany Shell...");
+        if (nodeConfig != null && nodeConfig.length() > 0) {
+            try {
+                runtime.createNodeFromXML(nodeConfig);
+            } catch (Exception e) {
+                throw new MojoExecutionException("Exception creating node", e);
+            }
+        } else {
+            List<String> contributionList = new ArrayList<String>();
 
-        List<String> contributionList = new ArrayList<String>();
+            addProjectContribution(contributionList);
 
-        addProjectContribution(contributionList);
-
-        addAdditionalContributions(contributionList);
-
-        contributionList.add(0, "-help");
-        contributionList.add(0, domainURI);
-
-        try {
-            Shell.main(contributionList.toArray(new String[contributionList.size()]));
-        } catch (Exception e) {
-            throw new MojoExecutionException("Exception in Shell", e);
+            addAdditionalContributions(contributionList);
+            
+            Node node = runtime.createNode(domainURI);
+            for (String c : contributionList) {
+                try {
+                    node.installContribution(null, c, null, null, true);
+                } catch (Exception e) {
+                    throw new MojoExecutionException("Exception installing contribution", e);
+                }
+            }
         }
-
-        getLog().info("Tuscany Shell stopped.");
     }
 
     private void addAdditionalContributions(List<String> contributionList) throws MojoExecutionException {
