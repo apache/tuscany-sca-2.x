@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.node;version="2.0.0";uses:="org.oasisopen.sca",
  org.apache.tuscany.sca.node.configuration;version="2.0.0",
- org.apache.tuscany.sca.node.extensibility
+ org.apache.tuscany.sca.node.extensibility;version="2.0.0"
 SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA Node API
 DynamicImport-Package: org.apache.tuscany.sca.node.impl,org.apache.tus
