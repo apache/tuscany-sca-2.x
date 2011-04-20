@@ -19,6 +19,11 @@
 
 package org.apache.tuscany.sca.host.http.extensibility.impl;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import org.apache.tuscany.sca.host.http.HttpScheme;
 import org.apache.tuscany.sca.host.http.extensibility.HttpPortAllocator;
 
@@ -27,15 +32,68 @@ public class DefaultHttpPortAllocatorImpl implements HttpPortAllocator {
     public int getDefaultPort(HttpScheme scheme) {
         int port = 0;
 
-        if(scheme == HttpScheme.HTTP) {
-            port = 8080;
-        } else if(scheme == HttpScheme.HTTPS) {
-           port = 8443;
-        } else {
-            throw new IllegalArgumentException("Scheme not support : " + scheme.toString());
+        if (scheme == null || scheme == HttpScheme.HTTP) {
+            try {
+                port = Integer.parseInt(getVariable("HTTP_PORT", "8080"));
+                if (port == 0) {
+                    port = findFreePort(8080, 9080);
+                }
+            } catch (NumberFormatException e) {
+                port = 8080;
+            }
+        } else if (scheme == HttpScheme.HTTPS) {
+            try {
+                port = Integer.parseInt(getVariable("HTTPS_PORT", "8443"));
+                if (port == 0) {
+                    port = findFreePort(8443, 9443);
+                }
+            } catch (NumberFormatException e) {
+                port = 8443;
+            }
         }
 
         return port;
+
+    }
+
+    private static String getVariable(final String variableName, final String defaultValue) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
+                String value = System.getProperty(variableName);
+                if (value == null || value.length() == 0) {
+                    value = System.getenv(variableName);
+                    if (value == null || value.length() == 0) {
+                        value = defaultValue;
+                    }
+                }
+                return value;
+            }
+        });
+    }
+
+    private int findFreePort(final int start, final int end) {
+        return AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+            public Integer run() {
+                for (int p = start; p <= end; p++) {
+                    ServerSocket socket = null;
+                    try {
+                        socket = new ServerSocket(p);
+                        return p;
+                    } catch (IOException e) {
+                        // Ignore
+                    } finally {
+                        if (socket != null) {
+                            try {
+                                socket.close();
+                            } catch (IOException e) {
+                                // Ignore
+                            }
+                        }
+                    }
+                }
+                return -1;
+            }
+        });
     }
 
 }

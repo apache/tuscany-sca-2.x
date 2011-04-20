@@ -49,7 +49,6 @@ import org.apache.tuscany.sca.host.http.HttpScheme;
 import org.apache.tuscany.sca.host.http.SecurityContext;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
-import org.apache.tuscany.sca.host.http.extensibility.ExtensibleHttpPortAllocator;
 import org.apache.tuscany.sca.host.http.extensibility.HttpPortAllocator;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.mortbay.jetty.Connector;
@@ -120,19 +119,25 @@ public class JettyServer implements ServletHost, LifeCycleListener {
     private org.mortbay.log.Logger jettyLogger;
 
     public JettyServer(ExtensionPointRegistry registry) {
-        this(registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(WorkScheduler.class), ExtensibleHttpPortAllocator.getInstance(registry));
+        UtilityExtensionPoint utilityExtensionPoint = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        this.workScheduler = utilityExtensionPoint.getUtility(WorkScheduler.class);
+        this.httpPortAllocator = utilityExtensionPoint.getUtility(HttpPortAllocator.class);
+        init();
     }
 
     protected JettyServer(WorkScheduler workScheduler, HttpPortAllocator httpPortAllocator) {
         this.httpPortAllocator = httpPortAllocator;
         this.workScheduler = workScheduler;
+        init();
+    }
 
-        this.defaultPort = httpPortAllocator.getDefaultPort(HttpScheme.HTTP);
+    private void init() {
+        this.defaultPort = this.httpPortAllocator.getDefaultPort(HttpScheme.HTTP);
         //handle backdoor to set specific default port in tests
         if(portDefault > 0) {
             this.defaultPort = portDefault;
         }
-        this.defaultSSLPort = httpPortAllocator.getDefaultPort(HttpScheme.HTTPS);
+        this.defaultSSLPort = this.httpPortAllocator.getDefaultPort(HttpScheme.HTTPS);
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 trustStore = System.getProperty("javax.net.ssl.trustStore");
