@@ -53,8 +53,6 @@ public class DomainCompositeResourceImpl implements NodeActivator, DomainComposi
     }
 
     public String getDomainComposite(String domainURI) {
-        System.out.println(">>> getDomainComposite");
-
         if( ! nodeMap.containsKey(domainURI)) {
             throw new WebApplicationException(404);
         }
@@ -72,13 +70,6 @@ public class DomainCompositeResourceImpl implements NodeActivator, DomainComposi
             xmlProcessors.getProcessor(Composite.class);
 
         return writeComposite(composite, registry, compositeProcessor);
-
-        //String compositeAsString = writeComposite(composite, registry, compositeProcessor);
-        //return "something";
-
-        //return Response.ok(compositeText, MediaType.APPLICATION_XML).build();
-
-        //return Response.ok().type(MediaType.APPLICATION_XML).entity(compositeAsString).build();
     }
 
 
