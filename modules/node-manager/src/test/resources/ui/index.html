@@ -16,7 +16,7 @@ body,html {
 	margin-left: 16px;
 	width: 16px;
 	height: 16px;
-	background: url('/manager/ui/component.gif') no-repeat;
+	background: url('component.gif') no-repeat;
 }
 
 .serviceIcon {
@@ -89,7 +89,7 @@ body,html {
                 identifier: 'id',
                 label: 'label',
                 type: 'type',
-                items: []
+                items: [ ]
             }
         });
         treeModel = new dijit.tree.ForestStoreModel({
@@ -100,16 +100,17 @@ body,html {
             model: treeModel,
             showRoot: false,
             getIconClass: function(/*dojo.data.Item*/ item, /*Boolean*/ opened) {
+            	console.log("##" + item.type);
             	if(item.type != undefined) {
             		if(item.type == 'component') {
             			return "componentIcon";
-            		} else if(item.type == 'service') {
+            		} else if(item.type == 'service' || item.type == 'service-binding') {
             			return "serviceIcon";
-            		} else if(item.type == 'reference') {
+            		} else if(item.type == 'reference' || item.type == 'reference-binding') {
             			return "referenceIcon";
-            		}
+            		} 
             	}
-            	return "componentIcon";
+            	return "serviceIcon";
             },
 			onClick: showArtifactDocumentation,
             _createTreeNode: function(/*Object*/ args) {
@@ -131,7 +132,6 @@ body,html {
 			return;
 		}
     	
-    	
     	var componentNode = xmlResponse.getElementsByTagName ("component");
     	//loop trough all components
         for (c = 0; c < componentNode.length; c++) {
@@ -151,11 +151,20 @@ body,html {
             	
            	 	var serviceItem = store.newItem({id:serviceId, label:serviceAttributes['name'].value, type:'service'}, parentInfo);
            	 	
-           	 	var bindingNode = serviceNode[s].getElementsByTagName ("binding.*");
-           	 	for(sb = 0; sb < bindingNode.length; sb++) {
-           	 		alert(bindingNode[sb].attributes['name'].value);
-           	 	}
-       	 		
+           	 	//loop trough children to find bindings
+           	 	for(b=0; b < serviceNode[s].childNodes.length; b ++) {
+           	 		var childNode = serviceNode[s].childNodes[b];
+           	 		if(childNode.nodeName.indexOf('binding') == 0) {
+           	 			var bindingId = serviceId + "/" + childNode.nodeName;
+           	 			
+           	 			var parentInfo={
+    						parent: serviceItem,
+    						attribute: "children"
+    					};
+           	 			
+           	 			var bindingItem = store.newItem({id:bindingId, label:childNode.nodeName, type:'service-binding'}, parentInfo);
+           	 		}
+    	 		}
        	 	}
 
        	 	
@@ -171,6 +180,22 @@ body,html {
     				};
             	
            	 	var referenceItem = store.newItem({id:serviceId, label:referenceAttributes['name'].value, type:'reference'}, parentInfo);
+           	 	
+           	 	//loop trough children to find bindings
+           	 	for(b=0; b < referenceNode[s].childNodes.length; b ++) {
+           	 		var childNode = referenceNode[s].childNodes[b];
+           	 		if(childNode.nodeName.indexOf('binding') == 0) {
+           	 			var bindingId = serviceId + "/" + childNode.nodeName;
+           	 			
+           	 			var parentInfo={
+    						parent: serviceItem,
+    						attribute: "children"
+    					};
+           	 			
+           	 			var bindingItem = store.newItem({id:bindingId, label:childNode.nodeName, type:'reference-binding'}, parentInfo);
+           	 		}
+    	 		}
+
        	 		
        	 	}
        	 	
@@ -209,6 +234,13 @@ body,html {
     	alert('showing documentation for' + item.id);
     }
     
+    function guidGenerator() {
+        var S4 = function() {
+           return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+        };
+        return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    }
+
     
     dojo.addOnLoad(prepare);
 </script>
