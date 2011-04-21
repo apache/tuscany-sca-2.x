@@ -31,6 +31,5 @@ public interface DomainCompositeResource {
 
     @GET
     @Path("{domainURI}")
-    //@Produces(MediaType.TEXT_PLAIN)
     String getDomainComposite(@PathParam("domainURI") @DefaultValue("default") String domainURI);
 }
