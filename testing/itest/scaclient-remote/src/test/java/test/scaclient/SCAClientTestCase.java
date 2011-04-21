@@ -19,7 +19,7 @@
 
 package test.scaclient;
 
-import itest.RemoteHelloworldService;
+import itest.HelloworldService;
 
 import java.net.URI;
 
@@ -38,8 +38,8 @@ public class SCAClientTestCase extends TestCase {
     @Test
     public void testDefault() throws Exception {
         SCAClientFactory clientFactory = SCAClientFactory.newInstance(URI.create("uri:default?wka=127.0.0.1:9876"));
-        RemoteHelloworldService service = clientFactory.getService(RemoteHelloworldService.class, "HelloworldComponent/HelloworldService");
-        assertEquals("Hello petra", service.sayHelloRemote("petra"));
+        HelloworldService service = clientFactory.getService(HelloworldService.class, "HelloworldComponent");
+        assertEquals("Hello petra", service.sayHello("petra"));
     }
 
 }

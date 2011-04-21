@@ -21,24 +21,18 @@ package itest;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Scope;
-import org.oasisopen.sca.annotation.Service;
 
 @EagerInit
 @Scope("COMPOSITE")
-@Service({HelloworldService.class, RemoteHelloworldService.class})
-public class HelloworldServiceImpl implements HelloworldService, RemoteHelloworldService {
+public class HelloworldServiceImpl implements HelloworldService {
 
     public String sayHello(String name) {
         return "Hello " + name;
     }
 
-    public String sayHelloRemote(String name) {
-        return "Hello " + name;
-    }
-    
     @Init
     public void init() {
-        System.out.println(sayHello("world"));
+        System.out.println("init: " + sayHello("world"));
     }
 
 }
