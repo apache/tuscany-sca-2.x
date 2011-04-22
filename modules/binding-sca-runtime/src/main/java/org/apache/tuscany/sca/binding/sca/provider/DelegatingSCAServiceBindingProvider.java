@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.binding.sca.provider;
 
-import java.util.logging.Logger;
-
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
@@ -37,7 +35,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  */
 public class DelegatingSCAServiceBindingProvider implements EndpointAsyncProvider {
 
-    private static final Logger logger = Logger.getLogger(DelegatingSCAServiceBindingProvider.class.getName());
+    // private static final Logger logger = Logger.getLogger(DelegatingSCAServiceBindingProvider.class.getName());
 
     private ServiceBindingProvider provider;
     private RuntimeEndpoint endpoint;
@@ -109,6 +107,10 @@ public class DelegatingSCAServiceBindingProvider implements EndpointAsyncProvide
         } finally {
             started = false;
         }
+    }
+
+    public ServiceBindingProvider getProviderDelegate() {
+        return provider;
     }
 
 }
