@@ -19,20 +19,22 @@
 <project name="itest-nodes-two-jvms-hazelcast" default="run">
 	
     <target name="run"> 
-       <parallel failonany="true">
-
-            <daemons>
-                <java classpath="../../../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT.dir/tuscany-sca-2.0-SNAPSHOT/features/tuscany-sca-manifest.jar:./target/classes"        
-                      classname="org.apache.tuscany.sca.impl.Tuscany"
-                      fork="true"
-                      failonerror="true">   
-                    <arg value="domain1"/>
-                    <arg value="nodeService"/>
-                </java>
-            </daemons>
+       <parallel failonany="true">          
+            
+            <!-- start a node that will be part of the domain -->
+            <java classpath="../../../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT.dir/tuscany-sca-2.0-SNAPSHOT/features/tuscany-sca-manifest.jar:./target/classes"        
+                  classname="org.apache.tuscany.sca.impl.Tuscany"
+                  fork="true"
+                  failonerror="true">   
+                <arg value="domain1"/>
+                <arg value="nodeService"/>
+                <arg value="8088"/>
+            </java>            
         
-            <sequential>
-                <sleep seconds="5"/>
+            <sequential>         
+                <!-- give the first node a chance to start --> 
+                <sleep seconds="5"/>   
+                <!-- start a second node that automatically tries to call a service in the first node -->            
                 <java classpath="../../../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT.dir/tuscany-sca-2.0-SNAPSHOT/features/tuscany-sca-manifest.jar:./target/classes"        
                       classname="org.apache.tuscany.sca.impl.Tuscany"
                       fork="true"
@@ -40,6 +42,10 @@
                     <arg value="domain1"/>
                     <arg value="nodeClient"/>
                 </java> 
+                <!-- use a HTTP GET to ping the first node to tell it to stop -->
+                <get src="http://localhost:8088" 
+                     dest="target/deamon.txt"
+                     ignoreerrors="true"/>
             </sequential>
 
        </parallel>         

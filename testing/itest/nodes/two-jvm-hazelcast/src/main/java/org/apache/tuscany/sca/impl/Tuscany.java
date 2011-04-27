@@ -21,6 +21,9 @@ package org.apache.tuscany.sca.impl;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URL;
 
 import org.apache.tuscany.sca.node.Node;
@@ -35,6 +38,11 @@ public class Tuscany {
     public static void main(String[] args) throws Exception {
         String domainName = args[0];
         String nodeName = args[1];
+        int deamonPort = -1;
+        
+        if (args.length > 2){
+            deamonPort = Integer.parseInt(args[2]);
+        }
         
         // find the domain directory
         File currentDirectory = new File(".");
@@ -57,8 +65,38 @@ public class Tuscany {
         URL nodeConfigURL = nodeDirectory.toURI().resolve("node.xml").toURL();
         Node node = nodeFactory.createNode(nodeConfigURL);
         
+        ShutdownThread shutdown = new ShutdownThread(node);
+        Runtime.getRuntime().addShutdownHook(shutdown);
+        
         node.start();
         
+        // for testing we're going to set up a deamon that listens for 
+        // a shutdown message on a specified port (well it actually just 
+        // waits for a client to connect to the port as that's all we need
+        // for now). If no port is specified then just stop straight away
+        
+        if (deamonPort >= 0){
+            // Its a runtime that has to act as a deamon
+            ServerSocket serverSocket = null;
+                
+            try {
+                serverSocket = new ServerSocket(deamonPort);
+            } catch (IOException e) {
+                System.out.println("Can't create a ServerSocket on port: " + deamonPort);
+            }
+            
+            // all we're doing here is waiting for a connection. If we wanted to implement
+            // a real deamon we should perhaps listen to what's coming in over the resulting socket
+            // and see if a shutdown has been requested
+            Socket clientSocket = null;
+            try {
+                clientSocket = serverSocket.accept();
+            } catch (IOException e) {
+                System.out.println("Accept failed on port: " + deamonPort);
+            }
+        } 
+        
+        node.stop();
     }
     
     /**
@@ -94,4 +132,18 @@ public class Tuscany {
             return false;
         }
     }
+    
+    private static class ShutdownThread extends Thread {
+        private Node node;
+
+        public ShutdownThread(Node node) {
+            super();
+            this.node = node;
+        }
+
+        @Override
+        public void run() {
+            node.stop();
+        }
+    }    
 }
