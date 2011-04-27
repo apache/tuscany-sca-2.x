@@ -20,4 +20,5 @@
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:itest="http://itest">
    <deployable composite="itest:HelloworldClient"/>
+   <import.java package="itest.nodes"/>
 </contribution>
