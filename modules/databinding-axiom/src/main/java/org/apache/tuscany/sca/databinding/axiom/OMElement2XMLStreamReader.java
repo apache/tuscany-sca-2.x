@@ -32,20 +32,22 @@ import org.apache.tuscany.sca.databinding.BaseTransformer;
  */
 public class OMElement2XMLStreamReader extends BaseTransformer<OMElement, XMLStreamReader> implements
     PullTransformer<OMElement, XMLStreamReader> {
-    // private XmlOptions options;
 
-    public static final QName QNAME_NIL = new QName("http://www.w3.org/2001/XMLSchema-instance", "nil");
-
+    /*
+     * Reverting the behavior here in 2.x (though not in 1.x) to pass through the 
+     * XMLStreamReader even in the case of an xsi:nil element.  This appears to only
+     * be relied upon in 1.x by the XMLStreamReader2CallableReference transformer, and can
+     * be changed in 2.x without breaking anything.  
+     *
+     * I'd preferto move the responsibility for handling xsi:nil to transformers such as
+     * XMLStreamReader2CallableReference.  While for something like JAXB, xsi:nil would
+     * typically map to 'null', for something XML-centric like DOM I think it's more useful
+     * to transform to a DOM Element with xsi:nil="true".   For now I'll leave this issue
+     * unaddressed in 2.x, where we'd have to adjust XMLStreamReader2CallableReference in 
+     * order to make a change like this.
+     */
     public XMLStreamReader transform(OMElement source, TransformationContext context) {
-        if (source == null) {
-            return null;
-        } else {
-            if ("true".equals(source.getAttributeValue(QNAME_NIL))) {
-                return null;
-            } else {
-                return source.getXMLStreamReader();
-            }
-        }
+        return source != null ? source.getXMLStreamReader() : null;  
     }
 
     @Override
