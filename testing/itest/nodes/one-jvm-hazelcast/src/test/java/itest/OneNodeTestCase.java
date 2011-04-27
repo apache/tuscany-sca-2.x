@@ -42,7 +42,7 @@ public class OneNodeTestCase{
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        node = NodeFactory.getInstance().createNode(domainURI, "../helloworld-service/target/classes", "../helloworld-client/target/classes");
+        node = NodeFactory.getInstance().createNode(domainURI, "../helloworld-service/target/classes", "../helloworld-client/target/classes", "../helloworld-iface/target/classes");
         node.start();
     }
 

@@ -45,6 +45,7 @@ public class OneNodeTestCase{
         System.setProperty("org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled", "false");
         NodeFactory factory = NodeFactory.newInstance();
         node = factory.createNode(
+               new Contribution("iface", getJar("../helloworld-iface/target")),
                new Contribution("service", getJar("../helloworld-service/target")),
                new Contribution("client", getJar("../helloworld-client/target")));
         node.start();

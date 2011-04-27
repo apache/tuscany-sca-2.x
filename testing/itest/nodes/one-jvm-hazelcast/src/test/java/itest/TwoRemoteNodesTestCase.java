@@ -43,10 +43,10 @@ public class TwoRemoteNodesTestCase{
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        serviceNode = NodeFactory.newInstance().createNode(URI.create("tuscany:TwoRemoteNodesTestCase"), "../helloworld-service/target/classes");
+        serviceNode = NodeFactory.newInstance().createNode(URI.create("tuscany:TwoRemoteNodesTestCase"), "../helloworld-service/target/classes", "../helloworld-iface/target/classes");
         serviceNode.start();
 
-        clientNode = NodeFactory.getInstance().createNode(URI.create("tuscany:TwoRemoteNodesTestCase"), "../helloworld-client/target/classes");
+        clientNode = NodeFactory.getInstance().createNode(URI.create("tuscany:TwoRemoteNodesTestCase"), "../helloworld-client/target/classes", "../helloworld-iface/target/classes");
         clientNode.start();
     }
 

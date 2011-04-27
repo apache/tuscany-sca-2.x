@@ -43,9 +43,9 @@ public class TwoNodeTestCase{
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        serviceNode = NodeFactory.getInstance().createNode(domainURI, "../helloworld-service/target/classes");
+        serviceNode = NodeFactory.getInstance().createNode(domainURI, "../helloworld-service/target/classes", "../helloworld-iface/target/classes");
         serviceNode.start();
-        clientNode = NodeFactory.getInstance().createNode(domainURI, "../helloworld-client/target/classes");
+        clientNode = NodeFactory.getInstance().createNode(domainURI, "../helloworld-client/target/classes", "../helloworld-iface/target/classes");
         clientNode.start();
     }
 
