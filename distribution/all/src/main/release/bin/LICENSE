@@ -267,9 +267,9 @@ The following components come under Apache Software License 2.0
  httpclient-4.0.3.jar
  httpcore-4.0.1.jar
  jabsorb-1.3.1.jar
- jackson-core-asl-1.8.0.jar
- jackson-mapper-asl-1.8.0.jar
- jackson-xc-1.8.0.jar
+ jackson-core-asl-1.7.5.jar
+ jackson-mapper-asl-1.7.5.jar
+ jackson-xc-1.7.5.jar
  jettison-1.2.jar
  jetty-6.1.26.jar
  jetty-util-6.1.26.jar
@@ -309,9 +309,9 @@ The following components come under Apache Software License 2.0
  stripes-1.5.2.jar
  tranql-connector-1.1.jar
  tribes-6.0.26.jar
- wink-common-1.1.3-incubating.jar
- wink-client-1.1.3-incubating.jar
- wink-server-1.1.3-incubating.jar 
+ wink-common-1.1.2-incubating.jar
+ wink-client-1.1.2-incubating.jar
+ wink-server-1.1.2-incubating.jar 
  xalan-2.7.0.jar
  xercesImpl-2.8.1.jar
  xmlbeans-2.3.0.jar
