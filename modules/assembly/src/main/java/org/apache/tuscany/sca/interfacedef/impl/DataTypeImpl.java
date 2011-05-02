@@ -168,6 +168,20 @@ public class DataTypeImpl<L> implements DataType<L> {
     @Override
     public Object clone() throws CloneNotSupportedException {
         DataTypeImpl copy = (DataTypeImpl)super.clone();
+        
+        // 
+        // When using a DataTypeImpl with java:array databinding, 
+        // 'logical' will be another DataTypeImpl.  Doing only
+        // a shallow copy means that resetting the databinding will
+        // have an unexpected side effect on the original.  Though
+        // we could special case the java:array-databinding case,
+        // instead do it more generally when the logical is another 
+        // DataType.
+        // 
+        if (logical instanceof DataType) {
+            DataType logicalDT = (DataType)logical;
+            copy.logical = logicalDT.clone();
+        }
         return copy;
     }
 
