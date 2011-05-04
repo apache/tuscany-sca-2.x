@@ -44,7 +44,7 @@
           name="start"
           partnerLink="helloPartnerLink"
           portType="test:HelloPortType"
-          operation="hello"
+          operation="sayHello"
           variable="helloMessage"
           createInstance="yes"/>
 
@@ -74,7 +74,7 @@
        <reply name="end"  
               partnerLink="helloPartnerLink"
               portType="test:HelloPortType" 
-              operation="hello"
+              operation="sayHello"
               variable="helloMessageResponse"/>
    </sequence>
 </process>

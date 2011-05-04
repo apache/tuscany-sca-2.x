@@ -61,7 +61,7 @@
     </wsdl:message>
     
     <wsdl:portType name="HelloPortType">
-        <wsdl:operation name="hello">
+        <wsdl:operation name="sayHello">
             <wsdl:input message="tns:HelloMessage" name="TestIn"/>
             <wsdl:output message="tns:HelloMessageResponse" name="TestOut"/>
         </wsdl:operation>    
@@ -70,7 +70,7 @@
 
     <wsdl:binding name="HelloSoapBinding" type="tns:HelloPortType">
         <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-        <wsdl:operation name="hello">
+        <wsdl:operation name="sayHello">
             <wsdlsoap:operation soapAction=""/>
             <wsdl:input name="TestIn">
                 <wsdlsoap:body use="literal"/>
