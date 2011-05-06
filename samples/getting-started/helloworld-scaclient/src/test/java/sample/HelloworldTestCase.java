@@ -35,12 +35,13 @@ public class HelloworldTestCase {
 
     @Test
     public void testSayHello() throws NoSuchDomainException, NoSuchServiceException {
+    	System.setProperty("domainURI", "uri:default?wka=127.0.0.1:7654");
         HelloworldSCAClient.main(new String[0]);
     }
 
     @BeforeClass
     public static void start() throws ContributionReadException, ActivationException, ValidationException {
-        node = TuscanyRuntime.newInstance().createNode("uri:default");
+        node = TuscanyRuntime.newInstance().createNode("uri:default?bind=127.0.0.1:7654");
         node.installContribution(null, "../helloworld/target/classes", null, null, true);
     }
 
