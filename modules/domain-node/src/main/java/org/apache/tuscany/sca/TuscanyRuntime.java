@@ -99,7 +99,6 @@ public class TuscanyRuntime {
      * @param contributionURL  URL of the contribution
      * @param dependentContributionURLs  optional URLs of dependent contributions
      * @return a Node with installed contributions
-     * TODO: keep this helper method? Maybe say you should just create/use Node directly
      */
     public static Node runComposite(URI domainURI, String compositeURI, String contributionURL, String... dependentContributionURLs) {
         try {
