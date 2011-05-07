@@ -104,7 +104,7 @@ public class TuscanyRuntime {
         try {
             TuscanyRuntime runtime = newInstance();
         	String domain = domainURI == null ? "default" : domainURI.toString();
-            EndpointRegistry endpointRegistry = new EndpointRegistryImpl(runtime.extensionPointRegistry, null, null);
+            EndpointRegistry endpointRegistry = runtime.domainRegistryFactory.getEndpointRegistry(domain, getDomainName(domain));
             NodeImpl node = new NodeImpl(domain, runtime.deployer, runtime.compositeActivator, endpointRegistry, runtime.extensionPointRegistry, runtime);
 
             if (dependentContributionURLs != null) {
@@ -222,7 +222,7 @@ public class TuscanyRuntime {
         return assemblyFactory;
     }
 
-    private String getDomainName(String domainURI) {
+    private static String getDomainName(String domainURI) {
         int scheme = domainURI.indexOf(':');
         int qm = domainURI.indexOf('?');
         if (qm == -1) {
