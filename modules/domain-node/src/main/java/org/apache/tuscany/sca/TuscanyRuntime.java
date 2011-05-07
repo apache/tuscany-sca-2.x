@@ -22,6 +22,7 @@ package org.apache.tuscany.sca;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 import java.util.Properties;
 
@@ -79,7 +80,7 @@ public class TuscanyRuntime {
     }
 
     /**
-     * A helper method to run a standalone SCA composite 
+     * A helper method to run a standalone SCA composite in the default standalone SCA domain.
      * @param compositeURI  URI within the contribution of a composite to run 
      *         if compositeURI is null then all deployable composites in the contribution will be run 
      * @param contributionURL  URL of the contribution
@@ -91,9 +92,8 @@ public class TuscanyRuntime {
     }
 
     /**
-     * A helper method to run a standalone SCA composite 
-     * @param runtime a TuscanyRuntime instance which will be used to run the composite
-     *                 this allows sharing a runtime instance to run multiple composites
+     * A helper method to run a standalone SCA composite in a SCA domain
+     * @param domainURI the URI of the SCA domain
      * @param compositeURI  URI within the contribution of a composite to run 
      *         if compositeURI is null then all deployable composites in the contribution will be run 
      * @param contributionURL  URL of the contribution
@@ -101,14 +101,12 @@ public class TuscanyRuntime {
      * @return a Node with installed contributions
      * TODO: keep this helper method? Maybe say you should just create/use Node directly
      */
-    public static Node runComposite(TuscanyRuntime runtime, String compositeURI, String contributionURL, String... dependentContributionURLs) {
+    public static Node runComposite(URI domainURI, String compositeURI, String contributionURL, String... dependentContributionURLs) {
         try {
-            boolean sharedRuntime = runtime != null;
-            if (runtime == null) {
-                runtime = newInstance();
-            }
+            TuscanyRuntime runtime = newInstance();
+        	String domain = domainURI == null ? "default" : domainURI.toString();
             EndpointRegistry endpointRegistry = new EndpointRegistryImpl(runtime.extensionPointRegistry, null, null);
-            NodeImpl node = new NodeImpl("default", runtime.deployer, runtime.compositeActivator, endpointRegistry, runtime.extensionPointRegistry, sharedRuntime? null : runtime);
+            NodeImpl node = new NodeImpl(domain, runtime.deployer, runtime.compositeActivator, endpointRegistry, runtime.extensionPointRegistry, runtime);
 
             if (dependentContributionURLs != null) {
                 for (int i=dependentContributionURLs.length-1; i>-1; i--) {

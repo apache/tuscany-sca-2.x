@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.runtime;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -175,14 +176,12 @@ public class TuscanyRuntimeTestCase {
 
     @Test
     public void testRunCompositeSharedRuntime() throws NoSuchServiceException {
-        TuscanyRuntime runtime = TuscanyRuntime.newInstance();
-        Node node = TuscanyRuntime.runComposite(runtime, "helloworld.composite", "src/test/resources/sample-helloworld.jar");
+        Node node = TuscanyRuntime.runComposite(URI.create("default"), "helloworld.composite", "src/test/resources/sample-helloworld.jar");
         try {
         Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
         Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
         } finally {
             node.stop();
         }
-        runtime.stop();
     }
 }
