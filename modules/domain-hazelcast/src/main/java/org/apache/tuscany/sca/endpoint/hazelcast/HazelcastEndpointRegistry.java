@@ -19,7 +19,9 @@
 
 package org.apache.tuscany.sca.endpoint.hazelcast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.StringReader;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,6 +33,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.wsdl.Definition;
+import javax.wsdl.WSDLException;
+import javax.wsdl.xml.WSDLReader;
+import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -40,11 +46,17 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.oasisopen.sca.ServiceRuntimeException;
+import org.xml.sax.InputSource;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.config.NearCacheConfig;
@@ -71,14 +83,14 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
 
     private HazelcastInstance hazelcastInstance;
     protected Map<Object, Object> endpointMap;
+    protected Map<Object, Object> endpointWsdls;
+    protected Map<QName, Composite> runningComposites;
     protected Map<String, Endpoint> localEndpoints = new ConcurrentHashMap<String, Endpoint>();
     protected MultiMap<String, String> endpointOwners;
-    protected Map<QName, Composite> runningComposites;
 
     protected AssemblyFactory assemblyFactory;
     protected Object shutdownMutex = new Object();
     protected Properties properties;
-
 
     public HazelcastEndpointRegistry(ExtensionPointRegistry registry, Properties properties, String endpointRegistryURI, String domainURI) {
         super(registry, null, endpointRegistryURI, domainURI);
@@ -112,6 +124,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
             endpointMap = imap;
             
             endpointOwners = hazelcastInstance.getMultiMap(domainURI + "/EndpointOwners");
+            endpointWsdls = hazelcastInstance.getMap(domainURI + "/EndpointWsdls");
 
             // TODO: get going in-JVM first then fix this which needs to serialize/deserialize the composite
             // runningComposites = hazelcastInstance.getMap(domainURI + "/composites");
@@ -128,6 +141,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
                 hazelcastInstance = null;
                 endpointMap = null;
                 endpointOwners = null;
+                endpointWsdls = null;
             }
         }
     }
@@ -233,10 +247,12 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
             
         String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
         String endpointURI = endpoint.getURI();
+        String wsdl = getWsdl(endpoint);
         Transaction txn = hazelcastInstance.getTransaction();
         txn.begin();
         try {
             endpointMap.put(endpointURI, endpoint);
+            endpointWsdls.put(endpointURI, wsdl);
             endpointOwners.put(localMemberAddr, endpointURI);
             txn.commit();
         } catch (Throwable e) {
@@ -245,6 +261,23 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         }
         localEndpoints.put(endpointURI, endpoint);
         logger.info("Add endpoint - " + endpoint);
+    }
+
+    private String getWsdl(Endpoint endpoint) {
+        WSDLInterfaceContract wsdlIC = (WSDLInterfaceContract)((RuntimeEndpoint)endpoint).getGeneratedWSDLContract(endpoint.getComponentServiceInterfaceContract());
+        if (wsdlIC == null) {
+            return "";
+        }
+        WSDLInterface wsdl = (WSDLInterface)wsdlIC.getInterface();
+        WSDLDefinition d = wsdl.getWsdlDefinition();
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        try {
+            WSDLWriter writer = javax.wsdl.factory.WSDLFactory.newInstance().newWSDLWriter();
+            writer.writeWSDL(d.getDefinition(), outStream);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        return outStream.toString();
     }
 
     public List<Endpoint> findEndpoint(String uri) {
@@ -266,6 +299,11 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         if (!isLocal(endpoint)) {
             endpoint.setRemote(true);
             ((RuntimeEndpoint)endpoint).bind(registry, this);
+            try {
+                setNormailizedWSDLContract(endpoint);
+            } catch (WSDLException e) {
+                throw new RuntimeException(e);
+            }
         } else {
             // get the local version of the endpoint
             // this local version won't have been serialized
@@ -276,6 +314,25 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         return endpoint;
     }
     
+
+    private void setNormailizedWSDLContract(Endpoint endpoint) throws WSDLException {
+        String wsdl = endpointWsdls == null ? null : (String)endpointWsdls.get(endpoint.getURI());
+        if (wsdl == null || wsdl.length() < 1) {
+            return;
+        }
+        InterfaceContract ic = endpoint.getComponentServiceInterfaceContract();
+        WSDLFactory wsdlFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(WSDLFactory.class);
+        WSDLInterfaceContract wsdlIC = wsdlFactory.createWSDLInterfaceContract();
+        WSDLInterface wsdlIface = wsdlFactory.createWSDLInterface();
+        WSDLDefinition wsdlDef = wsdlFactory.createWSDLDefinition();
+        WSDLReader reader = javax.wsdl.factory.WSDLFactory.newInstance().newWSDLReader();
+        InputSource inputSource = new InputSource(new StringReader(wsdl));
+        Definition def = reader.readWSDL("", inputSource);
+        wsdlDef.setDefinition(def);
+        wsdlIface.setWsdlDefinition(wsdlDef);
+        wsdlIC.setInterface(wsdlIface);
+        ic.setNormailizedWSDLContract(wsdlIC);
+    }
 
     private boolean isLocal(Endpoint endpoint) {
         return localEndpoints.containsKey(endpoint.getURI());
@@ -306,6 +363,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
             try {
                 endpointOwners.remove(localMemberAddr, endpointURI);
                 endpointMap.remove(endpointURI);
+                endpointWsdls.remove(endpointURI);
                 txn.commit();
             } catch (Throwable e) {
                 txn.rollback();
@@ -373,6 +431,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
                             Collection<String> keys = endpointOwners.remove(memberAddr);
                             for (Object k : keys) {
                                 endpointMap.remove(k);
+                                endpointWsdls.remove(k);
                             }
                         }
                     } finally {
@@ -406,7 +465,6 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         }
         return null;
     }
-
     @Override
     public void addRunningComposite(Composite composite) {
         runningComposites.put(composite.getName(), composite);

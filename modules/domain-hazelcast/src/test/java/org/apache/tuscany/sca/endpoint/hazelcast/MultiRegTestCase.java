@@ -30,6 +30,9 @@ import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.junit.Assert;
@@ -154,10 +157,61 @@ public class MultiRegTestCase {
         Component comp = assemblyFactory.createComponent();
         ep.setComponent(comp);
         ep.setService(assemblyFactory.createComponentService());
+        ep.getService().setInterfaceContract(getIC());
         Binding b = scaBindingFactory.createSCABinding();
         ep.setBinding(b);
         ep.setURI(uri);
         return ep;
+    }
+
+    private InterfaceContract getIC() {
+        InterfaceContract ic = new JavaInterfaceContract(){
+
+            public Object clone() throws CloneNotSupportedException {
+                return null;
+            }
+            @Override
+            public Interface getInterface() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public void setInterface(Interface callInterface) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public Interface getCallbackInterface() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public void setCallbackInterface(Interface callbackInterface) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public InterfaceContract makeUnidirectional(boolean isCallback) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public InterfaceContract getNormalizedWSDLContract() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public void setNormailizedWSDLContract(InterfaceContract wsdlInterfaceContract) {
+                // TODO Auto-generated method stub
+                
+            }};
+        return ic;
     }
     
 }
