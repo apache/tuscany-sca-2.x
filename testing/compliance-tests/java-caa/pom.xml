@@ -86,7 +86,6 @@
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
 
-           <argLine>-Xms256m -Xmx1024m</argLine>
 <!-- if you want to connect a debugger to a surefire test you can use this
            <argLine>-Xms256m -Xmx1024m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000</argLine>
 -->
