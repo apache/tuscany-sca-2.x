@@ -19,11 +19,9 @@
 
 package org.apache.tuscany.sca.endpoint.hazelcast.client;
 
-import java.net.BindException;
+import java.io.IOException;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.ServerSocket;
-import java.util.Enumeration;
+import java.net.Socket;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,7 +84,7 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
             }
         }
         if (rc.getWKAs().size() < 1) {
-            throw new IllegalArgumentException("Must specify remote IP address(es) for domain");
+            throw new IllegalArgumentException("No local domain instance found, please use domain URI 'wka=' argument to define IP address(es) for domain");
         }
         
         // Hazelcast is outputs a lot on info level log messages which are unnecessary for us,
@@ -109,31 +107,24 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
     }
 
     /**
-     * See if there's a local IP listening on port 14820
+     * As a default connect to a local runtime instance listening on port 14820
      */
-    protected static String getDefaultWKA() {
-        try {
-            Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
-            while (nis.hasMoreElements()) {
-                NetworkInterface ni = nis.nextElement();
-                Enumeration<InetAddress> ips = ni.getInetAddresses();
-                while (ips.hasMoreElements()) {
-                    InetAddress addr = ips.nextElement();
-                    ServerSocket ss = null;
-                    try {
-                        ss = new ServerSocket(14820, 0, addr);
-                    } catch (BindException e) {
-                        return addr.getHostAddress() + ":14820";
-                    } finally {
-                        if (ss != null) {
-                            ss.close();
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-        }
-        return null;
-    }    
-    
+	protected static String getDefaultWKA() {
+        Socket s = null;
+		try {
+	        s = new Socket(InetAddress.getLocalHost(), 14820);
+	        if (s.isConnected()) {
+	    		return s.getInetAddress().getHostAddress() + ":14820";
+	        }
+		} catch (IOException e) {
+		} finally {
+			if (s != null) {
+				try {
+					s.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+        return null;	        	
+	}
 }
