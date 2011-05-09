@@ -85,6 +85,7 @@ public class DeployedComposite {
 
         Monitor monitor = deployer.createMonitor();
         builtComposite = deployer.build(contribution, dependedOnContributions, new HashMap<QName, List<String>>(), monitor);
+        builtComposite.setName(composite.getName());
         monitor.analyzeProblems();
 
         compositeContext = new CompositeContext(extensionPointRegistry, 
@@ -100,9 +101,11 @@ public class DeployedComposite {
     public void start() throws ActivationException {
         compositeActivator.activate(compositeContext, builtComposite);
         compositeActivator.start(compositeContext, builtComposite);
+        endpointRegistry.addRunningComposite(builtComposite);
     }
 
     public void stop() throws ActivationException {
+        endpointRegistry.removeRunningComposite(builtComposite.getName());
         compositeActivator.stop(compositeContext, builtComposite);
         compositeActivator.deactivate(builtComposite);
     }

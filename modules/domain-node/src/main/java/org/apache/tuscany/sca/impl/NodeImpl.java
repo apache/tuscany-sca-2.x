@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -29,11 +30,13 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -48,6 +51,9 @@ import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
@@ -209,15 +215,32 @@ public class NodeImpl implements Node {
     }
 
     public Composite getDomainLevelComposite() {
-        // TODO Auto-generated method stub
-        return null;
+        FactoryExtensionPoint factories = extensionPointRegistry.getExtensionPoint(FactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        Composite domainComposite = assemblyFactory.createComposite();
+        domainComposite.setName(new QName(Base.SCA11_TUSCANY_NS, "domainCompoiste"));
+        List<Composite> domainIncludes = domainComposite.getIncludes();
+        for (Composite composite : endpointRegistry.getRunningComposites()) {
+            domainIncludes.add(composite);
+        }
+        return domainComposite;
     }
 
     public String getDomainLevelCompositeAsString() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+        StAXArtifactProcessorExtensionPoint xmlProcessors = extensionPointRegistry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessor<Composite> compositeProcessor = xmlProcessors.getProcessor(Composite.class);
+        XMLOutputFactory outputFactory = extensionPointRegistry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(XMLOutputFactory.class);
 
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            compositeProcessor.write(getDomainLevelComposite(), outputFactory.createXMLStreamWriter(bos), new ProcessorContext(extensionPointRegistry));
+        } catch(Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        String result = bos.toString();
+        return  result;
+    }
     public Object getQNameDefinition(String contributionURI, QName definition, QName symbolSpace) {
         // TODO Auto-generated method stub
         return null;

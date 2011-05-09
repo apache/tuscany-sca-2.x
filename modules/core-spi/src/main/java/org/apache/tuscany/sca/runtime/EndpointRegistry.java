@@ -22,6 +22,9 @@ package org.apache.tuscany.sca.runtime;
 import java.util.Collection;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 
@@ -76,4 +79,8 @@ public interface EndpointRegistry {
     void removeListener(EndpointListener listener);
 
     String getDomainURI();
+
+    void addRunningComposite(Composite composite);
+    void removeRunningComposite(QName name);
+    List<Composite> getRunningComposites();
 }

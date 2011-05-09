@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -30,7 +31,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -69,9 +73,12 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     protected Map<Object, Object> endpointMap;
     protected Map<String, Endpoint> localEndpoints = new ConcurrentHashMap<String, Endpoint>();
     protected MultiMap<String, String> endpointOwners;
+    protected Map<QName, Composite> runningComposites;
+
     protected AssemblyFactory assemblyFactory;
     protected Object shutdownMutex = new Object();
     protected Properties properties;
+
 
     public HazelcastEndpointRegistry(ExtensionPointRegistry registry, Properties properties, String endpointRegistryURI, String domainURI) {
         super(registry, null, endpointRegistryURI, domainURI);
@@ -105,6 +112,10 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
             endpointMap = imap;
             
             endpointOwners = hazelcastInstance.getMultiMap(domainURI + "/EndpointOwners");
+
+            // TODO: get going in-JVM first then fix this which needs to serialize/deserialize the composite
+            // runningComposites = hazelcastInstance.getMap(domainURI + "/composites");
+            runningComposites = new HashMap<QName, Composite>();
 
             hazelcastInstance.getCluster().addMembershipListener(this);
 //        }
@@ -394,5 +405,20 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
             }
         }
         return null;
+    }
+
+    @Override
+    public void addRunningComposite(Composite composite) {
+        runningComposites.put(composite.getName(), composite);
+    }
+
+    @Override
+    public void removeRunningComposite(QName name) {
+        runningComposites.remove(name);
+    }
+
+    @Override
+    public List<Composite> getRunningComposites() {
+        return new ArrayList<Composite>(runningComposites.values());
     }
 }

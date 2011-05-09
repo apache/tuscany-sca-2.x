@@ -836,5 +836,19 @@ public class DeployerImpl implements Deployer {
 
         public void stop() {
         }
+
+        @Override
+        public void addRunningComposite(Composite composite) {
+        }
+
+        @Override
+        public void removeRunningComposite(QName name) {
+        }
+
+        @Override
+        public List<Composite> getRunningComposites() {
+            return null;
+        }
+
     }
 }

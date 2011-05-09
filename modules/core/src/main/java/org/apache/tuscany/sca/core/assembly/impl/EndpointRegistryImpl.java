@@ -20,13 +20,18 @@
 package org.apache.tuscany.sca.core.assembly.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
@@ -43,6 +48,7 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
     private final Logger logger = Logger.getLogger(EndpointRegistryImpl.class.getName());
 
     private List<Endpoint> endpoints = new ArrayList<Endpoint>();
+    private Map<QName, Composite> runningComposites = new HashMap<QName, Composite>();
     
     protected boolean quietLogging;
 
@@ -153,6 +159,21 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
         }
         endpointreferences.clear();
         listeners.clear();
+    }
+
+    @Override
+    public void addRunningComposite(Composite composite) {
+        runningComposites.put(composite.getName(), composite);
+    }
+
+    @Override
+    public void removeRunningComposite(QName name) {
+        runningComposites.remove(name);
+    }
+
+    @Override
+    public List<Composite> getRunningComposites() {
+        return new ArrayList<Composite>(runningComposites.values());
     }
 
 }

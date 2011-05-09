@@ -34,6 +34,8 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
+
 import org.apache.catalina.tribes.Channel;
 import org.apache.catalina.tribes.ChannelException;
 import org.apache.catalina.tribes.ChannelReceiver;
@@ -43,6 +45,7 @@ import org.apache.catalina.tribes.group.interceptors.StaticMembershipInterceptor
 import org.apache.catalina.tribes.membership.McastService;
 import org.apache.catalina.tribes.membership.StaticMember;
 import org.apache.catalina.tribes.transport.ReceiverBase;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
@@ -415,6 +418,24 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
             logger.log(Level.SEVERE, e.getMessage(), e);
             return null;
         }
+    }
+
+    @Override
+    public void addRunningComposite(Composite composite) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void removeRunningComposite(QName name) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public List<Composite> getRunningComposites() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

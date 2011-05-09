@@ -67,7 +67,7 @@ public class Shell {
     private Map<String, Node> standaloneNodes = new HashMap<String, Node>();
     private Map<String, Node> nodes = new HashMap<String, Node>();
 
-    public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "help", "install", "installed", "invoke",
+    public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "domainComposite", "help", "install", "installed", "invoke",
                                                           "load", "remove", "run", "save", "services", "start", "started", "stop"};
 
     public static void main(final String[] args) throws Exception {
@@ -132,6 +132,11 @@ public class Shell {
         for (Node node : nodes.values()) {
             System.out.println(node.getDomainName());
         }
+        return true;
+    }
+
+    boolean domainComposite() {
+        System.out.println(getNode().getDomainLevelCompositeAsString());
         return true;
     }
 
@@ -531,12 +536,18 @@ public class Shell {
                     return domain(toks.size() > 1 ? toks.get(1) : "");
                 }
             };
-            if (op.equalsIgnoreCase("domains"))
-                return new Callable<Boolean>() {
-                    public Boolean call() throws Exception {
-                        return domains();
-                    }
-                };
+        if (op.equalsIgnoreCase("domains"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return domains();
+                }
+            };
+        if (op.equalsIgnoreCase("domainComposite"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return domainComposite();
+                }
+            };
         if (op.equalsIgnoreCase("install"))
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
