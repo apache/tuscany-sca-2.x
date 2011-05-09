@@ -218,7 +218,9 @@ public class NodeImpl implements Node {
         FactoryExtensionPoint factories = extensionPointRegistry.getExtensionPoint(FactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
         Composite domainComposite = assemblyFactory.createComposite();
-        domainComposite.setName(new QName(Base.SCA11_TUSCANY_NS, "domainCompoiste"));
+        domainComposite.setName(new QName(Base.SCA11_TUSCANY_NS, "domainComposite"));
+        domainComposite.setAutowire(false);
+        domainComposite.setLocal(false);
         List<Composite> domainIncludes = domainComposite.getIncludes();
         for (Composite composite : endpointRegistry.getRunningComposites()) {
             domainIncludes.add(composite);
