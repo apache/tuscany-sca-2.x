@@ -582,6 +582,7 @@ public class WSDLOperationIntrospectorImpl {
         ElementInfo elementInfo = new ElementInfo(element.getQName(), getTypeInfo(element.getSchemaType()));
         elementInfo.setMany(element.getMaxOccurs() > 1);
         elementInfo.setNillable(element.isNillable());
+        elementInfo.setOmissible(element.getMinOccurs()==0);
         return elementInfo;
     }
 

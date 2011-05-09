@@ -20,12 +20,15 @@
 package org.apache.tuscany.sca.databinding.axiom;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
@@ -71,32 +74,34 @@ public class OMElementWrapperHandlerTestCase {
         + " </wrapper>";
 
     private OMElementWrapperHandler handler;
+    private Operation op;
 
     @Before
     public void setUp() throws Exception {
         this.handler = new OMElementWrapperHandler();
+
+        List<ElementInfo> elements = new ArrayList<ElementInfo>();
+        for (QName inQName : new QName[] { INPUT1, INPUT2, INPUT3, INPUT4 }) {
+            ElementInfo e = new ElementInfo(inQName, null);
+            e.setNillable(true);
+            elements.add(e);
+        }
+        // INPUT1,4 are like maxOccurs="unbounded"
+        elements.get(0).setMany(true);
+        elements.get(3).setMany(true);
+        // INPUT2 is like minOccurs="0", nillable="false"
+        elements.get(1).setOmissible(true);
+        elements.get(1).setNillable(false);
+
+        WrapperInfo wrapperInfo = new WrapperInfo(AxiomDataBinding.NAME, null, null, elements, null);
+        this.op = new OperationImpl();
+        op.setWrapper(wrapperInfo);   
     }
-    
-    // Would be nice to do a "set" test too.
 
     @Test
-    @Ignore("TUSCANY-3857")
     public void testGetChildren() {
         try {
             OMElement wrapperElem = AXIOMUtil.stringToOM(WRAPPER_XML);
-            List<ElementInfo> elements = new ArrayList<ElementInfo>();
-            for (QName inQName : new QName[] { INPUT1, INPUT2, INPUT3, INPUT4 }) {
-                ElementInfo e = new ElementInfo(inQName, null);
-                e.setNillable(true);
-                elements.add(e);
-            }
-            // INPUT1,4 are "many" 
-            elements.get(0).setMany(true);
-            elements.get(3).setMany(true);
-            
-            WrapperInfo wrapperInfo = new WrapperInfo(AxiomDataBinding.NAME, null, null, elements, null);
-            Operation op = new OperationImpl();
-            op.setWrapper(wrapperInfo);
             List children = handler.getChildren(wrapperElem, op, true);
             Assert.assertEquals(4, children.size());
             Object[] firstChild = (Object[])children.get(0);
@@ -108,10 +113,37 @@ public class OMElementWrapperHandlerTestCase {
             Assert.assertEquals("input3ContentsA", thirdChild.getText());
             Object[] fourthChild = (Object[])children.get(3);
             Assert.assertEquals(1, fourthChild.length);
-
         } catch (XMLStreamException e) {
             throw new RuntimeException(e); 
         }
+    }
+
+    @Test
+    public void testSetChildren() {
+        OMFactory factory = OMAbstractFactory.getOMFactory();
+        OMElement wrapper = factory.createOMElement("wrapper", "myNamespace", "myns");
+        OMElement[] in1 = new OMElement[2];
+        in1[0] = factory.createOMElement(INPUT1);
+        in1[1] = factory.createOMElement(INPUT1);
+        OMElement in2 = null;
+        OMElement   in3 = factory.createOMElement(INPUT3);
+        OMElement[] in4 = new OMElement[1];
+        in4[0] = factory.createOMElement(INPUT4);
+        Object[] parms = new Object[] {in1, in2, in3, in4};
+
+        handler.setChildren(wrapper, parms, op, true);
+
+        Iterator<OMElement> iter = (Iterator<OMElement>)wrapper.getChildElements();
+        OMElement elem1 = iter.next();
+        OMElement elem2 = iter.next(); 
+        OMElement elem3 = iter.next();
+        OMElement elem4 = iter.next();
+        Assert.assertFalse(iter.hasNext());
+
+        Assert.assertEquals(INPUT1, elem1.getQName());
+        Assert.assertEquals(INPUT1, elem2.getQName());
+        Assert.assertEquals(INPUT3, elem3.getQName());
+        Assert.assertEquals(INPUT4, elem4.getQName());
     }
 
 }

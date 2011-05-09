@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.databinding.axiom;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -32,6 +33,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
+import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -46,7 +48,7 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  * @version $Rev$ $Date$
  */
 public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
-
+    private final static Logger logger = Logger.getLogger(OMElementWrapperHandler.class.getName());
     private OMFactory factory;
 
     public OMElementWrapperHandler() {
@@ -87,8 +89,12 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
 
     private void addChild(OMElement wrapper, ElementInfo childElement, OMElement element) {
         if (element == null) {
-            OMElement e = wrapper.getOMFactory().createOMElement(childElement.getQName(), wrapper);
-            attachXSINil(e);
+            // Prefer xsi:nil="true" 
+            if (childElement.isNillable()) {
+                OMElement e = wrapper.getOMFactory().createOMElement(childElement.getQName(), wrapper);
+                attachXSINil(e);
+            } 
+            // else, we might have minOccurs="0", so don't add anything to the wrapper.
             return;
         }
         QName elementName = childElement.getQName();
@@ -105,14 +111,146 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
         List<ElementInfo> childElements = input? operation.getWrapper().getInputChildElements():
             operation.getWrapper().getOutputChildElements();
 
-        List<Object> elements = new ArrayList<Object>();
-        int i = 0;
-        for (ElementInfo e : childElements) {
-            elements.add(getChild(wrapper, e, i));
-            i++;
+        // Used in both the schema-valid and schema-invalid paths
+        List<List<OMElement>> groupedElements = getElements(wrapper);    
+        
+        List<Object> children = null;
+        try {
+            children = getValidChildren(groupedElements, childElements);
+        } catch (InvalidChildException e) {
+            children = getInvalidChildren(groupedElements, childElements);
         }
+        return children;
+    }
+    
+    private List<Object> getValidChildren(List<List<OMElement>> groupedElementList, List<ElementInfo> elementInfoList) throws InvalidChildException {
+        List<Object> elements = new ArrayList<Object>();
+
+        Iterator<List<OMElement>> groupedElementListIter = groupedElementList.iterator();
+        List<OMElement> currentElemGroup = null;
+        QName currentPayloadElemQName = null;
+        int currentPayloadElemGroupSize = 0;
+        QName currentElementInfoQName = null;
+
+        boolean first = true;
+        boolean lookAtNextElementGroup = true;
+        boolean matchedLastElementGroup = false;
+        for (ElementInfo currentElementInfo : elementInfoList) {
+            currentElementInfoQName = currentElementInfo.getQName();
+            logger.fine("Iterating to next ElementInfo child with QName: " +  currentElementInfoQName + 
+                        ". Control variables lookAtNextElementGroup = " + lookAtNextElementGroup + 
+                        ", matchedLastElementGroup = " + matchedLastElementGroup);
+
+            if (first || lookAtNextElementGroup) { 
+                first = false;
+                currentElemGroup = groupedElementListIter.next();
+                matchedLastElementGroup = false;
+                currentPayloadElemGroupSize = currentElemGroup.size();
+                if (currentPayloadElemGroupSize < 1) {
+                    String logMsg = "Not sure how this would occur based on getElements() impl, " +
+                                    "but give the other routine a chance to happen to work.";
+                    logger.fine(logMsg);
+                    throw new InvalidChildException(logMsg);
+                }   
+                currentPayloadElemQName = currentElemGroup.get(0).getQName();  
+                logger.fine("Iterating to next payload element group with QName: " + currentPayloadElemQName);
+            }
+            
+            if (currentElementInfoQName.equals(currentPayloadElemQName)) {
+                //A Match!
+                logger.fine("Matched payload to child ElementInfo for QName: " + currentElementInfoQName);
+                matchedLastElementGroup = true;
+
+                if (currentElementInfo.isMany()) {
+                    // Includes case where this is only a single element of a "many"-typed ElementInfo,
+                    // which therefore gets wrapped in an array.
+                    
+                    logger.fine("ElementInfo 'isMany' = true, and group size = " + currentPayloadElemGroupSize);
+                    // These elements are all "alike" each other in having the same element QName 
+                    Iterator<OMElement> likeElemIterator = currentElemGroup.iterator();
+                    List<OMElement> likeTypedElements = new ArrayList<OMElement>();
+                    while (likeElemIterator.hasNext()) {
+                        OMElement child = likeElemIterator.next();
+                        attachXSIType(currentElementInfo, child);
+                        likeTypedElements.add(child);
+                    }
+                    elements.add(likeTypedElements.toArray());          
+                } else {
+                    if (currentPayloadElemGroupSize != 1) {
+                        String logMsg = "Detected invalid data.  Group size = " + currentPayloadElemGroupSize + " but 'isMany' = false";
+                        logger.fine(logMsg);
+                        throw new InvalidChildException(logMsg);
+                    }
+                    logger.fine("Single element.");
+                    OMElement child = currentElemGroup.get(0);
+                    attachXSIType(currentElementInfo, child);
+                    elements.add(child);
+                }
+                
+                // Advance to next group of payload elements
+                lookAtNextElementGroup = true;                
+            } else {
+                // No Match!
+                logger.fine("Did not match payload QName: " + currentPayloadElemQName +
+                            ", with child ElementInfo for QName: " + currentElementInfoQName);
+                
+                // For schema to be valid, we must have a minOccurs="0" child 
+                if (currentElementInfo.isOmissible()) {
+                    logger.fine("Child ElementInfo 'isOmissible' = true, so look at next ElementInfo.");
+                     // We need to account for this child in the wrapper child list.  Tempting to try
+                     // to use an empty array instead of a null in case isMany=true, however without a more
+                     // complete architecture for this sort of thing it's probably better NOT to introduce such
+                     // nuanced behavior, and instead to keep it simpler for now, so as not to create dependencies
+                     // on a specific null vs. empty mapping.
+                    elements.add(null); 
+                } else {
+                    String logMsg = "Detected invalid data. Child ElementInfo 'isOmissible' = false.";
+                    logger.fine(logMsg);
+                    throw new InvalidChildException(logMsg);
+                }
+                
+                // Advance to next ElementInfo, staying on the same group of payload elements.
+                lookAtNextElementGroup = false;
+            }
+        }
+        
+        // We should fail the match and throw an exception if either:
+        // 1) We haven't matched the last payload element group  
+        // 2) Though we may have matched the last one, there are more, but we are out of ElementInfo children.
+        if (!matchedLastElementGroup || groupedElementListIter.hasNext()) {
+            String logMsg = "Exhausted list of ElementInfo children without matching payload element group with QName: " + currentPayloadElemQName;
+            logger.fine(logMsg);
+            throw new InvalidChildException(logMsg);
+        }
+
+        
         return elements;
     }
+
+    
+    private List<Object> getInvalidChildren(List<List<OMElement>> groupedElementList, List<ElementInfo> childElements) {
+        List<Object> retVal = new ArrayList<Object>();
+        
+        // Since not all the ElementInfo(s) will be represented, (if some elements don't appear as children
+        // of the wrapper payload, we need to loop through the schema 
+        for (int index=0; index < groupedElementList.size(); index++) {          
+            List<OMElement> elements = groupedElementList.get(index);
+            ElementInfo childElement = childElements.get(index);  
+            if (!childElement.isMany()) {
+                Object next = elements.isEmpty() ? null : attachXSIType(childElement, elements.get(0));
+                retVal.add(next);
+            } else {
+                Object[] array = elements.toArray();
+                for (Object item : array) {
+                    attachXSIType(childElement, (OMElement)item);
+                }
+                retVal.add(array);
+            }
+        }
+        
+        return retVal;
+    }
+    
 
     /**
      * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(Operation, boolean)
@@ -174,42 +312,7 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
         }
         return elements;
     }
-
-    public Object getChild(OMElement wrapper, ElementInfo childElement, int index) {
-        Iterator children = wrapper.getChildrenWithName(childElement.getQName());
-        if (!children.hasNext()) {
-            // No name match, try by index
-            List<List<OMElement>> list = getElements(wrapper);
-            List<OMElement> elements = list.get(index);
-            if (!childElement.isMany()) {
-                return elements.isEmpty() ? null : attachXSIType(childElement, elements.get(0));
-            } else {
-                Object[] array = elements.toArray();
-                for (Object item : array) {
-                    attachXSIType(childElement, (OMElement)item);
-                }
-                return array;
-            }
-        }
-        if (!childElement.isMany()) {
-            if (children.hasNext()) {
-                OMElement child = (OMElement)children.next();
-                attachXSIType(childElement, child);
-                return child;
-            } else {
-                return null;
-            }
-        } else {
-            List<OMElement> elements = new ArrayList<OMElement>();
-            for (; children.hasNext();) {
-                OMElement child = (OMElement)children.next();
-                attachXSIType(childElement, child);
-                elements.add(child);
-            }
-            return elements.toArray();
-        }
-    }
-
+    
     /**
      * Create xis:type if required 
      * @param childElement
@@ -248,4 +351,19 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
         OMAttribute attr = element.getOMFactory().createOMAttribute("nil", xsiNS, "true");
         element.addAttribute(attr);
     }
+    
+    
+    private class InvalidChildException extends Exception {
+
+        private static final long serialVersionUID = 4858608999124013014L;
+        
+        public InvalidChildException() {
+            super();
+        }
+        
+        public InvalidChildException(String message) {
+            super(message);
+        }
+    }
+
 }

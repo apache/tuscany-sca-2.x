@@ -32,6 +32,7 @@ public class ElementInfo {
     private final TypeInfo type;
     private boolean many = false;
     private boolean nillable = false;
+    private boolean omissible = false;
 
     /**
      * @param name
@@ -78,6 +79,14 @@ public class ElementInfo {
 
     public void setNillable(boolean nillable) {
         this.nillable = nillable;
+    }
+
+    public boolean isOmissible() {
+        return omissible;
+    }
+    
+    public void setOmissible(boolean omissible) {
+        this.omissible = omissible;
     }
 
     @Override
