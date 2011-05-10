@@ -85,7 +85,7 @@ public class NodeImpl implements Node {
     private EndpointRegistry endpointRegistry;
     private ExtensionPointRegistry extensionPointRegistry;
     private TuscanyRuntime tuscanyRuntime;
-    private Map<String, InstalledContribution> installedContributions = new HashMap<String, InstalledContribution>();
+    private Map<String, InstalledContribution> locallyInstalledContributions = new HashMap<String, InstalledContribution>();
     
     private static Map<String, Node> allNodes = new HashMap<String, Node>();
     
@@ -107,6 +107,15 @@ public class NodeImpl implements Node {
         if (uri == null) {
             uri = getDefaultContributionURI(contributionURL);
         }
+        endpointRegistry.installContribution(uri, contributionURL);
+        if (startDeployables) {
+            // TODO: sort out metadata and dependents in distributed
+            localInstall(uri, contributionURL, metaDataURL, dependentContributionURIs, startDeployables);
+        }
+        return uri;
+    }
+
+    private void localInstall(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean startDeployables) throws ContributionReadException, ValidationException, ActivationException {
         Monitor monitor = deployer.createMonitor();
         Contribution contribution = deployer.loadContribution(IOHelper.createURI(uri), IOHelper.getLocationAsURL(contributionURL), monitor);
         monitor.analyzeProblems();
@@ -114,7 +123,6 @@ public class NodeImpl implements Node {
             mergeContributionMetaData(metaDataURL, contribution);
         }
         installContribution(contribution, dependentContributionURIs, startDeployables);
-        return uri;
     }
 
     private void mergeContributionMetaData(String metaDataURL, Contribution contribution) throws ValidationException {
@@ -133,7 +141,7 @@ public class NodeImpl implements Node {
     
     public String installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean startDeployables) throws ContributionReadException, ActivationException, ValidationException {
         InstalledContribution ic = new InstalledContribution(contribution.getURI(), contribution.getLocation(), contribution, dependentContributionURIs);
-        installedContributions.put(contribution.getURI(), ic);
+        locallyInstalledContributions.put(contribution.getURI(), ic);
         if (startDeployables) {
             for (Composite c : ic.getDefaultDeployables()) {
                 startComposite(c, ic);
@@ -159,14 +167,14 @@ public class NodeImpl implements Node {
         if (ic.getDependentContributionURIs() != null) {
             // if the install specified dependent uris use just those contributions
             for (String uri : ic.getDependentContributionURIs()) {
-                InstalledContribution dependee = installedContributions.get(uri);
+                InstalledContribution dependee = locallyInstalledContributions.get(uri);
                 if (dependee != null) {
                     dependentContributions.add(dependee.getContribution());
                 }
             }
         } else {
             // otherwise use all available contributions for dependents
-            for (InstalledContribution ics : installedContributions.values()) {
+            for (InstalledContribution ics : locallyInstalledContributions.values()) {
                 dependentContributions.add(ics.getContribution());
             }
         }
@@ -181,7 +189,7 @@ public class NodeImpl implements Node {
     }
 
     public String start(String contributionURI, Composite composite) throws ActivationException, ValidationException {
-        InstalledContribution ic = installedContributions.get(contributionURI);
+        InstalledContribution ic = locallyInstalledContributions.get(contributionURI);
         if (ic == null) {
             throw new IllegalArgumentException("contribution not installed: " + contributionURI);
         }
@@ -190,10 +198,15 @@ public class NodeImpl implements Node {
         return compositeArtifcatURI;
     }
 
-    public void start(String contributionURI, String compositeURI) throws ActivationException, ValidationException {
-        InstalledContribution ic = installedContributions.get(contributionURI);
+    public void start(String contributionURI, String compositeURI) throws ActivationException, ValidationException, ContributionReadException {
+        InstalledContribution ic = locallyInstalledContributions.get(contributionURI);
         if (ic == null) {
-            throw new IllegalArgumentException("Contribution not installed: " + contributionURI);
+            String url = endpointRegistry.getInstalledContributionURL(contributionURI);
+            if (url == null) {
+                throw new IllegalArgumentException("Contribution not installed: " + contributionURI);
+            }
+            localInstall(contributionURI, url, null, null, false);
+            ic = locallyInstalledContributions.get(contributionURI);
         }
         if (!ic.restart(compositeURI)) {
             for (Artifact a : ic.getContribution().getArtifacts()) {
@@ -208,7 +221,7 @@ public class NodeImpl implements Node {
 
     @Override
     public void stop(String contributionURI, String compositeURI) throws ActivationException {
-        InstalledContribution ic = installedContributions.get(contributionURI);
+        InstalledContribution ic = locallyInstalledContributions.get(contributionURI);
         if (ic == null) {
             throw new IllegalArgumentException("Contribution not installed: " + contributionURI);
         }
@@ -251,14 +264,17 @@ public class NodeImpl implements Node {
     }
 
     public List<String> removeContribution(String contributionURI) throws ActivationException {
+        endpointRegistry.uninstallContribution(contributionURI);
+
+        // TODO: should this next bit happen?
         List<String> removedContributionURIs = new ArrayList<String>();
-        InstalledContribution ic = installedContributions.get(contributionURI);
+        InstalledContribution ic = locallyInstalledContributions.get(contributionURI);
         if (ic != null) {
             removedContributionURIs.add(ic.getURI());
             for (String dependent : getDependentContributions(contributionURI)) {
                 removedContributionURIs.addAll(removeContribution(dependent));
             }
-            installedContributions.remove(contributionURI);
+            locallyInstalledContributions.remove(contributionURI);
             for (String compositeURI : ic.getStartedCompositeURIs()) {
                 ic.stop(compositeURI);
             }
@@ -285,7 +301,7 @@ public class NodeImpl implements Node {
     }
 
     public void stop() {
-        ArrayList<String> ics = new ArrayList<String>(installedContributions.keySet());
+        ArrayList<String> ics = new ArrayList<String>(locallyInstalledContributions.keySet());
         for (String uri : ics) {
             try {
                 removeContribution(uri);
@@ -430,7 +446,7 @@ public class NodeImpl implements Node {
     }
 
     public List<String> getStartedCompositeURIs(String contributionURI) {
-        InstalledContribution ic = installedContributions.get(contributionURI);
+        InstalledContribution ic = locallyInstalledContributions.get(contributionURI);
         if (ic == null) {
             throw new IllegalArgumentException("no contribution found for: " + contributionURI);
         }
@@ -438,19 +454,19 @@ public class NodeImpl implements Node {
     }
 
     public List<String> getInstalledContributionURIs() {
-        return new ArrayList<String>(installedContributions.keySet());
+        return new ArrayList<String>(locallyInstalledContributions.keySet());
     }
 
     public Contribution getInstalledContribution(String uri) {
-        if (installedContributions.containsKey(uri)) {
-            return installedContributions.get(uri).getContribution();
+        if (locallyInstalledContributions.containsKey(uri)) {
+            return locallyInstalledContributions.get(uri).getContribution();
         }
         throw new IllegalArgumentException("no contribution found for: " + uri);
     }
 
     protected String getContributionUriForArtifact(String artifactURI) {
         String contributionURI = null;
-        for (String uri : installedContributions.keySet()) {
+        for (String uri : locallyInstalledContributions.keySet()) {
             if (artifactURI.startsWith(uri)) {
                 contributionURI = uri;
                 break;
@@ -469,12 +485,12 @@ public class NodeImpl implements Node {
     }
     
     public Set<String> getDependentContributions(String contributionURI) {
-        InstalledContribution ic = installedContributions.get(contributionURI);
+        InstalledContribution ic = locallyInstalledContributions.get(contributionURI);
         if (ic == null) {
             throw new IllegalArgumentException("Contribution not installed: " + contributionURI);
         }
         Set<String> dependentContributionURIs = new HashSet<String>();
-        for (InstalledContribution icx : installedContributions.values()) {
+        for (InstalledContribution icx : locallyInstalledContributions.values()) {
             if (ic != icx) {
                 List<Contribution> dependencies = icx.getContribution().getDependencies();
                 if (dependencies != null && dependencies.contains(ic.getContribution())) {

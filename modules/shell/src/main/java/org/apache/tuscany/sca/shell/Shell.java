@@ -383,7 +383,7 @@ public class Shell {
         return false;
     }
 
-    boolean start(String curi, String compositeURI) throws ActivationException, ValidationException {
+    boolean start(String curi, String compositeURI) throws ActivationException, ValidationException, ContributionReadException {
         Contribution c = getNode().getInstalledContribution(curi);
         for (Artifact a : c.getArtifacts()) {
             if (compositeURI.equals(a.getURI())) {

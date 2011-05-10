@@ -56,7 +56,7 @@ public class PerfTest {
         validate(node);
     }
 
-    private void validate(Node node) throws ActivationException, ValidationException, NoSuchServiceException {
+    private void validate(Node node) throws ActivationException, ValidationException, NoSuchServiceException, ContributionReadException {
         node.start("sample-helloworld", "helloworld.composite");
         
         Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");

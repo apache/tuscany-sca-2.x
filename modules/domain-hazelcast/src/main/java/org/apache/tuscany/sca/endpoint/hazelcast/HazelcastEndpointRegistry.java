@@ -99,7 +99,9 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
 
     protected Map<Object, Object> endpointWsdls;
     protected Map<String, Endpoint> localEndpoints = new ConcurrentHashMap<String, Endpoint>();
-    
+
+    protected Map<String, String> installedContributions;
+
     protected AssemblyFactory assemblyFactory;
     protected Object shutdownMutex = new Object();
     protected Properties properties;
@@ -141,6 +143,8 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
             runningComposites = hazelcastInstance.getMap(domainURI + "/CompositeOwners");
             runningCompositeOwners = hazelcastInstance.getMultiMap(domainURI + "/CompositeOwners");
 
+            installedContributions = hazelcastInstance.getMap(domainURI + "/InstalledContributions");
+            
             hazelcastInstance.getCluster().addMembershipListener(this);
 //        }
     }
@@ -485,7 +489,6 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         return null;
     }
 
-    @Override
     public void addRunningComposite(Composite composite) {
         String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
         String compositeXML = writeComposite(composite);
@@ -501,7 +504,6 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         }
     }
 
-    @Override
     public void removeRunningComposite(QName name) {
         String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
         Transaction txn = hazelcastInstance.getTransaction();
@@ -516,13 +518,11 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         }
     }
 
-    @Override
     public Composite getRunningComposite(QName name) {
         String compositeXML = runningComposites.get(name);
         return readComposite(compositeXML);
     }
 
-    @Override
     public List<QName> getRunningCompositeNames() {
         return new ArrayList<QName>(runningCompositeOwners.values());
     }
@@ -556,5 +556,21 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void installContribution(String uri, String url) {
+        installedContributions.put(uri, url);
+    }
+
+    public List<String> getInstalledContributionURIs() {
+        return new ArrayList<String>(installedContributions.keySet());
+    }
+
+    public String getInstalledContributionURL(String uri) {
+        return installedContributions.get(uri);
+    }
+
+    public void uninstallContribution(String uri) {
+        installedContributions.remove(uri);
     }
 }

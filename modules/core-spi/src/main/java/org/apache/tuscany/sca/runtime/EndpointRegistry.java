@@ -84,4 +84,9 @@ public interface EndpointRegistry {
     void removeRunningComposite(QName name);
     Composite getRunningComposite(QName name);
     List<QName> getRunningCompositeNames();
+    
+    void installContribution(String uri, String url);
+    List<String> getInstalledContributionURIs();
+    String getInstalledContributionURL(String uri);
+    void uninstallContribution(String uri);
 }

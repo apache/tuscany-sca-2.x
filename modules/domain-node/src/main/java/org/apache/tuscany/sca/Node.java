@@ -162,8 +162,9 @@ public interface Node {
      * @param compositeURI
      * @throws ActivationException 
      * @throws ValidationException 
+     * @throws ContributionReadException 
      */
-    void start(String contributionURI, String compositeURI) throws ActivationException, ValidationException;
+    void start(String contributionURI, String compositeURI) throws ActivationException, ValidationException, ContributionReadException;
     
     /**
      * 4687 10.7.2 remove From Domain-Level Composite

@@ -49,6 +49,7 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
 
     private List<Endpoint> endpoints = new ArrayList<Endpoint>();
     private Map<QName, Composite> runningComposites = new HashMap<QName, Composite>();
+    private Map<String, String> installedContributions = new HashMap<String, String>();
     
     protected boolean quietLogging;
 
@@ -161,28 +162,40 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
         listeners.clear();
     }
 
-    @Override
     public void addRunningComposite(Composite composite) {
         runningComposites.put(composite.getName(), composite);
     }
 
-    @Override
     public void removeRunningComposite(QName name) {
         runningComposites.remove(name);
     }
 
-    @Override
     public Composite getRunningComposite(QName name) {
         return runningComposites.get(name);
     }
 
-    @Override
     public List<QName> getRunningCompositeNames() {
         List<QName> compositeNames = new ArrayList<QName>();
         for (Composite composite : runningComposites.values()) {
             compositeNames.add(composite.getName());
         }
         return compositeNames;
+    }
+
+    public void installContribution(String uri, String url) {
+        installedContributions.put(uri, url);
+    }
+
+    public List<String> getInstalledContributionURIs() {
+        return new ArrayList<String>(installedContributions.keySet());
+    }
+
+    public String getInstalledContributionURL(String uri) {
+        return installedContributions.get(uri);
+    }
+
+    public void uninstallContribution(String uri) {
+        installedContributions.remove(uri);
     }
 
 }

@@ -444,4 +444,28 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
         return null;
     }
 
+    @Override
+    public void installContribution(String uri, String url) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public List<String> getInstalledContributionURIs() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getInstalledContributionURL(String uri) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void uninstallContribution(String uri) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

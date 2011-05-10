@@ -837,23 +837,32 @@ public class DeployerImpl implements Deployer {
         public void stop() {
         }
 
-        @Override
         public void addRunningComposite(Composite composite) {
         }
 
-        @Override
         public void removeRunningComposite(QName name) {
         }
 
-        @Override
         public Composite getRunningComposite(QName name) {
             return null;
         }
 
-        @Override
         public List<QName> getRunningCompositeNames() {
             return null;
         }
 
+        public void installContribution(String uri, String url) {
+        }
+
+        public List<String> getInstalledContributionURIs() {
+            return null;
+        }
+
+        public String getInstalledContributionURL(String uri) {
+            return null;
+        }
+
+        public void uninstallContribution(String uri) {
+        }
     }
 }
