@@ -32,8 +32,17 @@ import org.oasisopen.sca.NoSuchServiceException;
 public class DomainCompositeTestCase {
 
     @Test
-    public void testInstallDeployable() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        Node node = TuscanyRuntime.newInstance().createNode("default");
+    public void localOnlyDomain() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
+        Node node = TuscanyRuntime.newInstance().createNode("DomainCompositeTestCase.localOnlyDomain");
+        testIt(node);
+    }
+    @Test
+    public void distributedDomain() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
+        Node node = TuscanyRuntime.newInstance().createNode("uri:DomainCompositeTestCase.distributedDomain");
+        testIt(node);
+    }
+
+    private void testIt(Node node) throws ContributionReadException, ActivationException, ValidationException {
         node.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null, true);
         
         Composite dc = node.getDomainLevelComposite();

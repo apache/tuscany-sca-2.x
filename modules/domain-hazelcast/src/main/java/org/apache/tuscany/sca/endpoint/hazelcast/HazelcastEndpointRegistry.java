@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.endpoint.hazelcast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.StringReader;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -37,10 +38,18 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.xml.WSDLReader;
 import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.LifeCycleListener;
@@ -479,7 +488,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     @Override
     public void addRunningComposite(Composite composite) {
         String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
-        String compositeXML = ""; // TODO: serialize composite
+        String compositeXML = writeComposite(composite);
         Transaction txn = hazelcastInstance.getTransaction();
         txn.begin();
         try {
@@ -510,11 +519,42 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     @Override
     public Composite getRunningComposite(QName name) {
         String compositeXML = runningComposites.get(name);
-        return null; // TODO: unserialize composite xml
+        return readComposite(compositeXML);
     }
 
     @Override
     public List<QName> getRunningCompositeNames() {
         return new ArrayList<QName>(runningCompositeOwners.values());
+    }
+
+    protected Composite readComposite(String compositeXML) {
+        try {
+            StAXHelper stAXHelper = StAXHelper.getInstance(registry);
+            StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+            ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, stAXHelper.getInputFactory(), null);
+            XMLStreamReader reader = stAXHelper.createXMLStreamReader(compositeXML);
+            Composite composite = (Composite)staxProcessor.read(reader, new ProcessorContext(registry));
+            return composite;
+        } catch (XMLStreamException e) {
+            throw new RuntimeException(e);
+        } catch (ContributionReadException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected String writeComposite(Composite composite) {
+        try {
+            StAXHelper stAXHelper = StAXHelper.getInstance(registry);
+            StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+            ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, null, stAXHelper.getOutputFactory());
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            staxProcessor.write(composite, bos, new ProcessorContext(registry));
+            bos.close();
+            return bos.toString();
+        } catch (ContributionWriteException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
