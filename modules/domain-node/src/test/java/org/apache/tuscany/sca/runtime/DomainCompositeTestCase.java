@@ -50,6 +50,10 @@ public class DomainCompositeTestCase {
         Assert.assertEquals(1, dc.getIncludes().size());
         Composite c = dc.getIncludes().get(0);
         Assert.assertEquals("helloworld", c.getName().getLocalPart());
+        
+        String s = node.getDomainLevelCompositeAsString();
+        System.out.println(s);
+        Assert.assertTrue(s.contains(":helloworld\""));
 
         node.stop("helloworld", "helloworld.composite");
         Assert.assertEquals(0, node.getDomainLevelComposite().getIncludes().size());
