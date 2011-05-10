@@ -32,6 +32,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
@@ -235,13 +236,14 @@ public class NodeImpl implements Node {
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
-            compositeProcessor.write(getDomainLevelComposite(), outputFactory.createXMLStreamWriter(bos), new ProcessorContext(extensionPointRegistry));
+            XMLStreamWriter sw = outputFactory.createXMLStreamWriter(bos);
+            compositeProcessor.write(getDomainLevelComposite(), sw, new ProcessorContext(extensionPointRegistry));
+            sw.close();
         } catch(Exception e) {
             throw new RuntimeException(e);
         }
 
-        String result = bos.toString();
-        return  result;
+        return  bos.toString();
     }
     public Object getQNameDefinition(String contributionURI, QName definition, QName symbolSpace) {
         // TODO Auto-generated method stub
