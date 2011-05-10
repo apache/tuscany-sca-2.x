@@ -25,7 +25,6 @@ import java.io.StringReader;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -82,12 +81,16 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     private final static Logger logger = Logger.getLogger(HazelcastEndpointRegistry.class.getName());
 
     private HazelcastInstance hazelcastInstance;
+
     protected Map<Object, Object> endpointMap;
-    protected Map<Object, Object> endpointWsdls;
-    protected Map<QName, Composite> runningComposites;
-    protected Map<String, Endpoint> localEndpoints = new ConcurrentHashMap<String, Endpoint>();
     protected MultiMap<String, String> endpointOwners;
 
+    protected Map<QName, String> runningComposites;
+    protected MultiMap<String, QName> runningCompositeOwners;
+
+    protected Map<Object, Object> endpointWsdls;
+    protected Map<String, Endpoint> localEndpoints = new ConcurrentHashMap<String, Endpoint>();
+    
     protected AssemblyFactory assemblyFactory;
     protected Object shutdownMutex = new Object();
     protected Properties properties;
@@ -126,9 +129,8 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
             endpointOwners = hazelcastInstance.getMultiMap(domainURI + "/EndpointOwners");
             endpointWsdls = hazelcastInstance.getMap(domainURI + "/EndpointWsdls");
 
-            // TODO: get going in-JVM first then fix this which needs to serialize/deserialize the composite
-            // runningComposites = hazelcastInstance.getMap(domainURI + "/composites");
-            runningComposites = new HashMap<QName, Composite>();
+            runningComposites = hazelcastInstance.getMap(domainURI + "/CompositeOwners");
+            runningCompositeOwners = hazelcastInstance.getMultiMap(domainURI + "/CompositeOwners");
 
             hazelcastInstance.getCluster().addMembershipListener(this);
 //        }
@@ -142,6 +144,8 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
                 endpointMap = null;
                 endpointOwners = null;
                 endpointWsdls = null;
+                runningComposites = null;
+                runningCompositeOwners = null;
             }
         }
     }
@@ -434,6 +438,12 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
                                 endpointWsdls.remove(k);
                             }
                         }
+                        if (runningCompositeOwners.containsKey(memberAddr)) {
+                            Collection<QName> keys = runningCompositeOwners.remove(memberAddr);
+                            for (QName k : keys) {
+                                runningComposites.remove(k);
+                            }
+                        }
                     } finally {
                         lock.unlock();
                     }
@@ -465,18 +475,46 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         }
         return null;
     }
+
     @Override
     public void addRunningComposite(Composite composite) {
-        runningComposites.put(composite.getName(), composite);
+        String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
+        String compositeXML = ""; // TODO: serialize composite
+        Transaction txn = hazelcastInstance.getTransaction();
+        txn.begin();
+        try {
+            runningComposites.put(composite.getName(), compositeXML);
+            runningCompositeOwners.put(localMemberAddr, composite.getName());
+            txn.commit();
+        } catch (Throwable e) {
+            txn.rollback();
+            throw new ServiceRuntimeException(e);
+        }
     }
 
     @Override
     public void removeRunningComposite(QName name) {
-        runningComposites.remove(name);
+        String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
+        Transaction txn = hazelcastInstance.getTransaction();
+        txn.begin();
+        try {
+            runningComposites.remove(name);
+            runningCompositeOwners.remove(localMemberAddr, name);
+            txn.commit();
+        } catch (Throwable e) {
+            txn.rollback();
+            throw new ServiceRuntimeException(e);
+        }
     }
 
     @Override
-    public List<Composite> getRunningComposites() {
-        return new ArrayList<Composite>(runningComposites.values());
+    public Composite getRunningComposite(QName name) {
+        String compositeXML = runningComposites.get(name);
+        return null; // TODO: unserialize composite xml
+    }
+
+    @Override
+    public List<QName> getRunningCompositeNames() {
+        return new ArrayList<QName>(runningCompositeOwners.values());
     }
 }

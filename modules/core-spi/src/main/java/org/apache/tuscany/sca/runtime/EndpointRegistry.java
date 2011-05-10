@@ -82,5 +82,6 @@ public interface EndpointRegistry {
 
     void addRunningComposite(Composite composite);
     void removeRunningComposite(QName name);
-    List<Composite> getRunningComposites();
+    Composite getRunningComposite(QName name);
+    List<QName> getRunningCompositeNames();
 }

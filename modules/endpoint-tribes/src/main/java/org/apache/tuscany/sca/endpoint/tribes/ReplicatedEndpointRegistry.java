@@ -433,7 +433,13 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
     }
 
     @Override
-    public List<Composite> getRunningComposites() {
+    public Composite getRunningComposite(QName name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<QName> getRunningCompositeNames() {
         // TODO Auto-generated method stub
         return null;
     }

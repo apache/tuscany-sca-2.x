@@ -846,7 +846,12 @@ public class DeployerImpl implements Deployer {
         }
 
         @Override
-        public List<Composite> getRunningComposites() {
+        public Composite getRunningComposite(QName name) {
+            return null;
+        }
+
+        @Override
+        public List<QName> getRunningCompositeNames() {
             return null;
         }
 

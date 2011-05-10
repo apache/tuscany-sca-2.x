@@ -222,8 +222,8 @@ public class NodeImpl implements Node {
         domainComposite.setAutowire(false);
         domainComposite.setLocal(false);
         List<Composite> domainIncludes = domainComposite.getIncludes();
-        for (Composite composite : endpointRegistry.getRunningComposites()) {
-            domainIncludes.add(composite);
+        for (QName compositeName : endpointRegistry.getRunningCompositeNames()) {
+            domainIncludes.add(endpointRegistry.getRunningComposite(compositeName));
         }
         return domainComposite;
     }

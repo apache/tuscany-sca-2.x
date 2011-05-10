@@ -172,8 +172,17 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
     }
 
     @Override
-    public List<Composite> getRunningComposites() {
-        return new ArrayList<Composite>(runningComposites.values());
+    public Composite getRunningComposite(QName name) {
+        return runningComposites.get(name);
+    }
+
+    @Override
+    public List<QName> getRunningCompositeNames() {
+        List<QName> compositeNames = new ArrayList<QName>();
+        for (Composite composite : runningComposites.values()) {
+            compositeNames.add(composite.getName());
+        }
+        return compositeNames;
     }
 
 }
