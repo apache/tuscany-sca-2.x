@@ -33,6 +33,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -50,6 +51,8 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
     private List<Endpoint> endpoints = new ArrayList<Endpoint>();
     private Map<QName, Composite> runningComposites = new HashMap<QName, Composite>();
     private Map<String, String> installedContributions = new HashMap<String, String>();
+    private Map<String, List<QName>> installedContributionsDeployables = new HashMap<String, List<QName>>();
+    private Map<String, List<Export>> installedContributionsExports = new HashMap<String, List<Export>>();
     
     protected boolean quietLogging;
 
@@ -182,8 +185,10 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
         return compositeNames;
     }
 
-    public void installContribution(String uri, String url) {
+    public void installContribution(String uri, String url, List<QName> deployables, List<Export> exports) {
         installedContributions.put(uri, url);
+        installedContributionsDeployables.put(uri, deployables);
+        installedContributionsExports.put(uri, exports);
     }
 
     public List<String> getInstalledContributionURIs() {
@@ -194,8 +199,17 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
         return installedContributions.get(uri);
     }
 
-    public void uninstallContribution(String uri) {
-        installedContributions.remove(uri);
+    public List<QName> getInstalledContributionDeployables(String uri) {
+        return installedContributionsDeployables.get(uri);
     }
 
+    public List<Export> getInstalledContributionExports(String uri) {
+        return installedContributionsExports.get(uri);
+    }
+
+    public void uninstallContribution(String uri) {
+        installedContributions.remove(uri);
+        installedContributionsDeployables.remove(uri);
+        installedContributionsExports.remove(uri);
+    }
 }

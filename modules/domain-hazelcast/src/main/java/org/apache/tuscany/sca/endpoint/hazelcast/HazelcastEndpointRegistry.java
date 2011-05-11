@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
+import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -567,7 +568,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         }
     }
 
-    public void installContribution(String uri, String url) {
+    public void installContribution(String uri, String url, List<QName> deployables, List<Export> exports) {
         installedContributions.put(uri, url);
     }
 
@@ -581,5 +582,17 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
 
     public void uninstallContribution(String uri) {
         installedContributions.remove(uri);
+    }
+
+    @Override
+    public List<QName> getInstalledContributionDeployables(String uri) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Export> getInstalledContributionExports(String uri) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

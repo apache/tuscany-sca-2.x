@@ -851,7 +851,7 @@ public class DeployerImpl implements Deployer {
             return null;
         }
 
-        public void installContribution(String uri, String url) {
+        public void installContribution(String uri, String url, List<QName> deployables, List<Export> exports) {
         }
 
         public List<String> getInstalledContributionURIs() {
@@ -863,6 +863,14 @@ public class DeployerImpl implements Deployer {
         }
 
         public void uninstallContribution(String uri) {
+        }
+
+        public List<QName> getInstalledContributionDeployables(String uri) {
+            return null;
+        }
+
+        public List<Export> getInstalledContributionExports(String uri) {
+            return null;
         }
     }
 }

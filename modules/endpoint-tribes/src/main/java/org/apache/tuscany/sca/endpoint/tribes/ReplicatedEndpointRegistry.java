@@ -47,6 +47,7 @@ import org.apache.catalina.tribes.membership.StaticMember;
 import org.apache.catalina.tribes.transport.ReceiverBase;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.endpoint.tribes.AbstractReplicatedMap.MapEntry;
@@ -445,12 +446,6 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
     }
 
     @Override
-    public void installContribution(String uri, String url) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
     public List<String> getInstalledContributionURIs() {
         // TODO Auto-generated method stub
         return null;
@@ -466,6 +461,24 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
     public void uninstallContribution(String uri) {
         // TODO Auto-generated method stub
         
+    }
+
+    @Override
+    public void installContribution(String uri, String url, List<QName> deployables, List<Export> exports) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public List<QName> getInstalledContributionDeployables(String uri) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Export> getInstalledContributionExports(String uri) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

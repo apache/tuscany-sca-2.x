@@ -107,7 +107,8 @@ public class NodeImpl implements Node {
         if (uri == null) {
             uri = getDefaultContributionURI(contributionURL);
         }
-        endpointRegistry.installContribution(uri, contributionURL);
+        // TODO: sort out deployables and exports
+        endpointRegistry.installContribution(uri, contributionURL, null, null);
         if (startDeployables) {
             // TODO: sort out metadata and dependents in distributed
             localInstall(uri, contributionURL, metaDataURL, dependentContributionURIs, startDeployables);
@@ -454,7 +455,9 @@ public class NodeImpl implements Node {
     }
 
     public List<String> getInstalledContributionURIs() {
-        return new ArrayList<String>(locallyInstalledContributions.keySet());
+        Set<String> ls = new HashSet<String>(endpointRegistry.getInstalledContributionURIs());
+        ls.addAll(locallyInstalledContributions.keySet());
+        return new ArrayList<String>(ls);
     }
 
     public Contribution getInstalledContribution(String uri) {

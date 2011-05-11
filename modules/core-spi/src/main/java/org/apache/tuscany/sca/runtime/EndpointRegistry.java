@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.contribution.Export;
 
 /**
  * The EndpointRegistry holds the active service endpoints for the SCA domain
@@ -85,8 +86,12 @@ public interface EndpointRegistry {
     Composite getRunningComposite(QName name);
     List<QName> getRunningCompositeNames();
     
-    void installContribution(String uri, String url);
+    void installContribution(String uri, String url, List<QName> deployables, List<Export> exports);
     List<String> getInstalledContributionURIs();
     String getInstalledContributionURL(String uri);
+    List<QName> getInstalledContributionDeployables(String uri);
+    List<Export> getInstalledContributionExports(String uri);
     void uninstallContribution(String uri);
+    
+    
 }
