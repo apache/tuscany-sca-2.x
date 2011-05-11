@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -492,16 +493,17 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     public void addRunningComposite(Composite composite) {
         String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
         String compositeXML = writeComposite(composite);
-        Transaction txn = hazelcastInstance.getTransaction();
-        txn.begin();
-        try {
+// TODO: doing this in a txn causes the values to get lost - looks like a bug in hazelcast        
+//        Transaction txn = hazelcastInstance.getTransaction();
+//        txn.begin();
+//        try {
             runningComposites.put(composite.getName(), compositeXML);
             runningCompositeOwners.put(localMemberAddr, composite.getName());
-            txn.commit();
-        } catch (Throwable e) {
-            txn.rollback();
-            throw new ServiceRuntimeException(e);
-        }
+//            txn.commit();
+//        } catch (Throwable e) {
+//            txn.rollback();
+//            throw new ServiceRuntimeException(e);
+//        }
     }
 
     public void removeRunningComposite(QName name) {
@@ -524,6 +526,13 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     }
 
     public List<QName> getRunningCompositeNames() {
+//        List<QName> names = new ArrayList<QName>();
+//        for (String s : runningCompositeOwners.keySet()) {
+//            for (QName name : runningCompositeOwners.get(s)) {
+//                names.add(name);
+//            }
+//        }
+//        return names;
         return new ArrayList<QName>(runningCompositeOwners.values());
     }
 
