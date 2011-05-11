@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Service;
@@ -41,6 +42,8 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
@@ -261,22 +264,36 @@ public class NodeImpl implements Node, NodeExtension {
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String name) {
 
         // Extract the component name
-        String componentName;
-        String serviceName;
-        int i = name.indexOf('/');
-        if (i != -1) {
-            componentName = name.substring(0, i);
-            serviceName = name.substring(i + 1);
+        String componentName = null;
+        String serviceName = null;
+        if (name != null) {
+            int i = name.indexOf('/');
+            if (i != -1) {
+                componentName = name.substring(0, i);
+                serviceName = name.substring(i + 1);
 
-        } else {
-            componentName = name;
-            serviceName = null;
+            } else {
+                componentName = name;
+                serviceName = null;
+            }
         }
 
         // Lookup the component
         Component component = null;
 
         for (Component compositeComponent : domainComposite.getComponents()) {
+            if (componentName == null) {
+                for (ComponentService service : compositeComponent.getServices()) {
+                    Interface intf = service.getInterfaceContract().getInterface();
+                    if (intf instanceof JavaInterface) {
+                        JavaInterface ji = (JavaInterface)intf;
+                        if (ji.getJavaClass() == businessInterface) {
+                            return ((RuntimeComponent)compositeComponent).getComponentContext()
+                                .createSelfReference(businessInterface, service);
+                        }
+                    }
+                }
+            }
             if (compositeComponent.getName().equals(componentName)) {
                 component = compositeComponent;
                 break;

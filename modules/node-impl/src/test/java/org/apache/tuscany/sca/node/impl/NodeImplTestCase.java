@@ -116,6 +116,8 @@ public class NodeImplTestCase {
         node.start();
         HelloWorld hw = node.getService(HelloWorld.class, "HelloWorld");
         Assert.assertEquals("Hello, Node", hw.hello("Node"));
+        hw = node.getService(HelloWorld.class, null);
+        Assert.assertEquals("Hello, Node", hw.hello("Node"));
         String address = node.getEndpointAddress("HelloWorld");
         Assert.assertNotNull(address);
         address = node.getEndpointAddress("HelloWorld/HelloWorld");
@@ -123,7 +125,7 @@ public class NodeImplTestCase {
         address = node.getEndpointAddress("HelloWorld/HelloWorld/HelloWorld");
         Assert.assertNotNull(address);
         address = node.getEndpointAddress("HelloWorld/HelloWorld1");
-        Assert.assertNull(address);        
+        Assert.assertNull(address);      
         node.stop();
     }
 
