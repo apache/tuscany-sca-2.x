@@ -209,31 +209,23 @@ public class Shell {
     }
 
     boolean installed(final List<String> toks) {
-        List<String> curis;
-        if (toks.size() > 1) {
-            curis = Arrays.asList(new String[] {toks.get(1)});
-        } else {
-            if (getNode() == null) {
-                return true;
-            }
-            curis = getNode().getInstalledContributionURIs();
+        if (getNode() == null) {
+            return true;
         }
-        boolean full = false;
-        for (String curi : curis) {
-            out.println("   " + curi);
-            if (full) { 
+        if (toks.size() > 1) {
+            String curi = toks.get(1);
+            Contribution c = getNode().getInstalledContribution(toks.get(1));
+            if (c == null) {
+                out.println("Contribution " + curi + " not installed");
+            } else {
+                out.println("Contribution " + curi);
+                out.println("   URL: " + c.getLocation());
                 // TODO: add full detail view of contribution showing
-                // uri, url, dependent cintrubutions, deployables, exports
-                out.println(curi + " " + getNode().getInstalledContribution(curi).getLocation());
-                Contribution c = getNode().getInstalledContribution(curi);
-                List<String> deployeds = getNode().getStartedCompositeURIs(curi);
-                for (Artifact a : c.getArtifacts()) {
-                    if (a.getModel() instanceof Composite) {
-                        Composite composite = (Composite)a.getModel();
-                        String running = deployeds.contains(composite.getURI()) ? "***running***" : "";
-                        out.println("   " + composite.getURI() + " " + composite.getName() + " " + running);
-                    }
-                }
+                // uri, url, dependent contrubutions, deployables, exports
+            }
+        } else {
+            for (String curi : getNode().getInstalledContributionURIs()) {
+                out.println("   " + curi);
             }
         }
         return true;
@@ -390,22 +382,24 @@ public class Shell {
     }
 
     boolean start(String curi, String compositeURI) throws ActivationException, ValidationException, ContributionReadException {
-        Contribution c = getNode().getInstalledContribution(curi);
-        for (Artifact a : c.getArtifacts()) {
-            if (compositeURI.equals(a.getURI())) {
-                getNode().start(curi, compositeURI);
-                return true;
-            }
-        }
-        // external composite file ('composite by value')
-        try {
-            URL url = IOHelper.getLocationAsURL(compositeURI);
-            InputStream is = IOHelper.openStream(url);
-            BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-            getNode().start(curi, br);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+        getNode().start(curi, compositeURI);
+
+//        Contribution c = getNode().getInstalledContribution(curi);
+//        for (Artifact a : c.getArtifacts()) {
+//            if (compositeURI.equals(a.getURI())) {
+//                getNode().start(curi, compositeURI);
+//                return true;
+//            }
+//        }
+//        // external composite file ('composite by value')
+//        try {
+//            URL url = IOHelper.getLocationAsURL(compositeURI);
+//            InputStream is = IOHelper.openStream(url);
+//            BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+//            getNode().start(curi, br);
+//        } catch (Exception e) {
+//            System.out.println(e);
+//        }
 
         return true;
     }
