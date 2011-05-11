@@ -218,15 +218,21 @@ public class Shell {
             }
             curis = getNode().getInstalledContributionURIs();
         }
+        boolean full = false;
         for (String curi : curis) {
-            out.println(curi + " " + getNode().getInstalledContribution(curi).getLocation());
-            Contribution c = getNode().getInstalledContribution(curi);
-            List<String> deployeds = getNode().getStartedCompositeURIs(curi);
-            for (Artifact a : c.getArtifacts()) {
-                if (a.getModel() instanceof Composite) {
-                    Composite composite = (Composite)a.getModel();
-                    String running = deployeds.contains(composite.getURI()) ? "***running***" : "";
-                    out.println("   " + composite.getURI() + " " + composite.getName() + " " + running);
+            out.println("   " + curi);
+            if (full) { 
+                // TODO: add full detail view of contribution showing
+                // uri, url, dependent cintrubutions, deployables, exports
+                out.println(curi + " " + getNode().getInstalledContribution(curi).getLocation());
+                Contribution c = getNode().getInstalledContribution(curi);
+                List<String> deployeds = getNode().getStartedCompositeURIs(curi);
+                for (Artifact a : c.getArtifacts()) {
+                    if (a.getModel() instanceof Composite) {
+                        Composite composite = (Composite)a.getModel();
+                        String running = deployeds.contains(composite.getURI()) ? "***running***" : "";
+                        out.println("   " + composite.getURI() + " " + composite.getName() + " " + running);
+                    }
                 }
             }
         }
