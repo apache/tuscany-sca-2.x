@@ -43,7 +43,7 @@ public class DeployedComposite {
     
     private String uri;
     private Composite composite; 
-    private InstalledContribution installedContribution; 
+    private Contribution contribution;
     private List<Contribution> dependedOnContributions;
     private Composite builtComposite;
     
@@ -54,14 +54,14 @@ public class DeployedComposite {
     private ExtensionPointRegistry extensionPointRegistry;
 
     public DeployedComposite(Composite composite,
-                             InstalledContribution ic,
+                             Contribution contribution,
                              List<Contribution> dependedOnContributions,
                              Deployer deployer,
                              CompositeActivator compositeActivator,
                              EndpointRegistry endpointRegistry,
                              ExtensionPointRegistry extensionPointRegistry) throws ValidationException, ActivationException {
         this.composite = composite;
-        this.installedContribution = ic;
+        this.contribution = contribution;
         this.dependedOnContributions = dependedOnContributions;
         this.deployer = deployer;
         this.compositeActivator = compositeActivator;
@@ -78,13 +78,13 @@ public class DeployedComposite {
 
     protected void init() throws ValidationException, ActivationException, ContributionResolveException, CompositeBuilderException {
         
-        List<Contribution> contribution = new ArrayList<Contribution>();
-        contribution.add(installedContribution.getContribution());
-        contribution.get(0).getDeployables().clear();
-        contribution.get(0).getDeployables().add(composite);
+        List<Contribution> contributions = new ArrayList<Contribution>();
+        contributions.add(contribution);
+        contributions.get(0).getDeployables().clear();
+        contributions.get(0).getDeployables().add(composite);
 
         Monitor monitor = deployer.createMonitor();
-        builtComposite = deployer.build(contribution, dependedOnContributions, new HashMap<QName, List<String>>(), monitor);
+        builtComposite = deployer.build(contributions, dependedOnContributions, new HashMap<QName, List<String>>(), monitor);
         builtComposite.setName(composite.getName());
         monitor.analyzeProblems();
 
@@ -95,17 +95,17 @@ public class DeployedComposite {
                                                 null, // don't need node uri
                                                 deployer.getSystemDefinitions());
                        
-        this.uri = getCompositeURI(composite, installedContribution);
+        this.uri = getCompositeURI(composite, contribution);
     }
 
     public void start() throws ActivationException {
         compositeActivator.activate(compositeContext, builtComposite);
         compositeActivator.start(compositeContext, builtComposite);
-        endpointRegistry.addRunningComposite(installedContribution.getURI(), builtComposite);
+        endpointRegistry.addRunningComposite(contribution.getURI(), builtComposite);
     }
 
     public void stop() throws ActivationException {
-        endpointRegistry.removeRunningComposite(installedContribution.getURI(), builtComposite.getName());
+        endpointRegistry.removeRunningComposite(contribution.getURI(), builtComposite.getName());
         compositeActivator.stop(compositeContext, builtComposite);
         compositeActivator.deactivate(builtComposite);
     }
@@ -118,8 +118,8 @@ public class DeployedComposite {
      * Deployable composites don't have the uri set so get it from the artifact in the contribution
      * // TODO: fix the Tuscany code so this uri is correctly set and this method isn't needed
      */
-    protected String getCompositeURI(Composite c, InstalledContribution ic) {
-        for (Artifact a : ic.getContribution().getArtifacts()) {
+    private static String getCompositeURI(Composite c, Contribution contribution) {
+        for (Artifact a : contribution.getArtifacts()) {
             if (a.getModel() != null) {
                 if (a.getModel() instanceof Composite) {
                     Composite cm = a.getModel();
