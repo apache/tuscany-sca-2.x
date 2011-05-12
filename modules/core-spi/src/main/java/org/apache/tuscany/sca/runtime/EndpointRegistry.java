@@ -86,6 +86,7 @@ public interface EndpointRegistry {
     List<String> getInstalledContributionURIs();
     InstalledContribution getInstalledContribution(String uri);
 
+    // TODO: Change to use the QName instead of Composite and have clients look up the Composite from the contribution themselves, but i need to get that working first
     void addRunningComposite(String contributionURI, Composite composite);
     void removeRunningComposite(String contributionURI, QName name);
     Map<String, List<QName>> getRunningCompositeNames();
