@@ -36,7 +36,6 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
-import org.apache.tuscany.sca.core.assembly.impl.EndpointRegistryImpl;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.monitor.ValidationException;
