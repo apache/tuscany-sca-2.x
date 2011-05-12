@@ -89,6 +89,7 @@ import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.InstalledContribution;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
 
@@ -837,39 +838,31 @@ public class DeployerImpl implements Deployer {
         public void stop() {
         }
 
-        public void addRunningComposite(Composite composite) {
-        }
-
-        public void removeRunningComposite(QName name) {
-        }
-
-        public Composite getRunningComposite(QName name) {
-            return null;
-        }
-
-        public List<QName> getRunningCompositeNames() {
-            return null;
-        }
-
-        public void installContribution(String uri, String url, List<QName> deployables, List<Export> exports) {
-        }
-
         public List<String> getInstalledContributionURIs() {
-            return null;
-        }
-
-        public String getInstalledContributionURL(String uri) {
             return null;
         }
 
         public void uninstallContribution(String uri) {
         }
 
-        public List<QName> getInstalledContributionDeployables(String uri) {
+        public void installContribution(InstalledContribution ic) {
+        }
+
+        public InstalledContribution getInstalledContribution(String uri) {
             return null;
         }
 
-        public List<Export> getInstalledContributionExports(String uri) {
+        public void addRunningComposite(String contributionURI, Composite composite) {
+        }
+
+        public void removeRunningComposite(String contributionURI, QName name) {
+        }
+
+        public Composite getRunningComposite(String contributionURI, QName name) {
+            return null;
+        }
+
+        public Map<String, List<QName>> getRunningCompositeNames() {
             return null;
         }
     }

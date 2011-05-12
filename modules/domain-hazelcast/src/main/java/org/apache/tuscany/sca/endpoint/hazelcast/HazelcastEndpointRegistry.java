@@ -26,6 +26,7 @@ import java.io.StringReader;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -63,6 +64,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.InstalledContribution;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -95,14 +97,13 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
 
     protected Map<Object, Object> endpointMap;
     protected MultiMap<String, String> endpointOwners;
-
-    protected Map<QName, String> runningComposites;
-    protected MultiMap<String, QName> runningCompositeOwners;
+    protected Map<String, Map<QName, String>> runningComposites;
+    protected Map<String, Map<String, List<QName>>> runningCompositeOwners;
 
     protected Map<Object, Object> endpointWsdls;
     protected Map<String, Endpoint> localEndpoints = new ConcurrentHashMap<String, Endpoint>();
 
-    protected Map<String, String> installedContributions;
+    protected Map<String, InstalledContribution> installedContributions;
 
     protected AssemblyFactory assemblyFactory;
     protected Object shutdownMutex = new Object();
@@ -142,8 +143,8 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
             endpointOwners = hazelcastInstance.getMultiMap(domainURI + "/EndpointOwners");
             endpointWsdls = hazelcastInstance.getMap(domainURI + "/EndpointWsdls");
 
-            runningComposites = hazelcastInstance.getMap(domainURI + "/CompositeOwners");
-            runningCompositeOwners = hazelcastInstance.getMultiMap(domainURI + "/CompositeOwners");
+            runningComposites = hazelcastInstance.getMap(domainURI + "/RunningComposites");
+            runningCompositeOwners = hazelcastInstance.getMap(domainURI + "/RunningCompositeOwners");
 
             installedContributions = hazelcastInstance.getMap(domainURI + "/InstalledContributions");
             
@@ -454,9 +455,12 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
                             }
                         }
                         if (runningCompositeOwners.containsKey(memberAddr)) {
-                            Collection<QName> keys = runningCompositeOwners.remove(memberAddr);
-                            for (QName k : keys) {
-                                runningComposites.remove(k);
+                            Map<String, List<QName>> cs = runningCompositeOwners.remove(memberAddr);
+                            for (String curi : cs.keySet()) {
+                                Map<QName, String> rcs = runningComposites.get(curi);
+                                for (QName qn : cs.get(curi)) {
+                                    rcs.remove(qn);
+                                }
                             }
                         }
                     } finally {
@@ -491,15 +495,30 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         return null;
     }
 
-    public void addRunningComposite(Composite composite) {
+    public void addRunningComposite(String curi, Composite composite) {
         String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
         String compositeXML = writeComposite(composite);
 // TODO: doing this in a txn causes the values to get lost - looks like a bug in hazelcast        
 //        Transaction txn = hazelcastInstance.getTransaction();
 //        txn.begin();
 //        try {
-            runningComposites.put(composite.getName(), compositeXML);
-            runningCompositeOwners.put(localMemberAddr, composite.getName());
+        Map<QName, String> cs = runningComposites.get(curi);
+        if (cs == null) {
+            cs = new HashMap<QName, String>();
+        }
+        cs.put(composite.getName(), compositeXML);
+        runningComposites.put(curi, cs);
+        Map<String, List<QName>> ocs = runningCompositeOwners.get(localMemberAddr);
+        if (ocs == null) {
+            ocs = new HashMap<String, List<QName>>();
+        }
+        List<QName> lcs = ocs.get(curi);
+        if (lcs == null) {
+            lcs = new ArrayList<QName>();
+            ocs.put(curi, lcs);
+        }
+        lcs.add(composite.getName());
+        runningCompositeOwners.put(localMemberAddr, ocs);
 //            txn.commit();
 //        } catch (Throwable e) {
 //            txn.rollback();
@@ -507,13 +526,22 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
 //        }
     }
 
-    public void removeRunningComposite(QName name) {
+    public void removeRunningComposite(String curi, QName name) {
         String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
         Transaction txn = hazelcastInstance.getTransaction();
         txn.begin();
         try {
-            runningComposites.remove(name);
-            runningCompositeOwners.remove(localMemberAddr, name);
+            Map<QName, String> cs = runningComposites.get(curi);
+            if (cs != null) {
+                cs.remove(name);
+            }
+            Map<String, List<QName>> ocs = runningCompositeOwners.get(localMemberAddr);
+            if (ocs != null) {
+                List<QName> xya = ocs.get(curi);
+                if (xya != null) {
+                    xya.remove(name);
+                }
+            }
             txn.commit();
         } catch (Throwable e) {
             txn.rollback();
@@ -521,20 +549,26 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         }
     }
 
-    public Composite getRunningComposite(QName name) {
-        String compositeXML = runningComposites.get(name);
-        return readComposite(compositeXML);
+    public Map<String, List<QName>> getRunningCompositeNames() {
+        Map<String, List<QName>> compositeNames = new HashMap<String, List<QName>>();
+        for (String curi : runningComposites.keySet()) {
+            List<QName> names = new ArrayList<QName>();
+            compositeNames.put(curi, names);
+            for (QName qn : runningComposites.get(curi).keySet()) {
+                names.add(qn);
+            }
+        }
+         return compositeNames;
     }
 
-    public List<QName> getRunningCompositeNames() {
-//        List<QName> names = new ArrayList<QName>();
-//        for (String s : runningCompositeOwners.keySet()) {
-//            for (QName name : runningCompositeOwners.get(s)) {
-//                names.add(name);
-//            }
-//        }
-//        return names;
-        return new ArrayList<QName>(runningCompositeOwners.values());
+    @Override
+    public Composite getRunningComposite(String contributionURI, QName name) {
+        Map<QName, String> cs = runningComposites.get(contributionURI);
+        if (cs != null) {
+            String compositeXML = cs.get(name);
+            return readComposite(compositeXML);
+        }
+        return null;
     }
 
     protected Composite readComposite(String compositeXML) {
@@ -568,15 +602,11 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         }
     }
 
-    public void installContribution(String uri, String url, List<QName> deployables, List<Export> exports) {
-        installedContributions.put(uri, url);
-    }
-
     public List<String> getInstalledContributionURIs() {
         return new ArrayList<String>(installedContributions.keySet());
     }
 
-    public String getInstalledContributionURL(String uri) {
+    public InstalledContribution getInstalledContribution(String uri) {
         return installedContributions.get(uri);
     }
 
@@ -585,14 +615,8 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     }
 
     @Override
-    public List<QName> getInstalledContributionDeployables(String uri) {
-        // TODO Auto-generated method stub
-        return null;
+    public void installContribution(InstalledContribution ic) {
+        installedContributions.put(ic.getURI(), ic);
     }
 
-    @Override
-    public List<Export> getInstalledContributionExports(String uri) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

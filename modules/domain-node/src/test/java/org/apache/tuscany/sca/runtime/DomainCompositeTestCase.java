@@ -36,6 +36,7 @@ public class DomainCompositeTestCase {
         Node node = TuscanyRuntime.newInstance().createNode("DomainCompositeTestCase.localOnlyDomain");
         testIt(node);
     }
+
     @Test
     public void distributedDomain() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
         Node node = TuscanyRuntime.newInstance().createNode("uri:DomainCompositeTestCase.distributedDomain");

@@ -33,13 +33,13 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.InstalledContribution;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 
 /**
@@ -49,10 +49,8 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
     private final Logger logger = Logger.getLogger(EndpointRegistryImpl.class.getName());
 
     private List<Endpoint> endpoints = new ArrayList<Endpoint>();
-    private Map<QName, Composite> runningComposites = new HashMap<QName, Composite>();
-    private Map<String, String> installedContributions = new HashMap<String, String>();
-    private Map<String, List<QName>> installedContributionsDeployables = new HashMap<String, List<QName>>();
-    private Map<String, List<Export>> installedContributionsExports = new HashMap<String, List<Export>>();
+    private Map<String, Map<QName, Composite>> runningComposites = new HashMap<String, Map<QName, Composite>>();
+    private Map<String, InstalledContribution> installedContributions = new HashMap<String, InstalledContribution>();
     
     protected boolean quietLogging;
 
@@ -165,51 +163,55 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
         listeners.clear();
     }
 
-    public void addRunningComposite(Composite composite) {
-        runningComposites.put(composite.getName(), composite);
-    }
-
-    public void removeRunningComposite(QName name) {
-        runningComposites.remove(name);
-    }
-
-    public Composite getRunningComposite(QName name) {
-        return runningComposites.get(name);
-    }
-
-    public List<QName> getRunningCompositeNames() {
-        List<QName> compositeNames = new ArrayList<QName>();
-        for (Composite composite : runningComposites.values()) {
-            compositeNames.add(composite.getName());
+    public void addRunningComposite(String curi, Composite composite) {
+        Map<QName, Composite> cs = runningComposites.get(curi);
+        if (cs == null) {
+            cs = new HashMap<QName, Composite>();
+            runningComposites.put(curi, cs);
         }
+        cs.put(composite.getName(), composite);
+    }
+
+    public void removeRunningComposite(String curi, QName name) {
+        Map<QName, Composite> cs = runningComposites.get(curi);
+        if (cs != null) {
+            cs.remove(name);
+        }
+    }
+
+    public Composite getRunningComposite(String curi, QName name) {
+        Map<QName, Composite> cs = runningComposites.get(curi);
+        if (cs != null) {
+            return cs.get(name);
+        }
+        return null;
+    }
+
+    public Map<String, List<QName>> getRunningCompositeNames() {
+       Map<String, List<QName>> compositeNames = new HashMap<String, List<QName>>();
+       for (String curi : runningComposites.keySet()) {
+           List<QName> names = new ArrayList<QName>();
+           compositeNames.put(curi, names);
+           for (QName qn : runningComposites.get(curi).keySet()) {
+               names.add(qn);
+           }
+       }
         return compositeNames;
     }
 
-    public void installContribution(String uri, String url, List<QName> deployables, List<Export> exports) {
-        installedContributions.put(uri, url);
-        installedContributionsDeployables.put(uri, deployables);
-        installedContributionsExports.put(uri, exports);
+    public void installContribution(InstalledContribution ic) {
+        installedContributions.put(ic.getURI(), ic);
+    }
+
+    public void uninstallContribution(String uri) {
+        installedContributions.remove(uri);
     }
 
     public List<String> getInstalledContributionURIs() {
         return new ArrayList<String>(installedContributions.keySet());
     }
 
-    public String getInstalledContributionURL(String uri) {
+    public InstalledContribution getInstalledContribution(String uri) {
         return installedContributions.get(uri);
-    }
-
-    public List<QName> getInstalledContributionDeployables(String uri) {
-        return installedContributionsDeployables.get(uri);
-    }
-
-    public List<Export> getInstalledContributionExports(String uri) {
-        return installedContributionsExports.get(uri);
-    }
-
-    public void uninstallContribution(String uri) {
-        installedContributions.remove(uri);
-        installedContributionsDeployables.remove(uri);
-        installedContributionsExports.remove(uri);
     }
 }

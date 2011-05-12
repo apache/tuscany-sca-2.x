@@ -21,13 +21,13 @@ package org.apache.tuscany.sca.runtime;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.contribution.Export;
 
 /**
  * The EndpointRegistry holds the active service endpoints for the SCA domain
@@ -81,17 +81,13 @@ public interface EndpointRegistry {
 
     String getDomainURI();
 
-    void addRunningComposite(Composite composite);
-    void removeRunningComposite(QName name);
-    Composite getRunningComposite(QName name);
-    List<QName> getRunningCompositeNames();
-    
-    void installContribution(String uri, String url, List<QName> deployables, List<Export> exports);
-    List<String> getInstalledContributionURIs();
-    String getInstalledContributionURL(String uri);
-    List<QName> getInstalledContributionDeployables(String uri);
-    List<Export> getInstalledContributionExports(String uri);
+    void installContribution(InstalledContribution ic);
     void uninstallContribution(String uri);
-    
-    
+    List<String> getInstalledContributionURIs();
+    InstalledContribution getInstalledContribution(String uri);
+
+    void addRunningComposite(String contributionURI, Composite composite);
+    void removeRunningComposite(String contributionURI, QName name);
+    Map<String, List<QName>> getRunningCompositeNames();
+    Composite getRunningComposite(String contributionURI, QName name);
 }

@@ -47,7 +47,6 @@ import org.apache.catalina.tribes.membership.StaticMember;
 import org.apache.catalina.tribes.transport.ReceiverBase;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.endpoint.tribes.AbstractReplicatedMap.MapEntry;
@@ -55,6 +54,7 @@ import org.apache.tuscany.sca.endpoint.tribes.MapStore.MapListener;
 import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
 import org.apache.tuscany.sca.runtime.DomainRegistryURI;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.InstalledContribution;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
@@ -422,37 +422,7 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
     }
 
     @Override
-    public void addRunningComposite(Composite composite) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void removeRunningComposite(QName name) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public Composite getRunningComposite(QName name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<QName> getRunningCompositeNames() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public List<String> getInstalledContributionURIs() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getInstalledContributionURL(String uri) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -464,19 +434,37 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
     }
 
     @Override
-    public void installContribution(String uri, String url, List<QName> deployables, List<Export> exports) {
+    public void installContribution(InstalledContribution ic) {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public List<QName> getInstalledContributionDeployables(String uri) {
+    public InstalledContribution getInstalledContribution(String uri) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<Export> getInstalledContributionExports(String uri) {
+    public void addRunningComposite(String contributionURI, Composite composite) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void removeRunningComposite(String contributionURI, QName name) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Composite getRunningComposite(String contributionURI, QName name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map<String, List<QName>> getRunningCompositeNames() {
         // TODO Auto-generated method stub
         return null;
     }

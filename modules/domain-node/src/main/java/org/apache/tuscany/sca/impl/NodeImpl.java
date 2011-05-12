@@ -108,7 +108,10 @@ public class NodeImpl implements Node {
             uri = getDefaultContributionURI(contributionURL);
         }
         // TODO: sort out deployables and exports
-        endpointRegistry.installContribution(uri, contributionURL, null, null);
+        org.apache.tuscany.sca.runtime.InstalledContribution ic = new org.apache.tuscany.sca.runtime.InstalledContribution();
+        ic.setURI(uri);
+        ic.setURL(contributionURL);
+        endpointRegistry.installContribution(ic);
         if (startDeployables) {
             // TODO: sort out metadata and dependents in distributed
             localInstall(uri, contributionURL, metaDataURL, dependentContributionURIs, startDeployables);
@@ -202,7 +205,12 @@ public class NodeImpl implements Node {
     public void start(String contributionURI, String compositeURI) throws ActivationException, ValidationException, ContributionReadException {
         InstalledContribution ic = locallyInstalledContributions.get(contributionURI);
         if (ic == null) {
-            String url = endpointRegistry.getInstalledContributionURL(contributionURI);
+            
+            org.apache.tuscany.sca.runtime.InstalledContribution icx = endpointRegistry.getInstalledContribution(contributionURI);
+            String url = null;
+            if (icx != null) {
+                url  = icx.getURL();
+            }
             if (url == null) {
                 throw new IllegalArgumentException("Contribution not installed: " + contributionURI);
             }
@@ -237,8 +245,11 @@ public class NodeImpl implements Node {
         domainComposite.setAutowire(false);
         domainComposite.setLocal(false);
         List<Composite> domainIncludes = domainComposite.getIncludes();
-        for (QName compositeName : endpointRegistry.getRunningCompositeNames()) {
-            domainIncludes.add(endpointRegistry.getRunningComposite(compositeName));
+        Map<String, List<QName>> runningComposites = endpointRegistry.getRunningCompositeNames();
+        for (String curi : runningComposites.keySet()) {
+            for (QName name : runningComposites.get(curi)) {
+                domainIncludes.add(endpointRegistry.getRunningComposite(curi, name));
+            }
         }
         return domainComposite;
     }

@@ -101,11 +101,11 @@ public class DeployedComposite {
     public void start() throws ActivationException {
         compositeActivator.activate(compositeContext, builtComposite);
         compositeActivator.start(compositeContext, builtComposite);
-        endpointRegistry.addRunningComposite(builtComposite);
+        endpointRegistry.addRunningComposite(installedContribution.getURI(), builtComposite);
     }
 
     public void stop() throws ActivationException {
-        endpointRegistry.removeRunningComposite(builtComposite.getName());
+        endpointRegistry.removeRunningComposite(installedContribution.getURI(), builtComposite.getName());
         compositeActivator.stop(compositeContext, builtComposite);
         compositeActivator.deactivate(builtComposite);
     }
