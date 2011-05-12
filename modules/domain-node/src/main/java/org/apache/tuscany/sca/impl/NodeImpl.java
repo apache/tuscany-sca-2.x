@@ -87,8 +87,6 @@ public class NodeImpl implements Node {
     private TuscanyRuntime tuscanyRuntime;
     private Map<String, InstalledContribution> locallyInstalledContributions = new HashMap<String, InstalledContribution>();
     
-    private static Map<String, Node> allNodes = new HashMap<String, Node>();
-    
     public NodeImpl(String domainName, Deployer deployer, CompositeActivator compositeActivator, EndpointRegistry endpointRegistry, ExtensionPointRegistry extensionPointRegistry, TuscanyRuntime tuscanyRuntime) {
         this.domainName = domainName;
         this.deployer = deployer;
@@ -96,7 +94,6 @@ public class NodeImpl implements Node {
         this.endpointRegistry = endpointRegistry;
         this.extensionPointRegistry = extensionPointRegistry;
         this.tuscanyRuntime = tuscanyRuntime;
-        allNodes.put(domainName, this);
     }
 
     public String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException {
@@ -325,7 +322,6 @@ public class NodeImpl implements Node {
         if (tuscanyRuntime != null) {
             tuscanyRuntime.stop();
         }
-        allNodes.remove(this.domainName);
     }
 
     public <T> T getService(Class<T> interfaze, String serviceURI) throws NoSuchServiceException {
@@ -494,7 +490,7 @@ public class NodeImpl implements Node {
 
     protected void startComposite(Composite c, InstalledContribution ic) throws ActivationException, ValidationException {
         List<Contribution> dependentContributions = calculateDependentContributions(ic);
-        DeployedComposite dc = new DeployedComposite(c, ic, dependentContributions, deployer, compositeActivator, endpointRegistry, extensionPointRegistry);
+        DeployedComposite dc = new DeployedComposite(c, ic.getContribution(), dependentContributions, deployer, compositeActivator, endpointRegistry, extensionPointRegistry);
         ic.start(dc);
     }
     
@@ -543,8 +539,4 @@ public class NodeImpl implements Node {
         return endpointRegistry;
     }
     
-    public static Node nodeExists(String domainName) {
-        return allNodes.get(domainName);
-    }
-
 }
