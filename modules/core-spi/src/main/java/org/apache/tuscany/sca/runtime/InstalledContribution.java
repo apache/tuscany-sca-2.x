@@ -35,6 +35,9 @@ public class InstalledContribution implements Serializable {
     // the URIs of the deployable composites within the contribution
     private List<String> deployables = new ArrayList<String>();
 
+    // TODO: Handle Imports in a more extensible way
+    private List<String> javaExports = new ArrayList<String>();
+    private List<String> namespaceExports = new ArrayList<String>();
     private List<String> exports = new ArrayList<String>();
     
     private String metaData;
@@ -81,5 +84,11 @@ public class InstalledContribution implements Serializable {
     }
     public Map<String, String> getAdditionalDeployables() {
         return additionalDeployables;
+    }
+    public List<String> getJavaExports() {
+        return javaExports;
+    }
+    public List<String> getNamespaceExports() {
+        return namespaceExports;
     }
 }
