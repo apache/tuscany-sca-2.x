@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.impl.NodeImpl;
+import org.apache.tuscany.sca.impl.NodeImpl2;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
@@ -149,6 +150,15 @@ public class TuscanyRuntime {
         return new NodeImpl(domainName, deployer, compositeActivator, endpointRegistry, extensionPointRegistry, null);
     }
 
+    public NodeImpl2 createNode2(String domainURI) {
+        String domainName = "default";
+        if (domainURI != null){
+            domainName = getDomainName(domainURI);
+        }
+        EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, domainName);
+        return new NodeImpl2(domainName, deployer, compositeActivator, endpointRegistry, extensionPointRegistry, null);
+    }
+    
     /**
      * Creates a Node from an XML configuration file
      * @param configURL  the URL to the XML configuration file
