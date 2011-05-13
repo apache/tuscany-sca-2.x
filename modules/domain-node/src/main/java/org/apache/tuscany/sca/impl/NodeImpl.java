@@ -108,12 +108,38 @@ public class NodeImpl implements Node {
         org.apache.tuscany.sca.runtime.InstalledContribution ic = new org.apache.tuscany.sca.runtime.InstalledContribution();
         ic.setURI(uri);
         ic.setURL(contributionURL);
+        peekIntoContribution(ic);
         endpointRegistry.installContribution(ic);
         if (startDeployables) {
+            for (String compositeURI : ic.getDeployables()) {
+                start(uri, compositeURI);
+            }
             // TODO: sort out metadata and dependents in distributed
             localInstall(uri, contributionURL, metaDataURL, dependentContributionURIs, startDeployables);
         }
         return uri;
+    }
+
+    /**
+     * ASM12032 and ASM12033 say no error checking should be done during install and that should happen later, but 
+     * we would still like to know about deployables and exports so peek into the contribution to try to get those,
+     * and just ignore any errors they might happen while doing that. 
+     */
+    protected void peekIntoContribution(org.apache.tuscany.sca.runtime.InstalledContribution ic) {
+        Contribution contribution = null;
+        try {
+            contribution = deployer.loadContribution(IOHelper.createURI(ic.getURI()), IOHelper.getLocationAsURL(ic.getURI()), deployer.createMonitor());
+        } catch (Exception e) {
+            // ignore any errors
+        }
+        if (contribution != null) {
+            for (Composite composite : contribution.getDeployables()) {
+                ic.getDeployables().add(composite.getURI());
+            }
+            // TODO: need to sort out if Export or xml goes in the reg
+//            for (Export e : contribution.getExports()) {
+//            }
+        }
     }
 
     private void localInstall(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean startDeployables) throws ContributionReadException, ValidationException, ActivationException {
