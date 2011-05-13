@@ -271,6 +271,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         Transaction txn = hazelcastInstance.getTransaction();
         txn.begin();
         try {
+            localEndpoints.put(endpointURI, endpoint);
             endpointMap.put(endpointURI, endpoint);
             endpointWsdls.put(endpointURI, wsdl);
             endpointOwners.put(localMemberAddr, endpointURI);
@@ -279,7 +280,6 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
             txn.rollback();
             throw new ServiceRuntimeException(e);
         }
-        localEndpoints.put(endpointURI, endpoint);
         logger.info("Add endpoint - " + endpoint);
     }
 
