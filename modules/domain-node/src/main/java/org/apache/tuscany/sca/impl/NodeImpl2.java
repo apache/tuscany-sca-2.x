@@ -144,9 +144,15 @@ public class NodeImpl2 {
         try {
             deployer.resolve(contribution, dependentContributions, monitor);
         } catch (Exception e) {
+            loadedContributions.remove(ic.getURI());
             throw new RuntimeException(e);
         }
-        monitor.analyzeProblems();
+        try {
+            monitor.analyzeProblems();
+        } catch (ValidationException e) {
+            loadedContributions.remove(ic.getURI());
+            throw e;
+        }
     }
     
     public Map<String, List<QName>> getStartedComposites() {
@@ -206,7 +212,7 @@ public class NodeImpl2 {
     protected List<Contribution> calculateDependentContributions(InstalledContribution ic) throws ContributionReadException, ValidationException {
         List<Contribution> dependentContributions = new ArrayList<Contribution>();
         Contribution c = loadContribution(ic);
-        if (ic.getDependentContributionURIs() != null) {
+        if (ic.getDependentContributionURIs() != null && ic.getDependentContributionURIs().size() > 0) {
             // if the install specified dependent uris use just those contributions
             for (String uri : ic.getDependentContributionURIs()) {
                 InstalledContribution dependee = endpointRegistry.getInstalledContribution(uri);
@@ -215,18 +221,34 @@ public class NodeImpl2 {
                 }
             }
         } else {
-            // TODO: otherwise find from the registry which contributions export the required resources
             for (Import imprt : c.getImports()) {
-                // TODO: Handle Imports in a more extensible way
-                if (imprt instanceof JavaImport) {
-//                    ic.getJavaExports().add(((JavaExport)export).getPackage());
-                } else if (imprt instanceof NamespaceImport) {
-//                    ic.getNamespaceExports().add(((NamespaceExport)export).getNamespace());
-                } 
-//                dependentContributions.add(ics.getContribution());
+                InstalledContribution exportingIC = findExportingContribution(imprt);
+                if (exportingIC != null) {
+                    dependentContributions.add(loadContribution(exportingIC));
+                }
             }
         }
+        // TODO: there is also the location attribute on the import which should be taken into account
         return dependentContributions;
+    }
+
+    private InstalledContribution findExportingContribution(Import imprt) {
+        // TODO: Handle Imports in a more extensible way
+        for (String curi : endpointRegistry.getInstalledContributionURIs()) {
+            InstalledContribution ic = endpointRegistry.getInstalledContribution(curi);
+            if (imprt instanceof JavaImport) {
+                for (String s : ic.getJavaExports()) {
+                    if (s.startsWith(((JavaImport)imprt).getPackage())) {
+                        return ic;
+                    }
+                }
+            } else if (imprt instanceof NamespaceImport) {
+                if (ic.getNamespaceExports().contains(((NamespaceImport)imprt).getNamespace())) {
+                        return ic;
+                }
+            } 
+        }
+        return null;
     }
 
     protected Composite getComposite(Contribution contribution, String compositeURI) {

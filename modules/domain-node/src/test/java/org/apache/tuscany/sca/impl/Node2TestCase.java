@@ -77,7 +77,7 @@ public class Node2TestCase {
 
         InstalledContribution ic = nodeB.getInstalledContribution("export");
         Assert.assertEquals(1, ic.getJavaExports().size());
-        Assert.assertEquals("foo", ic.getJavaExports().get(0));
+        Assert.assertEquals("sample", ic.getJavaExports().get(0));
     }
     
     @Test
@@ -103,7 +103,7 @@ public class Node2TestCase {
         
         InstalledContribution ic = node.getInstalledContribution("export");
         Assert.assertEquals(1, ic.getJavaExports().size());
-        Assert.assertEquals("foo", ic.getJavaExports().get(0));
+        Assert.assertEquals("sample", ic.getJavaExports().get(0));
     }
 
     @Test
@@ -120,20 +120,38 @@ public class Node2TestCase {
         try {
             node.validateContribution("import");
         } catch (ValidationException e) {
-            Assert.assertTrue(e.getMessage().endsWith("Unresolved import: Import = foo"));            
+            Assert.assertTrue(e.getMessage().endsWith("Unresolved import: Import = sample"));            
         }
     }
 
-//    @Test
-//    public void importExportValidate() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-//        NodeImpl2 node = TuscanyRuntime.newInstance().createNode2("ImportTestCase");
-//        node.installContribution("src/test/resources/import.jar");
-//        try {
-//            node.validateContribution("import");
-//        } catch (ValidationException e) {
-//            Assert.assertTrue(e.getMessage().endsWith("Unresolved import: Import = foo"));            
-//        }
-//    }
+    @Test
+    public void importExportValidate() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
+        NodeImpl2 node = TuscanyRuntime.newInstance().createNode2("ImportTestCase");
+        node.installContribution("src/test/resources/import.jar");
+        try {
+            node.validateContribution("import");
+        } catch (ValidationException e) {
+            // expected
+        }
+        node.installContribution("src/test/resources/export.jar");
+        node.validateContribution("import");
+        node.startComposite("import", "helloworld.composite");
+    }
+
+    @Test
+    public void importExportDistributedValidate() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
+        NodeImpl2 nodeA = TuscanyRuntime.newInstance().createNode2("uri:ImportTestCase");
+        nodeA.installContribution("src/test/resources/import.jar");
+        try {
+            nodeA.validateContribution("import");
+        } catch (ValidationException e) {
+            // expected
+        }
+        NodeImpl2 nodeB = TuscanyRuntime.newInstance().createNode2("uri:ImportTestCase");
+        nodeB.installContribution("src/test/resources/export.jar");
+        nodeA.validateContribution("import");
+        nodeA.startComposite("import", "helloworld.composite");
+    }
 
     @Test
     public void startTest() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
@@ -152,6 +170,5 @@ public class Node2TestCase {
         Assert.assertEquals("helloworld", node.getStartedComposites().get("sample-helloworld").get(0).getLocalPart());
         node.stopComposite("sample-helloworld", "helloworld.composite");
     }
-    
-    
+
 }
