@@ -28,9 +28,10 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.TuscanyRuntime;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
-import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
@@ -40,6 +41,7 @@ import org.apache.tuscany.sca.contribution.namespace.NamespaceExport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.ValidationException;
@@ -47,6 +49,7 @@ import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.InstalledContribution;
+import org.oasisopen.sca.NoSuchServiceException;
 
 public class NodeImpl2 {
 
@@ -76,6 +79,11 @@ public class NodeImpl2 {
         this.tuscanyRuntime = tuscanyRuntime;
     }
 
+    public void uninstallContribution(String contributionURI) {
+        loadedContributions.remove(contributionURI);
+        endpointRegistry.uninstallContribution(contributionURI);
+    }
+    
     public String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException {
         return installContribution(null, contributionURL);
     }
@@ -99,7 +107,7 @@ public class NodeImpl2 {
     /**
      * Peek into the contribution to find its attributes.
      * ASM12032 and ASM12033 say no error checking should be done during install and that should happen later, but 
-     * we would still like to know about deployables and exports so peek into the contribution to try to get those,
+     * we need to know about deployables and exports so peek into the contribution to try to get those,
      * and just ignore any errors they might happen while doing that. 
      */
     protected void peekIntoContribution(InstalledContribution ic) throws ContributionReadException, ValidationException {
@@ -121,7 +129,7 @@ public class NodeImpl2 {
 
     }
     
-    public List<String> getDeployableComposites(String contributionURI) {
+    public List<String> getDeployableCompositeURIs(String contributionURI) {
         InstalledContribution ic = endpointRegistry.getInstalledContribution(contributionURI);
         return new ArrayList<String>(ic.getDeployables());
     }
@@ -171,7 +179,7 @@ public class NodeImpl2 {
         } else {
             InstalledContribution ic = getInstalledContribution(contributionURI);
             Contribution contribution = loadContribution(ic);
-            Composite composite = getComposite(contribution, compositeURI);
+            Composite composite = contribution.getArtifactModel(compositeURI);
             List<Contribution> dependentContributions = calculateDependentContributions(ic);
             dc = new DeployedComposite(composite, contribution, dependentContributions, deployer, compositeActivator, endpointRegistry, extensionPointRegistry);
             dc.start();
@@ -189,6 +197,31 @@ public class NodeImpl2 {
         stoppedComposites.put(key, dc);
     }
 
+    public String getDomainName() {
+        return domainName;
+    }
+
+    public Composite getDomainComposite() {
+        FactoryExtensionPoint factories = extensionPointRegistry.getExtensionPoint(FactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        Composite domainComposite = assemblyFactory.createComposite();
+        domainComposite.setName(new QName(Base.SCA11_TUSCANY_NS, domainName));
+        domainComposite.setAutowire(false);
+        domainComposite.setLocal(false);
+        List<Composite> domainIncludes = domainComposite.getIncludes();
+        Map<String, List<QName>> runningComposites = endpointRegistry.getRunningCompositeNames();
+        for (String curi : runningComposites.keySet()) {
+            for (QName name : runningComposites.get(curi)) {
+                domainIncludes.add(endpointRegistry.getRunningComposite(curi, name));
+            }
+        }
+        return domainComposite;
+    }
+
+    public <T> T getService(Class<T> interfaze, String serviceURI) throws NoSuchServiceException {
+        return ServiceHelper.getService(interfaze, serviceURI, endpointRegistry, extensionPointRegistry, deployer);
+    }
+    
     protected InstalledContribution getInstalledContribution(String contributionURI) {
         InstalledContribution ic = endpointRegistry.getInstalledContribution(contributionURI);
         if (ic == null) {
@@ -204,7 +237,6 @@ public class NodeImpl2 {
             contribution = deployer.loadContribution(IOHelper.createURI(ic.getURI()), IOHelper.getLocationAsURL(ic.getURL()), monitor);
             monitor.analyzeProblems();
             loadedContributions.put(ic.getURI(), contribution);
-            fixDeployedCompositeURIs(contribution);
         }
         return contribution;
     }
@@ -222,8 +254,7 @@ public class NodeImpl2 {
             }
         } else {
             for (Import imprt : c.getImports()) {
-                InstalledContribution exportingIC = findExportingContribution(imprt);
-                if (exportingIC != null) {
+                for (InstalledContribution exportingIC : findExportingContributions(imprt)) {
                     dependentContributions.add(loadContribution(exportingIC));
                 }
             }
@@ -232,60 +263,28 @@ public class NodeImpl2 {
         return dependentContributions;
     }
 
-    private InstalledContribution findExportingContribution(Import imprt) {
+    private List<InstalledContribution> findExportingContributions(Import imprt) {
+        List<InstalledContribution> ics = new ArrayList<InstalledContribution>();
         // TODO: Handle Imports in a more extensible way
         for (String curi : endpointRegistry.getInstalledContributionURIs()) {
             InstalledContribution ic = endpointRegistry.getInstalledContribution(curi);
             if (imprt instanceof JavaImport) {
                 for (String s : ic.getJavaExports()) {
                     if (s.startsWith(((JavaImport)imprt).getPackage())) {
-                        return ic;
+                        ics.add(ic);
                     }
                 }
             } else if (imprt instanceof NamespaceImport) {
                 if (ic.getNamespaceExports().contains(((NamespaceImport)imprt).getNamespace())) {
-                        return ic;
+                    ics.add(ic);
                 }
             } 
         }
-        return null;
-    }
-
-    protected Composite getComposite(Contribution contribution, String compositeURI) {
-        for (Artifact a : contribution.getArtifacts()) {
-            if (a.getURI().equals(compositeURI)) {
-                return (Composite) a.getModel();
-            }
-        }
-        throw new IllegalArgumentException("composite not found: " + compositeURI);
-    }
-    
-    /**
-     * Deployable composites don't have the uri set so get it from the artifact in the contribution
-     * // TODO: fix the Tuscany code so this uri is correctly set and this method isn't needed
-     */
-    private void fixDeployedCompositeURIs(Contribution contribution) {
-        int i = contribution.getDependencies().size();
-        for (Artifact a : contribution.getArtifacts()) {
-            if (a.getModel() != null) {
-                if (a.getModel() instanceof Composite) {
-                    Composite cm = a.getModel();
-                    for (Composite c : contribution.getDeployables()) {
-                        if (c.getName().equals(cm.getName())) {
-                            c.setURI(cm.getURI());
-                            i = i-1;
-                            if (i < 1) {
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        return ics;
     }
 
     /**
-     * Returns a default URI for a contribution based on the contribution URL
+     * Derives a URI for a contribution based on the contribution URL
      */
     protected String getDefaultContributionURI(String contributionURL) {
         String uri = null;

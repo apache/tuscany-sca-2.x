@@ -19,6 +19,9 @@
 package org.apache.tuscany.sca.impl;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
 
@@ -87,7 +90,7 @@ public class Node2TestCase {
 
         Assert.assertEquals(1, node.getInstalledContributionURIs().size());
         Assert.assertEquals("import", node.getInstalledContributionURIs().get(0));
-        List<String> ds = node.getDeployableComposites("import");
+        List<String> ds = node.getDeployableCompositeURIs("import");
         Assert.assertEquals(1, ds.size());
         Assert.assertEquals("helloworld.composite", ds.get(0));
 
@@ -136,6 +139,8 @@ public class Node2TestCase {
         node.installContribution("src/test/resources/export.jar");
         node.validateContribution("import");
         node.startComposite("import", "helloworld.composite");
+        Map<String, List<QName>> scs = node.getStartedComposites();
+        Assert.assertEquals(1, scs.size());            
     }
 
     @Test
@@ -151,6 +156,8 @@ public class Node2TestCase {
         nodeB.installContribution("src/test/resources/export.jar");
         nodeA.validateContribution("import");
         nodeA.startComposite("import", "helloworld.composite");
+        Map<String, List<QName>> scs = nodeB.getStartedComposites();
+        Assert.assertEquals(1, scs.size());            
     }
 
     @Test
