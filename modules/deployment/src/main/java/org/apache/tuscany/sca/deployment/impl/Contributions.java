@@ -157,4 +157,10 @@ public class Contributions implements Contribution {
     public Set<String> getTypes() {
         return Collections.emptySet();
     }
+
+    @Override
+    public <T> T getArtifactModel(String URI) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
