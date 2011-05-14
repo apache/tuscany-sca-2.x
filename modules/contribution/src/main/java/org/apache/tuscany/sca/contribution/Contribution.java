@@ -122,5 +122,11 @@ public interface Contribution extends Artifact, Extensible {
      * @return
      */
     Set<String> getTypes();
-
+    
+    /**
+     * Get an artifacts model object
+     * @param uri The artifact uri
+     * @return the model
+     */
+    <T> T getArtifactModel(String uri);
 }

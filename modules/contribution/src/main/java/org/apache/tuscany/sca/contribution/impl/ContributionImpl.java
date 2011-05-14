@@ -155,4 +155,12 @@ class ContributionImpl extends ExtensibleImpl implements Contribution {
         return types;
     }
 
+    public <T> T getArtifactModel(String uri) {
+        for (Artifact a : getArtifacts()) {
+            if (a.getURI().equals(uri)) {
+                return (T) a.getModel();
+            }
+        }
+        throw new IllegalArgumentException("artifact not found: " + uri);
+    }
 }
