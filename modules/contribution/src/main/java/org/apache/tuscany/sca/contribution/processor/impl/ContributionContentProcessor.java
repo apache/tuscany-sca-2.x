@@ -206,8 +206,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
                         // Update the deployable Composite objects with the correct Composite object for the artifact
                         for (Artifact a : contribution.getArtifacts()) {
                             if (a.getModel() instanceof Composite) {
-                                for (ListIterator<Composite> lit = contribution.getDeployables().listIterator(); lit
-                                    .hasNext();) {
+                                for (ListIterator<Composite> lit = contribution.getDeployables().listIterator(); lit.hasNext();) {
                                     if (lit.next().getName().equals(((Composite)a.getModel()).getName())) {
                                         lit.set((Composite)a.getModel());
                                     }
