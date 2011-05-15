@@ -18,14 +18,17 @@
  */
 package org.apache.tuscany.sca.impl;
 
+import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.TuscanyRuntime;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
@@ -178,4 +181,28 @@ public class Node2TestCase {
         node.stopComposite("sample-helloworld", "helloworld.composite");
     }
 
+    @Test
+    public void addDeploymentCompositeTest() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, XMLStreamException {
+        NodeImpl2 node = TuscanyRuntime.newInstance().createNode2("addDeploymentCompositeTest");
+        String curi = node.installContribution("src/test/resources/sample-helloworld.jar");
+
+        String compositeXML =
+            "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\""
+                + "     xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.1\""
+                + "     targetNamespace=\"http://test/composite\""
+                + "     name=\"TestComposite\">"
+                + "   <component name=\"TestComponent\">"
+                + "      <implementation.java class=\"sample.HelloworldImpl\"/>"
+                + "   </component>"
+                + "</composite>";
+        String compositeURI = node.addDeploymentComposite(curi, new StringReader(compositeXML));
+
+        node.startComposite(curi, compositeURI);
+        Assert.assertEquals(1, node.getStartedComposites().size());
+        
+        Composite dc = node.getDomainComposite();
+        Assert.assertEquals(1, dc.getIncludes().size());
+        Composite runningComposite = dc.getIncludes().get(0);
+        Assert.assertEquals("TestComposite", runningComposite.getName().getLocalPart());
+    }
 }

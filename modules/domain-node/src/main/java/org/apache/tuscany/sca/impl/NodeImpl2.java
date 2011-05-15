@@ -19,18 +19,25 @@
 
 package org.apache.tuscany.sca.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.TuscanyRuntime;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.Export;
@@ -40,6 +47,10 @@ import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceExport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
@@ -47,6 +58,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
+import org.apache.tuscany.sca.runtime.ContributionListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.InstalledContribution;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -60,7 +72,7 @@ public class NodeImpl2 {
     private ExtensionPointRegistry extensionPointRegistry;
     private TuscanyRuntime tuscanyRuntime;
     
-    private Map<String, Contribution> loadedContributions = new HashMap<String, Contribution>();
+    private Map<String, Contribution> loadedContributions = new ConcurrentHashMap<String, Contribution>();
 
     private Map<String, DeployedComposite> startedComposites = new HashMap<String, DeployedComposite>();
     private Map<String, DeployedComposite> stoppedComposites = new HashMap<String, DeployedComposite>();
@@ -77,10 +89,19 @@ public class NodeImpl2 {
         this.endpointRegistry = endpointRegistry;
         this.extensionPointRegistry = extensionPointRegistry;
         this.tuscanyRuntime = tuscanyRuntime;
+        
+        endpointRegistry.addContributionListener(new ContributionListener() {
+            public void contributionUpdated(String uri) {
+                loadedContributions.remove(uri);
+            }
+            public void contributionRemoved(String uri) {
+                loadedContributions.remove(uri);
+            }
+        });
     }
 
     public String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException {
-        return installContribution(null, contributionURL);
+        return installContribution(null, contributionURL, null, null);
     }
 
     public String installContribution(String uri, String contributionURL) throws ContributionReadException, ActivationException, ValidationException {
@@ -106,7 +127,6 @@ public class NodeImpl2 {
     }
     
     public void uninstallContribution(String contributionURI) {
-        loadedContributions.remove(contributionURI);
         endpointRegistry.uninstallContribution(contributionURI);
     }
     
@@ -128,23 +148,35 @@ public class NodeImpl2 {
      * we need to know about deployables and exports so peek into the contribution to try to get those,
      * and just ignore any errors they might happen while doing that. 
      */
-    protected void peekIntoContribution(InstalledContribution ic) throws ContributionReadException, ValidationException {
-        Contribution contribution = loadContribution(ic);
-
-        // deployables
-        for (Composite composite : contribution.getDeployables()) {
-            ic.getDeployables().add(composite.getURI());
+    protected void peekIntoContribution(InstalledContribution ic) {
+        Contribution contribution = null;
+        try {
+            contribution = loadContribution(ic);
+        } catch (Exception e) {
+            // ignore it
         }
+        
+        if (contribution != null) {
 
-        // Exports
-        for (Export export : contribution.getExports()) {
-            if (export instanceof JavaExport) {
-                ic.getJavaExports().add(((JavaExport)export).getPackage());
-            } else if (export instanceof NamespaceExport) {
-                ic.getNamespaceExports().add(((NamespaceExport)export).getNamespace());
-            } // TODO: Handle these and others in a more extensible way
+            // deployables
+            if (contribution.getDeployables() != null) {
+                for (Composite composite : contribution.getDeployables()) {
+                    ic.getDeployables().add(composite.getURI());
+                }
+            }
+
+            // Exports
+            if (contribution.getExports() != null) {
+                for (Export export : contribution.getExports()) {
+                    // TODO: Handle these and others in a more extensible way
+                    if (export instanceof JavaExport) {
+                        ic.getJavaExports().add(((JavaExport)export).getPackage());
+                    } else if (export instanceof NamespaceExport) {
+                        ic.getNamespaceExports().add(((NamespaceExport)export).getNamespace());
+                    } 
+                }
+            }
         }
-
     }
     
     public List<String> getInstalledContributionURIs() {
@@ -158,6 +190,37 @@ public class NodeImpl2 {
     public List<String> getDeployableCompositeURIs(String contributionURI) {
         InstalledContribution ic = endpointRegistry.getInstalledContribution(contributionURI);
         return new ArrayList<String>(ic.getDeployables());
+    }
+    
+    public String addDeploymentComposite(String contributionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ValidationException {
+        InstalledContribution ic = getInstalledContribution(contributionURI);
+        
+        // load it to check its valid composite XML
+        Composite composite = compositeFromXML(compositeXML);
+        
+        addDeploymentComposite(ic, composite);
+        return composite.getURI();
+    }
+
+    protected Composite compositeFromXML(Reader compositeXML) throws XMLStreamException, ContributionReadException, ValidationException {
+        Monitor monitor = deployer.createMonitor();
+        Composite composite = deployer.loadXMLDocument(compositeXML, monitor);
+        monitor.analyzeProblems();
+        return composite;
+    }
+
+    public String addDeploymentComposite(String contributionURI, Composite composite) {
+        InstalledContribution ic = getInstalledContribution(contributionURI);
+        addDeploymentComposite(ic, composite);
+        return composite.getURI();
+    }
+
+    protected void addDeploymentComposite(InstalledContribution ic, Composite composite) {
+        if (composite.getURI() == null || composite.getURI().length() < 1) {
+            composite.setURI(composite.getName().getLocalPart() + ".composite");
+        }
+        ic.getAdditionalDeployables().put(composite.getURI(), compositeToXML(composite));
+        endpointRegistry.updateInstalledContribution(ic);
     }
 
     public void validateContribution(String contributionURI) throws ContributionReadException, ValidationException {
@@ -252,6 +315,19 @@ public class NodeImpl2 {
             Monitor monitor = deployer.createMonitor();
             contribution = deployer.loadContribution(IOHelper.createURI(ic.getURI()), IOHelper.getLocationAsURL(ic.getURL()), monitor);
             monitor.analyzeProblems();
+            if (ic.getAdditionalDeployables().size() > 0) {
+                for (String uri : ic.getAdditionalDeployables().keySet()) {
+                    String compositeXML = ic.getAdditionalDeployables().get(uri);
+                    Composite composite;
+                    try {
+                        composite = compositeFromXML(new StringReader(compositeXML));
+                    } catch (XMLStreamException e) {
+                        throw new ContributionReadException(e);
+                    }
+                    composite.setURI(composite.getName().getLocalPart() + ".composite");
+                    contribution.addComposite(composite);
+                }
+            }
             loadedContributions.put(ic.getURI(), contribution);
         }
         return contribution;
@@ -259,7 +335,6 @@ public class NodeImpl2 {
 
     protected List<Contribution> calculateDependentContributions(InstalledContribution ic) throws ContributionReadException, ValidationException {
         List<Contribution> dependentContributions = new ArrayList<Contribution>();
-        Contribution c = loadContribution(ic);
         if (ic.getDependentContributionURIs() != null && ic.getDependentContributionURIs().size() > 0) {
             // if the install specified dependent uris use just those contributions
             for (String uri : ic.getDependentContributionURIs()) {
@@ -269,7 +344,7 @@ public class NodeImpl2 {
                 }
             }
         } else {
-            for (Import imprt : c.getImports()) {
+            for (Import imprt : loadContribution(ic).getImports()) {
                 for (InstalledContribution exportingIC : findExportingContributions(imprt)) {
                     dependentContributions.add(loadContribution(exportingIC));
                 }
@@ -298,4 +373,24 @@ public class NodeImpl2 {
         }
         return ics;
     }
+    
+    /**
+     * TODO: this should be somewhere else, perhaps common-xml, and more general to work with any model object
+     */
+    protected String compositeToXML(Composite composite) {
+        try {
+            StAXHelper stAXHelper = StAXHelper.getInstance(extensionPointRegistry);
+            StAXArtifactProcessorExtensionPoint staxProcessors = extensionPointRegistry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+            ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, null, stAXHelper.getOutputFactory());
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            staxProcessor.write(composite, bos, new ProcessorContext(extensionPointRegistry));
+            bos.close();
+            return bos.toString();
+        } catch (ContributionWriteException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
 }
