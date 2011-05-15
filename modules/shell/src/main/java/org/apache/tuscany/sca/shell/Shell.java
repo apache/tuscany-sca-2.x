@@ -25,11 +25,9 @@ import static java.lang.System.out;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,6 +44,9 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.Export;
+import org.apache.tuscany.sca.contribution.java.JavaExport;
+import org.apache.tuscany.sca.contribution.namespace.NamespaceExport;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.monitor.ValidationException;
@@ -218,10 +219,24 @@ public class Shell {
             if (c == null) {
                 out.println("Contribution " + curi + " not installed");
             } else {
-                out.println("Contribution " + curi);
+                out.println(curi);
                 out.println("   URL: " + c.getLocation());
-                // TODO: add full detail view of contribution showing
-                // uri, url, dependent contrubutions, deployables, exports
+
+                List<String> es = new ArrayList<String>();
+                for (Export e : c.getExports()) {
+                    if (e instanceof JavaExport) {
+                        es.add(((JavaExport)e).getPackage());
+                    } else if (e instanceof NamespaceExport) {
+                        es.add(((NamespaceExport)e).getNamespace());
+                    }
+                }
+                out.println("   Exports: " + es);
+
+                List<String> ds = new ArrayList<String>();
+                for (Composite cp : c.getDeployables()) {
+                    ds.add(cp.getURI());
+                }
+                out.println("   Deployables: " + ds);
             }
         } else {
             for (String curi : getNode().getInstalledContributionURIs()) {
