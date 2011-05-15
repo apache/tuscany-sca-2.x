@@ -85,10 +85,15 @@ public interface EndpointRegistry {
     void uninstallContribution(String uri);
     List<String> getInstalledContributionURIs();
     InstalledContribution getInstalledContribution(String uri);
+    void updateInstalledContribution(InstalledContribution ic);
+    
+    void addContributionListener(ContributionListener listener);
+    void removeContributionListener(ContributionListener listener);
 
     // TODO: Change to use the QName instead of Composite and have clients look up the Composite from the contribution themselves, but i need to get that working first
     void addRunningComposite(String contributionURI, Composite composite);
     void removeRunningComposite(String contributionURI, QName name);
     Map<String, List<QName>> getRunningCompositeNames();
     Composite getRunningComposite(String contributionURI, QName name);
+
 }

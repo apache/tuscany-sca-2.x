@@ -43,6 +43,7 @@ public abstract class BaseEndpointRegistry implements EndpointRegistry, LifeCycl
 
     protected List<EndpointReference> endpointreferences = new CopyOnWriteArrayList<EndpointReference>();
     protected List<EndpointListener> listeners = new CopyOnWriteArrayList<EndpointListener>();
+    protected List<ContributionListener> contributionlisteners = new CopyOnWriteArrayList<ContributionListener>();
     protected ExtensionPointRegistry registry;
     protected Map<String, String> attributes;
 
@@ -156,4 +157,11 @@ public abstract class BaseEndpointRegistry implements EndpointRegistry, LifeCycl
         return domainURI;
     }
 
+    public void addContributionListener(ContributionListener listener) {
+        contributionlisteners.add(listener);
+    }
+
+    public void removeContributionListener(ContributionListener listener) {
+        contributionlisteners.remove(listener);
+    }
 }
