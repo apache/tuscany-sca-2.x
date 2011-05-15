@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,7 +46,6 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
-import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -63,6 +61,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
+import org.apache.tuscany.sca.runtime.ContributionListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.InstalledContribution;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
@@ -147,6 +146,22 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
             runningCompositeOwners = hazelcastInstance.getMap(domainURI + "/RunningCompositeOwners");
 
             installedContributions = hazelcastInstance.getMap(domainURI + "/InstalledContributions");
+            ((IMap<String, InstalledContribution>)installedContributions).addEntryListener(new EntryListener<String, InstalledContribution>() {
+                public void entryAdded(EntryEvent<String, InstalledContribution> event) {
+                }
+                public void entryRemoved(EntryEvent<String, InstalledContribution> event) {
+                    for (ContributionListener listener : contributionlisteners) {
+                        listener.contributionRemoved(event.getKey());
+                    }
+                }
+                public void entryUpdated(EntryEvent<String, InstalledContribution> event) {
+                    for (ContributionListener listener : contributionlisteners) {
+                        listener.contributionUpdated(event.getKey());
+                    }
+                }
+                public void entryEvicted(EntryEvent<String, InstalledContribution> event) {
+                }
+            }, false);
             
             hazelcastInstance.getCluster().addMembershipListener(this);
 //        }
@@ -616,6 +631,11 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
 
     @Override
     public void installContribution(InstalledContribution ic) {
+        installedContributions.put(ic.getURI(), ic);
+    }
+
+    @Override
+    public void updateInstalledContribution(InstalledContribution ic) {
         installedContributions.put(ic.getURI(), ic);
     }
 
