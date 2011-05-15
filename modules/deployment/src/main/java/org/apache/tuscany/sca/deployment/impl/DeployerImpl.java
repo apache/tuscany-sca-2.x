@@ -865,5 +865,8 @@ public class DeployerImpl implements Deployer {
         public Map<String, List<QName>> getRunningCompositeNames() {
             return null;
         }
+
+        public void updateInstalledContribution(InstalledContribution ic) {
+        }
     }
 }
