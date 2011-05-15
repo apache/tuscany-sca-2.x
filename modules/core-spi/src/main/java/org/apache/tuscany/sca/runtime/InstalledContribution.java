@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.runtime;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,17 +47,22 @@ public class InstalledContribution implements Serializable {
     // the URI and XML content of composites to include in the contribution
     private Map<String, String> additionalDeployables = new HashMap<String, String>();
 
+    public InstalledContribution(String url) {
+        this(null, url);
+    }
+    public InstalledContribution(String uri, String url) {
+        this.url = url;
+        this.uri = uri;
+        if (uri == null || uri.length() < 1) {
+            this.uri = deriveContributionURI(url);
+        }
+    }
+    
     public String getURI() {
         return uri;
     }
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
     public String getURL() {
         return url;
-    }
-    public void setURL(String url) {
-        this.url = url;
     }
     public List<String> getDeployables() {
         return deployables;
@@ -90,5 +96,33 @@ public class InstalledContribution implements Serializable {
     }
     public List<String> getNamespaceExports() {
         return namespaceExports;
+    }
+    
+    /**
+     * Derives a URI for the contribution based on its URL
+     */
+    protected String deriveContributionURI(String contributionURL) {
+        String uri = null;
+        try {
+            File f = new File(contributionURL);
+            if ("classes".equals(f.getName()) && "target".equals(f.getParentFile().getName())) {
+                uri = f.getParentFile().getParentFile().getName();
+            } else {
+                uri = f.getName();
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+        if (uri == null) {
+            uri = contributionURL;
+        }
+        if (uri.endsWith(".zip") || uri.endsWith(".jar")) {
+            uri = uri.substring(0, uri.length() - 4);
+        }
+        if (uri.endsWith("SNAPSHOT")) {
+            uri = uri.substring(0, uri.lastIndexOf('-'));
+            uri = uri.substring(0, uri.lastIndexOf('-'));
+        }
+        return uri;
     }
 }
