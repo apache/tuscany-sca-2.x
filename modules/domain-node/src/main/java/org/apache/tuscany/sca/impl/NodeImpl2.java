@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.impl;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +32,7 @@ import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
@@ -79,31 +79,49 @@ public class NodeImpl2 {
         this.tuscanyRuntime = tuscanyRuntime;
     }
 
-    public void uninstallContribution(String contributionURI) {
-        loadedContributions.remove(contributionURI);
-        endpointRegistry.uninstallContribution(contributionURI);
-    }
-    
     public String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException {
         return installContribution(null, contributionURL);
     }
 
     public String installContribution(String uri, String contributionURL) throws ContributionReadException, ActivationException, ValidationException {
-        if (uri == null) {
-            uri = getDefaultContributionURI(contributionURL);
+        return installContribution(uri, contributionURL, null, null);
+    }
+
+    public String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ActivationException, ValidationException {
+        InstalledContribution ic = new InstalledContribution(uri, contributionURL);
+
+        if (dependentContributionURIs != null) {
+            ic.getDependentContributionURIs().addAll(dependentContributionURIs);
+        }
+        
+        if (metaDataURL != null) {
+            mergeContributionMetaData(metaDataURL, loadContribution(ic));
         }
 
-        InstalledContribution ic = new InstalledContribution();
-        ic.setURI(uri);
-        ic.setURL(contributionURL);
-        
         peekIntoContribution(ic);
 
         endpointRegistry.installContribution(ic);
 
-        return uri;
+        return ic.getURI();
     }
-
+    
+    public void uninstallContribution(String contributionURI) {
+        loadedContributions.remove(contributionURI);
+        endpointRegistry.uninstallContribution(contributionURI);
+    }
+    
+    protected void mergeContributionMetaData(String metaDataURL, Contribution contribution) throws ValidationException {
+        ContributionMetadata metaData;
+        Monitor monitor = deployer.createMonitor();
+        try {
+            metaData = deployer.loadXMLDocument(IOHelper.getLocationAsURL(metaDataURL), monitor);
+        } catch (Exception e) {
+            throw new ValidationException(e);
+        }
+        monitor.analyzeProblems();
+        contribution.mergeMetaData(metaData);
+    }
+    
     /**
      * Peek into the contribution to find its attributes.
      * ASM12032 and ASM12033 say no error checking should be done during install and that should happen later, but 
@@ -129,11 +147,6 @@ public class NodeImpl2 {
 
     }
     
-    public List<String> getDeployableCompositeURIs(String contributionURI) {
-        InstalledContribution ic = endpointRegistry.getInstalledContribution(contributionURI);
-        return new ArrayList<String>(ic.getDeployables());
-    }
-
     public List<String> getInstalledContributionURIs() {
         return new ArrayList<String>(endpointRegistry.getInstalledContributionURIs());
     }
@@ -142,15 +155,18 @@ public class NodeImpl2 {
         return loadContribution(getInstalledContribution(contributionURI));
     }
 
+    public List<String> getDeployableCompositeURIs(String contributionURI) {
+        InstalledContribution ic = endpointRegistry.getInstalledContribution(contributionURI);
+        return new ArrayList<String>(ic.getDeployables());
+    }
+
     public void validateContribution(String contributionURI) throws ContributionReadException, ValidationException {
         InstalledContribution ic = getInstalledContribution(contributionURI);
         Contribution contribution = loadContribution(ic);
 
-        List<Contribution> dependentContributions = calculateDependentContributions(ic);
-
         Monitor monitor = deployer.createMonitor();
         try {
-            deployer.resolve(contribution, dependentContributions, monitor);
+            deployer.resolve(contribution, calculateDependentContributions(ic), monitor);
         } catch (Exception e) {
             loadedContributions.remove(ic.getURI());
             throw new RuntimeException(e);
@@ -281,33 +297,5 @@ public class NodeImpl2 {
             } 
         }
         return ics;
-    }
-
-    /**
-     * Derives a URI for a contribution based on the contribution URL
-     */
-    protected String getDefaultContributionURI(String contributionURL) {
-        String uri = null;
-        try {
-            File f = new File(contributionURL);
-            if ("classes".equals(f.getName()) && "target".equals(f.getParentFile().getName())) {
-                uri = f.getParentFile().getParentFile().getName();
-            } else {
-                uri = f.getName();
-            }
-        } catch (Exception e) {
-            // ignore
-        }
-        if (uri == null) {
-            uri = contributionURL;
-        }
-        if (uri.endsWith(".zip") || uri.endsWith(".jar")) {
-            uri = uri.substring(0, uri.length() - 4);
-        }
-        if (uri.endsWith("SNAPSHOT")) {
-            uri = uri.substring(0, uri.lastIndexOf('-'));
-            uri = uri.substring(0, uri.lastIndexOf('-'));
-        }
-        return uri;
     }
 }
