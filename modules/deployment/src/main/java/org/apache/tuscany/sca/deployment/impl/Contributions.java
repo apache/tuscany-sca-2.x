@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -162,5 +163,10 @@ public class Contributions implements Contribution {
     public <T> T getArtifactModel(String URI) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void mergeMetaData(ContributionMetadata metaData) {
+        // TODO Auto-generated method stub
     }
 }
