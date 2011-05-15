@@ -131,4 +131,6 @@ public interface Contribution extends Artifact, Extensible {
     <T> T getArtifactModel(String uri);
 
     void mergeMetaData(ContributionMetadata metaData);
+
+    void addComposite(Composite composite);
 }

@@ -184,4 +184,13 @@ class ContributionImpl extends ExtensibleImpl implements Contribution {
             deployables.addAll(metaData.getDeployables());
         }
     }
+
+    @Override
+    public void addComposite(Composite composite) {
+        Artifact a = new ArtifactImpl();
+        a.setURI(composite.getURI());
+        a.setModel(composite);
+        a.setUnresolved(false);
+        artifacts.add(a);
+    }
 }
