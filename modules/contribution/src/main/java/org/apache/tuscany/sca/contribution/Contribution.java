@@ -129,4 +129,6 @@ public interface Contribution extends Artifact, Extensible {
      * @return the model
      */
     <T> T getArtifactModel(String uri);
+
+    void mergeMetaData(ContributionMetadata metaData);
 }

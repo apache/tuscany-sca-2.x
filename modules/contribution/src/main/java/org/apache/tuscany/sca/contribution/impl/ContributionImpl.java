@@ -22,12 +22,14 @@ package org.apache.tuscany.sca.contribution.impl;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.impl.ExtensibleImpl;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -162,5 +164,24 @@ class ContributionImpl extends ExtensibleImpl implements Contribution {
             }
         }
         throw new IllegalArgumentException("artifact not found: " + uri);
+    }
+
+    @Override
+    public void mergeMetaData(ContributionMetadata metaData) {
+        imports.addAll(metaData.getImports());
+        exports.addAll(metaData.getExports());
+        if (metaData.getDeployables().size() > 0) {
+            // Update the deployable Composite objects with the correct Composite object for the artifact
+            for (Artifact a : getArtifacts()) {
+                if (a.getModel() instanceof Composite) {
+                    for (ListIterator<Composite> lit = metaData.getDeployables().listIterator(); lit.hasNext();) {
+                        if (lit.next().getName().equals(((Composite)a.getModel()).getName())) {
+                            lit.set((Composite)a.getModel());
+                        }
+                    }
+                }
+            }
+            deployables.addAll(metaData.getDeployables());
+        }
     }
 }
