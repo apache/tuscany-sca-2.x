@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
+import org.apache.tuscany.sca.runtime.ContributionListener;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.InstalledContribution;
@@ -205,6 +206,9 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
 
     public void uninstallContribution(String uri) {
         installedContributions.remove(uri);
+        for (ContributionListener listener : contributionlisteners) {
+            listener.contributionRemoved(uri);
+        }
     }
 
     public List<String> getInstalledContributionURIs() {
@@ -213,5 +217,13 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
 
     public InstalledContribution getInstalledContribution(String uri) {
         return installedContributions.get(uri);
+    }
+
+    @Override
+    public void updateInstalledContribution(InstalledContribution ic) {
+        installedContributions.put(ic.getURI(), ic);
+        for (ContributionListener listener : contributionlisteners) {
+            listener.contributionUpdated(ic.getURI());
+        }
     }
 }
