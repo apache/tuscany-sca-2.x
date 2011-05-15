@@ -28,7 +28,6 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.context.CompositeContext;
-import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -41,7 +40,6 @@ import org.apache.tuscany.sca.runtime.EndpointRegistry;
 
 public class DeployedComposite {
     
-    private String uri;
     private Composite composite; 
     private Contribution contribution;
     private List<Contribution> dependedOnContributions;
@@ -68,7 +66,7 @@ public class DeployedComposite {
         this.endpointRegistry = endpointRegistry;
         this.extensionPointRegistry = extensionPointRegistry;
         try {
-            init();
+            build();
         } catch (ContributionResolveException e) {
             throw new ActivationException(e);
         } catch (CompositeBuilderException e) {
@@ -76,7 +74,7 @@ public class DeployedComposite {
         }
     }
 
-    protected void init() throws ValidationException, ActivationException, ContributionResolveException, CompositeBuilderException {
+    protected void build() throws ValidationException, ActivationException, ContributionResolveException, CompositeBuilderException {
         
         List<Contribution> contributions = new ArrayList<Contribution>();
         contributions.add(contribution);
@@ -94,8 +92,6 @@ public class DeployedComposite {
                                                 null, // nothing appears to use the domain name in CompositeContext 
                                                 null, // don't need node uri
                                                 deployer.getSystemDefinitions());
-                       
-        this.uri = getCompositeURI(composite, contribution);
     }
 
     public void start() throws ActivationException {
@@ -111,25 +107,6 @@ public class DeployedComposite {
     }
     
     public String getURI() {
-        return uri;
-    }
-
-    /**
-     * Deployable composites don't have the uri set so get it from the artifact in the contribution
-     * // TODO: fix the Tuscany code so this uri is correctly set and this method isn't needed
-     */
-    private static String getCompositeURI(Composite c, Contribution contribution) {
-        for (Artifact a : contribution.getArtifacts()) {
-            if (a.getModel() != null) {
-                if (a.getModel() instanceof Composite) {
-                    Composite cm = a.getModel();
-                    if (c.getName().equals(cm.getName())) {
-                        return cm.getURI();
-                    }
-                }
-            }
-        }
-        // shouldn't ever happen
-        throw new IllegalStateException("can't determine composte uri");
+        return composite.getURI();
     }
 }
