@@ -469,4 +469,10 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
         return null;
     }
 
+    @Override
+    public void updateInstalledContribution(InstalledContribution ic) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }
