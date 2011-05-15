@@ -169,4 +169,10 @@ public class Contributions implements Contribution {
     public void mergeMetaData(ContributionMetadata metaData) {
         // TODO Auto-generated method stub
     }
+
+    @Override
+    public void addComposite(Composite composite) {
+        // TODO Auto-generated method stub
+        
+    }
 }
