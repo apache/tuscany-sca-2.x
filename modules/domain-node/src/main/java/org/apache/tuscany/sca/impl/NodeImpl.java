@@ -101,23 +101,18 @@ public class NodeImpl implements Node {
     }
 
     public String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean startDeployables) throws ContributionReadException, ActivationException, ValidationException {
-        if (uri == null) {
-            uri = getDefaultContributionURI(contributionURL);
-        }
         // TODO: sort out deployables and exports
-        org.apache.tuscany.sca.runtime.InstalledContribution ic = new org.apache.tuscany.sca.runtime.InstalledContribution();
-        ic.setURI(uri);
-        ic.setURL(contributionURL);
+        org.apache.tuscany.sca.runtime.InstalledContribution ic = new org.apache.tuscany.sca.runtime.InstalledContribution(uri, contributionURL);
         peekIntoContribution(ic);
         endpointRegistry.installContribution(ic);
         if (startDeployables) {
             for (String compositeURI : ic.getDeployables()) {
-                start(uri, compositeURI);
+                start(ic.getURI(), compositeURI);
             }
             // TODO: sort out metadata and dependents in distributed
-            localInstall(uri, contributionURL, metaDataURL, dependentContributionURIs, startDeployables);
+            localInstall(ic.getURI(), contributionURL, metaDataURL, dependentContributionURIs, startDeployables);
         }
-        return uri;
+        return ic.getURI();
     }
 
     /**
@@ -161,9 +156,7 @@ public class NodeImpl implements Node {
             throw new ValidationException(e);
         }
         monitor.analyzeProblems();
-        contribution.getDeployables().addAll(metaData.getDeployables());
-        contribution.getImports().addAll(metaData.getImports());
-        contribution.getExports().addAll(metaData.getExports());
+        contribution.mergeMetaData(metaData);
     }
     
     public String installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean startDeployables) throws ContributionReadException, ActivationException, ValidationException {
