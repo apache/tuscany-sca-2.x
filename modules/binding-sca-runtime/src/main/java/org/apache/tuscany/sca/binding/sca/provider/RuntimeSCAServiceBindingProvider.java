@@ -63,10 +63,10 @@ public class RuntimeSCAServiceBindingProvider implements EndpointAsyncProvider, 
         // find if the node config is for distributed endpoints
         // TODO: temp, need a much better way to do this
         DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionPoints);
-        Collection<EndpointRegistry> eprs = domainRegistryFactory.getEndpointRegistries();
+        Collection<DomainRegistry> eprs = domainRegistryFactory.getEndpointRegistries();
         if (eprs.size() > 0) {
             String eprName = eprs.iterator().next().getClass().getName();
-            return !eprName.equals("org.apache.tuscany.sca.core.assembly.impl.EndpointRegistryImpl");
+            return !eprName.equals("org.apache.tuscany.sca.core.assembly.impl.DomainRegistryImpl");
         }
         return false;
     }

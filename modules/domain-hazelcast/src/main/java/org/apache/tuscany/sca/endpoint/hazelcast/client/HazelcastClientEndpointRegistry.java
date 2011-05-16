@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.endpoint.hazelcast.HazelcastEndpointRegistry;
+import org.apache.tuscany.sca.endpoint.hazelcast.HazelcastDomainRegistry;
 import org.apache.tuscany.sca.endpoint.hazelcast.RegistryConfig;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 
@@ -38,9 +38,9 @@ import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
 
 /**
- * An EndpointRegistry using a Hazelcast Native Client
+ * An DomainRegistry using a Hazelcast Native Client
  */
-public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
+public class HazelcastClientEndpointRegistry extends HazelcastDomainRegistry {
 
     RegistryConfig rc;
     HazelcastClient hazelcastClient;

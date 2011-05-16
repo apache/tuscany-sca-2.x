@@ -24,30 +24,30 @@ import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 
 /**
  * A utility responsible for resolving the endpoint reference against a matching endpoint published
- * to the EndpointRegistry
+ * to the DomainRegistry
  */
 public interface EndpointReferenceBinder {
     
     /**
-     * @param endpointRegistry
+     * @param domainRegistry
      * @param endpointReference
      * @return
      */
-    void bindBuildTime(EndpointRegistry endpointRegistry, EndpointReference endpointReference, BuilderContext builderContext);
+    void bindBuildTime(DomainRegistry domainRegistry, EndpointReference endpointReference, BuilderContext builderContext);
 
     
     /**
-     * @param endpointRegistry
+     * @param domainRegistry
      * @param endpointReference
      * @return
      */
-    void bindRunTime(EndpointRegistry endpointRegistry, EndpointReference endpointReference);
+    void bindRunTime(DomainRegistry domainRegistry, EndpointReference endpointReference);
     
     /**
      * 
-     * @param endpointRegistry
+     * @param domainRegistry
      * @param endpointReference
      * @return
      */
-    boolean isOutOfDate(EndpointRegistry endpointRegistry, EndpointReference endpointReference);
+    boolean isOutOfDate(DomainRegistry domainRegistry, EndpointReference endpointReference);
 }

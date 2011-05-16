@@ -60,9 +60,9 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
-import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
+import org.apache.tuscany.sca.runtime.BaseDomainRegistry;
 import org.apache.tuscany.sca.runtime.ContributionListener;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.InstalledContribution;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
@@ -87,10 +87,10 @@ import com.hazelcast.core.Transaction;
 import com.hazelcast.nio.Address;
 
 /**
- * An EndpointRegistry using a Hazelcast
+ * An DomainRegistry using a Hazelcast
  */
-public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements EndpointRegistry, LifeCycleListener, EntryListener<String, Endpoint>, MembershipListener {
-    private final static Logger logger = Logger.getLogger(HazelcastEndpointRegistry.class.getName());
+public class HazelcastDomainRegistry extends BaseDomainRegistry implements DomainRegistry, LifeCycleListener, EntryListener<String, Endpoint>, MembershipListener {
+    private final static Logger logger = Logger.getLogger(HazelcastDomainRegistry.class.getName());
 
     private HazelcastInstance hazelcastInstance;
 
@@ -108,13 +108,13 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     protected Object shutdownMutex = new Object();
     protected Properties properties;
 
-    public HazelcastEndpointRegistry(ExtensionPointRegistry registry, Properties properties, String endpointRegistryURI, String domainURI) {
+    public HazelcastDomainRegistry(ExtensionPointRegistry registry, Properties properties, String endpointRegistryURI, String domainURI) {
         super(registry, null, endpointRegistryURI, domainURI);
         this.assemblyFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(AssemblyFactory.class);
         this.properties = properties;
     }
 
-    public HazelcastEndpointRegistry(ExtensionPointRegistry registry,
+    public HazelcastDomainRegistry(ExtensionPointRegistry registry,
                                      Map<String, String> attributes,
                                      String domainRegistryURI,
                                      String domainURI) {

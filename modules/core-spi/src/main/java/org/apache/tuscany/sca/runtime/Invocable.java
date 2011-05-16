@@ -47,9 +47,9 @@ public interface Invocable {
      * Bind the invocable to the extension point registry and endpoint registry. This is typically
      * called after the endpoint or endpoint reference is deserialized
      * @param registry
-     * @param endpointRegistry
+     * @param domainRegistry
      */
-    void bind(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry);
+    void bind(ExtensionPointRegistry registry, DomainRegistry domainRegistry);
     
     /**
      * Get the associated composite context

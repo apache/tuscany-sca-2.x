@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 
 public class DeployedComposite {
     
@@ -48,7 +48,7 @@ public class DeployedComposite {
     private CompositeActivator compositeActivator;
     private CompositeContext compositeContext;
     private Deployer deployer;
-    private EndpointRegistry endpointRegistry;
+    private DomainRegistry domainRegistry;
     private ExtensionPointRegistry extensionPointRegistry;
 
     public DeployedComposite(Composite composite,
@@ -56,14 +56,14 @@ public class DeployedComposite {
                              List<Contribution> dependedOnContributions,
                              Deployer deployer,
                              CompositeActivator compositeActivator,
-                             EndpointRegistry endpointRegistry,
+                             DomainRegistry domainRegistry,
                              ExtensionPointRegistry extensionPointRegistry) throws ValidationException, ActivationException {
         this.composite = composite;
         this.contribution = contribution;
         this.dependedOnContributions = dependedOnContributions;
         this.deployer = deployer;
         this.compositeActivator = compositeActivator;
-        this.endpointRegistry = endpointRegistry;
+        this.domainRegistry = domainRegistry;
         this.extensionPointRegistry = extensionPointRegistry;
         try {
             build();
@@ -87,7 +87,7 @@ public class DeployedComposite {
         monitor.analyzeProblems();
 
         compositeContext = new CompositeContext(extensionPointRegistry, 
-                                                endpointRegistry, 
+                                                domainRegistry, 
                                                 builtComposite, 
                                                 null, // nothing appears to use the domain name in CompositeContext 
                                                 null, // don't need node uri
@@ -97,11 +97,11 @@ public class DeployedComposite {
     public void start() throws ActivationException {
         compositeActivator.activate(compositeContext, builtComposite);
         compositeActivator.start(compositeContext, builtComposite);
-        endpointRegistry.addRunningComposite(contribution.getURI(), builtComposite);
+        domainRegistry.addRunningComposite(contribution.getURI(), builtComposite);
     }
 
     public void stop() throws ActivationException {
-        endpointRegistry.removeRunningComposite(contribution.getURI(), builtComposite.getName());
+        domainRegistry.removeRunningComposite(contribution.getURI(), builtComposite.getName());
         compositeActivator.stop(compositeContext, builtComposite);
         compositeActivator.deactivate(builtComposite);
     }

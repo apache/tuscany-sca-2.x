@@ -28,18 +28,18 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 
 /**
- * The context associated with the Node that provides access to ExtensionPointRegistry and EndpointRegistry
+ * The context associated with the Node that provides access to ExtensionPointRegistry and DomainRegistry
  * 
  * @version $Rev$ $Date$
  */
 public class CompositeContext {
     protected ExtensionPointRegistry extensionPointRegistry;
-    protected EndpointRegistry endpointRegistry;
+    protected DomainRegistry domainRegistry;
     protected ComponentContextFactory componentContextFactory;
     protected Composite domainComposite;
     protected String nodeURI;
@@ -49,13 +49,13 @@ public class CompositeContext {
     protected Map<String, Object> attributes = new HashMap<String, Object>();
 
     public CompositeContext(ExtensionPointRegistry registry,
-                            EndpointRegistry endpointRegistry,
+                            DomainRegistry domainRegistry,
                             Composite domainComposite,
                             String domainURI,
                             String nodeURI,
                             Definitions systemDefinitions) {
         this.extensionPointRegistry = registry;
-        this.endpointRegistry = endpointRegistry;
+        this.domainRegistry = domainRegistry;
         ContextFactoryExtensionPoint contextFactories = registry.getExtensionPoint(ContextFactoryExtensionPoint.class);
         this.componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);
         this.domainComposite = domainComposite;
@@ -64,8 +64,8 @@ public class CompositeContext {
         this.systemDefinitions = systemDefinitions;
     }
 
-    public CompositeContext(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry) {
-        this(registry, endpointRegistry, null, "default", "default", null);
+    public CompositeContext(ExtensionPointRegistry registry, DomainRegistry domainRegistry) {
+        this(registry, domainRegistry, null, "default", "default", null);
     }
 
     /**
@@ -119,11 +119,11 @@ public class CompositeContext {
     }
 
     /**
-     * Get the EndpointRegistry
-     * @return The EndpointRegistry for this node
+     * Get the DomainRegistry
+     * @return The DomainRegistry for this node
      */
-    public EndpointRegistry getEndpointRegistry() {
-        return endpointRegistry;
+    public DomainRegistry getEndpointRegistry() {
+        return domainRegistry;
     }
 
     public Composite getDomainComposite() {

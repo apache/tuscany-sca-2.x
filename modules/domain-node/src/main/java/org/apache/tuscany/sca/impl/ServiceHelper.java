@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
@@ -55,9 +55,9 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class ServiceHelper {
     
-    public static <T> T getService(Class<T> interfaze, String serviceURI, EndpointRegistry endpointRegistry, ExtensionPointRegistry extensionPointRegistry, Deployer deployer) throws NoSuchServiceException {
+    public static <T> T getService(Class<T> interfaze, String serviceURI, DomainRegistry domainRegistry, ExtensionPointRegistry extensionPointRegistry, Deployer deployer) throws NoSuchServiceException {
 
-        List<Endpoint> endpoints = endpointRegistry.findEndpoint(serviceURI);
+        List<Endpoint> endpoints = domainRegistry.findEndpoint(serviceURI);
         if (endpoints.size() < 1) {
             throw new NoSuchServiceException(serviceURI);
         }
@@ -74,11 +74,11 @@ public class ServiceHelper {
         if (((RuntimeComponent)ep.getComponent()).getComponentContext() != null) {
             return ((RuntimeComponent)ep.getComponent()).getServiceReference(interfaze, serviceName).getService();
         } else {
-            return getRemoteProxy(interfaze, ep, endpointRegistry, extensionPointRegistry, deployer);
+            return getRemoteProxy(interfaze, ep, domainRegistry, extensionPointRegistry, deployer);
         }
     }
 
-    private static <T> T getRemoteProxy(Class<T> serviceInterface, Endpoint endpoint, EndpointRegistry endpointRegistry, ExtensionPointRegistry extensionPointRegistry, Deployer deployer) throws NoSuchServiceException {
+    private static <T> T getRemoteProxy(Class<T> serviceInterface, Endpoint endpoint, DomainRegistry domainRegistry, ExtensionPointRegistry extensionPointRegistry, Deployer deployer) throws NoSuchServiceException {
         FactoryExtensionPoint factories = extensionPointRegistry.getExtensionPoint(FactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
         JavaInterfaceFactory javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
@@ -86,7 +86,7 @@ public class ServiceHelper {
             new ExtensibleProxyFactory(extensionPointRegistry.getExtensionPoint(ProxyFactoryExtensionPoint.class));
 
         CompositeContext compositeContext =
-            new CompositeContext(extensionPointRegistry, endpointRegistry, null, null, null,
+            new CompositeContext(extensionPointRegistry, domainRegistry, null, null, null,
                                  deployer.getSystemDefinitions());
 
         RuntimeEndpointReference epr;

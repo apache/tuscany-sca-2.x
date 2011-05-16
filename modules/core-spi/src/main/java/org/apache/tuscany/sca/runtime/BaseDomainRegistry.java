@@ -32,11 +32,11 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 
 /**
- * A replicated EndpointRegistry based on Apache Tomcat Tribes
+ * A replicated DomainRegistry based on Apache Tomcat Tribes
  * @tuscany.spi.extension.inheritfrom
  */
-public abstract class BaseEndpointRegistry implements EndpointRegistry, LifeCycleListener {
-    protected final static Logger logger = Logger.getLogger(BaseEndpointRegistry.class.getName());
+public abstract class BaseDomainRegistry implements DomainRegistry, LifeCycleListener {
+    protected final static Logger logger = Logger.getLogger(BaseDomainRegistry.class.getName());
 
     protected String domainRegistryURI;
     protected String domainURI;
@@ -47,7 +47,7 @@ public abstract class BaseEndpointRegistry implements EndpointRegistry, LifeCycl
     protected ExtensionPointRegistry registry;
     protected Map<String, String> attributes;
 
-    public BaseEndpointRegistry(ExtensionPointRegistry registry,
+    public BaseDomainRegistry(ExtensionPointRegistry registry,
                                 Map<String, String> attributes,
                                 String domainRegistryURI,
                                 String domainURI) {

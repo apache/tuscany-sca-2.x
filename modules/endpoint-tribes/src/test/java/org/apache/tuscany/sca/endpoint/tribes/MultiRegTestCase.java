@@ -69,7 +69,7 @@ public class MultiRegTestCase implements EndpointListener {
         attrs1.put("receiverPort", port1);
         attrs1.put("receiverAutoBind", range);
         // attrs1.put("routes", host + ":" + port2 + " " + host + ":" + port3);
-        ReplicatedEndpointRegistry reg1 = new ReplicatedEndpointRegistry(extensionPoints, attrs1, "foo", "bar");
+        ReplicatedDomainRegistry reg1 = new ReplicatedDomainRegistry(extensionPoints, attrs1, "foo", "bar");
         reg1.addListener(this);
         reg1.start();
 
@@ -79,7 +79,7 @@ public class MultiRegTestCase implements EndpointListener {
         attrs2.put("receiverPort", port2);
         attrs2.put("receiverAutoBind", range);
         // attrs2.put("routes", host + ":"+port1);
-        ReplicatedEndpointRegistry reg2 = new ReplicatedEndpointRegistry(extensionPoints, attrs2, "foo", "bar");
+        ReplicatedDomainRegistry reg2 = new ReplicatedDomainRegistry(extensionPoints, attrs2, "foo", "bar");
         reg2.addListener(this);
         reg2.start();
 
@@ -89,7 +89,7 @@ public class MultiRegTestCase implements EndpointListener {
         attrs3.put("receiverPort", port3);
         attrs3.put("receiverAutoBind", range);
         // attrs3.put("routes", host + ":"+port1);
-        ReplicatedEndpointRegistry reg3 = new ReplicatedEndpointRegistry(extensionPoints, attrs3, "foo", "bar");
+        ReplicatedDomainRegistry reg3 = new ReplicatedDomainRegistry(extensionPoints, attrs3, "foo", "bar");
         reg3.addListener(this);
         reg3.start();
 
@@ -126,7 +126,7 @@ public class MultiRegTestCase implements EndpointListener {
         System.out.println(); // closed
     }
 
-    private Endpoint assertExists(ReplicatedEndpointRegistry reg, String uri) throws InterruptedException {
+    private Endpoint assertExists(ReplicatedDomainRegistry reg, String uri) throws InterruptedException {
         Endpoint ep = null;
         int count = 0;
         while (ep == null && count < 15) {

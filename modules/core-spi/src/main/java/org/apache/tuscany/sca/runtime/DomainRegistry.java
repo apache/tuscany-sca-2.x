@@ -30,10 +30,10 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 
 /**
- * The EndpointRegistry holds the active service endpoints for the SCA domain
+ * The DomainRegistry holds the active service endpoints for the SCA domain
  * @tuscany.spi.extension.inheritfrom
  */
-public interface EndpointRegistry {
+public interface DomainRegistry {
     /**
      * Add an enpoint to the registry. If the endpoint URI is the same as an existing endpoint in the registry,
      * the existing one will be updated

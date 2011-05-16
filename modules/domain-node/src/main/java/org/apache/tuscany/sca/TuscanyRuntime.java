@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.apache.tuscany.sca.work.WorkScheduler;
@@ -104,8 +104,8 @@ public class TuscanyRuntime {
         try {
             TuscanyRuntime runtime = newInstance();
         	String domain = domainURI == null ? "default" : domainURI.toString();
-            EndpointRegistry endpointRegistry = runtime.domainRegistryFactory.getEndpointRegistry(domain, getDomainName(domain));
-            NodeImpl node = new NodeImpl(domain, runtime.deployer, runtime.compositeActivator, endpointRegistry, runtime.extensionPointRegistry, runtime);
+            DomainRegistry domainRegistry = runtime.domainRegistryFactory.getEndpointRegistry(domain, getDomainName(domain));
+            NodeImpl node = new NodeImpl(domain, runtime.deployer, runtime.compositeActivator, domainRegistry, runtime.extensionPointRegistry, runtime);
 
             if (dependentContributionURLs != null) {
                 for (int i=dependentContributionURLs.length-1; i>-1; i--) {
@@ -146,8 +146,8 @@ public class TuscanyRuntime {
         if (domainURI != null){
             domainName = getDomainName(domainURI);
         }
-        EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, domainName);
-        return new NodeImpl(domainName, deployer, compositeActivator, endpointRegistry, extensionPointRegistry, null);
+        DomainRegistry domainRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, domainName);
+        return new NodeImpl(domainName, deployer, compositeActivator, domainRegistry, extensionPointRegistry, null);
     }
 
     public NodeImpl2 createNode2(String domainURI) {
@@ -155,8 +155,8 @@ public class TuscanyRuntime {
         if (domainURI != null){
             domainName = getDomainName(domainURI);
         }
-        EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, domainName);
-        return new NodeImpl2(domainName, deployer, compositeActivator, endpointRegistry, extensionPointRegistry, null);
+        DomainRegistry domainRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, domainName);
+        return new NodeImpl2(domainName, deployer, compositeActivator, domainRegistry, extensionPointRegistry, null);
     }
     
     /**

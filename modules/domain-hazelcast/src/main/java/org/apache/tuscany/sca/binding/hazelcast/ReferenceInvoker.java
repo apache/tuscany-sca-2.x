@@ -29,14 +29,14 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.endpoint.hazelcast.HazelcastEndpointRegistry;
+import org.apache.tuscany.sca.endpoint.hazelcast.HazelcastDomainRegistry;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.w3c.dom.Document;
@@ -48,7 +48,7 @@ import com.hazelcast.core.Member;
 
 public class ReferenceInvoker implements Invoker {
 
-    HazelcastEndpointRegistry hzRegistry;
+    HazelcastDomainRegistry hzRegistry;
     DOMHelper domHelper;
     String serviceURI;
     private Operation operation;
@@ -58,9 +58,9 @@ public class ReferenceInvoker implements Invoker {
         this.serviceURI = serviceURI;
         this.operation = operation;
         DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionsRegistry);
-        for (EndpointRegistry r : domainRegistryFactory.getEndpointRegistries()) {
-            if (r instanceof HazelcastEndpointRegistry) {
-                hzRegistry = (HazelcastEndpointRegistry)r;
+        for (DomainRegistry r : domainRegistryFactory.getEndpointRegistries()) {
+            if (r instanceof HazelcastDomainRegistry) {
+                hzRegistry = (HazelcastDomainRegistry)r;
                 break;
             }
         }

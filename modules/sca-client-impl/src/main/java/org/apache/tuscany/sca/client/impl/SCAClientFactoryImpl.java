@@ -27,7 +27,7 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistryLocator;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.oasisopen.sca.NoSuchDomainException;
@@ -38,7 +38,7 @@ import org.oasisopen.sca.client.SCAClientFactoryFinder;
 public class SCAClientFactoryImpl extends SCAClientFactory {
 
     private ExtensionPointRegistry extensionPointRegistry;
-    private EndpointRegistry endpointRegistry;
+    private DomainRegistry domainRegistry;
     private boolean remoteClient;
     
     public static void setSCAClientFactoryFinder(SCAClientFactoryFinder factoryFinder) {
@@ -54,10 +54,10 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         String domainURI = getDomainURI().toString();
         for (ExtensionPointRegistry xpr : ExtensionPointRegistryLocator.getExtensionPointRegistries()) {
             ExtensibleDomainRegistryFactory drf = ExtensibleDomainRegistryFactory.getInstance(xpr);
-            for (EndpointRegistry epr : drf.getEndpointRegistries()) {
+            for (DomainRegistry epr : drf.getEndpointRegistries()) {
                 if (domainURI.equals(epr.getDomainURI())) {
                     this.extensionPointRegistry = xpr;
-                    this.endpointRegistry = epr;
+                    this.domainRegistry = epr;
                     return;
                 }
             }
@@ -65,7 +65,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
 
         remoteClient = true;
         extensionPointRegistry = RuntimeUtils.createExtensionPointRegistry();
-        endpointRegistry = RuntimeUtils.getClientEndpointRegistry(extensionPointRegistry, domainURI);
+        domainRegistry = RuntimeUtils.getClientEndpointRegistry(extensionPointRegistry, domainURI);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         
         // The service is a component in a local runtime
         if (!remoteClient) {
-            List<Endpoint> endpoints = endpointRegistry.findEndpoint(serviceURI);
+            List<Endpoint> endpoints = domainRegistry.findEndpoint(serviceURI);
             if (endpoints.size() < 1) {
                 throw new NoSuchServiceException(serviceURI);
             }
@@ -94,10 +94,10 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         InvocationHandler handler;
         if (!remoteClient) {
             // There is a local runtime but the service is a remote component
-            handler = new RemoteServiceInvocationHandler(extensionPointRegistry, endpointRegistry, serviceURI, serviceInterface);
+            handler = new RemoteServiceInvocationHandler(extensionPointRegistry, domainRegistry, serviceURI, serviceInterface);
         } else {
             // no local runtime
-            handler = new RemoteServiceInvocationHandler(extensionPointRegistry, endpointRegistry, getDomainURI().toString(), serviceURI, serviceInterface);
+            handler = new RemoteServiceInvocationHandler(extensionPointRegistry, domainRegistry, getDomainURI().toString(), serviceURI, serviceInterface);
         }
 
         return (T)Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[]{serviceInterface}, handler);

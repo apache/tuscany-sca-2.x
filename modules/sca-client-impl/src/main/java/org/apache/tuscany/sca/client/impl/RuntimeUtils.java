@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.apache.tuscany.sca.work.WorkScheduler;
@@ -60,7 +60,7 @@ public class RuntimeUtils {
         return extensionsRegistry;
     }
 
-    public static EndpointRegistry getClientEndpointRegistry(ExtensionPointRegistry extensionsRegistry, String domainURI) throws NoSuchDomainException {
+    public static DomainRegistry getClientEndpointRegistry(ExtensionPointRegistry extensionsRegistry, String domainURI) throws NoSuchDomainException {
         DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionsRegistry);
         
         String registryURI = domainURI;

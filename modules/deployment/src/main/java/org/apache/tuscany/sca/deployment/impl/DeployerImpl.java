@@ -86,9 +86,9 @@ import org.apache.tuscany.sca.definitions.xml.DefinitionsExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
+import org.apache.tuscany.sca.runtime.BaseDomainRegistry;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.InstalledContribution;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
@@ -747,17 +747,17 @@ public class DeployerImpl implements Deployer {
     
     private void buildTimeReferenceBind(Composite domainComposite, BuilderContext context){
         // create temporary local registry for all available local endpoints
-        EndpointRegistry endpointRegistry = new LocalEndpointRegistry(registry);
+        DomainRegistry domainRegistry = new LocalEndpointRegistry(registry);
         
         // populate the registry with all the endpoints that are present in the model
-        populateLocalRegistry(domainComposite, endpointRegistry, context);        
+        populateLocalRegistry(domainComposite, domainRegistry, context);        
         
         // match all local services against the endpoint references 
         // we've just created
-        matchEndpointReferences(domainComposite, endpointRegistry, context); 
+        matchEndpointReferences(domainComposite, domainRegistry, context); 
     }
     
-    private void populateLocalRegistry(Composite composite, EndpointRegistry registry, BuilderContext context){
+    private void populateLocalRegistry(Composite composite, DomainRegistry registry, BuilderContext context){
         for (Component component : composite.getComponents()) {
             // recurse for composite implementations
             Implementation implementation = component.getImplementation();
@@ -784,7 +784,7 @@ public class DeployerImpl implements Deployer {
         }
     }
 
-    private void matchEndpointReferences(Composite composite, EndpointRegistry registry, BuilderContext builderContext){
+    private void matchEndpointReferences(Composite composite, DomainRegistry registry, BuilderContext builderContext){
         
         // look at all the endpoint references and try to match them to 
         // endpoints
@@ -796,7 +796,7 @@ public class DeployerImpl implements Deployer {
     // A minimal endpoint registry implementation used to store the Endpoints/EndpointReferences 
     // for build time local reference resolution. We don't rely on the endpoint registry
     // factory here as we specifically just want to do simple local resolution
-    class LocalEndpointRegistry extends BaseEndpointRegistry {
+    class LocalEndpointRegistry extends BaseDomainRegistry {
         
         private List<Endpoint> endpoints = new ArrayList<Endpoint>();
         

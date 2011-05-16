@@ -59,7 +59,7 @@ import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.ContributionListener;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.InstalledContribution;
 import org.oasisopen.sca.NoSuchServiceException;
 
@@ -68,7 +68,7 @@ public class NodeImpl2 {
     private String domainName;
     private Deployer deployer;
     private CompositeActivator compositeActivator;
-    private EndpointRegistry endpointRegistry;
+    private DomainRegistry domainRegistry;
     private ExtensionPointRegistry extensionPointRegistry;
     private TuscanyRuntime tuscanyRuntime;
     
@@ -80,17 +80,17 @@ public class NodeImpl2 {
     public NodeImpl2(String domainName,
                      Deployer deployer,
                      CompositeActivator compositeActivator,
-                     EndpointRegistry endpointRegistry,
+                     DomainRegistry domainRegistry,
                      ExtensionPointRegistry extensionPointRegistry,
                      TuscanyRuntime tuscanyRuntime) {
         this.domainName = domainName;
         this.deployer = deployer;
         this.compositeActivator = compositeActivator;
-        this.endpointRegistry = endpointRegistry;
+        this.domainRegistry = domainRegistry;
         this.extensionPointRegistry = extensionPointRegistry;
         this.tuscanyRuntime = tuscanyRuntime;
         
-        endpointRegistry.addContributionListener(new ContributionListener() {
+        domainRegistry.addContributionListener(new ContributionListener() {
             public void contributionUpdated(String uri) {
                 loadedContributions.remove(uri);
             }
@@ -121,13 +121,13 @@ public class NodeImpl2 {
 
         peekIntoContribution(ic);
 
-        endpointRegistry.installContribution(ic);
+        domainRegistry.installContribution(ic);
 
         return ic.getURI();
     }
     
     public void uninstallContribution(String contributionURI) {
-        endpointRegistry.uninstallContribution(contributionURI);
+        domainRegistry.uninstallContribution(contributionURI);
     }
     
     protected void mergeContributionMetaData(String metaDataURL, Contribution contribution) throws ValidationException {
@@ -180,7 +180,7 @@ public class NodeImpl2 {
     }
     
     public List<String> getInstalledContributionURIs() {
-        return new ArrayList<String>(endpointRegistry.getInstalledContributionURIs());
+        return new ArrayList<String>(domainRegistry.getInstalledContributionURIs());
     }
 
     public Contribution getContribution(String contributionURI) throws ContributionReadException, ValidationException {
@@ -188,7 +188,7 @@ public class NodeImpl2 {
     }
 
     public List<String> getDeployableCompositeURIs(String contributionURI) {
-        InstalledContribution ic = endpointRegistry.getInstalledContribution(contributionURI);
+        InstalledContribution ic = domainRegistry.getInstalledContribution(contributionURI);
         return new ArrayList<String>(ic.getDeployables());
     }
     
@@ -220,7 +220,7 @@ public class NodeImpl2 {
             composite.setURI(composite.getName().getLocalPart() + ".composite");
         }
         ic.getAdditionalDeployables().put(composite.getURI(), compositeToXML(composite));
-        endpointRegistry.updateInstalledContribution(ic);
+        domainRegistry.updateInstalledContribution(ic);
     }
 
     public void validateContribution(String contributionURI) throws ContributionReadException, ValidationException {
@@ -243,7 +243,7 @@ public class NodeImpl2 {
     }
     
     public Map<String, List<QName>> getStartedComposites() {
-        return endpointRegistry.getRunningCompositeNames();
+        return domainRegistry.getRunningCompositeNames();
     }
 
     public void startComposite(String contributionURI, String compositeURI) throws ActivationException, ValidationException, ContributionReadException {
@@ -260,7 +260,7 @@ public class NodeImpl2 {
             Contribution contribution = loadContribution(ic);
             Composite composite = contribution.getArtifactModel(compositeURI);
             List<Contribution> dependentContributions = calculateDependentContributions(ic);
-            dc = new DeployedComposite(composite, contribution, dependentContributions, deployer, compositeActivator, endpointRegistry, extensionPointRegistry);
+            dc = new DeployedComposite(composite, contribution, dependentContributions, deployer, compositeActivator, domainRegistry, extensionPointRegistry);
             dc.start();
             startedComposites.put(key, dc);
         }
@@ -288,21 +288,21 @@ public class NodeImpl2 {
         domainComposite.setAutowire(false);
         domainComposite.setLocal(false);
         List<Composite> domainIncludes = domainComposite.getIncludes();
-        Map<String, List<QName>> runningComposites = endpointRegistry.getRunningCompositeNames();
+        Map<String, List<QName>> runningComposites = domainRegistry.getRunningCompositeNames();
         for (String curi : runningComposites.keySet()) {
             for (QName name : runningComposites.get(curi)) {
-                domainIncludes.add(endpointRegistry.getRunningComposite(curi, name));
+                domainIncludes.add(domainRegistry.getRunningComposite(curi, name));
             }
         }
         return domainComposite;
     }
 
     public <T> T getService(Class<T> interfaze, String serviceURI) throws NoSuchServiceException {
-        return ServiceHelper.getService(interfaze, serviceURI, endpointRegistry, extensionPointRegistry, deployer);
+        return ServiceHelper.getService(interfaze, serviceURI, domainRegistry, extensionPointRegistry, deployer);
     }
     
     protected InstalledContribution getInstalledContribution(String contributionURI) {
-        InstalledContribution ic = endpointRegistry.getInstalledContribution(contributionURI);
+        InstalledContribution ic = domainRegistry.getInstalledContribution(contributionURI);
         if (ic == null) {
             throw new IllegalArgumentException("Contribution not installed: " + contributionURI);
         }
@@ -338,7 +338,7 @@ public class NodeImpl2 {
         if (ic.getDependentContributionURIs() != null && ic.getDependentContributionURIs().size() > 0) {
             // if the install specified dependent uris use just those contributions
             for (String uri : ic.getDependentContributionURIs()) {
-                InstalledContribution dependee = endpointRegistry.getInstalledContribution(uri);
+                InstalledContribution dependee = domainRegistry.getInstalledContribution(uri);
                 if (dependee != null) {
                     dependentContributions.add(loadContribution(dependee));
                 }
@@ -357,8 +357,8 @@ public class NodeImpl2 {
     private List<InstalledContribution> findExportingContributions(Import imprt) {
         List<InstalledContribution> ics = new ArrayList<InstalledContribution>();
         // TODO: Handle Imports in a more extensible way
-        for (String curi : endpointRegistry.getInstalledContributionURIs()) {
-            InstalledContribution ic = endpointRegistry.getInstalledContribution(curi);
+        for (String curi : domainRegistry.getInstalledContributionURIs()) {
+            InstalledContribution ic = domainRegistry.getInstalledContribution(curi);
             if (imprt instanceof JavaImport) {
                 for (String s : ic.getJavaExports()) {
                     if (s.startsWith(((JavaImport)imprt).getPackage())) {

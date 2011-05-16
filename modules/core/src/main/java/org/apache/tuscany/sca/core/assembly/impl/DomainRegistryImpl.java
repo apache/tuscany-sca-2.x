@@ -36,18 +36,18 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
+import org.apache.tuscany.sca.runtime.BaseDomainRegistry;
 import org.apache.tuscany.sca.runtime.ContributionListener;
 import org.apache.tuscany.sca.runtime.EndpointListener;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.InstalledContribution;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 
 /**
- * A EndpointRegistry implementation that sees registrations from the same JVM
+ * A DomainRegistry implementation that sees registrations from the same JVM
  */
-public class EndpointRegistryImpl extends BaseEndpointRegistry implements EndpointRegistry, LifeCycleListener {
-    private final Logger logger = Logger.getLogger(EndpointRegistryImpl.class.getName());
+public class DomainRegistryImpl extends BaseDomainRegistry implements DomainRegistry, LifeCycleListener {
+    private final Logger logger = Logger.getLogger(DomainRegistryImpl.class.getName());
 
     private List<Endpoint> endpoints = new ArrayList<Endpoint>();
     private Map<String, Map<QName, Composite>> runningComposites = new HashMap<String, Map<QName, Composite>>();
@@ -55,7 +55,7 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
     
     protected boolean quietLogging;
 
-    public EndpointRegistryImpl(ExtensionPointRegistry extensionPoints, String endpointRegistryURI, String domainURI) {
+    public DomainRegistryImpl(ExtensionPointRegistry extensionPoints, String endpointRegistryURI, String domainURI) {
         super(extensionPoints, null, endpointRegistryURI, domainURI);
         Properties runtimeProps = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
         quietLogging = Boolean.parseBoolean(runtimeProps.getProperty(RuntimeProperties.QUIET_LOGGING));

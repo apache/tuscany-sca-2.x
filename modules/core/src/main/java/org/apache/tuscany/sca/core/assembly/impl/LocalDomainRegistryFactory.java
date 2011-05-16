@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.core.assembly.impl;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.runtime.BaseDomainRegistryFactory;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 
 /**
  * The utility responsible for finding the endpoint regstry by the scheme and creating instances for the
@@ -37,10 +37,10 @@ public class LocalDomainRegistryFactory extends BaseDomainRegistryFactory {
         super(registry);
     }
 
-    protected EndpointRegistry createEndpointRegistry(String endpointRegistryURI, String domainURI) {
-        EndpointRegistry endpointRegistry =
-            new EndpointRegistryImpl(registry, endpointRegistryURI, domainURI);
-        return endpointRegistry;
+    protected DomainRegistry createEndpointRegistry(String endpointRegistryURI, String domainURI) {
+        DomainRegistry domainRegistry =
+            new DomainRegistryImpl(registry, endpointRegistryURI, domainURI);
+        return domainRegistry;
     }
 
     public String[] getSupportedSchemes() {

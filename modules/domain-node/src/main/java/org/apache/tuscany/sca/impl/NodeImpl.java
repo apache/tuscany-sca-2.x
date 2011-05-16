@@ -70,7 +70,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
@@ -82,16 +82,16 @@ public class NodeImpl implements Node {
     private String domainName;
     private Deployer deployer;
     private CompositeActivator compositeActivator;
-    private EndpointRegistry endpointRegistry;
+    private DomainRegistry domainRegistry;
     private ExtensionPointRegistry extensionPointRegistry;
     private TuscanyRuntime tuscanyRuntime;
     private Map<String, InstalledContribution> locallyInstalledContributions = new HashMap<String, InstalledContribution>();
     
-    public NodeImpl(String domainName, Deployer deployer, CompositeActivator compositeActivator, EndpointRegistry endpointRegistry, ExtensionPointRegistry extensionPointRegistry, TuscanyRuntime tuscanyRuntime) {
+    public NodeImpl(String domainName, Deployer deployer, CompositeActivator compositeActivator, DomainRegistry domainRegistry, ExtensionPointRegistry extensionPointRegistry, TuscanyRuntime tuscanyRuntime) {
         this.domainName = domainName;
         this.deployer = deployer;
         this.compositeActivator = compositeActivator;
-        this.endpointRegistry = endpointRegistry;
+        this.domainRegistry = domainRegistry;
         this.extensionPointRegistry = extensionPointRegistry;
         this.tuscanyRuntime = tuscanyRuntime;
     }
@@ -104,7 +104,7 @@ public class NodeImpl implements Node {
         // TODO: sort out deployables and exports
         org.apache.tuscany.sca.runtime.InstalledContribution ic = new org.apache.tuscany.sca.runtime.InstalledContribution(uri, contributionURL);
         peekIntoContribution(ic);
-        endpointRegistry.installContribution(ic);
+        domainRegistry.installContribution(ic);
         if (startDeployables) {
             for (String compositeURI : ic.getDeployables()) {
                 start(ic.getURI(), compositeURI);
@@ -222,7 +222,7 @@ public class NodeImpl implements Node {
         InstalledContribution ic = locallyInstalledContributions.get(contributionURI);
         if (ic == null) {
             
-            org.apache.tuscany.sca.runtime.InstalledContribution icx = endpointRegistry.getInstalledContribution(contributionURI);
+            org.apache.tuscany.sca.runtime.InstalledContribution icx = domainRegistry.getInstalledContribution(contributionURI);
             String url = null;
             if (icx != null) {
                 url  = icx.getURL();
@@ -261,10 +261,10 @@ public class NodeImpl implements Node {
         domainComposite.setAutowire(false);
         domainComposite.setLocal(false);
         List<Composite> domainIncludes = domainComposite.getIncludes();
-        Map<String, List<QName>> runningComposites = endpointRegistry.getRunningCompositeNames();
+        Map<String, List<QName>> runningComposites = domainRegistry.getRunningCompositeNames();
         for (String curi : runningComposites.keySet()) {
             for (QName name : runningComposites.get(curi)) {
-                domainIncludes.add(endpointRegistry.getRunningComposite(curi, name));
+                domainIncludes.add(domainRegistry.getRunningComposite(curi, name));
             }
         }
         return domainComposite;
@@ -292,7 +292,7 @@ public class NodeImpl implements Node {
     }
 
     public List<String> removeContribution(String contributionURI) throws ActivationException {
-        endpointRegistry.uninstallContribution(contributionURI);
+        domainRegistry.uninstallContribution(contributionURI);
 
         // TODO: should this next bit happen?
         List<String> removedContributionURIs = new ArrayList<String>();
@@ -345,7 +345,7 @@ public class NodeImpl implements Node {
 
     public <T> T getService(Class<T> interfaze, String serviceURI) throws NoSuchServiceException {
 
-        List<Endpoint> endpoints = endpointRegistry.findEndpoint(serviceURI);
+        List<Endpoint> endpoints = domainRegistry.findEndpoint(serviceURI);
         if (endpoints.size() < 1) {
             throw new NoSuchServiceException(serviceURI);
         }
@@ -374,7 +374,7 @@ public class NodeImpl implements Node {
             new ExtensibleProxyFactory(extensionPointRegistry.getExtensionPoint(ProxyFactoryExtensionPoint.class));
 
         CompositeContext compositeContext =
-            new CompositeContext(extensionPointRegistry, endpointRegistry, null, null, null,
+            new CompositeContext(extensionPointRegistry, domainRegistry, null, null, null,
                                  deployer.getSystemDefinitions());
 
         RuntimeEndpointReference epr;
@@ -481,7 +481,7 @@ public class NodeImpl implements Node {
     }
 
     public List<String> getInstalledContributionURIs() {
-        Set<String> ls = new HashSet<String>(endpointRegistry.getInstalledContributionURIs());
+        Set<String> ls = new HashSet<String>(domainRegistry.getInstalledContributionURIs());
         ls.addAll(locallyInstalledContributions.keySet());
         return new ArrayList<String>(ls);
     }
@@ -509,7 +509,7 @@ public class NodeImpl implements Node {
 
     protected void startComposite(Composite c, InstalledContribution ic) throws ActivationException, ValidationException {
         List<Contribution> dependentContributions = calculateDependentContributions(ic);
-        DeployedComposite dc = new DeployedComposite(c, ic.getContribution(), dependentContributions, deployer, compositeActivator, endpointRegistry, extensionPointRegistry);
+        DeployedComposite dc = new DeployedComposite(c, ic.getContribution(), dependentContributions, deployer, compositeActivator, domainRegistry, extensionPointRegistry);
         ic.start(dc);
     }
     
@@ -554,8 +554,8 @@ public class NodeImpl implements Node {
         return uri;
     }
 
-    public EndpointRegistry getEndpointRegistry() {
-        return endpointRegistry;
+    public DomainRegistry getEndpointRegistry() {
+        return domainRegistry;
     }
     
 }

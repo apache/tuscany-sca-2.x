@@ -63,15 +63,15 @@ public class ExtensibleDomainRegistryFactory implements DomainRegistryFactory {
         }
     }
 
-    public Collection<EndpointRegistry> getEndpointRegistries() {
-        List<EndpointRegistry> registries = new ArrayList<EndpointRegistry>();
+    public Collection<DomainRegistry> getEndpointRegistries() {
+        List<DomainRegistry> registries = new ArrayList<DomainRegistry>();
         for (DomainRegistryFactory factory : factories.getDomainRegistryFactories()) {
             registries.addAll(factory.getEndpointRegistries());
         }
         return registries;
     }
 
-    public EndpointRegistry getEndpointRegistry(String endpointRegistryURI, String domainURI) {
+    public DomainRegistry getEndpointRegistry(String endpointRegistryURI, String domainURI) {
         if (endpointRegistryURI == null) {
             endpointRegistryURI = factories.getDomainRegistryMapping().get(domainURI);
             if (endpointRegistryURI == null) {
@@ -84,9 +84,9 @@ public class ExtensibleDomainRegistryFactory implements DomainRegistryFactory {
             
             // See if there is a previously created registry for that domain
             for (DomainRegistryFactory factory : factories.getDomainRegistryFactories()) {
-                for (EndpointRegistry endpointRegistry : factory.getEndpointRegistries()) {
-                    if (endpointRegistry.getDomainURI().equals(domainURI)) {
-                        return endpointRegistry;
+                for (DomainRegistry domainRegistry : factory.getEndpointRegistries()) {
+                    if (domainRegistry.getDomainURI().equals(domainURI)) {
+                        return domainRegistry;
                     }
                 }
             }
@@ -99,15 +99,15 @@ public class ExtensibleDomainRegistryFactory implements DomainRegistryFactory {
         for (DomainRegistryFactory factory : factories.getDomainRegistryFactories()) {
             String[] schemes = factory.getSupportedSchemes();
             if (schemes != null && Arrays.asList(schemes).contains(scheme)) {
-                EndpointRegistry endpointRegistry = factory.getEndpointRegistry(endpointRegistryURI, domainURI);
-                if (endpointRegistry == null) {
+                DomainRegistry domainRegistry = factory.getEndpointRegistry(endpointRegistryURI, domainURI);
+                if (domainRegistry == null) {
                     continue;
                 } else {
-                    return endpointRegistry;
+                    return domainRegistry;
                 }
             }
         }
-        throw new ServiceRuntimeException("No EndpointRegistry can support " + endpointRegistryURI);
+        throw new ServiceRuntimeException("No DomainRegistry can support " + endpointRegistryURI);
     }
 
     public void removeListener(EndpointListener listener) {

@@ -81,7 +81,7 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.EndpointSerializer;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -104,7 +104,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
     private transient PhaseManager phaseManager;
     private transient MessageFactory messageFactory;
     private transient RuntimeInvoker invoker;
-    private transient EndpointRegistry endpointRegistry;
+    private transient DomainRegistry domainRegistry;
 
     private transient List<InvocationChain> chains;
     private transient Map<Operation, InvocationChain> invocationChainMap =
@@ -173,12 +173,12 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         bind(compositeContext.getExtensionPointRegistry(), compositeContext.getEndpointRegistry());
     }
 
-    public void bind(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry) {
+    public void bind(ExtensionPointRegistry registry, DomainRegistry domainRegistry) {
         if (compositeContext == null) {
-            compositeContext = new CompositeContext(registry, endpointRegistry);
+            compositeContext = new CompositeContext(registry, domainRegistry);
         }
         this.registry = registry;
-        this.endpointRegistry = endpointRegistry;
+        this.domainRegistry = domainRegistry;
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         this.eprBinder = utilities.getUtility(EndpointReferenceBinder.class);
         this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
@@ -427,7 +427,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
     private void resolveEndpointReference() {
         resolve();
 
-        eprBinder.bindRunTime(endpointRegistry, this);
+        eprBinder.bindRunTime(domainRegistry, this);
 
         // start the binding provider
         final ReferenceBindingProvider bindingProvider = getBindingProvider();
@@ -539,7 +539,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
 
     public boolean isOutOfDate() {
         resolve();
-        return eprBinder.isOutOfDate(endpointRegistry, this);
+        return eprBinder.isOutOfDate(domainRegistry, this);
     }
 
     public synchronized ReferenceBindingProvider getBindingProvider() {
@@ -648,7 +648,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
                     UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
                     this.serializer = utilities.getUtility(EndpointSerializer.class);
                     RuntimeEndpointReferenceImpl epr = (RuntimeEndpointReferenceImpl)serializer.readEndpointReference(xml);
-                    // Find the actual Endpoint in the EndpointRegistry
+                    // Find the actual Endpoint in the DomainRegistry
                     epr = findActualEPR( epr, registry );
                     if( epr != null ){
                         copyFrom( epr );
@@ -660,23 +660,23 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
     } // end method resolve
     
     /**
-     * Find the actual EndpointReference in the EndpointRegistry which corresponds to the configuration described
+     * Find the actual EndpointReference in the DomainRegistry which corresponds to the configuration described
      * in a deserialized EndpointReference 
      * @param ep The deserialized endpointReference
      * @param registry - the main extension point Registry
-     * @return the corresponding EndpointReference from the EndpointRegistry, or null if no match can be found
+     * @return the corresponding EndpointReference from the DomainRegistry, or null if no match can be found
      */
     private RuntimeEndpointReferenceImpl findActualEPR(RuntimeEndpointReferenceImpl epr,
 			ExtensionPointRegistry registry) {
-		// Get the EndpointRegistry
+		// Get the DomainRegistry
         DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(registry);
         if( domainRegistryFactory == null ) return null;
         
-        // TODO: For the moment, just use the first (and only!) EndpointRegistry...
-        EndpointRegistry endpointRegistry = (EndpointRegistry) domainRegistryFactory.getEndpointRegistries().toArray()[0];
-        if( endpointRegistry == null ) return null;
+        // TODO: For the moment, just use the first (and only!) DomainRegistry...
+        DomainRegistry domainRegistry = (DomainRegistry) domainRegistryFactory.getEndpointRegistries().toArray()[0];
+        if( domainRegistry == null ) return null;
         
-        for( EndpointReference epReference : endpointRegistry.getEndpointReferences() ) {
+        for( EndpointReference epReference : domainRegistry.getEndpointReferences() ) {
         	// TODO: For the present, simply return the first matching endpointReference
         	if( epReference.getURI().equals(epr.getURI()) ) {
         	    return (RuntimeEndpointReferenceImpl) epReference;

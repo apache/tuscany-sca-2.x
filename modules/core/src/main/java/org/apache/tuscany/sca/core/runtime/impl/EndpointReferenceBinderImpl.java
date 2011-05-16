@@ -60,7 +60,7 @@ import org.apache.tuscany.sca.provider.EndpointReferenceAsyncProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.runtime.UnknownEndpointHandler;
@@ -110,35 +110,35 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * Bind a single endpoint reference at build time. Here we only expect the
      * registry to have a record of local endpoints
      *
-     * @param endpointRegistry
+     * @param domainRegistry
      * @param endpointReference
      */
-    public void bindBuildTime(EndpointRegistry endpointRegistry, 
+    public void bindBuildTime(DomainRegistry domainRegistry, 
                               EndpointReference endpointReference, 
                               BuilderContext builderContext) {
-       bind(endpointRegistry, endpointReference, builderContext, false);
+       bind(domainRegistry, endpointReference, builderContext, false);
     }
     
     /**
      * Bind a single endpoint reference at run time. Here we expect the
      * registry to be populated with endpoints from across the domain
      *
-     * @param endpointRegistry
+     * @param domainRegistry
      * @param endpointReference
      */
-    public void bindRunTime(EndpointRegistry endpointRegistry,
+    public void bindRunTime(DomainRegistry domainRegistry,
                             EndpointReference endpointReference) {
-        bind(endpointRegistry, endpointReference, null, true);
+        bind(domainRegistry, endpointReference, null, true);
     }
     
     /**
      * Bind a reference to a service endpoint
      * 
-     * @param endpointRegistry
+     * @param domainRegistry
      * @param endpointReference
      * @param runtime set true if called from the runtime 
      */
-    public void bind(EndpointRegistry endpointRegistry,  
+    public void bind(DomainRegistry domainRegistry,  
                      EndpointReference endpointReference,
                      BuilderContext builderContext,
                      boolean runtime){
@@ -154,7 +154,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             // do autowire matching
             // will only be called at build time at the moment
             Multiplicity multiplicity = endpointReference.getReference().getMultiplicity();
-            for (Endpoint endpoint : endpointRegistry.getEndpoints()){
+            for (Endpoint endpoint : domainRegistry.getEndpoints()){
 //              if (endpoint is in the same composite as endpoint reference){
                     if ((multiplicity == Multiplicity.ZERO_ONE || 
                          multiplicity == Multiplicity.ONE_ONE) && 
@@ -253,7 +253,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             // The reference is not yet matched to a service
           
             // find the service in the endpoint registry
-            List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);
+            List<Endpoint> endpoints = domainRegistry.findEndpoint(endpointReference);
             
             if (endpoints.size() > 0){
                 selectForwardEndpoint(endpointReference,
@@ -917,12 +917,12 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * 
      * @return true is the registry has changed
      */
-    public boolean isOutOfDate(EndpointRegistry endpointRegistry, EndpointReference endpointReference) {
+    public boolean isOutOfDate(DomainRegistry domainRegistry, EndpointReference endpointReference) {
         Endpoint te = endpointReference.getTargetEndpoint();
         if (te != null && !te.isUnresolved()
             && te.getURI() != null
             && endpointReference.getStatus() != EndpointReference.Status.RESOLVED_BINDING) {
-            List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);
+            List<Endpoint> endpoints = domainRegistry.findEndpoint(endpointReference);
             return ! endpoints.contains(endpointReference.getTargetEndpoint());
         }
         return false;

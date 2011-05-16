@@ -43,7 +43,7 @@ public class ReplicatedEndpointRegistryTestCase {
 
         Map<String, String> attrs = new HashMap<String, String>();
         attrs.put("bind", "127.0.0.1");
-        ReplicatedEndpointRegistry ep1 = new ReplicatedEndpointRegistry(extensionPoints, attrs, "foo", "bar");
+        ReplicatedDomainRegistry ep1 = new ReplicatedDomainRegistry(extensionPoints, attrs, "foo", "bar");
         System.out.println("ep1 is: " + ep1);
         ep1.start();
 
@@ -56,7 +56,7 @@ public class ReplicatedEndpointRegistryTestCase {
         System.out.println("EP1 in Registry 1: " + e1p);
         Assert.assertNotNull(e1p);
 
-        ReplicatedEndpointRegistry ep2 = new ReplicatedEndpointRegistry(extensionPoints, attrs, "foo", "bar");
+        ReplicatedDomainRegistry ep2 = new ReplicatedDomainRegistry(extensionPoints, attrs, "foo", "bar");
         System.out.println("ep2 is: " + ep2);
         ep2.start();
         Thread.sleep(5000);
@@ -65,7 +65,7 @@ public class ReplicatedEndpointRegistryTestCase {
         System.out.println("EP1 in Registry 2: " + e1p2);
         Assert.assertNotNull(e1p2);
 
-        ReplicatedEndpointRegistry ep3 = new ReplicatedEndpointRegistry(extensionPoints, attrs, "foo", "bar");
+        ReplicatedDomainRegistry ep3 = new ReplicatedDomainRegistry(extensionPoints, attrs, "foo", "bar");
         System.out.println("ep3 is: " + ep3);
         ep3.start();
         Thread.sleep(5000);

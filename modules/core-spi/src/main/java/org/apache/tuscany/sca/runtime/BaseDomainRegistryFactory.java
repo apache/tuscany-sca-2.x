@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.core.LifeCycleListener;
  */
 public abstract class BaseDomainRegistryFactory implements DomainRegistryFactory, LifeCycleListener {
     protected ExtensionPointRegistry registry;
-    protected Map<Object, EndpointRegistry> endpointRegistries = new ConcurrentHashMap<Object, EndpointRegistry>();
+    protected Map<Object, DomainRegistry> domainRegistries = new ConcurrentHashMap<Object, DomainRegistry>();
     protected List<EndpointListener> listeners = new ArrayList<EndpointListener>();
 
     /**
@@ -49,54 +49,54 @@ public abstract class BaseDomainRegistryFactory implements DomainRegistryFactory
     public void start() {
     }
 
-    public synchronized EndpointRegistry getEndpointRegistry(String endpointRegistryURI, String domainURI) {
+    public synchronized DomainRegistry getEndpointRegistry(String endpointRegistryURI, String domainURI) {
         if (endpointRegistryURI == null) {
             endpointRegistryURI = domainURI;
         }
 
         Object key = getKey(endpointRegistryURI, domainURI);
 
-        EndpointRegistry endpointRegistry = endpointRegistries.get(key);
-        if (endpointRegistry != null) {
-            return endpointRegistry;
+        DomainRegistry domainRegistry = domainRegistries.get(key);
+        if (domainRegistry != null) {
+            return domainRegistry;
         }
 
-        endpointRegistry = createEndpointRegistry(endpointRegistryURI, domainURI);
+        domainRegistry = createEndpointRegistry(endpointRegistryURI, domainURI);
 
-        if (endpointRegistry instanceof LifeCycleListener) {
-            ((LifeCycleListener)endpointRegistry).start();
+        if (domainRegistry instanceof LifeCycleListener) {
+            ((LifeCycleListener)domainRegistry).start();
         }
 
         for (EndpointListener listener : listeners) {
-            endpointRegistry.addListener(listener);
+            domainRegistry.addListener(listener);
         }
-        endpointRegistries.put(key, endpointRegistry);
-        return endpointRegistry;
+        domainRegistries.put(key, domainRegistry);
+        return domainRegistry;
     }
 
     protected Object getKey(String endpointRegistryURI, String domainURI) {
         return endpointRegistryURI + "," + domainURI;
     }
 
-    protected abstract EndpointRegistry createEndpointRegistry(String endpointRegistryURI, String domainURI);
+    protected abstract DomainRegistry createEndpointRegistry(String endpointRegistryURI, String domainURI);
 
     public void stop() {
-        for (EndpointRegistry endpointRegistry : endpointRegistries.values()) {
-            if (endpointRegistry instanceof LifeCycleListener) {
-                ((LifeCycleListener)endpointRegistry).stop();
+        for (DomainRegistry domainRegistry : domainRegistries.values()) {
+            if (domainRegistry instanceof LifeCycleListener) {
+                ((LifeCycleListener)domainRegistry).stop();
             }
         }
-        endpointRegistries.clear();
+        domainRegistries.clear();
         listeners.clear();
     }
 
-    public synchronized Collection<EndpointRegistry> getEndpointRegistries() {
-        return new ArrayList<EndpointRegistry>(endpointRegistries.values());
+    public synchronized Collection<DomainRegistry> getEndpointRegistries() {
+        return new ArrayList<DomainRegistry>(domainRegistries.values());
     }
 
     public synchronized void addListener(EndpointListener listener) {
         listeners.add(listener);
-        for (EndpointRegistry registry : endpointRegistries.values()) {
+        for (DomainRegistry registry : domainRegistries.values()) {
             registry.addListener(listener);
         }
     }
@@ -107,7 +107,7 @@ public abstract class BaseDomainRegistryFactory implements DomainRegistryFactory
 
     public synchronized void removeListener(EndpointListener listener) {
         listeners.remove(listener);
-        for (EndpointRegistry registry : endpointRegistries.values()) {
+        for (DomainRegistry registry : domainRegistries.values()) {
             registry.removeListener(listener);
         }
     }

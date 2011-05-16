@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
@@ -153,7 +153,7 @@ public class TestRuntimeWire implements RuntimeEndpoint {
     }
 
 
-    public void bind(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry) {
+    public void bind(ExtensionPointRegistry registry, DomainRegistry domainRegistry) {
         // TODO Auto-generated method stub
         
     }

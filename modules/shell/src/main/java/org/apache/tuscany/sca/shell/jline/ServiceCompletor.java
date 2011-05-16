@@ -26,7 +26,7 @@ import jline.SimpleCompletor;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.impl.NodeImpl;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.shell.Shell;
 
 /**
@@ -45,7 +45,7 @@ public class ServiceCompletor extends SimpleCompletor {
     public int complete(final String buffer, final int cursor, final List clist) {
         if (shell.getNode() != null) {
             List<String> services = new ArrayList<String>();
-            EndpointRegistry reg = ((NodeImpl)shell.getNode()).getEndpointRegistry();
+            DomainRegistry reg = ((NodeImpl)shell.getNode()).getEndpointRegistry();
             for (Endpoint endpoint : reg.getEndpoints()) {
                 services.add(endpoint.getComponent().getURI() + "/" + endpoint.getService().getName());
             }

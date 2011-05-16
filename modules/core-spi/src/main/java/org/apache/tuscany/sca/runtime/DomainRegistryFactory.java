@@ -27,19 +27,19 @@ import java.util.Collection;
  */
 public interface DomainRegistryFactory {
     /**
-     * Get the EndpointRegistry for the given registry URI and domain URI
+     * Get the DomainRegistry for the given registry URI and domain URI
      * @param endpointRegistryURI A URI can be used to connect to the registry, such as vm://localhost
      * or multicast://200.0.100.200:50000/...
      * @param domainURI The domain URI
      * @return
      */
-    EndpointRegistry getEndpointRegistry(String endpointRegistryURI, String domainURI);
+    DomainRegistry getEndpointRegistry(String endpointRegistryURI, String domainURI);
 
     /**
      * Return all active endpoint registries
      * @return
      */
-    Collection<EndpointRegistry> getEndpointRegistries();
+    Collection<DomainRegistry> getEndpointRegistries();
 
     /**
      * Add an EndpointListener

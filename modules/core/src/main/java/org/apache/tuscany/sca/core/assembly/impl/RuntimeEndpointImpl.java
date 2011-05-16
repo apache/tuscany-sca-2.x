@@ -95,7 +95,7 @@ import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.EndpointSerializer;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -181,9 +181,9 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         bind(compositeContext.getExtensionPointRegistry(), compositeContext.getEndpointRegistry());
     }
 
-    public void bind(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry) {
+    public void bind(ExtensionPointRegistry registry, DomainRegistry domainRegistry) {
         if (compositeContext == null) {
-            compositeContext = new CompositeContext(registry, endpointRegistry);
+            compositeContext = new CompositeContext(registry, domainRegistry);
         }
 
         // if interfaceContractMapper is already initialized then all the rest will be too
@@ -435,8 +435,8 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     	// Store the new callback EPR into the Endpoint
     	this.getCallbackEndpointReferences().add(asyncEPR);
     	
-    	// Also store the callback EPR into the EndpointRegistry
-    	EndpointRegistry epReg = getEndpointRegistry( registry );
+    	// Also store the callback EPR into the DomainRegistry
+    	DomainRegistry epReg = getEndpointRegistry( registry );
     	if( epReg != null ) epReg.addEndpointReference(asyncEPR);
     } // end method createAsyncServerCallback
     
@@ -931,7 +931,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                     this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
                     this.serializer = utilities.getUtility(EndpointSerializer.class);
                     RuntimeEndpointImpl ep = (RuntimeEndpointImpl)serializer.readEndpoint(xml);
-                    // Find the actual Endpoint in the EndpointRegistry
+                    // Find the actual Endpoint in the DomainRegistry
                     ep = findActualEP( ep, registry );
                     if( ep != null ){
                         copyFrom( ep );
@@ -943,19 +943,19 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     } // end method resolve
 
     /**
-     * Find the actual Endpoint in the EndpointRegistry which corresponds to the configuration described
+     * Find the actual Endpoint in the DomainRegistry which corresponds to the configuration described
      * in a deserialized Endpoint 
      * @param ep The deserialized endpoint
      * @param registry - the main extension point Registry
-     * @return the corresponding Endpoint from the EndpointRegistry, or null if no match can be found
+     * @return the corresponding Endpoint from the DomainRegistry, or null if no match can be found
      */
     private RuntimeEndpointImpl findActualEP(RuntimeEndpointImpl ep,
 			ExtensionPointRegistry registry) {
-		EndpointRegistry endpointRegistry = getEndpointRegistry( registry );
+		DomainRegistry domainRegistry = getEndpointRegistry( registry );
         
-        if( endpointRegistry == null ) return null;
+        if( domainRegistry == null ) return null;
         
-        for( Endpoint endpoint : endpointRegistry.findEndpoint(ep.getURI()) ) {
+        for( Endpoint endpoint : domainRegistry.findEndpoint(ep.getURI()) ) {
         	// TODO: For the present, simply return the first matching endpoint
         	return (RuntimeEndpointImpl) endpoint;
         } // end for
@@ -964,19 +964,19 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 	} // end method findActualEP
     
     /**
-     * Get the EndpointRegistry
+     * Get the DomainRegistry
      * @param registry - the ExtensionPoint registry
-     * @return the EndpointRegistry - will be null if the EndpointRegistry cannot be found
+     * @return the DomainRegistry - will be null if the DomainRegistry cannot be found
      */
-    private EndpointRegistry getEndpointRegistry( ExtensionPointRegistry registry) {
+    private DomainRegistry getEndpointRegistry( ExtensionPointRegistry registry) {
         DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(registry);
         
         if( domainRegistryFactory == null ) return null;
         
-        // TODO: For the moment, just use the first (and only!) EndpointRegistry...
-        EndpointRegistry endpointRegistry = (EndpointRegistry) domainRegistryFactory.getEndpointRegistries().toArray()[0];
+        // TODO: For the moment, just use the first (and only!) DomainRegistry...
+        DomainRegistry domainRegistry = (DomainRegistry) domainRegistryFactory.getEndpointRegistries().toArray()[0];
     	
-    	return endpointRegistry;
+    	return domainRegistry;
     } // end method 
 
 	public InterfaceContract getBindingInterfaceContract() {

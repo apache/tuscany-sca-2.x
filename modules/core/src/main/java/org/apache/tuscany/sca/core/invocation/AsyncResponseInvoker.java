@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
@@ -70,7 +70,7 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
     private String endpointReferenceURI;
     private String domainURI;
 
-	private transient EndpointRegistry endpointRegistry;
+	private transient DomainRegistry domainRegistry;
 	private transient ExtensionPointRegistry registry;
     
     public AsyncResponseInvoker(RuntimeEndpoint requestEndpoint,
@@ -256,8 +256,8 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
      */
     private RuntimeEndpointReference retrieveEndpointReference(String uri) {
 		if( uri == null ) return null;
-    	if( endpointRegistry == null ) return null;
-		List<EndpointReference> refs = endpointRegistry.findEndpointReferences( uri );
+    	if( domainRegistry == null ) return null;
+		List<EndpointReference> refs = domainRegistry.findEndpointReferences( uri );
 		// If there is more than EndpointReference with the uri...
 		if( refs.isEmpty() ) return null;
 		// TODO: what if there is more than 1 EPR with the given URI?
@@ -266,37 +266,37 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
 
 	/**
      * Fetches the Endpoint identified by an endpoint URI
-     * - the Endpoint is retrieved from the EndpointRegistry 
+     * - the Endpoint is retrieved from the DomainRegistry 
      * @param uri - the URI of the Endpoint
      * @return - the Endpoint corresponding to the URI, or null if no Endpoint is found which has the
      * supplied URI
      */
 	private RuntimeEndpoint retrieveEndpoint(String uri) {
 		if( uri == null ) return null;
-		if( endpointRegistry == null ) endpointRegistry = getEndpointRegistry( uri );
-		if( endpointRegistry == null ) return null;
+		if( domainRegistry == null ) domainRegistry = getEndpointRegistry( uri );
+		if( domainRegistry == null ) return null;
 		// TODO what if more than one Endpoint gets returned??
-		return (RuntimeEndpoint) endpointRegistry.findEndpoint(uri).get(0);
+		return (RuntimeEndpoint) domainRegistry.findEndpoint(uri).get(0);
 	} // end method retrieveEndpoint
 
 	/**
-	 * Gets the EndpointRegistry which contains an Endpoint with the supplied URI
+	 * Gets the DomainRegistry which contains an Endpoint with the supplied URI
 	 * @param uri - The URI of an Endpoint
-	 * @return - the EndpointRegistry containing the Endpoint with the supplied URI - null if no
-	 *           such EndpointRegistry can be found
+	 * @return - the DomainRegistry containing the Endpoint with the supplied URI - null if no
+	 *           such DomainRegistry can be found
 	 */
-	private EndpointRegistry getEndpointRegistry(String uri) {
+	private DomainRegistry getEndpointRegistry(String uri) {
 		ExtensionPointRegistry registry   = null;
-		EndpointRegistry endpointRegistry = null;
+		DomainRegistry domainRegistry = null;
 		
 		CompositeContext context = CompositeContext.getCurrentCompositeContext();
 		if( context == null && requestEndpoint != null ) context = requestEndpoint.getCompositeContext();
 		if( context != null ) {
 			registry = context.getExtensionPointRegistry();
-			endpointRegistry = getEndpointRegistry( registry );
-			if( endpointRegistry != null ) {
+			domainRegistry = getEndpointRegistry( registry );
+			if( domainRegistry != null ) {
 				this.registry = registry;
-				return endpointRegistry;
+				return domainRegistry;
 			} // end if
 		} // end if
 		
@@ -304,14 +304,14 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
     	for(ExtensionPointRegistry r : ExtensionPointRegistryLocator.getExtensionPointRegistries()) {
                 registry = r;
     		if( registry != null ) {
-    			// Find the actual Endpoint in the EndpointRegistry
-        		endpointRegistry = getEndpointRegistry( registry );
+    			// Find the actual Endpoint in the DomainRegistry
+        		domainRegistry = getEndpointRegistry( registry );
                 
-                if( endpointRegistry != null ) {
-                    for( Endpoint endpoint : endpointRegistry.findEndpoint(uri) ) {
+                if( domainRegistry != null ) {
+                    for( Endpoint endpoint : domainRegistry.findEndpoint(uri) ) {
                     	// TODO: For the present, simply return the first registry with a matching endpoint
                     	this.registry = registry;
-                    	return endpointRegistry;
+                    	return domainRegistry;
                     } // end for
                 } // end if 
     		} // end if
@@ -321,27 +321,27 @@ public class AsyncResponseInvoker<T> implements InvokerAsyncResponse, Serializab
 	} // end method getEndpointRegistry
 	
     /**
-     * Get the EndpointRegistry
+     * Get the DomainRegistry
      * @param registry - the ExtensionPoint registry
-     * @return the EndpointRegistry - will be null if the EndpointRegistry cannot be found
+     * @return the DomainRegistry - will be null if the DomainRegistry cannot be found
      */
-    private EndpointRegistry getEndpointRegistry( ExtensionPointRegistry registry) {
+    private DomainRegistry getEndpointRegistry( ExtensionPointRegistry registry) {
         DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(registry);
         
         if( domainRegistryFactory == null ) return null;
         
         // Find the first endpoint registry that matches the domain name 
         if( domainURI != null ) {
-	        for( EndpointRegistry endpointRegistry : domainRegistryFactory.getEndpointRegistries() ) {
-	        	if( domainURI.equals( endpointRegistry.getDomainURI() ) ) return endpointRegistry;
+	        for( DomainRegistry domainRegistry : domainRegistryFactory.getEndpointRegistries() ) {
+	        	if( domainURI.equals( domainRegistry.getDomainURI() ) ) return domainRegistry;
 	        } // end for
         } // end if
         
-        // if there was no domainName to match, simply return the first EndpointRegistry if there is one...
+        // if there was no domainName to match, simply return the first DomainRegistry if there is one...
         
         if (domainRegistryFactory.getEndpointRegistries().size() > 0){
-            EndpointRegistry endpointRegistry = (EndpointRegistry) domainRegistryFactory.getEndpointRegistries().toArray()[0];
-            return endpointRegistry;
+            DomainRegistry domainRegistry = (DomainRegistry) domainRegistryFactory.getEndpointRegistries().toArray()[0];
+            return domainRegistry;
         } else {
             return null;
         }

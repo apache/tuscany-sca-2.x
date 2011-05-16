@@ -51,18 +51,18 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.endpoint.tribes.AbstractReplicatedMap.MapEntry;
 import org.apache.tuscany.sca.endpoint.tribes.MapStore.MapListener;
-import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
+import org.apache.tuscany.sca.runtime.BaseDomainRegistry;
 import org.apache.tuscany.sca.runtime.DomainRegistryURI;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.InstalledContribution;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
- * A replicated EndpointRegistry based on Apache Tomcat Tribes
+ * A replicated DomainRegistry based on Apache Tomcat Tribes
  */
-public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements EndpointRegistry, LifeCycleListener,
+public class ReplicatedDomainRegistry extends BaseDomainRegistry implements DomainRegistry, LifeCycleListener,
     MapListener {
-    private final static Logger logger = Logger.getLogger(ReplicatedEndpointRegistry.class.getName());
+    private final static Logger logger = Logger.getLogger(ReplicatedDomainRegistry.class.getName());
     private static final String MULTICAST_ADDRESS = "228.0.0.100";
     private static final int MULTICAST_PORT = 50000;
 
@@ -103,7 +103,7 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
         return channel;
     }
 
-    public ReplicatedEndpointRegistry(ExtensionPointRegistry registry,
+    public ReplicatedDomainRegistry(ExtensionPointRegistry registry,
                                       Map<String, String> attributes,
                                       String domainRegistryURI,
                                       String domainURI) {
@@ -221,7 +221,7 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
         GroupChannel channel = createChannel(address, port, bind);
         map =
             new ReplicatedMap(null, channel, timeout, this.domainURI,
-                              new ClassLoader[] {ReplicatedEndpointRegistry.class.getClassLoader()});
+                              new ClassLoader[] {ReplicatedDomainRegistry.class.getClassLoader()});
         map.addListener(this);
 
         if (noMultiCast) {

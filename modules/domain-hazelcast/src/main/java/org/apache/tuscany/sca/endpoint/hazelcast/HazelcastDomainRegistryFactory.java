@@ -24,7 +24,7 @@ import java.util.Properties;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.runtime.BaseDomainRegistryFactory;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 
 /**
@@ -38,9 +38,9 @@ public class HazelcastDomainRegistryFactory extends BaseDomainRegistryFactory {
         super(registry);
     }
 
-    protected EndpointRegistry createEndpointRegistry(String endpointRegistryURI, String domainURI) {
+    protected DomainRegistry createEndpointRegistry(String endpointRegistryURI, String domainURI) {
         Properties properties = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
-        return new HazelcastEndpointRegistry(registry, properties, endpointRegistryURI, domainURI);
+        return new HazelcastDomainRegistry(registry, properties, endpointRegistryURI, domainURI);
     }
 
     public String[] getSupportedSchemes() {

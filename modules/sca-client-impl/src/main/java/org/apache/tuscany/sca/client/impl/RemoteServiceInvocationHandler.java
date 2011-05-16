@@ -43,7 +43,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
@@ -64,7 +64,7 @@ public class RemoteServiceInvocationHandler implements InvocationHandler {
     private Class<?> serviceInterface;
     
     private ExtensionPointRegistry extensionsRegistry;
-    private EndpointRegistry endpointRegistry;
+    private DomainRegistry domainRegistry;
     
     private InvocationHandler handler;
     private boolean reuse;
@@ -72,10 +72,10 @@ public class RemoteServiceInvocationHandler implements InvocationHandler {
     /**
      * Constructor for when there is an existing Tuscany runtime for the domain
      */
-    public RemoteServiceInvocationHandler(ExtensionPointRegistry extensionsRegistry, EndpointRegistry endpointRegistry, String serviceName, Class<?> serviceInterface) {
+    public RemoteServiceInvocationHandler(ExtensionPointRegistry extensionsRegistry, DomainRegistry domainRegistry, String serviceName, Class<?> serviceInterface) {
         this.extensionsRegistry = extensionsRegistry;
-        this.endpointRegistry = endpointRegistry;
-        this.domainURI = endpointRegistry.getDomainURI();
+        this.domainRegistry = domainRegistry;
+        this.domainURI = domainRegistry.getDomainURI();
         this.serviceName = serviceName;
         this.serviceInterface = serviceInterface;
         this.reuse = true;
@@ -86,9 +86,9 @@ public class RemoteServiceInvocationHandler implements InvocationHandler {
      * @param endpointRegistry2 
      * @param extensionPointRegistry 
      */
-    public RemoteServiceInvocationHandler(ExtensionPointRegistry extensionsRegistry, EndpointRegistry endpointRegistry, String domainURI, String serviceName, Class<?> serviceInterface) throws NoSuchDomainException {
+    public RemoteServiceInvocationHandler(ExtensionPointRegistry extensionsRegistry, DomainRegistry domainRegistry, String domainURI, String serviceName, Class<?> serviceInterface) throws NoSuchDomainException {
         this.extensionsRegistry = extensionsRegistry;
-        this.endpointRegistry = endpointRegistry;
+        this.domainRegistry = domainRegistry;
         this.domainURI = domainURI;
         this.serviceName = serviceName;
         this.serviceInterface = serviceInterface;
@@ -114,8 +114,8 @@ public class RemoteServiceInvocationHandler implements InvocationHandler {
             if (extensionsRegistry == null) {
                 extensionsRegistry = RuntimeUtils.createExtensionPointRegistry();
             }
-            if (endpointRegistry == null) {
-                endpointRegistry = RuntimeUtils.getClientEndpointRegistry(extensionsRegistry, domainURI);
+            if (domainRegistry == null) {
+                domainRegistry = RuntimeUtils.getClientEndpointRegistry(extensionsRegistry, domainURI);
             }
 
             FactoryExtensionPoint factories = extensionsRegistry.getExtensionPoint(FactoryExtensionPoint.class);
@@ -123,9 +123,9 @@ public class RemoteServiceInvocationHandler implements InvocationHandler {
             JavaInterfaceFactory javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
             ProxyFactory proxyFactory = new ExtensibleProxyFactory(extensionsRegistry.getExtensionPoint(ProxyFactoryExtensionPoint.class));
 
-            CompositeContext compositeContext = new CompositeContext(extensionsRegistry, endpointRegistry, null, domainURI, null, null);
+            CompositeContext compositeContext = new CompositeContext(extensionsRegistry, domainRegistry, null, domainURI, null, null);
 
-            List<Endpoint> eps = endpointRegistry.findEndpoint(serviceName);
+            List<Endpoint> eps = domainRegistry.findEndpoint(serviceName);
             if (eps == null || eps.size() < 1) {
                 throw new NoSuchServiceException(serviceName);
             }

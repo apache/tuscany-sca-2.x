@@ -51,7 +51,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.Version;
 import org.apache.tuscany.sca.shell.jline.JLine;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -351,7 +351,7 @@ public class Shell {
         if (getNode() == null) {
             return true;
         }
-        EndpointRegistry reg = ((NodeImpl)getNode()).getEndpointRegistry();
+        DomainRegistry reg = ((NodeImpl)getNode()).getEndpointRegistry();
         for (Endpoint endpoint : reg.getEndpoints()) {
             out.println(endpoint.getComponent().getURI() + "/" + endpoint.getService().getName());
             for (Binding b : endpoint.getService().getBindings()) {
