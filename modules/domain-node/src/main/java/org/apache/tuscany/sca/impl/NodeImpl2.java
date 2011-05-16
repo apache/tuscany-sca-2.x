@@ -176,6 +176,18 @@ public class NodeImpl2 {
                     } 
                 }
             }
+            
+            // Imports
+            if (contribution.getImports() != null) {
+                for (Import imprt : contribution.getImports()) {
+                    // TODO: Handle these and others in a more extensible way
+                    if (imprt instanceof JavaImport) {
+                        ic.getJavaImports().add(((JavaImport)imprt).getPackage());
+                    } else if (imprt instanceof NamespaceImport) {
+                        ic.getNamespaceImports().add(((NamespaceImport)imprt).getNamespace());
+                    } 
+                }
+            }
         }
     }
     
