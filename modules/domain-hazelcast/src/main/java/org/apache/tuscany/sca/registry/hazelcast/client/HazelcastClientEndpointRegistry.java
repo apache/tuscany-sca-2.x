@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.regsitry.hazelcast.client;
+package org.apache.tuscany.sca.registry.hazelcast.client;
 
 import java.io.IOException;
 import java.net.InetAddress;

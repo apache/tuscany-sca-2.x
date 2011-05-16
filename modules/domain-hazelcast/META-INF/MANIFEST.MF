@@ -32,6 +32,6 @@ Import-Package: com.hazelcast.client,
  org.oasisopen.sca.annotation,
  org.w3c.dom,
  org.xml.sax
-Export-Package: org.apache.tuscany.sca.endpoint.hazelcast;version="2.0.0";
+Export-Package: org.apache.tuscany.sca.registry.hazelcast;version="2.0.0";
  uses:="org.apache.tuscany.sca.runtime,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.core"
 
