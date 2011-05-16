@@ -86,9 +86,10 @@ import org.apache.tuscany.sca.definitions.xml.DefinitionsExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.BaseDomainRegistry;
-import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
+import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.InstalledContribution;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
@@ -699,6 +700,13 @@ public class DeployerImpl implements Deployer {
         return staxProcessor.read(reader, new ProcessorContext(monitor));
     }
 
+    public Object loadXMLDocument(Reader document) throws XMLStreamException, ContributionReadException, ValidationException {
+        Monitor monitor = createMonitor();
+        Object model = loadXMLDocument(document, monitor);
+        monitor.analyzeProblems();
+        return model;
+    }
+    
     public Object loadXMLDocument(Reader document, Monitor monitor) throws XMLStreamException, ContributionReadException {
         init();
         XMLStreamReader reader = staxHelper.createXMLStreamReader(document);

@@ -44,6 +44,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.ValidationException;
 
 /**
  * A utility that provides system functions to handle Tuscany SCA application deployment
@@ -125,6 +126,16 @@ public interface Deployer extends LifeCycleListener {
      * @throws ContributionReadException
      */
     <T> T loadXMLDocument(Reader reader, Monitor monitor) throws XMLStreamException, ContributionReadException;
+
+    /**
+     * @param <T>
+     * @param reader
+     * @return
+     * @throws XMLStreamException
+     * @throws ContributionReadException
+     * @throws ValidationException
+     */
+    <T> T loadXMLDocument(Reader reader) throws XMLStreamException, ContributionReadException, ValidationException;
 
     /**
      * @param <T>
