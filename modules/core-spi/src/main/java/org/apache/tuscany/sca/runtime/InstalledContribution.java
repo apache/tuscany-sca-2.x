@@ -36,10 +36,11 @@ public class InstalledContribution implements Serializable {
     // the URIs of the deployable composites within the contribution
     private List<String> deployables = new ArrayList<String>();
 
-    // TODO: Handle Imports in a more extensible way
+    // TODO: Handle Imports and Exports in a more extensible way
     private List<String> javaExports = new ArrayList<String>();
     private List<String> namespaceExports = new ArrayList<String>();
-    private List<String> exports = new ArrayList<String>();
+    private List<String> javaImports = new ArrayList<String>();
+    private List<String> namespaceImports = new ArrayList<String>();
     
     private String metaData;
     private boolean overwriteMetaData;
@@ -67,9 +68,6 @@ public class InstalledContribution implements Serializable {
     public List<String> getDeployables() {
         return deployables;
     }
-    public List<String> getExports() {
-        return exports;
-    }
     public void setDeployables(List<String> deployables) {
         this.deployables = deployables;
     }
@@ -96,6 +94,12 @@ public class InstalledContribution implements Serializable {
     }
     public List<String> getNamespaceExports() {
         return namespaceExports;
+    }
+    public List<String> getJavaImports() {
+        return javaImports;
+    }
+    public List<String> getNamespaceImports() {
+        return namespaceImports;
     }
     
     /**
