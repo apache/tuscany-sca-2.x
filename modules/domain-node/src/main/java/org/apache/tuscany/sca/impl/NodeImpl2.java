@@ -198,29 +198,21 @@ public class NodeImpl2 {
         // load it to check its valid composite XML
         Composite composite = compositeFromXML(compositeXML);
         
-        addDeploymentComposite(ic, composite);
-        return composite.getURI();
-    }
-
-    protected Composite compositeFromXML(Reader compositeXML) throws XMLStreamException, ContributionReadException, ValidationException {
-        Monitor monitor = deployer.createMonitor();
-        Composite composite = deployer.loadXMLDocument(compositeXML, monitor);
-        monitor.analyzeProblems();
-        return composite;
+        return addDeploymentComposite(ic, composite);
     }
 
     public String addDeploymentComposite(String contributionURI, Composite composite) {
         InstalledContribution ic = getInstalledContribution(contributionURI);
-        addDeploymentComposite(ic, composite);
-        return composite.getURI();
+        return addDeploymentComposite(ic, composite);
     }
 
-    protected void addDeploymentComposite(InstalledContribution ic, Composite composite) {
+    protected String addDeploymentComposite(InstalledContribution ic, Composite composite) {
         if (composite.getURI() == null || composite.getURI().length() < 1) {
             composite.setURI(composite.getName().getLocalPart() + ".composite");
         }
         ic.getAdditionalDeployables().put(composite.getURI(), compositeToXML(composite));
         domainRegistry.updateInstalledContribution(ic);
+        return composite.getURI();
     }
 
     public void validateContribution(String contributionURI) throws ContributionReadException, ValidationException {
@@ -393,4 +385,10 @@ public class NodeImpl2 {
         }
     }
     
+    protected Composite compositeFromXML(Reader compositeXML) throws XMLStreamException, ContributionReadException, ValidationException {
+        Monitor monitor = deployer.createMonitor();
+        Composite composite = deployer.loadXMLDocument(compositeXML, monitor);
+        monitor.analyzeProblems();
+        return composite;
+    }
 }
