@@ -196,7 +196,7 @@ public class NodeImpl2 {
         InstalledContribution ic = getInstalledContribution(contributionURI);
         
         // load it to check its valid composite XML
-        Composite composite = compositeFromXML(compositeXML);
+        Composite composite = deployer.loadXMLDocument(compositeXML);
         
         return addDeploymentComposite(ic, composite);
     }
@@ -312,7 +312,7 @@ public class NodeImpl2 {
                     String compositeXML = ic.getAdditionalDeployables().get(uri);
                     Composite composite;
                     try {
-                        composite = compositeFromXML(new StringReader(compositeXML));
+                        composite = deployer.loadXMLDocument(new StringReader(compositeXML));
                     } catch (XMLStreamException e) {
                         throw new ContributionReadException(e);
                     }
@@ -383,12 +383,5 @@ public class NodeImpl2 {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-    
-    protected Composite compositeFromXML(Reader compositeXML) throws XMLStreamException, ContributionReadException, ValidationException {
-        Monitor monitor = deployer.createMonitor();
-        Composite composite = deployer.loadXMLDocument(compositeXML, monitor);
-        monitor.analyzeProblems();
-        return composite;
     }
 }
