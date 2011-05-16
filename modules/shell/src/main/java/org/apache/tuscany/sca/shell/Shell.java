@@ -45,8 +45,11 @@ import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
+import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
+import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceExport;
+import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.monitor.ValidationException;
@@ -221,6 +224,16 @@ public class Shell {
             } else {
                 out.println(curi);
                 out.println("   URL: " + c.getLocation());
+
+                List<String> ims = new ArrayList<String>();
+                for (Import im : c.getImports()) {
+                    if (im instanceof JavaImport) {
+                        ims.add(((JavaImport)im).getPackage());
+                    } else if (im instanceof NamespaceImport) {
+                        ims.add(((NamespaceImport)im).getNamespace());
+                    }
+                }
+                out.println("   Imports: " + ims);
 
                 List<String> es = new ArrayList<String>();
                 for (Export e : c.getExports()) {
