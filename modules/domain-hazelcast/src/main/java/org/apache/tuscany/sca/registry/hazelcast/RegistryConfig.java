@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.endpoint.hazelcast;
+package org.apache.tuscany.sca.registry.hazelcast;
 
 import java.util.ArrayList;
 import java.util.HashMap;

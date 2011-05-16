@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.endpoint.hazelcast.client;
+package org.apache.tuscany.sca.regsitry.hazelcast.client;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -28,8 +28,8 @@ import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.endpoint.hazelcast.HazelcastDomainRegistry;
-import org.apache.tuscany.sca.endpoint.hazelcast.RegistryConfig;
+import org.apache.tuscany.sca.registry.hazelcast.HazelcastDomainRegistry;
+import org.apache.tuscany.sca.registry.hazelcast.RegistryConfig;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 
 import com.hazelcast.client.ClientProperties;

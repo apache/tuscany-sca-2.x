@@ -17,30 +17,30 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.endpoint.hazelcast.client;
+package org.apache.tuscany.sca.registry.hazelcast;
+
+import java.util.Properties;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.runtime.BaseDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
+import org.apache.tuscany.sca.runtime.RuntimeProperties;
 
 /**
  * The utility responsible for finding the endpoint regstry by the scheme and creating instances for the
  * given domain
  */
-public class HazelcastClientDomainRegistryFactory extends BaseDomainRegistryFactory {
-    private final static String[] schemes = new String[] {"hazelcastclient", "tuscanyclient"};
+public class HazelcastDomainRegistryFactory extends BaseDomainRegistryFactory {
+    private final static String[] schemes = new String[] {"multicast", "wka", "tuscany", "hazelcast", "uri"};
 
-    /**
-     * @param extensionRegistry
-     */
-    public HazelcastClientDomainRegistryFactory(ExtensionPointRegistry registry) {
+    public HazelcastDomainRegistryFactory(ExtensionPointRegistry registry) {
         super(registry);
     }
 
     protected DomainRegistry createEndpointRegistry(String endpointRegistryURI, String domainURI) {
-        DomainRegistry domainRegistry =
-            new HazelcastClientEndpointRegistry(registry, null, endpointRegistryURI, domainURI);
-        return domainRegistry;
+        Properties properties = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
+        return new HazelcastDomainRegistry(registry, properties, endpointRegistryURI, domainURI);
     }
 
     public String[] getSupportedSchemes() {
