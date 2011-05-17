@@ -32,10 +32,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
-import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
-import org.apache.tuscany.sca.monitor.ValidationException;
-import org.apache.tuscany.sca.runtime.ActivationException;
-import org.apache.tuscany.sca.shell.Shell;
 
 /**
  * Maven Mojo to start a Tuscany runtime and install the project as an SCA
@@ -134,10 +130,16 @@ public class TuscanyStartMojo extends AbstractMojo {
             
             Node node = runtime.createNode(domainURI);
             for (String c : contributionList) {
+                String curi;
                 try {
-                    node.installContribution(null, c, null, null, true);
+                    curi = node.installContribution(null, c, null, null);
                 } catch (Exception e) {
                     throw new MojoExecutionException("Exception installing contribution", e);
+                }
+                try {
+                    node.startDeployables(curi);
+                } catch (Exception e) {
+                    throw new MojoExecutionException("Exception starting deployables for contribution " + curi, e);
                 }
             }
         }
