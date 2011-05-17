@@ -19,8 +19,14 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
@@ -29,6 +35,11 @@ import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProce
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.w3c.dom.Document;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSOutput;
+import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.SAXException;
 
 public class Utils {
     
@@ -44,14 +55,31 @@ public class Utils {
             staxProcessor.write(model, bos, new ProcessorContext(extensionPointRegistry));
             bos.close();
 
-// TODO: support pretty printing            
-//            if (!pretty) {
+            if (!pretty) {
                 return bos.toString();
-//            }
+            }
+
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder parser = factory.newDocumentBuilder();
+            Document document = parser.parse(new ByteArrayInputStream(bos.toByteArray()));        
             
+            DOMImplementationLS domImplementationLS = (DOMImplementationLS) document.getImplementation().getFeature("LS", "3.0");
+            LSSerializer lsSerializer = domImplementationLS.createLSSerializer();
+            lsSerializer.getDomConfig().setParameter("format-pretty-print", Boolean.TRUE);
+            LSOutput lsOutput = domImplementationLS.createLSOutput();
+            lsOutput.setEncoding("UTF-8");
+            StringWriter stringWriter = new StringWriter();
+            lsOutput.setCharacterStream(stringWriter);
+            lsSerializer.write(document, lsOutput);
+            return stringWriter.toString();
+
         } catch (ContributionWriteException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (SAXException e) {
+            throw new RuntimeException(e);
+        } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
     }
