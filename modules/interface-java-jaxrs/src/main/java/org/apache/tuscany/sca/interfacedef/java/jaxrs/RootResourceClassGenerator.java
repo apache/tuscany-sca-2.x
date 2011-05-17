@@ -89,8 +89,14 @@ public class RootResourceClassGenerator implements Opcodes {
                                        String produces) {
         String methodDescriptor = Type.getMethodDescriptor(method);
 
+        String signatureString = getSignature(method);
+
         MethodVisitor mv =
-            cw.visitMethod(ACC_PUBLIC, method.getName(), methodDescriptor, null, getExceptionInternalNames(method));
+            cw.visitMethod(ACC_PUBLIC,
+                           method.getName(),
+                           methodDescriptor,
+                           signatureString,
+                           getExceptionInternalNames(method));
 
         mv.visitCode();
         mv.visitFieldInsn(GETSTATIC, className, DELEGATE_FIELD, getSignature(interfaceName));
@@ -106,6 +112,21 @@ public class RootResourceClassGenerator implements Opcodes {
         int size = paramTypes.length + 1;
         mv.visitMaxs(size, size);
         mv.visitEnd();
+    }
+
+    /**
+     * [rfeng] A hack to get the generic method signature
+     * @param method
+     * @return
+     */
+    private static String getSignature(Method method) {
+        try {
+            Field field = method.getClass().getDeclaredField("signature");
+            field.setAccessible(true);
+            return (String)field.get(method);
+        } catch (Throwable e) {
+            return null;
+        }
     }
 
     private static String[] getExceptionInternalNames(Method method) {

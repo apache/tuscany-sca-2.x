@@ -20,7 +20,11 @@
 package org.apache.tuscany.sca.interfacedef.java.jaxrs;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
@@ -35,17 +39,21 @@ import org.junit.Test;
 public class RootResourceClassGeneratorTestCase {
     @Test
     public void testGenerator() throws Exception {
-        Class<?> cls = RootResourceClassGenerator.generateRootResourceClass(Resource.class, "myURI", "application/xml,application/json", "application/xml,application/json");
+        Class<?> cls =
+            RootResourceClassGenerator.generateRootResourceClass(Resource.class,
+                                                                 "myURI",
+                                                                 "application/xml,application/json",
+                                                                 "application/xml,application/json");
         Assert.assertTrue(cls.isAnnotationPresent(Path.class));
         Path path = cls.getAnnotation(Path.class);
         Assert.assertEquals("myURI", path.value());
-        
+
         Produces produces = cls.getAnnotation(Produces.class);
         Assert.assertEquals("application/xml", produces.value()[0]);
 
         Consumes consumes = cls.getAnnotation(Consumes.class);
         Assert.assertEquals("application/json", consumes.value()[1]);
-        
+
         Field field = cls.getField("delegate");
         Assert.assertSame(Resource.class, field.getType());
 
@@ -53,6 +61,13 @@ public class RootResourceClassGeneratorTestCase {
         Assert.assertTrue(Modifier.isStatic(field.getModifiers()));
 
         Assert.assertTrue(Resource.class.isAssignableFrom(cls));
+
+        Method m = cls.getMethod("getList", List.class);
+        System.out.println(m.toGenericString());
+        Type type = m.getGenericParameterTypes()[0];
+        Assert.assertTrue(type instanceof ParameterizedType);
+        ParameterizedType pType = (ParameterizedType)type;
+        Assert.assertEquals(String.class, pType.getActualTypeArguments()[0]);
 
         Resource resource = new MockedResource();
         field.set(null, resource);

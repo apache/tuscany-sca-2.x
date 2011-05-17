@@ -19,10 +19,11 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxrs;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-
 
 @Path("myURI")
 @Produces({"application/xml", "application/json"})
@@ -33,7 +34,6 @@ public class ResourceWrapper implements Resource {
     public ResourceWrapper() {
         super();
     }
-
 
     public String get() {
         return delegate.get();
@@ -49,6 +49,11 @@ public class ResourceWrapper implements Resource {
 
     public void update(String value) {
         delegate.update(value);
+    }
+
+    @Override
+    public String getList(List<String> names) {
+        return delegate.getList(names);
     }
 
 }

@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxrs;
 
+import java.util.List;
+
 public class MockedResource implements Resource {
     private String value;
 
@@ -40,5 +42,10 @@ public class MockedResource implements Resource {
 
     public void update(String value) {
         this.value = value;
+    }
+
+    @Override
+    public String getList(List<String> names) {
+        return value;
     }
 }

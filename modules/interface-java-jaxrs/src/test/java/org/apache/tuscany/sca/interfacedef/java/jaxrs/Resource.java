@@ -19,10 +19,13 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxrs;
 
+import java.util.List;
+
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import javax.ws.rs.QueryParam;
 
 import org.oasisopen.sca.annotation.Remotable;
 
@@ -31,6 +34,9 @@ public interface Resource {
 
     @GET
     String get();
+    
+    @GET
+    String getList(@QueryParam("list") List<String> names);
 
     @PUT
     void update(String value);
