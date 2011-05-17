@@ -243,4 +243,11 @@ public interface Node {
     List<String> getDeployableCompositeURIs(String contributionURI);
 
     void validateContribution(String string) throws ContributionReadException, ValidationException;
+    
+    // TODO: Add methods to get:
+    //   active members in domain
+    //   which composites are running on which members
+    //   start and stop composites on remote members
+    //   get/display contribution content
+    //   a view-only Node
 }
