@@ -26,6 +26,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.Export;
+import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.java.JavaExport;
+import org.apache.tuscany.sca.contribution.java.JavaImport;
+import org.apache.tuscany.sca.contribution.namespace.NamespaceExport;
+import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
+
 public class InstalledContribution implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -41,9 +50,6 @@ public class InstalledContribution implements Serializable {
     private List<String> namespaceExports = new ArrayList<String>();
     private List<String> javaImports = new ArrayList<String>();
     private List<String> namespaceImports = new ArrayList<String>();
-    
-    private String metaData;
-    private boolean overwriteMetaData;
     
     // the URI and XML content of composites to include in the contribution
     private Map<String, String> additionalDeployables = new HashMap<String, String>();
@@ -74,18 +80,6 @@ public class InstalledContribution implements Serializable {
     public List<String> getDependentContributionURIs() {
         return dependentContributionURIs;
     }
-    public String getMetaData() {
-        return metaData;
-    }
-    public void setMetaData(String metaData) {
-        this.metaData = metaData;
-    }
-    public boolean isOverwriteMetaData() {
-        return overwriteMetaData;
-    }
-    public void setOverwriteMetaData(boolean overwriteMetaData) {
-        this.overwriteMetaData = overwriteMetaData;
-    }
     public Map<String, String> getAdditionalDeployables() {
         return additionalDeployables;
     }
@@ -100,6 +94,37 @@ public class InstalledContribution implements Serializable {
     }
     public List<String> getNamespaceImports() {
         return namespaceImports;
+    }
+    
+    public void configureMetaData(Contribution contribution) {
+
+        if (contribution.getDeployables() != null) {
+            for (Composite composite : contribution.getDeployables()) {
+                getDeployables().add(composite.getURI());
+            }
+        }
+
+        if (contribution.getExports() != null) {
+            for (Export export : contribution.getExports()) {
+                // TODO: Handle these and others in a more extensible way
+                if (export instanceof JavaExport) {
+                    getJavaExports().add(((JavaExport)export).getPackage());
+                } else if (export instanceof NamespaceExport) {
+                    getNamespaceExports().add(((NamespaceExport)export).getNamespace());
+                } 
+            }
+        }
+        
+        if (contribution.getImports() != null) {
+            for (Import imprt : contribution.getImports()) {
+                // TODO: Handle these and others in a more extensible way
+                if (imprt instanceof JavaImport) {
+                    getJavaImports().add(((JavaImport)imprt).getPackage());
+                } else if (imprt instanceof NamespaceImport) {
+                    getNamespaceImports().add(((NamespaceImport)imprt).getNamespace());
+                } 
+            }
+        }
     }
     
     /**
