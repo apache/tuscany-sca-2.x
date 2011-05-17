@@ -35,12 +35,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.xml.Utils;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -140,7 +143,8 @@ public class Shell {
     }
 
     boolean domainComposite() {
-        System.out.println(getNode().getDomainLevelCompositeAsString());
+        Composite domainComposite = getNode().getDomainComposite();
+        System.out.println(Utils.modelToXML(domainComposite, true, runtime.getExtensionPointRegistry()));
         return true;
     }
 
@@ -187,7 +191,7 @@ public class Shell {
         
         curl = mavenProject(curl);
 
-        String uri = getNode().installContribution(curi, curl, metaDataURL, duris, startDeployables);
+        String uri = getNode().installContribution(curi, curl, metaDataURL, duris);
         out.println("installed at: " + uri);
         return true;
     }
@@ -212,13 +216,13 @@ public class Shell {
         return curl;
     }
 
-    boolean installed(final List<String> toks) {
+    boolean installed(final List<String> toks) throws ContributionReadException, ValidationException {
         if (getNode() == null) {
             return true;
         }
         if (toks.size() > 1) {
             String curi = toks.get(1);
-            Contribution c = getNode().getInstalledContribution(toks.get(1));
+            Contribution c = getNode().getContribution(toks.get(1));
             if (c == null) {
                 out.println("Contribution " + curi + " not installed");
             } else {
@@ -310,11 +314,11 @@ public class Shell {
         throw new IllegalArgumentException("Invalid service operation: " + operationName);
     }
 
-    boolean listComposites(final String curi) {
+    boolean listComposites(final String curi) throws ContributionReadException, ValidationException {
         if (getNode() == null) {
             return true;
         }
-        Contribution c = getNode().getInstalledContribution(curi);
+        Contribution c = getNode().getContribution(curi);
         for (Artifact a : c.getArtifacts()) {
             if (a.getModel() instanceof Composite) {
                 out.println(((Composite)a.getModel()).getName());
@@ -335,7 +339,7 @@ public class Shell {
             out.println("not in domain, use domain command first");
             return true;
         }
-        getNode().removeContribution(curi);
+        getNode().uninstallContribution(curi);
         return true;
     }
 
@@ -379,10 +383,10 @@ public class Shell {
     public boolean stop(List<String> toks) throws ActivationException {
         String curi = toks.get(1);
         if (toks.size() > 2) {
-            getNode().stop(curi, toks.get(2));
+            getNode().stopComposite(curi, toks.get(2));
         } else {
             if (standaloneNodes.containsKey(curi)) {
-                standaloneNodes.remove(curi).stop();
+//                standaloneNodes.remove(curi).stopComposite(); // TODO continue standalone support?
             } else if (nodes.containsKey(curi)) {
                 Node n = nodes.remove(curi);
                 n.stop();
@@ -390,9 +394,11 @@ public class Shell {
                     currentDomain = "";
                 }
             } else {
-                for (String compositeURI : getNode().getStartedCompositeURIs(curi)) {
-                    getNode().stop(curi, compositeURI);
-                }
+                out.println("TODO finish stop support");
+                
+//                for (String compositeURI : getNode().getStartedComposites()StartedCompositeURIs(curi)) {
+//                    getNode().stop(curi, compositeURI);
+//                }
             }
         }
         return true;
@@ -410,7 +416,7 @@ public class Shell {
     }
 
     boolean start(String curi, String compositeURI) throws ActivationException, ValidationException, ContributionReadException {
-        getNode().start(curi, compositeURI);
+        getNode().startComposite(curi, compositeURI);
 
 //        Contribution c = getNode().getInstalledContribution(curi);
 //        for (Artifact a : c.getArtifacts()) {
@@ -444,8 +450,9 @@ public class Shell {
             out.println("Standalone Nodes:");
             for (String nodeName : standaloneNodes.keySet()) {
                 Node node = standaloneNodes.get(nodeName);
-                for (String curi : node.getInstalledContributionURIs()) {
-                    for (String dc : node.getStartedCompositeURIs(curi)) {
+                Map<String, List<QName>> scs = node.getStartedComposites();
+                for (String curi : scs.keySet()) {
+                    for (QName dc : scs.get(curi)) {
                         out.println("   " + nodeName + " " + dc);
                     }
                 }
@@ -464,24 +471,15 @@ public class Shell {
                 }
 
                 for (String curi : ics) {
-                    Contribution c = node.getInstalledContribution(curi);
-                    List<String> dcs = node.getStartedCompositeURIs(curi);
-                    if (toks.size() > 2) {
-                        dcs = new ArrayList<String>();
-                        dcs.add(toks.get(2));
-                    } else {
-                        dcs = node.getStartedCompositeURIs(curi);
-                    }
-                    for (String compositeUri : dcs) {
-                        for (Artifact a : c.getArtifacts()) {
-                            if (compositeUri.equals(a.getURI())) {
-                                out.println("   " + curi
-                                    + " "
-                                    + compositeUri
-                                    + " "
-                                    + ((Composite)a.getModel()).getName());
-                            }
-                        }
+                    List<QName> cs = node.getStartedComposites().get(curi);
+                    if (cs != null) {
+                        for (QName compositeQN : cs) {
+                            out.println("   " + curi
+                                + " "
+                                + "XXX"
+                                + " "
+                                + compositeQN);
+                }
                     }
                 }
             }

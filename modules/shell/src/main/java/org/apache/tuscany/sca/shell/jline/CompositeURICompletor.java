@@ -27,6 +27,8 @@ import jline.SimpleCompletor;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.shell.Shell;
 
 /**
@@ -47,7 +49,12 @@ public class CompositeURICompletor extends SimpleCompletor {
         if (shell.getNode() == null) {
             return -1;
         }
-       Contribution c = shell.getNode().getInstalledContribution(getContributionURI());
+       Contribution c;
+       try {
+           c = shell.getNode().getContribution(getContributionURI());
+       } catch (Exception e) {
+           c = null;
+       }
        if (c == null) {
            return -1;
        }
