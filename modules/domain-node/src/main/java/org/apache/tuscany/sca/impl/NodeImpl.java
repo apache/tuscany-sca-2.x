@@ -218,6 +218,7 @@ public class NodeImpl implements Node {
         }
     }
     
+    // TODO: should this be composite uri instead of QName?
     public Map<String, List<QName>> getStartedComposites() {
         return domainRegistry.getRunningCompositeNames();
     }
@@ -276,7 +277,8 @@ public class NodeImpl implements Node {
     public <T> T getService(Class<T> interfaze, String serviceURI) throws NoSuchServiceException {
         return ServiceHelper.getService(interfaze, serviceURI, domainRegistry, extensionPointRegistry, deployer);
     }
-    
+
+    // TODO: should this be exposed on the interface?
     protected InstalledContribution getInstalledContribution(String contributionURI) {
         InstalledContribution ic = domainRegistry.getInstalledContribution(contributionURI);
         if (ic == null) {

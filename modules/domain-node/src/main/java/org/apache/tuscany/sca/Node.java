@@ -34,11 +34,24 @@ import org.apache.tuscany.sca.runtime.ActivationException;
 import org.oasisopen.sca.NoSuchServiceException;
 
 /**
- * A Node is a collection of contributions and started composites which are part
- * of an SCA Domain. 
+ * A Node provides APIs to configure, update, and view an SCA domain
  */
 public interface Node {
 
+    /**
+     * Creates an installed contribution from a supplied root contribution URL.
+     * See section 10.5.1 of the Assembly Specification. This method is the same
+     * as calling installContribution(null, contributionURL, null, null)
+     * 
+     * @param contributionURL  the URL where the contribution is located
+     * @return the URI of the installed contribution
+     * 
+     * @throws ContributionReadException 
+     * @throws ActivationException 
+     * @throws ValidationException 
+     */
+    String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException;
+    
     /**
      * Creates an installed contribution from a supplied root contribution and installed at a supplied base URI.
      * See section 10.5.1 of the Assembly Specification.
@@ -57,40 +70,16 @@ public interface Node {
      */
     String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ActivationException, ValidationException;
 
+    /**
+     * Creates an installed contribution from a supplied Contribution object.
+     * See section 10.5.1 of the Assembly Specification.
+     * 
+     * @param contribution  the Contribution object
+     * @param dependentContributionURIs  specifies the contributions that are used to resolve the dependencies of the 
+     *               root contribution and other dependent contributions. May be null.
+     */
     void installContribution(Contribution contribution, List<String> dependentContributionURIs);
 
-// TODO: I'd still like this one but not in NodeImpl/registry yet    
-//    /**
-//     * Creates an installed contribution from a supplied Contribution object.
-//     * See section 10.5.1 of the Assembly Specification.
-//     * 
-//     * @param contribution  the Contribution object
-//     * @param dependentContributionURIs  specifies the contributions that are used to resolve the dependencies of the 
-//     *               root contribution and other dependent contributions. May be null.
-//     * @param startDeployables  true if the composites defined as deployable in the contribution's sca-contribution.xml
-//     *               file or supplied metaData file should be started, false if they should not be. 
-//     * @return the URI of the installed contribution
-//     * 
-//     * @throws ContributionReadException 
-//     * @throws ActivationException 
-//     * @throws ValidationException 
-//     */
-//    String installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean startDeployables) throws ContributionReadException, ActivationException, ValidationException;
-
-    /**
-     * Creates an installed contribution from a supplied root contribution URL.
-     * See section 10.5.1 of the Assembly Specification. This method is the same
-     * as calling installContribution(null, contributionURL, null, null, true)
-     * 
-     * @param contributionURL  the URL where the contribution is located
-     * @return the URI of the installed contribution
-     * 
-     * @throws ContributionReadException 
-     * @throws ActivationException 
-     * @throws ValidationException 
-     */
-    String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException;
-    
     /**
      * 4599 10.5.2 add Deployment Composite & update Deployment Composite
      * 4600 Adds or updates a deployment composite using a supplied composite ("composite by value" - a data
@@ -168,8 +157,6 @@ public interface Node {
      */
     void startComposite(String contributionURI, String compositeURI) throws ActivationException, ValidationException, ContributionReadException;
 
-    List<String> startDeployables(String contributionURI) throws ActivationException, ValidationException, ContributionReadException;
-    
     /**
      * 4687 10.7.2 remove From Domain-Level Composite
      * 4688 Removes from the Domain Level composite the elements corresponding to the composite identified by a
@@ -181,6 +168,16 @@ public interface Node {
      */
     void stopComposite(String contributionURI, String compositeURI) throws ActivationException;
 
+    /**
+     * Starts all the deployable composites in a contriubution
+     * @param contributionURI
+     * @return the list of composite URIs which were started
+     * @throws ActivationException
+     * @throws ValidationException
+     * @throws ContributionReadException
+     */
+    List<String> startDeployables(String contributionURI) throws ActivationException, ValidationException, ContributionReadException;
+    
     /**
      * 10.7.3 get Domain-Level Composite
      * Returns a <composite> definition that has an <include> line for each composite that had been added to
@@ -243,59 +240,7 @@ public interface Node {
     
     String getDomainName();
 
-// TODO: the spec is unclear if update is different from remove/install, leave it out for now    
-//    /**
-//     * 4577 10.5.1 install Contribution & update Contribution
-//     * 4578 Creates or updates an installed contribution with a supplied root contribution, and installed at a supplied
-//     * 4579 base URI. A supplied dependent contribution list (<export/> elements) specifies the contributions that are
-//     * 4580 used to resolve the dependencies of the root contribution and other dependent contributions. These
-//     * 4581 override any dependent contributions explicitly listed via the @location attribute in the import statements
-//     * 4582 of the contribution.
-//     * 4583 SCA follows the simplifying assumption that the use of a contribution for resolving anything also means
-//     * 4584 that all other exported artifacts can be used from that contribution. Because of this, the dependent
-//     * 4585 contribution list is just a list of installed contribution URIs. There is no need to specify what is being used
-//     * 4586 from each one.
-//     * 4587 Each dependent contribution is also an installed contribution, with its own dependent contributions. By
-//     * 4588 default these dependent contributions of the dependent contributions (which we will call indirect
-//     * 4589 dependent contributions) are included as dependent contributions of the installed contribution. However,
-//     * 4590 if a contribution in the dependent contribution list exports any conflicting definitions with an indirect
-//     * 4591 dependent contribution, then the indirect dependent contribution is not included (i.e. the explicit list
-//     * 4592 overrides the default inclusion of indirect dependent contributions). Also, if there is ever a conflict
-//     * 4593 between two indirect dependent contributions, then the conflict MUST be resolved by an explicit entry in
-//     * 4594 the dependent contribution list.
-//     * 4595 [ASM12009]
-//     * 4596 Note that in many cases, the dependent contribution list can be generated. In particular, if the creator of
-//     * 4597 a Domain is careful to avoid creating duplicate definitions for the same qualified name, then it is easy for
-//     * 4598 this list to be generated by tooling.
-//     *  
-//     * @param uri
-//     * @param contributionURL
-//     */
-//    void updateContribution(String uri, String contributionURL);
-//    void updateContribution(Contribution contribution);
-//    /**
-//     * 4599 10.5.2 add Deployment Composite & update Deployment Composite
-//     * 4600 Adds or updates a deployment composite using a supplied composite ("composite by value" - a data
-//     * 4601 structure, not an existing resource in the Domain) to the contribution identified by a supplied contribution
-//     * 4602 URI. The added or updated deployment composite is given a relative URI that matches the @name
-//     * 4603 attribute of the composite, with a ".composite" suffix. Since all composites run within the context of a
-//     * 4604 installed contribution (any component implementations or other definitions are resolved within that
-//     * 4605 contribution), this functionality makes it possible for the deployer to create a composite with final
-//     * 4606 configuration and wiring decisions and add it to an installed contribution without having to modify the
-//     * 4607 contents of the root contribution.
-//     * 4608 Also, in some use cases, a contribution might include only implementation code (e.g. PHP scripts). It is
-//     * 4609 then possible for those to be given component names by a (possibly generated) composite that is added
-//     * 4610 into the installed contribution, without having to modify the packaging.     * 
-//     * 
-//     * @param uri
-//     * @param compositeXML
-//     * @return
-//     */
-//    String updateDeploymentComposite(String uri, Reader compositeXML);
-//    String updateDeploymentComposite(String uri, Composite composite);
-    
     List<String> getDeployableCompositeURIs(String contributionURI);
 
     void validateContribution(String string) throws ContributionReadException, ValidationException;
-
 }
