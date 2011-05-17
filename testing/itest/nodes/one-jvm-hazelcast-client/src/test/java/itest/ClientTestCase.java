@@ -46,8 +46,10 @@ public class ClientTestCase{
     public static void setUpBeforeClass() throws Exception {
         node = TuscanyRuntime.newInstance().createNode(domainURI);
         node.installContribution("../helloworld-iface/target/classes");
-        node.installContribution("../helloworld-service/target/classes");
-        node.installContribution("../helloworld-client/target/classes");   
+        String c1 = node.installContribution("../helloworld-service/target/classes");
+        String c2 = node.installContribution("../helloworld-client/target/classes");   
+        node.startDeployables(c1);
+        node.startDeployables(c2);
     }
 
     @Test
