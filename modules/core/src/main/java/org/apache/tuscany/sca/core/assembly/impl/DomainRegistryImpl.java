@@ -191,10 +191,12 @@ public class DomainRegistryImpl extends BaseDomainRegistry implements DomainRegi
     public Map<String, List<QName>> getRunningCompositeNames() {
        Map<String, List<QName>> compositeNames = new HashMap<String, List<QName>>();
        for (String curi : runningComposites.keySet()) {
-           List<QName> names = new ArrayList<QName>();
-           compositeNames.put(curi, names);
-           for (QName qn : runningComposites.get(curi).keySet()) {
-               names.add(qn);
+           if (runningComposites.get(curi).size() > 0) {
+               List<QName> names = new ArrayList<QName>();
+               compositeNames.put(curi, names);
+               for (QName qn : runningComposites.get(curi).keySet()) {
+                   names.add(qn);
+               }
            }
        }
         return compositeNames;
