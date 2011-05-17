@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamException;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -42,7 +43,7 @@ public class Node2TestCase {
 
     @Test
     public void localInstall() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        NodeImpl2 node = TuscanyRuntime.newInstance().createNode2("ImportTestCase");
+        Node node = TuscanyRuntime.newInstance().createNode("ImportTestCase");
         node.installContribution("src/test/resources/import.jar");
 
         Assert.assertEquals(1, node.getInstalledContributionURIs().size());
@@ -53,7 +54,7 @@ public class Node2TestCase {
 
     @Test
     public void remoteInstall() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        NodeImpl2 node = TuscanyRuntime.newInstance().createNode2("ImportTestCase");
+        Node node = TuscanyRuntime.newInstance().createNode("ImportTestCase");
         node.installContribution("https://repository.apache.org/content/groups/snapshots/org/apache/tuscany/sca/samples/helloworld/2.0-SNAPSHOT/helloworld-2.0-SNAPSHOT.jar");
 
         Assert.assertEquals(1, node.getInstalledContributionURIs().size());
@@ -64,7 +65,7 @@ public class Node2TestCase {
 
     @Test
     public void DistributedInstall() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        NodeImpl2 nodeA = TuscanyRuntime.newInstance().createNode2("uri:DistributedInstall");
+        Node nodeA = TuscanyRuntime.newInstance().createNode("uri:DistributedInstall");
         nodeA.installContribution("https://repository.apache.org/content/groups/snapshots/org/apache/tuscany/sca/samples/helloworld/2.0-SNAPSHOT/helloworld-2.0-SNAPSHOT.jar");
         nodeA.installContribution("src/test/resources/export.jar");
 
@@ -74,21 +75,21 @@ public class Node2TestCase {
         Contribution cA = nodeA.getContribution("helloworld");
         Assert.assertNotNull(cA);
         
-        NodeImpl2 nodeB = TuscanyRuntime.newInstance().createNode2("uri:DistributedInstall");
+        Node nodeB = TuscanyRuntime.newInstance().createNode("uri:DistributedInstall");
         Assert.assertEquals(2, nodeB.getInstalledContributionURIs().size());
         Assert.assertTrue(nodeB.getInstalledContributionURIs().contains("export"));
         Assert.assertTrue(nodeB.getInstalledContributionURIs().contains("helloworld"));
         Contribution cB = nodeB.getContribution("helloworld");
         Assert.assertNotNull(cB);
 
-        InstalledContribution ic = nodeB.getInstalledContribution("export");
+        InstalledContribution ic = ((NodeImpl)nodeB).getInstalledContribution("export");
         Assert.assertEquals(1, ic.getJavaExports().size());
         Assert.assertEquals("sample", ic.getJavaExports().get(0));
     }
     
     @Test
     public void deployables() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        NodeImpl2 node = TuscanyRuntime.newInstance().createNode2("ImportTestCase");
+        Node node = TuscanyRuntime.newInstance().createNode("ImportTestCase");
         node.installContribution("src/test/resources/import.jar");
 
         Assert.assertEquals(1, node.getInstalledContributionURIs().size());
@@ -101,27 +102,27 @@ public class Node2TestCase {
 
     @Test
     public void exports() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        NodeImpl2 node = TuscanyRuntime.newInstance().createNode2("ImportTestCase");
+        Node node = TuscanyRuntime.newInstance().createNode("ImportTestCase");
         node.installContribution("src/test/resources/export.jar");
 
         Assert.assertEquals(1, node.getInstalledContributionURIs().size());
         Assert.assertEquals("export", node.getInstalledContributionURIs().get(0));
         
-        InstalledContribution ic = node.getInstalledContribution("export");
+        InstalledContribution ic = ((NodeImpl)node).getInstalledContribution("export");
         Assert.assertEquals(1, ic.getJavaExports().size());
         Assert.assertEquals("sample", ic.getJavaExports().get(0));
     }
 
     @Test
     public void validValidate() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        NodeImpl2 node = TuscanyRuntime.newInstance().createNode2("ImportTestCase");
+        Node node = TuscanyRuntime.newInstance().createNode("ImportTestCase");
         node.installContribution("src/test/resources/sample-helloworld.jar");
         node.validateContribution("sample-helloworld");
     }
 
     @Test
     public void invalidValidate() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        NodeImpl2 node = TuscanyRuntime.newInstance().createNode2("ImportTestCase");
+        Node node = TuscanyRuntime.newInstance().createNode("ImportTestCase");
         node.installContribution("src/test/resources/import.jar");
         try {
             node.validateContribution("import");
@@ -132,7 +133,7 @@ public class Node2TestCase {
 
     @Test
     public void importExportValidate() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        NodeImpl2 node = TuscanyRuntime.newInstance().createNode2("ImportTestCase");
+        Node node = TuscanyRuntime.newInstance().createNode("ImportTestCase");
         node.installContribution("src/test/resources/import.jar");
         try {
             node.validateContribution("import");
@@ -148,14 +149,14 @@ public class Node2TestCase {
 
     @Test
     public void importExportDistributedValidate() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        NodeImpl2 nodeA = TuscanyRuntime.newInstance().createNode2("uri:ImportTestCase");
+        Node nodeA = TuscanyRuntime.newInstance().createNode("uri:ImportTestCase");
         nodeA.installContribution("src/test/resources/import.jar");
         try {
             nodeA.validateContribution("import");
         } catch (ValidationException e) {
             // expected
         }
-        NodeImpl2 nodeB = TuscanyRuntime.newInstance().createNode2("uri:ImportTestCase");
+        Node nodeB = TuscanyRuntime.newInstance().createNode("uri:ImportTestCase");
         nodeB.installContribution("src/test/resources/export.jar");
         nodeA.validateContribution("import");
         nodeA.startComposite("import", "helloworld.composite");
@@ -165,7 +166,7 @@ public class Node2TestCase {
 
     @Test
     public void startTest() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        NodeImpl2 node = TuscanyRuntime.newInstance().createNode2("ImportTestCase");
+        Node node = TuscanyRuntime.newInstance().createNode("ImportTestCase");
         node.installContribution("src/test/resources/sample-helloworld.jar");
         Assert.assertEquals(0, node.getStartedComposites().size());
 
@@ -183,7 +184,7 @@ public class Node2TestCase {
 
     @Test
     public void addDeploymentCompositeTest() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, XMLStreamException {
-        NodeImpl2 node = TuscanyRuntime.newInstance().createNode2("addDeploymentCompositeTest");
+        Node node = TuscanyRuntime.newInstance().createNode("addDeploymentCompositeTest");
         String curi = node.installContribution("src/test/resources/sample-helloworld.jar");
 
         String compositeXML =

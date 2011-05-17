@@ -35,7 +35,8 @@ public class TwoNodesTestCase {
     @Test
     public void testInstallDeployable() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
         Node node1 = TuscanyRuntime.newInstance().createNode("uri:TwoNodesTestCase?multicast=off&bind=127.0.0.1:44331");
-        node1.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null, true);
+        node1.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null);
+        node1.startComposite("helloworld", "helloworld.composite");
 
         Node node2 = TuscanyRuntime.newInstance().createNode("uri:TwoNodesTestCase?multicast=off&bind=127.0.0.1:44332&wka=127.0.0.1:44331");
 

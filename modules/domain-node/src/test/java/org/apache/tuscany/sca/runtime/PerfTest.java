@@ -39,15 +39,15 @@ public class PerfTest {
         Properties config = new Properties();
         config.setProperty(RuntimeProperties.QUIET_LOGGING, "true");
         Node node = TuscanyRuntime.newInstance(config).createNode();
-        node.installContribution(null, "src/test/resources/sample-helloworld.jar", null, null, false);
+        node.installContribution(null, "src/test/resources/sample-helloworld.jar", null, null);
         
         validate(node);
 
         int count = 3000;
         long start = System.currentTimeMillis();
         for (int i=0; i<count; i++) {
-            node.start("sample-helloworld", "helloworld.composite");
-            node.stop("sample-helloworld", "helloworld.composite");
+            node.startComposite("sample-helloworld", "helloworld.composite");
+            node.stopComposite("sample-helloworld", "helloworld.composite");
         }
         long total = System.currentTimeMillis() - start;
         System.out.println(count + " = " + total + " = " + total / (double)count);
@@ -57,12 +57,12 @@ public class PerfTest {
     }
 
     private void validate(Node node) throws ActivationException, ValidationException, NoSuchServiceException, ContributionReadException {
-        node.start("sample-helloworld", "helloworld.composite");
+        node.startComposite("sample-helloworld", "helloworld.composite");
         
         Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
         Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
         
-        node.stop("sample-helloworld", "helloworld.composite");
+        node.stopComposite("sample-helloworld", "helloworld.composite");
         try {
             node.getService(Helloworld.class, "HelloworldComponent");
             Assert.fail();

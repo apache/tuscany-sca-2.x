@@ -33,31 +33,32 @@ public class DomainCompositeTestCase {
 
     @Test
     public void localOnlyDomain() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        Node node = TuscanyRuntime.newInstance().createNode("DomainCompositeTestCase.localOnlyDomain");
+        Node node = TuscanyRuntime.newInstance().createNode("DomainCompositeTestCase");
         testIt(node);
     }
 
     @Test
     public void distributedDomain() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
-        Node node = TuscanyRuntime.newInstance().createNode("uri:DomainCompositeTestCase.distributedDomain");
+        Node node = TuscanyRuntime.newInstance().createNode("uri:DomainCompositeTestCase");
         testIt(node);
     }
 
     private void testIt(Node node) throws ContributionReadException, ActivationException, ValidationException {
-        node.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null, true);
+        node.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null);
+        node.startComposite("helloworld", "helloworld.composite");
         
-        Composite dc = node.getDomainLevelComposite();
-        Assert.assertEquals("domainComposite", dc.getName().getLocalPart());
+        Composite dc = node.getDomainComposite();
+        Assert.assertEquals("DomainCompositeTestCase", dc.getName().getLocalPart());
         Assert.assertEquals(1, dc.getIncludes().size());
         Composite c = dc.getIncludes().get(0);
         Assert.assertEquals("helloworld", c.getName().getLocalPart());
         
-        String s = node.getDomainLevelCompositeAsString();
-        System.out.println(s);
-        Assert.assertTrue(s.contains(":helloworld\""));
+//        String s = node.getDomainLevelCompositeAsString();
+//        System.out.println(s);
+//        Assert.assertTrue(s.contains(":helloworld\""));
 
-        node.stop("helloworld", "helloworld.composite");
-        Assert.assertEquals(0, node.getDomainLevelComposite().getIncludes().size());
+        node.stopComposite("helloworld", "helloworld.composite");
+        Assert.assertEquals(0, node.getDomainComposite().getIncludes().size());
     }
 
 }

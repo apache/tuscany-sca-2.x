@@ -21,6 +21,9 @@ package org.apache.tuscany.sca.runtime;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
 
@@ -41,7 +44,8 @@ public class TuscanyRuntimeTestCase {
     @Test
     public void testInstallDeployable() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
         Node node = TuscanyRuntime.newInstance().createNode("default");
-        node.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null, true);
+        node.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null);
+        node.startComposite("helloworld", "helloworld.composite");
 
         Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
         Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
@@ -50,13 +54,16 @@ public class TuscanyRuntimeTestCase {
     @Test
     public void testStopStart() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
         Node node = TuscanyRuntime.newInstance().createNode("default");
-        node.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null, true);
-        String ci = node.getStartedCompositeURIs("helloworld").get(0);
+        node.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null);
+        node.startComposite("helloworld", "helloworld.composite");
+
+        Map<String, List<QName>> ci = node.getStartedComposites();
+        Assert.assertEquals(1, ci.size());
 
         Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
         Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
 
-        node.stop("helloworld", ci);
+        node.stopComposite("helloworld", "helloworld.composite");
         try {
             node.getService(Helloworld.class, "HelloworldComponent");
             Assert.fail();
@@ -64,7 +71,7 @@ public class TuscanyRuntimeTestCase {
             // expected as there is no deployables
         }
         
-        node.start("helloworld", ci);
+        node.startComposite("helloworld", "helloworld.composite");
         helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
         Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
     }
@@ -73,8 +80,10 @@ public class TuscanyRuntimeTestCase {
     @Ignore("Depdends on itest/T3558 which isn't in the build?")
     public void testInstallWithDependent() throws NoSuchServiceException, ContributionReadException, ActivationException, ValidationException {
         Node node = TuscanyRuntime.newInstance().createNode("default");
-        node.installContribution("store", "../../itest/T3558/src/test/resources/sample-store.jar", null, null, true);
-        node.installContribution("store-client", "../../itest/T3558/src/test/resources/sample-store-client.jar", null, null, true);
+        node.installContribution("store", "../../testing/itest/T3558/src/test/resources/sample-store.jar", null, null);
+        node.installContribution("store-client", "../../testing/itest/T3558/src/test/resources/sample-store-client.jar", null, null);
+        node.startComposite("store", "store.composite");
+        node.startComposite("store-client", "store-client.composite");
 
         Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
         Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
@@ -83,7 +92,7 @@ public class TuscanyRuntimeTestCase {
     @Test
     public void testInstallNoDeployable() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
         Node node = TuscanyRuntime.newInstance().createNode("default");
-        node.installContribution("helloworld", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
+        node.installContribution("helloworld", "src/test/resources/sample-helloworld-nodeployable.jar", null, null);
 
         try {
             node.getService(Helloworld.class, "HelloworldComponent");
@@ -92,7 +101,7 @@ public class TuscanyRuntimeTestCase {
             // expected as there is no deployables
         }
 
-        node.start("helloworld", "helloworld.composite");
+        node.startComposite("helloworld", "helloworld.composite");
         Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
         Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
     }
@@ -100,7 +109,7 @@ public class TuscanyRuntimeTestCase {
     @Test
     public void testGetInstalledContributions() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
         Node node = TuscanyRuntime.newInstance().createNode("default");
-        node.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
+        node.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null);
         List<String> ics = node.getInstalledContributionURIs();
         Assert.assertEquals(1, ics.size());
         Assert.assertEquals("foo", ics.get(0));
@@ -109,8 +118,8 @@ public class TuscanyRuntimeTestCase {
     @Test
     public void testGetDeployedCompostes() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, MalformedURLException, ActivationException, ValidationException {
         Node node = TuscanyRuntime.newInstance().createNode("default");
-        node.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
-        List<String> dcs = node.getStartedCompositeURIs("foo");
+        node.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null);
+        List<String> dcs = node.startDeployables("foo");
         Assert.assertEquals(1, dcs.size());
         Assert.assertEquals("helloworld.composite", dcs.get(0));
     }
@@ -118,20 +127,25 @@ public class TuscanyRuntimeTestCase {
     @Test
     public void testRemoveComposte() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, MalformedURLException, ActivationException, ValidationException {
         Node node = TuscanyRuntime.newInstance().createNode("default");
-        node.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null, true);
-        node.stop("foo", "helloworld.composite");
-        List<String> dcs = node.getStartedCompositeURIs("foo");
-        Assert.assertEquals(0, dcs.size());
+        node.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null);
+        List<String> dcs = node.startDeployables("foo");
+        Assert.assertEquals(1, dcs.size());
+        Map<String, List<QName>> dcsx = node.getStartedComposites();
+        Assert.assertEquals(1, dcsx.size());
+        node.stopComposite("foo", "helloworld.composite");
+        dcsx = node.getStartedComposites();
+        Assert.assertEquals(0, dcsx.size());
     }
 
     @Test
     public void testInstallWithMetaData() throws ContributionReadException, ActivationException, ValidationException, NoSuchServiceException {
         Node node = TuscanyRuntime.newInstance().createNode("default");
-        ((NodeImpl)node).installContribution("helloworld", "src/test/resources/sample-helloworld-nodeployable.jar", "src/test/resources/sca-contribution-generated.xml", null, true);
+        node.installContribution("helloworld", "src/test/resources/sample-helloworld-nodeployable.jar", "src/test/resources/sca-contribution-generated.xml", null);
+        node.startComposite("helloworld", "helloworld.composite");
 
-        List<String> dcs = node.getStartedCompositeURIs("helloworld");
+        Map<String, List<QName>> dcs = node.getStartedComposites();
         Assert.assertEquals(1, dcs.size());
-        Assert.assertEquals("helloworld.composite", dcs.get(0));
+        Assert.assertEquals("helloworld", dcs.get("helloworld").get(0).getLocalPart());
 
         Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
         Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
@@ -149,9 +163,9 @@ public class TuscanyRuntimeTestCase {
         Node node = TuscanyRuntime.runComposite("helloworld.composite", "src/test/resources/sample-helloworld.jar");
         List<String> cs = node.getInstalledContributionURIs();
         Assert.assertEquals(1, cs.size());
-        List<String> dcs = node.getStartedCompositeURIs(cs.get(0));
+        Map<String, List<QName>> dcs = node.getStartedComposites();
         Assert.assertEquals(1, dcs.size());
-        Assert.assertEquals("helloworld.composite", dcs.get(0));
+        Assert.assertEquals("helloworld", dcs.get("sample-helloworld").get(0).getLocalPart());
     }
 
     @Test
@@ -159,29 +173,21 @@ public class TuscanyRuntimeTestCase {
         Node node = TuscanyRuntime.runComposite(null, "src/test/resources/sample-helloworld.jar");
         List<String> cs = node.getInstalledContributionURIs();
         Assert.assertEquals(1, cs.size());
-        List<String> dcs = node.getStartedCompositeURIs(cs.get(0));
+        Map<String, List<QName>> dcs = node.getStartedComposites();
         Assert.assertEquals(1, dcs.size());
-        Assert.assertEquals("helloworld.composite", dcs.get(0));
+        Assert.assertEquals("helloworld", dcs.get("sample-helloworld").get(0).getLocalPart());
     }
     @Test
     public void testRunComposite() throws NoSuchServiceException {
         Node node = TuscanyRuntime.runComposite("helloworld.composite", "src/test/resources/sample-helloworld.jar");
-        try {
         Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
         Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
-        } finally {
-            node.stop();
-        }
     }
 
     @Test
     public void testRunCompositeSharedRuntime() throws NoSuchServiceException {
         Node node = TuscanyRuntime.runComposite(URI.create("default"), "helloworld.composite", "src/test/resources/sample-helloworld.jar");
-        try {
         Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
         Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
-        } finally {
-            node.stop();
-        }
     }
 }

@@ -38,7 +38,6 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.impl.NodeImpl;
-import org.apache.tuscany.sca.impl.NodeImpl2;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
@@ -103,19 +102,23 @@ public class TuscanyRuntime {
     public static Node runComposite(URI domainURI, String compositeURI, String contributionURL, String... dependentContributionURLs) {
         try {
             TuscanyRuntime runtime = newInstance();
-        	String domain = domainURI == null ? "default" : domainURI.toString();
+            String domain = domainURI == null ? "default" : domainURI.toString();
             DomainRegistry domainRegistry = runtime.domainRegistryFactory.getEndpointRegistry(domain, getDomainName(domain));
             NodeImpl node = new NodeImpl(domain, runtime.deployer, runtime.compositeActivator, domainRegistry, runtime.extensionPointRegistry, runtime);
 
             if (dependentContributionURLs != null) {
                 for (int i=dependentContributionURLs.length-1; i>-1; i--) {
-                    node.installContribution(null, dependentContributionURLs[i], null, null, false);
+                    node.installContribution(null, dependentContributionURLs[i], null, null);
                 }
             }
 
-            String curi = node.installContribution(null, contributionURL, null, null, compositeURI == null);
+            String curi = node.installContribution(null, contributionURL, null, null);
             if (compositeURI != null) {
-                node.start(curi, compositeURI);
+                node.startComposite(curi, compositeURI);
+            } else {
+                for (String compURI : node.getDeployableCompositeURIs(curi)) {
+                    node.startComposite(curi, compURI);
+                }
             }
             return node;
             
@@ -150,15 +153,6 @@ public class TuscanyRuntime {
         return new NodeImpl(domainName, deployer, compositeActivator, domainRegistry, extensionPointRegistry, null);
     }
 
-    public NodeImpl2 createNode2(String domainURI) {
-        String domainName = "default";
-        if (domainURI != null){
-            domainName = getDomainName(domainURI);
-        }
-        DomainRegistry domainRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, domainName);
-        return new NodeImpl2(domainName, deployer, compositeActivator, domainRegistry, extensionPointRegistry, null);
-    }
-    
     /**
      * Creates a Node from an XML configuration file
      * @param configURL  the URL to the XML configuration file
@@ -166,9 +160,14 @@ public class TuscanyRuntime {
      */
     public Node createNodeFromXML(String configURL) throws ContributionReadException, ActivationException, ValidationException {
         NodeConfiguration configuration = loadConfiguration(configURL);
-        Node node = createNode(configuration.getDomainURI());
+        NodeImpl node = (NodeImpl)createNode(configuration.getDomainURI());
         for ( ContributionConfiguration c : configuration.getContributions()) {
-            node.installContribution(c.getURI(), c.getLocation(), c.getMetaDataURL(), c.getDependentContributionURIs(), c.isStartDeployables());
+            String curi = node.installContribution(c.getURI(), c.getLocation(), c.getMetaDataURL(), c.getDependentContributionURIs());
+            if (c.isStartDeployables()) {
+                for (String compURI : node.getDeployableCompositeURIs(curi)) {
+                    node.startComposite(curi, compURI);
+                }
+            }
         }
         return node;
     }

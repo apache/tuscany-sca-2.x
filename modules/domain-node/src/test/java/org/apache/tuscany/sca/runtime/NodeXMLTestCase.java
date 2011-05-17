@@ -19,6 +19,9 @@
 package org.apache.tuscany.sca.runtime;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
 
@@ -37,9 +40,9 @@ public class NodeXMLTestCase {
         List<String> cs = node.getInstalledContributionURIs();
         Assert.assertEquals(1, cs.size());
         Assert.assertEquals("sample-helloworld", cs.get(0));
-        List<String> compsoites = node.getStartedCompositeURIs("sample-helloworld");
-        Assert.assertEquals(1, compsoites.size());
-        Assert.assertEquals("helloworld.composite", compsoites.get(0));
+        Map<String, List<QName>> startedComposites = node.getStartedComposites();
+        Assert.assertEquals(1, startedComposites.size());
+        Assert.assertEquals("helloworld", startedComposites.get("sample-helloworld").get(0).getLocalPart());
     }
 
 }

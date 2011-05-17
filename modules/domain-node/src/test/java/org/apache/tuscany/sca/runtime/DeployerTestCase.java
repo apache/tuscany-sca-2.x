@@ -19,10 +19,14 @@
 package org.apache.tuscany.sca.runtime;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import junit.framework.Assert;
@@ -51,7 +55,7 @@ public class DeployerTestCase {
         Contribution contribution = deployer.loadContribution(URI.create("foo"), new File("src/test/resources/sample-helloworld-nodeployable.jar").toURI().toURL(), monitor);
         monitor.analyzeProblems();
         
-        node.installContribution(contribution, null, true);
+        node.installContribution(contribution, null);
         List<String> ics = node.getInstalledContributionURIs();
         Assert.assertEquals(1, ics.size());
         Assert.assertEquals("foo", ics.get(0));
@@ -62,17 +66,31 @@ public class DeployerTestCase {
         TuscanyRuntime tuscanyRuntime = TuscanyRuntime.newInstance();
         Node node = tuscanyRuntime.createNode("myDomain");
         
-        node.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
+        node.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null);
 
         Deployer deployer = tuscanyRuntime.getDeployer();
         Monitor monitor = deployer.createMonitor();
         Composite composite = deployer.loadXMLDocument(new File("src/test/resources/helloworld2.composite").toURI().toURL(), monitor);
         monitor.analyzeProblems();
-        composite.setURI("helloworld2.composite");
-        node.start("foo", composite);
-        List<String> dcs = node.getStartedCompositeURIs("foo");
+        String cmpuri = node.addDeploymentComposite("foo", composite);
+        node.startComposite("foo", cmpuri);
+        Map<String, List<QName>> dcs = node.getStartedComposites();
         Assert.assertEquals(1, dcs.size());
-        Assert.assertEquals("helloworld2.composite", dcs.get(0));
+        Assert.assertEquals("helloworld2", dcs.get("foo").get(0).getLocalPart());
+    }
+
+    @Test
+    public void testAddDeploymentCompositeXML() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, MalformedURLException, XMLStreamException, FileNotFoundException {
+        TuscanyRuntime tuscanyRuntime = TuscanyRuntime.newInstance();
+        Node node = tuscanyRuntime.createNode("myDomain");
+        
+        node.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null);
+
+        String cmpuri = node.addDeploymentComposite("foo", new FileReader(new File("src/test/resources/helloworld2.composite")));
+        node.startComposite("foo", cmpuri);
+        Map<String, List<QName>> dcs = node.getStartedComposites();
+        Assert.assertEquals(1, dcs.size());
+        Assert.assertEquals("helloworld2", dcs.get("foo").get(0).getLocalPart());
     }
 
 }

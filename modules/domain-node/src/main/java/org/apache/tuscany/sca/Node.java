@@ -21,6 +21,7 @@ package org.apache.tuscany.sca;
 
 import java.io.Reader;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -48,32 +49,33 @@ public interface Node {
      *               of the Assembly Specification. May be null.
      * @param dependentContributionURIs  specifies the contributions that are used to resolve the dependencies of the 
      *               root contribution and other dependent contributions. May be null.
-     * @param startDeployables  true if the composites defined as deployable in the contribution's sca-contribution.xml
-     *               file or supplied metaData file should be started, false if they should not be. 
      * @return the URI of the installed contribution
      * 
      * @throws ContributionReadException 
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean startDeployables) throws ContributionReadException, ActivationException, ValidationException;
+    String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ActivationException, ValidationException;
 
-    /**
-     * Creates an installed contribution from a supplied Contribution object.
-     * See section 10.5.1 of the Assembly Specification.
-     * 
-     * @param contribution  the Contribution object
-     * @param dependentContributionURIs  specifies the contributions that are used to resolve the dependencies of the 
-     *               root contribution and other dependent contributions. May be null.
-     * @param startDeployables  true if the composites defined as deployable in the contribution's sca-contribution.xml
-     *               file or supplied metaData file should be started, false if they should not be. 
-     * @return the URI of the installed contribution
-     * 
-     * @throws ContributionReadException 
-     * @throws ActivationException 
-     * @throws ValidationException 
-     */
-    String installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean startDeployables) throws ContributionReadException, ActivationException, ValidationException;
+    void installContribution(Contribution contribution, List<String> dependentContributionURIs);
+
+// TODO: I'd still like this one but not in NodeImpl/registry yet    
+//    /**
+//     * Creates an installed contribution from a supplied Contribution object.
+//     * See section 10.5.1 of the Assembly Specification.
+//     * 
+//     * @param contribution  the Contribution object
+//     * @param dependentContributionURIs  specifies the contributions that are used to resolve the dependencies of the 
+//     *               root contribution and other dependent contributions. May be null.
+//     * @param startDeployables  true if the composites defined as deployable in the contribution's sca-contribution.xml
+//     *               file or supplied metaData file should be started, false if they should not be. 
+//     * @return the URI of the installed contribution
+//     * 
+//     * @throws ContributionReadException 
+//     * @throws ActivationException 
+//     * @throws ValidationException 
+//     */
+//    String installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean startDeployables) throws ContributionReadException, ActivationException, ValidationException;
 
     /**
      * Creates an installed contribution from a supplied root contribution URL.
@@ -111,7 +113,7 @@ public interface Node {
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    String start(String contributionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException;
+    String addDeploymentComposite(String contributionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException;
 
     /**
      * 4599 10.5.2 add Deployment Composite & update Deployment Composite
@@ -135,7 +137,7 @@ public interface Node {
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    String start(String contributionURI, Composite composite) throws ActivationException, ValidationException;
+    String addDeploymentComposite(String contributionURI, Composite composite) throws ActivationException, ValidationException;
 
     /**
      * 4611 11.4.310.5.3 remove Contribution
@@ -145,7 +147,7 @@ public interface Node {
      * @return List of contribution URIs (includes dependent contributions) which were removed
      * @throws ActivationException 
      */
-    List<String> removeContribution(String contributionURI) throws ActivationException;
+    void uninstallContribution(String contributionURI) throws ActivationException;
 
     /**
      * 4677 10.7.1 add To Domain-Level Composite
@@ -164,7 +166,9 @@ public interface Node {
      * @throws ValidationException 
      * @throws ContributionReadException 
      */
-    void start(String contributionURI, String compositeURI) throws ActivationException, ValidationException, ContributionReadException;
+    void startComposite(String contributionURI, String compositeURI) throws ActivationException, ValidationException, ContributionReadException;
+
+    List<String> startDeployables(String contributionURI) throws ActivationException, ValidationException, ContributionReadException;
     
     /**
      * 4687 10.7.2 remove From Domain-Level Composite
@@ -175,7 +179,7 @@ public interface Node {
      * @param compositeURI
      * @throws ActivationException 
      */
-    void stop(String contributionURI, String compositeURI) throws ActivationException;
+    void stopComposite(String contributionURI, String compositeURI) throws ActivationException;
 
     /**
      * 10.7.3 get Domain-Level Composite
@@ -185,10 +189,7 @@ public interface Node {
      * 
      * @return
      */
-    Composite getDomainLevelComposite();
-    
-    /* that previous one returns a Composte object but not sure what would be most appropriate, and having one return a string seems convenient: */
-    String getDomainLevelCompositeAsString();
+    Composite getDomainComposite();
     
     /**
      * 4695 10.7.4 get QName Definition
@@ -207,9 +208,9 @@ public interface Node {
      */
     Object getQNameDefinition(String contributionURI, QName definition, QName symbolSpace);
 
-    /**
-     * Probably want to be able to stop it all at once so a method called stop or shutdown or destroy
-     */
+//    /**
+//     * Probably want to be able to stop it all at once so a method called stop or shutdown or destroy
+//     */
     void stop();
 
     /**
@@ -222,7 +223,8 @@ public interface Node {
      * @param contributionURI  the contribution URI
      * @return the List of started composite URIs
      */
-    List<String> getStartedCompositeURIs(String contributionURI);
+//    List<String> getStartedCompositeURIs(String contributionURI);
+    Map<String, List<QName>> getStartedComposites();
 
     /**
      * Get the URIs of all the contributions installed on this Node
@@ -234,8 +236,10 @@ public interface Node {
      * Get an installed Contribution
      * @param uri  the URI of the contribution
      * @return the Contribution
+     * @throws ValidationException 
+     * @throws ContributionReadException 
      */
-    Contribution getInstalledContribution(String uri);
+    Contribution getContribution(String uri) throws ContributionReadException, ValidationException;
     
     String getDomainName();
 
@@ -289,5 +293,9 @@ public interface Node {
 //     */
 //    String updateDeploymentComposite(String uri, Reader compositeXML);
 //    String updateDeploymentComposite(String uri, Composite composite);
+    
+    List<String> getDeployableCompositeURIs(String contributionURI);
+
+    void validateContribution(String string) throws ContributionReadException, ValidationException;
 
 }
