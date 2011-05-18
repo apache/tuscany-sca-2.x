@@ -514,27 +514,26 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
     public void addRunningComposite(String curi, Composite composite) {
         String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
         String compositeXML = writeComposite(composite);
-// TODO: doing this in a txn causes the values to get lost - looks like a bug in hazelcast        
         Transaction txn = hazelcastInstance.getTransaction();
         txn.begin();
         try {
-        Map<String, String> cs = runningComposites.get(curi);
-        if (cs == null) {
-            cs = new HashMap<String, String>();
-        }
-        cs.put(composite.getURI(), compositeXML);
-        runningComposites.put(curi, cs);
-        Map<String, List<String>> ocs = runningCompositeOwners.get(localMemberAddr);
-        if (ocs == null) {
-            ocs = new HashMap<String, List<String>>();
-        }
-        List<String> lcs = ocs.get(curi);
-        if (lcs == null) {
-            lcs = new ArrayList<String>();
-            ocs.put(curi, lcs);
-        }
-        lcs.add(composite.getURI());
-        runningCompositeOwners.put(localMemberAddr, ocs);
+            Map<String, String> cs = runningComposites.get(curi);
+            if (cs == null) {
+                cs = new HashMap<String, String>();
+            }
+            cs.put(composite.getURI(), compositeXML);
+            runningComposites.put(curi, cs);
+            Map<String, List<String>> ocs = runningCompositeOwners.get(localMemberAddr);
+            if (ocs == null) {
+                ocs = new HashMap<String, List<String>>();
+            }
+            List<String> lcs = ocs.get(curi);
+            if (lcs == null) {
+                lcs = new ArrayList<String>();
+                ocs.put(curi, lcs);
+            }
+            lcs.add(composite.getURI());
+            runningCompositeOwners.put(localMemberAddr, ocs);
             txn.commit();
         } catch (Throwable e) {
             txn.rollback();
