@@ -278,7 +278,7 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
     public void addEndpoint(Endpoint endpoint) {
         if (findEndpoint(endpoint.getURI()).size() > 0) {
             Member m = getOwningMember(endpoint.getURI());
-            throw new IllegalStateException("Endpoint " + endpoint.getURI() + " already exists in domain " + domainURI + " at " + m.getInetSocketAddress());
+            throw new IllegalStateException("Endpoint " + endpoint.getURI() + " already exists in domain " + domainURI + " at " + (m == null? "null" : m.getInetSocketAddress()));
         }
             
         String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
@@ -549,12 +549,22 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
             Map<String, String> cs = runningComposites.get(curi);
             if (cs != null) {
                 cs.remove(compositeURI);
+                if (cs.size() > 0) {
+                    runningComposites.put(curi, cs);                
+                } else {
+                    runningComposites.remove(curi);                
+                }
             }
             Map<String, List<String>> ocs = runningCompositeOwners.get(localMemberAddr);
             if (ocs != null) {
                 List<String> xya = ocs.get(curi);
                 if (xya != null) {
                     xya.remove(compositeURI);
+                    if (xya.size() > 0) {
+                        runningCompositeOwners.put(localMemberAddr, ocs);
+                    } else {
+                        runningCompositeOwners.remove(localMemberAddr);
+                    }
                 }
             }
             txn.commit();
