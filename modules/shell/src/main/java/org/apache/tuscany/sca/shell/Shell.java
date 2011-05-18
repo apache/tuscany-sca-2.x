@@ -460,24 +460,24 @@ public class Shell {
         if (nodes.size() > 0) {
             for (Node node : nodes.values()) {
                 out.println("Domain: " + node.getDomainName());
-                List<String> ics;
-                if (toks.size() > 1) {
-                    ics = new ArrayList<String>();
-                    ics.add(toks.get(1));
-                } else {
-                    ics = node.getInstalledContributionURIs();
-                }
-
-                for (String curi : ics) {
-                    List<String> cs = node.getStartedCompositeURIs().get(curi);
-                    if (cs != null) {
-                        for (String compositeURI : cs) {
-                            out.println("   " + curi
-                                + " "
-                                + compositeURI);
-                }
+//                List<String> ics;
+//                if (toks.size() > 1) {
+//                    ics = new ArrayList<String>();
+//                    ics.add(toks.get(1));
+//                } else {
+//                    ics = node.getInstalledContributionURIs();
+//                }
+//
+//                for (String curi : ics) {
+//                    List<String> cs = node.getStartedCompositeURIs().get(curi);
+//                    if (cs != null) {
+                for (String curi : node.getStartedCompositeURIs().keySet()) {
+                    for (String compositeURI : node.getStartedCompositeURIs().get(curi)) {
+                        out.println("   " + curi + " " + compositeURI);
                     }
                 }
+//                    }
+//                }
             }
         }
         return true;
