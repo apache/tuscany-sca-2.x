@@ -76,8 +76,8 @@ public interface DomainRegistry {
      */
     public List<EndpointReference> findEndpointReferences( String uri );
 
-    void addListener(EndpointListener listener);
-    void removeListener(EndpointListener listener);
+    void addEndpointListener(EndpointListener listener);
+    void removeEndpointListener(EndpointListener listener);
 
     String getDomainURI();
 
@@ -92,8 +92,8 @@ public interface DomainRegistry {
 
     // TODO: Change to use the QName instead of Composite and have clients look up the Composite from the contribution themselves, but i need to get that working first
     void addRunningComposite(String contributionURI, Composite composite);
-    void removeRunningComposite(String contributionURI, QName name);
-    Map<String, List<QName>> getRunningCompositeNames();
-    Composite getRunningComposite(String contributionURI, QName name);
+    void removeRunningComposite(String contributionURI, String compositeURI);
+    Map<String, List<String>> getRunningCompositeURIs();
+    Composite getRunningComposite(String contributionURI, String compositeURI);
 
 }

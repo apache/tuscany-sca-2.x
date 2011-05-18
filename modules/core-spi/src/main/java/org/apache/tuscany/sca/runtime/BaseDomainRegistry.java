@@ -65,7 +65,7 @@ public abstract class BaseDomainRegistry implements DomainRegistry, LifeCycleLis
         logger.fine("Add endpoint reference - " + endpointReference);
     }
 
-    public void addListener(EndpointListener listener) {
+    public void addEndpointListener(EndpointListener listener) {
         listeners.add(listener);
     }
 
@@ -149,7 +149,7 @@ public abstract class BaseDomainRegistry implements DomainRegistry, LifeCycleLis
         logger.fine("Remove endpoint reference - " + endpointReference);
     }
 
-    public void removeListener(EndpointListener listener) {
+    public void removeEndpointListener(EndpointListener listener) {
         listeners.remove(listener);
     }
 

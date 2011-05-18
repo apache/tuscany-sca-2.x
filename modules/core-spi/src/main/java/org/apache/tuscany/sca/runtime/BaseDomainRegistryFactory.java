@@ -68,7 +68,7 @@ public abstract class BaseDomainRegistryFactory implements DomainRegistryFactory
         }
 
         for (EndpointListener listener : listeners) {
-            domainRegistry.addListener(listener);
+            domainRegistry.addEndpointListener(listener);
         }
         domainRegistries.put(key, domainRegistry);
         return domainRegistry;
@@ -97,7 +97,7 @@ public abstract class BaseDomainRegistryFactory implements DomainRegistryFactory
     public synchronized void addListener(EndpointListener listener) {
         listeners.add(listener);
         for (DomainRegistry registry : domainRegistries.values()) {
-            registry.addListener(listener);
+            registry.addEndpointListener(listener);
         }
     }
 
@@ -108,7 +108,7 @@ public abstract class BaseDomainRegistryFactory implements DomainRegistryFactory
     public synchronized void removeListener(EndpointListener listener) {
         listeners.remove(listener);
         for (DomainRegistry registry : domainRegistries.values()) {
-            registry.removeListener(listener);
+            registry.removeEndpointListener(listener);
         }
     }
 
