@@ -28,8 +28,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
@@ -38,8 +36,8 @@ import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.runtime.BaseDomainRegistry;
 import org.apache.tuscany.sca.runtime.ContributionListener;
-import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
+import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.InstalledContribution;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 
@@ -50,7 +48,7 @@ public class DomainRegistryImpl extends BaseDomainRegistry implements DomainRegi
     private final Logger logger = Logger.getLogger(DomainRegistryImpl.class.getName());
 
     private List<Endpoint> endpoints = new ArrayList<Endpoint>();
-    private Map<String, Map<QName, Composite>> runningComposites = new HashMap<String, Map<QName, Composite>>();
+    private Map<String, Map<String, Composite>> runningComposites = new HashMap<String, Map<String, Composite>>();
     private Map<String, InstalledContribution> installedContributions = new HashMap<String, InstalledContribution>();
     
     protected boolean quietLogging;
@@ -165,41 +163,41 @@ public class DomainRegistryImpl extends BaseDomainRegistry implements DomainRegi
     }
 
     public void addRunningComposite(String curi, Composite composite) {
-        Map<QName, Composite> cs = runningComposites.get(curi);
+        Map<String, Composite> cs = runningComposites.get(curi);
         if (cs == null) {
-            cs = new HashMap<QName, Composite>();
+            cs = new HashMap<String, Composite>();
             runningComposites.put(curi, cs);
         }
-        cs.put(composite.getName(), composite);
+        cs.put(composite.getURI(), composite);
     }
 
-    public void removeRunningComposite(String curi, QName name) {
-        Map<QName, Composite> cs = runningComposites.get(curi);
+    public void removeRunningComposite(String curi, String compositeURI) {
+        Map<String, Composite> cs = runningComposites.get(curi);
         if (cs != null) {
-            cs.remove(name);
+            cs.remove(compositeURI);
         }
     }
 
-    public Composite getRunningComposite(String curi, QName name) {
-        Map<QName, Composite> cs = runningComposites.get(curi);
+    public Composite getRunningComposite(String curi, String compositeURI) {
+        Map<String, Composite> cs = runningComposites.get(curi);
         if (cs != null) {
-            return cs.get(name);
+            return cs.get(compositeURI);
         }
         return null;
     }
 
-    public Map<String, List<QName>> getRunningCompositeNames() {
-       Map<String, List<QName>> compositeNames = new HashMap<String, List<QName>>();
+    public Map<String, List<String>> getRunningCompositeURIs() {
+       Map<String, List<String>> compositeURIs = new HashMap<String, List<String>>();
        for (String curi : runningComposites.keySet()) {
            if (runningComposites.get(curi).size() > 0) {
-               List<QName> names = new ArrayList<QName>();
-               compositeNames.put(curi, names);
-               for (QName qn : runningComposites.get(curi).keySet()) {
-                   names.add(qn);
+               List<String> uris = new ArrayList<String>();
+               compositeURIs.put(curi, uris);
+               for (String uri : runningComposites.get(curi).keySet()) {
+                   uris.add(uri);
                }
            }
        }
-        return compositeNames;
+        return compositeURIs;
     }
 
     public void installContribution(InstalledContribution ic) {

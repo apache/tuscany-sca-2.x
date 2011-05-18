@@ -40,9 +40,9 @@ public class NodeXMLTestCase {
         List<String> cs = node.getInstalledContributionURIs();
         Assert.assertEquals(1, cs.size());
         Assert.assertEquals("sample-helloworld", cs.get(0));
-        Map<String, List<QName>> startedComposites = node.getStartedComposites();
+        Map<String, List<String>> startedComposites = node.getStartedCompositeURIs();
         Assert.assertEquals(1, startedComposites.size());
-        Assert.assertEquals("helloworld", startedComposites.get("sample-helloworld").get(0).getLocalPart());
+        Assert.assertEquals("helloworld.composite", startedComposites.get("sample-helloworld").get(0));
     }
 
 }

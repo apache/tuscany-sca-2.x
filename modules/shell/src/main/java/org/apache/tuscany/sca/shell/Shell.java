@@ -35,8 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -450,9 +448,9 @@ public class Shell {
             out.println("Standalone Nodes:");
             for (String nodeName : standaloneNodes.keySet()) {
                 Node node = standaloneNodes.get(nodeName);
-                Map<String, List<QName>> scs = node.getStartedComposites();
+                Map<String, List<String>> scs = node.getStartedCompositeURIs();
                 for (String curi : scs.keySet()) {
-                    for (QName dc : scs.get(curi)) {
+                    for (String dc : scs.get(curi)) {
                         out.println("   " + nodeName + " " + dc);
                     }
                 }
@@ -471,14 +469,12 @@ public class Shell {
                 }
 
                 for (String curi : ics) {
-                    List<QName> cs = node.getStartedComposites().get(curi);
+                    List<String> cs = node.getStartedCompositeURIs().get(curi);
                     if (cs != null) {
-                        for (QName compositeQN : cs) {
+                        for (String compositeURI : cs) {
                             out.println("   " + curi
                                 + " "
-                                + "XXX"
-                                + " "
-                                + compositeQN);
+                                + compositeURI);
                 }
                     }
                 }

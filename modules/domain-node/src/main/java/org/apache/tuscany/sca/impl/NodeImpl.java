@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.impl;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -218,9 +219,8 @@ public class NodeImpl implements Node {
         }
     }
     
-    // TODO: should this be composite uri instead of QName?
-    public Map<String, List<QName>> getStartedComposites() {
-        return domainRegistry.getRunningCompositeNames();
+    public Map<String, List<String>> getStartedCompositeURIs() {
+        return Collections.unmodifiableMap(domainRegistry.getRunningCompositeURIs());
     }
 
     public void startComposite(String contributionURI, String compositeURI) throws ActivationException, ValidationException, ContributionReadException {
@@ -265,10 +265,10 @@ public class NodeImpl implements Node {
         domainComposite.setAutowire(false);
         domainComposite.setLocal(false);
         List<Composite> domainIncludes = domainComposite.getIncludes();
-        Map<String, List<QName>> runningComposites = domainRegistry.getRunningCompositeNames();
-        for (String curi : runningComposites.keySet()) {
-            for (QName name : runningComposites.get(curi)) {
-                domainIncludes.add(domainRegistry.getRunningComposite(curi, name));
+        Map<String, List<String>> runningCompositeURIs = domainRegistry.getRunningCompositeURIs();
+        for (String curi : runningCompositeURIs.keySet()) {
+            for (String compositeURI : runningCompositeURIs.get(curi)) {
+                domainIncludes.add(domainRegistry.getRunningComposite(curi, compositeURI));
             }
         }
         return domainComposite;

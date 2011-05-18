@@ -452,19 +452,19 @@ public class ReplicatedDomainRegistry extends BaseDomainRegistry implements Doma
     }
 
     @Override
-    public void removeRunningComposite(String contributionURI, QName name) {
+    public void removeRunningComposite(String contributionURI, String compositeURI) {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public Composite getRunningComposite(String contributionURI, QName name) {
+    public Composite getRunningComposite(String contributionURI, String compositeURI) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Map<String, List<QName>> getRunningCompositeNames() {
+    public Map<String, List<String>> getRunningCompositeURIs() {
         // TODO Auto-generated method stub
         return null;
     }

@@ -143,7 +143,7 @@ public class Node2TestCase {
         node.installContribution("src/test/resources/export.jar");
         node.validateContribution("import");
         node.startComposite("import", "helloworld.composite");
-        Map<String, List<QName>> scs = node.getStartedComposites();
+        Map<String, List<String>> scs = node.getStartedCompositeURIs();
         Assert.assertEquals(1, scs.size());            
     }
 
@@ -160,7 +160,7 @@ public class Node2TestCase {
         nodeB.installContribution("src/test/resources/export.jar");
         nodeA.validateContribution("import");
         nodeA.startComposite("import", "helloworld.composite");
-        Map<String, List<QName>> scs = nodeB.getStartedComposites();
+        Map<String, List<String>> scs = nodeB.getStartedCompositeURIs();
         Assert.assertEquals(1, scs.size());            
     }
 
@@ -168,17 +168,17 @@ public class Node2TestCase {
     public void startTest() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
         Node node = TuscanyRuntime.newInstance().createNode("ImportTestCase");
         node.installContribution("src/test/resources/sample-helloworld.jar");
-        Assert.assertEquals(0, node.getStartedComposites().size());
+        Assert.assertEquals(0, node.getStartedCompositeURIs().size());
 
         node.startComposite("sample-helloworld", "helloworld.composite");
-        Assert.assertEquals(1, node.getStartedComposites().size());
-        Assert.assertEquals("helloworld", node.getStartedComposites().get("sample-helloworld").get(0).getLocalPart());
+        Assert.assertEquals(1, node.getStartedCompositeURIs().size());
+        Assert.assertEquals("helloworld.composite", node.getStartedCompositeURIs().get("sample-helloworld").get(0));
         
         node.stopComposite("sample-helloworld", "helloworld.composite");
 //        Assert.assertEquals(0, node.getStartedComposites().size());
         node.startComposite("sample-helloworld", "helloworld.composite");
-        Assert.assertEquals(1, node.getStartedComposites().size());
-        Assert.assertEquals("helloworld", node.getStartedComposites().get("sample-helloworld").get(0).getLocalPart());
+        Assert.assertEquals(1, node.getStartedCompositeURIs().size());
+        Assert.assertEquals("helloworld.composite", node.getStartedCompositeURIs().get("sample-helloworld").get(0));
         node.stopComposite("sample-helloworld", "helloworld.composite");
     }
 
@@ -199,7 +199,7 @@ public class Node2TestCase {
         String compositeURI = node.addDeploymentComposite(curi, new StringReader(compositeXML));
 
         node.startComposite(curi, compositeURI);
-        Assert.assertEquals(1, node.getStartedComposites().size());
+        Assert.assertEquals(1, node.getStartedCompositeURIs().size());
         
         Composite dc = node.getDomainComposite();
         Assert.assertEquals(1, dc.getIncludes().size());

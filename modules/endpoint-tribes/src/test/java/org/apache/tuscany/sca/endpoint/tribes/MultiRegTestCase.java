@@ -70,7 +70,7 @@ public class MultiRegTestCase implements EndpointListener {
         attrs1.put("receiverAutoBind", range);
         // attrs1.put("routes", host + ":" + port2 + " " + host + ":" + port3);
         ReplicatedDomainRegistry reg1 = new ReplicatedDomainRegistry(extensionPoints, attrs1, "foo", "bar");
-        reg1.addListener(this);
+        reg1.addEndpointListener(this);
         reg1.start();
 
         Map<String, String> attrs2 = new HashMap<String, String>();
@@ -80,7 +80,7 @@ public class MultiRegTestCase implements EndpointListener {
         attrs2.put("receiverAutoBind", range);
         // attrs2.put("routes", host + ":"+port1);
         ReplicatedDomainRegistry reg2 = new ReplicatedDomainRegistry(extensionPoints, attrs2, "foo", "bar");
-        reg2.addListener(this);
+        reg2.addEndpointListener(this);
         reg2.start();
 
         Map<String, String> attrs3 = new HashMap<String, String>();
@@ -90,7 +90,7 @@ public class MultiRegTestCase implements EndpointListener {
         attrs3.put("receiverAutoBind", range);
         // attrs3.put("routes", host + ":"+port1);
         ReplicatedDomainRegistry reg3 = new ReplicatedDomainRegistry(extensionPoints, attrs3, "foo", "bar");
-        reg3.addListener(this);
+        reg3.addEndpointListener(this);
         reg3.start();
 
         ep1.bind(extensionPoints, reg1);

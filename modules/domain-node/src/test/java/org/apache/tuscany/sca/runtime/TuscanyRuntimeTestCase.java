@@ -57,7 +57,7 @@ public class TuscanyRuntimeTestCase {
         node.installContribution("helloworld", "src/test/resources/sample-helloworld.jar", null, null);
         node.startComposite("helloworld", "helloworld.composite");
 
-        Map<String, List<QName>> ci = node.getStartedComposites();
+        Map<String, List<String>> ci = node.getStartedCompositeURIs();
         Assert.assertEquals(1, ci.size());
 
         Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
@@ -130,10 +130,10 @@ public class TuscanyRuntimeTestCase {
         node.installContribution("foo", "src/test/resources/sample-helloworld.jar", null, null);
         List<String> dcs = node.startDeployables("foo");
         Assert.assertEquals(1, dcs.size());
-        Map<String, List<QName>> dcsx = node.getStartedComposites();
+        Map<String, List<String>> dcsx = node.getStartedCompositeURIs();
         Assert.assertEquals(1, dcsx.size());
         node.stopComposite("foo", "helloworld.composite");
-        dcsx = node.getStartedComposites();
+        dcsx = node.getStartedCompositeURIs();
         Assert.assertEquals(0, dcsx.size());
     }
 
@@ -143,9 +143,9 @@ public class TuscanyRuntimeTestCase {
         node.installContribution("helloworld", "src/test/resources/sample-helloworld-nodeployable.jar", "src/test/resources/sca-contribution-generated.xml", null);
         node.startComposite("helloworld", "helloworld.composite");
 
-        Map<String, List<QName>> dcs = node.getStartedComposites();
+        Map<String, List<String>> dcs = node.getStartedCompositeURIs();
         Assert.assertEquals(1, dcs.size());
-        Assert.assertEquals("helloworld", dcs.get("helloworld").get(0).getLocalPart());
+        Assert.assertEquals("helloworld.composite", dcs.get("helloworld").get(0));
 
         Helloworld helloworldService = node.getService(Helloworld.class, "HelloworldComponent");
         Assert.assertEquals("Hello petra", helloworldService.sayHello("petra"));
@@ -163,9 +163,9 @@ public class TuscanyRuntimeTestCase {
         Node node = TuscanyRuntime.runComposite("helloworld.composite", "src/test/resources/sample-helloworld.jar");
         List<String> cs = node.getInstalledContributionURIs();
         Assert.assertEquals(1, cs.size());
-        Map<String, List<QName>> dcs = node.getStartedComposites();
+        Map<String, List<String>> dcs = node.getStartedCompositeURIs();
         Assert.assertEquals(1, dcs.size());
-        Assert.assertEquals("helloworld", dcs.get("sample-helloworld").get(0).getLocalPart());
+        Assert.assertEquals("helloworld.composite", dcs.get("sample-helloworld").get(0));
     }
 
     @Test
@@ -173,9 +173,9 @@ public class TuscanyRuntimeTestCase {
         Node node = TuscanyRuntime.runComposite(null, "src/test/resources/sample-helloworld.jar");
         List<String> cs = node.getInstalledContributionURIs();
         Assert.assertEquals(1, cs.size());
-        Map<String, List<QName>> dcs = node.getStartedComposites();
+        Map<String, List<String>> dcs = node.getStartedCompositeURIs();
         Assert.assertEquals(1, dcs.size());
-        Assert.assertEquals("helloworld", dcs.get("sample-helloworld").get(0).getLocalPart());
+        Assert.assertEquals("helloworld.composite", dcs.get("sample-helloworld").get(0));
     }
     @Test
     public void testRunComposite() throws NoSuchServiceException {

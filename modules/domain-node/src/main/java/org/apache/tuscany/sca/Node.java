@@ -216,12 +216,10 @@ public interface Node {
     <T> T getService(Class<T> interfaze, String serviceURI) throws NoSuchServiceException;    
 
     /**
-     * Get the URIs of any composites that have been started for a contribution
-     * @param contributionURI  the contribution URI
-     * @return the List of started composite URIs
+     * Get the URIs of any composites that have been started in the domain
+     * @return a map with key contributionURI and value a list of the started compositeURIs
      */
-//    List<String> getStartedCompositeURIs(String contributionURI);
-    Map<String, List<QName>> getStartedComposites();
+    Map<String, List<String>> getStartedCompositeURIs();
 
     /**
      * Get the URIs of all the contributions installed on this Node

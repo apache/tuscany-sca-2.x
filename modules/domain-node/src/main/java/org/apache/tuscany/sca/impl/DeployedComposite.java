@@ -83,7 +83,9 @@ public class DeployedComposite {
 
         Monitor monitor = deployer.createMonitor();
         builtComposite = deployer.build(contributions, dependedOnContributions, new HashMap<QName, List<String>>(), monitor);
+        // TODO: Ideally deployer.build would set the name and uri to what this needs
         builtComposite.setName(composite.getName());
+        builtComposite.setURI(composite.getURI());
         monitor.analyzeProblems();
 
         compositeContext = new CompositeContext(extensionPointRegistry, 
@@ -101,7 +103,7 @@ public class DeployedComposite {
     }
 
     public void stop() throws ActivationException {
-        domainRegistry.removeRunningComposite(contribution.getURI(), builtComposite.getName());
+        domainRegistry.removeRunningComposite(contribution.getURI(), builtComposite.getURI());
         compositeActivator.stop(compositeContext, builtComposite);
         compositeActivator.deactivate(builtComposite);
     }

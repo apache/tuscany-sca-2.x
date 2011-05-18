@@ -74,9 +74,9 @@ public class DeployerTestCase {
         monitor.analyzeProblems();
         String cmpuri = node.addDeploymentComposite("foo", composite);
         node.startComposite("foo", cmpuri);
-        Map<String, List<QName>> dcs = node.getStartedComposites();
+        Map<String, List<String>> dcs = node.getStartedCompositeURIs();
         Assert.assertEquals(1, dcs.size());
-        Assert.assertEquals("helloworld2", dcs.get("foo").get(0).getLocalPart());
+        Assert.assertEquals("helloworld2.composite", dcs.get("foo").get(0));
     }
 
     @Test
@@ -88,9 +88,9 @@ public class DeployerTestCase {
 
         String cmpuri = node.addDeploymentComposite("foo", new FileReader(new File("src/test/resources/helloworld2.composite")));
         node.startComposite("foo", cmpuri);
-        Map<String, List<QName>> dcs = node.getStartedComposites();
+        Map<String, List<String>> dcs = node.getStartedCompositeURIs();
         Assert.assertEquals(1, dcs.size());
-        Assert.assertEquals("helloworld2", dcs.get("foo").get(0).getLocalPart());
+        Assert.assertEquals("helloworld2.composite", dcs.get("foo").get(0));
     }
 
 }

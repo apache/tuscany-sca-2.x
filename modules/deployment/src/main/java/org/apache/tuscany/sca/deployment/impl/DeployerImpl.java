@@ -863,14 +863,14 @@ public class DeployerImpl implements Deployer {
         public void addRunningComposite(String contributionURI, Composite composite) {
         }
 
-        public void removeRunningComposite(String contributionURI, QName name) {
+        public void removeRunningComposite(String contributionURI, String compositeURI) {
         }
 
-        public Composite getRunningComposite(String contributionURI, QName name) {
+        public Composite getRunningComposite(String contributionURI, String compositeURI) {
             return null;
         }
 
-        public Map<String, List<QName>> getRunningCompositeNames() {
+        public Map<String, List<String>> getRunningCompositeURIs() {
             return null;
         }
 

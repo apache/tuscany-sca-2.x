@@ -38,7 +38,6 @@ import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
 import javax.wsdl.xml.WSDLReader;
 import javax.wsdl.xml.WSDLWriter;
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -96,8 +95,10 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
 
     protected Map<Object, Object> endpointMap;
     protected MultiMap<String, String> endpointOwners;
-    protected Map<String, Map<QName, String>> runningComposites;
-    protected Map<String, Map<String, List<QName>>> runningCompositeOwners;
+    
+    // key contributionURI, value map key compositeURI value compositeXML
+    protected Map<String, Map<String, String>> runningComposites;
+    protected Map<String, Map<String, List<String>>> runningCompositeOwners;
 
     protected Map<Object, Object> endpointWsdls;
     protected Map<String, Endpoint> localEndpoints = new ConcurrentHashMap<String, Endpoint>();
@@ -470,11 +471,11 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
                             }
                         }
                         if (runningCompositeOwners.containsKey(memberAddr)) {
-                            Map<String, List<QName>> cs = runningCompositeOwners.remove(memberAddr);
+                            Map<String, List<String>> cs = runningCompositeOwners.remove(memberAddr);
                             for (String curi : cs.keySet()) {
-                                Map<QName, String> rcs = runningComposites.get(curi);
-                                for (QName qn : cs.get(curi)) {
-                                    rcs.remove(qn);
+                                Map<String, String> rcs = runningComposites.get(curi);
+                                for (String uri : cs.get(curi)) {
+                                    rcs.remove(uri);
                                 }
                             }
                         }
@@ -514,47 +515,47 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
         String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
         String compositeXML = writeComposite(composite);
 // TODO: doing this in a txn causes the values to get lost - looks like a bug in hazelcast        
-//        Transaction txn = hazelcastInstance.getTransaction();
-//        txn.begin();
-//        try {
-        Map<QName, String> cs = runningComposites.get(curi);
+        Transaction txn = hazelcastInstance.getTransaction();
+        txn.begin();
+        try {
+        Map<String, String> cs = runningComposites.get(curi);
         if (cs == null) {
-            cs = new HashMap<QName, String>();
+            cs = new HashMap<String, String>();
         }
-        cs.put(composite.getName(), compositeXML);
+        cs.put(composite.getURI(), compositeXML);
         runningComposites.put(curi, cs);
-        Map<String, List<QName>> ocs = runningCompositeOwners.get(localMemberAddr);
+        Map<String, List<String>> ocs = runningCompositeOwners.get(localMemberAddr);
         if (ocs == null) {
-            ocs = new HashMap<String, List<QName>>();
+            ocs = new HashMap<String, List<String>>();
         }
-        List<QName> lcs = ocs.get(curi);
+        List<String> lcs = ocs.get(curi);
         if (lcs == null) {
-            lcs = new ArrayList<QName>();
+            lcs = new ArrayList<String>();
             ocs.put(curi, lcs);
         }
-        lcs.add(composite.getName());
+        lcs.add(composite.getURI());
         runningCompositeOwners.put(localMemberAddr, ocs);
-//            txn.commit();
-//        } catch (Throwable e) {
-//            txn.rollback();
-//            throw new ServiceRuntimeException(e);
-//        }
+            txn.commit();
+        } catch (Throwable e) {
+            txn.rollback();
+            throw new ServiceRuntimeException(e);
+        }
     }
 
-    public void removeRunningComposite(String curi, QName name) {
+    public void removeRunningComposite(String curi, String compositeURI) {
         String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
         Transaction txn = hazelcastInstance.getTransaction();
         txn.begin();
         try {
-            Map<QName, String> cs = runningComposites.get(curi);
+            Map<String, String> cs = runningComposites.get(curi);
             if (cs != null) {
-                cs.remove(name);
+                cs.remove(compositeURI);
             }
-            Map<String, List<QName>> ocs = runningCompositeOwners.get(localMemberAddr);
+            Map<String, List<String>> ocs = runningCompositeOwners.get(localMemberAddr);
             if (ocs != null) {
-                List<QName> xya = ocs.get(curi);
+                List<String> xya = ocs.get(curi);
                 if (xya != null) {
-                    xya.remove(name);
+                    xya.remove(compositeURI);
                 }
             }
             txn.commit();
@@ -564,23 +565,23 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
         }
     }
 
-    public Map<String, List<QName>> getRunningCompositeNames() {
-        Map<String, List<QName>> compositeNames = new HashMap<String, List<QName>>();
+    public Map<String, List<String>> getRunningCompositeURIs() {
+        Map<String, List<String>> compositeURIs = new HashMap<String, List<String>>();
         for (String curi : runningComposites.keySet()) {
-            List<QName> names = new ArrayList<QName>();
-            compositeNames.put(curi, names);
-            for (QName qn : runningComposites.get(curi).keySet()) {
-                names.add(qn);
+            List<String> uris = new ArrayList<String>();
+            compositeURIs.put(curi, uris);
+            for (String uri : runningComposites.get(curi).keySet()) {
+                uris.add(uri);
             }
         }
-         return compositeNames;
+         return compositeURIs;
     }
 
     @Override
-    public Composite getRunningComposite(String contributionURI, QName name) {
-        Map<QName, String> cs = runningComposites.get(contributionURI);
+    public Composite getRunningComposite(String contributionURI, String compositeURI) {
+        Map<String, String> cs = runningComposites.get(contributionURI);
         if (cs != null) {
-            String compositeXML = cs.get(name);
+            String compositeXML = cs.get(compositeURI);
             return readComposite(compositeXML);
         }
         return null;
