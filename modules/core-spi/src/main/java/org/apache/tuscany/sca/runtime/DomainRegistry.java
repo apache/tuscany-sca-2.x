@@ -23,8 +23,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
@@ -90,10 +88,8 @@ public interface DomainRegistry {
     void addContributionListener(ContributionListener listener);
     void removeContributionListener(ContributionListener listener);
 
-    // TODO: Change to use the QName instead of Composite and have clients look up the Composite from the contribution themselves, but i need to get that working first
     void addRunningComposite(String contributionURI, Composite composite);
     void removeRunningComposite(String contributionURI, String compositeURI);
     Map<String, List<String>> getRunningCompositeURIs();
     Composite getRunningComposite(String contributionURI, String compositeURI);
-
 }
