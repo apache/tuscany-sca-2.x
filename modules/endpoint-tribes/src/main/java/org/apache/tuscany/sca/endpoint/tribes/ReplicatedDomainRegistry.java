@@ -481,4 +481,16 @@ public class ReplicatedDomainRegistry extends BaseDomainRegistry implements Doma
         return null;
     }
 
+    @Override
+    public String getLocalMember() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getRunningMember(String contributionURI, String compositeURI) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

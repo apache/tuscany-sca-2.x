@@ -473,7 +473,18 @@ public class Shell {
 //                    if (cs != null) {
                 for (String curi : node.getStartedCompositeURIs().keySet()) {
                     for (String compositeURI : node.getStartedCompositeURIs().get(curi)) {
-                        out.println("   " + curi + " " + compositeURI);
+                        
+                        String runningMember = node.getRunningMember(curi, compositeURI);
+                        if (node.getLocalMember().equals(runningMember)) {
+                            runningMember = "this";
+                        }
+                        if ("LocalOnly".equals(runningMember)) {
+                            runningMember = ""; 
+                        } else {
+                            runningMember = " (" + runningMember + ")"; 
+                        }
+                        
+                        out.println("   " + curi + " " + compositeURI + runningMember);
                     }
                 }
 //                    }
@@ -484,8 +495,9 @@ public class Shell {
     }
 
     boolean members() {
+        String localMember = getNode().getLocalMember();
         for (String member : getNode().getMembers()) {
-            out.println(member);
+            out.println(member + (localMember.equals(member) ? " (this)" : ""));
         }
         return true;
     }

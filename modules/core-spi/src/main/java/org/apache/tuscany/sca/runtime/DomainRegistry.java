@@ -94,4 +94,6 @@ public interface DomainRegistry {
     Composite getRunningComposite(String contributionURI, String compositeURI);
     
     List<String> getMembers();
+    String getLocalMember();
+    String getRunningMember(String contributionURI, String compositeURI);
 }

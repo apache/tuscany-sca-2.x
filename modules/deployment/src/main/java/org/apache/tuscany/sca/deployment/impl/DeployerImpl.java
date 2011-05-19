@@ -882,5 +882,17 @@ public class DeployerImpl implements Deployer {
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public String getLocalMember() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getRunningMember(String contributionURI, String compositeURI) {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 }

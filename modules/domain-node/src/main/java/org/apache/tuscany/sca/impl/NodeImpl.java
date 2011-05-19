@@ -392,4 +392,14 @@ public class NodeImpl implements Node {
         return domainRegistry.getMembers();
     }
 
+    @Override
+    public String getLocalMember() {
+        return domainRegistry.getLocalMember();
+    }
+
+    @Override
+    public String getRunningMember(String contributionURI, String compositeURI) {
+        return domainRegistry.getRunningMember(contributionURI, compositeURI);
+    }
+
 }

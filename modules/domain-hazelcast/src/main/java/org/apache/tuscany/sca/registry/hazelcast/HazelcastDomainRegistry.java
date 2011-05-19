@@ -660,4 +660,21 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
         return members;
     }
 
+    @Override
+    public String getLocalMember() {
+        return hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
+    }
+
+    @Override
+    public String getRunningMember(String contributionURI, String compositeURI) {
+        for (String m : runningCompositeOwners.keySet()) {
+            Map<String, List<String>> rcs = runningCompositeOwners.get(m);
+            for (String curi : rcs.keySet()) {
+                if (rcs.get(curi).contains(compositeURI)) {
+                    return m;
+                }
+            }
+        }
+        return null;
+    }
 }
