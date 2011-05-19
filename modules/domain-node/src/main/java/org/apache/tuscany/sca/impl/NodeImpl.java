@@ -93,15 +93,18 @@ public class NodeImpl implements Node {
         });
     }
 
-    public String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException {
+    // TODO: install shouldn't throw ValidationException as it shouldn't do any validation, its
+    //      only here from the loadContribution in mergeContributionMetaData so change that approach
+    
+    public String installContribution(String contributionURL) throws ContributionReadException, ValidationException {
         return installContribution(null, contributionURL, null, null);
     }
 
-    public String installContribution(String uri, String contributionURL) throws ContributionReadException, ActivationException, ValidationException {
+    public String installContribution(String uri, String contributionURL) throws ContributionReadException, ValidationException {
         return installContribution(uri, contributionURL, null, null);
     }
 
-    public String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ActivationException, ValidationException {
+    public String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ValidationException {
         InstalledContribution ic = new InstalledContribution(uri, contributionURL);
 
         if (dependentContributionURIs != null) {

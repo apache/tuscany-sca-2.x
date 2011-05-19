@@ -47,10 +47,9 @@ public interface Node {
      * @return the URI of the installed contribution
      * 
      * @throws ContributionReadException 
-     * @throws ActivationException 
      * @throws ValidationException 
      */
-    String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException;
+    String installContribution(String contributionURL) throws ContributionReadException, ValidationException;
     
     /**
      * Creates an installed contribution from a supplied root contribution and installed at a supplied base URI.
@@ -65,10 +64,9 @@ public interface Node {
      * @return the URI of the installed contribution
      * 
      * @throws ContributionReadException 
-     * @throws ActivationException 
      * @throws ValidationException 
      */
-    String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ActivationException, ValidationException;
+    String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ValidationException;
 
     /**
      * Creates an installed contribution from a supplied Contribution object.
@@ -134,9 +132,8 @@ public interface Node {
      * 
      * @param contributionURI
      * @return List of contribution URIs (includes dependent contributions) which were removed
-     * @throws ActivationException 
      */
-    void uninstallContribution(String contributionURI) throws ActivationException;
+    void uninstallContribution(String contributionURI);
 
     /**
      * 4677 10.7.1 add To Domain-Level Composite
@@ -248,4 +245,5 @@ public interface Node {
     //   start and stop composites on remote members
     //   get/display contribution content
     //   a view-only Node
+    //   dirty started composites (contributions updated while composite running)
 }
