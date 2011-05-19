@@ -99,4 +99,5 @@ public interface DomainRegistry {
     String getRunningMember(String contributionURI, String compositeURI);
     
     String remoteCommand(String memberName, Callable<String> command);
+    public Composite getDomainComposite();
 }

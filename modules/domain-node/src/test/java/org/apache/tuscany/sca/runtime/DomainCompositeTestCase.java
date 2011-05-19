@@ -23,7 +23,9 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.xml.Utils;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
@@ -57,7 +59,7 @@ public class DomainCompositeTestCase {
         Assert.assertEquals("helloworld", c.getName().getLocalPart());
         
 //        String s = node.getDomainLevelCompositeAsString();
-//        System.out.println(s);
+        System.out.println(Utils.modelToXML(node.getDomainComposite(), true, ((NodeImpl)node).getExtensionPointRegistry()));
 //        Assert.assertTrue(s.contains(":helloworld\""));
 
         node.stopComposite("helloworld", "helloworld.composite");

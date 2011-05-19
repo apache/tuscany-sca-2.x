@@ -26,9 +26,15 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Base;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 
 /**
@@ -163,5 +169,22 @@ public abstract class BaseDomainRegistry implements DomainRegistry, LifeCycleLis
 
     public void removeContributionListener(ContributionListener listener) {
         contributionlisteners.remove(listener);
+    }
+
+    public Composite getDomainComposite() {
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        Composite domainComposite = assemblyFactory.createComposite();
+        domainComposite.setName(new QName(Base.SCA11_TUSCANY_NS, getDomainURI()));
+        domainComposite.setAutowire(false);
+        domainComposite.setLocal(false);
+        List<Composite> domainIncludes = domainComposite.getIncludes();
+        Map<String, List<String>> runningCompositeURIs = getRunningCompositeURIs();
+        for (String curi : runningCompositeURIs.keySet()) {
+            for (String compositeURI : runningCompositeURIs.get(curi)) {
+                domainIncludes.add(getRunningComposite(curi, compositeURI));
+            }
+        }
+        return domainComposite;
     }
 }

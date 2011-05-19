@@ -594,6 +594,7 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
         Map<String, String> cs = runningComposites.get(contributionURI);
         if (cs != null) {
             String compositeXML = cs.get(compositeURI);
+            // TODO: cache the Composite locally so that it doesn't get deserialized multiple times
             return readComposite(compositeXML);
         }
         return null;

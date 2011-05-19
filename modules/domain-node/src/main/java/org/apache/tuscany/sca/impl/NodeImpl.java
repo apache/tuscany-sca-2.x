@@ -265,20 +265,7 @@ public class NodeImpl implements Node {
     }
 
     public Composite getDomainComposite() {
-        FactoryExtensionPoint factories = extensionPointRegistry.getExtensionPoint(FactoryExtensionPoint.class);
-        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
-        Composite domainComposite = assemblyFactory.createComposite();
-        domainComposite.setName(new QName(Base.SCA11_TUSCANY_NS, domainName));
-        domainComposite.setAutowire(false);
-        domainComposite.setLocal(false);
-        List<Composite> domainIncludes = domainComposite.getIncludes();
-        Map<String, List<String>> runningCompositeURIs = domainRegistry.getRunningCompositeURIs();
-        for (String curi : runningCompositeURIs.keySet()) {
-            for (String compositeURI : runningCompositeURIs.get(curi)) {
-                domainIncludes.add(domainRegistry.getRunningComposite(curi, compositeURI));
-            }
-        }
-        return domainComposite;
+        return domainRegistry.getDomainComposite();
     }
 
     public <T> T getService(Class<T> interfaze, String serviceURI) throws NoSuchServiceException {
@@ -374,9 +361,12 @@ public class NodeImpl implements Node {
         return dcURIs;
     }
 
-    // TODO: this is used by the shell to endpoint detail, should it be on the Node interface?
+    // TODO: these are used by the shell, should they be on the Node interface?
     public DomainRegistry getEndpointRegistry() {
         return domainRegistry;
+    }
+    public ExtensionPointRegistry getExtensionPointRegistry() {
+        return extensionPointRegistry;
     }
     
     public void stop() {
