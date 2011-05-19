@@ -127,9 +127,12 @@ public class CometBindingHandler {
 		final Operation operation = context.getOperation(url);
 
 		final Object[] args = decodeJsonDataForOperation(jsonData, operation);
-		Message msg = createMessageWithMockedCometReference(args, callbackMethod);
-		Object response = wire.invoke(operation, args);
-		System.out.println("Response: " + gson.toJson(response));
+		// Message msg = createMessageWithMockedCometReference(args,
+		// callbackMethod);
+		Message msg = new MessageImpl();
+		msg.setBody(args);
+		msg.setOperation(operation);
+		wire.invokeAsync(msg);
 	}
 
 	/**
