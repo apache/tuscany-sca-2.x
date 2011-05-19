@@ -384,6 +384,9 @@ public class NodeImpl implements Node {
         }
         startedComposites.clear();
         stoppedComposites.clear();
+        if (tuscanyRuntime != null) {
+            tuscanyRuntime.stop();
+        }
     }
 
     @Override
