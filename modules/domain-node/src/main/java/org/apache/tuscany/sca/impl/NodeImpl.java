@@ -383,8 +383,7 @@ public class NodeImpl implements Node {
             }
         }
         startedComposites.clear();
-        startedComposites.clear();
-        
+        stoppedComposites.clear();
     }
 
     @Override
