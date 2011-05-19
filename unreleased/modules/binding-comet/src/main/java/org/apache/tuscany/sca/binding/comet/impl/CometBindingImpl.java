@@ -18,19 +18,30 @@
  */
 package org.apache.tuscany.sca.binding.comet.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.comet.CometBinding;
+import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * Represents a binding through Comet to a service.
  */
-public class CometBindingImpl implements CometBinding {
+public class CometBindingImpl implements CometBinding, PolicySubject {
 
     private String name;
     private String uri;
+    
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private ExtensionType extensionType;
 
     @Override
     public String getName() {
@@ -98,4 +109,23 @@ public class CometBindingImpl implements CometBinding {
     public void setOperationSelector(final OperationSelector operationSelector) {
     }
 
+    @Override
+    public ExtensionType getExtensionType() {
+        return extensionType;
+    }
+
+    @Override
+    public void setExtensionType(ExtensionType intentAttachPointType) {
+        this.extensionType = intentAttachPointType;
+    }
+    
+    @Override
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+
+    @Override
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
 }
