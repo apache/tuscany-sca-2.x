@@ -99,9 +99,10 @@ public class Shell {
         	shell.help(null);
         }
         if (contribution != null) {
-        	System.out.println();
-        	System.out.println("install " + contribution + " -start");
-            shell.install(Arrays.asList(new String[]{"install", contribution, "-start"}));
+            System.out.println();
+            System.out.println("install " + contribution + " -start");
+            String curi = shell.getNode().installContribution(contribution);
+            shell.getNode().startDeployables(curi);
         }
         
         
