@@ -387,4 +387,9 @@ public class NodeImpl implements Node {
         
     }
 
+    @Override
+    public List<String> getMembers() {
+        return domainRegistry.getMembers();
+    }
+
 }

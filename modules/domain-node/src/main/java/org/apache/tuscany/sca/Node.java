@@ -239,6 +239,8 @@ public interface Node {
 
     void validateContribution(String string) throws ContributionReadException, ValidationException;
     
+    List<String> getMembers();
+    
     // TODO: Add methods to get:
     //   active members in domain
     //   which composites are running on which members

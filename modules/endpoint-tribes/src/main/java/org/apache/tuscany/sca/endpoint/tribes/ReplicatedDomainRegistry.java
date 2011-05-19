@@ -475,4 +475,10 @@ public class ReplicatedDomainRegistry extends BaseDomainRegistry implements Doma
         
     }
 
+    @Override
+    public List<String> getMembers() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

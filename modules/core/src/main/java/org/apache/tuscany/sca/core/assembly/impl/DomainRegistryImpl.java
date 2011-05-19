@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.core.assembly.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -225,5 +226,10 @@ public class DomainRegistryImpl extends BaseDomainRegistry implements DomainRegi
         for (ContributionListener listener : contributionlisteners) {
             listener.contributionUpdated(ic.getURI());
         }
+    }
+
+    @Override
+    public List<String> getMembers() {
+        return Arrays.asList(new String[]{"LocalOnly"});
     }
 }

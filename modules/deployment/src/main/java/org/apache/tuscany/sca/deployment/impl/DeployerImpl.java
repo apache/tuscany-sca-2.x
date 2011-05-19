@@ -876,5 +876,11 @@ public class DeployerImpl implements Deployer {
 
         public void updateInstalledContribution(InstalledContribution ic) {
         }
+
+        @Override
+        public List<String> getMembers() {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 }

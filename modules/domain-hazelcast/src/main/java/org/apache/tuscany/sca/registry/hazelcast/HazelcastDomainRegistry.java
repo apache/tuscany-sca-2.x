@@ -649,4 +649,15 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
         installedContributions.put(ic.getURI(), ic);
     }
 
+    @Override
+    public List<String> getMembers() {
+        List<String> members = new ArrayList<String>();
+        for (Member m : hazelcastInstance.getCluster().getMembers()) {
+            if (!m.isSuperClient()) {
+                members.add(m.getInetSocketAddress().toString());
+            }
+        }
+        return members;
+    }
+
 }

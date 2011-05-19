@@ -73,7 +73,7 @@ public class Shell {
     private Map<String, Node> nodes = new HashMap<String, Node>();
 
     public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "domainComposite", "help", "install", "installed", "invoke",
-                                                          "load", "remove", "run", "save", "services", "start", "started", "stop"};
+                                                          "load", "members", "remove", "run", "save", "services", "start", "started", "stop"};
 
     public static void main(final String[] args) throws Exception {
         boolean useJline = true;
@@ -483,6 +483,13 @@ public class Shell {
         return true;
     }
 
+    boolean members() {
+        for (String member : getNode().getMembers()) {
+            out.println(member);
+        }
+        return true;
+    }
+
     boolean status() {
         return true;
     }
@@ -592,6 +599,12 @@ public class Shell {
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
                     return load(toks.get(1));
+                }
+            };
+        if (op.equalsIgnoreCase("members"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return members();
                 }
             };
         if (op.equalsIgnoreCase("remove"))
