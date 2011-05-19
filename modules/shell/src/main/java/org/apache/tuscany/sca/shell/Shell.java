@@ -73,7 +73,7 @@ public class Shell {
     private Map<String, Node> nodes = new HashMap<String, Node>();
 
     public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "domainComposite", "help", "install", "installed", "invoke",
-                                                          "load", "members", "remove", "run", "save", "services", "start", "started", "stop"};
+                                                          "load", "members", "remoteStart", "remoteStop", "remove", "run", "save", "services", "start", "started", "stop"};
 
     public static void main(final String[] args) throws Exception {
         boolean useJline = true;
@@ -444,6 +444,17 @@ public class Shell {
         return true;
     }
 
+    boolean remoteStart(final List<String> toks) {
+        String response = getNode().remoteStart(toks.get(1), toks.get(2), toks.get(3));
+        out.println(response);
+        return true;
+    }
+    boolean remoteStop(final List<String> toks) {
+        String response = getNode().remoteStop(toks.get(1), toks.get(2), toks.get(3));
+        out.println(response);
+        return true;
+    }
+
     boolean started(final List<String> toks) {
         if (standaloneNodes.size() > 0) {
             out.println("Standalone Nodes:");
@@ -662,6 +673,18 @@ public class Shell {
                     return bye();
                 }
             };
+        if (op.equalsIgnoreCase("remoteStart"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return remoteStart(toks);
+                }
+            };
+        if (op.equalsIgnoreCase("remoteStop"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return remoteStop(toks);
+                    }
+                };
         if (op.equalsIgnoreCase("start"))
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {

@@ -46,10 +46,12 @@ import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
+import org.apache.tuscany.sca.runtime.ActiveNodes;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.ContributionListener;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
@@ -82,7 +84,9 @@ public class NodeImpl implements Node {
         this.domainRegistry = domainRegistry;
         this.extensionPointRegistry = extensionPointRegistry;
         this.tuscanyRuntime = tuscanyRuntime;
-        
+
+        extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(ActiveNodes.class).getActiveNodes().add(this);
+
         domainRegistry.addContributionListener(new ContributionListener() {
             public void contributionUpdated(String uri) {
                 loadedContributions.remove(uri);
@@ -384,6 +388,7 @@ public class NodeImpl implements Node {
         }
         startedComposites.clear();
         stoppedComposites.clear();
+        extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(ActiveNodes.class).getActiveNodes().remove(this);
         if (tuscanyRuntime != null) {
             tuscanyRuntime.stop();
         }
@@ -402,6 +407,16 @@ public class NodeImpl implements Node {
     @Override
     public String getRunningMember(String contributionURI, String compositeURI) {
         return domainRegistry.getRunningMember(contributionURI, compositeURI);
+    }
+
+    @Override
+    public String remoteStart(String memberName, String contributionURI, String compositeURI) {
+        return domainRegistry.remoteCommand(memberName, new RemoteCommand(domainName, "start", contributionURI, compositeURI));
+    }
+
+    @Override
+    public String remoteStop(String memberName, String contributionURI, String compositeURI) {
+        return domainRegistry.remoteCommand(memberName, new RemoteCommand(domainName, "stop", contributionURI, compositeURI));
     }
 
 }

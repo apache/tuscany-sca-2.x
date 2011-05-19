@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -891,6 +892,12 @@ public class DeployerImpl implements Deployer {
 
         @Override
         public String getRunningMember(String contributionURI, String compositeURI) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String remoteCommand(String memberName, Callable<String> command) {
             // TODO Auto-generated method stub
             return null;
         }

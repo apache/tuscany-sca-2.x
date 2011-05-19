@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -489,6 +490,12 @@ public class ReplicatedDomainRegistry extends BaseDomainRegistry implements Doma
 
     @Override
     public String getRunningMember(String contributionURI, String compositeURI) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String remoteCommand(String memberName, Callable<String> command) {
         // TODO Auto-generated method stub
         return null;
     }

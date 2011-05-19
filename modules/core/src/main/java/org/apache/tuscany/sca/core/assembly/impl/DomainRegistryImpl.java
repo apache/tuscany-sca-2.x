@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -242,5 +243,11 @@ public class DomainRegistryImpl extends BaseDomainRegistry implements DomainRegi
     @Override
     public String getRunningMember(String contributionURI, String compositeURI) {
         return LOCAL_MEMBER_NAME;
+    }
+
+    @Override
+    public String remoteCommand(String memberName, Callable<String> command) {
+        // TODO or should it just ensure the member name is LocalOnly and the run the command locally?
+        throw new IllegalStateException("not supportted for " + LOCAL_MEMBER_NAME);
     }
 }

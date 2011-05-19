@@ -243,6 +243,9 @@ public interface Node {
     List<String> getMembers();
     String getLocalMember();
     String getRunningMember(String contributionURI, String compositeURI);
+
+    String remoteStart(String member, String contributionURI, String compositeURI);
+    String remoteStop(String member, String contributionURI, String compositeURI);
     
     // TODO: Add methods to get:
     //   start and stop composites on remote members

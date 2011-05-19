@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.runtime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
@@ -96,4 +97,6 @@ public interface DomainRegistry {
     List<String> getMembers();
     String getLocalMember();
     String getRunningMember(String contributionURI, String compositeURI);
+    
+    String remoteCommand(String memberName, Callable<String> command);
 }

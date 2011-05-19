@@ -30,7 +30,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,6 +74,7 @@ import com.hazelcast.config.Config;
 import com.hazelcast.config.NearCacheConfig;
 import com.hazelcast.config.TcpIpConfig;
 import com.hazelcast.config.XmlConfigBuilder;
+import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.Hazelcast;
@@ -678,5 +681,21 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
             }
         }
         return null;
+    }
+
+    @Override
+    public String remoteCommand(String memberName, Callable<String> command) {
+        for (Member member : hazelcastInstance.getCluster().getMembers()) {
+            if (member.getInetSocketAddress().toString().equals(memberName)) {
+                FutureTask<String> task = new DistributedTask<String>(command, member);
+                hazelcastInstance.getExecutorService().execute(task);
+                try {
+                    return task.get();
+                } catch (Exception e) {
+                    throw new ServiceRuntimeException(e);
+                }
+            }
+        }
+        throw new IllegalArgumentException("member not found: " + memberName);
     }
 }
