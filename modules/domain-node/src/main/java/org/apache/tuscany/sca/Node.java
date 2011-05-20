@@ -153,6 +153,7 @@ public interface Node {
      * @throws ContributionReadException 
      */
     void startComposite(String contributionURI, String compositeURI) throws ActivationException, ValidationException, ContributionReadException;
+    void startComposite(String memberName, String contributionURI, String compositeURI) throws ActivationException;
 
     /**
      * 4687 10.7.2 remove From Domain-Level Composite
@@ -244,11 +245,7 @@ public interface Node {
     String getLocalMember();
     String getRunningMember(String contributionURI, String compositeURI);
 
-    String remoteStart(String member, String contributionURI, String compositeURI);
-    String remoteStop(String member, String contributionURI, String compositeURI);
-    
     // TODO: Add methods to get:
-    //   start and stop composites on remote members
     //   get/display contribution content
     //   a view-only Node
     //   dirty started composites (contributions updated while composite running)

@@ -33,8 +33,6 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.xml.Utils;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
@@ -45,7 +43,6 @@ import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -249,12 +246,30 @@ public class NodeImpl implements Node {
             startedComposites.put(key, dc);
         }
     }
+
+    @Override
+    public void startComposite(String memberName, String contributionURI, String compositeURI) throws ActivationException {
+        String response = domainRegistry.remoteCommand(memberName, new RemoteCommand(domainName, "start", contributionURI, compositeURI));
+        if (!"Started.".equals(response)) {
+            throw new ActivationException(response);
+        }
+    }
+
+    
     
     public void stopComposite(String contributionURI, String compositeURI) throws ActivationException {
         String key = contributionURI+"/"+compositeURI;
         DeployedComposite dc = startedComposites.remove(key);
         if (dc == null) {
-            throw new IllegalStateException("composite not started: " + compositeURI);
+            String member = domainRegistry.getRunningMember(contributionURI, compositeURI);
+            if (member == null) {
+                throw new IllegalStateException("composite not started: " + compositeURI);
+            }
+            RemoteCommand command = new RemoteCommand(domainName, "stop", contributionURI, compositeURI);
+            String response = domainRegistry.remoteCommand(member, command);
+            if (!"Stopped.".equals(response)) {
+                throw new ActivationException(response);
+            }
         }
         dc.stop();
         stoppedComposites.put(key, dc);
@@ -397,16 +412,6 @@ public class NodeImpl implements Node {
     @Override
     public String getRunningMember(String contributionURI, String compositeURI) {
         return domainRegistry.getRunningMember(contributionURI, compositeURI);
-    }
-
-    @Override
-    public String remoteStart(String memberName, String contributionURI, String compositeURI) {
-        return domainRegistry.remoteCommand(memberName, new RemoteCommand(domainName, "start", contributionURI, compositeURI));
-    }
-
-    @Override
-    public String remoteStop(String memberName, String contributionURI, String compositeURI) {
-        return domainRegistry.remoteCommand(memberName, new RemoteCommand(domainName, "stop", contributionURI, compositeURI));
     }
 
 }
