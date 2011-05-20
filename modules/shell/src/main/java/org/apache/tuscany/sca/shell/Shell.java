@@ -24,16 +24,21 @@ import static java.lang.System.out;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
@@ -45,17 +50,12 @@ import org.apache.tuscany.sca.assembly.xml.Utils;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.Export;
-import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.java.JavaExport;
-import org.apache.tuscany.sca.contribution.java.JavaImport;
-import org.apache.tuscany.sca.contribution.namespace.NamespaceExport;
-import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
+import org.apache.tuscany.sca.runtime.InstalledContribution;
 import org.apache.tuscany.sca.runtime.Version;
 import org.apache.tuscany.sca.shell.jline.JLine;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -72,7 +72,7 @@ public class Shell {
     private Map<String, Node> standaloneNodes = new HashMap<String, Node>();
     private Map<String, Node> nodes = new HashMap<String, Node>();
 
-    public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "domainComposite", "help", "install", "installed", "invoke",
+    public static final String[] COMMANDS = new String[] {"bye", "addComposite", "domain", "domains", "domainComposite", "help", "install", "installed", "invoke",
                                                           "load", "members", "remove", "run", "save", "services", "start", "started", "stop"};
 
     public static void main(final String[] args) throws Exception {
@@ -115,6 +115,12 @@ public class Shell {
         if (domainURI != null) {
             domain(domainURI);
         }
+    }
+
+    boolean addComposite(String curi, String compositeURL) throws ActivationException, ValidationException, ContributionReadException, FileNotFoundException, XMLStreamException, URISyntaxException {
+        File f = new File(IOHelper.getLocationAsURL(compositeURL).toURI());
+        getNode().addDeploymentComposite(curi, new FileReader(f));
+        return true;
     }
 
     boolean domain(final String domainURI) {
@@ -221,36 +227,37 @@ public class Shell {
         }
         if (toks.size() > 1) {
             String curi = toks.get(1);
-            Contribution c = getNode().getContribution(toks.get(1));
-            if (c == null) {
+            InstalledContribution ic = getNode().getInstalledContribution(toks.get(1));
+            if (ic == null) {
                 out.println("Contribution " + curi + " not installed");
             } else {
                 out.println(curi);
-                out.println("   URL: " + c.getLocation());
+                out.println("   URL: " + ic.getURL());
 
                 List<String> ims = new ArrayList<String>();
-                for (Import im : c.getImports()) {
-                    if (im instanceof JavaImport) {
-                        ims.add(((JavaImport)im).getPackage());
-                    } else if (im instanceof NamespaceImport) {
-                        ims.add(((NamespaceImport)im).getNamespace());
-                    }
+                for (String im : ic.getJavaImports()) {
+                        ims.add(im);
+                }
+                for (String im : ic.getNamespaceImports()) {
+                    ims.add(im);
                 }
                 out.println("   Imports: " + ims);
 
                 List<String> es = new ArrayList<String>();
-                for (Export e : c.getExports()) {
-                    if (e instanceof JavaExport) {
-                        es.add(((JavaExport)e).getPackage());
-                    } else if (e instanceof NamespaceExport) {
-                        es.add(((NamespaceExport)e).getNamespace());
-                    }
+                for (String e : ic.getJavaExports()) {
+                    es.add(e);
+                }
+                for (String e : ic.getNamespaceExports()) {
+                    es.add(e);
                 }
                 out.println("   Exports: " + es);
 
                 List<String> ds = new ArrayList<String>();
-                for (Composite cp : c.getDeployables()) {
-                    ds.add(cp.getURI());
+                for (String cp : ic.getDeployables()) {
+                    ds.add(cp);
+                }
+                for (String cp : ic.getAdditionalDeployables().keySet()) {
+                    ds.add(cp);
                 }
                 out.println("   Deployables: " + ds);
             }
@@ -577,6 +584,12 @@ public class Shell {
     Callable<Boolean> eval(final List<String> toks) {
         final String op = toks.size() > 0 ? toks.get(0) : "";
 
+        if (op.equalsIgnoreCase("addComposite"))
+            return new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return addComposite(toks.get(1), toks.get(2));
+                }
+            };
         if (op.equalsIgnoreCase("domain"))
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
