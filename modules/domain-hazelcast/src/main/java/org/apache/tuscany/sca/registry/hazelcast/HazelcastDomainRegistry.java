@@ -674,10 +674,9 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
         for (String m : runningCompositeOwners.keySet()) {
             Map<String, List<String>> rcs = runningCompositeOwners.get(m);
             if (rcs != null) {
-                for (String curi : rcs.keySet()) {
-                    if (rcs.get(curi).contains(compositeURI)) {
-                        return m;
-                    }
+                List<String> cs = rcs.get(contributionURI);
+                if (cs != null && cs.contains(compositeURI)) {
+                    return m;
                 }
             }
         }
