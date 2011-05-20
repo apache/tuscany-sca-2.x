@@ -106,7 +106,7 @@ public class NodeImpl implements Node {
     }
 
     public String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ValidationException {
-        InstalledContribution ic = new InstalledContribution(uri, contributionURL);
+        InstalledContribution ic = new InstalledContribution(uri, IOHelper.getLocationAsURL(contributionURL).toString());
 
         if (dependentContributionURIs != null) {
             ic.getDependentContributionURIs().addAll(dependentContributionURIs);
@@ -287,8 +287,7 @@ public class NodeImpl implements Node {
         return ServiceHelper.getService(interfaze, serviceURI, domainRegistry, extensionPointRegistry, deployer);
     }
 
-    // TODO: should this be exposed on the interface?
-    protected InstalledContribution getInstalledContribution(String contributionURI) {
+    public InstalledContribution getInstalledContribution(String contributionURI) {
         InstalledContribution ic = domainRegistry.getInstalledContribution(contributionURI);
         if (ic == null) {
             throw new IllegalArgumentException("Contribution not installed: " + contributionURI);

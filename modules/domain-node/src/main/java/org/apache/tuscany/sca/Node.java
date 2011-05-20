@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
+import org.apache.tuscany.sca.runtime.InstalledContribution;
 import org.oasisopen.sca.NoSuchServiceException;
 
 /**
@@ -237,6 +238,8 @@ public interface Node {
     String getDomainName();
 
     List<String> getDeployableCompositeURIs(String contributionURI);
+    // TODO: should this be exposed on the interface?
+    public InstalledContribution getInstalledContribution(String contributionURI);
 
     void validateContribution(String string) throws ContributionReadException, ValidationException;
 
