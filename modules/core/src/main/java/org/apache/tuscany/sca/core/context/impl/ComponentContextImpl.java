@@ -106,17 +106,18 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     }
 
     public <B> B getService(Class<B> businessInterface, String referenceName) throws IllegalArgumentException {
-    	B service = null;
-    	
-     	ServiceReference<B> serviceRef = getServiceReference(businessInterface, referenceName);
-     	if(serviceRef != null) {
+        B service = null;
+
+        ServiceReference<B> serviceRef = getServiceReference(businessInterface, referenceName);
+        if (serviceRef != null) {
             service = serviceRef.getService();
-     	}
+        }
 
         return service;
     }
 
-    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) throws IllegalArgumentException {
+    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName)
+        throws IllegalArgumentException {
 
         for (ComponentReference ref : component.getReferences()) {
             if (referenceName.equals(ref.getName())) {
@@ -129,7 +130,8 @@ public class ComponentContextImpl implements RuntimeComponentContext {
                 if (ref.getEndpointReferences().size() < 1) {
                     return null;
                 }
-                ServiceReference<B> sr = getServiceReference(businessInterface, (RuntimeEndpointReference)getEndpointReference(ref));
+                ServiceReference<B> sr =
+                    getServiceReference(businessInterface, (RuntimeEndpointReference)getEndpointReference(ref));
                 if (sr == null) {
                     throw new IllegalArgumentException("Reference " + referenceName + " is null");
                 }
@@ -181,10 +183,10 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             }
         }
         //TUSCANY-3543
-        if(returnEp == null) {
+        if (returnEp == null) {
             returnEp = eps.get(0);
         }
-        
+
         return returnEp;
     }
 
@@ -213,7 +215,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     public <B> B getProperty(Class<B> type, String propertyName) {
         for (ComponentProperty p : component.getProperties()) {
             if (propertyName.equals(p.getName())) {
-            	return propertyFactory.createPropertyValue(p, type);           
+                return propertyFactory.createPropertyValue(p, type);
             }
         }
         throw new IllegalArgumentException("Property not found: " + propertyName);
@@ -251,7 +253,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         try {
             return createSelfReference(businessInterface, service);
         } catch (IllegalArgumentException iae) {
-        	throw iae;
+            throw iae;
         } catch (Exception e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
@@ -279,7 +281,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             }
             throw new IllegalArgumentException("Service not found: " + serviceName);
         } catch (IllegalArgumentException iae) {
-        	throw iae;
+            throw iae;
         } catch (ServiceRuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -300,7 +302,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             ref.setComponent(component);
             return getServiceReference(businessInterface, ref);
         } catch (IllegalArgumentException iae) {
-        	throw iae;
+            throw iae;
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -323,8 +325,8 @@ public class ComponentContextImpl implements RuntimeComponentContext {
      */
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface,
                                                        RuntimeEndpointReference endpointReference) {
-    	ServiceReference<B> result = null;
-    	
+        ServiceReference<B> result = null;
+
         try {
             InterfaceContract interfaceContract = endpointReference.getComponentTypeReferenceInterfaceContract();
             if (businessInterface == null) {
@@ -333,24 +335,26 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             RuntimeComponentReference ref = (RuntimeComponentReference)endpointReference.getReference();
             InterfaceContract refInterfaceContract = getInterfaceContract(interfaceContract, businessInterface);
             if (refInterfaceContract != null) {
-	            if (refInterfaceContract != interfaceContract) {
-	                ref = (RuntimeComponentReference)ref.clone();
-	                if (interfaceContract != null) {
-	                    ref.setInterfaceContract(interfaceContract);
-	                } else {
-	                    ref.setInterfaceContract(refInterfaceContract);
-	                }
-	            }
- 
-	            ref.setComponent(component);
-	            result = new ServiceReferenceImpl<B>(businessInterface, endpointReference, component.getComponentContext().getCompositeContext());
+                if (refInterfaceContract != interfaceContract) {
+                    ref = (RuntimeComponentReference)ref.clone();
+                    if (interfaceContract != null) {
+                        ref.setInterfaceContract(interfaceContract);
+                    } else {
+                        ref.setInterfaceContract(refInterfaceContract);
+                    }
+                }
+
+                ref.setComponent(component);
+                result =
+                    new ServiceReferenceImpl<B>(businessInterface, endpointReference, component.getComponentContext()
+                        .getCompositeContext());
             }
-        } catch (IllegalArgumentException iae ) {
-        	throw iae;
+        } catch (IllegalArgumentException iae) {
+            throw iae;
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
-        
+
         return result;
     }
 
@@ -365,7 +369,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             ref.setComponent(component);
             return new ServiceReferenceImpl<B>(businessInterface, ref, compositeContext);
         } catch (IllegalArgumentException iae) {
-        	throw iae;
+            throw iae;
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -400,6 +404,9 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         componentReference.getPolicySets().addAll(service.getPolicySets());
         componentReference.getRequiredIntents().addAll(service.getRequiredIntents());
         componentReference.getBindings().add(endpoint.getBinding());
+
+        // For the self-reference, allows pass by reference
+        componentReference.setAllowsPassByReference(true);
 
         InterfaceContract interfaceContract = service.getInterfaceContract();
         Service componentTypeService = service.getService();
@@ -453,7 +460,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
                 if (businessInterface.isAssignableFrom(cls)) {
                     compatible = true;
                 }
-                if(!compatible) {
+                if (!compatible) {
                     InterfaceContract biContract = javaInterfaceFactory.createJavaInterfaceContract();
                     JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(businessInterface);
                     biContract.setInterface(callInterface);
@@ -461,16 +468,18 @@ public class ComponentContextImpl implements RuntimeComponentContext {
                         biContract.setCallbackInterface(javaInterfaceFactory.createJavaInterface(callInterface
                             .getCallbackClass()));
                     }
-                	InterfaceContractMapper ifcm = registry.getExtensionPoint(InterfaceContractMapper.class);
-                	compatible = ifcm.isCompatibleSubset(biContract , interfaceContract);
+                    InterfaceContractMapper ifcm = registry.getExtensionPoint(InterfaceContractMapper.class);
+                    compatible = ifcm.isCompatibleSubset(biContract, interfaceContract);
                 }
 
             }
         }
-        
-        if(!compatible) {
-        	// JCA-9011
-        	throw new IllegalArgumentException("Business interface " + businessInterface.getName() + " is not compatible with " + interfaceContract.getInterface());
+
+        if (!compatible) {
+            // JCA-9011
+            throw new IllegalArgumentException("Business interface " + businessInterface.getName()
+                + " is not compatible with "
+                + interfaceContract.getInterface());
         }
 
         return interfaceContract;
@@ -497,11 +506,13 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         try {
             for (ComponentReference ref : component.getReferences()) {
                 if (referenceName.equals(ref.getName())) {
-                	if ( ref.getMultiplicity() == Multiplicity.ONE_ONE ) 
-                		throw new IllegalArgumentException("Reference " + referenceName + " is not a valid argument for getServiceReferences because it has a multiplicity of 1..1");
-                	if (ref.getMultiplicity() == Multiplicity.ZERO_ONE)
-                		throw new IllegalArgumentException("Reference " + referenceName + " is not a valid argument for getServiceReferences because it has a multiplicity of 0..1");
-                		
+                    if (ref.getMultiplicity() == Multiplicity.ONE_ONE)
+                        throw new IllegalArgumentException("Reference " + referenceName
+                            + " is not a valid argument for getServiceReferences because it has a multiplicity of 1..1");
+                    if (ref.getMultiplicity() == Multiplicity.ZERO_ONE)
+                        throw new IllegalArgumentException("Reference " + referenceName
+                            + " is not a valid argument for getServiceReferences because it has a multiplicity of 0..1");
+
                     ArrayList<ServiceReference<B>> serviceRefs = new ArrayList<ServiceReference<B>>();
                     for (EndpointReference endpointReference : ref.getEndpointReferences()) {
                         RuntimeEndpointReference epr = (RuntimeEndpointReference)endpointReference;
@@ -512,7 +523,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             }
             throw new IllegalArgumentException("Reference not found: " + referenceName);
         } catch (IllegalArgumentException iae) {
-        	throw iae;
+            throw iae;
         } catch (ServiceRuntimeException e) {
             throw e;
         } catch (Exception e) {

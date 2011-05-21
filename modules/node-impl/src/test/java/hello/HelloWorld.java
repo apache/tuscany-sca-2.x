@@ -27,4 +27,11 @@ import org.oasisopen.sca.annotation.Remotable;
 @Remotable
 public interface HelloWorld {
     String hello(String name);
+
+    Message echo(Message msg);
+
+    public class Message {
+        public String name;
+        public String message;
+    }
 }

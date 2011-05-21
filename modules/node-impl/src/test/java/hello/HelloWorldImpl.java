@@ -19,6 +19,8 @@
 
 package hello;
 
+import org.oasisopen.sca.annotation.AllowsPassByReference;
+
 /**
  * HelloWorldImpl
  */
@@ -26,5 +28,11 @@ public class HelloWorldImpl implements HelloWorld {
     public String hello(String name) {
         System.out.println("Hello: " + name);
         return "Hello, " + name;
+    }
+
+    @Override
+    @AllowsPassByReference
+    public Message echo(Message msg) {
+        return msg;
     }
 }

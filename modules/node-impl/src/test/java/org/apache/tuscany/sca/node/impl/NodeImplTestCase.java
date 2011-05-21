@@ -125,7 +125,12 @@ public class NodeImplTestCase {
         address = node.getEndpointAddress("HelloWorld/HelloWorld/HelloWorld");
         Assert.assertNotNull(address);
         address = node.getEndpointAddress("HelloWorld/HelloWorld1");
-        Assert.assertNull(address);      
+        Assert.assertNull(address);    
+        
+        HelloWorld.Message msg = new HelloWorld.Message();
+        msg.name = "John";
+        msg.message = "Hi";
+        Assert.assertSame(msg, hw.echo(msg));
         node.stop();
     }
 
