@@ -66,12 +66,10 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.tuscany.sca.assembly.Binding;
@@ -186,6 +184,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
         Callback callback = null;
         QName name = null;
         Monitor monitor = context.getMonitor();
+        Contribution contribution = context.getContribution();
         try {
             // Read the composite document
             while (reader.hasNext()) {
@@ -199,6 +198,9 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                             // Read a <composite>
                             composite = assemblyFactory.createComposite();
                             composite.setSpecVersion(Constants.SCA11_NS);
+                            if (contribution != null) {
+                                composite.setContributionURI(contribution.getURI());
+                            }
 
                             composite.setName(new QName(getURIString(reader, TARGET_NAMESPACE), getString(reader, NAME)));
 
