@@ -353,7 +353,6 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
         return endpoint;
     }
     
-
     private void setNormailizedWSDLContract(Endpoint endpoint) throws WSDLException {
         String wsdl = endpointWsdls == null ? null : (String)endpointWsdls.get(endpoint.getURI());
         if (wsdl == null || wsdl.length() < 1) {
@@ -595,7 +594,9 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
         if (cs != null) {
             String compositeXML = cs.get(compositeURI);
             // TODO: cache the Composite locally so that it doesn't get deserialized multiple times
-            return readComposite(compositeXML);
+            Composite composite = readComposite(compositeXML);
+            composite.setContributionURI(contributionURI);
+            return composite;
         }
         return null;
     }
