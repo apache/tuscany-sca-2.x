@@ -199,6 +199,7 @@ public class NodeImpl implements Node {
         if (composite.getURI() == null || composite.getURI().length() < 1) {
             composite.setURI(composite.getName().getLocalPart() + ".composite");
         }
+        composite.setContributionURI(ic.getURI());
         ic.getAdditionalDeployables().put(composite.getURI(), Utils.modelToXML(composite, false, extensionPointRegistry));
         domainRegistry.updateInstalledContribution(ic);
         return composite.getURI();
