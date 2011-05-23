@@ -50,6 +50,9 @@ public interface Composite extends Implementation, Extensible, Cloneable, Policy
      */
     void setSpecVersion(String specVersion);
 
+    String getContributionURI();
+    void setContributionURI(String contributionURI);
+    
     /**
      * Returns the name of the composite.
      *

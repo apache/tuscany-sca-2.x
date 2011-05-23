@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.assembly.Wire;
  */
 public class CompositeImpl extends ImplementationImpl implements Composite, Cloneable {
     private String specVersion = "undefined";
+    private String contributionURI;
     private List<Component> components = new ArrayList<Component>();
     private List<Composite> includes = new ArrayList<Composite>();
     private QName name;
@@ -181,5 +182,15 @@ public class CompositeImpl extends ImplementationImpl implements Composite, Clon
     @Override
     public String toString() {
         return "Composite (name=" + getName() + ")";
+    }
+
+    @Override
+    public String getContributionURI() {
+        return contributionURI;
+    }
+
+    @Override
+    public void setContributionURI(String contributionURI) {
+        this.contributionURI = contributionURI;
     }
 }
