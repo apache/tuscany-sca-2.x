@@ -24,8 +24,6 @@ import org.oasisopen.sca.annotation.Remotable;
 @Remotable
 public interface CometCallback {
 
-	void sendResponse(Object response);
-
-	boolean isClientConnected();
+	Status sendMessage(Object message);
 
 }

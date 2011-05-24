@@ -24,9 +24,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.atmosphere.cpr.Broadcaster;
+
+import com.google.gson.Gson;
 
 public class CometComponentContext {
 
+	public static Map<String, Broadcaster> broadcasters = new ConcurrentHashMap<String, Broadcaster>();
+	public static Gson gson = new Gson();
 	private Map<String, RuntimeEndpoint> endpoints;
 	private Map<String, Operation> operations;
 

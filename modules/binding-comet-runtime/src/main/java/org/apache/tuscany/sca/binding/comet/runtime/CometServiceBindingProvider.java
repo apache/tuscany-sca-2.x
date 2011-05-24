@@ -33,59 +33,63 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  */
 public class CometServiceBindingProvider implements ServiceBindingProvider {
 
-    /**
-     * Service's endpoint.
-     */
-    private final RuntimeEndpoint endpoint;
+	/**
+	 * Service's endpoint.
+	 */
+	private final RuntimeEndpoint endpoint;
 
-    /**
-     * The underlying servlet host.
-     */
-    private final ServletHost servletHost;
+	/**
+	 * The underlying servlet host.
+	 */
+	private final ServletHost servletHost;
 
-    /**
-     * Constructor.
-     * 
-     * @param endpoint the given endpoint
-     * @param servletHost the given servlet host
-     */
-    public CometServiceBindingProvider(final RuntimeEndpoint endpoint, final ServletHost servletHost) {
-        this.endpoint = endpoint;
-        this.servletHost = servletHost;
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param endpoint
+	 *            the given endpoint
+	 * @param servletHost
+	 *            the given servlet host
+	 */
+	public CometServiceBindingProvider(final RuntimeEndpoint endpoint, final ServletHost servletHost) {
+		this.endpoint = endpoint;
+		this.servletHost = servletHost;
+	}
 
-    /**
-     * This method is used to start the provider.
-     */
-    @Override
-    public void start() {
-        String deployedURI = ServletFactory.registerServlet(this.servletHost);
-        endpoint.setDeployedURI(deployedURI);
-        final ComponentService service = this.endpoint.getService();
-        final Interface serviceInterface = service.getInterfaceContract().getInterface();
-        JavascriptGenerator.generateServiceProxy(service);
-        for (final Operation operation : serviceInterface.getOperations()) {
-            JavascriptGenerator.generateMethodProxy(service, operation);
-            ServletFactory.registerOperation(this.endpoint, operation);
-        }
-    }
+	/**
+	 * This method is used to start the provider.
+	 */
+	@Override
+	public void start() {
+		String deployedURI = ServletFactory.registerServlet(this.servletHost);
+		endpoint.setDeployedURI(deployedURI);
+		final ComponentService service = this.endpoint.getService();
+		final Interface serviceInterface = service.getInterfaceContract().getInterface();
+		JavascriptGenerator.generateServiceProxy(service);
+		for (final Operation operation : serviceInterface.getOperations()) {
+			JavascriptGenerator.generateMethodProxy(service, operation);
+			ServletFactory.registerOperation(this.endpoint, operation);
+		}
+	}
 
-    /**
-     * This method is used to stop the provider.
-     */
-    @Override
-    public void stop() {
-        ServletFactory.unregisterServlet(this.servletHost);
-    }
+	/**
+	 * This method is used to stop the provider.
+	 */
+	@Override
+	public void stop() {
+		ServletFactory.unregisterServlet(this.servletHost);
+	}
 
-    @Override
-    public InterfaceContract getBindingInterfaceContract() {
-        return endpoint.getService().getInterfaceContract();
-    }
+	@Override
+	public InterfaceContract getBindingInterfaceContract() {
+		return endpoint.getService().getInterfaceContract();
+	}
 
-    @Override
-    public boolean supportsOneWayInvocation() {
-        return true;
-    }
+	@Override
+	public boolean supportsOneWayInvocation() {
+		// set to false so the runtime will add a nonBlocking interceptor to
+		// handle @OneWay calls
+		return false;
+	}
 
 }

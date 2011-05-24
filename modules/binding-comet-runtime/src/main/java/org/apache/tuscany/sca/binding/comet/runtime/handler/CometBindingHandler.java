@@ -32,24 +32,27 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.comet.runtime.CometComponentContext;
-import org.apache.tuscany.sca.binding.comet.runtime.CometMessageContext;
 import org.apache.tuscany.sca.binding.comet.runtime.ServletFactory;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointReferenceImpl;
+import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.core.invocation.impl.MessageImpl;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
-import org.atmosphere.annotation.Broadcast;
+import org.atmosphere.cache.SessionBroadcasterCache;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.DefaultBroadcaster;
+import org.atmosphere.cpr.DefaultBroadcasterFactory;
+import org.atmosphere.jersey.JerseyBroadcaster;
 import org.atmosphere.jersey.SuspendResponse;
+import org.atmosphere.jersey.util.JerseyBroadcasterUtil;
 
-import com.google.gson.Gson;
 import com.sun.jersey.spi.container.servlet.PerSession;
 
 /**
@@ -67,11 +70,6 @@ public class CometBindingHandler {
 	private Broadcaster broadcaster;
 
 	/**
-	 * JSON converter.
-	 */
-	private Gson gson = new Gson();
-
-	/**
 	 * The underlying servlet context.
 	 */
 	@Context
@@ -82,6 +80,15 @@ public class CometBindingHandler {
 
 	private CometComponentContext context;
 
+	@GET
+	@Path("/sessionId")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String establishSessionId() {
+		request.getSession().invalidate();
+		request.getSession(true);
+		return "OK";
+	}
+
 	/**
 	 * Method called at comet connect time. This suspends the response and keeps
 	 * the connection opened.
@@ -89,12 +96,14 @@ public class CometBindingHandler {
 	 * @return the suspended response
 	 */
 	@GET
+	@Path("/connect")
 	public SuspendResponse<String> connect() {
 		System.out.println("-- connect -- Session Id: " + request.getSession().getId());
 		if (broadcaster == null) {
-			broadcaster = new DefaultBroadcaster();
+			broadcaster = new JerseyBroadcaster();
 			context = (CometComponentContext) sc.getAttribute(ServletFactory.COMET_COMPONENT_CONTEXT_KEY);
 		}
+		CometComponentContext.broadcasters.put(request.getSession().getId(), broadcaster);
 		return new SuspendResponse.SuspendResponseBuilder<String>().broadcaster(this.broadcaster).outputComments(true)
 				.build();
 	}
@@ -117,7 +126,6 @@ public class CometBindingHandler {
 	 */
 	@POST
 	@Path("/{service}/{method}")
-	@Broadcast
 	public void handleRequest(@PathParam("service") final String service, @PathParam("method") final String method,
 			@FormParam("callback") final String callbackMethod, @FormParam("params") final String jsonData)
 			throws InvocationTargetException {
@@ -128,6 +136,7 @@ public class CometBindingHandler {
 
 		final Object[] args = decodeJsonDataForOperation(jsonData, operation);
 		Message msg = createMessageWithMockedCometReference(args, callbackMethod);
+		System.out.println("CometBindingHandler thread id: " + Thread.currentThread().getId());
 		wire.invoke(operation, msg);
 	}
 
@@ -144,7 +153,7 @@ public class CometBindingHandler {
 		int index = 0;
 		// convert each argument to the corresponding class
 		for (final DataType<?> dataType : operation.getInputType().getLogical()) {
-			args[index] = this.gson.fromJson(json[index], dataType.getPhysical());
+			args[index] = CometComponentContext.gson.fromJson(json[index], dataType.getPhysical());
 			index++;
 		}
 		return args;
@@ -161,11 +170,12 @@ public class CometBindingHandler {
 	 */
 	private Message createMessageWithMockedCometReference(Object[] args, String callbackMethod) {
 		Message msg = new MessageImpl();
+		msg.getHeaders().put(Constants.MESSAGE_ID, request.getSession().getId());
 		msg.setBody(args);
-		CometMessageContext messageContext = new CometMessageContext(this, callbackMethod);
-		msg.setBindingContext(messageContext);
 		EndpointReference re = new RuntimeEndpointReferenceImpl();
-		re.setCallbackEndpoint(new RuntimeEndpointImpl());
+		RuntimeEndpointImpl callbackEndpoint = new RuntimeEndpointImpl();
+		callbackEndpoint.setURI(callbackMethod);
+		re.setCallbackEndpoint(callbackEndpoint);
 		msg.setFrom(re);
 		return msg;
 	}
@@ -209,14 +219,6 @@ public class CometBindingHandler {
 		// add last object
 		objects.add(jsonArray.substring(startPos, jsonArray.length() - 1));
 		return objects.toArray(new String[] {});
-	}
-
-	public void respondToClient(String callbackMethod, Object response) {
-		broadcaster.broadcast(callbackMethod + "($.secureEvalJSON('" + this.gson.toJson(response) + "'))");
-	}
-
-	public boolean isClientConnected() {
-		return !broadcaster.getAtmosphereResources().isEmpty();
 	}
 
 }

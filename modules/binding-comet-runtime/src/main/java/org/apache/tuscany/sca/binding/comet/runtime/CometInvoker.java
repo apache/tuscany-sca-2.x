@@ -20,11 +20,13 @@
 package org.apache.tuscany.sca.binding.comet.runtime;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.binding.comet.runtime.handler.CometBindingHandler;
+import org.apache.tuscany.sca.binding.comet.runtime.callback.Status;
+import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.core.invocation.impl.MessageImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.atmosphere.cpr.Broadcaster;
 
 public class CometInvoker implements Invoker {
 
@@ -38,18 +40,28 @@ public class CometInvoker implements Invoker {
 
 	@Override
 	public Message invoke(final Message msg) {
-		String operation = msg.getOperation().getName();
-		CometMessageContext context = msg.getBindingContext();
-		CometBindingHandler handler = context.getCometHandler();
-		Message message = new MessageImpl();
-		if (operation.equals("sendResponse")) {
-			String callbackMethod = context.getCallbackMethod();
-			Object[] body = msg.getBody();
-			handler.respondToClient(callbackMethod, body[0]);
-		} else if (operation.equals("isClientConnected")) {
-			message.setBody(handler.isClientConnected());
-		}
-		return message;
+		return handleSendMessage(msg);
 	}
 
+	private Message handleSendMessage(Message msg) {
+		String sessionId = (String) msg.getHeaders().get(Constants.RELATES_TO);
+		Broadcaster broadcaster = CometComponentContext.broadcasters.get(sessionId);
+		Message response = new MessageImpl();
+		if (broadcaster == null) {
+			System.out.println("Broadcaster already removed.");
+			response.setBody(Status.CLIENT_DISCONNECTED);
+		} else if (broadcaster.getAtmosphereResources().isEmpty()) {
+			System.out.println("Removing broadcaster " + sessionId + "...");
+			CometComponentContext.broadcasters.remove(sessionId);
+			response.setBody(Status.CLIENT_DISCONNECTED);
+		} else {
+			System.out.println("Using broadcaster " + sessionId + "...");
+			String callbackMethod = msg.getTo().getURI();
+			Object[] body = msg.getBody();
+			broadcaster.broadcast(callbackMethod + "($.secureEvalJSON('" + CometComponentContext.gson.toJson(body[0])
+					+ "'))");
+			response.setBody(Status.OK);
+		}
+		return response;
+	}
 }
