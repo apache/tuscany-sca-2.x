@@ -6,8 +6,8 @@ To configure the project add the following to the SCA contribution's pom.xml:
       ...
       <plugins>
          <plugin>
-            <groupId>org.apache.tuscany.maven.plugins</groupId>
-            <artifactId>maven-tuscany-plugin</artifactId>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-maven-plugin</artifactId>
          </plugin>
       ...
       </plugins>

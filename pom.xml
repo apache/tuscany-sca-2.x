@@ -116,7 +116,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>maven/maven-tuscany-plugin</module>
+                <module>maven/tuscany-maven-plugin</module>
                 <module>modules</module>
                 <module>samples</module>
                 <module>testing/itest</module>
@@ -141,7 +141,7 @@
                 <tools.jar>${java.home}/../Classes/classes.jar</tools.jar>
             </properties>
             <modules>
-                <module>maven/maven-tuscany-plugin</module>
+                <module>maven/tuscany-maven-plugin</module>
                 <module>modules</module>
                 <module>samples</module>
                 <module>testing/itest</module>
@@ -230,7 +230,7 @@
         <profile>
             <id>distribution</id>
             <modules>
-                <module>maven/maven-tuscany-plugin</module>
+                <module>maven/tuscany-maven-plugin</module>
                 <module>modules</module>
                 <module>samples</module>
                 <module>testing/itest</module>
@@ -420,7 +420,7 @@
                 <buildZips>true</buildZips>
             </properties>
             <modules>
-                <module>maven/maven-tuscany-plugin</module>
+                <module>maven/tuscany-maven-plugin</module>
                 <module>modules</module>
                 <module>features</module>
                 <module>distribution</module>
@@ -687,7 +687,7 @@ org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apac
             <configuration>
               <rules>
                 <requirePluginVersions>
-                   <unCheckedPluginList>org.apache.tuscany.maven.plugins:maven-tuscany-plugin</unCheckedPluginList>
+                   <unCheckedPluginList>org.apache.tuscany.sca:tuscany-maven-plugin</unCheckedPluginList>
                    <message>Best Practice is to always define released plugin versions!</message>
                    <banLatest>true</banLatest>
                    <banRelease>true</banRelease>

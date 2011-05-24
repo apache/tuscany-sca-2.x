@@ -74,8 +74,8 @@
 
          <!-- to support running the composite with mvn tuscany:run -->
          <plugin>
-            <groupId>org.apache.tuscany.maven.plugins</groupId>
-            <artifactId>maven-tuscany-plugin</artifactId>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-maven-plugin</artifactId>
             <version>${tuscany.version}</version>
             <dependencies>
                <dependency>
