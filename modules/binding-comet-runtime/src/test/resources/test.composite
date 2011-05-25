@@ -25,8 +25,12 @@
 	<component name="test">
 		<implementation.java class="org.apache.tuscany.sca.test.StockServiceImpl"/>
 		<service name="StockService">
-			<interface.java interface="org.apache.tuscany.sca.test.StockService"/>
+			<interface.java interface="org.apache.tuscany.sca.test.StockService" 
+				callbackInterface="org.apache.tuscany.sca.binding.comet.runtime.callback.CometCallback"/>
 			<tuscany:binding.comet/>
+			<callback>
+				<tuscany:binding.comet/>
+			</callback>
 		</service>
 	</component>
 	

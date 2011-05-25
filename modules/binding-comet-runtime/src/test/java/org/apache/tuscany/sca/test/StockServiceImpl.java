@@ -22,18 +22,23 @@ import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Random;
 
+import org.apache.tuscany.sca.binding.comet.runtime.callback.CometCallback;
+import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Service;
 
 @Service(StockService.class)
 public class StockServiceImpl implements StockService {
 
-    public static final int MAX_VALUE = 1000;
-    private final Random random = new Random(new Date().getTime());
+	@Callback
+	protected CometCallback callback;
 
-    @Override
-    public String getQuotes() {
-        final Double value = Math.abs(this.random.nextDouble() * this.random.nextInt(StockServiceImpl.MAX_VALUE));
-        return "ASF" + "#" + Double.valueOf(new DecimalFormat("#.##").format(value));
-    }
+	public static final int MAX_VALUE = 1000;
+	private final Random random = new Random(new Date().getTime());
+
+	@Override
+	public void subscribeForQuotes() {
+		final Double value = Math.abs(this.random.nextDouble() * this.random.nextInt(StockServiceImpl.MAX_VALUE));
+		callback.sendMessage("ASF" + "#" + Double.valueOf(new DecimalFormat("#.##").format(value)));
+	}
 
 }

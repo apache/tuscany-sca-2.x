@@ -18,11 +18,16 @@
  */
 package org.apache.tuscany.sca.test;
 
+import org.apache.tuscany.sca.binding.comet.runtime.callback.CometCallback;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.OneWay;
 import org.oasisopen.sca.annotation.Remotable;
 
+@Callback(CometCallback.class)
 @Remotable
 public interface StockService {
 
-    String getQuotes();
+	@OneWay
+	void subscribeForQuotes();
 
 }
