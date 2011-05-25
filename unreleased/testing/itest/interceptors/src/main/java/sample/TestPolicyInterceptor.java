@@ -69,6 +69,10 @@ public class TestPolicyInterceptor  extends InterceptorAsyncImpl implements Phas
         return msg;
     }
     
+    public Message postProcessRequest(Message msg, Throwable e) throws Throwable {
+        throw e;
+    } 
+    
     public Message processResponse(Message msg) {
         System.out.println("TestPolicyInterceptor.processResponse() " + context + " @ " + phase);
         return msg;
