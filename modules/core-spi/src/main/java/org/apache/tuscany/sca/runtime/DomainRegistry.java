@@ -80,11 +80,11 @@ public interface DomainRegistry {
 
     String getDomainURI();
 
-    void installContribution(InstalledContribution ic);
+    void installContribution(ContributionDescription cd);
     void uninstallContribution(String uri);
     List<String> getInstalledContributionURIs();
-    InstalledContribution getInstalledContribution(String uri);
-    void updateInstalledContribution(InstalledContribution ic);
+    ContributionDescription getInstalledContribution(String uri);
+    void updateInstalledContribution(ContributionDescription cd);
     
     void addContributionListener(ContributionListener listener);
     void removeContributionListener(ContributionListener listener);

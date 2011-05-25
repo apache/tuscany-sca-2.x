@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
-import org.apache.tuscany.sca.runtime.InstalledContribution;
+import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
@@ -84,9 +84,9 @@ public class Node2TestCase {
         Contribution cB = nodeB.getContribution("helloworld");
         Assert.assertNotNull(cB);
 
-        InstalledContribution ic = ((NodeImpl)nodeB).getInstalledContribution("export");
-        Assert.assertEquals(1, ic.getJavaExports().size());
-        Assert.assertEquals("sample", ic.getJavaExports().get(0));
+        ContributionDescription cd = ((NodeImpl)nodeB).getInstalledContribution("export");
+        Assert.assertEquals(1, cd.getJavaExports().size());
+        Assert.assertEquals("sample", cd.getJavaExports().get(0));
         } finally {
             runtime.stop();
         }
@@ -113,9 +113,9 @@ public class Node2TestCase {
         Assert.assertEquals(1, node.getInstalledContributionURIs().size());
         Assert.assertEquals("export", node.getInstalledContributionURIs().get(0));
         
-        InstalledContribution ic = ((NodeImpl)node).getInstalledContribution("export");
-        Assert.assertEquals(1, ic.getJavaExports().size());
-        Assert.assertEquals("sample", ic.getJavaExports().get(0));
+        ContributionDescription cd = ((NodeImpl)node).getInstalledContribution("export");
+        Assert.assertEquals(1, cd.getJavaExports().size());
+        Assert.assertEquals("sample", cd.getJavaExports().get(0));
     }
 
     @Test

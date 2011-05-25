@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceExport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 
-public class InstalledContribution implements Serializable {
+public class ContributionDescription implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String uri;
@@ -54,10 +54,10 @@ public class InstalledContribution implements Serializable {
     // the URI and XML content of composites to include in the contribution
     private Map<String, String> additionalDeployables = new HashMap<String, String>();
 
-    public InstalledContribution(String url) {
+    public ContributionDescription(String url) {
         this(null, url);
     }
-    public InstalledContribution(String uri, String url) {
+    public ContributionDescription(String uri, String url) {
         this.url = url;
         this.uri = uri;
         if (uri == null || uri.length() < 1) {

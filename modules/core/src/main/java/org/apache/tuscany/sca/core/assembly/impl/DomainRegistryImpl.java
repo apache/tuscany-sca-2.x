@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.runtime.BaseDomainRegistry;
 import org.apache.tuscany.sca.runtime.ContributionListener;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.EndpointListener;
-import org.apache.tuscany.sca.runtime.InstalledContribution;
+import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 
 /**
@@ -51,7 +51,7 @@ public class DomainRegistryImpl extends BaseDomainRegistry implements DomainRegi
 
     private List<Endpoint> endpoints = new ArrayList<Endpoint>();
     private Map<String, Map<String, Composite>> runningComposites = new HashMap<String, Map<String, Composite>>();
-    private Map<String, InstalledContribution> installedContributions = new HashMap<String, InstalledContribution>();
+    private Map<String, ContributionDescription> contributionDescriptions = new HashMap<String, ContributionDescription>();
     
     protected boolean quietLogging;
 
@@ -202,30 +202,30 @@ public class DomainRegistryImpl extends BaseDomainRegistry implements DomainRegi
         return compositeURIs;
     }
 
-    public void installContribution(InstalledContribution ic) {
-        installedContributions.put(ic.getURI(), ic);
+    public void installContribution(ContributionDescription cd) {
+        contributionDescriptions.put(cd.getURI(), cd);
     }
 
     public void uninstallContribution(String uri) {
-        installedContributions.remove(uri);
+        contributionDescriptions.remove(uri);
         for (ContributionListener listener : contributionlisteners) {
             listener.contributionRemoved(uri);
         }
     }
 
     public List<String> getInstalledContributionURIs() {
-        return new ArrayList<String>(installedContributions.keySet());
+        return new ArrayList<String>(contributionDescriptions.keySet());
     }
 
-    public InstalledContribution getInstalledContribution(String uri) {
-        return installedContributions.get(uri);
+    public ContributionDescription getInstalledContribution(String uri) {
+        return contributionDescriptions.get(uri);
     }
 
     @Override
-    public void updateInstalledContribution(InstalledContribution ic) {
-        installedContributions.put(ic.getURI(), ic);
+    public void updateInstalledContribution(ContributionDescription cd) {
+        contributionDescriptions.put(cd.getURI(), cd);
         for (ContributionListener listener : contributionlisteners) {
-            listener.contributionUpdated(ic.getURI());
+            listener.contributionUpdated(cd.getURI());
         }
     }
 

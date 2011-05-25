@@ -55,7 +55,7 @@ import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
-import org.apache.tuscany.sca.runtime.InstalledContribution;
+import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.runtime.Version;
 import org.apache.tuscany.sca.shell.jline.JLine;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -227,36 +227,36 @@ public class Shell {
         }
         if (toks.size() > 1) {
             String curi = toks.get(1);
-            InstalledContribution ic = getNode().getInstalledContribution(toks.get(1));
-            if (ic == null) {
+            ContributionDescription cd = getNode().getInstalledContribution(toks.get(1));
+            if (cd == null) {
                 out.println("Contribution " + curi + " not installed");
             } else {
                 out.println(curi);
-                out.println("   URL: " + ic.getURL());
+                out.println("   URL: " + cd.getURL());
 
                 List<String> ims = new ArrayList<String>();
-                for (String im : ic.getJavaImports()) {
+                for (String im : cd.getJavaImports()) {
                         ims.add(im);
                 }
-                for (String im : ic.getNamespaceImports()) {
+                for (String im : cd.getNamespaceImports()) {
                     ims.add(im);
                 }
                 out.println("   Imports: " + ims);
 
                 List<String> es = new ArrayList<String>();
-                for (String e : ic.getJavaExports()) {
+                for (String e : cd.getJavaExports()) {
                     es.add(e);
                 }
-                for (String e : ic.getNamespaceExports()) {
+                for (String e : cd.getNamespaceExports()) {
                     es.add(e);
                 }
                 out.println("   Exports: " + es);
 
                 List<String> ds = new ArrayList<String>();
-                for (String cp : ic.getDeployables()) {
+                for (String cp : cd.getDeployables()) {
                     ds.add(cp);
                 }
-                for (String cp : ic.getAdditionalDeployables().keySet()) {
+                for (String cp : cd.getAdditionalDeployables().keySet()) {
                     ds.add(cp);
                 }
                 out.println("   Deployables: " + ds);

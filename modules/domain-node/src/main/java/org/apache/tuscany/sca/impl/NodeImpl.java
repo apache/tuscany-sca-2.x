@@ -52,7 +52,7 @@ import org.apache.tuscany.sca.runtime.ActiveNodes;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.ContributionListener;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
-import org.apache.tuscany.sca.runtime.InstalledContribution;
+import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.oasisopen.sca.NoSuchServiceException;
 
 public class NodeImpl implements Node {
@@ -106,31 +106,31 @@ public class NodeImpl implements Node {
     }
 
     public String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ValidationException {
-        InstalledContribution ic = new InstalledContribution(uri, IOHelper.getLocationAsURL(contributionURL).toString());
+        ContributionDescription cd = new ContributionDescription(uri, IOHelper.getLocationAsURL(contributionURL).toString());
 
         if (dependentContributionURIs != null) {
-            ic.getDependentContributionURIs().addAll(dependentContributionURIs);
+            cd.getDependentContributionURIs().addAll(dependentContributionURIs);
         }
         
         if (metaDataURL != null) {
-            mergeContributionMetaData(metaDataURL, loadContribution(ic));
+            mergeContributionMetaData(metaDataURL, loadContribution(cd));
         }
 
-        peekIntoContribution(ic);
+        peekIntoContribution(cd);
 
-        domainRegistry.installContribution(ic);
+        domainRegistry.installContribution(cd);
 
-        return ic.getURI();
+        return cd.getURI();
     }
     
     public void installContribution(Contribution contribution, List<String> dependentContributionURIs) {
-        InstalledContribution ic = new InstalledContribution(contribution.getURI(), contribution.getLocation());
+        ContributionDescription cd = new ContributionDescription(contribution.getURI(), contribution.getLocation());
         if (dependentContributionURIs != null) {
-            ic.getDependentContributionURIs().addAll(dependentContributionURIs);
+            cd.getDependentContributionURIs().addAll(dependentContributionURIs);
         }
-        ic.configureMetaData(contribution);
-        domainRegistry.installContribution(ic);
-        loadedContributions.put(ic.getURI(), contribution);
+        cd.configureMetaData(contribution);
+        domainRegistry.installContribution(cd);
+        loadedContributions.put(cd.getURI(), contribution);
     }
     
     public void uninstallContribution(String contributionURI) {
@@ -155,16 +155,16 @@ public class NodeImpl implements Node {
      * we need to know about deployables and exports so peek into the contribution to try to get those,
      * and just ignore any errors they might happen while doing that. 
      */
-    protected void peekIntoContribution(InstalledContribution ic) {
+    protected void peekIntoContribution(ContributionDescription cd) {
         Contribution contribution = null;
         try {
-            contribution = loadContribution(ic);
+            contribution = loadContribution(cd);
         } catch (Exception e) {
             // ignore it
         }
         
         if (contribution != null) {
-            ic.configureMetaData(contribution);
+            cd.configureMetaData(contribution);
         }
     }
     
@@ -177,49 +177,49 @@ public class NodeImpl implements Node {
     }
 
     public List<String> getDeployableCompositeURIs(String contributionURI) {
-        InstalledContribution ic = domainRegistry.getInstalledContribution(contributionURI);
-        return new ArrayList<String>(ic.getDeployables());
+        ContributionDescription cd = domainRegistry.getInstalledContribution(contributionURI);
+        return new ArrayList<String>(cd.getDeployables());
     }
     
     public String addDeploymentComposite(String contributionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ValidationException {
-        InstalledContribution ic = getInstalledContribution(contributionURI);
+        ContributionDescription cd = getInstalledContribution(contributionURI);
         
         // load it to check its valid composite XML
         Composite composite = deployer.loadXMLDocument(compositeXML);
         
-        return addDeploymentComposite(ic, composite);
+        return addDeploymentComposite(cd, composite);
     }
 
     public String addDeploymentComposite(String contributionURI, Composite composite) {
-        InstalledContribution ic = getInstalledContribution(contributionURI);
-        return addDeploymentComposite(ic, composite);
+        ContributionDescription cd = getInstalledContribution(contributionURI);
+        return addDeploymentComposite(cd, composite);
     }
 
-    protected String addDeploymentComposite(InstalledContribution ic, Composite composite) {
+    protected String addDeploymentComposite(ContributionDescription cd, Composite composite) {
         if (composite.getURI() == null || composite.getURI().length() < 1) {
             composite.setURI(composite.getName().getLocalPart() + ".composite");
         }
-        composite.setContributionURI(ic.getURI());
-        ic.getAdditionalDeployables().put(composite.getURI(), Utils.modelToXML(composite, false, extensionPointRegistry));
-        domainRegistry.updateInstalledContribution(ic);
+        composite.setContributionURI(cd.getURI());
+        cd.getAdditionalDeployables().put(composite.getURI(), Utils.modelToXML(composite, false, extensionPointRegistry));
+        domainRegistry.updateInstalledContribution(cd);
         return composite.getURI();
     }
 
     public void validateContribution(String contributionURI) throws ContributionReadException, ValidationException {
-        InstalledContribution ic = getInstalledContribution(contributionURI);
-        Contribution contribution = loadContribution(ic);
+        ContributionDescription cd = getInstalledContribution(contributionURI);
+        Contribution contribution = loadContribution(cd);
 
         Monitor monitor = deployer.createMonitor();
         try {
-            deployer.resolve(contribution, calculateDependentContributions(ic), monitor);
+            deployer.resolve(contribution, calculateDependentContributions(cd), monitor);
         } catch (Exception e) {
-            loadedContributions.remove(ic.getURI());
+            loadedContributions.remove(cd.getURI());
             throw new RuntimeException(e);
         }
         try {
             monitor.analyzeProblems();
         } catch (ValidationException e) {
-            loadedContributions.remove(ic.getURI());
+            loadedContributions.remove(cd.getURI());
             throw e;
         }
     }
@@ -238,10 +238,10 @@ public class NodeImpl implements Node {
             dc.start();
             startedComposites.put(key, dc);
         } else {
-            InstalledContribution ic = getInstalledContribution(contributionURI);
-            Contribution contribution = loadContribution(ic);
+            ContributionDescription cd = getInstalledContribution(contributionURI);
+            Contribution contribution = loadContribution(cd);
             Composite composite = contribution.getArtifactModel(compositeURI);
-            List<Contribution> dependentContributions = calculateDependentContributions(ic);
+            List<Contribution> dependentContributions = calculateDependentContributions(cd);
             dc = new DeployedComposite(composite, contribution, dependentContributions, deployer, compositeActivator, domainRegistry, extensionPointRegistry);
             dc.start();
             startedComposites.put(key, dc);
@@ -288,23 +288,23 @@ public class NodeImpl implements Node {
         return ServiceHelper.getService(interfaze, serviceURI, domainRegistry, extensionPointRegistry, deployer);
     }
 
-    public InstalledContribution getInstalledContribution(String contributionURI) {
-        InstalledContribution ic = domainRegistry.getInstalledContribution(contributionURI);
-        if (ic == null) {
+    public ContributionDescription getInstalledContribution(String contributionURI) {
+        ContributionDescription cd = domainRegistry.getInstalledContribution(contributionURI);
+        if (cd == null) {
             throw new IllegalArgumentException("Contribution not installed: " + contributionURI);
         }
-        return ic;
+        return cd;
     }
 
-    protected Contribution loadContribution(InstalledContribution ic) throws ContributionReadException, ValidationException {
-        Contribution contribution = loadedContributions.get(ic.getURI());
+    protected Contribution loadContribution(ContributionDescription cd) throws ContributionReadException, ValidationException {
+        Contribution contribution = loadedContributions.get(cd.getURI());
         if (contribution == null) {
             Monitor monitor = deployer.createMonitor();
-            contribution = deployer.loadContribution(IOHelper.createURI(ic.getURI()), IOHelper.getLocationAsURL(ic.getURL()), monitor);
+            contribution = deployer.loadContribution(IOHelper.createURI(cd.getURI()), IOHelper.getLocationAsURL(cd.getURL()), monitor);
             monitor.analyzeProblems();
-            if (ic.getAdditionalDeployables().size() > 0) {
-                for (String uri : ic.getAdditionalDeployables().keySet()) {
-                    String compositeXML = ic.getAdditionalDeployables().get(uri);
+            if (cd.getAdditionalDeployables().size() > 0) {
+                for (String uri : cd.getAdditionalDeployables().keySet()) {
+                    String compositeXML = cd.getAdditionalDeployables().get(uri);
                     Composite composite;
                     try {
                         composite = deployer.loadXMLDocument(new StringReader(compositeXML));
@@ -315,24 +315,24 @@ public class NodeImpl implements Node {
                     contribution.addComposite(composite);
                 }
             }
-            loadedContributions.put(ic.getURI(), contribution);
+            loadedContributions.put(cd.getURI(), contribution);
         }
         return contribution;
     }
 
-    protected List<Contribution> calculateDependentContributions(InstalledContribution ic) throws ContributionReadException, ValidationException {
+    protected List<Contribution> calculateDependentContributions(ContributionDescription cd) throws ContributionReadException, ValidationException {
         List<Contribution> dependentContributions = new ArrayList<Contribution>();
-        if (ic.getDependentContributionURIs() != null && ic.getDependentContributionURIs().size() > 0) {
+        if (cd.getDependentContributionURIs() != null && cd.getDependentContributionURIs().size() > 0) {
             // if the install specified dependent uris use just those contributions
-            for (String uri : ic.getDependentContributionURIs()) {
-                InstalledContribution dependee = domainRegistry.getInstalledContribution(uri);
+            for (String uri : cd.getDependentContributionURIs()) {
+                ContributionDescription dependee = domainRegistry.getInstalledContribution(uri);
                 if (dependee != null) {
                     dependentContributions.add(loadContribution(dependee));
                 }
             }
         } else {
-            for (Import imprt : loadContribution(ic).getImports()) {
-                for (InstalledContribution exportingIC : findExportingContributions(imprt)) {
+            for (Import imprt : loadContribution(cd).getImports()) {
+                for (ContributionDescription exportingIC : findExportingContributions(imprt)) {
                     dependentContributions.add(loadContribution(exportingIC));
                 }
             }
@@ -341,20 +341,20 @@ public class NodeImpl implements Node {
         return dependentContributions;
     }
 
-    private List<InstalledContribution> findExportingContributions(Import imprt) {
-        List<InstalledContribution> ics = new ArrayList<InstalledContribution>();
+    private List<ContributionDescription> findExportingContributions(Import imprt) {
+        List<ContributionDescription> ics = new ArrayList<ContributionDescription>();
         // TODO: Handle Imports in a more extensible way
         for (String curi : domainRegistry.getInstalledContributionURIs()) {
-            InstalledContribution ic = domainRegistry.getInstalledContribution(curi);
+            ContributionDescription cd = domainRegistry.getInstalledContribution(curi);
             if (imprt instanceof JavaImport) {
-                for (String s : ic.getJavaExports()) {
+                for (String s : cd.getJavaExports()) {
                     if (s.startsWith(((JavaImport)imprt).getPackage())) {
-                        ics.add(ic);
+                        ics.add(cd);
                     }
                 }
             } else if (imprt instanceof NamespaceImport) {
-                if (ic.getNamespaceExports().contains(((NamespaceImport)imprt).getNamespace())) {
-                    ics.add(ic);
+                if (cd.getNamespaceExports().contains(((NamespaceImport)imprt).getNamespace())) {
+                    ics.add(cd);
                 }
             } 
         }

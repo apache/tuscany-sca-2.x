@@ -64,7 +64,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.runtime.BaseDomainRegistry;
 import org.apache.tuscany.sca.runtime.ContributionListener;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
-import org.apache.tuscany.sca.runtime.InstalledContribution;
+import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -106,7 +106,7 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
     protected Map<Object, Object> endpointWsdls;
     protected Map<String, Endpoint> localEndpoints = new ConcurrentHashMap<String, Endpoint>();
 
-    protected Map<String, InstalledContribution> installedContributions;
+    protected Map<String, ContributionDescription> contributionDescriptions;
 
     protected AssemblyFactory assemblyFactory;
     protected Object shutdownMutex = new Object();
@@ -149,21 +149,21 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
             runningComposites = hazelcastInstance.getMap(domainURI + "/RunningComposites");
             runningCompositeOwners = hazelcastInstance.getMap(domainURI + "/RunningCompositeOwners");
 
-            installedContributions = hazelcastInstance.getMap(domainURI + "/InstalledContributions");
-            ((IMap<String, InstalledContribution>)installedContributions).addEntryListener(new EntryListener<String, InstalledContribution>() {
-                public void entryAdded(EntryEvent<String, InstalledContribution> event) {
+            contributionDescriptions = hazelcastInstance.getMap(domainURI + "/InstalledContributions");
+            ((IMap<String, ContributionDescription>)contributionDescriptions).addEntryListener(new EntryListener<String, ContributionDescription>() {
+                public void entryAdded(EntryEvent<String, ContributionDescription> event) {
                 }
-                public void entryRemoved(EntryEvent<String, InstalledContribution> event) {
+                public void entryRemoved(EntryEvent<String, ContributionDescription> event) {
                     for (ContributionListener listener : contributionlisteners) {
                         listener.contributionRemoved(event.getKey());
                     }
                 }
-                public void entryUpdated(EntryEvent<String, InstalledContribution> event) {
+                public void entryUpdated(EntryEvent<String, ContributionDescription> event) {
                     for (ContributionListener listener : contributionlisteners) {
                         listener.contributionUpdated(event.getKey());
                     }
                 }
-                public void entryEvicted(EntryEvent<String, InstalledContribution> event) {
+                public void entryEvicted(EntryEvent<String, ContributionDescription> event) {
                 }
             }, false);
             
@@ -633,25 +633,25 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
     }
 
     public List<String> getInstalledContributionURIs() {
-        return new ArrayList<String>(installedContributions.keySet());
+        return new ArrayList<String>(contributionDescriptions.keySet());
     }
 
-    public InstalledContribution getInstalledContribution(String uri) {
-        return installedContributions.get(uri);
+    public ContributionDescription getInstalledContribution(String uri) {
+        return contributionDescriptions.get(uri);
     }
 
     public void uninstallContribution(String uri) {
-        installedContributions.remove(uri);
+        contributionDescriptions.remove(uri);
     }
 
     @Override
-    public void installContribution(InstalledContribution ic) {
-        installedContributions.put(ic.getURI(), ic);
+    public void installContribution(ContributionDescription cd) {
+        contributionDescriptions.put(cd.getURI(), cd);
     }
 
     @Override
-    public void updateInstalledContribution(InstalledContribution ic) {
-        installedContributions.put(ic.getURI(), ic);
+    public void updateInstalledContribution(ContributionDescription cd) {
+        contributionDescriptions.put(cd.getURI(), cd);
     }
 
     @Override

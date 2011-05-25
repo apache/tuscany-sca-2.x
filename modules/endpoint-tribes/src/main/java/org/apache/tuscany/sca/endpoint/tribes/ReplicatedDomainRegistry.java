@@ -55,7 +55,7 @@ import org.apache.tuscany.sca.endpoint.tribes.MapStore.MapListener;
 import org.apache.tuscany.sca.runtime.BaseDomainRegistry;
 import org.apache.tuscany.sca.runtime.DomainRegistryURI;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
-import org.apache.tuscany.sca.runtime.InstalledContribution;
+import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
@@ -435,13 +435,13 @@ public class ReplicatedDomainRegistry extends BaseDomainRegistry implements Doma
     }
 
     @Override
-    public void installContribution(InstalledContribution ic) {
+    public void installContribution(ContributionDescription cd) {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public InstalledContribution getInstalledContribution(String uri) {
+    public ContributionDescription getInstalledContribution(String uri) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -471,7 +471,7 @@ public class ReplicatedDomainRegistry extends BaseDomainRegistry implements Doma
     }
 
     @Override
-    public void updateInstalledContribution(InstalledContribution ic) {
+    public void updateInstalledContribution(ContributionDescription cd) {
         // TODO Auto-generated method stub
         
     }

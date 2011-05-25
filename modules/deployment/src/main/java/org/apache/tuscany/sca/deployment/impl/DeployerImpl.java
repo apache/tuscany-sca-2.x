@@ -91,7 +91,7 @@ import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.BaseDomainRegistry;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
-import org.apache.tuscany.sca.runtime.InstalledContribution;
+import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
 
@@ -854,10 +854,10 @@ public class DeployerImpl implements Deployer {
         public void uninstallContribution(String uri) {
         }
 
-        public void installContribution(InstalledContribution ic) {
+        public void installContribution(ContributionDescription cd) {
         }
 
-        public InstalledContribution getInstalledContribution(String uri) {
+        public ContributionDescription getInstalledContribution(String uri) {
             return null;
         }
 
@@ -875,7 +875,7 @@ public class DeployerImpl implements Deployer {
             return null;
         }
 
-        public void updateInstalledContribution(InstalledContribution ic) {
+        public void updateInstalledContribution(ContributionDescription cd) {
         }
 
         @Override
