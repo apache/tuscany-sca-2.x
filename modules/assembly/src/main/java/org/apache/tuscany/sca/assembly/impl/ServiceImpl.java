@@ -57,6 +57,15 @@ public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneab
     public List<Binding> getBindings() {
         return bindings;
     }
+    
+    public Binding getBinding(String name) {
+        for (Binding binding : bindings) {
+            if (binding.getName().equals(name)) {
+                return binding;
+            }
+        }
+        return null;
+    }       
 
     public <B> B getBinding(Class<B> bindingClass) {
         for (Binding binding : bindings) {

@@ -37,6 +37,13 @@ public interface Contract extends AbstractContract, PolicySubject, Cloneable {
      * @return the bindings supported by this contract
      */
     List<Binding> getBindings();
+    
+    /**
+     * Return the named binding
+     * 
+     * @return the named binding or null if it can't be found
+     */
+    Binding getBinding(String name);    
 
     /**
      * Returns a binding of the specified type or null if there is no such

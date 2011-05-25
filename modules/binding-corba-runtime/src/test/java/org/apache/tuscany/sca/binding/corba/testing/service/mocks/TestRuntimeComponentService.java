@@ -109,6 +109,11 @@ public class TestRuntimeComponentService implements RuntimeComponentService {
         // TODO Auto-generated method stub
         return null;
     }
+    
+    public Binding getBinding(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     public List<Binding> getBindings() {
         // TODO Auto-generated method stub
