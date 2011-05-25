@@ -36,7 +36,7 @@ this.TuscanyComet = {
 				null, 
 				$.atmosphere.request = {
 					method : 'POST',
-					data : 'callback=' + callbackMethod.name + '&params=' + params 
+					data : 'callbackMethod=' + callbackMethod.name + '&params=' + params 
 				});
 	},
 	callback : function(response) {

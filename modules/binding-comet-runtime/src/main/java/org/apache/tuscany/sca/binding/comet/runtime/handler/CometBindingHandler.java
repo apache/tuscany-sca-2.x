@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.binding.comet.runtime.handler;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -45,13 +46,11 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
-import org.atmosphere.cache.SessionBroadcasterCache;
 import org.atmosphere.cpr.Broadcaster;
-import org.atmosphere.cpr.DefaultBroadcaster;
-import org.atmosphere.cpr.DefaultBroadcasterFactory;
+import org.atmosphere.cpr.BroadcasterLifeCyclePolicy.ATMOSPHERE_RESOURCE_POLICY;
+import org.atmosphere.cpr.BroadcasterLifeCyclePolicy.Builder;
 import org.atmosphere.jersey.JerseyBroadcaster;
 import org.atmosphere.jersey.SuspendResponse;
-import org.atmosphere.jersey.util.JerseyBroadcasterUtil;
 
 import com.sun.jersey.spi.container.servlet.PerSession;
 
@@ -101,6 +100,8 @@ public class CometBindingHandler {
 		System.out.println("-- connect -- Session Id: " + request.getSession().getId());
 		if (broadcaster == null) {
 			broadcaster = new JerseyBroadcaster();
+//			broadcaster.setBroadcasterLifeCyclePolicy(new Builder().policy(ATMOSPHERE_RESOURCE_POLICY.IDLE_DESTROY)
+//					.idleTimeInMS(5000).build());
 			context = (CometComponentContext) sc.getAttribute(ServletFactory.COMET_COMPONENT_CONTEXT_KEY);
 		}
 		CometComponentContext.broadcasters.put(request.getSession().getId(), broadcaster);
@@ -127,7 +128,7 @@ public class CometBindingHandler {
 	@POST
 	@Path("/{service}/{method}")
 	public void handleRequest(@PathParam("service") final String service, @PathParam("method") final String method,
-			@FormParam("callback") final String callbackMethod, @FormParam("params") final String jsonData)
+			@FormParam("callbackMethod") final String callbackMethod, @FormParam("params") final String jsonData)
 			throws InvocationTargetException {
 		System.out.println("-- handleRequest -- Session Id: " + request.getSession().getId());
 		final String url = "/" + service + "/" + method;

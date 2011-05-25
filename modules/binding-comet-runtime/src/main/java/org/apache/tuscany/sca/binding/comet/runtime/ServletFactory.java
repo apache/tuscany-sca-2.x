@@ -66,7 +66,7 @@ public final class ServletFactory {
 	/**
 	 * Path where Javascript toolkit will be exposed.
 	 */
-	public static final String JS_PATH = "/org.apache.tuscany.sca.cometComponentContext.js/*";
+	public static final String JS_PATH = "/tuscany-comet-js/*";
 
 	/**
 	 * The servlet that is exposing the comet services.

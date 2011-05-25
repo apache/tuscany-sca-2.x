@@ -46,6 +46,7 @@ public class JavascriptResource {
      * @return InputStream containing the Javascript code.
      */
     @GET
+    @Path("/org.apache.tuscany.sca.CometComponentContext.js")
     public InputStream getJavascript() {
         InputStream stream = null;
         // add dependencies in the specified order

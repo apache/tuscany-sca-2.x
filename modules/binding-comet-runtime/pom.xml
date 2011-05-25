@@ -40,16 +40,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.atmosphere</groupId>
-			<artifactId>atmosphere-commons</artifactId>
-			<version>0.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.atmosphere</groupId>
-			<artifactId>atmosphere-runtime</artifactId>
-			<version>0.6.1</version>
-		</dependency>
-		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>1.4</version>
@@ -68,6 +58,12 @@
 			<scope>test</scope>
         </dependency>
 
+        <dependency>
+        	<groupId>org.atmosphere</groupId>
+        	<artifactId>atmosphere-jersey</artifactId>
+        	<version>0.7.1</version>
+        	<scope>compile</scope>
+        </dependency>
 	</dependencies>
 
 	<repositories>
@@ -81,6 +77,16 @@
 				<enabled>true</enabled>
 			</releases>
 		</repository>
-	</repositories>
+		<repository>
+			<id>oss-sonatype-repository</id>
+			<url>https://oss.sonatype.org/content/repositories/releases/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+</repositories>
 
 </project>
