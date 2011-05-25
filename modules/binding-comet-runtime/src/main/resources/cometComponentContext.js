@@ -22,6 +22,9 @@ this.TuscanyComet = {
 	appUrl: 'tuscany-comet',
 	connectedEndpoint : null,
 	connect : function(transport) {
+		if(transport == null) {
+			transport = 'streaming';
+		}
 		$.atmosphere.subscribe(document.location.toString() + this.appUrl + "/connect",
 				this.callback, 
 				$.atmosphere.request = {
