@@ -97,7 +97,7 @@ public class CometBindingHandler {
 	@GET
 	@Path("/connect")
 	public SuspendResponse<String> connect() {
-		System.out.println("-- connect -- Session Id: " + request.getSession().getId());
+//		System.out.println("-- connect -- Session Id: " + request.getSession().getId());
 		if (broadcaster == null) {
 			broadcaster = new JerseyBroadcaster();
 //			broadcaster.setBroadcasterLifeCyclePolicy(new Builder().policy(ATMOSPHERE_RESOURCE_POLICY.IDLE_DESTROY)
@@ -130,14 +130,13 @@ public class CometBindingHandler {
 	public void handleRequest(@PathParam("service") final String service, @PathParam("method") final String method,
 			@FormParam("callbackMethod") final String callbackMethod, @FormParam("params") final String jsonData)
 			throws InvocationTargetException {
-		System.out.println("-- handleRequest -- Session Id: " + request.getSession().getId());
+//		System.out.println("-- handleRequest -- Session Id: " + request.getSession().getId());
 		final String url = "/" + service + "/" + method;
 		final RuntimeEndpoint wire = context.getEndpoint(url);
 		final Operation operation = context.getOperation(url);
 
 		final Object[] args = decodeJsonDataForOperation(jsonData, operation);
 		Message msg = createMessageWithMockedCometReference(args, callbackMethod);
-		System.out.println("CometBindingHandler thread id: " + Thread.currentThread().getId());
 		wire.invoke(operation, msg);
 	}
 

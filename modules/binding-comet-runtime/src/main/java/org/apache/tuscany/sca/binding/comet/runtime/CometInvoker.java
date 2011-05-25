@@ -48,14 +48,11 @@ public class CometInvoker implements Invoker {
 		Broadcaster broadcaster = CometComponentContext.broadcasters.get(sessionId);
 		Message response = new MessageImpl();
 		if (broadcaster == null) {
-			System.out.println("Broadcaster already removed.");
 			response.setBody(Status.CLIENT_DISCONNECTED);
 		} else if (broadcaster.getAtmosphereResources().isEmpty()) {
-			System.out.println("Removing broadcaster " + sessionId + "...");
 			CometComponentContext.broadcasters.remove(sessionId);
 			response.setBody(Status.CLIENT_DISCONNECTED);
 		} else {
-			System.out.println("Using broadcaster " + sessionId + "...");
 			String callbackMethod = msg.getTo().getURI();
 			Object[] body = msg.getBody();
 			broadcaster.broadcast(callbackMethod + "($.secureEvalJSON('" + CometComponentContext.gson.toJson(body[0])
