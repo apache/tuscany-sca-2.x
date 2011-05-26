@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.comet.runtime.handler;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ import com.sun.jersey.spi.container.servlet.PerSession;
 @Path("/")
 @Produces("text/html;charset=ISO-8859-1")
 @PerSession
-public class CometBindingHandler {
+public class CometBindingHandler implements Serializable {
 
 	/**
 	 * The object used to suspend the response and send async responses back to
