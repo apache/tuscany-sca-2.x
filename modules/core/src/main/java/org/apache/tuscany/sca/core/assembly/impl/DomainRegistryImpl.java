@@ -242,7 +242,10 @@ public class DomainRegistryImpl extends BaseDomainRegistry implements DomainRegi
 
     @Override
     public String getRunningMember(String contributionURI, String compositeURI) {
-        return LOCAL_MEMBER_NAME;
+        if (getRunningComposite(contributionURI, compositeURI) != null) {
+            return LOCAL_MEMBER_NAME;
+        }
+        return null;
     }
 
     @Override
