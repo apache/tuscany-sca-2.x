@@ -28,23 +28,41 @@ import org.oasisopen.sca.annotation.Scope;
 @EagerInit
 @Scope("COMPOSITE")
 public class HelloworldClientImpl implements Helloworld {
+    
+    public static boolean throwTestExceptionOnInit = false;
+    public static boolean throwTestExceptionOnDestroy = false;
+    
 
     @Reference
     public Helloworld service;
     
     @Init
     public void initialize() throws Exception{
+        if (throwTestExceptionOnInit) {
+            StatusImpl.statusString += "Exception on init ";
+            throw new Exception("Exception on init");
+        }
+        
         StatusImpl.statusString += "HelloworldClientImpl init ";
     	System.out.println(">>>>>> " + sayHello("init"));
     }
     
     @Destroy
     public void destroy() throws Exception{
+        if (throwTestExceptionOnDestroy) {
+            StatusImpl.statusString += "Exception on destroy ";
+            throw new Exception("Exception on destroy");
+        }
+        
         StatusImpl.statusString += "HelloworldClientImpl destroy ";
     }    
     
     public String sayHello(String name) throws Exception {
         return "Hi " + service.sayHello(name);
+    }
+    
+    public String throwException(String name) throws Exception {
+        throw new Exception("test exception");
     }
 
 }

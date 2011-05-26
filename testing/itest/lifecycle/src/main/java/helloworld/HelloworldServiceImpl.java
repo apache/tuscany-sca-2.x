@@ -26,5 +26,10 @@ public class HelloworldServiceImpl implements Helloworld {
         System.out.println("At service - " + response);
         return response;
     }
+    
+    public String throwException(String name) throws Exception {
+        // not used
+        return null;
+    }
 
 }

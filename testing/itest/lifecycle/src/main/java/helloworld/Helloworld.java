@@ -25,5 +25,7 @@ import org.oasisopen.sca.annotation.Remotable;
 public interface Helloworld {
     
     String sayHello(String name) throws Exception;
+    
+    String throwException(String name) throws Exception;
 
 }

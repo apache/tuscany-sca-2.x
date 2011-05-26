@@ -22,16 +22,23 @@
            targetNamespace="http://sample"
            name="domainview">
            
-    <component name="HelloworldService">
+    <component name="HelloworldService1">
        <implementation.java class="helloworld.HelloworldServiceImpl"/>
        <service name="Helloworld">
            <tuscany:binding.lifecycle name="lifecycle"/>
        </service>
-    </component>            
+    </component>  
+    
+    <component name="HelloworldService2">
+       <tuscany:implementation.lifecycle class="helloworld.HelloworldServiceImpl"/>
+       <service name="Helloworld">
+           <tuscany:binding.lifecycle name="lifecycle"/>
+       </service>
+    </component>               
 
     <component name="HelloworldClient">
        <implementation.java class="helloworld.HelloworldClientImpl"/>
-       <reference name="service" target="HelloworldService"/>       
+       <reference name="service" target="HelloworldService1"/>       
     </component> 
 
 </composite>

@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.itest.lifecycle;
 
 
+import helloworld.Helloworld;
+import helloworld.HelloworldClientImpl;
 import helloworld.StatusImpl;
 import junit.framework.Assert;
 
@@ -46,7 +48,7 @@ public class LifecycleTestCase {
     }
 
     @Test
-    public void test1() throws Exception{
+    public void testNormalShutdown() throws Exception{
         
         TuscanyRuntime tuscanyRuntime = TuscanyRuntime.newInstance();
 
@@ -74,13 +76,158 @@ public class LifecycleTestCase {
         // see what happened
         System.out.println(StatusImpl.statusString);
         Assert.assertEquals("Service binding start " + 
+                            "Implementation start " +
+                            "Service binding start " +
                             "HelloworldClientImpl init " +
                             "Reference binding start " + 
                             "Service binding stop " + 
+                            "Service binding stop " + 
+                            "Implementation stop " +
+                            "Reference binding stop " +
+                            "HelloworldClientImpl destroy ", 
+                            StatusImpl.statusString);
+    }
+    
+    @Test
+    public void testInitExceptionShutdown() throws Exception{
+        
+        HelloworldClientImpl.throwTestExceptionOnInit = true;
+        
+        TuscanyRuntime tuscanyRuntime = TuscanyRuntime.newInstance();
+
+        // create a Tuscany node
+        node = tuscanyRuntime.createNode();
+        
+        // install a contribution
+        node.installContribution("HelloworldContrib", "target/classes", null, null);
+        
+        // start a composite
+        try {
+            node.startComposite("HelloworldContrib", "lifecycle.composite");
+        } catch (Exception exception) {
+            // it's thrown from the HelloworldClientImpl @Init method
+        }
+        
+        // stop a composite
+        node.stopComposite("HelloworldContrib", "lifecycle.composite");
+        
+        // uninstall a constribution
+        node.uninstallContribution("HelloworldContrib");
+        
+        // stop a Tuscany node
+        node.stop();
+        
+        // stop the runtime
+        tuscanyRuntime.stop();
+        
+        // see what happened
+        System.out.println(StatusImpl.statusString);
+        Assert.assertEquals("Service binding start " + 
+                            "Implementation start " +
+                            "Service binding start " +
+                            "HelloworldClientImpl init " +
+                            "Reference binding start " + 
+                            "Service binding stop " + 
+                            "Service binding stop " + 
+                            "Implementation stop " +
                             "Reference binding stop " +
                             "HelloworldClientImpl destroy ", 
                             StatusImpl.statusString);
         
-    }
+        HelloworldClientImpl.throwTestExceptionOnInit = false;
+    }    
+    
+    @Test
+    public void testDestroyExceptionShutdown() throws Exception{
+        
+        HelloworldClientImpl.throwTestExceptionOnDestroy = true;
+        
+        TuscanyRuntime tuscanyRuntime = TuscanyRuntime.newInstance();
+
+        // create a Tuscany node
+        node = tuscanyRuntime.createNode();
+        
+        // install a contribution
+        node.installContribution("HelloworldContrib", "target/classes", null, null);
+        
+        // start a composite
+        node.startComposite("HelloworldContrib", "lifecycle.composite");
+        
+        // stop a composite
+        node.stopComposite("HelloworldContrib", "lifecycle.composite");
+        
+        // uninstall a constribution
+        node.uninstallContribution("HelloworldContrib");
+        
+        // stop a Tuscany node
+        node.stop();
+        
+        // stop the runtime
+        tuscanyRuntime.stop();
+        
+        // see what happened
+        System.out.println(StatusImpl.statusString);
+        Assert.assertEquals("Service binding start " + 
+                            "Implementation start " +
+                            "Service binding start " +
+                            "HelloworldClientImpl init " +
+                            "Reference binding start " + 
+                            "Service binding stop " + 
+                            "Service binding stop " + 
+                            "Implementation stop " +
+                            "Reference binding stop " +
+                            "HelloworldClientImpl destroy ", 
+                            StatusImpl.statusString);
+        
+        HelloworldClientImpl.throwTestExceptionOnDestroy = false;
+    }     
+    
+    @Test
+    public void testAppExceptionShutdown() throws Exception{
+        
+        TuscanyRuntime tuscanyRuntime = TuscanyRuntime.newInstance();
+
+        // create a Tuscany node
+        node = tuscanyRuntime.createNode();
+        
+        // install a contribution
+        node.installContribution("HelloworldContrib", "target/classes", null, null);
+        
+        // start a composite
+        node.startComposite("HelloworldContrib", "lifecycle.composite");
+        
+        try {
+            Helloworld hw = node.getService(Helloworld.class, "Helloworld1");
+            hw.throwException("name");
+        } catch (Exception ex) {
+            // do nothing
+        }
+        
+        // stop a composite
+        node.stopComposite("HelloworldContrib", "lifecycle.composite");
+        
+        // uninstall a constribution
+        node.uninstallContribution("HelloworldContrib");
+        
+        // stop a Tuscany node
+        node.stop();
+        
+        // stop the runtime
+        tuscanyRuntime.stop();
+        
+        // see what happened
+        System.out.println(StatusImpl.statusString);
+        Assert.assertEquals("Service binding start " + 
+                            "Implementation start " +
+                            "Service binding start " +
+                            "HelloworldClientImpl init " +
+                            "Reference binding start " + 
+                            "Service binding stop " + 
+                            "Service binding stop " + 
+                            "Implementation stop " +
+                            "Reference binding stop " +
+                            "HelloworldClientImpl destroy ", 
+                            StatusImpl.statusString);
+    }    
     
 }
