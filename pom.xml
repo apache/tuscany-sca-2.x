@@ -520,6 +520,7 @@ org.apache.tuscany.sca.assembly:org.apache.tuscany.sca.assembly.builder:org.apac
                 <buildZips>true</buildZips>
             </properties>
             <modules>
+                <module>maven/tuscany-maven-plugin</module>
                 <module>modules</module>
                 <!-- samples need to be included so that the bin distro includes the prebuilt contributions -->
                 <module>samples</module>
