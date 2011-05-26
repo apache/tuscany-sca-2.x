@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.binding.comet.runtime.handler;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -47,8 +47,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.atmosphere.cpr.Broadcaster;
-import org.atmosphere.cpr.BroadcasterLifeCyclePolicy.ATMOSPHERE_RESOURCE_POLICY;
-import org.atmosphere.cpr.BroadcasterLifeCyclePolicy.Builder;
 import org.atmosphere.jersey.JerseyBroadcaster;
 import org.atmosphere.jersey.SuspendResponse;
 
@@ -97,11 +95,13 @@ public class CometBindingHandler {
 	@GET
 	@Path("/connect")
 	public SuspendResponse<String> connect() {
-//		System.out.println("-- connect -- Session Id: " + request.getSession().getId());
+		// System.out.println("-- connect -- Session Id: " +
+		// request.getSession().getId());
 		if (broadcaster == null) {
-			broadcaster = new JerseyBroadcaster();
-//			broadcaster.setBroadcasterLifeCyclePolicy(new Builder().policy(ATMOSPHERE_RESOURCE_POLICY.IDLE_DESTROY)
-//					.idleTimeInMS(5000).build());
+			broadcaster = new JerseyBroadcaster(UUID.randomUUID().toString());
+			// broadcaster.setBroadcasterLifeCyclePolicy(new
+			// Builder().policy(ATMOSPHERE_RESOURCE_POLICY.IDLE_DESTROY)
+			// .idleTimeInMS(5000).build());
 			context = (CometComponentContext) sc.getAttribute(ServletFactory.COMET_COMPONENT_CONTEXT_KEY);
 		}
 		CometComponentContext.broadcasters.put(request.getSession().getId(), broadcaster);
@@ -130,14 +130,25 @@ public class CometBindingHandler {
 	public void handleRequest(@PathParam("service") final String service, @PathParam("method") final String method,
 			@FormParam("callbackMethod") final String callbackMethod, @FormParam("params") final String jsonData)
 			throws InvocationTargetException {
-//		System.out.println("-- handleRequest -- Session Id: " + request.getSession().getId());
+		// System.out.println("-- handleRequest -- Session Id: " +
+		// request.getSession().getId());
 		final String url = "/" + service + "/" + method;
 		final RuntimeEndpoint wire = context.getEndpoint(url);
 		final Operation operation = context.getOperation(url);
 
 		final Object[] args = decodeJsonDataForOperation(jsonData, operation);
 		Message msg = createMessageWithMockedCometReference(args, callbackMethod);
-		wire.invoke(operation, msg);
+		boolean isVoidReturnType = operation.getOutputType().getLogical().isEmpty();
+		if (!isVoidReturnType) {
+			Object response = wire.invoke(operation, args);
+			broadcaster.broadcast(callbackMethod + "($.secureEvalJSON('" + CometComponentContext.gson.toJson(response)
+					+ "'))");
+			if (broadcaster.getAtmosphereResources().isEmpty()) {
+				CometComponentContext.broadcasters.remove(request.getSession().getId());
+			}
+		} else {
+			wire.invoke(operation, msg);
+		}
 	}
 
 	/**
