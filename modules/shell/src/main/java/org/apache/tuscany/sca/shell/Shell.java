@@ -72,7 +72,7 @@ public class Shell {
     private Map<String, Node> standaloneNodes = new HashMap<String, Node>();
     private Map<String, Node> nodes = new HashMap<String, Node>();
 
-    public static final String[] COMMANDS = new String[] {"bye", "addComposite", "domain", "domains", "domainComposite", "help", "install", "installed", "invoke",
+    public static final String[] COMMANDS = new String[] {"addComposite", "bye", "domain", "domains", "domainComposite", "help", "install", "installed", "invoke",
                                                           "load", "members", "remove", "run", "save", "services", "start", "started", "stop"};
 
     public static void main(final String[] args) throws Exception {
@@ -768,6 +768,8 @@ public class Shell {
             helpOverview();
         } else if ("help".equalsIgnoreCase(command)) {
             helpHelp();
+        } else if ("addComposite".equalsIgnoreCase(command)) {
+            helpAddComposite();
         } else if ("install".equalsIgnoreCase(command)) {
             helpInstall();
         } else if ("installed".equalsIgnoreCase(command)) {
@@ -805,27 +807,38 @@ public class Shell {
         out.println("Commands:");
         out.println();
         out.println("   help");
+        out.println("   addComposite <contributionURI> <compositeURI");
         out.println("   domain <domainURI>");
         out.println("   domains");
-        out.println("   install [<uri>] <contributionURL> [-start] [-metadata <url>] [-duris <uri,uri,...>]");
+        out.println("   install [<uri>] <contributionURL> [-metadata <url>] [-duris <uri,uri,...>]");
         out.println("   installed [<contributionURI>]");
         out.println("   invoke <component>[/<service>] <operation> [<arg0> <arg1> ...]");
         out.println("   load <configXmlURL>");
+        out.println("   members");
         out.println("   remove <contributionURI>");
         out.println("   run <commandsFileURL>");
         out.println("   save <directoryPath>");
         out.println("   services");
-        out.println("   start <curi> <compositeUri>|<contentURL>");
-        out.println("   start <name> [<compositeUri>] <contributionURL> [-duris <uri,uri,...>]");
-        out.println("   started [<curi> [<compositeUri>]]");
+        out.println("   start <curi> <compositeUri> [<member>]");
+        out.println("   started");
         out.println("   status");
-        out.println("   stop [<curi> [<compositeUri>]]");
+        out.println("   stop <curi> <compositeUri>");
         out.println("   bye");
         out.println();
         if (useJline)
             out.println("Use Tab key for command and argument completion");
         out.println("For detailed help on each command do 'help <command>', for help of startup options do 'help startup'");
         return true;
+    }
+
+    void helpAddComposite() {
+        out.println("   addComposite <contributionURI> <compositeURI");
+        out.println();
+        out.println("   Adds a deployable composite to an installed contribution.");
+        out.println();
+        out.println("   Arguments:");
+        out.println("      contributionURI - (required) the URI of the installed contribution");
+        out.println("      compositeURL    - (required) the URL to an external composite file");
     }
 
     void helpHelp() {
