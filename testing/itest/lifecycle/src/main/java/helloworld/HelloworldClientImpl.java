@@ -39,22 +39,22 @@ public class HelloworldClientImpl implements Helloworld {
     @Init
     public void initialize() throws Exception{
         if (throwTestExceptionOnInit) {
-            StatusImpl.statusString += "Exception on init ";
+            StatusImpl.appendStatus("Exception on init", "HelloworldClientImpl");
             throw new Exception("Exception on init");
         }
         
-        StatusImpl.statusString += "HelloworldClientImpl init ";
+        StatusImpl.appendStatus("Init", "HelloworldClientImpl");
     	System.out.println(">>>>>> " + sayHello("init"));
     }
     
     @Destroy
     public void destroy() throws Exception{
         if (throwTestExceptionOnDestroy) {
-            StatusImpl.statusString += "Exception on destroy ";
+            StatusImpl.appendStatus("Exception on destroy", "HelloworldClientImpl");
             throw new Exception("Exception on destroy");
         }
         
-        StatusImpl.statusString += "HelloworldClientImpl destroy ";
+        StatusImpl.appendStatus("Destroy", "HelloworldClientImpl");
     }    
     
     public String sayHello(String name) throws Exception {

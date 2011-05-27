@@ -56,11 +56,11 @@ class LifecycleProvider implements ImplementationProvider {
     }
 
     public void start() {
-        StatusImpl.statusString += "Implementation start ";
+        StatusImpl.appendStatus("Implementation start", comp.getName());
     }
 
     public void stop() {
-        StatusImpl.statusString += "Implementation stop ";
+        StatusImpl.appendStatus("Implementation stop", comp.getName());
     }
 
     public boolean supportsOneWayInvocation() {

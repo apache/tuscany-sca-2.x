@@ -22,5 +22,9 @@ package helloworld;
 public class StatusImpl {
 
     public static String statusString = "";
+    
+    public static void appendStatus(String event, String location){
+        statusString += event + " - " + location + "\n";
+    }
 
 }

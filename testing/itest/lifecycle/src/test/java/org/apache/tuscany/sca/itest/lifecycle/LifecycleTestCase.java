@@ -39,7 +39,7 @@ public class LifecycleTestCase {
     
     @Before
     public void setUp() throws Exception {   
-
+        StatusImpl.statusString = "";
     }
 
     @After
@@ -48,7 +48,9 @@ public class LifecycleTestCase {
     }
 
     @Test
-    public void testNormalShutdown() throws Exception{
+    public void testNormalShutdownNoMessage() throws Exception{
+        
+        StatusImpl.statusString = "";
         
         TuscanyRuntime tuscanyRuntime = TuscanyRuntime.newInstance();
 
@@ -75,18 +77,66 @@ public class LifecycleTestCase {
         
         // see what happened
         System.out.println(StatusImpl.statusString);
-        Assert.assertEquals("Service binding start " + 
-                            "Implementation start " +
-                            "Service binding start " +
-                            "HelloworldClientImpl init " +
-                            "Reference binding start " + 
-                            "Service binding stop " + 
-                            "Service binding stop " + 
-                            "Implementation stop " +
-                            "Reference binding stop " +
-                            "HelloworldClientImpl destroy ", 
+        Assert.assertEquals("Service binding start - Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" + 
+                            "Implementation start - HelloworldService2\n" +
+                            "Service binding start - Endpoint:  URI = HelloworldService2#service-binding(Helloworld/lifecycle)\n" +
+                            "Init - HelloworldClientImpl\n" +
+                            "Reference binding start - EndpointReference:  URI = HelloworldClient#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" + 
+                            "Service binding stop - Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" + 
+                            "Service binding stop - Endpoint:  URI = HelloworldService2#service-binding(Helloworld/lifecycle)\n" + 
+                            "Implementation stop - HelloworldService2\n" +
+                            "Reference binding stop - EndpointReference:  URI = HelloworldClient#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" +
+                            "Destroy - HelloworldClientImpl\n", 
                             StatusImpl.statusString);
     }
+    
+    @Test
+    public void testNormalShutdownAfterMessage() throws Exception{
+        
+        TuscanyRuntime tuscanyRuntime = TuscanyRuntime.newInstance();
+
+        // create a Tuscany node
+        node = tuscanyRuntime.createNode();
+        
+        // install a contribution
+        node.installContribution("HelloworldContrib", "target/classes", null, null);
+        
+        // start a composite
+        node.startComposite("HelloworldContrib", "lifecycle.composite");
+        
+        // send a message
+        Helloworld hw = node.getService(Helloworld.class, "HelloworldService1");
+        System.out.println(hw.sayHello("name"));
+        
+        // stop a composite
+        node.stopComposite("HelloworldContrib", "lifecycle.composite");
+        
+        // uninstall a constribution
+        node.uninstallContribution("HelloworldContrib");
+        
+        // stop a Tuscany node
+        node.stop();
+        
+        // stop the runtime
+        tuscanyRuntime.stop();
+        
+        // see what happened
+        System.out.println(StatusImpl.statusString);
+        Assert.assertEquals("Service binding start - Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" + 
+                            "Implementation start - HelloworldService2\n" +
+                            "Service binding start - Endpoint:  URI = HelloworldService2#service-binding(Helloworld/lifecycle)\n" +
+                            "Init - HelloworldClientImpl\n" +
+                            "Reference binding start - EndpointReference:  URI = HelloworldClient#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" +
+                            /*extra ref start for getService reference*/
+                            "Reference binding start - EndpointReference:  URI = HelloworldService1#reference-binding($self$.Helloworld/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" +
+                            "Service binding stop - Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" + 
+                            "Service binding stop - Endpoint:  URI = HelloworldService2#service-binding(Helloworld/lifecycle)\n" + 
+                            "Implementation stop - HelloworldService2\n" +
+                            "Reference binding stop - EndpointReference:  URI = HelloworldClient#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" +
+                            /*$self$ reference is not stopped */
+                            "Destroy - HelloworldClientImpl\n", 
+                            StatusImpl.statusString);
+    }    
     
     @Test
     public void testInitExceptionShutdown() throws Exception{
@@ -109,7 +159,11 @@ public class LifecycleTestCase {
         }
         
         // stop a composite
-        node.stopComposite("HelloworldContrib", "lifecycle.composite");
+        try {
+            node.stopComposite("HelloworldContrib", "lifecycle.composite");
+        } catch (Exception exception) {
+            // it will complain about the composite not being started
+        }            
         
         // uninstall a constribution
         node.uninstallContribution("HelloworldContrib");
@@ -122,16 +176,15 @@ public class LifecycleTestCase {
         
         // see what happened
         System.out.println(StatusImpl.statusString);
-        Assert.assertEquals("Service binding start " + 
-                            "Implementation start " +
-                            "Service binding start " +
-                            "HelloworldClientImpl init " +
-                            "Reference binding start " + 
-                            "Service binding stop " + 
-                            "Service binding stop " + 
-                            "Implementation stop " +
-                            "Reference binding stop " +
-                            "HelloworldClientImpl destroy ", 
+        Assert.assertEquals("Service binding start - Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" + 
+                            "Implementation start - HelloworldService2\n" +
+                            "Service binding start - Endpoint:  URI = HelloworldService2#service-binding(Helloworld/lifecycle)\n" +
+                            "Exception on init - HelloworldClientImpl\n" + 
+                            /* is it right that the destroy happens directly?*/
+                            "Destroy - HelloworldClientImpl\n" +
+                            "Service binding stop - Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" + 
+                            "Service binding stop - Endpoint:  URI = HelloworldService2#service-binding(Helloworld/lifecycle)\n" + 
+                            "Implementation stop - HelloworldService2\n", 
                             StatusImpl.statusString);
         
         HelloworldClientImpl.throwTestExceptionOnInit = false;
@@ -151,10 +204,18 @@ public class LifecycleTestCase {
         node.installContribution("HelloworldContrib", "target/classes", null, null);
         
         // start a composite
-        node.startComposite("HelloworldContrib", "lifecycle.composite");
+        try {
+            node.startComposite("HelloworldContrib", "lifecycle.composite");
+        } catch (Exception exception) {
+            // it's thrown from the HelloworldClientImpl @Destroy method
+        }
         
         // stop a composite
-        node.stopComposite("HelloworldContrib", "lifecycle.composite");
+        try {
+            node.stopComposite("HelloworldContrib", "lifecycle.composite");
+        } catch (Exception exception) {
+            // it will complain about the composite not being started
+        }   
         
         // uninstall a constribution
         node.uninstallContribution("HelloworldContrib");
@@ -167,16 +228,16 @@ public class LifecycleTestCase {
         
         // see what happened
         System.out.println(StatusImpl.statusString);
-        Assert.assertEquals("Service binding start " + 
-                            "Implementation start " +
-                            "Service binding start " +
-                            "HelloworldClientImpl init " +
-                            "Reference binding start " + 
-                            "Service binding stop " + 
-                            "Service binding stop " + 
-                            "Implementation stop " +
-                            "Reference binding stop " +
-                            "HelloworldClientImpl destroy ", 
+        Assert.assertEquals("Service binding start - Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" + 
+                            "Implementation start - HelloworldService2\n" +
+                            "Service binding start - Endpoint:  URI = HelloworldService2#service-binding(Helloworld/lifecycle)\n" +
+                            "Init - HelloworldClientImpl\n" +
+                            "Reference binding start - EndpointReference:  URI = HelloworldClient#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" + 
+                            "Service binding stop - Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" + 
+                            "Service binding stop - Endpoint:  URI = HelloworldService2#service-binding(Helloworld/lifecycle)\n" + 
+                            "Implementation stop - HelloworldService2\n" +
+                            "Reference binding stop - EndpointReference:  URI = HelloworldClient#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" +
+                            "Exception on destroy - HelloworldClientImpl\n",  
                             StatusImpl.statusString);
         
         HelloworldClientImpl.throwTestExceptionOnDestroy = false;
@@ -217,16 +278,16 @@ public class LifecycleTestCase {
         
         // see what happened
         System.out.println(StatusImpl.statusString);
-        Assert.assertEquals("Service binding start " + 
-                            "Implementation start " +
-                            "Service binding start " +
-                            "HelloworldClientImpl init " +
-                            "Reference binding start " + 
-                            "Service binding stop " + 
-                            "Service binding stop " + 
-                            "Implementation stop " +
-                            "Reference binding stop " +
-                            "HelloworldClientImpl destroy ", 
+        Assert.assertEquals("Service binding start - Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" + 
+                            "Implementation start - HelloworldService2\n" +
+                            "Service binding start - Endpoint:  URI = HelloworldService2#service-binding(Helloworld/lifecycle)\n" +
+                            "Init - HelloworldClientImpl\n" +
+                            "Reference binding start - EndpointReference:  URI = HelloworldClient#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" + 
+                            "Service binding stop - Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" + 
+                            "Service binding stop - Endpoint:  URI = HelloworldService2#service-binding(Helloworld/lifecycle)\n" + 
+                            "Implementation stop - HelloworldService2\n" +
+                            "Reference binding stop - EndpointReference:  URI = HelloworldClient#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService1#service-binding(Helloworld/lifecycle)\n" +
+                            "Destroy - HelloworldClientImpl\n",  
                             StatusImpl.statusString);
     }    
     

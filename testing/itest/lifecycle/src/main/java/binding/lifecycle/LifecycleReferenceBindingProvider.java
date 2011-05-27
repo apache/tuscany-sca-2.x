@@ -22,6 +22,8 @@ package binding.lifecycle;
 import helloworld.StatusImpl;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.impl.EndpointImpl;
+import org.apache.tuscany.sca.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -41,11 +43,13 @@ public class LifecycleReferenceBindingProvider implements ReferenceBindingProvid
     }
 
     public void start() {
-        StatusImpl.statusString += "Reference binding start ";
+        StatusImpl.appendStatus("Reference binding start", 
+                                ((EndpointReferenceImpl)endpoint).toStringWithoutHash());
     }
 
     public void stop() {
-        StatusImpl.statusString += "Reference binding stop ";
+        StatusImpl.appendStatus("Reference binding stop", 
+                                ((EndpointReferenceImpl)endpoint).toStringWithoutHash());
     }
 
     public InterfaceContract getBindingInterfaceContract() {

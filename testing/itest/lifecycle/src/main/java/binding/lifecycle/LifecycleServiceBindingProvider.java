@@ -20,6 +20,8 @@
 package binding.lifecycle;
 
 import helloworld.StatusImpl;
+
+import org.apache.tuscany.sca.assembly.impl.EndpointImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
@@ -34,11 +36,13 @@ public class LifecycleServiceBindingProvider implements ServiceBindingProvider {
     }
 
     public void start() {
-        StatusImpl.statusString += "Service binding start ";
+        StatusImpl.appendStatus("Service binding start", 
+                                ((EndpointImpl)endpoint).toStringWithoutHash());
     }
 
     public void stop() {
-        StatusImpl.statusString += "Service binding stop ";
+        StatusImpl.appendStatus("Service binding stop", 
+                                ((EndpointImpl)endpoint).toStringWithoutHash());
     }
 
     public InterfaceContract getBindingInterfaceContract() {
