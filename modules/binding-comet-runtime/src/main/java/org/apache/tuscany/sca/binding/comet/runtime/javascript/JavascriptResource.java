@@ -37,8 +37,8 @@ public class JavascriptResource {
     /**
      * Dependencies for the Tuscany Comet Javascript API.
      */
-    private static final String[] DEPENDENCIES = {"/jquery.atmosphere.js", "/jquery.json-2.2.min.js",
-                                                  "/cometComponentContext.js"};
+    private static final String[] DEPENDENCIES = { "/jquery.atmosphere.js", "/jquery.json-2.2.min.js",
+            "/jquery.guid.js", "/cometComponentContext.js" };
 
     /**
      * Method called when the Javascript toolkit is requested.

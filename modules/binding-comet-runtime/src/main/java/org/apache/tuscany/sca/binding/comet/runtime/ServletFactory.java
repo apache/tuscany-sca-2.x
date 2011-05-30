@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.binding.comet.runtime;
 
 import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.atmosphere.cpr.AtmosphereServlet;
 
 /**
@@ -84,15 +82,7 @@ public final class ServletFactory {
 	private ServletFactory() {
 	}
 
-	/**
-	 * Method called by CometServiceBindingProvider for each endpoint in order
-	 * to create the two singleton servlets.
-	 * 
-	 * @param servletHost
-	 *            the underlying servlet host
-	 */
-	public static synchronized String registerServlet(
-			final ServletHost servletHost) {
+	public static synchronized String registerServlet(final ServletHost servletHost) {
 		String uri = registerCometServlet(servletHost);
 		registerJavascriptServlet(servletHost);
 		return uri;
@@ -101,61 +91,25 @@ public final class ServletFactory {
 	private static String registerCometServlet(ServletHost servletHost) {
 		if (ServletFactory.cometServlet == null) {
 			ServletFactory.cometServlet = new AtmosphereServlet();
-			ServletFactory.cometServlet.addInitParameter(
-					ServletFactory.PACKAGE_KEY, ServletFactory.PACKAGE_VALUE);
-			String uri = servletHost.addServletMapping(ServletFactory.PATH,
-					ServletFactory.cometServlet);
-			final CometComponentContext context = new CometComponentContext();
-			ServletFactory.cometServlet.getServletContext().setAttribute(
-					ServletFactory.COMET_COMPONENT_CONTEXT_KEY, context);
+			ServletFactory.cometServlet.addInitParameter(ServletFactory.PACKAGE_KEY, ServletFactory.PACKAGE_VALUE);
+			String uri = servletHost.addServletMapping(ServletFactory.PATH, ServletFactory.cometServlet);
 			return uri;
-		} else {
-		    return null;
 		}
+		return null;
 	}
 
 	private static void registerJavascriptServlet(ServletHost servletHost) {
 		if (ServletFactory.javascriptServlet == null) {
 			ServletFactory.javascriptServlet = new AtmosphereServlet();
-			ServletFactory.javascriptServlet
-					.addInitParameter(ServletFactory.PACKAGE_KEY,
-							ServletFactory.JS_PACKAGE_VALUE);
-			servletHost.addServletMapping(ServletFactory.JS_PATH,
-					ServletFactory.javascriptServlet);
+			ServletFactory.javascriptServlet.addInitParameter(ServletFactory.PACKAGE_KEY,
+					ServletFactory.JS_PACKAGE_VALUE);
+			servletHost.addServletMapping(ServletFactory.JS_PATH, ServletFactory.javascriptServlet);
 		}
 	}
 
-	/**
-	 * Method called by CometServiceBindingProvider for each endpoint operation
-	 * in order to store all the operations the servlet will serve.
-	 * 
-	 * @param endpoint
-	 *            the endpoint
-	 * @param operation
-	 *            the operation
-	 */
-	public static void registerOperation(final RuntimeEndpoint endpoint,
-			final Operation operation) {
-		final String url = "/" + endpoint.getService().getName() + "/"
-				+ operation.getName();
-		CometComponentContext context = (CometComponentContext) cometServlet
-				.getServletContext().getAttribute(COMET_COMPONENT_CONTEXT_KEY);
-		context.addEndpoint(url, endpoint);
-		context.addOperation(url, operation);
-	}
-
-	/**
-	 * Method called by CometServiceBindingProvider for each endpoint operation
-	 * in order to remove the two servlets.
-	 * 
-	 * @param servletHost
-	 *            the underlying servlet host
-	 */
 	public static void unregisterServlet(final ServletHost servletHost) {
-		synchronized (servletHost) {
-			servletHost.removeServletMapping(ServletFactory.PATH);
-			servletHost.removeServletMapping(ServletFactory.JS_PATH);
-		}
+		servletHost.removeServletMapping(ServletFactory.PATH);
+		servletHost.removeServletMapping(ServletFactory.JS_PATH);
 	}
 
 }

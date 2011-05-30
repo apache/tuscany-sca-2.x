@@ -21,6 +21,9 @@ package org.apache.tuscany.sca.binding.comet.runtime;
 
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.binding.comet.runtime.javascript.JavascriptGenerator;
+import org.apache.tuscany.sca.binding.comet.runtime.manager.CometEndpointManager;
+import org.apache.tuscany.sca.binding.comet.runtime.manager.CometOperationManager;
+import org.apache.tuscany.sca.binding.comet.runtime.manager.CometSessionManager;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -33,32 +36,14 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  */
 public class CometServiceBindingProvider implements ServiceBindingProvider {
 
-	/**
-	 * Service's endpoint.
-	 */
 	private final RuntimeEndpoint endpoint;
-
-	/**
-	 * The underlying servlet host.
-	 */
 	private final ServletHost servletHost;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param endpoint
-	 *            the given endpoint
-	 * @param servletHost
-	 *            the given servlet host
-	 */
 	public CometServiceBindingProvider(final RuntimeEndpoint endpoint, final ServletHost servletHost) {
 		this.endpoint = endpoint;
 		this.servletHost = servletHost;
 	}
 
-	/**
-	 * This method is used to start the provider.
-	 */
 	@Override
 	public void start() {
 		String deployedURI = ServletFactory.registerServlet(this.servletHost);
@@ -67,8 +52,10 @@ public class CometServiceBindingProvider implements ServiceBindingProvider {
 		final Interface serviceInterface = service.getInterfaceContract().getInterface();
 		JavascriptGenerator.generateServiceProxy(service);
 		for (final Operation operation : serviceInterface.getOperations()) {
+			final String url = "/" + endpoint.getService().getName() + "/" + operation.getName();
+			CometEndpointManager.add(url, endpoint);
+			CometOperationManager.add(url, operation);
 			JavascriptGenerator.generateMethodProxy(service, operation);
-			ServletFactory.registerOperation(this.endpoint, operation);
 		}
 	}
 
@@ -78,6 +65,9 @@ public class CometServiceBindingProvider implements ServiceBindingProvider {
 	@Override
 	public void stop() {
 		ServletFactory.unregisterServlet(this.servletHost);
+		CometEndpointManager.clear();
+		CometOperationManager.clear();
+		CometSessionManager.clear();
 	}
 
 	@Override

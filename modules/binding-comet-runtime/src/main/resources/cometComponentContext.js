@@ -21,15 +21,17 @@ var SCA = new function() {
 this.TuscanyComet = {
 	appUrl: 'tuscany-comet',
 	connectedEndpoint : null,
+    sessionId : $.Guid.New(),	
 	connect : function(transport) {
 		if(transport == null) {
 			transport = 'streaming';
 		}
-		$.atmosphere.subscribe(document.location.toString() + this.appUrl + "/connect",
+		$.atmosphere.subscribe(document.location.toString() + this.appUrl + "/connect?sessionId=" + this.sessionId,
 				this.callback, 
 				$.atmosphere.request = {
+					method : 'GET',
 					transport : transport,
-					maxRequest: 1000000000
+					maxRequest: 1000000,
 				});
 		this.connectedEndpoint = $.atmosphere.response;
 	},
@@ -39,7 +41,7 @@ this.TuscanyComet = {
 				null, 
 				$.atmosphere.request = {
 					method : 'POST',
-					data : 'callbackMethod=' + callbackMethod.name + '&params=' + params 
+					data : 'sessionId=' + this.sessionId + '&callbackMethod=' + callbackMethod.name + '&params=' + params
 				});
 	},
 	callback : function(response) {
@@ -47,11 +49,5 @@ this.TuscanyComet = {
 	}
 };
 
-
-$.ajax({
-	url: document.location.toString() + this.TuscanyComet.appUrl + '/sessionId',
-	type: 'GET',
-	async: false,
-});
 
 this.CometComponentContext = new Object();
