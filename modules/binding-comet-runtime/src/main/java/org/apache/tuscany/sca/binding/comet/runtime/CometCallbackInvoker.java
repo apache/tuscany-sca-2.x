@@ -32,18 +32,32 @@ import org.atmosphere.cpr.Broadcaster;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class CometInvoker implements Invoker {
+/**
+ * Receives callback invocations and sends messages back to the browser.
+ */
+public class CometCallbackInvoker implements Invoker {
 
+    /**
+     * JSON converter
+     */
     private static Gson gson = new GsonBuilder().serializeNulls().create();
 
     protected Operation operation;
     protected EndpointReference endpoint;
 
-    public CometInvoker(final Operation operation, final EndpointReference endpoint) {
+    public CometCallbackInvoker(final Operation operation, final EndpointReference endpoint) {
         this.operation = operation;
         this.endpoint = endpoint;
     }
 
+    /**
+     * Sends message back to the browser client and reports connection status to
+     * the runtime.
+     * 
+     * @param msg
+     *            message to send to the browser
+     * @return the connection status
+     */
     @Override
     public Message invoke(final Message msg) {
         String sessionId = (String) msg.getHeaders().get(Constants.RELATES_TO);
@@ -61,7 +75,6 @@ public class CometInvoker implements Invoker {
             response.setBody(Status.OK);
         }
         return response;
-
     }
 
 }

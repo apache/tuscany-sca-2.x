@@ -36,50 +36,53 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  */
 public class CometServiceBindingProvider implements ServiceBindingProvider {
 
-	private final RuntimeEndpoint endpoint;
-	private final ServletHost servletHost;
+    private RuntimeEndpoint endpoint;
+    private ServletHost servletHost;
 
-	public CometServiceBindingProvider(final RuntimeEndpoint endpoint, final ServletHost servletHost) {
-		this.endpoint = endpoint;
-		this.servletHost = servletHost;
-	}
+    public CometServiceBindingProvider(final RuntimeEndpoint endpoint, final ServletHost servletHost) {
+        this.endpoint = endpoint;
+        this.servletHost = servletHost;
+    }
 
-	@Override
-	public void start() {
-		String deployedURI = ServletFactory.registerServlet(this.servletHost);
-		endpoint.setDeployedURI(deployedURI);
-		final ComponentService service = this.endpoint.getService();
-		final Interface serviceInterface = service.getInterfaceContract().getInterface();
-		JavascriptGenerator.generateServiceProxy(service);
-		for (final Operation operation : serviceInterface.getOperations()) {
-			final String url = "/" + endpoint.getService().getName() + "/" + operation.getName();
-			CometEndpointManager.add(url, endpoint);
-			CometOperationManager.add(url, operation);
-			JavascriptGenerator.generateMethodProxy(service, operation);
-		}
-	}
+    /**
+     * Init the comet binding server-side infrastructure.
+     */
+    @Override
+    public void start() {
+        String deployedURI = ServletFactory.registerServlet(this.servletHost);
+        endpoint.setDeployedURI(deployedURI);
+        final ComponentService service = this.endpoint.getService();
+        final Interface serviceInterface = service.getInterfaceContract().getInterface();
+        JavascriptGenerator.generateServiceProxy(service);
+        for (final Operation operation : serviceInterface.getOperations()) {
+            final String url = "/" + endpoint.getService().getName() + "/" + operation.getName();
+            CometEndpointManager.add(url, endpoint);
+            CometOperationManager.add(url, operation);
+            JavascriptGenerator.generateMethodProxy(service, operation);
+        }
+    }
 
-	/**
-	 * This method is used to stop the provider.
-	 */
-	@Override
-	public void stop() {
-		ServletFactory.unregisterServlet(this.servletHost);
-		CometEndpointManager.clear();
-		CometOperationManager.clear();
-		CometSessionManager.clear();
-	}
+    /**
+     * Stop the comet binding server-side infrastructure.
+     */
+    @Override
+    public void stop() {
+        ServletFactory.unregisterServlet(this.servletHost);
+        CometEndpointManager.clear();
+        CometOperationManager.clear();
+        CometSessionManager.clear();
+    }
 
-	@Override
-	public InterfaceContract getBindingInterfaceContract() {
-		return endpoint.getService().getInterfaceContract();
-	}
+    @Override
+    public InterfaceContract getBindingInterfaceContract() {
+        return endpoint.getService().getInterfaceContract();
+    }
 
-	@Override
-	public boolean supportsOneWayInvocation() {
-		// set to false so the runtime will add a nonBlocking interceptor to
-		// handle @OneWay calls
-		return false;
-	}
+    @Override
+    public boolean supportsOneWayInvocation() {
+        // set to false so the runtime will add a nonBlocking interceptor to
+        // handle @OneWay calls
+        return false;
+    }
 
 }

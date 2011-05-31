@@ -49,15 +49,27 @@ import org.atmosphere.jersey.SuspendResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/**
+ * Handles requests for comet services and for creating a persistent connection.
+ */
 @Path("/")
 public class CometBindingHandler {
 
+    /**
+     * JSON converter
+     */
     private static Gson gson = new GsonBuilder().serializeNulls().create();
 
+    /**
+     * Suspends the current HTTP connection.
+     * 
+     * @param sessionId
+     *            session id to identify client
+     * @return a response that is not committed, just flushed
+     */
     @GET
     @Path("/connect")
     public SuspendResponse<String> connect(@QueryParam("sessionId") String sessionId) {
-        System.out.println("-- connect -- Session Id: " + sessionId);
         Broadcaster broadcaster = CometSessionManager.get(sessionId);
         if (broadcaster == null) {
             broadcaster = new JerseyBroadcaster(sessionId);
@@ -67,12 +79,27 @@ public class CometBindingHandler {
                 .build();
     }
 
+    /**
+     * Handles requests for service operations.
+     * 
+     * @param service
+     *            the service to invoke
+     * @param method
+     *            the method to invoke
+     * @param sessionId
+     *            the client session id
+     * @param callbackMethod
+     *            the callbackMethod to invoke once a response is available
+     * @param jsonData
+     *            method arguments sent by the client in JSON format
+     * @throws InvocationTargetException
+     *             if a problem occurs while invoking the service implementation
+     */
     @POST
     @Path("/{service}/{method}")
     public void handleRequest(@PathParam("service") String service, @PathParam("method") String method,
             @FormParam("sessionId") String sessionId, @FormParam("callbackMethod") String callbackMethod,
             @FormParam("params") String jsonData) throws InvocationTargetException {
-        System.out.println("-- handleRequest -- Session Id: " + sessionId);
         String url = "/" + service + "/" + method;
         RuntimeEndpoint wire = CometEndpointManager.get(url);
         Operation operation = CometOperationManager.get(url);
@@ -93,32 +120,18 @@ public class CometBindingHandler {
     }
 
     /**
-     * Convert request parameters from JSON to operation parameter types.
-     * 
-     * @param jsonData
-     * @param operation
-     * @return
-     */
-    private Object[] decodeJsonDataForOperation(String jsonData, Operation operation) {
-        Object[] args = new Object[operation.getInputType().getLogical().size()];
-        final String[] json = this.parseArray(jsonData);
-        int index = 0;
-        // convert each argument to the corresponding class
-        for (final DataType<?> dataType : operation.getInputType().getLogical()) {
-            args[index] = gson.fromJson(json[index], dataType.getPhysical());
-            index++;
-        }
-        return args;
-    }
-
-    /**
-     * Creates the message to be sent with a mocked EndpointReference in the
-     * 'from' field as the request comes from a browser (there is no actual
-     * comet reference running in a controlled environment).
+     * Creates a message with a mocked EndpointReference in the 'from' field to
+     * simulate a comet reference (because requests are coming from browsers).
+     * This is needed by the callback mechanism to have a source for the
+     * request.
      * 
      * @param args
+     *            arguments for the method invocation
+     * @param sessionId
+     *            the session id of the client
      * @param callbackMethod
-     * @return
+     *            method to call once a response is available
+     * @return an invocation message
      */
     private Message createMessageWithMockedCometReference(Object[] args, String sessionId, String callbackMethod) {
         Message msg = new MessageImpl();
@@ -133,17 +146,37 @@ public class CometBindingHandler {
     }
 
     /**
-     * Parse the JSON array containing the arguments for the method call in
+     * Convert request parameters from JSON to operation parameter types.
+     * 
+     * @param jsonData
+     *            parameters in JSON array format
+     * @param operation
+     *            the operation to invoke
+     * @return an array of objects
+     */
+    private Object[] decodeJsonDataForOperation(String jsonData, Operation operation) {
+        Object[] args = new Object[operation.getInputType().getLogical().size()];
+        final String[] json = this.parseArray(jsonData);
+        int index = 0;
+        for (final DataType<?> dataType : operation.getInputType().getLogical()) {
+            args[index] = gson.fromJson(json[index], dataType.getPhysical());
+            index++;
+        }
+        return args;
+    }
+
+    /**
+     * Split the JSON array containing the arguments for the method call in
      * order to avoid converting JSON to Object[]. Converting each object
      * separately to it's corresponding type avoids type mismatch problems at
      * service invocation.
      * 
      * @param jsonArray
      *            the JSON array
-     * @return an array of JSON formatted objects
+     * @return an array of JSON formatted strings
      */
-    private String[] parseArray(final String jsonArray) {
-        final List<String> objects = new ArrayList<String>();
+    private String[] parseArray(String jsonArray) {
+        List<String> objects = new ArrayList<String>();
         int bracketNum = 0;
         int parNum = 0;
         int startPos = 1;
@@ -168,7 +201,6 @@ public class CometBindingHandler {
                 }
             }
         }
-        // add last object
         objects.add(jsonArray.substring(startPos, jsonArray.length() - 1));
         return objects.toArray(new String[] {});
     }

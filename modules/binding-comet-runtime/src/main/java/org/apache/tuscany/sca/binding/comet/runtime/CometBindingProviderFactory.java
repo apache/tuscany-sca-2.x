@@ -35,13 +35,10 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 public class CometBindingProviderFactory implements BindingProviderFactory<CometBinding> {
 
     /**
-     * Underlying servlet host. Injected by constructor.
+     * Underlying servlet host.
      */
     private final ServletHost servletHost;
 
-    /**
-     * Constructor.
-     */
     public CometBindingProviderFactory(final ExtensionPointRegistry extensionPoints) {
         this.servletHost = ServletHostHelper.getServletHost(extensionPoints);
     }

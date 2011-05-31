@@ -21,9 +21,19 @@ package org.apache.tuscany.sca.binding.comet.runtime.callback;
 
 import org.oasisopen.sca.annotation.Remotable;
 
+/**
+ * The comet callback interface.
+ */
 @Remotable
 public interface CometCallback {
 
-	Status sendMessage(Object message);
+    /**
+     * Send message back to the browser client.
+     * 
+     * @param message
+     *            message to send
+     * @return status of the underlying connection with the browser
+     */
+    Status sendMessage(Object message);
 
 }

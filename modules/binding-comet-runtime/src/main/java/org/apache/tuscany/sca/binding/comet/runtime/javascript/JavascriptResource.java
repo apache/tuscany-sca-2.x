@@ -28,7 +28,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 /**
- * Class serving the calls performed to retrieve the Javascript toolkit.
+ * Handles calls for the retrieving the Javascript toolkit.
  */
 @Path("/")
 @Produces("text/javascript")
@@ -49,15 +49,13 @@ public class JavascriptResource {
     @Path("/org.apache.tuscany.sca.CometComponentContext.js")
     public InputStream getJavascript() {
         InputStream stream = null;
-        // add dependencies in the specified order
-        for (final String dependency : JavascriptResource.DEPENDENCIES) {
+        for (String dependency : JavascriptResource.DEPENDENCIES) {
             if (stream == null) {
                 stream = this.getClass().getResourceAsStream(dependency);
             } else {
                 stream = new SequenceInputStream(stream, this.getClass().getResourceAsStream(dependency));
             }
         }
-        // add generated proxies
         final String generatedJs = JavascriptGenerator.getJavascript().toString() + "\n}";
         return new SequenceInputStream(stream, new ByteArrayInputStream(generatedJs.getBytes()));
     }

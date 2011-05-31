@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.interfacedef.Operation;
 
 /**
- * This class generates proxies for the comet services.
+ * Generates javascript proxies for the comet services.
  */
 public class JavascriptGenerator {
 
@@ -42,50 +42,38 @@ public class JavascriptGenerator {
      */
     private static final String TUSCANY_COMET = "SCA.TuscanyComet";
 
-    /**
-     * Generated Javascript.
-     */
     private static StringBuffer javascript = new StringBuffer();
 
-    /**
-     * Default constructor for utility class.
-     */
     private JavascriptGenerator() {
     }
 
-    /**
-     * Getter for the generated Javascript.
-     * 
-     * @return the generated Javascript
-     */
     public static StringBuffer getJavascript() {
         return JavascriptGenerator.javascript;
     }
 
     /**
-     * Generates the proxy for a service.
+     * Generates the javascript proxy for a service.
      * 
-     * @param service the service for which generation is performed
+     * @param service
+     *            the service for which generation is performed
      */
     public static void generateServiceProxy(final ComponentService service) {
-        JavascriptGenerator.javascript.append(JavascriptGenerator.COMPONENT_CONTEXT + "."
-            + service.getName()
-            + " = new Object();\n");
+        JavascriptGenerator.javascript.append(JavascriptGenerator.COMPONENT_CONTEXT + "." + service.getName()
+                + " = new Object();\n");
     }
 
     /**
      * Generates the method inside the service proxy for the specified
      * operation.
      * 
-     * @param service the service containing the operation
-     * @param operation the operation
+     * @param service
+     *            the service containing the operation
+     * @param operation
+     *            the operation
      */
     public static void generateMethodProxy(final ComponentService service, final Operation operation) {
-        JavascriptGenerator.javascript.append(JavascriptGenerator.COMPONENT_CONTEXT + "."
-            + service.getName()
-            + "."
-            + operation.getName()
-            + " = function(");
+        JavascriptGenerator.javascript.append(JavascriptGenerator.COMPONENT_CONTEXT + "." + service.getName() + "."
+                + operation.getName() + " = function(");
         for (int i = 0; i < operation.getInputType().getLogical().size(); i++) {
             JavascriptGenerator.javascript.append("p" + i + ", ");
         }
@@ -95,12 +83,8 @@ public class JavascriptGenerator {
         for (int i = 0; i < operation.getInputType().getLogical().size(); i++) {
             JavascriptGenerator.javascript.append("  params.push(p" + i + ");\n");
         }
-        JavascriptGenerator.javascript.append("  " + JavascriptGenerator.TUSCANY_COMET
-            + ".callAsync('"
-            + service.getName()
-            + "/"
-            + operation.getName()
-            + "', $.toJSON(params), callbackMethod);\n");
+        JavascriptGenerator.javascript.append("  " + JavascriptGenerator.TUSCANY_COMET + ".callAsync('"
+                + service.getName() + "/" + operation.getName() + "', $.toJSON(params), callbackMethod);\n");
         JavascriptGenerator.javascript.append("}\n");
     }
 

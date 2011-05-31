@@ -26,8 +26,9 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 
 /**
- * Provider for references that have comet binding specified in the scdl. Not
- * used as comet binding references would occur in client browser's Javascript.
+ * Provider for references and callbacks that have comet binding specified in
+ * the scdl. Used by callbacks to create invokers. Not used for comet
+ * references as they are javascript proxies not Java objects.
  */
 public class CometReferenceBindingProvider implements ReferenceBindingProvider {
 
@@ -42,19 +43,13 @@ public class CometReferenceBindingProvider implements ReferenceBindingProvider {
 
     @Override
     public Invoker createInvoker(final Operation operation) {
-        return new CometInvoker(operation, this.endpoint);
+        return new CometCallbackInvoker(operation, endpoint);
     }
 
-    /**
-     * No behavior.
-     */
     @Override
     public void start() {
     }
 
-    /**
-     * No behavior.
-     */
     @Override
     public void stop() {
     }
@@ -66,7 +61,7 @@ public class CometReferenceBindingProvider implements ReferenceBindingProvider {
 
     @Override
     public boolean supportsOneWayInvocation() {
-        return true;
+        return false;
     }
 
 }
