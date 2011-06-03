@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -220,4 +221,13 @@ public interface Deployer extends LifeCycleListener {
     void resolve(Contribution c, List<Contribution> dependentContributions, Monitor monitor) throws ContributionResolveException, CompositeBuilderException;
 
     public  Contribution cloneSystemContribution(Monitor monitor);
+
+    /**
+     * Get a contributions dependencies from meta data without having to load a Contribution 
+     * @param possibles a Map with key contributionURI and value the contribution metaData
+     * @param targetURI the contributionURI to find the dependencies of
+     * @param monitor
+     * @return the list of contribution URIs
+     */
+    public List<String> getDependencies(Map<String, ContributionMetadata> possibles, String targetURI, Monitor monitor);
 }

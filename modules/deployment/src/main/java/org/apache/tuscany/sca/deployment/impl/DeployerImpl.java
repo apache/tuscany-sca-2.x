@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,7 @@ import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
@@ -89,9 +91,9 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.BaseDomainRegistry;
+import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
-import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
 
@@ -227,7 +229,7 @@ public class DeployerImpl implements Deployer {
                     // push context here as the "stack" in this case is a list of nexted contributions
                     // through which imports have been chased which may not make much sense to the 
                     // user so just report the contribution in error
-                    monitor.pushContext("Contribution: " + contribution.getLocation());
+                    monitor.pushContext("Contribution: " + contribution.getURI());
                     Monitor.error(monitor, this, DEPLOYER_IMPL_VALIDATION_MESSAGES, "UnresolvedImport", import_);
                     monitor.popContext();
                 }
@@ -249,6 +251,27 @@ public class DeployerImpl implements Deployer {
 
         contribution.getDependencies().addAll(dependencies);
     }
+    
+    public List<String> getDependencies(Map<String, ContributionMetadata> possibles, String targetURI, Monitor monitor) {   
+        Map<String, Contribution> contributions = new HashMap<String, Contribution>();
+        for (String curi : possibles.keySet()) {
+            Contribution c = contributionFactory.createContribution();
+            c.setURI(curi);
+            c.mergeMetaData(possibles.get(curi));
+            contributions.put(curi, c);
+        }
+
+        Contribution tc = contributions.remove(targetURI);
+        buildDependencies(tc, new ArrayList<Contribution>(contributions.values()), monitor);
+        
+        List<String> dcuris = new ArrayList<String>();
+        for (Contribution dc : tc.getDependencies()) {
+            dcuris.add(dc.getURI());
+        }
+        dcuris.remove(targetURI);
+        return dcuris;
+    }
+    
 
     /**
      * Pre-resolve phase for contributions, to set up handling of imports and exports prior to full resolution
