@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.impl;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -42,8 +43,6 @@ import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
-
-import com.ibm.jvm.util.ByteArrayOutputStream;
 
 public class DependencyUtils {
 
