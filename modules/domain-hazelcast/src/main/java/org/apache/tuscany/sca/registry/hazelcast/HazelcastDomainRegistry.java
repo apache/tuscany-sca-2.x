@@ -101,7 +101,10 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
     
     // key contributionURI, value map key compositeURI value compositeXML
     protected Map<String, Map<String, String>> runningComposites;
+    // key member, value map key contributionURI value list of compositeURI 
     protected Map<String, Map<String, List<String>>> runningCompositeOwners;
+    // key componentName, value contributionURI
+    protected Map<String, String> runningComponentContributions;
 
     protected Map<Object, Object> endpointWsdls;
     protected Map<String, Endpoint> localEndpoints = new ConcurrentHashMap<String, Endpoint>();
@@ -148,8 +151,9 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
 
             runningComposites = hazelcastInstance.getMap(domainURI + "/RunningComposites");
             runningCompositeOwners = hazelcastInstance.getMap(domainURI + "/RunningCompositeOwners");
-
-            contributionDescriptions = hazelcastInstance.getMap(domainURI + "/InstalledContributions");
+            runningComponentContributions = hazelcastInstance.getMap(domainURI + "/RunningComponentContributions");
+            
+            contributionDescriptions = hazelcastInstance.getMap(domainURI + "/ContributionDescriptions");
             ((IMap<String, ContributionDescription>)contributionDescriptions).addEntryListener(new EntryListener<String, ContributionDescription>() {
                 public void entryAdded(EntryEvent<String, ContributionDescription> event) {
                 }
@@ -287,6 +291,14 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
         String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
         String endpointURI = endpoint.getURI();
         String wsdl = getWsdl(endpoint);
+        String componentName = endpoint.getComponent().getName();
+        String curi = null;
+        if (endpoint instanceof RuntimeEndpoint) {
+            Composite dc = ((RuntimeEndpoint)endpoint).getCompositeContext().getDomainComposite();
+            if (dc != null) {
+                curi = dc.getContributionURI();
+            }
+        }
         Transaction txn = hazelcastInstance.getTransaction();
         txn.begin();
         try {
@@ -294,6 +306,9 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
             endpointMap.put(endpointURI, endpoint);
             endpointWsdls.put(endpointURI, wsdl);
             endpointOwners.put(localMemberAddr, endpointURI);
+            if (curi != null) {
+                runningComponentContributions.put(componentName, curi);
+            }
             txn.commit();
         } catch (Throwable e) {
             txn.rollback();
@@ -395,13 +410,14 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
         synchronized (shutdownMutex) {
             String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
             String endpointURI = endpoint.getURI();
-            
+            String componentName = endpoint.getComponent().getName();
             Transaction txn = hazelcastInstance.getTransaction();
             txn.begin();
             try {
                 endpointOwners.remove(localMemberAddr, endpointURI);
                 endpointMap.remove(endpointURI);
                 endpointWsdls.remove(endpointURI);
+                runningComponentContributions.remove(componentName);
                 txn.commit();
             } catch (Throwable e) {
                 txn.rollback();
@@ -468,7 +484,8 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
                         if (endpointOwners.containsKey(memberAddr)) {
                             Collection<String> keys = endpointOwners.remove(memberAddr);
                             for (Object k : keys) {
-                                endpointMap.remove(k);
+                                Endpoint endpoint = (Endpoint)endpointMap.remove(k);
+                                runningComponentContributions.remove(endpoint.getComponent().getName());
                                 endpointWsdls.remove(k);
                             }
                         }
@@ -698,5 +715,11 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
             }
         }
         throw new IllegalArgumentException("member not found: " + memberName);
+    }
+
+    @Override
+    public String getContainingCompositesContributionURI(String componentName) {
+        int x = runningComponentContributions.size();
+        return runningComponentContributions.get(componentName);
     }
 }

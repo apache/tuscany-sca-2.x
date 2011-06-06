@@ -61,6 +61,8 @@ public class HazelcastClientEndpointRegistry extends HazelcastDomainRegistry {
         endpointMap = hazelcastClient.getMap(rc.getUserid() + "/Endpoints");
         endpointOwners = hazelcastClient.getMultiMap(rc.getUserid() + "/EndpointOwners");
         endpointWsdls = hazelcastClient.getMap(rc.getUserid() + "/EndpointWsdls");
+        runningComponentContributions = hazelcastClient.getMap(rc.getUserid() + "/RunningComponentContributions");
+        contributionDescriptions = hazelcastClient.getMap(rc.getUserid() + "/ContributionDescriptions");
     }
 
     @Override
