@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.shell.Shell;
 public class TuscanyShellMojo extends AbstractMojo {
 
     /**
-     * @parameter expression="${domainURI}" default-value="default"
+     * @parameter expression="${domainURI}" default-value="uri:default"
      */
     private String domainURI;
     
