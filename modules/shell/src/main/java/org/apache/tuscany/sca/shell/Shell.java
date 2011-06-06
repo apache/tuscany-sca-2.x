@@ -77,7 +77,7 @@ public class Shell {
 
     public static void main(final String[] args) throws Exception {
         boolean useJline = true;
-        String domainURI = "default";
+        String domainURI = "uri:default";
         
         boolean showHelp = false;
         String contribution = null;
