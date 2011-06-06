@@ -93,6 +93,8 @@ public interface DomainRegistry {
     void removeRunningComposite(String contributionURI, String compositeURI);
     Map<String, List<String>> getRunningCompositeURIs();
     Composite getRunningComposite(String contributionURI, String compositeURI);
+
+    String getContainingCompositesContributionURI(String componentName);
     
     List<String> getMembers();
     String getLocalMember();
