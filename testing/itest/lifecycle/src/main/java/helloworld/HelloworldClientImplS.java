@@ -20,15 +20,18 @@
 package helloworld;
 
 import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Scope;
 
-@EagerInit
-@Scope("COMPOSITE")
-public class HelloworldClientImpl implements Helloworld {
+/* 
+ * S = a stateless scoped component that throws exceptions
+ */
+
+@Scope("STATELESS")
+public class HelloworldClientImplS implements Helloworld {
     
+    public static boolean throwTestExceptionOnConstruction = false;
     public static boolean throwTestExceptionOnInit = false;
     public static boolean throwTestExceptionOnDestroy = false;
     
@@ -36,25 +39,32 @@ public class HelloworldClientImpl implements Helloworld {
     @Reference
     public Helloworld service;
     
+    public HelloworldClientImplS() throws Exception {
+        if(throwTestExceptionOnConstruction){
+            StatusImpl.appendStatus("Exception on construction", "HelloworldClientImplS");
+            throw new Exception("Exception on construction");
+        }
+    }
+    
     @Init
     public void initialize() throws Exception{
         if (throwTestExceptionOnInit) {
-            StatusImpl.appendStatus("Exception on init", "HelloworldClientImpl");
+            StatusImpl.appendStatus("Exception on init", "HelloworldClientImplS");
             throw new Exception("Exception on init");
         }
         
-        StatusImpl.appendStatus("Init", "HelloworldClientImpl");
+        StatusImpl.appendStatus("Init", "HelloworldClientImplS");
     	System.out.println(">>>>>> " + sayHello("init"));
     }
     
     @Destroy
     public void destroy() throws Exception{
         if (throwTestExceptionOnDestroy) {
-            StatusImpl.appendStatus("Exception on destroy", "HelloworldClientImpl");
+            StatusImpl.appendStatus("Exception on destroy", "HelloworldClientImplS");
             throw new Exception("Exception on destroy");
         }
         
-        StatusImpl.appendStatus("Destroy", "HelloworldClientImpl");
+        StatusImpl.appendStatus("Destroy", "HelloworldClientImplS");
     }    
     
     public String sayHello(String name) throws Exception {
