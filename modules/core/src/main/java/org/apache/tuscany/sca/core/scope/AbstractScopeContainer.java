@@ -36,8 +36,17 @@ public abstract class AbstractScopeContainer<KEY> implements ScopeContainer<KEY>
 
     protected RuntimeComponent component;
     protected volatile int lifecycleState = UNINITIALIZED;
-
-
+    
+    private static String scopeStateStrings[] = {"CONFIG_ERROR", 
+                                                 "UNINITIALIZED",
+                                                 "INITIALIZING",
+                                                 "INITIALIZED",
+                                                 "NOT USED",
+                                                 "RUNNING",
+                                                 "STOPPING",
+                                                 "STOPPED",
+                                                 "ERROR"};
+    
     public AbstractScopeContainer(Scope scope, RuntimeComponent component) {
         this.scope = scope;
         this.component = component;
@@ -45,7 +54,9 @@ public abstract class AbstractScopeContainer<KEY> implements ScopeContainer<KEY>
 
     protected void checkInit() {
         if (getLifecycleState() != RUNNING) {
-            throw new IllegalStateException("Scope container not running [" + getLifecycleState() + "]");
+            throw new IllegalStateException("Scope container not running. Current state is [" + 
+                                            scopeStateStrings[getLifecycleState() + 1] + 
+                                            "]");
         }
     }
 
@@ -110,7 +121,9 @@ public abstract class AbstractScopeContainer<KEY> implements ScopeContainer<KEY>
     public synchronized void start() {
         int lifecycleState = getLifecycleState();
         if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
-            throw new IllegalStateException("Scope must be in UNINITIALIZED or STOPPED state [" + lifecycleState + "]");
+            throw new IllegalStateException("Scope must be in UNINITIALIZED or STOPPED state but the current state is [" + 
+                                            scopeStateStrings[lifecycleState + 1] + 
+                                            "]. Did you try to start the same node twice?");
         }
         setLifecycleState(RUNNING);
     }
@@ -128,7 +141,9 @@ public abstract class AbstractScopeContainer<KEY> implements ScopeContainer<KEY>
     public synchronized void stop() {
         int lifecycleState = getLifecycleState();
         if (lifecycleState != RUNNING) {
-            throw new IllegalStateException("Scope in wrong state [" + lifecycleState + "]");
+            throw new IllegalStateException("Scope in wrong state. Current state is [" + 
+                                            scopeStateStrings[lifecycleState + 1] + 
+                                            "]");
         }
         setLifecycleState(STOPPED);
     }
@@ -139,37 +154,7 @@ public abstract class AbstractScopeContainer<KEY> implements ScopeContainer<KEY>
 
     @Override
     public String toString() {
-        String s;
-        switch (lifecycleState) {
-            case ScopeContainer.CONFIG_ERROR:
-                s = "CONFIG_ERROR";
-                break;
-            case ScopeContainer.ERROR:
-                s = "ERROR";
-                break;
-            case ScopeContainer.INITIALIZING:
-                s = "INITIALIZING";
-                break;
-            case ScopeContainer.INITIALIZED:
-                s = "INITIALIZED";
-                break;
-            case ScopeContainer.RUNNING:
-                s = "RUNNING";
-                break;
-            case ScopeContainer.STOPPING:
-                s = "STOPPING";
-                break;
-            case ScopeContainer.STOPPED:
-                s = "STOPPED";
-                break;
-            case ScopeContainer.UNINITIALIZED:
-                s = "UNINITIALIZED";
-                break;
-            default:
-                s = "UNKNOWN";
-                break;
-        }
-        return "In state [" + s + ']';
+        return "In state [" + scopeStateStrings[lifecycleState + 1] + ']';
     }
 
     public RuntimeComponent getComponent() {
