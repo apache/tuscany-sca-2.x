@@ -924,5 +924,11 @@ public class DeployerImpl implements Deployer {
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public String getContainingCompositesContributionURI(String componentName) {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 }
