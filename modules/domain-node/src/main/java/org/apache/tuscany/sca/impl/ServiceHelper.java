@@ -24,8 +24,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
 
-import javax.xml.bind.JAXBElement;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -46,13 +44,14 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.ContributionDescription;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * All the code for creating a service proxy in this helper class as it feels like 
@@ -185,7 +184,6 @@ public class ServiceHelper {
             interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
             JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(businessInterface);
             callInterface.setRemotable(true);
-            callInterface.resetDataBinding(JAXBElement.class.getName());
             interfaceContract.setInterface(callInterface);
             if (callInterface.getCallbackClass() != null) {
                 interfaceContract.setCallbackInterface(javaInterfaceFactory.createJavaInterface(callInterface
@@ -202,7 +200,7 @@ public class ServiceHelper {
             String curi = domainRegistry.getContainingCompositesContributionURI(endpoint.getComponent().getName());
             if (curi != null) {
                 ContributionDescription ic = domainRegistry.getInstalledContribution(curi);
-                ClassLoader cl = new URLClassLoader(new URL[]{new URL(ic.getURL())});
+                ClassLoader cl = new URLClassLoader(new URL[]{new URL(ic.getURL())}, Remotable.class.getClassLoader());
                 return cl.loadClass(((JavaInterface)iface).getName());
             }
         }
