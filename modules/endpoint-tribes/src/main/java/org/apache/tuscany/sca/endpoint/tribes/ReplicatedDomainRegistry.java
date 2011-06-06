@@ -500,4 +500,10 @@ public class ReplicatedDomainRegistry extends BaseDomainRegistry implements Doma
         return null;
     }
 
+    @Override
+    public String getContainingCompositesContributionURI(String componentName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
