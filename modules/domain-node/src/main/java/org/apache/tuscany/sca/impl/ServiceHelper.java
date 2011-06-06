@@ -19,7 +19,12 @@
 
 package org.apache.tuscany.sca.impl;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
+
+import javax.xml.bind.JAXBElement;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
@@ -42,6 +47,7 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
+import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
@@ -88,6 +94,14 @@ public class ServiceHelper {
         CompositeContext compositeContext =
             new CompositeContext(extensionPointRegistry, domainRegistry, null, null, null,
                                  deployer.getSystemDefinitions());
+
+        if (serviceInterface == null) {
+            try {
+                serviceInterface = (Class<T>)findInterface(endpoint, domainRegistry);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         RuntimeEndpointReference epr;
         try {
@@ -170,6 +184,8 @@ public class ServiceHelper {
             // The interface is not assignable from the interface contract
             interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
             JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(businessInterface);
+            callInterface.setRemotable(true);
+            callInterface.resetDataBinding(JAXBElement.class.getName());
             interfaceContract.setInterface(callInterface);
             if (callInterface.getCallbackClass() != null) {
                 interfaceContract.setCallbackInterface(javaInterfaceFactory.createJavaInterface(callInterface
@@ -178,5 +194,18 @@ public class ServiceHelper {
         }
 
         return interfaceContract;
+    }
+
+    private static Class<?> findInterface(Endpoint endpoint, DomainRegistry domainRegistry) throws MalformedURLException, ClassNotFoundException {
+        Interface iface = endpoint.getService().getInterfaceContract().getInterface();
+        if (iface instanceof JavaInterface) {
+            String curi = domainRegistry.getContainingCompositesContributionURI(endpoint.getComponent().getName());
+            if (curi != null) {
+                ContributionDescription ic = domainRegistry.getInstalledContribution(curi);
+                ClassLoader cl = new URLClassLoader(new URL[]{new URL(ic.getURL())});
+                return cl.loadClass(((JavaInterface)iface).getName());
+            }
+        }
+        return null;
     }
 }

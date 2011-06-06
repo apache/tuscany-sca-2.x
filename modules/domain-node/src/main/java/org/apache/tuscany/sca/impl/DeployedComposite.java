@@ -86,6 +86,7 @@ public class DeployedComposite {
         // TODO: Ideally deployer.build would set the name and uri to what this needs
         builtComposite.setName(composite.getName());
         builtComposite.setURI(composite.getURI());
+        builtComposite.setContributionURI(composite.getContributionURI());
         monitor.analyzeProblems();
 
         compositeContext = new CompositeContext(extensionPointRegistry, 

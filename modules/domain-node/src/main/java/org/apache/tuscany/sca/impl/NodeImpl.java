@@ -261,7 +261,10 @@ public class NodeImpl implements Node {
     public void stopComposite(String contributionURI, String compositeURI) throws ActivationException {
         String key = contributionURI+"/"+compositeURI;
         DeployedComposite dc = startedComposites.remove(key);
-        if (dc == null) {
+        if (dc != null) {
+            dc.stop();
+            stoppedComposites.put(key, dc);
+        } else {
             String member = domainRegistry.getRunningMember(contributionURI, compositeURI);
             if (member == null) {
                 throw new IllegalStateException("composite not started: " + compositeURI);
@@ -272,8 +275,6 @@ public class NodeImpl implements Node {
                 throw new ActivationException(response);
             }
         }
-        dc.stop();
-        stoppedComposites.put(key, dc);
     }
 
     public String getDomainName() {
