@@ -37,10 +37,10 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.runtime.BaseDomainRegistry;
+import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.runtime.ContributionListener;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.EndpointListener;
-import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 
 /**
@@ -252,5 +252,17 @@ public class DomainRegistryImpl extends BaseDomainRegistry implements DomainRegi
     public String remoteCommand(String memberName, Callable<String> command) {
         // TODO or should it just ensure the member name is LocalOnly and the run the command locally?
         throw new IllegalStateException("not supportted for " + LOCAL_MEMBER_NAME);
+    }
+
+    @Override
+    public String getContainingCompositesContributionURI(String componentName) {
+        for (Map<String, Composite> cs : runningComposites.values()) {
+            for (Composite c : cs.values()) {
+                if (c.getComponent(componentName) != null) {
+                    return c.getContributionURI();
+                }
+            }
+        }
+        return null;
     }
 }
