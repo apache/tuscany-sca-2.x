@@ -24,6 +24,8 @@ public class StatusImpl {
     public static String statusString = "";
     
     public static void appendStatus(String event, String location){
+        // remove any addresses from the strings
+        location = location.replaceAll("\\(@.*Endpoint", "Endpoint");
         statusString += event + " - " + location + "\n";
     }
 

@@ -60,6 +60,7 @@
                 <module>interfaces</module>
                 <module>java-lifecycle-exceptions</module>
                 <module>jms</module>
+                <module>lifecycle</module>
                 <module>nodes</module>
                 <module>node-launcher-equinox</module>
                 <module>oneway</module>
