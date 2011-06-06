@@ -524,7 +524,11 @@ public class CompositeActivatorImpl implements CompositeActivator {
     // registered before any @EagerInit takes place
     public void start(CompositeContext compositeContext, ScopedRuntimeComponent scopedRuntimeComponent) {
         if (scopedRuntimeComponent.getScopeContainer() != null) {
-            scopedRuntimeComponent.getScopeContainer().start();
+            try {
+                scopedRuntimeComponent.getScopeContainer().start();
+            } catch (Throwable ex){
+                Monitor.error(monitor, this, "core-messages", "StartException", ex);
+            }             
         }
     }
     
@@ -539,24 +543,32 @@ public class CompositeActivatorImpl implements CompositeActivator {
         for (PolicyProvider policyProvider : ep.getPolicyProviders()) {
             policyProvider.start();
             if (providers != null) {
-                providers.add(policyProvider);
+                try {
+                    providers.add(policyProvider);
+                } catch (Throwable ex){
+                    Monitor.error(monitor, this, "core-messages", "StartException", ex);
+                }                     
             }
         }
 
         final ServiceBindingProvider bindingProvider = ep.getBindingProvider();
         if (bindingProvider != null) {
-            // bindingProvider.start();
-            // Allow bindings to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy.
-            AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                public Object run() {
-                    bindingProvider.start();
-                    if (providers != null) {
-                        providers.add(bindingProvider);
-                    }
-                    return null;
-                  }
-            });
-            compositeContext.getEndpointRegistry().addEndpoint(ep);
+            try {
+                // bindingProvider.start();
+                // Allow bindings to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy.
+                AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                    public Object run() {
+                        bindingProvider.start();
+                        if (providers != null) {
+                            providers.add(bindingProvider);
+                        }
+                        return null;
+                      }
+                });
+                compositeContext.getEndpointRegistry().addEndpoint(ep);
+            } catch (Throwable ex){
+                Monitor.error(monitor, this, "core-messages", "StartException", ex);
+            }  
         }
     }
     
@@ -611,7 +623,11 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     ((EndpointReferenceAsyncProvider)bindingProvider).supportsNativeAsync() &&
                     epr.isAsyncInvocation()){
                     // it's resolved so start it now
-                    start(compositeContext, epr);
+                    try {
+                        start(compositeContext, epr);
+                    } catch (Throwable ex){
+                        Monitor.error(monitor, this, "core-messages", "StartException", ex);
+                    }  
                 }
             }
         }
