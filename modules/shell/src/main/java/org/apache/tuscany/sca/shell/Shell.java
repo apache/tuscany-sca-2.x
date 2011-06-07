@@ -451,7 +451,7 @@ public class Shell {
         return true;
     }
 
-    boolean remoteStart(String member, String contributionURI, String compositeURI) throws ActivationException {
+    boolean remoteStart(String contributionURI, String compositeURI, String member) throws ActivationException {
         getNode().startComposite(member, contributionURI, compositeURI);
         return true;
     }
