@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.shell.Shell;
+import org.oasisopen.sca.NoSuchServiceException;
 
 /**
  * A Completor for available service operations
@@ -58,27 +59,31 @@ public class ServiceOperationCompletor extends SimpleCompletor {
     @Override
     public int complete(final String buffer, final int cursor, final List clist) {
         String service = TShellCompletor.lastArg;
-        DomainRegistry reg = ((NodeImpl)shell.getNode()).getEndpointRegistry();
-        List<Endpoint> endpoints = reg.findEndpoint(service);
-        if (endpoints.size() < 1) {
-            return -1;
-        }
-        String serviceName = null;
-        if (service.contains("/")) {
-            int i = service.indexOf("/");
-            if (i < service.length()-1) {
-                serviceName = service.substring(i+1);
+//        DomainRegistry reg = ((NodeImpl)shell.getNode()).getEndpointRegistry();
+//        List<Endpoint> endpoints = reg.findEndpoint(service);
+//        if (endpoints.size() < 1) {
+//            return -1;
+//        }
+//        String serviceName = null;
+//        if (service.contains("/")) {
+//            int i = service.indexOf("/");
+//            if (i < service.length()-1) {
+//                serviceName = service.substring(i+1);
+//            }
+//        }
+//        Object proxy = ((RuntimeComponent)endpoints.get(0).getComponent()).getServiceReference(null, serviceName).getService();        
+        try {
+            Object proxy = shell.getNode().getService(null, service);
+            Method[] ms = proxy.getClass().getMethods();
+            List<String> ops = new ArrayList<String>();
+            for (Method m : ms) {
+                if (!EXCLUDED_OPS.contains(m.getName())) {
+                    ops.add(m.getName());
+                }
             }
+            setCandidateStrings(ops.toArray(new String[ops.size()]));
+        } catch (NoSuchServiceException e) {
         }
-        Object proxy = ((RuntimeComponent)endpoints.get(0).getComponent()).getServiceReference(null, serviceName).getService();        
-        Method[] ms = proxy.getClass().getMethods();
-        List<String> ops = new ArrayList<String>();
-        for (Method m : ms) {
-            if (!EXCLUDED_OPS.contains(m.getName())) {
-                ops.add(m.getName());
-            }
-        }
-        setCandidateStrings(ops.toArray(new String[ops.size()]));
         return super.complete(buffer, cursor, clist);
     }
 }
