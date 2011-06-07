@@ -22,6 +22,9 @@ package org.apache.tuscany.sca.client.impl;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -44,6 +47,7 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
+import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
@@ -61,7 +65,7 @@ public class RemoteServiceInvocationHandler implements InvocationHandler {
 
     private String domainURI;
     private String serviceName;
-    private Class<?> serviceInterface;
+    public Class<?> serviceInterface;
     
     private ExtensionPointRegistry extensionsRegistry;
     private DomainRegistry domainRegistry;
@@ -85,14 +89,18 @@ public class RemoteServiceInvocationHandler implements InvocationHandler {
      * Constructor for when there is no existing Tuscany runtime for the domain
      * @param endpointRegistry2 
      * @param extensionPointRegistry 
+     * @throws NoSuchServiceException 
      */
-    public RemoteServiceInvocationHandler(ExtensionPointRegistry extensionsRegistry, DomainRegistry domainRegistry, String domainURI, String serviceName, Class<?> serviceInterface) throws NoSuchDomainException {
+    public RemoteServiceInvocationHandler(ExtensionPointRegistry extensionsRegistry, DomainRegistry domainRegistry, String domainURI, String serviceName, Class<?> serviceInterface) throws NoSuchDomainException, NoSuchServiceException {
         this.extensionsRegistry = extensionsRegistry;
         this.domainRegistry = domainRegistry;
         this.domainURI = domainURI;
         this.serviceName = serviceName;
         this.serviceInterface = serviceInterface;
         this.reuse = false;
+        if (serviceInterface == null) {
+            getHandler();
+        }
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -131,6 +139,14 @@ public class RemoteServiceInvocationHandler implements InvocationHandler {
             }
             Endpoint endpoint = eps.get(0); // TODO: what should be done with multiple endpoints?
              
+            if (serviceInterface == null) {
+                try {
+                    findInterface(endpoint);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            
             RuntimeEndpointReference epr;
             try {
                 epr = createEndpointReference(javaInterfaceFactory, compositeContext, assemblyFactory, endpoint, serviceInterface);
@@ -141,6 +157,18 @@ public class RemoteServiceInvocationHandler implements InvocationHandler {
             this.handler = Proxy.getInvocationHandler(proxyFactory.createProxy(serviceInterface, epr));
         }
         return handler;
+    }
+
+    private void findInterface(Endpoint endpoint) throws MalformedURLException, ClassNotFoundException {
+        Interface iface = endpoint.getService().getInterfaceContract().getInterface();
+        if (iface instanceof JavaInterface) {
+            String curi = domainRegistry.getContainingCompositesContributionURI(endpoint.getComponent().getName());
+            if (curi != null) {
+                ContributionDescription ic = domainRegistry.getInstalledContribution(curi);
+                ClassLoader cl = new URLClassLoader(new URL[]{new URL(ic.getURL())});
+                serviceInterface = cl.loadClass(((JavaInterface)iface).getName());
+            }
+        }
     }
 
     private RuntimeEndpointReference createEndpointReference(JavaInterfaceFactory javaInterfaceFactory, CompositeContext compositeContext, AssemblyFactory assemblyFactory, Endpoint endpoint, Class<?> businessInterface) throws CloneNotSupportedException, InvalidInterfaceException {

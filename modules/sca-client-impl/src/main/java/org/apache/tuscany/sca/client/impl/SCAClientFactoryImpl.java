@@ -99,6 +99,9 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
             // no local runtime
             handler = new RemoteServiceInvocationHandler(extensionPointRegistry, domainRegistry, getDomainURI().toString(), serviceURI, serviceInterface);
         }
+        if (serviceInterface == null) {
+            serviceInterface = (Class<T>)((RemoteServiceInvocationHandler)handler).serviceInterface;
+        }
 
         return (T)Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[]{serviceInterface}, handler);
     }
