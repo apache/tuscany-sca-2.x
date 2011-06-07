@@ -231,17 +231,17 @@ public class DomainRegistryImpl extends BaseDomainRegistry implements DomainRegi
 
     private static final String LOCAL_MEMBER_NAME = "LocalOnly";
     @Override
-    public List<String> getMembers() {
+    public List<String> getNodeNames() {
         return Arrays.asList(new String[]{LOCAL_MEMBER_NAME});
     }
 
     @Override
-    public String getLocalMember() {
+    public String getLocalNodeName() {
         return LOCAL_MEMBER_NAME;
     }
 
     @Override
-    public String getRunningMember(String contributionURI, String compositeURI) {
+    public String getRunningNodeName(String contributionURI, String compositeURI) {
         if (getRunningComposite(contributionURI, compositeURI) != null) {
             return LOCAL_MEMBER_NAME;
         }

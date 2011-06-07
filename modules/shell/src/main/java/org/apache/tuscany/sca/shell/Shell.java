@@ -73,7 +73,7 @@ public class Shell {
     private Map<String, Node> nodes = new HashMap<String, Node>();
 
     public static final String[] COMMANDS = new String[] {"addComposite", "bye", "domain", "domains", "domainComposite", "help", "install", "installed", "invoke",
-                                                          "load", "members", "remove", "run", "save", "services", "start", "started", "stop"};
+                                                          "load", "nodes", "remove", "run", "save", "services", "start", "started", "stop"};
 
     public static void main(final String[] args) throws Exception {
         boolean useJline = true;
@@ -451,8 +451,8 @@ public class Shell {
         return true;
     }
 
-    boolean remoteStart(String contributionURI, String compositeURI, String member) throws ActivationException {
-        getNode().startComposite(member, contributionURI, compositeURI);
+    boolean remoteStart(String contributionURI, String compositeURI, String nodeName) throws ActivationException {
+        getNode().startComposite(nodeName, contributionURI, compositeURI);
         return true;
     }
 
@@ -487,17 +487,17 @@ public class Shell {
                 for (String curi : node.getStartedCompositeURIs().keySet()) {
                     for (String compositeURI : node.getStartedCompositeURIs().get(curi)) {
                         
-                        String runningMember = node.getRunningMember(curi, compositeURI);
-                        if (node.getLocalMember().equals(runningMember)) {
-                            runningMember = "this";
+                        String runningNodeName = node.getRunningNodeName(curi, compositeURI);
+                        if (node.getLocalNodeName().equals(runningNodeName)) {
+                            runningNodeName = "this";
                         }
-                        if ("LocalOnly".equals(runningMember)) {
-                            runningMember = ""; 
+                        if ("LocalOnly".equals(runningNodeName)) {
+                            runningNodeName = ""; 
                         } else {
-                            runningMember = " (" + runningMember + ")"; 
+                            runningNodeName = " (" + runningNodeName + ")"; 
                         }
                         
-                        out.println("   " + curi + " " + compositeURI + runningMember);
+                        out.println("   " + curi + " " + compositeURI + runningNodeName);
                     }
                 }
 //                    }
@@ -507,10 +507,10 @@ public class Shell {
         return true;
     }
 
-    boolean members() {
-        String localMember = getNode().getLocalMember();
-        for (String member : getNode().getMembers()) {
-            out.println(member + (localMember.equals(member) ? " (this)" : ""));
+    boolean nodes() {
+        String localNode = getNode().getLocalNodeName();
+        for (String node : getNode().getNodeNames()) {
+            out.println(node + (localNode.equals(node) ? " (this)" : ""));
         }
         return true;
     }
@@ -632,10 +632,10 @@ public class Shell {
                     return load(toks.get(1));
                 }
             };
-        if (op.equalsIgnoreCase("members"))
+        if (op.equalsIgnoreCase("nodes"))
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
-                    return members();
+                    return nodes();
                 }
             };
         if (op.equalsIgnoreCase("remove"))
@@ -814,12 +814,12 @@ public class Shell {
         out.println("   installed [<contributionURI>]");
         out.println("   invoke <component>[/<service>] <operation> [<arg0> <arg1> ...]");
         out.println("   load <configXmlURL>");
-        out.println("   members");
+        out.println("   nodes");
         out.println("   remove <contributionURI>");
         out.println("   run <commandsFileURL>");
         out.println("   save <directoryPath>");
         out.println("   services");
-        out.println("   start <curi> <compositeUri> [<member>]");
+        out.println("   start <curi> <compositeUri> [<nodeName>]");
         out.println("   started");
         out.println("   status");
         out.println("   stop <curi> <compositeUri>");

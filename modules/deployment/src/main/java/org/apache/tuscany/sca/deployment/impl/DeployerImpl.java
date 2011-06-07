@@ -902,19 +902,19 @@ public class DeployerImpl implements Deployer {
         }
 
         @Override
-        public List<String> getMembers() {
+        public List<String> getNodeNames() {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public String getLocalMember() {
+        public String getLocalNodeName() {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public String getRunningMember(String contributionURI, String compositeURI) {
+        public String getRunningNodeName(String contributionURI, String compositeURI) {
             // TODO Auto-generated method stub
             return null;
         }

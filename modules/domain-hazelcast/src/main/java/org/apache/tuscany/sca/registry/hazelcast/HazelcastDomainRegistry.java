@@ -672,7 +672,7 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
     }
 
     @Override
-    public List<String> getMembers() {
+    public List<String> getNodeNames() {
         List<String> members = new ArrayList<String>();
         for (Member m : hazelcastInstance.getCluster().getMembers()) {
             if (!m.isSuperClient()) {
@@ -683,12 +683,12 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
     }
 
     @Override
-    public String getLocalMember() {
+    public String getLocalNodeName() {
         return hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
     }
 
     @Override
-    public String getRunningMember(String contributionURI, String compositeURI) {
+    public String getRunningNodeName(String contributionURI, String compositeURI) {
         for (String m : runningCompositeOwners.keySet()) {
             Map<String, List<String>> rcs = runningCompositeOwners.get(m);
             if (rcs != null) {

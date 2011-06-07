@@ -244,9 +244,9 @@ public interface Node {
     void validateContribution(String string) throws ContributionReadException, ValidationException;
 
     // TODO: should these member getters be replaced with a getDomainRegistry?
-    List<String> getMembers();
-    String getLocalMember();
-    String getRunningMember(String contributionURI, String compositeURI);
+    List<String> getNodeNames();
+    String getLocalNodeName();
+    String getRunningNodeName(String contributionURI, String compositeURI);
 
     // TODO: Add methods to get:
     //   get/display contribution content

@@ -265,7 +265,7 @@ public class NodeImpl implements Node {
             dc.stop();
             stoppedComposites.put(key, dc);
         } else {
-            String member = domainRegistry.getRunningMember(contributionURI, compositeURI);
+            String member = domainRegistry.getRunningNodeName(contributionURI, compositeURI);
             if (member == null) {
                 throw new IllegalStateException("composite not started: " + compositeURI);
             }
@@ -401,18 +401,18 @@ public class NodeImpl implements Node {
     }
 
     @Override
-    public List<String> getMembers() {
-        return domainRegistry.getMembers();
+    public List<String> getNodeNames() {
+        return domainRegistry.getNodeNames();
     }
 
     @Override
-    public String getLocalMember() {
-        return domainRegistry.getLocalMember();
+    public String getLocalNodeName() {
+        return domainRegistry.getLocalNodeName();
     }
 
     @Override
-    public String getRunningMember(String contributionURI, String compositeURI) {
-        return domainRegistry.getRunningMember(contributionURI, compositeURI);
+    public String getRunningNodeName(String contributionURI, String compositeURI) {
+        return domainRegistry.getRunningNodeName(contributionURI, compositeURI);
     }
 
 }

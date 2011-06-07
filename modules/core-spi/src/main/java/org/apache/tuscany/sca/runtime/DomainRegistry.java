@@ -96,9 +96,9 @@ public interface DomainRegistry {
 
     String getContainingCompositesContributionURI(String componentName);
     
-    List<String> getMembers();
-    String getLocalMember();
-    String getRunningMember(String contributionURI, String compositeURI);
+    List<String> getNodeNames();
+    String getLocalNodeName();
+    String getRunningNodeName(String contributionURI, String compositeURI);
     
     String remoteCommand(String memberName, Callable<String> command);
     public Composite getDomainComposite();
