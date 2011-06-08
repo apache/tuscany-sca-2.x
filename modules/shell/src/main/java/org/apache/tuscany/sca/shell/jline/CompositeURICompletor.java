@@ -53,7 +53,7 @@ public class CompositeURICompletor extends SimpleCompletor {
        try {
            c = shell.getNode().getContribution(getContributionURI());
        } catch (Exception e) {
-           c = null;
+           return super.complete(buffer, cursor, clist);   
        }
        if (c == null) {
            return -1;
