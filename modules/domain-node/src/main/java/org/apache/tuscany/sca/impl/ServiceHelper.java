@@ -54,6 +54,8 @@ import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Remotable;
 
 /**
+ * TODO: Merge this into sca-client RemoteServiceInvocationHandler
+ * 
  * All the code for creating a service proxy in this helper class as it feels like 
  * it doesn't all belong in the node but i can't see where to refactor it to yet.
  * (perhaps its just the remote proxy bit that needs to go somewhere else?)
