@@ -302,7 +302,9 @@ public class NodeImpl implements Node {
         if (contribution == null) {
             Monitor monitor = deployer.createMonitor();
             contribution = deployer.loadContribution(IOHelper.createURI(cd.getURI()), IOHelper.getLocationAsURL(cd.getURL()), monitor);
-            monitor.analyzeProblems();
+            
+            // TODO: should the monitor be checked? If it is then the peek in to get the metadata doesn't work if there's a problem 
+            // monitor.analyzeProblems();
             if (cd.getAdditionalDeployables().size() > 0) {
                 for (String uri : cd.getAdditionalDeployables().keySet()) {
                     String compositeXML = cd.getAdditionalDeployables().get(uri);

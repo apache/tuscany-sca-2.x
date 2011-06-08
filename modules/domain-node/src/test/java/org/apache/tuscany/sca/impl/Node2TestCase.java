@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.impl;
 
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
@@ -251,4 +252,38 @@ public class Node2TestCase {
         Composite runningComposite = dc.getIncludes().get(0);
         Assert.assertEquals("TestComposite", runningComposite.getName().getLocalPart());
     }
+
+    @Test
+    public void invalidCompositeStartTest() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, XMLStreamException {
+        Node node = TuscanyRuntime.newInstance().createNode("invalidCompositeStartTest");
+        String curi = node.installContribution("src/test/resources/helloworld-invalidComposite.jar");
+        Assert.assertEquals(1, node.getInstalledContributionURIs().size());
+        Assert.assertEquals(0, node.getStartedCompositeURIs().size());
+        ContributionDescription cd = node.getInstalledContribution(curi);
+        Assert.assertEquals(1, cd.getDeployables().size());
+        
+        String compositeXML =
+            "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\""
+                + "     xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.1\""
+                + "     targetNamespace=\"http://test/composite\""
+                + "     name=\"TestComposite\">"
+                + "   <component name=\"TestComponent\">"
+                + "      <implementation.java class=\"sample.HelloworldImpl\"/>"
+                + "   </component>"
+                + "</composite>";
+        String compositeURI = node.addDeploymentComposite(curi, new StringReader(compositeXML));
+        node.startComposite(curi, compositeURI);
+
+//        node.startComposite("sample-helloworld", "helloworld.composite");
+//        Assert.assertEquals(1, node.getStartedCompositeURIs().size());
+//        Assert.assertEquals("helloworld.composite", node.getStartedCompositeURIs().get("sample-helloworld").get(0));
+//        
+//        node.stopComposite("sample-helloworld", "helloworld.composite");
+////        Assert.assertEquals(0, node.getStartedComposites().size());
+//        node.startComposite("sample-helloworld", "helloworld.composite");
+//        Assert.assertEquals(1, node.getStartedCompositeURIs().size());
+//        Assert.assertEquals("helloworld.composite", node.getStartedCompositeURIs().get("sample-helloworld").get(0));
+//        node.stopComposite("sample-helloworld", "helloworld.composite");
+    }
+
 }
