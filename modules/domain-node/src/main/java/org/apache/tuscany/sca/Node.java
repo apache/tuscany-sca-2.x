@@ -252,4 +252,9 @@ public interface Node {
     //   get/display contribution content
     //   a view-only Node
     //   dirty started composites (contributions updated while composite running)
+    //   adding foreign endpoints to support domain federation, eg perhaps:
+    // void addForeignEndpoint(String serviceName, Binding b);
+    // void removeForeignEndpoint(String serviceName);
+    // List<String> getForeignEndpoints();
+    // Binding getForeignEndpoint(String serviceName);
 }
