@@ -65,9 +65,6 @@ public class CometCallbackInvoker implements Invoker {
         Message response = new MessageImpl();
         if (broadcaster == null) {
             response.setBody(Status.CLIENT_DISCONNECTED);
-        } else if (broadcaster.getAtmosphereResources().isEmpty()) {
-            CometSessionManager.remove(sessionId);
-            response.setBody(Status.CLIENT_DISCONNECTED);
         } else {
             String callbackMethod = msg.getTo().getURI();
             Object[] body = msg.getBody();

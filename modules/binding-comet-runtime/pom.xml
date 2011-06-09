@@ -61,7 +61,7 @@
         <dependency>
         	<groupId>org.atmosphere</groupId>
         	<artifactId>atmosphere-jersey</artifactId>
-        	<version>0.7.1</version>
+        	<version>0.8-SNAPSHOT</version>
         	<scope>compile</scope>
         </dependency>
 	</dependencies>
@@ -78,14 +78,12 @@
 			</releases>
 		</repository>
 		<repository>
-			<id>oss-sonatype-repository</id>
+			<id>sonatype-releases</id>
 			<url>https://oss.sonatype.org/content/repositories/releases/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
+		</repository>
+		<repository>
+			<id>sonatype-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 		</repository>
 </repositories>
 

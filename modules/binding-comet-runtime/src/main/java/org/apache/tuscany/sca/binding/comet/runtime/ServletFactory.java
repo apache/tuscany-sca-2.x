@@ -56,6 +56,16 @@ public final class ServletFactory {
     private static final String JS_PACKAGE = "org.apache.tuscany.sca.binding.comet.runtime.javascript";
 
     /**
+     * Init-param key for Atmosphere filters.
+     */
+    private static final String FILTERS_KEY = "org.atmosphere.cpr.broadcastFilterClasses";
+
+    /**
+     * Defined filters.
+     */
+    private static final String FILTERS = "org.atmosphere.client.JavascriptClientFilter";
+
+    /**
      * Path where services will be exposed.
      */
     public static final String PATH = "/tuscany-comet/*";
@@ -99,8 +109,9 @@ public final class ServletFactory {
     private static String registerCometServlet(ServletHost servletHost) {
         if (ServletFactory.cometServlet == null) {
             ServletFactory.cometServlet = new AtmosphereServlet();
-            ServletFactory.cometServlet.addInitParameter(ServletFactory.PACKAGE_KEY, ServletFactory.HANDLER_PACKAGE);
-            String uri = servletHost.addServletMapping(ServletFactory.PATH, ServletFactory.cometServlet);
+            ServletFactory.cometServlet.addInitParameter(PACKAGE_KEY, HANDLER_PACKAGE);
+//            ServletFactory.cometServlet.addInitParameter(FILTERS_KEY, FILTERS);
+            String uri = servletHost.addServletMapping(PATH, cometServlet);
             return uri;
         }
         return null;
@@ -109,8 +120,8 @@ public final class ServletFactory {
     private static void registerJavascriptServlet(ServletHost servletHost) {
         if (ServletFactory.javascriptServlet == null) {
             ServletFactory.javascriptServlet = new AtmosphereServlet();
-            ServletFactory.javascriptServlet.addInitParameter(ServletFactory.PACKAGE_KEY, ServletFactory.JS_PACKAGE);
-            servletHost.addServletMapping(ServletFactory.JS_PATH, ServletFactory.javascriptServlet);
+            ServletFactory.javascriptServlet.addInitParameter(PACKAGE_KEY, JS_PACKAGE);
+            servletHost.addServletMapping(JS_PATH, javascriptServlet);
         }
     }
 
@@ -121,8 +132,8 @@ public final class ServletFactory {
      *            the underlying servlet host.
      */
     public static void unregisterServlet(final ServletHost servletHost) {
-        servletHost.removeServletMapping(ServletFactory.PATH);
-        servletHost.removeServletMapping(ServletFactory.JS_PATH);
+        servletHost.removeServletMapping(PATH);
+        servletHost.removeServletMapping(JS_PATH);
     }
 
 }

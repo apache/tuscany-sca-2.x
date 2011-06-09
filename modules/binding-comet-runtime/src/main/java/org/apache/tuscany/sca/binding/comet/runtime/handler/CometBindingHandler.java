@@ -43,6 +43,9 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.atmosphere.cpr.Broadcaster;
+import org.atmosphere.cpr.BroadcasterLifeCyclePolicy;
+import org.atmosphere.cpr.BroadcasterLifeCyclePolicyListener;
+import org.atmosphere.cpr.BroadcasterLifeCyclePolicy.ATMOSPHERE_RESOURCE_POLICY;
 import org.atmosphere.jersey.JerseyBroadcaster;
 import org.atmosphere.jersey.SuspendResponse;
 
@@ -73,6 +76,10 @@ public class CometBindingHandler {
         Broadcaster broadcaster = CometSessionManager.get(sessionId);
         if (broadcaster == null) {
             broadcaster = new JerseyBroadcaster(sessionId);
+            BroadcasterLifeCyclePolicy policy = new BroadcasterLifeCyclePolicy.Builder().policy(
+                    ATMOSPHERE_RESOURCE_POLICY.EMPTY_DESTROY).build();
+            broadcaster.setBroadcasterLifeCyclePolicy(policy);
+            broadcaster.addBroadcasterLifeCyclePolicyListener(new CometBroadcasterLifeCyclePolicyListener(sessionId));
             CometSessionManager.add(sessionId, broadcaster);
         }
         return new SuspendResponse.SuspendResponseBuilder<String>().broadcaster(broadcaster).outputComments(true)
@@ -110,9 +117,8 @@ public class CometBindingHandler {
         if (!isVoidReturnType) {
             Object response = wire.invoke(operation, args);
             Broadcaster broadcaster = CometSessionManager.get(sessionId);
-            broadcaster.broadcast(callbackMethod + "($.secureEvalJSON('" + gson.toJson(response) + "'))");
-            if (broadcaster.getAtmosphereResources().isEmpty()) {
-                CometSessionManager.remove(sessionId);
+            if (broadcaster != null) {
+                broadcaster.broadcast(callbackMethod + "($.secureEvalJSON('" + gson.toJson(response) + "'))");
             }
         } else {
             wire.invoke(operation, msg);
@@ -203,6 +209,29 @@ public class CometBindingHandler {
         }
         objects.add(jsonArray.substring(startPos, jsonArray.length() - 1));
         return objects.toArray(new String[] {});
+    }
+
+    public class CometBroadcasterLifeCyclePolicyListener implements BroadcasterLifeCyclePolicyListener {
+
+        private String sessionId;
+
+        public CometBroadcasterLifeCyclePolicyListener(String sessionId) {
+            this.sessionId = sessionId;
+        }
+
+        @Override
+        public void onDestroy() {
+        }
+
+        @Override
+        public void onEmpty() {
+            CometSessionManager.remove(sessionId);
+        }
+
+        @Override
+        public void onIdle() {
+        }
+
     }
 
 }
