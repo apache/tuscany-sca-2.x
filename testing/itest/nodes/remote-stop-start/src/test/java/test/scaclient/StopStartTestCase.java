@@ -56,6 +56,7 @@ public class StopStartTestCase {
         String remoteNode = nodes.get(0);
         node1.startComposite(curi, "Helloworld.composite", remoteNode);
 
+// TUSCANY-3870: this next invoke doesn't work:        
 //        Assert.assertEquals("Hello Amelia", node1.getService(HelloworldService.class, "HelloworldComponent").sayHello("Amelia"));
     }
 }
