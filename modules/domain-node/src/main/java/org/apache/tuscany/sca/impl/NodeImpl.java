@@ -50,9 +50,9 @@ import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.ActiveNodes;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
+import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.runtime.ContributionListener;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
-import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.oasisopen.sca.NoSuchServiceException;
 
 public class NodeImpl implements Node {
@@ -249,8 +249,8 @@ public class NodeImpl implements Node {
     }
 
     @Override
-    public void startComposite(String memberName, String contributionURI, String compositeURI) throws ActivationException {
-        String response = domainRegistry.remoteCommand(memberName, new RemoteCommand(domainName, "start", contributionURI, compositeURI));
+    public void startComposite(String contributionURI, String compositeURI, String nodeName) throws ActivationException {
+        String response = domainRegistry.remoteCommand(nodeName, new RemoteCommand(domainName, "start", contributionURI, compositeURI));
         if (!"Started.".equals(response)) {
             throw new ActivationException(response);
         }

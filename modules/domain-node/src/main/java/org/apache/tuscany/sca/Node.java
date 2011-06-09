@@ -154,7 +154,7 @@ public interface Node {
      * @throws ContributionReadException 
      */
     void startComposite(String contributionURI, String compositeURI) throws ActivationException, ValidationException, ContributionReadException;
-    void startComposite(String memberName, String contributionURI, String compositeURI) throws ActivationException;
+    void startComposite(String contributionURI, String compositeURI, String nodeName) throws ActivationException;
 
     /**
      * 4687 10.7.2 remove From Domain-Level Composite
