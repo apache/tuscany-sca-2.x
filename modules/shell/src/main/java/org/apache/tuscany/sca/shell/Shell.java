@@ -452,7 +452,7 @@ public class Shell {
     }
 
     boolean remoteStart(String contributionURI, String compositeURI, String nodeName) throws ActivationException {
-        getNode().startComposite(nodeName, contributionURI, compositeURI);
+        getNode().startComposite(contributionURI, compositeURI, nodeName);
         return true;
     }
 
