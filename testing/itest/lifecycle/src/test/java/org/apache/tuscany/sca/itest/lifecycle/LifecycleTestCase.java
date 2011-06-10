@@ -154,7 +154,7 @@ public class LifecycleTestCase {
                             "Destroy - HelloworldClientImplCE\n",
                             StatusImpl.statusString);
         
-        /*$self$ reference is not stopped here - should it be? */
+        /*$self$ reference of client is not stopped here - should it be? */
     } 
     
     /*
@@ -179,6 +179,7 @@ public class LifecycleTestCase {
             node.startComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it's thrown from the HelloworldClientImpl @Init method
+            StatusImpl.appendStatus("Exception caught on node.startComposite", "LifecycleTestCase.testConstructorExceptionShutdownCE");
         }
         
         // don't need to send a message as eager init ensures that 
@@ -186,9 +187,11 @@ public class LifecycleTestCase {
         
         // stop a composite
         try {
-            node.stopComposite("HelloworldContrib", "lifecycle.composite");
+            // not required in this test as the exception during EagerInit will cause the stop         
+            //node.stopComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it will complain about the composite not being started
+            StatusImpl.appendStatus("Exception caught on node.stopComposite", "LifecycleTestCase.testConstructorExceptionShutdownCE");
         }            
         
         // uninstall a constribution
@@ -200,6 +203,8 @@ public class LifecycleTestCase {
         // stop the runtime
         tuscanyRuntime.stop();
         
+        HelloworldClientImplCE.throwTestExceptionOnConstruction = false;
+        
         // see what happened
         System.out.println(StatusImpl.statusString);
         Assert.assertEquals("Service binding start - Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
@@ -208,10 +213,9 @@ public class LifecycleTestCase {
                             "Exception on construction - HelloworldClientImplCE\n" +
                             "Service binding stop - Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Service binding stop - Endpoint:  URI = HelloworldServiceTestImpl#service-binding(Helloworld/lifecycle)\n" +
-                            "Implementation stop - HelloworldServiceTestImpl\n",
+                            "Implementation stop - HelloworldServiceTestImpl\n" +
+                            "Exception caught on node.startComposite - LifecycleTestCase.testConstructorExceptionShutdownCE\n",
                             StatusImpl.statusString);
-        
-        HelloworldClientImplCE.throwTestExceptionOnConstruction = false;
     } 
     
     /*
@@ -236,6 +240,7 @@ public class LifecycleTestCase {
             node.startComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it's thrown from the HelloworldClientImpl @Init method
+            StatusImpl.appendStatus("Exception caught on node.startComposite", "LifecycleTestCase.testConstructorExceptionShutdownC");
         }
         
         // send a message to the appropriate client
@@ -244,6 +249,7 @@ public class LifecycleTestCase {
             System.out.println(hwCE.sayHello("name"));
         } catch (Exception exception) {
             // the component throws an error on construction
+            StatusImpl.appendStatus("Exception caught on sayHello()", "LifecycleTestCase.testConstructorExceptionShutdownC");
         }
         
         // stop a composite
@@ -251,6 +257,7 @@ public class LifecycleTestCase {
             node.stopComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it will complain about the composite not being started
+            StatusImpl.appendStatus("Exception caught on node.stopComposite", "LifecycleTestCase.testConstructorExceptionShutdownC");
         }            
         
         // uninstall a constribution
@@ -262,6 +269,8 @@ public class LifecycleTestCase {
         // stop the runtime
         tuscanyRuntime.stop();
         
+        HelloworldClientImplC.throwTestExceptionOnConstruction = false;        
+        
         // see what happened
         System.out.println(StatusImpl.statusString);
         Assert.assertEquals("Service binding start - Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
@@ -270,14 +279,13 @@ public class LifecycleTestCase {
                             "Init - HelloworldClientImplCE\n" +
                             "Reference binding start - EndpointReference:  URI = HelloworldClientCE#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Exception on construction - HelloworldClientImplC\n" +
+                            "Exception caught on sayHello() - LifecycleTestCase.testConstructorExceptionShutdownC\n" +
                             "Service binding stop - Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Service binding stop - Endpoint:  URI = HelloworldServiceTestImpl#service-binding(Helloworld/lifecycle)\n" +
                             "Implementation stop - HelloworldServiceTestImpl\n" +
                             "Reference binding stop - EndpointReference:  URI = HelloworldClientCE#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Destroy - HelloworldClientImplCE\n", 
                             StatusImpl.statusString);
-        
-        HelloworldClientImplC.throwTestExceptionOnConstruction = false;
     }   
     
     /*
@@ -302,6 +310,7 @@ public class LifecycleTestCase {
             node.startComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it's thrown from the HelloworldClientImpl @Init method
+            StatusImpl.appendStatus("Exception caught on node.startComposite", "LifecycleTestCase.testConstructorExceptionShutdownS");
         }
         
         // send a message to the appropriate client
@@ -310,6 +319,7 @@ public class LifecycleTestCase {
             System.out.println(hwCE.sayHello("name"));
         } catch (Exception exception) {
             // the component throws an error on construction
+            StatusImpl.appendStatus("Exception caught on sayHello()", "LifecycleTestCase.testConstructorExceptionShutdownS");
         }        
         
         // stop a composite
@@ -317,6 +327,7 @@ public class LifecycleTestCase {
             node.stopComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it will complain about the composite not being started
+            StatusImpl.appendStatus("Exception caught on node.stopComposite", "LifecycleTestCase.testConstructorExceptionShutdownS");
         }            
         
         // uninstall a constribution
@@ -328,6 +339,8 @@ public class LifecycleTestCase {
         // stop the runtime
         tuscanyRuntime.stop();
         
+        HelloworldClientImplS.throwTestExceptionOnConstruction = false;
+        
         // see what happened
         System.out.println(StatusImpl.statusString);
         Assert.assertEquals("Service binding start - Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
@@ -336,14 +349,13 @@ public class LifecycleTestCase {
                             "Init - HelloworldClientImplCE\n" +
                             "Reference binding start - EndpointReference:  URI = HelloworldClientCE#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Exception on construction - HelloworldClientImplS\n" +
+                            "Exception caught on sayHello() - LifecycleTestCase.testConstructorExceptionShutdownS\n" +
                             "Service binding stop - Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Service binding stop - Endpoint:  URI = HelloworldServiceTestImpl#service-binding(Helloworld/lifecycle)\n" +
                             "Implementation stop - HelloworldServiceTestImpl\n" +
                             "Reference binding stop - EndpointReference:  URI = HelloworldClientCE#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Destroy - HelloworldClientImplCE\n",
                             StatusImpl.statusString);
-        
-        HelloworldClientImplS.throwTestExceptionOnConstruction = false;
     } 
       
     /*
@@ -368,6 +380,7 @@ public class LifecycleTestCase {
             node.startComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it's thrown from the HelloworldClientImpl @Init method
+            StatusImpl.appendStatus("Exception caught on node.startComposite", "LifecycleTestCase.testInitExceptionShutdownCE");
         }
         
         // don't need to send a message as eager init ensures that 
@@ -375,9 +388,11 @@ public class LifecycleTestCase {
         
         // stop a composite
         try {
-            node.stopComposite("HelloworldContrib", "lifecycle.composite");
+            // not required in this test as the exception during EagerInit will cause the stop             
+            //node.stopComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it will complain about the composite not being started
+            StatusImpl.appendStatus("Exception caught on node.stopComposite", "LifecycleTestCase.testInitExceptionShutdownCE");
         }            
         
         // uninstall a constribution
@@ -389,6 +404,8 @@ public class LifecycleTestCase {
         // stop the runtime
         tuscanyRuntime.stop();
         
+        HelloworldClientImplCE.throwTestExceptionOnInit = false;        
+        
         // see what happened
         System.out.println(StatusImpl.statusString);
         Assert.assertEquals("Service binding start - Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n"+
@@ -398,10 +415,9 @@ public class LifecycleTestCase {
                             "Destroy - HelloworldClientImplCE\n"+
                             "Service binding stop - Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n"+
                             "Service binding stop - Endpoint:  URI = HelloworldServiceTestImpl#service-binding(Helloworld/lifecycle)\n"+
-                            "Implementation stop - HelloworldServiceTestImpl\n", 
+                            "Implementation stop - HelloworldServiceTestImpl\n" +
+                            "Exception caught on node.startComposite - LifecycleTestCase.testInitExceptionShutdownCE\n",
                             StatusImpl.statusString);
-        
-        HelloworldClientImplCE.throwTestExceptionOnInit = false;
     } 
     
     /*
@@ -426,6 +442,7 @@ public class LifecycleTestCase {
             node.startComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it's thrown from the HelloworldClientImpl @Init method
+            StatusImpl.appendStatus("Exception caught on node.startComposite", "LifecycleTestCase.testInitExceptionShutdownC");
         }
         
         // send a message to the appropriate client
@@ -434,6 +451,7 @@ public class LifecycleTestCase {
             System.out.println(hwCE.sayHello("name"));
         } catch (Exception exception) {
             // the component throws an error on init
+            StatusImpl.appendStatus("Exception caught on sayHello()", "LifecycleTestCase.testInitExceptionShutdownC");
         }        
         
         // stop a composite
@@ -441,6 +459,7 @@ public class LifecycleTestCase {
             node.stopComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it will complain about the composite not being started
+            StatusImpl.appendStatus("Exception caught on node.stopComposite", "LifecycleTestCase.testInitExceptionShutdownC");
         }            
         
         // uninstall a constribution
@@ -452,6 +471,8 @@ public class LifecycleTestCase {
         // stop the runtime
         tuscanyRuntime.stop();
         
+        HelloworldClientImplC.throwTestExceptionOnInit = false;        
+        
         // see what happened
         System.out.println(StatusImpl.statusString);
         Assert.assertEquals("Service binding start - Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
@@ -461,14 +482,13 @@ public class LifecycleTestCase {
                             "Reference binding start - EndpointReference:  URI = HelloworldClientCE#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Exception on init - HelloworldClientImplC\n" +
                             "Destroy - HelloworldClientImplC\n" +
+                            "Exception caught on sayHello() - LifecycleTestCase.testInitExceptionShutdownC\n" +                            
                             "Service binding stop - Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Service binding stop - Endpoint:  URI = HelloworldServiceTestImpl#service-binding(Helloworld/lifecycle)\n" +
                             "Implementation stop - HelloworldServiceTestImpl\n" +
                             "Reference binding stop - EndpointReference:  URI = HelloworldClientCE#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Destroy - HelloworldClientImplCE\n",
                             StatusImpl.statusString);
-        
-        HelloworldClientImplC.throwTestExceptionOnInit = false;
     }   
     
     /*
@@ -493,6 +513,7 @@ public class LifecycleTestCase {
             node.startComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it's thrown from the HelloworldClientImpl @Init method
+            StatusImpl.appendStatus("Exception caught on node.startComposite", "LifecycleTestCase.testInitExceptionShutdownS");
         }
         
         // send a message to the appropriate client
@@ -501,6 +522,7 @@ public class LifecycleTestCase {
             System.out.println(hwCE.sayHello("name"));
         } catch (Exception exception) {
             // the component throws an error on init
+            StatusImpl.appendStatus("Exception caught on sayHello()", "LifecycleTestCase.testInitExceptionShutdownS");
         }         
         
         // stop a composite
@@ -508,6 +530,7 @@ public class LifecycleTestCase {
             node.stopComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it will complain about the composite not being started
+            StatusImpl.appendStatus("Exception caught on node.stopComposite", "LifecycleTestCase.testInitExceptionShutdownS");
         }            
         
         // uninstall a constribution
@@ -519,6 +542,8 @@ public class LifecycleTestCase {
         // stop the runtime
         tuscanyRuntime.stop();
         
+        HelloworldClientImplS.throwTestExceptionOnInit = false;        
+        
         // see what happened
         System.out.println(StatusImpl.statusString);
         Assert.assertEquals("Service binding start - Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
@@ -528,14 +553,13 @@ public class LifecycleTestCase {
                             "Reference binding start - EndpointReference:  URI = HelloworldClientCE#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Exception on init - HelloworldClientImplS\n" +
                             "Destroy - HelloworldClientImplS\n" +
+                            "Exception caught on sayHello() - LifecycleTestCase.testInitExceptionShutdownS\n" +
                             "Service binding stop - Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Service binding stop - Endpoint:  URI = HelloworldServiceTestImpl#service-binding(Helloworld/lifecycle)\n" +
                             "Implementation stop - HelloworldServiceTestImpl\n" +
                             "Reference binding stop - EndpointReference:  URI = HelloworldClientCE#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Destroy - HelloworldClientImplCE\n",
                             StatusImpl.statusString);
-        
-        HelloworldClientImplS.throwTestExceptionOnInit = false;
     }    
     
     /*
@@ -560,6 +584,7 @@ public class LifecycleTestCase {
             node.startComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it's thrown from the HelloworldClientImpl @Destroy method
+            StatusImpl.appendStatus("Exception caught on node.startComposite", "LifecycleTestCase.testDestroyExceptionShutdownCE");
         }
         
         // don't need to send a message as eager init ensures that 
@@ -568,9 +593,11 @@ public class LifecycleTestCase {
         
         // stop a composite
         try {
-            node.stopComposite("HelloworldContrib", "lifecycle.composite");
+            // not required in this test as the exception during EagerInit will cause the stop 
+            //node.stopComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it will complain about the composite not being started
+            StatusImpl.appendStatus("Exception caught on node.stopComposite", "LifecycleTestCase.testDestroyExceptionShutdownCE");
         }   
         
         // uninstall a constribution
@@ -581,6 +608,8 @@ public class LifecycleTestCase {
         
         // stop the runtime
         tuscanyRuntime.stop();
+        
+        HelloworldClientImplCE.throwTestExceptionOnDestroy = false;        
         
         // see what happened
         System.out.println(StatusImpl.statusString);
@@ -595,8 +624,6 @@ public class LifecycleTestCase {
                             "Reference binding stop - EndpointReference:  URI = HelloworldClientCE#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Exception on destroy - HelloworldClientImplCE\n",
                             StatusImpl.statusString);
-        
-        HelloworldClientImplCE.throwTestExceptionOnDestroy = false;
     }  
   
     /*
@@ -621,12 +648,13 @@ public class LifecycleTestCase {
             node.startComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it's thrown from the HelloworldClientImpl @Destroy method
+            StatusImpl.appendStatus("Exception caught on node.startComposite", "LifecycleTestCase.testDestroyExceptionShutdownC");
         }
         
         // send a message to the appropriate client
         Helloworld hwCE = node.getService(Helloworld.class, "HelloworldClientC");
         System.out.println(hwCE.sayHello("name"));  
-        // don't need to catch exception here as it component instance won't
+        // don't need to catch exception here as the component instance won't
         // be destroyed until shutdown
         
         // stop a composite
@@ -634,6 +662,7 @@ public class LifecycleTestCase {
             node.stopComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it will complain about the composite not being started
+            StatusImpl.appendStatus("Exception caught on node.stopComposite", "LifecycleTestCase.testDestroyExceptionShutdownC");
         }   
         
         // uninstall a constribution
@@ -644,6 +673,8 @@ public class LifecycleTestCase {
         
         // stop the runtime
         tuscanyRuntime.stop();
+        
+        HelloworldClientImplC.throwTestExceptionOnDestroy = false;        
         
         // see what happened
         System.out.println(StatusImpl.statusString);
@@ -662,8 +693,6 @@ public class LifecycleTestCase {
                             "Reference binding stop - EndpointReference:  URI = HelloworldClientCE#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Destroy - HelloworldClientImplCE\n",
                             StatusImpl.statusString);
-        
-        HelloworldClientImplC.throwTestExceptionOnDestroy = false;
     }  
     
     /*
@@ -688,6 +717,7 @@ public class LifecycleTestCase {
             node.startComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it's thrown from the HelloworldClientImpl @Destroy method
+            StatusImpl.appendStatus("Exception caught on node.startComposite", "LifecycleTestCase.testDestroyExceptionShutdownS");
         }
         
         // send a message to the appropriate client
@@ -695,7 +725,7 @@ public class LifecycleTestCase {
             Helloworld hwCE = node.getService(Helloworld.class, "HelloworldClientS");
             System.out.println(hwCE.sayHello("name")); 
         } catch (Exception exception) {
-            // exception will be thown when component instance is discarded
+            // exception will be thrown when component instance is discarded
             // after the message has been processed
         }              
         
@@ -704,6 +734,7 @@ public class LifecycleTestCase {
             node.stopComposite("HelloworldContrib", "lifecycle.composite");
         } catch (Exception exception) {
             // it will complain about the composite not being started
+            StatusImpl.appendStatus("Exception caught on sayHello()", "LifecycleTestCase.testDestroyExceptionShutdownS");
         }   
         
         // uninstall a constribution
@@ -714,6 +745,8 @@ public class LifecycleTestCase {
         
         // stop the runtime
         tuscanyRuntime.stop();
+        
+        HelloworldClientImplS.throwTestExceptionOnDestroy = false;        
         
         // see what happened
         System.out.println(StatusImpl.statusString);
@@ -732,8 +765,6 @@ public class LifecycleTestCase {
                             "Destroy - HelloworldClientImplCE\n" +
                             "Reference binding stop - EndpointReference:  URI = HelloworldClientS#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n", 
                             StatusImpl.statusString);
-        
-        HelloworldClientImplS.throwTestExceptionOnDestroy = false;
     }     
     
     /*
@@ -767,6 +798,7 @@ public class LifecycleTestCase {
             hw.throwException("name");
         } catch (Exception ex) {
             // do nothing
+            StatusImpl.appendStatus("Exception caught on throwException()", "LifecycleTestCase.testAppExceptionShutdown");
         }
         
         // stop a composite
@@ -790,6 +822,7 @@ public class LifecycleTestCase {
                             "Reference binding start - EndpointReference:  URI = HelloworldClientCE#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Init - HelloworldClientImplC\n" +
                             "Reference binding start - EndpointReference:  URI = HelloworldClientC#reference-binding(service/lifecycle) WIRED_TARGET_FOUND_AND_MATCHED Target = Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
+                            "Exception caught on throwException() - LifecycleTestCase.testAppExceptionShutdown\n" +
                             "Service binding stop - Endpoint:  URI = HelloworldService#service-binding(Helloworld/lifecycle)\n" +
                             "Service binding stop - Endpoint:  URI = HelloworldServiceTestImpl#service-binding(Helloworld/lifecycle)\n" +
                             "Implementation stop - HelloworldServiceTestImpl\n" +
