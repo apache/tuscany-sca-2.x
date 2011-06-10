@@ -427,6 +427,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
             // is up and running before we try and connect references to services
             
         } catch (Throwable e) {
+            // any providers (binding, implementation, policy) that were started
+            // before the error occured are stopped here
             for (int i = providers.size() - 1; i >= 0; i--) {
                 try {
                     providers.get(i).stop();
@@ -439,6 +441,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             providers.clear();
         }
 
+        // mark a successful start
         runtimeComponent.setStarted(true);
     }
 
@@ -528,6 +531,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 scopedRuntimeComponent.getScopeContainer().start();
             } catch (Throwable ex){
                 Monitor.error(monitor, this, "core-messages", "StartException", ex);
+                rethrow(ex);
             }             
         }
     }
@@ -547,6 +551,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     providers.add(policyProvider);
                 } catch (Throwable ex){
                     Monitor.error(monitor, this, "core-messages", "StartException", ex);
+                    rethrow(ex);
                 }                     
             }
         }
@@ -568,6 +573,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 compositeContext.getEndpointRegistry().addEndpoint(ep);
             } catch (Throwable ex){
                 Monitor.error(monitor, this, "core-messages", "StartException", ex);
+                rethrow(ex);
             }  
         }
     }
@@ -627,6 +633,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                         start(compositeContext, epr);
                     } catch (Throwable ex){
                         Monitor.error(monitor, this, "core-messages", "StartException", ex);
+                        rethrow(ex);
                     }  
                 }
             }
