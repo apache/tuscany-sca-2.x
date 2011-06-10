@@ -98,9 +98,17 @@ public class DeployedComposite {
     }
 
     public void start() throws ActivationException {
-        compositeActivator.activate(compositeContext, builtComposite);
-        compositeActivator.start(compositeContext, builtComposite);
-        domainRegistry.addRunningComposite(contribution.getURI(), builtComposite);
+        try {
+            compositeActivator.activate(compositeContext, builtComposite);
+            compositeActivator.start(compositeContext, builtComposite);
+            domainRegistry.addRunningComposite(contribution.getURI(), builtComposite);
+        } catch (ActivationException ex){
+            stop();
+            throw ex;
+        } catch (Exception ex){
+            stop();
+            throw new ActivationException(ex);
+        }
     }
 
     public void stop() throws ActivationException {
