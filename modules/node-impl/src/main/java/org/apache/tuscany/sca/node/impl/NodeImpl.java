@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -359,11 +360,14 @@ public class NodeImpl implements Node, NodeExtension {
                 .getFactory(XMLOutputFactory.class);
 
         try {
-            compositeProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), new ProcessorContext(nodeFactory.registry));
+            XMLStreamWriter xmlStreamWriter = outputFactory.createXMLStreamWriter(bos);
+            compositeProcessor.write(composite, xmlStreamWriter, new ProcessorContext(nodeFactory.registry));
+            xmlStreamWriter.flush();
         } catch(Exception ex) {
             return ex.toString();
         }
 
+        
         String result = bos.toString();
 
         // write out and nested composites
