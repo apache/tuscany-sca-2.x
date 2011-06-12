@@ -116,6 +116,11 @@ public class OSGiServletHost implements ServletHost, BundleActivator {
             suri = contextPath + suri;
         }
 
+        // The OSGi HTTP service doesn't use an aster for sub-paths so strip it off
+        if (suri.endsWith("/*")) {
+            suri = suri.substring(0, suri.length()-2);
+        }
+
         // In a webapp just use the given path and ignore the host and port
         // as they are fixed by the Web container
         try {
