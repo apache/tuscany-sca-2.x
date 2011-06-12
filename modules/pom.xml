@@ -81,6 +81,7 @@
         <module>extensibility</module>
         <module>extensibility-equinox</module>
         <module>host-http</module>
+        <module>host-http-osgi</module>
         <module>host-jetty</module>
         <module>host-rmi</module>
         <module>host-webapp</module>
