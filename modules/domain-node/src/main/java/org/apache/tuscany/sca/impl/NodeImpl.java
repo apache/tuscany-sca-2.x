@@ -57,7 +57,6 @@ import org.oasisopen.sca.NoSuchServiceException;
 
 public class NodeImpl implements Node {
 
-    private String domainName;
     private Deployer deployer;
     private CompositeActivator compositeActivator;
     private DomainRegistry domainRegistry;
@@ -69,13 +68,11 @@ public class NodeImpl implements Node {
     private Map<String, DeployedComposite> startedComposites = new HashMap<String, DeployedComposite>();
     private Map<String, DeployedComposite> stoppedComposites = new HashMap<String, DeployedComposite>();
 
-    public NodeImpl(String domainName,
-                     Deployer deployer,
+    public NodeImpl(Deployer deployer,
                      CompositeActivator compositeActivator,
                      DomainRegistry domainRegistry,
                      ExtensionPointRegistry extensionPointRegistry,
                      TuscanyRuntime tuscanyRuntime) {
-        this.domainName = domainName;
         this.deployer = deployer;
         this.compositeActivator = compositeActivator;
         this.domainRegistry = domainRegistry;
@@ -250,7 +247,7 @@ public class NodeImpl implements Node {
 
     @Override
     public void startComposite(String contributionURI, String compositeURI, String nodeName) throws ActivationException {
-        String response = domainRegistry.remoteCommand(nodeName, new RemoteCommand(domainName, "start", contributionURI, compositeURI));
+        String response = domainRegistry.remoteCommand(nodeName, new RemoteCommand(domainRegistry.getDomainName(), "start", contributionURI, compositeURI));
         if (!"Started.".equals(response)) {
             throw new ActivationException(response);
         }
@@ -269,7 +266,7 @@ public class NodeImpl implements Node {
             if (member == null) {
                 throw new IllegalStateException("composite not started: " + compositeURI);
             }
-            RemoteCommand command = new RemoteCommand(domainName, "stop", contributionURI, compositeURI);
+            RemoteCommand command = new RemoteCommand(domainRegistry.getDomainName(), "stop", contributionURI, compositeURI);
             String response = domainRegistry.remoteCommand(member, command);
             if (!"Stopped.".equals(response)) {
                 throw new ActivationException(response);
@@ -278,7 +275,7 @@ public class NodeImpl implements Node {
     }
 
     public String getDomainName() {
-        return domainName;
+        return domainRegistry.getDomainName();
     }
 
     public Composite getDomainComposite() {

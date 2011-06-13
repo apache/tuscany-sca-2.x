@@ -104,7 +104,7 @@ public class TuscanyRuntime {
             TuscanyRuntime runtime = newInstance();
             String domain = domainURI == null ? "default" : domainURI.toString();
             DomainRegistry domainRegistry = runtime.domainRegistryFactory.getEndpointRegistry(domain, getDomainName(domain));
-            NodeImpl node = new NodeImpl(domain, runtime.deployer, runtime.compositeActivator, domainRegistry, runtime.extensionPointRegistry, runtime);
+            NodeImpl node = new NodeImpl(runtime.deployer, runtime.compositeActivator, domainRegistry, runtime.extensionPointRegistry, runtime);
 
             if (dependentContributionURLs != null) {
                 for (int i=dependentContributionURLs.length-1; i>-1; i--) {
@@ -150,7 +150,7 @@ public class TuscanyRuntime {
             domainName = getDomainName(domainURI);
         }
         DomainRegistry domainRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, domainName);
-        return new NodeImpl(domainName, deployer, compositeActivator, domainRegistry, extensionPointRegistry, null);
+        return new NodeImpl(deployer, compositeActivator, domainRegistry, extensionPointRegistry, null);
     }
 
     /**

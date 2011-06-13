@@ -88,8 +88,8 @@ public class DeployedComposite {
         
         // TODO: don't hardcode the default domain name, instead do something like having a property on Node that says whether or not the 
         // domain name should be included in the service uri
-        if (!"default".equals(domainRegistry.getDomainURI())) {
-            bs.put(new QName("default"), Arrays.asList(new String[]{domainRegistry.getDomainURI()}));
+        if (!"default".equals(domainRegistry.getDomainName())) {
+            bs.put(new QName("default"), Arrays.asList(new String[]{domainRegistry.getDomainName()}));
         }
         builtComposite = deployer.build(contributions, dependedOnContributions, bs, monitor);
         // TODO: Ideally deployer.build would set the name and uri to what this needs

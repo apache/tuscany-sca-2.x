@@ -58,5 +58,4 @@ public class DependencyUtilsTestCase {
         contributions.put("unrelated", new ZipInputStream(new BufferedInputStream(new FileInputStream("src/test/resources/sample-helloworld-nodeployable.jar"))));
         return contributions;
     }
-
 }
