@@ -32,6 +32,7 @@ import javax.xml.xpath.XPathExpression;
 
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -248,6 +249,8 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
     private static final QName COMPONENT = new QName(Base.SCA11_NS, "component");
     private static final QName SERVICE = new QName(Base.SCA11_NS, "service");
     private static final QName REFERENCE = new QName(Base.SCA11_NS, "reference");
+    private static final QName CALLBACK = new QName(Base.SCA11_NS, "callback");
+    private static final QName COMPOSITE = new QName(Base.SCA11_NS, "composite");
 
     protected static String getStructuralURI(Node node) {
         if (node != null) {
@@ -264,18 +267,26 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
                 Element component = (Element)node.getParentNode();
                 String uri = component.getAttributeNS(null, "uri");
                 String reference = ((Element)node).getAttributeNS(null, "name");
-                return uri + "#reference(" + reference + ")";
-            } else if ( new QName(Base.SCA11_NS, "composite").equals(name)) {
+                return uri + "#reference(" + reference + ")";             
+            } else if ( COMPOSITE.equals(name)) {
             	return "";
             } else {
                 String localName = node.getLocalName();
                 if (localName.startsWith("binding.")) {
+                	boolean callback = false;
                     String bindingName = ((Element)node).getAttributeNS(null, "name");
-                    Element contract = (Element)node.getParentNode();
+                    Element contract = (Element)node.getParentNode();     
+                    if ( "callback".equals(contract.getLocalName()) ) {
+                    	callback = true;
+                    	contract = (Element)contract.getParentNode();
+                    }
                     String contractName = contract.getAttributeNS(null, "name");
-                    Element component = (Element)node.getParentNode().getParentNode();
+                    Element component = (Element)contract.getParentNode();
                     String uri = component.getAttributeNS(null, "uri");
-                    return uri + "#" + contract.getLocalName() + "(" + contractName + "/" + bindingName + ")";
+                    if ( callback ) 
+                    	return uri + "#" + contract.getLocalName() + "(" + contractName + "/callback/" + bindingName + ")";
+                    else
+                    	return uri + "#" + contract.getLocalName() + "(" + contractName + "/" + bindingName + ")";
                 } else if (localName.startsWith("implementation.")) {
                     Element component = (Element)node.getParentNode();
                     String uri = component.getAttributeNS(null, "uri");
@@ -292,8 +303,15 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
         return null;
     }
 
-    protected Binding getBinding(Contract contract, String name) {
-        for (Binding binding : contract.getBindings()) {
+    protected Binding getBinding(Contract contract, String name, boolean isCallback) {
+    	List<Binding> bindings = null;
+    	if ( isCallback ) {
+    		bindings = contract.getCallback().getBindings();
+    	} else {
+    		bindings = contract.getBindings();
+    	}
+    	
+        for (Binding binding : bindings) {
             if (name.equals(binding.getName())) {
                 return binding;
             }
@@ -314,7 +332,8 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
         String binding = null;
         boolean isInterface = false;
         boolean impl = false;
-
+    	boolean isCallback = false;
+    	
         if (index != -1) {
             componentURI = structuralURI.substring(0, index);
             String fragment = structuralURI.substring(index + 1);
@@ -325,10 +344,14 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
                 String prefix = fragment.substring(0, begin).trim();
                 if (prefix.equals("implementation")) {
                     impl = true;
-                } else {
+                } else {                
                     int pos = path.indexOf('/');
                     if (pos != -1) {
                         binding = path.substring(pos + 1);
+                        if ( binding.startsWith("callback/")) {
+                        	binding = path.substring(pos + 10);                        	
+                        	isCallback = true;
+                        }
                         path = path.substring(0, pos);
                         if ("service-binding".equals(prefix)) {
                             service = path;
@@ -354,7 +377,7 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
                     if ( isInterface ) {
                     	return componentService.getInterfaceContract().getInterface();
                     } else if (binding != null) {
-                        Binding b = getBinding(componentService, binding);
+                        Binding b = getBinding(componentService, binding, isCallback);
                         if (b instanceof PolicySubject) {
                             return (PolicySubject)b;
                         }
@@ -364,7 +387,7 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
                 } else if (reference != null) {
                     ComponentReference componentReference = component.getReference(reference);
                     if (binding != null) {
-                        Binding b = getBinding(componentReference, binding);
+                        Binding b = getBinding(componentReference, binding, isCallback);
                         if (b instanceof PolicySubject) {
                             return (PolicySubject)b;
                         }
