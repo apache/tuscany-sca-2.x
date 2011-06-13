@@ -48,6 +48,8 @@ import org.apache.tuscany.sca.monitor.Monitor;
  */
 public class BindingURIBuilderImpl implements CompositeBuilder {
 
+    private static final QName DEFAULT = new QName("default");
+
     public BindingURIBuilderImpl(ExtensionPointRegistry registry) {
     }
 
@@ -228,6 +230,11 @@ public class BindingURIBuilderImpl implements CompositeBuilder {
                     List<String> uris = defaultBindings.get(binding.getType());
                     if (uris != null && uris.size() > 0) {
                         baseURI = new URI(addSlashToPath(uris.get(0)));
+                    } else {
+                        uris = defaultBindings.get(DEFAULT);
+                        if (uris != null && uris.size() > 0) {
+                            baseURI = new URI(addSlashToPath(uris.get(0)));
+                        }
                     }
                 }
             }
