@@ -55,7 +55,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         for (ExtensionPointRegistry xpr : ExtensionPointRegistryLocator.getExtensionPointRegistries()) {
             ExtensibleDomainRegistryFactory drf = ExtensibleDomainRegistryFactory.getInstance(xpr);
             for (DomainRegistry epr : drf.getEndpointRegistries()) {
-                if (domainURI.equals(epr.getDomainURI())) {
+                if (domainURI.equals(epr.getDomainName())) {
                     this.extensionPointRegistry = xpr;
                     this.domainRegistry = epr;
                     return;
@@ -104,5 +104,5 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         }
 
         return (T)Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[]{serviceInterface}, handler);
-    }
+    }    
 }
