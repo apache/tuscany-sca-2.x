@@ -20,8 +20,10 @@
 package org.apache.tuscany.sca.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -82,7 +84,14 @@ public class DeployedComposite {
         contributions.get(0).getDeployables().add(composite);
 
         Monitor monitor = deployer.createMonitor();
-        builtComposite = deployer.build(contributions, dependedOnContributions, new HashMap<QName, List<String>>(), monitor);
+        Map<QName, List<String>> bs = new HashMap<QName, List<String>>();
+        
+        // TODO: don't hardcode the default domain name, instead do something like having a property on Node that says whether or not the 
+        // domain name should be included in the service uri
+        if (!"default".equals(domainRegistry.getDomainURI())) {
+            bs.put(new QName("default"), Arrays.asList(new String[]{domainRegistry.getDomainURI()}));
+        }
+        builtComposite = deployer.build(contributions, dependedOnContributions, bs, monitor);
         // TODO: Ideally deployer.build would set the name and uri to what this needs
         builtComposite.setName(composite.getName());
         builtComposite.setURI(composite.getURI());
