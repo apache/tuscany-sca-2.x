@@ -79,6 +79,7 @@ public interface DomainRegistry {
     void removeEndpointListener(EndpointListener listener);
 
     String getDomainURI();
+    String getDomainName();
 
     void installContribution(ContributionDescription cd);
     void uninstallContribution(String uri);

@@ -160,6 +160,10 @@ public abstract class BaseDomainRegistry implements DomainRegistry, LifeCycleLis
     }
 
     public String getDomainURI() {
+        return domainRegistryURI;
+    }
+
+    public String getDomainName() {
         return domainURI;
     }
 
@@ -175,7 +179,7 @@ public abstract class BaseDomainRegistry implements DomainRegistry, LifeCycleLis
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
         Composite domainComposite = assemblyFactory.createComposite();
-        domainComposite.setName(new QName(Base.SCA11_TUSCANY_NS, getDomainURI()));
+        domainComposite.setName(new QName(Base.SCA11_TUSCANY_NS, getDomainName()));
         domainComposite.setAutowire(false);
         domainComposite.setLocal(false);
         List<Composite> domainIncludes = domainComposite.getIncludes();
