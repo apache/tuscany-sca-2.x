@@ -115,17 +115,17 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
     protected Object shutdownMutex = new Object();
     protected Properties properties;
 
-    public HazelcastDomainRegistry(ExtensionPointRegistry registry, Properties properties, String endpointRegistryURI, String domainURI) {
-        super(registry, null, endpointRegistryURI, domainURI);
+    public HazelcastDomainRegistry(ExtensionPointRegistry registry, Properties properties, String domainURI, String domainName) {
+        super(registry, null, domainURI, domainName);
         this.assemblyFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(AssemblyFactory.class);
         this.properties = properties;
     }
 
     public HazelcastDomainRegistry(ExtensionPointRegistry registry,
                                      Map<String, String> attributes,
-                                     String domainRegistryURI,
-                                     String domainURI) {
-        super(registry, attributes, domainRegistryURI, domainURI);
+                                     String domainURI,
+                                     String domainName) {
+        super(registry, attributes, domainURI, domainName);
         this.assemblyFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(AssemblyFactory.class);
         this.properties = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
     }

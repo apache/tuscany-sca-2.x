@@ -38,9 +38,9 @@ public class HazelcastDomainRegistryFactory extends BaseDomainRegistryFactory {
         super(registry);
     }
 
-    protected DomainRegistry createEndpointRegistry(String endpointRegistryURI, String domainURI) {
+    protected DomainRegistry createEndpointRegistry(String domainURI, String domainName) {
         Properties properties = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
-        return new HazelcastDomainRegistry(registry, properties, endpointRegistryURI, domainURI);
+        return new HazelcastDomainRegistry(registry, properties, domainURI, domainName);
     }
 
     public String[] getSupportedSchemes() {
