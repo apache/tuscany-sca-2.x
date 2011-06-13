@@ -148,6 +148,10 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
+        if (Object.class == method.getDeclaringClass()) {
+            return invokeObjectMethod(method, args);
+        }
+ 
         // force the bind of the reference so that we can look at the 
         // target contract to see if it's asynchronous 
         source.getInvocationChains();
