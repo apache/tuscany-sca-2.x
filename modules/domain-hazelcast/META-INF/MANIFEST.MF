@@ -9,7 +9,13 @@ Bundle-Description: Apache Tuscany Domain Hazelcast
 Bundle-SymbolicName: org.apache.tuscany.sca.domain.hazelcast
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: com.hazelcast.client,
+Import-Package: javax.wsdl,
+ javax.wsdl.extensions,
+ javax.wsdl.extensions.schema,
+ javax.wsdl.factory,
+ javax.wsdl.xml,
+ javax.xml.stream,
+ com.hazelcast.client,
  com.hazelcast.config,
  com.hazelcast.core,
  com.hazelcast.nio,
