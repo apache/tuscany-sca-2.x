@@ -53,7 +53,7 @@ public class DirectoryDomainTestCase {
     public void testMyDomain() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, XMLStreamException, IOException {
         Node node = TuscanyRuntime.newInstance().createNode(new File("src/test/resources/test-domains/MyDomain"));
 
-        Assert.assertEquals("MyDomain", node.getDomainName());
+        Assert.assertEquals("foo", node.getDomainName());
         Assert.assertEquals(1, node.getInstalledContributionURIs().size());
         Assert.assertEquals("helloworld-contribution", node.getInstalledContributionURIs().get(0));
 
