@@ -175,7 +175,9 @@ public class NodeImpl implements Node {
 
     public List<String> getDeployableCompositeURIs(String contributionURI) {
         ContributionDescription cd = domainRegistry.getInstalledContribution(contributionURI);
-        return new ArrayList<String>(cd.getDeployables());
+        List<String> deployables = new ArrayList<String>(cd.getDeployables());
+        deployables.addAll(cd.getAdditionalDeployables().keySet());
+        return deployables;
     }
     
     public String addDeploymentComposite(String contributionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ValidationException {
