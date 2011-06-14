@@ -19,12 +19,20 @@
 
 package org.apache.tuscany.sca;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
+
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
@@ -136,7 +144,7 @@ public class TuscanyRuntime {
      * @return a Node
      */
     public Node createNode() {
-        return createNode(null);
+        return createNode((String)null);
     }
 
     /**
@@ -151,6 +159,66 @@ public class TuscanyRuntime {
         }
         DomainRegistry domainRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, domainName);
         return new NodeImpl(deployer, compositeActivator, domainRegistry, extensionPointRegistry, null);
+    }
+    
+    /*
+     * Create a node from a file system directory. 
+     * The directory can contain:
+     *  domain.properties 
+     *  contributions - jar, zip, or exploded directories
+     *  sca-contribution.xml metaData files to override whats in a contribution
+     *  .composite files to add to contributions as additional deployables
+     * 
+     * TODO: Review if this is useful?
+     */
+    public Node createNode(File directory) throws ContributionReadException, ValidationException, ActivationException, XMLStreamException, IOException {
+        
+        Properties domainProps = new Properties();
+        File propsFile = new File(directory, "domain.properties");
+        if (propsFile.exists()) {
+            domainProps.load(new FileInputStream(propsFile));
+        }
+        String domainName = domainProps.getProperty("domainName", directory.getName());
+        String domainURI = domainProps.getProperty("domainURI", domainName);
+
+        DomainRegistry domainRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, domainName);
+        Node node = new NodeImpl(deployer, compositeActivator, domainRegistry, extensionPointRegistry, null);
+ 
+        
+        List<String> installed = new ArrayList<String>();
+        for (File f : directory.listFiles()) {
+            if (!f.getName().endsWith(".xml") && !f.getName().endsWith(".composite")) {
+                String fn = f.getName().lastIndexOf('.') == -1 ? f.getName() : f.getName().substring(0, f.getName().lastIndexOf('.'));
+                String metaData = null;
+                for (File f2 : directory.listFiles()) {
+                    if (f2.getName().startsWith(fn) && f2.getName().endsWith(".xml")) {
+                        metaData = f2.getPath();
+                        break;
+                    }
+                }
+                
+                List<String> dependencyURIs = new ArrayList();
+                String dependencyURIprop = domainProps.getProperty(fn + ".dependencies");
+                if (dependencyURIprop != null && dependencyURIprop.length() > 0) {
+                    dependencyURIs = Arrays.asList(dependencyURIprop.split(","));
+                }
+
+                String curi = node.installContribution(null, f.getPath(), metaData, dependencyURIs);
+                installed.add(curi);
+
+                for (File f2 : directory.listFiles()) {
+                    if (f2.getName().startsWith(fn) && f2.getName().endsWith(".composite")) {
+                        node.addDeploymentComposite(curi, new FileReader(f2));
+                    }
+                }
+            }
+        }
+
+        for (String curi : installed) {
+            node.startDeployables(curi);
+        }
+
+        return node;
     }
 
     /**
