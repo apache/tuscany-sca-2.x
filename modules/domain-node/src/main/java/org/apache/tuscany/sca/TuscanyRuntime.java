@@ -212,7 +212,7 @@ public class TuscanyRuntime {
                 }
                 
                 List<String> dependencyURIs = new ArrayList<String>();
-                String dependencyURIprop = domainProps.getProperty(fn + ".dependencies");
+                String dependencyURIprop = domainProps.getProperty("dependencies." + fn);
                 if (dependencyURIprop != null && dependencyURIprop.length() > 0) {
                     dependencyURIs = Arrays.asList(dependencyURIprop.split(","));
                 }

@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
+import org.oasisopen.sca.annotation.Remotable;
 
 public class DirectoryDomainTestCase {
 
@@ -103,5 +104,20 @@ public class DirectoryDomainTestCase {
         Map<String, List<String>> startedComposites = node.getStartedCompositeURIs();
         Assert.assertEquals(1, startedComposites.size());
         Assert.assertEquals("helloworld.composite", startedComposites.get("sample-helloworld").get(0));
+    }
+
+    @Test
+    public void testDependencies() throws ContributionReadException, ActivationException, ValidationException, XMLStreamException, IOException, NoSuchServiceException {
+        Node node = TuscanyRuntime.newInstance().createNode(new File("src/test/resources/test-domains/dependencies"));
+        Assert.assertEquals("dependencies", node.getDomainName());
+        List<String> cs = node.getInstalledContributionURIs();
+        Assert.assertEquals(4, cs.size());
+        Assert.assertEquals("Hello 1 Petra", node.getService(TestIface.class, "Helloworld1Component").sayHello("Petra"));
+        Assert.assertEquals("Hello 2 Amelia", node.getService(TestIface.class, "Helloworld2Component").sayHello("Amelia"));
+    }
+
+    @Remotable
+    interface TestIface {
+        String sayHello(String name);
     }
 }
