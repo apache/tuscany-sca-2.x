@@ -163,7 +163,9 @@ public class TuscanyRuntime {
     
     /*
      * Create a node from a file system directory. 
-     * The directory can contain:
+     * If the directory is actually a file use createNodeFromXML
+     * if the directory contains a file named node.xml then use createNodeFromXML
+     * Otherwise, the directory can contain:
      *  domain.properties 
      *  contributions - jar, zip, or exploded directories
      *  sca-contribution.xml metaData files to override whats in a contribution
@@ -172,6 +174,15 @@ public class TuscanyRuntime {
      * TODO: Review if this is useful?
      */
     public Node createNode(File directory) throws ContributionReadException, ValidationException, ActivationException, XMLStreamException, IOException {
+        
+        if (!directory.isDirectory()) {
+            return createNodeFromXML(directory.toURI().toURL().toString());
+        }
+        
+        File nodeXML = new File(directory, "node.xml");
+        if (nodeXML.exists()) {
+            return createNodeFromXML(nodeXML.toURI().toURL().toString());
+        }
         
         Properties domainProps = new Properties();
         File propsFile = new File(directory, "domain.properties");

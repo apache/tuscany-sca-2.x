@@ -69,4 +69,27 @@ public class DirectoryDomainTestCase {
         Assert.assertEquals("sample", ic.getJavaExports().get(0));
     }
 
+    @Test
+    public void testNodeXMLFile() throws ContributionReadException, ActivationException, ValidationException, XMLStreamException, IOException {
+        Node node = TuscanyRuntime.newInstance().createNode(new File("src/test/resources/helloworldNode.xml"));
+        Assert.assertEquals("helloworld", node.getDomainName());
+        List<String> cs = node.getInstalledContributionURIs();
+        Assert.assertEquals(1, cs.size());
+        Assert.assertEquals("sample-helloworld", cs.get(0));
+        Map<String, List<String>> startedComposites = node.getStartedCompositeURIs();
+        Assert.assertEquals(1, startedComposites.size());
+        Assert.assertEquals("helloworld.composite", startedComposites.get("sample-helloworld").get(0));
+    }
+
+    @Test
+    public void testNodeXMLDomain() throws ContributionReadException, ActivationException, ValidationException, XMLStreamException, IOException {
+        Node node = TuscanyRuntime.newInstance().createNode(new File("src/test/resources/test-domains/NodeXMLDomain"));
+        Assert.assertEquals("helloworld", node.getDomainName());
+        List<String> cs = node.getInstalledContributionURIs();
+        Assert.assertEquals(1, cs.size());
+        Assert.assertEquals("sample-helloworld", cs.get(0));
+        Map<String, List<String>> startedComposites = node.getStartedCompositeURIs();
+        Assert.assertEquals(1, startedComposites.size());
+        Assert.assertEquals("helloworld.composite", startedComposites.get("sample-helloworld").get(0));
+    }
 }
