@@ -92,4 +92,16 @@ public class DirectoryDomainTestCase {
         Assert.assertEquals(1, startedComposites.size());
         Assert.assertEquals("helloworld.composite", startedComposites.get("sample-helloworld").get(0));
     }
+
+    @Test
+    public void testExploded() throws ContributionReadException, ActivationException, ValidationException, XMLStreamException, IOException {
+        Node node = TuscanyRuntime.newInstance().createNode(new File("src/test/resources/test-domains/exploded"));
+        Assert.assertEquals("exploded", node.getDomainName());
+        List<String> cs = node.getInstalledContributionURIs();
+        Assert.assertEquals(1, cs.size());
+        Assert.assertEquals("sample-helloworld", cs.get(0));
+        Map<String, List<String>> startedComposites = node.getStartedCompositeURIs();
+        Assert.assertEquals(1, startedComposites.size());
+        Assert.assertEquals("helloworld.composite", startedComposites.get("sample-helloworld").get(0));
+    }
 }

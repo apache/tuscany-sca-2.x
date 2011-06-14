@@ -194,12 +194,15 @@ public class TuscanyRuntime {
 
         DomainRegistry domainRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, domainName);
         Node node = new NodeImpl(deployer, compositeActivator, domainRegistry, extensionPointRegistry, null);
- 
-        
+
         List<String> installed = new ArrayList<String>();
         for (File f : directory.listFiles()) {
             if (f.getName().endsWith(".jar") || f.getName().endsWith(".zip") || (f.isDirectory() && !f.getName().startsWith("."))) {
                 String fn = f.getName().lastIndexOf('.') == -1 ? f.getName() : f.getName().substring(0, f.getName().lastIndexOf('.'));
+                // ignore the contribution if it has an associated exploded folder version
+                if (!f.isDirectory() && new File(f.getParent(), fn).isDirectory()) {
+                    continue;
+                }
                 String metaData = null;
                 for (File f2 : directory.listFiles()) {
                     if (f2.getName().startsWith(fn) && f2.getName().endsWith(".xml")) {
