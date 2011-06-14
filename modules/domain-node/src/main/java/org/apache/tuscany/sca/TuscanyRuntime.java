@@ -187,7 +187,7 @@ public class TuscanyRuntime {
         
         List<String> installed = new ArrayList<String>();
         for (File f : directory.listFiles()) {
-            if (!f.getName().endsWith(".xml") && !f.getName().endsWith(".composite")) {
+            if (f.getName().endsWith(".jar") || f.getName().endsWith(".zip") || (f.isDirectory() && !f.getName().startsWith("."))) {
                 String fn = f.getName().lastIndexOf('.') == -1 ? f.getName() : f.getName().substring(0, f.getName().lastIndexOf('.'));
                 String metaData = null;
                 for (File f2 : directory.listFiles()) {
@@ -197,7 +197,7 @@ public class TuscanyRuntime {
                     }
                 }
                 
-                List<String> dependencyURIs = new ArrayList();
+                List<String> dependencyURIs = new ArrayList<String>();
                 String dependencyURIprop = domainProps.getProperty(fn + ".dependencies");
                 if (dependencyURIprop != null && dependencyURIprop.length() > 0) {
                     dependencyURIs = Arrays.asList(dependencyURIprop.split(","));
