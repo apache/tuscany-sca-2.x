@@ -31,13 +31,7 @@ public class HelloWorldService implements HelloWorld {
     
     public String getGreetings(String name) {
         Subject subject = requestContext.getSecuritySubject();
-        String response = "Hello " + name + " ";
-        
-        if (subject == null){
-            response += "null subject";
-        } else {
-            response += subject.getPrincipals().iterator().next().getName();
-        }
+        String response = "Hello " + name;       
         
         System.out.println("At service: " + response);
         return response;

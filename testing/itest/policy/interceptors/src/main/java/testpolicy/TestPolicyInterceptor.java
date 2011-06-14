@@ -77,7 +77,7 @@ public class TestPolicyInterceptor implements PhasedInterceptor {
 
     public Message invoke(Message msg) {
         System.out.println("In interceptor");
-        return msg;
+        return getNext().invoke(msg);
     }
 
     public Invoker getNext() {

@@ -40,7 +40,7 @@ public class HelloworldTestCase extends TestCase {
     }
     
     public void testCalculator() throws Exception {
-        assertEquals("Hello fred myname", helloWorld.getGreetings("fred"));
+        assertEquals("Hello fred", helloWorld.getGreetings("fred"));
     }    
     
     @Override
