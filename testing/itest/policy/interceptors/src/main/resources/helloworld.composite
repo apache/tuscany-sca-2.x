@@ -31,7 +31,8 @@
     </component>
     
     <component name="HelloWorldService">
-		<implementation.java class="helloworld.HelloWorldService"/>
+		<implementation.java class="helloworld.HelloWorldService" 
+		                     requires="tuscany:testIntent"/>
 	    <service name="HelloWorld" requires="tuscany:testIntent">  
 	        <binding.ws name="BindingWS"/>
 	    </service>		

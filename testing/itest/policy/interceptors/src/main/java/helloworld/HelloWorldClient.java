@@ -20,7 +20,9 @@
 package helloworld;
 
 import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Requires;
 
+@Requires("{http://tuscany.apache.org/xmlns/sca/1.1}testIntent")
 public class HelloWorldClient implements HelloWorld {
 
     @Reference
