@@ -96,13 +96,8 @@ public class MatchingTestCase {
     
     @Test
     public void testSomePoliciesOnOneSideButNoneOnTheOther() throws Exception {
-        try {
-            HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClientSomePoliciesOnOneSideButNoneOnTheOther");
-            helloWorld.getGreetings("petra");
-            fail("Exception expected");
-        } catch (Exception ex) {
-            assertTrue(ex.getMessage().indexOf("No match because there are policy sets at the endpoint but not at the endpoint reference") > -1);
-        }
+        HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClientSomePoliciesOnOneSideButNoneOnTheOther");
+        assertEquals("Hello petra",helloWorld.getGreetings("petra"));
     } 
     
     @Test

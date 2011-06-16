@@ -422,8 +422,13 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             return;
         } else {
             endpointReference.setTargetEndpoint(matchedEndpoint);
-            Binding binding = endpointReference.getTargetEndpoint().getBinding();
+            Binding binding = matchedEndpoint.getBinding();
             endpointReference.setBinding(binding);
+            // TUSCANY-3873 - if no policy on the reference add policy from the service
+            //                we don't care about intents at this stage
+            if (endpointReference.getPolicySets().isEmpty()){
+                endpointReference.getPolicySets().addAll(matchedEndpoint.getPolicySets());
+            }
             build(endpointReference);
             endpointReference.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
             endpointReference.setUnresolved(false);
@@ -509,8 +514,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             build(callbackEndpoint);
             
             // Only activate the callback endpoint if the bind is being done at runtime
-            // and hence everthing else is running. If we don't activate here then the
-            // endpoint will be activate at the same time as all the other endpoints
+            // and hence everything else is running. If we don't activate here then the
+            // endpoint will be activated at the same time as all the other endpoints
             if (runtime) {
                 // activate it
                 compositeActivator.activate(((RuntimeEndpointReferenceImpl)endpointReference).getCompositeContext(), 
@@ -548,6 +553,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      *   - FAIL if there are intents that are mutually exclusive between reference and service
      *   - PASS if there are no intents or policies present at reference and service
      *   - FAIL if there are unresolved intents (intents with no policy set) at the reference (service should have been checked previously)
+     *          the wrinkle here is that we need to adopt policy from the service if the reference doesn't define a binding
      *   - PASS if there are no policies at reference and service (now we know all intents are resolved)
      *   - FAIL if there are some policies on one side but not on the other
      *   - PASS if the QName of the policy sets on each side match
@@ -590,6 +596,24 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         // the policy sets that are specific to the service binding and 
         // any policy sets that are not binding specific    
         for (PolicySet policySet : endpointReference.getPolicySets()){
+            PolicyBuilder policyBuilder = null;
+            
+            if (policySet.getPolicies().size() > 0){
+                QName policyType = policySet.getPolicies().get(0).getName();
+                policyBuilder = builders.getPolicyBuilder(policyType);
+            }
+            
+            if ((policyBuilder == null) ||
+                (policyBuilder != null && policyBuilder.getSupportedBindings() == null) ||
+                (policyBuilder != null && policyBuilder.getSupportedBindings().contains(binding.getType()))){
+                referencePolicySets.add(policySet);
+            }
+        }
+        
+        // if there are no policy sets on the reference take the policy sets from the
+        // service binding we are matching against
+        if (referencePolicySets.isEmpty()) {
+            for (PolicySet policySet : endpoint.getPolicySets()){
                 PolicyBuilder policyBuilder = null;
                 
                 if (policySet.getPolicies().size() > 0){
@@ -602,6 +626,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                     (policyBuilder != null && policyBuilder.getSupportedBindings().contains(binding.getType()))){
                     referencePolicySets.add(policySet);
                 }
+            }   
         }
         
         // the "appliesTo" algorithm to remove any policy sets that 
