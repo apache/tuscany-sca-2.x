@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 public class TestPolicyProviderImplementation extends BasePolicyProvider<TestPolicy> {
 
     public TestPolicyProviderImplementation(RuntimeComponent component) {
-        super(TestPolicy.class, component);
+        super(TestPolicy.class, component.getImplementation());
     }
 
     /**
@@ -41,8 +41,11 @@ public class TestPolicyProviderImplementation extends BasePolicyProvider<TestPol
      */
     public PhasedInterceptor createInterceptor(Operation operation) {
         List<TestPolicy> policies = findPolicies();
-        return policies.isEmpty() ? null : new TestPolicyInterceptor(subject, getContext(), operation,
-                                                                     policies, Phase.IMPLEMENTATION_POLICY);
+        return policies.isEmpty() ? null : new TestPolicyInterceptor(subject, 
+                                                                     getContext(), 
+                                                                     operation,
+                                                                     policies, 
+                                                                     Phase.IMPLEMENTATION_POLICY);
     }
 
 }

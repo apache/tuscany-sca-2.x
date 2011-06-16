@@ -38,7 +38,7 @@ public class JaasAuthenticationImplementationPolicyProvider extends BasePolicyPr
     private Implementation implementation;
 
     public JaasAuthenticationImplementationPolicyProvider(RuntimeComponent component) {
-        super(JaasAuthenticationPolicy.class, component);
+        super(JaasAuthenticationPolicy.class, component.getImplementation());
         this.component = component;
         this.implementation = component.getImplementation();
     }
@@ -63,7 +63,7 @@ public class JaasAuthenticationImplementationPolicyProvider extends BasePolicyPr
         }
         */
         
-        List<PolicySet> policySets = component.getPolicySets();
+        List<PolicySet> policySets = implementation.getPolicySets();
         for (PolicySet ps : policySets) {
             for (Object p : ps.getPolicies()) {
                 if (JaasAuthenticationPolicy.class.isInstance(p)) {

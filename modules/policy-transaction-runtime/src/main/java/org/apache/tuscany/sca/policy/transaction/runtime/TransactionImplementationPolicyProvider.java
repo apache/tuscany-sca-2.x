@@ -35,7 +35,7 @@ public class TransactionImplementationPolicyProvider extends BasePolicyProvider<
     private TransactionManagerHelper helper;
 
     public TransactionImplementationPolicyProvider(TransactionManagerHelper helper, RuntimeComponent component) {
-        super(TransactionPolicy.class, component);
+        super(TransactionPolicy.class, component.getImplementation());
         this.helper = helper;
     }
 

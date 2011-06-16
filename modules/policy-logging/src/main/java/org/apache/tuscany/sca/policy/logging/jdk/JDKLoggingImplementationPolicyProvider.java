@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 public class JDKLoggingImplementationPolicyProvider extends BasePolicyProvider<JDKLoggingPolicy> {
 
     public JDKLoggingImplementationPolicyProvider(RuntimeComponent component) {
-        super(JDKLoggingPolicy.class, component);
+        super(JDKLoggingPolicy.class, component.getImplementation());
     }
 
     /**

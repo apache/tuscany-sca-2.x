@@ -36,7 +36,7 @@ public class SecurityIdentityImplementationPolicyProvider extends BasePolicyProv
     private Implementation implementation;
 
     public SecurityIdentityImplementationPolicyProvider(RuntimeComponent component) {
-        super(SecurityIdentityPolicy.class, component);
+        super(SecurityIdentityPolicy.class, component.getImplementation());
         this.component = component;
         this.implementation = component.getImplementation();
     }
@@ -61,7 +61,7 @@ public class SecurityIdentityImplementationPolicyProvider extends BasePolicyProv
         }
         */
         
-        List<PolicySet> policySets = component.getPolicySets();
+        List<PolicySet> policySets = implementation.getPolicySets();
         for (PolicySet ps : policySets) {
             for (Object p : ps.getPolicies()) {
                 if (SecurityIdentityPolicy.class.isInstance(p)) {

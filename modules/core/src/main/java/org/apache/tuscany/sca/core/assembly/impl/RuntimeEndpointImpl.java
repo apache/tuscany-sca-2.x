@@ -785,8 +785,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             }
             chain.addInvoker(invoker);
         }
-        // TODO - EPR - don't we need to get the policy from the right level in the 
-        //              model rather than the leafmost level
+
         List<PolicyProvider> pps = ((RuntimeComponent)component).getPolicyProviders();
         if (pps != null) {
             for (PolicyProvider p : pps) {

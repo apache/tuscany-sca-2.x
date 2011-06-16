@@ -70,10 +70,15 @@ abstract class BaseJavaImplementationImpl extends ImplementationImpl implements 
         return getType() + " (class=" + getName() + ")";
     }
 
+/* TUSCANY-3876 - disable implementation model sharing so that 
+ *                we can get implementation policy modelled on an
+ *                impementation by implementation basis rather than 
+ *                storing it on the component
     @Override
     public int hashCode() {
         return String.valueOf(getName()).hashCode();
     }
+*/    
 
     @Override
     public boolean equals(Object obj) {

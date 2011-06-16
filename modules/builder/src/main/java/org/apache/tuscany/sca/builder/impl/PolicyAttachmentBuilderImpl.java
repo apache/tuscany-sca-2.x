@@ -181,7 +181,7 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
 		        }
 		        
 		      
-		        // The node can be a component, service, reference or binding
+		        // The node can be a component, implementation, service, reference or binding
 		        String index = getStructuralURI(node);
 		        PolicySubject subject = lookup(composite, index);
 		        if (subject != null) {
