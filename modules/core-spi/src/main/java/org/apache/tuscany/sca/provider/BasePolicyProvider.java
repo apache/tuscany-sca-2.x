@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyContainer;
 import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -52,9 +53,29 @@ public abstract class BasePolicyProvider<T> implements PolicyProvider {
         this.subject = subject;
     }
 
+    protected List<T> findPoliciesWithProvidedIntents(List<Intent> intents) {
+    	List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
+    	List<PolicySet> policySets = subject.getPolicySets();
+    	for ( PolicySet ps : policySets ) {
+    		List<Intent> provided = ps.getProvidedIntents();
+    		for ( Intent intent : intents ) {    		
+    			if ( provided.contains(intent) ) {
+    				applicablePolicySets.add(ps);
+    				continue;
+    			}
+    			
+    		}
+    	}
+    	return findPolicies(applicablePolicySets);
+    }
+    
     protected List<T> findPolicies() {
+    	return findPolicies(subject.getPolicySets());
+    }
+    
+    private List<T> findPolicies(List<PolicySet> policySets) {
         List<T> policies = new ArrayList<T>();
-        List<PolicySet> policySets = subject.getPolicySets();
+       
         for (PolicySet ps : policySets) {
             for (Object p : ps.getPolicies()) {
                 if (policyType.isInstance(p)) {

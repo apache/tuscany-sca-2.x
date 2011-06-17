@@ -40,7 +40,8 @@ public class TransactionImplementationPolicyProvider extends BasePolicyProvider<
     }
 
     public PhasedInterceptor createInterceptor(Operation operation) {
-        List<TransactionPolicy> policies = findPolicies();
+    	// Only create an interceptor for the policy that matches the required intent. 
+        List<TransactionPolicy> policies = findPoliciesWithProvidedIntents(subject.getRequiredIntents());       
         return policies.isEmpty() ? null : new TransactionInterceptor(helper, false, null, policies.get(0), getPhase());
     }
 
