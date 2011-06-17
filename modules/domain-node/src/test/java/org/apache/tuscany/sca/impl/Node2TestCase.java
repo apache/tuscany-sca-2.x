@@ -286,4 +286,27 @@ public class Node2TestCase {
 //        node.stopComposite("sample-helloworld", "helloworld.composite");
     }
 
+    @Test
+    public void stopAndUnistallTest() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, XMLStreamException {
+        Node node = TuscanyRuntime.newInstance().createNode("stopAndUnistallTest");
+        node.installContribution("src/test/resources/import.jar");
+        node.installContribution("src/test/resources/export.jar");
+        String compositeXML =
+            "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\""
+                + "     xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.1\""
+                + "     targetNamespace=\"http://test/composite\""
+                + "     name=\"TestComposite\">"
+                + "   <component name=\"TestComponent\">"
+                + "      <implementation.java class=\"sample.HelloworldImpl\"/>"
+                + "   </component>"
+                + "</composite>";
+        String compositeURI = node.addDeploymentComposite("export", new StringReader(compositeXML));
+        node.startComposite("import", "helloworld.composite");
+        node.startComposite("export", compositeURI);
+        Assert.assertEquals(2, node.getInstalledContributionURIs().size());
+        node.stopCompositeAndUninstallUnused("import", "helloworld.composite");
+        Assert.assertEquals(1, node.getInstalledContributionURIs().size());
+        node.stopCompositeAndUninstallUnused("export", compositeURI);
+        Assert.assertEquals(0, node.getInstalledContributionURIs().size());
+    }
 }
