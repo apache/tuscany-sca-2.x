@@ -265,8 +265,6 @@ public class NodeImpl implements Node {
         }
     }
 
-    
-    
     public void stopComposite(String contributionURI, String compositeURI) throws ActivationException {
         String key = contributionURI+"/"+compositeURI;
         DeployedComposite dc = startedComposites.remove(key);
@@ -283,6 +281,24 @@ public class NodeImpl implements Node {
             if (!"Stopped.".equals(response)) {
                 throw new ActivationException(response);
             }
+        }
+    }
+
+    public void stopCompositeAndUninstallUnused(String contributionURI, String compositeURI) throws ActivationException {
+        String key = contributionURI+"/"+compositeURI;
+        DeployedComposite dc = startedComposites.remove(key);
+        if (dc == null) {
+            throw new IllegalArgumentException("No startd composite found: " + key);
+        }
+        dc.stop();
+
+        loop: for (String curi : dc.getContributionURIs()) {
+            for (DeployedComposite started : startedComposites.values()) {
+                if (started.getContributionURIs().contains(curi)) {
+                    continue loop;
+                }
+            }
+            uninstallContribution(curi);
         }
     }
 

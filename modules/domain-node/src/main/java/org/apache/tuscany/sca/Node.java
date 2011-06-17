@@ -156,6 +156,8 @@ public interface Node {
     void startComposite(String contributionURI, String compositeURI) throws ActivationException, ValidationException, ContributionReadException;
     void startComposite(String contributionURI, String compositeURI, String nodeName) throws ActivationException;
 
+    void stopCompositeAndUninstallUnused(String contributionURI, String compositeURI) throws ActivationException;
+
     /**
      * 4687 10.7.2 remove From Domain-Level Composite
      * 4688 Removes from the Domain Level composite the elements corresponding to the composite identified by a
