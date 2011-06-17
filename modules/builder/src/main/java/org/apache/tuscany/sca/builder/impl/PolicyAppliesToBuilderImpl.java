@@ -101,23 +101,23 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
     	for (Component component : topComposite.getComponents()) {
 
     		for (ComponentService componentService : component.getServices()) {
-    			for (Endpoint ep : componentService.getEndpoints()) {
-    			    List<PolicySet> policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getService(), ep.getService().getPolicySets());
+    			List<PolicySet> policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, componentService, componentService.getPolicySets());
+    			for (Endpoint ep : componentService.getEndpoints()) {    			    
     			    ep.getPolicySets().removeAll(policySetsToRemove);
     				if (ep.getBinding() instanceof PolicySubject) {
-    				    policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getBinding(), ((PolicySubject)ep.getBinding()).getPolicySets());
-    				    ep.getPolicySets().removeAll(policySetsToRemove);
+    				    List<PolicySet> bindingPolicySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getBinding(), ((PolicySubject)ep.getBinding()).getPolicySets());
+    				    ep.getPolicySets().removeAll(bindingPolicySetsToRemove);
     				}
     			}
     		}
 
     		for (ComponentReference componentReference : component.getReferences()) {
-    			for (EndpointReference epr : componentReference.getEndpointReferences()) {
-    			    List<PolicySet> policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getReference(), epr.getReference().getPolicySets());
+    			List<PolicySet> policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, componentReference, componentReference.getPolicySets());
+    			for (EndpointReference epr : componentReference.getEndpointReferences()) {    			    
     			    epr.getPolicySets().removeAll(policySetsToRemove);
     				if (epr.getBinding() instanceof PolicySubject) {
-    				    policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getBinding(), ((PolicySubject)epr.getBinding()).getPolicySets());
-    				    epr.getPolicySets().removeAll(policySetsToRemove);
+    				    List<PolicySet> bindingPolicySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getBinding(), ((PolicySubject)epr.getBinding()).getPolicySets());
+    				    epr.getPolicySets().removeAll(bindingPolicySetsToRemove);
     				} 
     			}
     		}
