@@ -52,6 +52,7 @@ public class DeployedComposite {
     private Deployer deployer;
     private DomainRegistry domainRegistry;
     private ExtensionPointRegistry extensionPointRegistry;
+    private List<String> usedContributionURIs;
 
     public DeployedComposite(Composite composite,
                              Contribution contribution,
@@ -104,6 +105,11 @@ public class DeployedComposite {
                                                 null, // nothing appears to use the domain name in CompositeContext 
                                                 null, // don't need node uri
                                                 deployer.getSystemDefinitions());
+        usedContributionURIs = new ArrayList<String>();
+        usedContributionURIs.add(contribution.getURI());
+        for (Contribution dc : dependedOnContributions) {
+            usedContributionURIs.add(dc.getURI());
+        }
     }
 
     public void start() throws ActivationException {
@@ -128,5 +134,9 @@ public class DeployedComposite {
     
     public String getURI() {
         return composite.getURI();
+    }
+    
+    public List<String> getContributionURIs() {
+        return usedContributionURIs;
     }
 }
