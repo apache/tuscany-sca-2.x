@@ -38,19 +38,19 @@
         <tuscany:transactionPolicy action="REQUIRE_NONE" />
     </policySet>
     
-    <policySet name="TransactedOneWayPolicySet" provides="transactedOneWay" appliesTo="//*[starts-with(name(.),'binding')]" attachTo="IntentRefs('sca:transactedOneWay')">
+    <policySet name="TransactedOneWayPolicySet" provides="transactedOneWay" appliesTo="//*[starts-with(name(.),'binding')] | //*[name(.) = 'reference'] | //*[name(.) = 'service']" attachTo="IntentRefs('sca:transactedOneWay')">
         <tuscany:transactionPolicy action="PROPAGATE" />
     </policySet>    
     
-    <policySet name="ImmediateOneWayPolicySet" provides="immediateOneWay" appliesTo="//*[starts-with(name(.),'binding')]" attachTo="IntentRefs('sca:immediateOneWay')">
+    <policySet name="ImmediateOneWayPolicySet" provides="immediateOneWay" appliesTo="//*[starts-with(name(.),'binding')] | //*[name(.) = 'reference'] | //*[name(.) = 'service']" attachTo="IntentRefs('sca:immediateOneWay')">
         <tuscany:transactionPolicy action="SUSPEND" />
     </policySet>    
 
-    <policySet name="PropagatesTransactionPolicySet" provides="propagatesTransaction" attachTo="IntentRefs('sca:propagatesTransaction')" appliesTo="//*[starts-with(name(.),'binding')]">
+    <policySet name="PropagatesTransactionPolicySet" provides="propagatesTransaction" attachTo="IntentRefs('sca:propagatesTransaction')" appliesTo="//*[starts-with(name(.),'binding')] | //*[name(.) = 'reference'] | //*[name(.) = 'service']">
         <tuscany:transactionPolicy action="PROPAGATE" />
     </policySet>
 
-    <policySet name="SuspendsTransactionPolicySet" provides="suspendsTransaction" appliesTo="//*[starts-with(name(.),'binding')]" attachTo="IntentRefs('sca:suspendsTransaction')">
+    <policySet name="SuspendsTransactionPolicySet" provides="suspendsTransaction" appliesTo="//*[starts-with(name(.),'binding')] | //*[name(.) = 'reference'] | //*[name(.) = 'service']" attachTo="IntentRefs('sca:suspendsTransaction')">
         <tuscany:transactionPolicy action="SUSPEND" />
     </policySet>  
 
