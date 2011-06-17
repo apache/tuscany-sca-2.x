@@ -24,6 +24,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -132,6 +133,15 @@ public class NodeImpl implements Node {
     
     public void uninstallContribution(String contributionURI) {
         domainRegistry.uninstallContribution(contributionURI);
+        
+        // remove any stopped composite that used the contribution
+        Iterator<String> i = stoppedComposites.keySet().iterator();
+        while (i.hasNext()) {
+            DeployedComposite dc = stoppedComposites.get(i.next());
+            if (dc.getContributionURIs().contains(contributionURI)) {
+                i.remove();
+            }
+        }
     }
     
     protected void mergeContributionMetaData(String metaDataURL, Contribution contribution) throws ValidationException {
