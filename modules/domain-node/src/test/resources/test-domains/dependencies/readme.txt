@@ -7,7 +7,7 @@ and "Hello 2" in export2.jar.
 Contributions import1.jar and import2.jar both import the package sample and use the 
 sample.HelloworldImpl class in the component implementation.
 
-The domain.propertes includes properties to explicitly set the dependency URIs used by 
+The *.dependencies files explicitly set the dependency URIs used by 
 Contributions import1.jar and import2.jar, without the explicit property the imports would just t
 use the first contribution found that exports the sample package.
 

@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -212,9 +213,16 @@ public class TuscanyRuntime {
                 }
                 
                 List<String> dependencyURIs = new ArrayList<String>();
-                String dependencyURIprop = domainProps.getProperty("dependencies." + fn);
-                if (dependencyURIprop != null && dependencyURIprop.length() > 0) {
-                    dependencyURIs = Arrays.asList(dependencyURIprop.split(","));
+                File dependencyFile = new File(directory, fn + ".dependencies");
+                if (dependencyFile.exists()) {
+                    BufferedReader br = new BufferedReader(new FileReader(dependencyFile));
+                    String s;
+                    while ((s = br.readLine()) != null)   {
+                        if (!s.startsWith("#") && s.trim().length() > 0) {
+                            dependencyURIs.addAll(Arrays.asList(s.trim().split("[ ,]+")));
+                        }
+                    }
+                    br.close();
                 }
 
                 String curi = node.installContribution(null, f.getPath(), metaData, dependencyURIs);
