@@ -115,6 +115,7 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
                 }
             }
 
+            composite.getFusedIncludes().addAll(composite.getIncludes());
             composite.getIncludes().clear();
 
             // return the fused composite we have built up so far
