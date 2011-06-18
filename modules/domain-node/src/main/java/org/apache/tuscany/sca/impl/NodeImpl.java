@@ -442,4 +442,20 @@ public class NodeImpl implements Node {
         return domainRegistry.getRunningNodeName(contributionURI, compositeURI);
     }
 
+    public List<String> updateUsingComposites(String contributionURI, String compositeURI) throws ActivationException, ContributionReadException, ValidationException {
+        List<String> updated = new ArrayList<String>();
+        for (DeployedComposite dc : new ArrayList<DeployedComposite>(startedComposites.values())) {
+            if (dc.uses(contributionURI, compositeURI)) {
+                String dcConttributionURI = dc.getContributionURIs().get(0);
+                String dcCompositeURI = dc.getURI();
+                stopComposite(dcConttributionURI, dcCompositeURI);
+                String key = dcConttributionURI + "/" + dcCompositeURI;
+                stoppedComposites.remove(key);
+                updated.add(key);
+                startComposite(dcConttributionURI, dcCompositeURI);
+            }
+        }
+        return updated;
+    }
+
 }

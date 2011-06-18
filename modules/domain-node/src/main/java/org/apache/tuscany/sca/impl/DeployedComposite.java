@@ -27,8 +27,10 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.impl.CompositeImpl;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -138,5 +140,29 @@ public class DeployedComposite {
     
     public List<String> getContributionURIs() {
         return usedContributionURIs;
+    }
+
+    public boolean uses(String contributionURI, String compositeURI) {
+        // TODO: builtComposite or composite? 
+        return compositeUses(builtComposite, contributionURI, compositeURI);
+    }
+    
+    protected boolean compositeUses(Composite c, String contributionURI, String compositeURI) {
+        if (contributionURI.equals(c.getContributionURI()) && compositeURI.equals(c.getURI())) {
+            return true;
+        }
+        for (Composite include : ((CompositeImpl)c).getFusedIncludes()) {
+            if (compositeUses(include, contributionURI, compositeURI)) {
+                return true;
+            }
+        }
+        for (Component comp : c.getComponents()) {
+            if (comp.getImplementation() instanceof Composite) {
+                if (compositeUses((Composite)comp.getImplementation(), contributionURI, compositeURI)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
