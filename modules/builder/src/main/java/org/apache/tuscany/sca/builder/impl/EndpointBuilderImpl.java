@@ -113,6 +113,7 @@ public class EndpointBuilderImpl implements CompositeBuilder {
                         // uri is calculated correctly
                         // Callback endpoints may not be added here in the case that the
                         // forward reference is not yet resolved. 
+                        service.getEndpoints().clear();
                         for (Binding binding : service.getBindings()) {
                             Endpoint endpoint = assemblyFactory.createEndpoint();
                             endpoint.setComponent(component);
