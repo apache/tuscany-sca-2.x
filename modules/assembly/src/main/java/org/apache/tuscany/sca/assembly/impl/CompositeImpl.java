@@ -43,6 +43,7 @@ public class CompositeImpl extends ImplementationImpl implements Composite, Clon
     private String contributionURI;
     private List<Component> components = new ArrayList<Component>();
     private List<Composite> includes = new ArrayList<Composite>();
+    private List<Composite> fusedIncludes = new ArrayList<Composite>();
     private QName name;
     private List<Wire> wires = new ArrayList<Wire>();
     private Boolean autowire;
@@ -125,6 +126,9 @@ public class CompositeImpl extends ImplementationImpl implements Composite, Clon
 
     public List<Composite> getIncludes() {
         return includes;
+    }
+    public List<Composite> getFusedIncludes() {
+        return fusedIncludes;
     }
 
     public QName getName() {

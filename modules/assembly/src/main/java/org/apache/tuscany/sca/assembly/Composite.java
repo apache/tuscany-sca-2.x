@@ -74,6 +74,8 @@ public interface Composite extends Implementation, Extensible, Cloneable, Policy
      */
     List<Composite> getIncludes();
 
+    public List<Composite> getFusedIncludes();
+
     /**
      * Returns a list of components contained in this composite.
      *
