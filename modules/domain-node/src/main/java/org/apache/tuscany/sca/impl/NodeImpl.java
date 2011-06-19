@@ -103,6 +103,26 @@ public class NodeImpl implements Node {
         return installContribution(uri, contributionURL, null, null);
     }
 
+    public boolean updateContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ValidationException {
+        ContributionDescription ic = getInstalledContribution(uri);
+        if (ic == null) {
+            installContribution(uri, contributionURL, metaDataURL, dependentContributionURIs);
+            return true;
+        }
+
+        // if url equal and a file and last modified not changed
+            // if metadata url equal and a file and laqst modified not changed
+                 // if (dependent contributions uris not changed)
+                     // return false
+
+        // uninstall contribution
+        // install contribution
+        // stop/start all started composites using the contribution
+        // remove all stopped composites using the contribution
+        
+        return true;
+    }
+    
     public String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ValidationException {
         ContributionDescription cd = new ContributionDescription(uri, IOHelper.getLocationAsURL(contributionURL).toString());
 
