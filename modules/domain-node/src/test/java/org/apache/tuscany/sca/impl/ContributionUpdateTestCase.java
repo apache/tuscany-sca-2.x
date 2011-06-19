@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.impl;
 
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.Collection;
 
 import javax.xml.stream.XMLStreamException;
@@ -52,4 +53,23 @@ public class ContributionUpdateTestCase {
         Assert.assertEquals(1, eps.size());
         Assert.assertEquals("Helloworld2Component#service-binding(Helloworld/Helloworld)", eps.iterator().next().getURI());
     }
+
+    @Test
+    public void updateWithAdditionalDeployablesTest() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, XMLStreamException, FileNotFoundException {
+        Node node = TuscanyRuntime.newInstance().createNode("updateWithAdditionalDeployablesTest");
+        String curi = node.installContribution("src/test/resources/sample-helloworld.jar");
+        String compURI = node.addDeploymentComposite(curi, new FileReader("src/test/resources/helloworld2.composite"));
+        node.startComposite(curi, compURI);
+        
+        Collection<Endpoint> eps = ((NodeImpl)node).getEndpointRegistry().getEndpoints();
+        Assert.assertEquals(1, eps.size());
+        Assert.assertEquals("Helloworld2Component#service-binding(Helloworld/Helloworld)", eps.iterator().next().getURI());
+        
+        ((NodeImpl)node).updateContribution(curi, "src/test/resources/sample-helloworld.jar", null, null);
+        
+        eps = ((NodeImpl)node).getEndpointRegistry().getEndpoints();
+        Assert.assertEquals(1, eps.size());
+        Assert.assertEquals("Helloworld2Component#service-binding(Helloworld/Helloworld)", eps.iterator().next().getURI());
+    }
+
 }

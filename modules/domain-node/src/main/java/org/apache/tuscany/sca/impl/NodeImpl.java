@@ -119,15 +119,23 @@ public class NodeImpl implements Node {
         uninstallContribution(uri);
 
         installContribution(uri, contributionURL, metaDataURL, dependentContributionURIs);
+        
+        // merge in additional deployables
+        if (ic.getAdditionalDeployables().size() > 0) {
+            ContributionDescription newIC = getInstalledContribution(uri);
+            newIC.getAdditionalDeployables().putAll(ic.getAdditionalDeployables());
+            domainRegistry.updateInstalledContribution(newIC);
+        }
 
         // stop/start all started composites using the contribution
         for (DeployedComposite dc : new ArrayList<DeployedComposite>(startedComposites.values())) {
             if (dc.getContributionURIs().contains(uri)) {
+                String dcContributionURI = dc.getContributionURIs().get(0);
                 String dcCompositeURI = dc.getURI();
-                stopComposite(uri, dcCompositeURI);
-                String key = uri + "/" + dcCompositeURI;
+                stopComposite(dcContributionURI, dcCompositeURI);
+                String key = dcContributionURI + "/" + dcCompositeURI;
                 stoppedComposites.remove(key);
-                startComposite(uri, dcCompositeURI);
+                startComposite(dcContributionURI, dcCompositeURI);
             }
         }
 
