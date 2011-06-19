@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.TuscanyRuntime;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
+import org.junit.Assert;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -36,7 +37,7 @@ import org.oasisopen.sca.NoSuchServiceException;
 public class UsedCompositesTestCase {
 
     @Test
-    public void UsedTest1() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, XMLStreamException, FileNotFoundException {
+    public void includeTest1() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, XMLStreamException, FileNotFoundException {
         Node node = TuscanyRuntime.newInstance().createNode("localTest");
         String curi = node.installContribution("src/test/resources/sample-helloworld.jar");
         String compositeURI = node.addDeploymentComposite(curi, new FileReader("src/test/resources/include.composite"));
@@ -44,11 +45,11 @@ public class UsedCompositesTestCase {
         node.startComposite(curi, compositeURI);
         
         List<String> xs = ((NodeImpl)node).updateUsingComposites(curi, "helloworld.composite");
-        System.out.println(xs);
-//        Assert.assertEquals(",mn,mn", s.doit("xyz"));
+        Assert.assertEquals(1, xs.size());
+        Assert.assertEquals("sample-helloworld/include.composite", xs.get(0));
     }
     @Test
-    public void UsedTest2() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, XMLStreamException, FileNotFoundException {
+    public void implCompositeTest() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, XMLStreamException, FileNotFoundException {
         Node node = TuscanyRuntime.newInstance().createNode("localTest");
         String curi = node.installContribution("src/test/resources/sample-helloworld.jar");
         String compositeURI = node.addDeploymentComposite(curi, new FileReader("src/test/resources/compositeImpl.composite"));
@@ -56,7 +57,23 @@ public class UsedCompositesTestCase {
         node.startComposite(curi, compositeURI);
         
         List<String> xs = ((NodeImpl)node).updateUsingComposites(curi, "helloworld.composite");
-        System.out.println(xs);
-//        Assert.assertEquals(",mn,mn", s.doit("xyz"));
+        Assert.assertEquals(1, xs.size());
+        Assert.assertEquals("sample-helloworld/compositeImpl.composite", xs.get(0));
+    }
+
+    @Test
+    public void nestedTest1() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, XMLStreamException, FileNotFoundException {
+        Node node = TuscanyRuntime.newInstance().createNode("NestedTest");
+        String curi = node.installContribution("src/test/resources/helloworld2.jar");
+
+        node.startComposite(curi, "compositeImpl.composite");
+
+        String compositeURI = node.addDeploymentComposite(curi, new FileReader("src/test/resources/nested.composite"));
+        node.startComposite(curi, compositeURI);
+        
+        List<String> xs = ((NodeImpl)node).updateUsingComposites(curi, "helloworld.composite");
+        Assert.assertEquals(2, xs.size());
+        Assert.assertTrue(xs.contains("helloworld2/compositeImpl.composite"));
+        Assert.assertTrue(xs.contains("helloworld2/nested.composite"));
     }
 }
