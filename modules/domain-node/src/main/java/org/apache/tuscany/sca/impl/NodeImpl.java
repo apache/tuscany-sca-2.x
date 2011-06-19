@@ -103,22 +103,40 @@ public class NodeImpl implements Node {
         return installContribution(uri, contributionURL, null, null);
     }
 
-    public boolean updateContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ValidationException {
+    public boolean updateContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ValidationException, ActivationException {
         ContributionDescription ic = getInstalledContribution(uri);
         if (ic == null) {
             installContribution(uri, contributionURL, metaDataURL, dependentContributionURIs);
             return true;
         }
 
+        // do this if only updating if the contribution has been modified:
         // if url equal and a file and last modified not changed
             // if metadata url equal and a file and laqst modified not changed
                  // if (dependent contributions uris not changed)
                      // return false
 
-        // uninstall contribution
-        // install contribution
+        uninstallContribution(uri);
+
+        installContribution(uri, contributionURL, metaDataURL, dependentContributionURIs);
+
         // stop/start all started composites using the contribution
+        for (DeployedComposite dc : new ArrayList<DeployedComposite>(startedComposites.values())) {
+            if (dc.getContributionURIs().contains(uri)) {
+                String dcCompositeURI = dc.getURI();
+                stopComposite(uri, dcCompositeURI);
+                String key = uri + "/" + dcCompositeURI;
+                stoppedComposites.remove(key);
+                startComposite(uri, dcCompositeURI);
+            }
+        }
+
         // remove all stopped composites using the contribution
+        for (DeployedComposite dc : new ArrayList<DeployedComposite>(stoppedComposites.values())) {
+            if (dc.getContributionURIs().contains(uri)) {
+                stoppedComposites.remove(uri + "/" + dc.getURI());
+            }
+        }
         
         return true;
     }
