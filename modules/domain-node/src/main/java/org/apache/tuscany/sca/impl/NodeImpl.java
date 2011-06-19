@@ -446,16 +446,15 @@ public class NodeImpl implements Node {
         List<String> updated = new ArrayList<String>();
         for (DeployedComposite dc : new ArrayList<DeployedComposite>(startedComposites.values())) {
             if (dc.uses(contributionURI, compositeURI)) {
-                String dcConttributionURI = dc.getContributionURIs().get(0);
+                String dcContributionURI = dc.getContributionURIs().get(0);
                 String dcCompositeURI = dc.getURI();
-                stopComposite(dcConttributionURI, dcCompositeURI);
-                String key = dcConttributionURI + "/" + dcCompositeURI;
+                stopComposite(dcContributionURI, dcCompositeURI);
+                String key = dcContributionURI + "/" + dcCompositeURI;
                 stoppedComposites.remove(key);
                 updated.add(key);
-                startComposite(dcConttributionURI, dcCompositeURI);
+                startComposite(dcContributionURI, dcCompositeURI);
             }
         }
         return updated;
     }
-
 }
