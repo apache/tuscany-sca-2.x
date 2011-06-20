@@ -104,7 +104,7 @@ public class NodeImpl implements Node {
     }
 
     public boolean updateContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ValidationException, ActivationException {
-        ContributionDescription ic = getInstalledContribution(uri);
+        ContributionDescription ic = domainRegistry.getInstalledContribution(uri);
         if (ic == null) {
             installContribution(uri, contributionURL, metaDataURL, dependentContributionURIs);
             return true;
@@ -502,5 +502,30 @@ public class NodeImpl implements Node {
             }
         }
         return updated;
+    }
+
+    public void uninstallContribution(String contributionURI, boolean b) throws ActivationException {
+        uninstallContribution(contributionURI);
+        if (!b) {
+            return;
+        }
+
+        // stop all started composites using the contribution
+        for (DeployedComposite dc : new ArrayList<DeployedComposite>(startedComposites.values())) {
+            if (dc.getContributionURIs().contains(contributionURI)) {
+                String dcContributionURI = dc.getContributionURIs().get(0);
+                String dcCompositeURI = dc.getURI();
+                stopComposite(dcContributionURI, dcCompositeURI);
+                String key = dcContributionURI + "/" + dcCompositeURI;
+                stoppedComposites.remove(key);
+            }
+        }
+
+        // remove all stopped composites using the contribution
+        for (DeployedComposite dc : new ArrayList<DeployedComposite>(stoppedComposites.values())) {
+            if (dc.getContributionURIs().contains(contributionURI)) {
+                stoppedComposites.remove(contributionURI + "/" + dc.getURI());
+            }
+        }
     }
 }
