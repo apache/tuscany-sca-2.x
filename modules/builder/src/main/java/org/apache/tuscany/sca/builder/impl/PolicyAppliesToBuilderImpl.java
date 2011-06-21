@@ -27,6 +27,7 @@ import java.util.Map;
 
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -101,86 +102,110 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
     	for (Component component : topComposite.getComponents()) {
 
     		for (ComponentService componentService : component.getServices()) {
-    			List<PolicySet> policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, componentService, componentService.getPolicySets());
-    			for (Endpoint ep : componentService.getEndpoints()) {    			    
-    			    ep.getPolicySets().removeAll(policySetsToRemove);
-    				if (ep.getBinding() instanceof PolicySubject) {
-    				    List<PolicySet> bindingPolicySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getBinding(), ((PolicySubject)ep.getBinding()).getPolicySets());
-    				    ep.getPolicySets().removeAll(bindingPolicySetsToRemove);
+    	
+    			for (Endpoint ep : componentService.getEndpoints()) {  
+    				for ( PolicySet ps : new ArrayList<PolicySet>(ep.getPolicySets()) ) {
+    					// Check if this PolicySet applies to the binding, component service, interface, component, or composite. If not,
+    					// remove it from the list of policy sets for this endpoint. 
+    					if ( ep.getBinding() instanceof PolicySubject ) {
+    						if (isApplicableToSubject(document, appliesToSubjects, topComposite, (PolicySubject)ep.getBinding(), ps))
+    							continue;
+    					}
+    					
+    					if (isApplicableToSubject(document, appliesToSubjects, topComposite, componentService, ps))
+    						continue;
+    					else if ( (componentService.getInterfaceContract() != null ) && (isApplicableToSubject(document, appliesToSubjects, topComposite, componentService.getInterfaceContract().getInterface(), ps)))
+    						continue;
+    					else if ( isApplicableToSubject(document, appliesToSubjects, topComposite, component, ps))
+    						continue;
+    					else if ( isApplicableToSubject(document, appliesToSubjects, topComposite, topComposite, ps))
+    						continue;
+    					else
+    						ep.getPolicySets().remove(ps);
     				}
     			}
     		}
 
-    		for (ComponentReference componentReference : component.getReferences()) {
-    			List<PolicySet> policySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, componentReference, componentReference.getPolicySets());
-    			for (EndpointReference epr : componentReference.getEndpointReferences()) {    			    
-    			    epr.getPolicySets().removeAll(policySetsToRemove);
-    				if (epr.getBinding() instanceof PolicySubject) {
-    				    List<PolicySet> bindingPolicySetsToRemove = checkAppliesToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getBinding(), ((PolicySubject)epr.getBinding()).getPolicySets());
-    				    epr.getPolicySets().removeAll(bindingPolicySetsToRemove);
-    				} 
+    		for (ComponentReference componentReference : component.getReferences()) {    			
+    			for (EndpointReference epr : componentReference.getEndpointReferences()) {   
+    				for (PolicySet ps : new ArrayList<PolicySet>(epr.getPolicySets()) ) {
+    				// Check if this PolicySet applies to the binding, component reference, component, or composite. If not,
+					// remove it from the list of policy sets for this endpoint. 
+    					if ( epr.getBinding() instanceof PolicySubject ) {
+    						if (isApplicableToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getBinding(), ps))
+    							continue;
+    					}
+    					if (isApplicableToSubject(document, appliesToSubjects, topComposite, componentReference, ps))
+    						continue;
+    					else if ( (componentReference.getInterfaceContract() != null) && (isApplicableToSubject(document, appliesToSubjects, topComposite, componentReference.getInterfaceContract().getInterface(), ps)))
+    						continue;
+    					else if ( isApplicableToSubject(document, appliesToSubjects, topComposite, component, ps))
+    						continue;
+    					else if ( isApplicableToSubject(document, appliesToSubjects, topComposite, topComposite, ps))
+    						continue;
+    					else
+    						epr.getPolicySets().remove(ps);    			
+    				}
     			}
     		}
 
     		Implementation implementation = component.getImplementation();
     		if (implementation != null && 
     				implementation instanceof PolicySubject) {
-    			checkAppliesToSubject(document, appliesToSubjects, topComposite, implementation, implementation.getPolicySets());
+    			for ( PolicySet ps : new ArrayList<PolicySet>(implementation.getPolicySets())) {    		
+    				if (!isApplicableToSubject(document, appliesToSubjects, topComposite, implementation, ps))
+    					implementation.getPolicySets().remove(ps);
+    			}
     		}
+    		
     	}
-
-        return topComposite;
+    	return topComposite;
     }
     
 
 	/**
-     * Checks that all the provided policy sets apply to the provided policy subject
+     * Checks that the provided policy sets applies to the provided policy subject
      * 
      * @param document
      * @param appliesToSubjects
      * @param policySubject
-     * @param policySets
+     * @param policySet
      * @return
-     * @throws Exception
+	 * @throws XPathExpressionException    
      */
-    private List<PolicySet> checkAppliesToSubject(Document document, Map<PolicySet, List<PolicySubject>> appliesToSubjects, Composite composite, PolicySubject policySubject, List<PolicySet> policySets) throws Exception {
-        List<PolicySet> policySetsToRemove = new ArrayList<PolicySet>();
-        
-        for (PolicySet policySet : policySets){
-            List<PolicySubject> subjects = appliesToSubjects.get(policySet);
+    private boolean isApplicableToSubject(Document document, Map<PolicySet, List<PolicySubject>> appliesToSubjects, Composite composite, PolicySubject policySubject, PolicySet policySet) throws XPathExpressionException {
+                  
+        List<PolicySubject> subjects = appliesToSubjects.get(policySet);
             
-            if (subjects == null){
-                XPathExpression appliesTo = policySet.getAppliesToXPathExpression();
-                if (appliesTo != null) {
-                    NodeList nodes = (NodeList)appliesTo.evaluate(document, XPathConstants.NODESET);
+        if (subjects == null){
+        	XPathExpression appliesTo = policySet.getAppliesToXPathExpression();
+        	if (appliesTo != null) {
+        		NodeList nodes = (NodeList)appliesTo.evaluate(document, XPathConstants.NODESET);
                     
-                    if (nodes.getLength() > 0){
-                        subjects = new ArrayList<PolicySubject>();
-                        appliesToSubjects.put(policySet, subjects);
-                    }
+        		if (nodes.getLength() > 0){
+        			subjects = new ArrayList<PolicySubject>();
+        			appliesToSubjects.put(policySet, subjects);
+        		}
                     
-                    for (int i = 0; i < nodes.getLength(); i++) {
-                        Node node = nodes.item(i);
-                        String index = getStructuralURI(node);
-                        PolicySubject subject = lookup(composite, index);
-                        if ( subject != null ) 
-                        	subjects.add(subject);
-                    }
-                }
-            }
-            
-            if (subjects != null){
-                if (!subjects.contains(policySubject)){
-                    policySetsToRemove.add(policySet);
-                }
-            } 
-            
-            // TODO - If no "appliesTo" is provided does the policy set apply to 
-            //        everything or nothing?
-
+        		for (int i = 0; i < nodes.getLength(); i++) {
+        			Node node = nodes.item(i);
+        			String index = getStructuralURI(node);
+        			PolicySubject subject = lookup(composite, index);
+        			if ( subject != null ) 
+        				subjects.add(subject);
+        		}
+        	}
         }
+            
+        if (subjects != null){
+        	if (!subjects.contains(policySubject)){
+        		return false;
+        	} else {
+        		return true;
+        	}
+        } 
         
-        policySets.removeAll(policySetsToRemove); 
-        return policySetsToRemove;
+        return false;
+                   
     }    
 }
