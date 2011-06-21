@@ -17,4 +17,5 @@
 
 # Implementation class for the artifact processor extension
 testpolicy.TestPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#testPolicy,model=testpolicy.TestPolicy
+testbindingwspolicy.TestBindingWSPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#testBindingWSPolicy,model=testbindingwspolicy.TestBindingWSPolicy
 

@@ -30,7 +30,7 @@ public class HelloWorldClient implements HelloWorld {
     
     public String getGreetings(String s) {
         String response = helloWorldWS.getGreetings(s);
-        System.out.println("At client: " + response);
+        StatusImpl.appendStatus("At client", response);
         return response;
     }
 

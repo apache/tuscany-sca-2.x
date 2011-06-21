@@ -41,11 +41,16 @@ public class TestPolicyProviderImplementation extends BasePolicyProvider<TestPol
      */
     public PhasedInterceptor createInterceptor(Operation operation) {
         List<TestPolicy> policies = findPolicies();
-        return policies.isEmpty() ? null : new TestPolicyInterceptor(subject, 
-                                                                     getContext(), 
-                                                                     operation,
-                                                                     policies, 
-                                                                     Phase.IMPLEMENTATION_POLICY);
+        
+        if (policies.isEmpty()){
+            return null;
+        } else {
+            return new TestPolicyInterceptor(subject, 
+                                             getContext(), 
+                                             operation,
+                                             policies, 
+                                             Phase.IMPLEMENTATION_POLICY);
+        }
     }
 
 }

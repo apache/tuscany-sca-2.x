@@ -16,41 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package testpolicy;
+package testbindingwspolicy;
 
 import helloworld.StatusImpl;
 
 import java.util.List;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySubject;
 
 
-public class TestPolicyInterceptor extends InterceptorAsyncImpl implements PhasedInterceptor {
-    
+public class TestBindingWSPolicyInterceptor extends InterceptorAsyncImpl implements PhasedInterceptor {
+
     private Operation operation;
-    private List<TestPolicy> policies;
+    private List<TestBindingWSPolicy> policies;
     private PolicySubject subject;
     private String context;
     private String phase;
 
-    public TestPolicyInterceptor(PolicySubject subject,
+    public TestBindingWSPolicyInterceptor(PolicySubject subject,
                                        String context,
                                        Operation operation,
-                                       List<TestPolicy> policies,
+                                       List<TestBindingWSPolicy> policies,
                                        String phase) {
         super();
         this.operation = operation;
@@ -75,25 +68,14 @@ public class TestPolicyInterceptor extends InterceptorAsyncImpl implements Phase
     }
 
     public Message processRequest(Message msg) {
-        StatusImpl.appendStatus("TestPolicyInterceptor.processRequest()", context + " @ " + phase);
+        StatusImpl.appendStatus("TestBindingWSPolicyInterceptor.processRequest()", context + " @ " + phase);
         return msg;
     }
-    
-    public Message postProcessRequest(Message msg, Throwable e) throws Throwable {
-        StatusImpl.appendStatus("TestPolicyInterceptor.postProcessRequest()", context + " @ " + phase);
-        return msg;
-    } 
     
     public Message processResponse(Message msg) {
-        StatusImpl.appendStatus("TestPolicyInterceptor.processResponse()", context + " @ " + phase);
+        StatusImpl.appendStatus("TestBindingWSPolicyInterceptor.processResponse()", context + " @ " + phase);
         return msg;
     }
-/* not in interface - should we add it?   
-    public Message postProcessResponse(Message msg) {
-        System.out.println("TestPolicyInterceptor.postProcessResponse() " + context + " @ " + phase);
-        return msg;
-    }
-*/
 
     public String getPhase() {
         return phase;

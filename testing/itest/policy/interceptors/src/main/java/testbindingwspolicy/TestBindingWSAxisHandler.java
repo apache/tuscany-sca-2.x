@@ -16,23 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package testbindingwspolicy;
 
-package helloworld;
+import helloworld.StatusImpl;
 
-import javax.security.auth.Subject;
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.handlers.AbstractHandler;
 
-import org.oasisopen.sca.RequestContext;
-import org.oasisopen.sca.annotation.Context;
-
-public class HelloWorldService implements HelloWorld {
-
-    @Context
-    protected RequestContext requestContext;
+/**
+ * An Axis handler to show that policy can add one of needs be
+ *
+ * @version $Rev: 881959 $ $Date: 2009-11-18 22:07:09 +0000 (Wed, 18 Nov 2009) $
+ */
+public class TestBindingWSAxisHandler  extends AbstractHandler
+{
+    private String name;
     
-    public String getGreetings(String name) {
-        Subject subject = requestContext.getSecuritySubject();
-        String response = "Hello " + name;       
-        StatusImpl.appendStatus("At service", response);
-        return response;
+    public TestBindingWSAxisHandler(String name)
+    {
+        this.name = name;
+    }
+    
+    public InvocationResponse invoke(MessageContext msgContext) throws AxisFault {
+        StatusImpl.appendStatus("TestAxisHandler.invoke()", name);
+        return InvocationResponse.CONTINUE;
     }
 }

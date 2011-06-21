@@ -17,4 +17,5 @@
 
 # Implementation class for the policy extension
 testpolicy.TestPolicyProviderFactory;model=testpolicy.TestPolicy
+testbindingwspolicy.TestBindingWSPolicyProviderFactory;model=testbindingwspolicy.TestBindingWSPolicy
 

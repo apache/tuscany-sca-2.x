@@ -19,20 +19,14 @@
 
 package helloworld;
 
-import javax.security.auth.Subject;
+public class StatusImpl {
 
-import org.oasisopen.sca.RequestContext;
-import org.oasisopen.sca.annotation.Context;
-
-public class HelloWorldService implements HelloWorld {
-
-    @Context
-    protected RequestContext requestContext;
+    public static String statusString = "";
     
-    public String getGreetings(String name) {
-        Subject subject = requestContext.getSecuritySubject();
-        String response = "Hello " + name;       
-        StatusImpl.appendStatus("At service", response);
-        return response;
+    public static void appendStatus(String event, String location){
+        // remove any addresses from the strings
+        location = location.replaceAll("\\(@.*Endpoint", "Endpoint");
+        statusString += event + " - " + location + "\n";
     }
+
 }

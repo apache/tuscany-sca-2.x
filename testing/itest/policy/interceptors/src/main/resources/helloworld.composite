@@ -26,16 +26,23 @@
     <component name="HelloWorldClient">
         <implementation.java class="helloworld.HelloWorldClient"/>
         <reference name="helloWorldWS"
-                   target="HelloWorldService/HelloWorld/BindingWS"
+                   target="HelloWorldService2/HelloWorld/BindingWS"
                    requires="tuscany:testIntent"/>
     </component>
     
-    <component name="HelloWorldService">
+    <component name="HelloWorldService1">
 		<implementation.java class="helloworld.HelloWorldService" 
 		                     requires="tuscany:testIntent"/>
 	    <service name="HelloWorld" requires="tuscany:testIntent">  
 	        <binding.ws name="BindingWS"/>
 	    </service>		
     </component>
+    
+    <component name="HelloWorldService2" requires="tuscany:testIntent">
+        <implementation.java class="helloworld.HelloWorldService"/>
+        <service name="HelloWorld">  
+            <binding.ws name="BindingWS"/>
+        </service>      
+    </component>    
     
 </composite>

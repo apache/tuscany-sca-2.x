@@ -26,18 +26,36 @@
         <description>a test intent</description>
     </intent>
 
-    <sca:policySet name="TestInteractonPolicySet"
+    <sca:policySet name="TestInteractonPolicySet1"
                    attachTo="//sca:binding.ws"
                    provides="tuscany:testIntent"
                    appliesTo="//sca:binding.ws">
         <tuscany:testPolicy testString="interaction"/>
     </sca:policySet>
+   
+    <sca:policySet name="TestInteractonPolicySet2"
+                   attachTo="//sca:binding.ws"
+                   provides="tuscany:testIntent"
+                   appliesTo="//sca:binding.ws">
+        <tuscany:testBindingWSPolicy testString="interaction"/>
+    </sca:policySet>   
     
-    <sca:policySet name="TestImplementationPolicySet"
+    <!--  
+        don't seem to be able to attach the following to binding.sca probably because
+        attachment is performed before the default binding models are created 
+    --> 
+    <sca:policySet name="TestInteractonPolicySet3"
+                   attachTo="//sca:component"
+                   provides="tuscany:testIntent"
+                   appliesTo="//sca:binding.sca">
+        <tuscany:testPolicy testString="interaction"/>
+    </sca:policySet>    
+
+    <sca:policySet name="TestImplementationPolicySet2"
                    attachTo="//sca:implementation.java"
                    provides="tuscany:testIntent"
                    appliesTo="//sca:implementation.java">
         <tuscany:testPolicy testString="implementation"/> 
-    </sca:policySet>      
-      
+    </sca:policySet> 
+
 </definitions>

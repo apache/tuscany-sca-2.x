@@ -38,8 +38,16 @@ public class TestPolicyProviderReference extends BasePolicyProvider<TestPolicy> 
 
     public PhasedInterceptor createInterceptor(Operation operation) {
         List<TestPolicy> policies = findPolicies();
-        return policies.isEmpty() ? null : new TestPolicyInterceptor(subject, getContext(), operation,
-                                                                     policies, Phase.REFERENCE_POLICY);
+        
+        if (policies.isEmpty()){
+            return null;
+        } else {
+            return new TestPolicyInterceptor(subject, 
+                                             getContext(), 
+                                             operation,
+                                             policies, 
+                                             Phase.REFERENCE_POLICY);
+        }
     }
 
 }
