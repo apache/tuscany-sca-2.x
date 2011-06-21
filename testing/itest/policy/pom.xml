@@ -32,7 +32,9 @@
   <modules>
     <module>matching</module>
     <module>wspolicy</module>
+<!--
     <module>interceptors</module>
+-->
   </modules>
 
 </project>
