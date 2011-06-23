@@ -55,6 +55,7 @@ public class DeployedComposite {
     private DomainRegistry domainRegistry;
     private ExtensionPointRegistry extensionPointRegistry;
     private List<String> usedContributionURIs;
+    private boolean endpointsIncludeDomainName;
 
     public DeployedComposite(Composite composite,
                              Contribution contribution,
@@ -62,7 +63,8 @@ public class DeployedComposite {
                              Deployer deployer,
                              CompositeActivator compositeActivator,
                              DomainRegistry domainRegistry,
-                             ExtensionPointRegistry extensionPointRegistry) throws ValidationException, ActivationException {
+                             ExtensionPointRegistry extensionPointRegistry,
+                             boolean endpointsIncludeDomainName) throws ValidationException, ActivationException {
         this.composite = composite;
         this.contribution = contribution;
         this.dependedOnContributions = dependedOnContributions;
@@ -70,6 +72,8 @@ public class DeployedComposite {
         this.compositeActivator = compositeActivator;
         this.domainRegistry = domainRegistry;
         this.extensionPointRegistry = extensionPointRegistry;
+        this.endpointsIncludeDomainName = endpointsIncludeDomainName;
+        
         try {
             build();
         } catch (ContributionResolveException e) {
@@ -86,20 +90,19 @@ public class DeployedComposite {
         contributions.get(0).getDeployables().clear();
         contributions.get(0).getDeployables().add(composite);
 
-        Monitor monitor = deployer.createMonitor();
         Map<QName, List<String>> bs = new HashMap<QName, List<String>>();
-        
-        // TODO: don't hardcode the default domain name, instead do something like having a property on Node that says whether or not the 
-        // domain name should be included in the service uri
-        if (!"default".equals(domainRegistry.getDomainName())) {
+        if (endpointsIncludeDomainName) {
             bs.put(new QName("default"), Arrays.asList(new String[]{domainRegistry.getDomainName()}));
         }
+
+        Monitor monitor = deployer.createMonitor();
         builtComposite = deployer.build(contributions, dependedOnContributions, bs, monitor);
+        monitor.analyzeProblems();
+
         // TODO: Ideally deployer.build would set the name and uri to what this needs
         builtComposite.setName(composite.getName());
         builtComposite.setURI(composite.getURI());
         builtComposite.setContributionURI(composite.getContributionURI());
-        monitor.analyzeProblems();
 
         compositeContext = new CompositeContext(extensionPointRegistry, 
                                                 domainRegistry, 

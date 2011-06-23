@@ -64,6 +64,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class TuscanyRuntime {
 
+    public static final String DEFAUL_DOMAIN_NAME = "default";
     private Deployer deployer;
     private ExtensionPointRegistry extensionPointRegistry;
     private CompositeActivator compositeActivator;
@@ -111,7 +112,7 @@ public class TuscanyRuntime {
     public static Node runComposite(URI domainURI, String compositeURI, String contributionURL, String... dependentContributionURLs) {
         try {
             TuscanyRuntime runtime = newInstance();
-            String domain = domainURI == null ? "default" : domainURI.toString();
+            String domain = domainURI == null ? DEFAUL_DOMAIN_NAME : domainURI.toString();
             DomainRegistry domainRegistry = runtime.domainRegistryFactory.getEndpointRegistry(domain, getDomainName(domain));
             NodeImpl node = new NodeImpl(runtime.deployer, runtime.compositeActivator, domainRegistry, runtime.extensionPointRegistry, runtime);
 
@@ -154,7 +155,7 @@ public class TuscanyRuntime {
      * @return a Node
      */
     public Node createNode(String domainURI) {
-        String domainName = "default";
+        String domainName = DEFAUL_DOMAIN_NAME;
         if (domainURI != null){
             domainName = getDomainName(domainURI);
         }

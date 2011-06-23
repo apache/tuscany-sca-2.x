@@ -68,6 +68,8 @@ public class NodeImpl implements Node {
 
     private Map<String, DeployedComposite> startedComposites = new HashMap<String, DeployedComposite>();
     private Map<String, DeployedComposite> stoppedComposites = new HashMap<String, DeployedComposite>();
+    
+    private boolean endpointsIncludeDomainName;
 
     public NodeImpl(Deployer deployer,
                      CompositeActivator compositeActivator,
@@ -90,6 +92,8 @@ public class NodeImpl implements Node {
                 loadedContributions.remove(uri);
             }
         });
+
+        endpointsIncludeDomainName = !TuscanyRuntime.DEFAUL_DOMAIN_NAME.equals(domainRegistry.getDomainName());
     }
 
     // TODO: install shouldn't throw ValidationException as it shouldn't do any validation, its
@@ -297,7 +301,7 @@ public class NodeImpl implements Node {
             Contribution contribution = loadContribution(cd);
             Composite composite = contribution.getArtifactModel(compositeURI);
             List<Contribution> dependentContributions = calculateDependentContributions(cd);
-            dc = new DeployedComposite(composite, contribution, dependentContributions, deployer, compositeActivator, domainRegistry, extensionPointRegistry);
+            dc = new DeployedComposite(composite, contribution, dependentContributions, deployer, compositeActivator, domainRegistry, extensionPointRegistry, endpointsIncludeDomainName);
             dc.start();
             startedComposites.put(key, dc);
         }
@@ -531,6 +535,14 @@ public class NodeImpl implements Node {
                 stoppedComposites.remove(contributionURI + "/" + dc.getURI());
             }
         }
+    }
+    
+    public boolean getEndpointsIncludeDomainName() {
+        return endpointsIncludeDomainName;
+    }
+
+    public void setEndpointsIncludeDomainName(boolean b) {
+        endpointsIncludeDomainName = b;
     }
 
 }
