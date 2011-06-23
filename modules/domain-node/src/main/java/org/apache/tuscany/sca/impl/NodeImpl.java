@@ -348,6 +348,10 @@ public class NodeImpl implements Node {
         }
     }
 
+    public String getDomainURI() {
+        return domainRegistry.getDomainURI();
+    }
+
     public String getDomainName() {
         return domainRegistry.getDomainName();
     }
@@ -528,4 +532,5 @@ public class NodeImpl implements Node {
             }
         }
     }
+
 }

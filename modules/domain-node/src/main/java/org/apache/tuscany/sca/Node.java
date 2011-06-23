@@ -237,6 +237,18 @@ public interface Node {
      */
     Contribution getContribution(String uri) throws ContributionReadException, ValidationException;
     
+    /**
+     * Gets the Domain URI used to configure this Node.
+     * 
+     * @return the domain uri string
+     */
+    String getDomainURI();
+
+    /**
+     * Gets the Domain name of this Node.
+     * 
+     * @return the domain name
+     */
     String getDomainName();
 
     List<String> getDeployableCompositeURIs(String contributionURI);
