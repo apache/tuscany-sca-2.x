@@ -24,7 +24,8 @@
 
     <policySet name="JDKLoggingPolicy" 
                provides="tuscany:logging" 
-               appliesTo="//binding | //implementation">
+               appliesTo="//sca:binding.sca"
+               attachTo="//sca:component[@name='CreditCardPayment']">
         <tuscany:jdkLogger name="test.logger">
             <tuscany:logLevel>FINE</tuscany:logLevel>
             <tuscany:resourceBundle>LoggingMessages.properties</tuscany:resourceBundle>
@@ -34,7 +35,7 @@
     
     <policySet name="JDKLoggingImplPolicy" 
                provides="tuscany:logging" 
-               appliesTo="//implementation.java"
+               appliesTo="//sca:implementation.java"
                attachTo="//sca:component[@name='CreditCardPayment']">
         <tuscany:jdkLogger name="test.logger">
             <tuscany:logLevel>INFO</tuscany:logLevel>
@@ -47,36 +48,36 @@
     
     <policySet name="SuspendsTransactionPolicy" 
                provides="sca:suspendsTransaction" 
-               appliesTo="//binding.sca | //implementation.java"
+               appliesTo="//sca:binding.sca | //sca:implementation.java"
                attachTo="IntentRefs('sca:suspendsTransaction')"/>    
                
     <policySet name="AuthorizationFineGrainPolicy" 
                provides="sca:authorization" 
-               appliesTo="//binding.sca | //implementation.java" 
+               appliesTo="//sca:binding.sca | //sca:implementation.java" 
                attachTo="IntentRefs('sca:authorization')"/>   
                
     <policySet name="ConfidentialityTransportPolicy" 
                provides="sca:confidentiality.transport" 
-               appliesTo="//binding.sca | //implementation.java"
+               appliesTo="//sca:binding.sca | //sca:implementation.java"
                attachTo="IntentRefs('sca:confidentiality.transport')"/>               
 
     <policySet name="ConfidentialityMessagePolicy" 
                provides="sca:confidentiality.message" 
-               appliesTo="//binding.sca | //implementation.java"
+               appliesTo="//sca:binding.sca | //sca:implementation.java"
                attachTo="IntentRefs('sca:confidentiality.message')"/>   
                
     <policySet name="ClientAuthenticationTransportPolicy" 
                provides="sca:clientAuthentication.transport" 
-               appliesTo="//binding.sca | //implementation.java"
+               appliesTo="//sca:binding.sca | //sca:implementation.java"
                attachTo="IntentRefs('sca:clientAuthentication.transport') | //sca:service[@name='CreditCardPayment']"/>  
                
     <policySet name="IntegrityTransportPolicy" 
                provides="sca:integrity.transport" 
-               appliesTo="//binding.sca | //implementation.java"
+               appliesTo="//sca:binding.sca | //sca:implementation.java"
                attachTo="IntentRefs('sca:integrity.transport')"/>   
                
 	<policySet name="ManagedTransactionGlobalPolicy"
 			   provides="sca:managedTransaction.global"
-			   appliesTo="//implementation.composite | //implementation.java"
+			   appliesTo="//sca:implementation.composite | //sca:implementation.java"
 			   attachTo="IntentRefs('sca:managedTransaction.global')"/>	              	              
 </definitions>

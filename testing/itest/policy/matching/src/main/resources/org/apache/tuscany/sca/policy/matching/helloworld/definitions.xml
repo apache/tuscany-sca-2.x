@@ -37,12 +37,12 @@
    
     <policySet name="testPolicy1" 
                provides="tuscany:testIntent1" 
-               appliesTo="//binding | //implementation">
+               appliesTo="//sca:binding.sca | //sca:implementation.java">
     </policySet>
     
     <policySet name="testPolicy2" 
                provides="tuscany:testIntent4 tuscany:testIntent5" 
-               appliesTo="//binding | //implementation">
+               appliesTo="//sca:binding.sca | //sca:implementation.java">
         <tuscany:jdkLogger name="test.logger">
             <tuscany:logLevel>FINE</tuscany:logLevel>
             <tuscany:resourceBundle>LoggingMessages.properties</tuscany:resourceBundle>
@@ -51,7 +51,7 @@
     
     <policySet name="testPolicy3" 
                provides="tuscany:testIntent6" 
-               appliesTo="//binding | //implementation">
+               appliesTo="//sca:binding.sca | //sca:implementation.java">
         <wsp:Policy>
 	        <wsp:ExactlyOne>
 	            <wsp:All>

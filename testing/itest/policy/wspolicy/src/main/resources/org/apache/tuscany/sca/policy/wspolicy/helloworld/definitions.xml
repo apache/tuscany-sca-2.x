@@ -25,7 +25,7 @@
 
     <policySet name="JDKLoggingPolicy" 
                provides="tuscany:logging" 
-               appliesTo="//binding | //implementation"
+               appliesTo="//sca:binding.ws"
                attachTo="//sca:service | //sca:reference">
         <wsp:Policy>
             <wsp:ExactlyOne>
