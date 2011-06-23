@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.sca.binding.ws.axis2.context.WSAxis2BindingContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
@@ -110,13 +111,17 @@ public class TuscanyServiceProvider {
     	}
     } // end method checkCallbackAddress
     
-    public OMElement invoke(OMElement requestOM, MessageContext inMC) throws InvocationTargetException, AxisFault {
+    public OMElement invoke(OMElement requestOM, MessageContext inMC, MessageContext outMC) throws InvocationTargetException, AxisFault {
         String callbackAddress = null;
 
         // create a message object and set the args as its body
         Message msg = messageFactory.createMessage();
         msg.setOperation(operation);
-        msg.setBindingContext(inMC);
+        WSAxis2BindingContext bindingContext = new WSAxis2BindingContext();
+        bindingContext.setAxisOutMessageContext(inMC);
+        bindingContext.setAxisOutMessageContext(outMC); //TUSCANY-3881
+        msg.setBindingContext(bindingContext);
+
         
         if (wsBinding.isRpcLiteral()){               
             // remove the wrapping element containing

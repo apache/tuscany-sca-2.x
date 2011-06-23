@@ -28,6 +28,7 @@ import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.transport.http.HttpTransportProperties;
 import org.apache.axis2.transport.http.HttpTransportProperties.Authenticator;
+import org.apache.tuscany.sca.binding.ws.axis2.context.WSAxis2BindingContext;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.Phase;
@@ -74,7 +75,8 @@ public class BasicAuthenticationReferencePolicyInterceptor implements PhasedInte
 
     public Message invoke(Message msg) {
         
-        OperationClient operationClient = msg.getBindingContext();
+        WSAxis2BindingContext bindingContext = msg.getBindingContext();
+        OperationClient operationClient = bindingContext.getAxisOperationClient();
         
         String username = null;
         String password = null;

@@ -28,6 +28,7 @@ import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.tuscany.sca.binding.ws.axis2.context.WSAxis2BindingContext;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -72,7 +73,8 @@ public class TransportReferenceInterceptor implements Interceptor {
     }
 
     protected Object invokeTarget(Message msg) throws AxisFault {
-        final OperationClient operationClient = msg.getBindingContext();
+        WSAxis2BindingContext bindingContext = msg.getBindingContext();
+        final OperationClient operationClient = bindingContext.getAxisOperationClient();
 
         // ensure connections are tracked so that they can be closed by the reference binding
         MessageContext requestMC = operationClient.getMessageContext("Out");
@@ -95,6 +97,7 @@ public class TransportReferenceInterceptor implements Interceptor {
         }
 
         MessageContext responseMC = operationClient.getMessageContext("In");
+        bindingContext.setAxisInMessageContext(responseMC);
                 
         OMElement response = responseMC.getEnvelope().getBody().getFirstElement();
 
@@ -111,7 +114,8 @@ public class TransportReferenceInterceptor implements Interceptor {
     }
     
     protected Object invokeTargetOneWay(Message msg) throws AxisFault {
-        OperationClient operationClient = msg.getBindingContext();
+        WSAxis2BindingContext bindingContext = msg.getBindingContext();
+        OperationClient operationClient = bindingContext.getAxisOperationClient();
 
         // ensure connections are tracked so that they can be closed by the reference binding
         MessageContext requestMC = operationClient.getMessageContext("Out");

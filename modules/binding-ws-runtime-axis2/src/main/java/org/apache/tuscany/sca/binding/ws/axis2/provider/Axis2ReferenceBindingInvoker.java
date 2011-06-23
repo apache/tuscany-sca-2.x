@@ -54,6 +54,7 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.sca.binding.ws.axis2.context.WSAxis2BindingContext;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -113,7 +114,12 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
     public Message invoke(Message msg) {
         try {
             final OperationClient operationClient = createOperationClient(msg);
-            msg.setBindingContext(operationClient);
+            WSAxis2BindingContext bindingContext = new WSAxis2BindingContext();
+            bindingContext.setAxisOperationClient(operationClient);
+            bindingContext.setAxisOutMessageContext(operationClient.getMessageContext("Out"));
+            bindingContext.setAxisOutMessageContext(operationClient.getMessageContext("In"));
+            msg.setBindingContext(bindingContext);
+            
             msg = endpointReference.getBindingInvocationChain().getHeadInvoker().invoke(msg);
             
             if (wsBinding.isRpcLiteral()){   

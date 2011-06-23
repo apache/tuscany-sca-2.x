@@ -25,7 +25,9 @@ import javax.security.auth.Subject;
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.util.base64.Base64Utils;
+import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.context.MessageContext;
+import org.apache.tuscany.sca.binding.ws.axis2.context.WSAxis2BindingContext;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.Phase;
@@ -74,7 +76,9 @@ public class BasicAuthenticationServicePolicyInterceptor implements PhasedInterc
 
     public Message invoke(Message msg) {
         
-        MessageContext messageContext = msg.getBindingContext();
+        WSAxis2BindingContext bindingContext = msg.getBindingContext();        
+        MessageContext messageContext = bindingContext.getAxisInMessageContext();
+        
         Map httpHeaderProperties = (Map)messageContext.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
         
         String basicAuthString = (String)httpHeaderProperties.get("Authorization");

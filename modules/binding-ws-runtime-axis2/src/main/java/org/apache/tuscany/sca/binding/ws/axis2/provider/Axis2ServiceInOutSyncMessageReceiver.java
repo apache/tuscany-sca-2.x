@@ -48,7 +48,7 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
         try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             
-            OMElement responseOM = (OMElement)provider.invoke(requestOM, inMC);
+            OMElement responseOM = (OMElement)provider.invoke(requestOM, inMC, outMC);
 
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
             if (null != responseOM ) {
