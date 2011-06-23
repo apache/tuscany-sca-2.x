@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -86,6 +87,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
     protected CompositeActivator compositeActivator;
     protected Monitor monitor;
     protected UnknownEndpointHandler unknownEndpointHandler;
+    protected CompositeBuilder policyAppliesToBuilder;
 
 
     public EndpointReferenceBinderImpl(ExtensionPointRegistry extensionPoints) {
@@ -103,6 +105,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         this.unknownEndpointHandler = utils.getUtility(UnknownEndpointHandler.class);
         
         this.builders = extensionPoints.getExtensionPoint(BuilderExtensionPoint.class);
+        
         this.compositeActivator = extensionPoints.getExtensionPoint(CompositeActivator.class);
     }
     
@@ -424,11 +427,24 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             endpointReference.setTargetEndpoint(matchedEndpoint);
             Binding binding = matchedEndpoint.getBinding();
             endpointReference.setBinding(binding);
-            // TUSCANY-3873 - if no policy on the reference add policy from the service
+            // TUSCANY-3873 - add policy from the service
             //                we don't care about intents at this stage
-            if (endpointReference.getPolicySets().isEmpty()){
-                endpointReference.getPolicySets().addAll(matchedEndpoint.getPolicySets());
+            endpointReference.getPolicySets().addAll(matchedEndpoint.getPolicySets());
+            // TODO - we need to re-run the appliesTo processing here but there is some question about what 
+            //        appliesTo means. It's also difficult to get to the PolicyAppliesToBuilder from here and
+            //        need a new EntensionInterface to support access. So for now I'm just cheating and looking to 
+            //        see if the XPath expression contains the binding type as a string while we discuss appliesTo
+            
+            List<PolicySet> psToRemove = new ArrayList<PolicySet>();
+            
+            for (PolicySet ps : endpointReference.getPolicySets() ) {
+                if (!ps.getAppliesTo().contains(endpointReference.getBinding().getType().getLocalPart())){
+                    psToRemove.add(ps);
+                }
             }
+            
+            endpointReference.getPolicySets().removeAll(psToRemove);
+            
             build(endpointReference);
             endpointReference.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
             endpointReference.setUnresolved(false);
@@ -794,7 +810,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             }
         }
         
-        if(!eprLanguage.equals(epLanguage)){
+        if(!eprLanguage.getNamespaceURI().equals(epLanguage.getNamespaceURI())){
             matchAudit.append("No match because the policy sets on either side have policies in differnt languages " + 
                               eprLanguage + 
                               " and " +

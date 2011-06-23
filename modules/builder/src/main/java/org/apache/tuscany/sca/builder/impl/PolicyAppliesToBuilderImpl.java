@@ -39,10 +39,13 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 
+import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -50,7 +53,7 @@ import org.w3c.dom.NodeList;
 /**
  * A builder that checks that policy sets apply to the elements to which they are attached. 
  * Any that don't are removed. It first creates a DOM model for the composite so that the xpath
- * expression can be evaluated. For each element that holds a policy set is calculates the 
+ * expression can be evaluated. For each element that holds a policy set it calculates the 
  * appliesTo nodes and checks that the current element is in the set. If not the policySet is
  * removed from the element   
  *
@@ -66,6 +69,7 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
         return "org.apache.tuscany.sca.policy.builder.PolicyAppliesToBuilder";
     }
 
+    // Build the whole composite
     public Composite build(Composite composite, BuilderContext context)
         throws CompositeBuilderException {
         try {
@@ -89,6 +93,74 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
             throw new CompositeBuilderException(e);
         }
     }
+    
+    // Build just an endpoint reference that has just been matched against an endpoint. This
+    // can often happen at runtime so the policy attachTo for a reference policy cannot
+    // be assessed at build time
+    // THIS DOESN'T HANDLE THE NESTED COMPOSITE CASE
+    public void build(EndpointReference epr) throws CompositeBuilderException {
+        try {
+            
+            // What we really need to be doing here is...
+            //
+            // - correct the composite model to add the service binding to the reference
+            // - turn the composite model into a DOM
+            // - apply the reference policy XPath and assess whether it appliesTo the binding
+            //
+            // I've had a go at making the code do that below. However there is some question
+            // about what the appliesTo field means and it's hard to get here from the 
+            // binder so until we sort out the appliesTo question this code isn't used
+                       
+            CompositeContext compositeContext = ((RuntimeComponent)epr.getComponent()).getComponentContext().getCompositeContext();
+            Composite domainComposite = compositeContext.getDomainComposite();
+            Definitions systemDefinitions = compositeContext.getSystemDefinitions();
+            
+            if (systemDefinitions == null || 
+                (systemDefinitions.getPolicySets().isEmpty() && 
+                 systemDefinitions.getExternalAttachments().isEmpty()) ) {
+                return;
+            }
+            
+            // temporarily add the endpoint binding to the reference model so that the
+            // XPath expression can be evaluated correctly
+            epr.getReference().getBindings().add(epr.getTargetEndpoint().getBinding());
+            
+            // create a DOM for the Domain Composite Infoset
+            Document document = saveAsDOM(domainComposite);
+            
+            // remove the binding again to retain the untainted model 
+            epr.getReference().getBindings().remove(epr.getTargetEndpoint().getBinding());
+            
+            // create a cache of evaluated node against each policy set so we don't
+            // have to keep evaluating policy sets that appear in multiple places
+            Map<PolicySet, List<PolicySubject>> appliesToSubjects = new HashMap<PolicySet, List<PolicySubject>>();
+            
+            // can we get the composite within which the erp is defined
+            
+            for (PolicySet ps : new ArrayList<PolicySet>(epr.getPolicySets()) ) {
+                // Check if this PolicySet applies to the binding, component reference, component, or composite. If not,
+                // remove it from the list of policy sets for this endpoint. 
+                if ( epr.getBinding() instanceof PolicySubject ) {
+                    if (isApplicableToSubject(document, appliesToSubjects, domainComposite, (PolicySubject)epr.getBinding(), ps))
+                        continue;
+                }
+                if (isApplicableToSubject(document, appliesToSubjects, domainComposite, epr.getReference(), ps))
+                    continue;
+                else if ( (epr.getReference().getInterfaceContract() != null) && 
+                          (isApplicableToSubject(document, appliesToSubjects, domainComposite, epr.getReference().getInterfaceContract().getInterface(), ps)))
+                    continue;
+                else if ( isApplicableToSubject(document, appliesToSubjects, domainComposite, epr.getComponent(), ps))
+                    continue;
+                else if ( isApplicableToSubject(document, appliesToSubjects, domainComposite, domainComposite, ps))
+                    continue;
+                else
+                    epr.getPolicySets().remove(ps);             
+            }
+          
+        } catch (Exception e) {
+            throw new CompositeBuilderException(e);
+        }
+    }    
     
     private Composite checkAppliesTo(Document document, Map<PolicySet, List<PolicySubject>> appliesToSubjects, Composite topComposite, BuilderContext context) throws Exception {
  
@@ -127,10 +199,16 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
     		}
 
     		for (ComponentReference componentReference : component.getReferences()) {    			
-    			for (EndpointReference epr : componentReference.getEndpointReferences()) {   
+    			for (EndpointReference epr : componentReference.getEndpointReferences()) {
+    			    // don't process the EPR yet if it's not resolved
+                    if (epr.getStatus() == EndpointReference.Status.WIRED_TARGET_NOT_FOUND ||
+                        epr.getBinding() == null){ 
+                        continue;
+                    }
+                    
     				for (PolicySet ps : new ArrayList<PolicySet>(epr.getPolicySets()) ) {
-    				// Check if this PolicySet applies to the binding, component reference, component, or composite. If not,
-					// remove it from the list of policy sets for this endpoint. 
+                        // Check if this PolicySet applies to the binding, component reference, component, or composite. If not,
+                        // remove it from the list of policy sets for this endpoint. 
     					if ( epr.getBinding() instanceof PolicySubject ) {
     						if (isApplicableToSubject(document, appliesToSubjects, topComposite, (PolicySubject)epr.getBinding(), ps))
     							continue;
@@ -161,7 +239,6 @@ public class PolicyAppliesToBuilderImpl extends PolicyAttachmentBuilderImpl {
     	}
     	return topComposite;
     }
-    
 
 	/**
      * Checks that the provided policy sets applies to the provided policy subject
