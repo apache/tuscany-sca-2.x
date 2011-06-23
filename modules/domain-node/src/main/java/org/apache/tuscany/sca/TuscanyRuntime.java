@@ -243,6 +243,22 @@ public class TuscanyRuntime {
         return node;
     }
 
+    /* Node.xml hot update
+     * - domain URi changed 
+     *       - restart entire node
+     * - List of contributions (matched on uri)
+     *    - uninstall removed
+     *    - install added
+     *    - for each existing
+     *        - if url or metadata or duris changed - update
+     *        - if startdeployables changed
+     *           - if now false then stop all started
+     *           - if now true then start deployables
+     *        
+     *        
+     *        
+     */       
+    
     /**
      * Creates a Node from an XML configuration file
      * @param configURL  the URL to the XML configuration file
