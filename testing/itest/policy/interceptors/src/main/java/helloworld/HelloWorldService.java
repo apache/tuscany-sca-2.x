@@ -29,10 +29,16 @@ public class HelloWorldService implements HelloWorld {
     @Context
     protected RequestContext requestContext;
     
-    public String getGreetings(String name) {
-        Subject subject = requestContext.getSecuritySubject();
-        String response = "Hello " + name;       
-        StatusImpl.appendStatus("At service", response);
+    public String getGreetings(String s) {
+        //Subject subject = requestContext.getSecuritySubject();
+        String response = "Hello " + s;       
+        StatusImpl.appendStatus("At service.getGreetings()", response);
         return response;
+    }
+    
+    public String getGreetingsException(String s) throws HelloWorldException {
+        String response = "Hello " + s;  
+        StatusImpl.appendStatus("At service.getGreetingsException()", response);
+        throw new HelloWorldException(response);
     }
 }

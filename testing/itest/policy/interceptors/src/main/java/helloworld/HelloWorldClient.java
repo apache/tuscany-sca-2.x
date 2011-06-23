@@ -29,9 +29,21 @@ public class HelloWorldClient implements HelloWorld {
     public HelloWorld helloWorldWS;
     
     public String getGreetings(String s) {
+        StatusImpl.appendStatus("At client.getGreetings() pre-invoke", s);
         String response = helloWorldWS.getGreetings(s);
-        StatusImpl.appendStatus("At client", response);
+        StatusImpl.appendStatus("At client.getGreetings() post-invoke", response);
         return response;
     }
-
+    
+    public String getGreetingsException(String s) throws HelloWorldException {
+        StatusImpl.appendStatus("At client.getGreetingsException() pre-invoke", s);
+        try {
+            String response = helloWorldWS.getGreetingsException(s);
+            StatusImpl.appendStatus("At client.getGreetingsException() post-invoke", response);
+            return response;    
+        } catch (HelloWorldException ex){
+            StatusImpl.appendStatus("At client.getGreetingsException() post-exception", ex.getMessage());
+            throw ex;
+        }
+    }
 }

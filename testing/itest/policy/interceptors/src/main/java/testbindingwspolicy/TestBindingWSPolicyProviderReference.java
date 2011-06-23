@@ -51,7 +51,9 @@ public class TestBindingWSPolicyProviderReference extends BasePolicyProvider<Tes
         List<org.apache.axis2.engine.Phase> outPhases = axisConfiguration.getOutFlowPhases();
         outPhases.get(0).addHandler(new TestBindingWSAxisHandler("Reference OutFlow Handler"));
         List<org.apache.axis2.engine.Phase> inPhases = axisConfiguration.getInFlowPhases();
-        inPhases.get(0).addHandler(new TestBindingWSAxisHandler("Reference InFlow Handler"));         
+        inPhases.get(0).addHandler(new TestBindingWSAxisHandler("Reference InFlow Handler"));  
+        List<org.apache.axis2.engine.Phase> inFaultPhases = axisConfiguration.getInFaultFlowPhases();
+        inFaultPhases.get(0).addHandler(new TestBindingWSAxisHandler("Reference InFaultFlow Handler"));
     }
 
     public PhasedInterceptor createBindingInterceptor() {

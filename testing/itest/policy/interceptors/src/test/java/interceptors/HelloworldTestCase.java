@@ -25,6 +25,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import helloworld.HelloWorld;
+import helloworld.HelloWorldException;
 import helloworld.StatusImpl;
 
 import org.apache.tuscany.sca.assembly.Component;
@@ -50,7 +51,7 @@ public class HelloworldTestCase extends TestCase {
         helloWorld = node.getService(HelloWorld.class, "HelloWorldClient/HelloWorld");
     }
     
-    public void testCalculator() throws Exception {
+    public void testHelloWorld() throws Exception {
         // check response from application
         assertEquals("Hello fred", helloWorld.getGreetings("fred"));
         
@@ -61,6 +62,7 @@ public class HelloworldTestCase extends TestCase {
                      "TestPolicyInterceptor.processRequest() - HelloWorldClient#reference-binding($self$.HelloWorld/HelloWorld) @ reference.policy\n" +
                      "TestPolicyInterceptor.processRequest() - HelloWorldClient#service-binding(HelloWorld/HelloWorld) @ service.policy\n" +
                      "TestPolicyInterceptor.processRequest() - null @ implementation.policy\n" +
+                     "At client.getGreetings() pre-invoke - fred\n" +
                      "TestBindingWSPolicyProviderReference.configureBinding() - org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2ReferenceBindingProvider\n" +
                      "TestPolicyInterceptor.processRequest() - HelloWorldClient#reference-binding(helloWorldWS/BindingWS) @ reference.policy\n" +
                      "TestBindingWSPolicyInterceptor.processRequest() - HelloWorldClient#reference-binding(helloWorldWS/BindingWS) @ reference.binding.policy\n" +
@@ -69,7 +71,7 @@ public class HelloworldTestCase extends TestCase {
                      "TestBindingWSPolicyInterceptor.processRequest() - HelloWorldService2#service-binding(HelloWorld/BindingWS) @ service.binding.policy\n" +
                      "TestPolicyInterceptor.processRequest() - HelloWorldService2#service-binding(HelloWorld/BindingWS) @ service.policy\n" +
                      "TestPolicyInterceptor.processRequest() - null @ implementation.policy\n" +
-                     "At service - Hello fred\n" +
+                     "At service.getGreetings() - Hello fred\n" +
                      "TestPolicyInterceptor.processResponse() - null @ implementation.policy\n" +
                      "TestPolicyInterceptor.processResponse() - HelloWorldService2#service-binding(HelloWorld/BindingWS) @ service.policy\n" +
                      "TestBindingWSPolicyInterceptor.processResponse() - HelloWorldService2#service-binding(HelloWorld/BindingWS) @ service.binding.policy\n" +
@@ -77,7 +79,7 @@ public class HelloworldTestCase extends TestCase {
                      "TestAxisHandler.invoke() - Reference InFlow Handler\n" +
                      "TestBindingWSPolicyInterceptor.processResponse() - HelloWorldClient#reference-binding(helloWorldWS/BindingWS) @ reference.binding.policy\n" +
                      "TestPolicyInterceptor.processResponse() - HelloWorldClient#reference-binding(helloWorldWS/BindingWS) @ reference.policy\n" +
-                     "At client - Hello fred\n" +
+                     "At client.getGreetings() post-invoke - Hello fred\n" +
                      "TestPolicyInterceptor.processResponse() - null @ implementation.policy\n" +
                      "TestPolicyInterceptor.processResponse() - HelloWorldClient#service-binding(HelloWorld/HelloWorld) @ service.policy\n" +
                      "TestPolicyInterceptor.processResponse() - HelloWorldClient#reference-binding($self$.HelloWorld/HelloWorld) @ reference.policy\n", 
@@ -93,6 +95,57 @@ public class HelloworldTestCase extends TestCase {
         assertEquals("TestInteractonPolicySet1", policySets.get(1).getName().getLocalPart());
         
     }    
+    
+    public void testHelloWorldException() throws Exception {
+        
+        // check response from application
+        try {
+            helloWorld.getGreetingsException("fred");
+            Assert.fail();
+        } catch (HelloWorldException ex){
+            assertEquals("Hello fred", ex.getMessage());
+        }
+        
+        // check sequences of interceptors
+        System.out.println(StatusImpl.statusString);
+        assertEquals("TestBindingWSPolicyProviderService.configureBinding() - org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2ServiceBindingProvider\n" +
+                     "TestBindingWSPolicyProviderService.configureBinding() - org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2ServiceBindingProvider\n" +
+                     "TestPolicyInterceptor.processRequest() - HelloWorldClient#reference-binding($self$.HelloWorld/HelloWorld) @ reference.policy\n" +
+                     "TestPolicyInterceptor.processRequest() - HelloWorldClient#service-binding(HelloWorld/HelloWorld) @ service.policy\n" +
+                     "TestPolicyInterceptor.processRequest() - null @ implementation.policy\n" +
+                     "At client.getGreetingsException() pre-invoke - fred\n" +
+                     "TestBindingWSPolicyProviderReference.configureBinding() - org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2ReferenceBindingProvider\n" +
+                     "TestPolicyInterceptor.processRequest() - HelloWorldClient#reference-binding(helloWorldWS/BindingWS) @ reference.policy\n" +
+                     "TestBindingWSPolicyInterceptor.processRequest() - HelloWorldClient#reference-binding(helloWorldWS/BindingWS) @ reference.binding.policy\n" +
+                     "TestAxisHandler.invoke() - Reference OutFlow Handler\n" +
+                     "TestAxisHandler.invoke() - Service InFlow Handler\n" +
+                     "TestBindingWSPolicyInterceptor.processRequest() - HelloWorldService2#service-binding(HelloWorld/BindingWS) @ service.binding.policy\n" +
+                     "TestPolicyInterceptor.processRequest() - HelloWorldService2#service-binding(HelloWorld/BindingWS) @ service.policy\n" +
+                     "TestPolicyInterceptor.processRequest() - null @ implementation.policy\n" +
+                     "At service.getGreetingsException() - Hello fred\n" +
+                     "TestPolicyInterceptor.processResponse() - null @ implementation.policy\n" +
+                     "TestPolicyInterceptor.processResponse() - HelloWorldService2#service-binding(HelloWorld/BindingWS) @ service.policy\n" +
+                     "TestBindingWSPolicyInterceptor.processResponse() - HelloWorldService2#service-binding(HelloWorld/BindingWS) @ service.binding.policy\n" +
+                     "TestAxisHandler.invoke() - Service OutFaultFlow Handler\n" +
+                     "TestAxisHandler.invoke() - Reference InFaultFlow Handler\n" +
+                     "TestBindingWSPolicyInterceptor.processResponse() - HelloWorldClient#reference-binding(helloWorldWS/BindingWS) @ reference.binding.policy\n" +
+                     "TestPolicyInterceptor.processResponse() - HelloWorldClient#reference-binding(helloWorldWS/BindingWS) @ reference.policy\n" +
+                     "At client.getGreetingsException() post-exception - Hello fred\n" +
+                     "TestPolicyInterceptor.processResponse() - null @ implementation.policy\n" +
+                     "TestPolicyInterceptor.processResponse() - HelloWorldClient#service-binding(HelloWorld/HelloWorld) @ service.policy\n" +
+                     "TestPolicyInterceptor.processResponse() - HelloWorldClient#reference-binding($self$.HelloWorld/HelloWorld) @ reference.policy\n", 
+                     StatusImpl.statusString);
+        
+        // check final intents on endpoint reference to see if the matching process
+        // results on the right set
+        Composite domainComposite = ((NodeImpl)node).getDomainComposite();
+        List<PolicySet> policySets = domainComposite.getComponents().get(0).getReferences().get(0).getEndpointReferences().get(0).getPolicySets();
+        
+        assertEquals(2, policySets.size());
+        assertEquals("TestInteractonPolicySet2", policySets.get(0).getName().getLocalPart());
+        assertEquals("TestInteractonPolicySet1", policySets.get(1).getName().getLocalPart());
+        
+    }       
     
     @Override
     protected void tearDown() throws Exception {

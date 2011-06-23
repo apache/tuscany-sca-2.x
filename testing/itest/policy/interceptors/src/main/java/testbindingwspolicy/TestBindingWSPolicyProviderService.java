@@ -52,6 +52,8 @@ public class TestBindingWSPolicyProviderService extends BasePolicyProvider<TestB
         inPhases.get(0).addHandler(new TestBindingWSAxisHandler("Service InFlow Handler"));              
         List<org.apache.axis2.engine.Phase> outPhases = axisConfiguration.getOutFlowPhases();
         outPhases.get(0).addHandler(new TestBindingWSAxisHandler("Service OutFlow Handler"));
+        List<org.apache.axis2.engine.Phase> outFaultPhases = axisConfiguration.getOutFaultFlowPhases();
+        outFaultPhases.get(0).addHandler(new TestBindingWSAxisHandler("Service OutFaultFlow Handler"));
     }
 
     public PhasedInterceptor createBindingInterceptor() {

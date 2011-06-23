@@ -19,13 +19,16 @@
 
 package helloworld;
 
-import org.oasisopen.sca.annotation.Remotable;
 
-@Remotable
-public interface HelloWorld {
+public class HelloWorldException extends Exception {
+
+    private static final long serialVersionUID = 4608283774062947117L;
     
-    String getGreetings(String s);
-    
-    String getGreetingsException(String s) throws HelloWorldException;
+    public HelloWorldException(){
+    }
+
+    public HelloWorldException(String message){
+        super(message);
+    }
 
 }
