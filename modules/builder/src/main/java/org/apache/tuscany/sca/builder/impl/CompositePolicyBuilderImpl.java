@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.policy.util.PolicyHelper;
@@ -410,7 +411,7 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
 
             for (ComponentService componentService : component.getServices()) {
                 for (Endpoint ep : componentService.getEndpoints()) {
-                    Set<QName> policyNames = getPolicyNames(ep);
+                    Set<String> policyNames = getPolicyNames(ep);
                     
                     // check that only one policy language is present in the endpoint's policy sets
                     if (policyNames.size() > 1){
@@ -420,19 +421,21 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                               ep.toString(), 
                               policyNames.toString());
                     } else {
-                        for (QName policyType : policyNames) {
-                            PolicyBuilder builder = builders.getPolicyBuilder(policyType);
-                            if (builder != null) {
-                                builder.build(ep, context);
+                        for (PolicySet ps : ep.getPolicySets()) {
+                            for (PolicyExpression exp : ps.getPolicies()) {
+                                PolicyBuilder builder = builders.getPolicyBuilder(exp.getName());
+                                if (builder != null) {
+                                    builder.build(ep, context);
+                                }                
                             }
-                        }
+                        }                        
                     }
                 }
             }
 
             for (ComponentReference componentReference : component.getReferences()) {
                 for (EndpointReference epr : componentReference.getEndpointReferences()) {
-                    Set<QName> policyNames = getPolicyNames(epr);
+                    Set<String> policyNames = getPolicyNames(epr);
                     
                     // check that only one policy language is present in the endpoint references's policy sets
                     if (policyNames.size() > 1){
@@ -442,10 +445,12 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                               epr.toString(), 
                               policyNames.toString());
                     } else {                    
-                        for (QName policyType : policyNames) {
-                            PolicyBuilder builder = builders.getPolicyBuilder(policyType);
-                            if (builder != null) {
-                                builder.build(epr, context);
+                        for (PolicySet ps : epr.getPolicySets()) {
+                            for (PolicyExpression exp : ps.getPolicies()) {
+                                PolicyBuilder builder = builders.getPolicyBuilder(exp.getName());
+                                if (builder != null) {
+                                    builder.build(epr, context);
+                                }
                             }
                         }
                     }
@@ -454,7 +459,7 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
 
             Implementation implementation = component.getImplementation();
             if (implementation != null) {
-                Set<QName> policyNames = getPolicyNames(implementation);
+                Set<String> policyNames = getPolicyNames(implementation);
                 
                 // check that only one policy language is present in the implementations's policy sets
                 if (policyNames.size() > 1){
@@ -464,10 +469,12 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                           component.toString(), 
                           policyNames.toString());
                 } else {
-                    for (QName policyType : policyNames) {
-                        PolicyBuilder builder = builders.getPolicyBuilder(policyType);
-                        if (builder != null) {
-                            builder.build(component, implementation, context);
+                    for (PolicySet ps : implementation.getPolicySets()) {
+                        for (PolicyExpression exp : ps.getPolicies()) {                    
+                            PolicyBuilder builder = builders.getPolicyBuilder(exp.getName());
+                            if (builder != null) {
+                                builder.build(component, implementation, context);
+                            }
                         }
                     }
                 }

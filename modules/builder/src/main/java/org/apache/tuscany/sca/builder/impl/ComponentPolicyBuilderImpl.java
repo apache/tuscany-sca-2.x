@@ -558,14 +558,14 @@ public class ComponentPolicyBuilderImpl {
         }
     }
 
-    protected Set<QName> getPolicyNames(PolicySubject subject) {
+    protected Set<String> getPolicyNames(PolicySubject subject) {
         if (subject == null) {
             return Collections.emptySet();
         }
-        Set<QName> names = new HashSet<QName>();
+        Set<String> names = new HashSet<String>();
         for (PolicySet ps : subject.getPolicySets()) {
             for (PolicyExpression exp : ps.getPolicies()) {
-                names.add(exp.getName());
+                names.add(exp.getName().getNamespaceURI());
             }
         }
         return names;

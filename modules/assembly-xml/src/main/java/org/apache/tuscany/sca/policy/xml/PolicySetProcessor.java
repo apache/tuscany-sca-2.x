@@ -224,8 +224,8 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                             // check that all the policies in the policy set are 
                             // expressed in the same language. Compare against the 
                             // first expression we added
-                            if ((policySet.getPolicies().size() > 0) && (!policySet.getPolicies().get(0).getName()
-                                .equals(name))) {
+                            if ((policySet.getPolicies().size() > 0) && 
+                                (!policySet.getPolicies().get(0).getName().getNamespaceURI().equals(name.getNamespaceURI()))) {
                                 error(monitor, "PolicyLanguageMissmatch", reader, policySet.getName(), policySet
                                     .getPolicies().get(0).getName(), name);
                             } else {
