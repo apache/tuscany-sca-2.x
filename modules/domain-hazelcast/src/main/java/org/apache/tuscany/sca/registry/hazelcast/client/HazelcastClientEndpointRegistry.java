@@ -60,7 +60,6 @@ public class HazelcastClientEndpointRegistry extends HazelcastDomainRegistry {
         initHazelcastClientInstance();
         endpointMap = hazelcastClient.getMap(rc.getUserid() + "/Endpoints");
         endpointOwners = hazelcastClient.getMultiMap(rc.getUserid() + "/EndpointOwners");
-        endpointWsdls = hazelcastClient.getMap(rc.getUserid() + "/EndpointWsdls");
         runningComponentContributions = hazelcastClient.getMap(rc.getUserid() + "/RunningComponentContributions");
         contributionDescriptions = hazelcastClient.getMap(rc.getUserid() + "/ContributionDescriptions");
     }
@@ -71,7 +70,6 @@ public class HazelcastClientEndpointRegistry extends HazelcastDomainRegistry {
             hazelcastClient.shutdown();
             hazelcastClient = null;
             endpointMap = null;
-            endpointWsdls = null;
         }
     }
 
