@@ -328,7 +328,7 @@ public class MediatorImpl implements Mediator {
             context.put(TARGET_OPERATION, sourceOperation);
         }
         if (context.get(BODY_TYPE) == null) {
-        	context.put(BODY_TYPE, BODY_TYPE_FAULT);
+            context.put(BODY_TYPE, BODY_TYPE_FAULT);
         }
 
 
@@ -408,7 +408,7 @@ public class MediatorImpl implements Mediator {
             context.put(TARGET_OPERATION, sourceOperation);
         }
         if (context.get(BODY_TYPE) == null) {
-        	context.put(BODY_TYPE, BODY_TYPE_OUTPUT);
+            context.put(BODY_TYPE, BODY_TYPE_OUTPUT);
         }
 
         return mediate(output, targetType, sourceType, context);
@@ -438,7 +438,7 @@ public class MediatorImpl implements Mediator {
             context.put(TARGET_OPERATION, targetOperation);
         }
         if (context.get(BODY_TYPE) == null) {
-        	context.put(BODY_TYPE, BODY_TYPE_INPUT);
+            context.put(BODY_TYPE, BODY_TYPE_INPUT);
         }
         
         return mediate(input, sourceType, targetType, context);
@@ -589,18 +589,23 @@ public class MediatorImpl implements Mediator {
     }
     
     public Object copyOutput(Object data, Operation sourceOperation, Operation targetOperation) {
-    	if ( data == null ) 
-    		return null;
-    	Object[] output = null;
-    	
-    	if ( !sourceOperation.hasArrayWrappedOutput() ) {
-    		output = new Object[] {data};
-    	} else {
-    		output = (Object[])data;    		
-    	}
+
+        // Rename the parameters so we can more easily remember which direction we're going in.
+        Operation fromOperation = targetOperation;
+        Operation toOperation = sourceOperation;
+
+        if ( data == null ) 
+            return null;
+        Object[] output = null;
+        
+        if ( !fromOperation.hasArrayWrappedOutput() ) {
+            output = new Object[] {data};
+        } else {
+            output = (Object[])data;            
+        }
    
-        List<DataType> outputTypes = sourceOperation.getOutputType().getLogical();
-        List<DataType> outputTypesTarget = targetOperation == null ? null : targetOperation.getOutputType().getLogical();
+        List<DataType> outputTypes = fromOperation.getOutputType().getLogical();
+        List<DataType> outputTypesTarget = toOperation == null ? null : toOperation.getOutputType().getLogical();
         Object[] copy = new Object[output.length];
         Map<Object, Object> map = new IdentityHashMap<Object, Object>();
         for (int i = 0, size = output.length; i < size; i++) {
@@ -616,17 +621,17 @@ public class MediatorImpl implements Mediator {
                         copy(arg,
                              outputTypes.get(i),
                              outputTypesTarget == null ? null : outputTypesTarget.get(i),
-                             sourceOperation,
-                             targetOperation);
+                             fromOperation,
+                             toOperation);
                     map.put(arg, copiedArg);
                     copy[i] = copiedArg;
                 }
             }
         }
-        if ( !targetOperation.hasArrayWrappedOutput()) {
-    		return copy[0];
+        if ( !toOperation.hasArrayWrappedOutput()) {
+            return copy[0];
         } else {
-        	return copy;
+            return copy;
         }
     }
 
@@ -635,21 +640,26 @@ public class MediatorImpl implements Mediator {
     }
     
     public Object copyFault(Object fault, Operation sourceOperation, Operation targetOperation) {
+
+        // Rename the parameters so we can more easily remember which direction we're going in.
+        Operation fromOperation = targetOperation;
+        Operation toOperation = sourceOperation;
+
         if (faultExceptionMapper == null) {
             return fault;
         }
-        List<DataType> fts = targetOperation.getFaultTypes();
+        List<DataType> fts = fromOperation.getFaultTypes();
         for (int i = 0; i < fts.size(); i++) {
             DataType et = fts.get(i); 
             if (et.getPhysical().isInstance(fault)) {
                 Throwable ex = (Throwable)fault;
-                DataType<DataType> exType = findFaultDataType(targetOperation, fault);
+                DataType<DataType> exType = findFaultDataType(fromOperation, fault);
                 DataType faultType = getFaultType(exType);
-                Object faultInfo = faultExceptionMapper.getFaultInfo(ex, faultType.getPhysical(), targetOperation);
-                DataType targetExType = findSourceFaultDataType(sourceOperation, exType);
+                Object faultInfo = faultExceptionMapper.getFaultInfo(ex, faultType.getPhysical(), fromOperation);
+                DataType targetExType = findSourceFaultDataType(toOperation, exType);
                 DataType targetFaultType = getFaultType(targetExType);
-                faultInfo = copy(faultInfo, faultType, targetFaultType, targetOperation, sourceOperation);
-                fault = faultExceptionMapper.wrapFaultInfo(targetExType, ex.getMessage(), faultInfo, ex.getCause(), sourceOperation);
+                faultInfo = copy(faultInfo, faultType, targetFaultType, fromOperation, toOperation);
+                fault = faultExceptionMapper.wrapFaultInfo(targetExType, ex.getMessage(), faultInfo, ex.getCause(), toOperation);
                 return fault;
             }
         }
