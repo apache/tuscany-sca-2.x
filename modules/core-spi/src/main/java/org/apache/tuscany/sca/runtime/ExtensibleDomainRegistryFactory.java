@@ -72,6 +72,9 @@ public class ExtensibleDomainRegistryFactory implements DomainRegistryFactory {
     }
 
     public DomainRegistry getEndpointRegistry(String endpointRegistryURI, String domainURI) {
+        if (domainURI == null) {
+            domainURI = getDomainName(endpointRegistryURI);
+        }
         if (endpointRegistryURI == null) {
             endpointRegistryURI = factories.getDomainRegistryMapping().get(domainURI);
             if (endpointRegistryURI == null) {
@@ -128,6 +131,26 @@ public class ExtensibleDomainRegistryFactory implements DomainRegistryFactory {
             allSchemes = supportedSchemes.toArray(new String[supportedSchemes.size()]);
         }
         return allSchemes;
+    }
+
+    /**
+     * Derive a domain name from a domain URI
+     * Examples:
+     * Domain URI  -           Domain Name
+     * default                 default
+     * foo                     foo
+     * uri:foo                 foo
+     * uri://foo?key=x&key2=y  foo
+     * uri://foo/bar           foo/bar
+     */
+    private static String getDomainName(String domainURI) {
+        int scheme = domainURI.indexOf(':');
+        int qm = domainURI.indexOf('?');
+        if (qm == -1) {
+            return domainURI.substring(scheme+1);
+        } else {
+            return domainURI.substring(scheme+1, qm);
+        }
     }
 
 }
