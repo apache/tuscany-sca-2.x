@@ -38,7 +38,7 @@
     </dependencies>
 
   <modules>
-                <module>async-services</module>
+                <!-- module>async-services</module removed due to hang, see TUSCANY-3886 -->
                 <module>base</module>
                 <module>builder</module>
                 <module>bpel</module>
