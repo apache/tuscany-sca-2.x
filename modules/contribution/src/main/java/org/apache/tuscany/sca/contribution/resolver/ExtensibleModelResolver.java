@@ -65,7 +65,7 @@ public class ExtensibleModelResolver implements ModelResolver {
      * @param modelType
      * @return
      */
-    private ModelResolver getModelResolverInstance(Class<?> modelType) {
+    public ModelResolver getModelResolverInstance(Class<?> modelType) {
         // Look up a model resolver instance for the model class or
         // each implemented interface
         Class<?>[] interfaces = modelType.getInterfaces();
