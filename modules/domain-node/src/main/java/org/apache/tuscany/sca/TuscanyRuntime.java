@@ -113,7 +113,7 @@ public class TuscanyRuntime {
         try {
             TuscanyRuntime runtime = newInstance();
             String domain = domainURI == null ? DEFAUL_DOMAIN_NAME : domainURI.toString();
-            DomainRegistry domainRegistry = runtime.domainRegistryFactory.getEndpointRegistry(domain, getDomainName(domain));
+            DomainRegistry domainRegistry = runtime.domainRegistryFactory.getEndpointRegistry(domain, null);
             NodeImpl node = new NodeImpl(runtime.deployer, runtime.compositeActivator, domainRegistry, runtime.extensionPointRegistry, runtime);
 
             if (dependentContributionURLs != null) {
@@ -155,11 +155,10 @@ public class TuscanyRuntime {
      * @return a Node
      */
     public Node createNode(String domainURI) {
-        String domainName = DEFAUL_DOMAIN_NAME;
-        if (domainURI != null){
-            domainName = getDomainName(domainURI);
+        if (domainURI == null){
+            domainURI = DEFAUL_DOMAIN_NAME;
         }
-        DomainRegistry domainRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, domainName);
+        DomainRegistry domainRegistry = domainRegistryFactory.getEndpointRegistry(domainURI, null);
         return new NodeImpl(deployer, compositeActivator, domainRegistry, extensionPointRegistry, null);
     }
     
@@ -335,16 +334,6 @@ public class TuscanyRuntime {
      */
     public AssemblyFactory getAssemblyFactory() {
         return assemblyFactory;
-    }
-
-    private static String getDomainName(String domainURI) {
-        int scheme = domainURI.indexOf(':');
-        int qm = domainURI.indexOf('?');
-        if (qm == -1) {
-            return domainURI.substring(scheme+1);
-        } else {
-            return domainURI.substring(scheme+1, qm);
-        }
     }
 
     protected NodeConfiguration loadConfiguration(String configURL) {
