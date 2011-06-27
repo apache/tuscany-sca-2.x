@@ -22,12 +22,15 @@ package org.apache.tuscany.sca.impl;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -54,9 +57,11 @@ import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.runtime.ContributionListener;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
+import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.oasisopen.sca.NoSuchServiceException;
 
 public class NodeImpl implements Node {
+    private static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
 
     private Deployer deployer;
     private CompositeActivator compositeActivator;
@@ -70,6 +75,7 @@ public class NodeImpl implements Node {
     private Map<String, DeployedComposite> stoppedComposites = new HashMap<String, DeployedComposite>();
     
     private boolean endpointsIncludeDomainName;
+    private boolean quietLogging;
 
     public NodeImpl(Deployer deployer,
                      CompositeActivator compositeActivator,
@@ -94,6 +100,10 @@ public class NodeImpl implements Node {
         });
 
         endpointsIncludeDomainName = !TuscanyRuntime.DEFAUL_DOMAIN_NAME.equals(domainRegistry.getDomainName());
+        
+        UtilityExtensionPoint utilities = extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class);
+        this.quietLogging = Boolean.parseBoolean(utilities.getUtility(RuntimeProperties.class).getProperties().getProperty(RuntimeProperties.QUIET_LOGGING));
+        if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "NodeImpl " + domainRegistry.getDomainName());
     }
 
     // TODO: install shouldn't throw ValidationException as it shouldn't do any validation, its
@@ -103,11 +113,14 @@ public class NodeImpl implements Node {
         return installContribution(null, contributionURL, null, null);
     }
 
-    public String installContribution(String uri, String contributionURL) throws ContributionReadException, ValidationException {
+    public String installContribution(String uri, String contributionURL) throws ContributionReadException, ValidationException {        if (logger.isLoggable(Level.FINE)) logger.log(Level.FINE, "updateUsingComposites", contributionURL);
         return installContribution(uri, contributionURL, null, null);
     }
 
     public boolean updateContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ValidationException, ActivationException {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.log(Level.FINE, "updateContribution" + Arrays.asList(new Object[]{uri, contributionURL, metaDataURL, dependentContributionURIs}));
+        }
         ContributionDescription ic = domainRegistry.getInstalledContribution(uri);
         if (ic == null) {
             installContribution(uri, contributionURL, metaDataURL, dependentContributionURIs);
@@ -150,10 +163,14 @@ public class NodeImpl implements Node {
             }
         }
         
+        if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "updateContribution: " + uri);
         return true;
     }
     
     public String installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs) throws ContributionReadException, ValidationException {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.log(Level.FINE, "installContribution" + Arrays.asList(new Object[]{uri, contributionURL, metaDataURL, dependentContributionURIs}));
+        }
         ContributionDescription cd = new ContributionDescription(uri, IOHelper.getLocationAsURL(contributionURL).toString());
 
         if (dependentContributionURIs != null) {
@@ -168,10 +185,14 @@ public class NodeImpl implements Node {
 
         domainRegistry.installContribution(cd);
 
+        if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "installContribution: " + cd.getURI());
         return cd.getURI();
     }
     
     public void installContribution(Contribution contribution, List<String> dependentContributionURIs) {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.log(Level.FINE, "installContribution" + Arrays.asList(new Object[]{contribution, dependentContributionURIs}));
+        }
         ContributionDescription cd = new ContributionDescription(contribution.getURI(), contribution.getLocation());
         if (dependentContributionURIs != null) {
             cd.getDependentContributionURIs().addAll(dependentContributionURIs);
@@ -179,6 +200,7 @@ public class NodeImpl implements Node {
         cd.configureMetaData(contribution);
         domainRegistry.installContribution(cd);
         loadedContributions.put(cd.getURI(), contribution);
+        if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "installContribution: " + cd.getURI());
     }
     
     public void uninstallContribution(String contributionURI) {
@@ -192,6 +214,7 @@ public class NodeImpl implements Node {
                 i.remove();
             }
         }
+        if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "uninstallContribution: " + contributionURI);
     }
     
     protected void mergeContributionMetaData(String metaDataURL, Contribution contribution) throws ValidationException {
@@ -255,12 +278,16 @@ public class NodeImpl implements Node {
     }
 
     protected String addDeploymentComposite(ContributionDescription cd, Composite composite) {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.log(Level.FINE, "addDeploymentComposite" + Arrays.asList(new Object[]{cd, composite}));
+        }
         if (composite.getURI() == null || composite.getURI().length() < 1) {
             composite.setURI(composite.getName().getLocalPart() + ".composite");
         }
         composite.setContributionURI(cd.getURI());
         cd.getAdditionalDeployables().put(composite.getURI(), Utils.modelToXML(composite, false, extensionPointRegistry));
         domainRegistry.updateInstalledContribution(cd);
+        if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "addDeploymentComposite: " + composite.getURI());
         return composite.getURI();
     }
 
@@ -305,6 +332,7 @@ public class NodeImpl implements Node {
             dc.start();
             startedComposites.put(key, dc);
         }
+        if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "startComposite: " + key);
     }
 
     @Override
@@ -313,6 +341,7 @@ public class NodeImpl implements Node {
         if (!"Started.".equals(response)) {
             throw new ActivationException(response);
         }
+        if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "startComposite: " + contributionURI + " " + compositeURI + " " + nodeName);
     }
 
     public void stopComposite(String contributionURI, String compositeURI) throws ActivationException {
@@ -332,6 +361,7 @@ public class NodeImpl implements Node {
                 throw new ActivationException(response);
             }
         }
+        if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "stopComposite: " + key);
     }
 
     public void stopCompositeAndUninstallUnused(String contributionURI, String compositeURI) throws ActivationException {
@@ -350,6 +380,7 @@ public class NodeImpl implements Node {
             }
             uninstallContribution(curi);
         }
+        if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "stopCompositeAndUninstallUnused: " + key);
     }
 
     public String getDomainURI() {
@@ -509,6 +540,7 @@ public class NodeImpl implements Node {
                 startComposite(dcContributionURI, dcCompositeURI);
             }
         }
+        if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "updateUsingComposites", updated);
         return updated;
     }
 
