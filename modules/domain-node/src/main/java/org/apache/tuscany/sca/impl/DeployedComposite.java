@@ -34,6 +34,8 @@ import org.apache.tuscany.sca.assembly.impl.CompositeImpl;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.resolver.ClassReference;
+import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -103,6 +105,10 @@ public class DeployedComposite {
         builtComposite.setName(composite.getName());
         builtComposite.setURI(composite.getURI());
         builtComposite.setContributionURI(composite.getContributionURI());
+        
+        if (contribution.getClassLoader() == null) {
+            contribution.setClassLoader((ClassLoader)((ExtensibleModelResolver)contribution.getModelResolver()).getModelResolverInstance(ClassReference.class));        
+        }
 
         compositeContext = new CompositeContext(extensionPointRegistry, 
                                                 domainRegistry, 
