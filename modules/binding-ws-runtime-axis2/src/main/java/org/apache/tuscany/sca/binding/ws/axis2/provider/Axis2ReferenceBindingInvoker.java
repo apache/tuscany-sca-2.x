@@ -117,7 +117,8 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
             WSAxis2BindingContext bindingContext = new WSAxis2BindingContext();
             bindingContext.setAxisOperationClient(operationClient);
             bindingContext.setAxisOutMessageContext(operationClient.getMessageContext("Out"));
-            bindingContext.setAxisOutMessageContext(operationClient.getMessageContext("In"));
+            // set in the transport invoker when the response is received
+            //bindingContext.setAxisInMessageContext(operationClient.getMessageContext("In"));
             msg.setBindingContext(bindingContext);
             
             msg = endpointReference.getBindingInvocationChain().getHeadInvoker().invoke(msg);
