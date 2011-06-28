@@ -41,12 +41,14 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
     private DomainRegistry domainRegistry;
     private boolean remoteClient;
     
+    public static URI default_domainURI = URI.create("default");
+    
     public static void setSCAClientFactoryFinder(SCAClientFactoryFinder factoryFinder) {
         SCAClientFactory.factoryFinder = factoryFinder;
     }
 
     public SCAClientFactoryImpl(URI domainURI) throws NoSuchDomainException {
-        super(domainURI);
+        super(domainURI == null ? default_domainURI : domainURI);
         findLocalRuntime();
     }   
     
