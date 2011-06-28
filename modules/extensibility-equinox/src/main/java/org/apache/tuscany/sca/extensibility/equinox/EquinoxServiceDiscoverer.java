@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -128,8 +130,16 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             return javaClass;
         }
 
-        public Class<?> loadClass(String className) throws ClassNotFoundException {
-            return bundle.loadClass(className);
+        public Class<?> loadClass(final String className) throws ClassNotFoundException {
+            try {
+                return AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
+                    public Class<?> run() throws ClassNotFoundException {
+                        return bundle.loadClass(className);
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                throw (ClassNotFoundException)e.getException();
+            }
         }
 
         public URL getLocation() {
@@ -205,7 +215,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
 
     }
 
-    public ServiceDeclaration getServiceDeclaration(String name) throws IOException {
+    public ServiceDeclaration getServiceDeclaration(String name) {
         Collection<ServiceDeclaration> declarations = getServiceDeclarations(name);
         if (declarations.isEmpty()) {
             return null;
@@ -253,80 +263,85 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         return set;
     }
 
-    public Collection<ServiceDeclaration> getServiceDeclarations(String serviceName) throws IOException {
-        boolean debug = logger.isLoggable(Level.FINE);
-        Collection<ServiceDeclaration> descriptors = new HashSet<ServiceDeclaration>();
-
-        // http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/xpath/XPathFactory.html
-        boolean isPropertyFile = "javax.xml.xpath.XPathFactory".equals(serviceName);
-        boolean isTuscanyService = serviceName.startsWith("org.apache.tuscany.sca.");
-
-        if (serviceName.startsWith("/")) {
-            // If the service name starts with /, treat it as the entry name
-            serviceName = serviceName.substring(1);
-        } else {
-            // Use JDK SPI pattern
-            serviceName = "META-INF/services/" + serviceName;
-        }
-
-        Set<URL> visited = new HashSet<URL>();
-        //System.out.println(">>>> getServiceDeclarations()");
-        for (Bundle bundle : getBundles(isTuscanyService)) {
-            //            if (!isProviderBundle(bundle)) {
-            //                continue;
-            //            }
-            Enumeration<URL> urls = null;
-            try {
-                // Use getResources to find resources on the classpath of the bundle
-                // Please note there are cases that getResources will return null even
-                // the bundle containing such entries:
-                // 1. There is a match on Import-Package or DynamicImport-Package, and another
-                // bundle exports the resource package, there is a possiblity that it doesn't
-                // find the containing entry
-                // 2. The bundle cannot be resolved, then getResources will return null
-                urls = bundle.getResources(serviceName);
-                if (urls == null) {
-                    URL entry = bundle.getEntry(serviceName);
-                    if (entry != null) {
-                        logger.warning("Unresolved resource " + serviceName + " found in bundle: " + toString(bundle));
-                        try {
-                            bundle.start();
-                        } catch (BundleException e) {
-                            logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
-                        }
-                        // urls = Collections.enumeration(Arrays.asList(entry));
-                    }
-                }
-            } catch (IOException e) {
-                logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
-            }
-            if (urls == null) {
-                continue;
-            }
-            while (urls.hasMoreElements()) {
-                final URL url = urls.nextElement();
-
-                if (!visited.add(url)) {
-                    // The URL has already been processed
-                    continue;
-                }
-
-                if (debug) {
-                    logger.fine("Reading service provider file: " + url.toExternalForm());
-                }
-                try {
-                    for (Map<String, String> attributes : ServiceDeclarationParser.load(url, isPropertyFile)) {
-                        String className = attributes.get("class");
-                        ServiceDeclarationImpl descriptor =
-                            new ServiceDeclarationImpl(bundle, url, className, attributes);
-                        descriptors.add(descriptor);
-                    }
-                } catch (IOException e) {
-                    logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
-                }
-            }
-        }
-        return descriptors;
+    public Collection<ServiceDeclaration> getServiceDeclarations(final String _serviceName) {
+        return AccessController.doPrivileged(new PrivilegedAction<Collection<ServiceDeclaration>>() {
+          public Collection<ServiceDeclaration> run() {
+              boolean debug = logger.isLoggable(Level.FINE);
+              Collection<ServiceDeclaration> descriptors = new HashSet<ServiceDeclaration>();
+              
+              // http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/xpath/XPathFactory.html
+              boolean isPropertyFile = "javax.xml.xpath.XPathFactory".equals(_serviceName);
+              boolean isTuscanyService = _serviceName.startsWith("org.apache.tuscany.sca.");
+              
+              String serviceName;
+              if (_serviceName.startsWith("/")) {
+                  // If the service name starts with /, treat it as the entry name
+                  serviceName = _serviceName.substring(1);
+              } else {
+                  // Use JDK SPI pattern
+                  serviceName = "META-INF/services/" + _serviceName;
+              }
+              
+              Set<URL> visited = new HashSet<URL>();
+              //System.out.println(">>>> getServiceDeclarations()");
+              for (Bundle bundle : getBundles(isTuscanyService)) {
+                  //            if (!isProviderBundle(bundle)) {
+                  //                continue;
+                  //            }
+                  Enumeration<URL> urls = null;
+                  try {
+                      // Use getResources to find resources on the classpath of the bundle
+                      // Please note there are cases that getResources will return null even
+                      // the bundle containing such entries:
+                      // 1. There is a match on Import-Package or DynamicImport-Package, and another
+                      // bundle exports the resource package, there is a possiblity that it doesn't
+                      // find the containing entry
+                      // 2. The bundle cannot be resolved, then getResources will return null
+                      urls = bundle.getResources(serviceName);
+                      if (urls == null) {
+                          URL entry = bundle.getEntry(serviceName);
+                          if (entry != null) {
+                              logger.warning("Unresolved resource " + serviceName + " found in bundle: " + EquinoxServiceDiscoverer.toString(bundle));
+                              try {
+                                  bundle.start();
+                              } catch (BundleException e) {
+                                  logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
+                              }
+                              // urls = Collections.enumeration(Arrays.asList(entry));
+                          }
+                      }
+                  } catch (IOException e) {
+                      logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
+                  }
+                  if (urls == null) {
+                      continue;
+                  }
+                  while (urls.hasMoreElements()) {
+                      final URL url = urls.nextElement();
+              
+                      if (!visited.add(url)) {
+                          // The URL has already been processed
+                          continue;
+                      }
+              
+                      if (debug) {
+                          logger.fine("Reading service provider file: " + url.toExternalForm());
+                      }
+                      try {
+                          for (Map<String, String> attributes : ServiceDeclarationParser.load(url, isPropertyFile)) {
+                              String className = attributes.get("class");
+                              ServiceDeclarationImpl descriptor =
+                                  new ServiceDeclarationImpl(bundle, url, className, attributes);
+                              descriptors.add(descriptor);
+                          }
+                      } catch (IOException e) {
+                          logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
+                      }
+                  }
+              }
+              return descriptors;
+          }
+        });
     }
 
     public ClassLoader getContextClassLoader() {
