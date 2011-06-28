@@ -118,7 +118,7 @@ public class TuscanyServiceProvider {
         Message msg = messageFactory.createMessage();
         msg.setOperation(operation);
         WSAxis2BindingContext bindingContext = new WSAxis2BindingContext();
-        bindingContext.setAxisOutMessageContext(inMC);
+        bindingContext.setAxisInMessageContext(inMC);
         bindingContext.setAxisOutMessageContext(outMC); //TUSCANY-3881
         msg.setBindingContext(bindingContext);
 
