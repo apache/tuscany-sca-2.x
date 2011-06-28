@@ -260,7 +260,7 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
         
         try {
             Constructor<? extends SCAClientFactory> URIConstructor = 
-            	factoryImplClass.getConstructor(domainURI.getClass());
+            	factoryImplClass.getConstructor(URI.class);
             SCAClientFactory provider = 
                URIConstructor.newInstance( domainURI );
             return provider;
