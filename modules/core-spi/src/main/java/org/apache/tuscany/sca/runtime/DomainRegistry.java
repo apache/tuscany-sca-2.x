@@ -67,6 +67,8 @@ public interface DomainRegistry {
     // List<EndpointReference> findEndpointReference(Endpoint endpoint);
     List<EndpointReference> getEndpointReferences();
     
+    boolean isOutOfDate(EndpointReference endpointReference);
+    
     /** 
      * Returns a list of EndpointReferences that have a URI that matches a given URI
      * @param uri - the URI to match

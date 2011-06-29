@@ -96,6 +96,10 @@ public abstract class BaseDomainRegistry implements DomainRegistry, LifeCycleLis
         }
     }
 
+    public boolean isOutOfDate(EndpointReference endpointReference) {
+        return ! findEndpoint(endpointReference).contains(endpointReference.getTargetEndpoint());
+    }
+    
     public List<Endpoint> findEndpoint(EndpointReference endpointReference) {
         logger.fine("Find endpoint for reference - " + endpointReference);
 
