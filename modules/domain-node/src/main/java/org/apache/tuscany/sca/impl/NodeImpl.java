@@ -103,7 +103,7 @@ public class NodeImpl implements Node {
         
         UtilityExtensionPoint utilities = extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class);
         this.quietLogging = Boolean.parseBoolean(utilities.getUtility(RuntimeProperties.class).getProperties().getProperty(RuntimeProperties.QUIET_LOGGING));
-        if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "NodeImpl " + domainRegistry.getDomainName());
+        if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "domain: " + domainRegistry.getDomainName() + (!domainRegistry.getDomainName().equals(domainRegistry.getDomainURI()) ? "" : (" domainURI: " + domainRegistry.getDomainURI())));
     }
 
     // TODO: install shouldn't throw ValidationException as it shouldn't do any validation, its
