@@ -470,6 +470,12 @@ public class ComponentContextImpl implements RuntimeComponentContext {
                     }
                     InterfaceContractMapper ifcm = registry.getExtensionPoint(InterfaceContractMapper.class);
                     compatible = ifcm.isCompatibleSubset(biContract, interfaceContract);
+		    // If the business interface class is not assignable from the service interface class but
+		    // they are compatible, we need to return an InterfaceContract with the business interface
+		    // class to store on the reference side. 
+		    if ( compatible ) {
+			return biContract;
+		    }
                 }
 
             }
