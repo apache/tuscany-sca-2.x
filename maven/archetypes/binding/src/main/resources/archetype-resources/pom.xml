@@ -26,9 +26,9 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>binding-${project.artifactId}</artifactId>
+    <artifactId>binding-${artifactId}</artifactId>
     <groupId>${groupId}</groupId>
-    <version>${project.version}</version>
+    <version>${version}</version>
     <name>Apache Tuscany SCA ${bindingName} Binding Extension</name>
 
     <dependencies>
