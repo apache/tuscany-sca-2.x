@@ -60,8 +60,8 @@ import org.apache.tuscany.sca.policy.Qualifier;
 import org.apache.tuscany.sca.provider.EndpointReferenceAsyncProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
-import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
+import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.runtime.UnknownEndpointHandler;
@@ -963,8 +963,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         if (te != null && !te.isUnresolved()
             && te.getURI() != null
             && endpointReference.getStatus() != EndpointReference.Status.RESOLVED_BINDING) {
-            List<Endpoint> endpoints = domainRegistry.findEndpoint(endpointReference);
-            return ! endpoints.contains(endpointReference.getTargetEndpoint());
+            return domainRegistry.isOutOfDate(endpointReference);
         }
         return false;
     }
