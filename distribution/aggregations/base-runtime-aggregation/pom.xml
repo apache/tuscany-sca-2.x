@@ -91,9 +91,9 @@
      1/ it relies on generating the modules directory (which is not such a big deal)
      2/ it generates a bundle with contains jars and a bundle classpath so is not jse friendly. 
             <plugin>
-                <groupId>org.apache.tuscany.maven.plugins</groupId> 
-                <artifactId>maven-bundle-plugin</artifactId> 
-                <version>1.0.7-SNAPSHOT</version>
+                <groupId>org.apache.tuscany.sca</groupId> 
+                <artifactId>tuscany-bundle-plugin</artifactId> 
+                <version>1.0.8</version>
                 <executions>
                     <execution>
                         <id>distribution-modules</id>

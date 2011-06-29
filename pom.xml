@@ -165,13 +165,13 @@
                 <module>features/eclipse-pde</module>
             </modules>
            <build>
-                <defaultGoal>org.apache.tuscany.maven.plugins:maven-bundle-plugin:eclipse</defaultGoal>
+                <defaultGoal>org.apache.tuscany.sca:tuscany-bundle-plugin:eclipse</defaultGoal>
                 <pluginManagement>
                 <plugins>
                    <plugin> 
-                       <groupId>org.apache.tuscany.maven.plugins</groupId> 
-                       <artifactId>maven-bundle-plugin</artifactId> 
-                       <version>1.0.5</version> 
+                       <groupId>org.apache.tuscany.sca</groupId> 
+                       <artifactId>tuscany-bundle-plugin</artifactId> 
+                       <version>1.0.8</version> 
                        <extensions>true</extensions> 
                     </plugin>
                     <plugin>
@@ -203,13 +203,13 @@
                 <module>distribution</module>
             </modules>
            <build>
-                <defaultGoal>org.apache.tuscany.maven.plugins:maven-bundle-plugin:eclipse</defaultGoal>
+                <defaultGoal>org.apache.tuscany.sca:tuscany-bundle-plugin:eclipse</defaultGoal>
                 <pluginManagement>
                 <plugins>
                    <plugin> 
-                       <groupId>org.apache.tuscany.maven.plugins</groupId> 
-                       <artifactId>maven-bundle-plugin</artifactId> 
-                       <version>1.0.5</version> 
+                       <groupId>org.apache.tuscany.sca</groupId> 
+                       <artifactId>tuscany-bundle-plugin</artifactId> 
+                       <version>1.0.8</version> 
                        <extensions>true</extensions> 
                     </plugin>
                     <plugin>
