@@ -31,14 +31,14 @@ public class HelloWorldService implements HelloWorld {
     
     public String getGreetings(String name) {
         Subject subject = requestContext.getSecuritySubject();
-        String response = "Hello " + name + " ";
-        
+        String response = "Hello " + name;
+/*        
         if (subject == null){
             response += "null subject";
         } else {
             response += subject.getPrincipals().iterator().next().getName();
         }
-        
+*/
         System.out.println("At service: " + response);
         return response;
     }

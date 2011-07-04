@@ -32,7 +32,7 @@ public class HelloworldTestCase extends TestCase {
     private HelloWorld helloWorld;
 
     public void testCalculator() throws Exception {
-        assertEquals("Hello fred myname", helloWorld.getGreetings("fred"));
+        assertEquals("Hello fred", helloWorld.getGreetings("fred"));
     }
 
     @Override

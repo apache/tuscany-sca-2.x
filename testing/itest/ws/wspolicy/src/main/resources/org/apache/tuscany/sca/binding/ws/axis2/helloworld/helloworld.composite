@@ -30,7 +30,7 @@
         <reference name="helloWorldWS" requires="integrity">
             <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
             <binding.ws wsdlElement="http://helloworld#wsdl.binding(HelloWorldSoapBinding)"
-                        uri="http://localhost:8081/HelloWorldService/HelloWorld"/>
+                        uri="http://localhost:8080/HelloWorldService/HelloWorld"/>
         </reference>    
     </component>
     
