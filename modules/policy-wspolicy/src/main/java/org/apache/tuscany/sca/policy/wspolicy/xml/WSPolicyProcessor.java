@@ -97,7 +97,13 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements
         
         // normalize the neethi tree so we can easily identify
         // the policy alternatives
-        neethiPolicy.normalize(true);
+/*  Messes up the hierarchy if rampart config policies included      
+        try {
+            neethiPolicy.normalize(true);
+        } catch (UnsupportedOperationException ex){
+            // RampartConfig policies don't support this yet
+        }
+*/        
         
         // top-level children of ExactlyOne are policy alternatives so
         // for each child create a policy model list and pull the 
@@ -138,6 +144,10 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements
                 XMLStreamWriter writer = outputFactory.createXMLStreamWriter(outputStream);
                 
                 policyComponent.serialize(writer);
+                writer.flush();
+                writer.close();
+                outputStream.flush();
+                outputStream.close();
                 
                 ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
                 XMLStreamReader reader = inputFactory.createXMLStreamReader(inputStream);

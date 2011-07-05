@@ -118,13 +118,12 @@
         <module>node-launcher</module>
         <module>node-launcher-equinox</module>
         <module>node-manager</module>
-        <module>policy-security</module>
-        <module>policy-wspolicy</module>
-        <!--module>policy-xml-ws</module-->
         <module>policy-logging</module>
+        <module>policy-security</module>
         <module>policy-transaction</module>
         <module>policy-transaction-runtime</module>
-        <module>policy-transaction-runtime-geronimo</module>        
+        <module>policy-transaction-runtime-geronimo</module>
+        <module>policy-wspolicy</module>        
         <module>shell</module>
         <module>sca-api</module>
         <module>sca-client-impl</module>

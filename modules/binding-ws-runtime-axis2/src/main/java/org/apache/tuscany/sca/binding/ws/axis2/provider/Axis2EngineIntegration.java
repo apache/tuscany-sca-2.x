@@ -19,7 +19,9 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2.provider;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -49,16 +51,24 @@ import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
+import org.apache.axis2.deployment.DeploymentEngine;
+import org.apache.axis2.deployment.DeploymentErrorMsgs;
+import org.apache.axis2.deployment.DeploymentException;
+import org.apache.axis2.deployment.ModuleBuilder;
 import org.apache.axis2.deployment.URLBasedAxisConfigurator;
 import org.apache.axis2.deployment.util.Utils;
 import org.apache.axis2.description.AxisEndpoint;
+import org.apache.axis2.description.AxisModule;
 import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.Parameter;
+import org.apache.axis2.description.Version;
 import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
 import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.description.WSDLToAxisServiceBuilder;
+import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.MessageReceiver;
+import org.apache.axis2.i18n.Messages;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.common.xml.XMLDocumentHelper;
@@ -135,21 +145,20 @@ public class Axis2EngineIntegration {
             try {
                 axis2Config = AccessController.doPrivileged(new PrivilegedExceptionAction<Axis2Config>() {
                     public Axis2Config run() throws AxisFault, MalformedURLException {
-                        // collect together the classloaders that Axis2 requireds in order to load
-                        // pluggable items such as the Tuscany MessageReceivers and the xerces 
+                        // collect together the classloaders that Axis2 requires in order to load
+                        // pluggable items such as the Tuscany MessageReceivers and the Xerces 
                         // document builder. 
                         ClassLoader wsBindingCL = getClass().getClassLoader();
                         ClassLoader axis2CL = URLBasedAxisConfigurator.class.getClassLoader();
-                        ClassLoaderContext classLoaderContext =
-                            new ClassLoaderContext(wsBindingCL, axis2CL);
+                        ClassLoaderContext classLoaderContext = new ClassLoaderContext(wsBindingCL, axis2CL);
 
-                        classLoaderContext =
-                            new ClassLoaderContext(classLoaderContext.getClassLoader(), serviceDiscovery,
-                                                   XMLInputFactory.class, DocumentBuilderFactory.class);
+                        classLoaderContext = new ClassLoaderContext(classLoaderContext.getClassLoader(), 
+                                                                    serviceDiscovery,
+                                                                    XMLInputFactory.class, 
+                                                                    DocumentBuilderFactory.class);
 
-                        URL axis2xmlURL =
-                            wsBindingCL
-                                .getResource("org/apache/tuscany/sca/binding/ws/axis2/engine/conf/tuscany-axis2.xml");
+                        URL axis2xmlURL = wsBindingCL.getResource("org/apache/tuscany/sca/binding/ws/axis2/engine/conf/tuscany-axis2.xml");
+                        
                         if (axis2xmlURL != null) {
                             URL repositoryURL = new URL(axis2xmlURL, "../repository/");
                             Axis2Config config = new Axis2Config();
@@ -190,8 +199,72 @@ public class Axis2EngineIntegration {
         } catch (PrivilegedActionException e) {
             throw new ServiceRuntimeException(e.getException());
         }
-
     }
+    
+    // Some code to programatically load an Axis2 module only if we need it
+    // currently hard coded to load rampart only. Needs generalization
+    public synchronized static void loadRampartModule(ConfigurationContext axis2ConfigContext) {
+        try {
+            final AxisConfiguration axisConfiguration = axis2ConfigContext.getAxisConfiguration();
+            final URL rampartURL = new URL(axis2Config.repositoryURL.toString() + "modules/rampart-1.4.mar");
+            
+            ClassLoader deploymentClassLoader = org.apache.axis2.deployment.util.Utils.createClassLoader(
+                    new URL[]{rampartURL},
+                    axisConfiguration.getModuleClassLoader(),
+                    true,
+                    (File) axisConfiguration.getParameterValue(Constants.Configuration.ARTIFACTS_TEMP_DIR));
+            
+            final AxisModule module = new AxisModule();
+            module.setModuleClassLoader(deploymentClassLoader);
+            module.setParent(axisConfiguration);
+
+            if (module.getName() == null) {
+                module.setName("rampart-1.4");
+                module.setVersion(new Version("1.4"));
+            }
+            
+            populateModule(axis2ConfigContext, module, rampartURL);
+            module.setFileName(rampartURL);
+            
+            // Allow privileged access to read properties. Requires PropertiesPermission read in
+            // security policy.
+            try {
+                AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                    public Object run() throws IOException {
+                        DeploymentEngine.addNewModule(module, axisConfiguration);
+                        return null;
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                throw (AxisFault)e.getException();
+            }            
+           
+            org.apache.axis2.util.Utils.calculateDefaultModuleVersion(axisConfiguration.getModules(), 
+                                                                      axisConfiguration);
+            axisConfiguration.validateSystemPredefinedPhases();
+        } catch (IOException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }   
+    
+    private static void populateModule(ConfigurationContext axis2ConfigContext, AxisModule module, URL moduleUrl) throws DeploymentException {
+        try {
+            ClassLoader classLoader = module.getModuleClassLoader();
+            InputStream moduleStream = classLoader.getResourceAsStream("META-INF/module.xml");
+            if (moduleStream == null) {
+                moduleStream = classLoader.getResourceAsStream("meta-inf/module.xml");
+            }
+            if (moduleStream == null) {
+                throw new DeploymentException(Messages.getMessage(DeploymentErrorMsgs.MODULE_XML_MISSING, moduleUrl.toString()));
+            }
+            ModuleBuilder moduleBuilder = new ModuleBuilder(moduleStream, module, axis2ConfigContext.getAxisConfiguration());
+            moduleBuilder.populateModule();
+        } catch (IOException e) {
+            throw new DeploymentException(e);
+        }
+    }    
     
     //=========================================================  
     

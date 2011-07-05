@@ -64,6 +64,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.policy.util.PolicyHelper;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
@@ -108,17 +109,18 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
             contract.getInterface().resetDataBinding(OMElement.class.getName());
         }
         
-        isSOAP11Required = PolicyHelper.isIntentRequired(wsBinding, Constants.SOAP11_INTENT);
-        isSOAP12Required = PolicyHelper.isIntentRequired(wsBinding, Constants.SOAP12_INTENT);
+        // TODO - why don't intents get aggregated to EPR correctly?
+        isSOAP11Required = PolicyHelper.isIntentRequired((PolicySubject)wsBinding, Constants.SOAP11_INTENT);
+        isSOAP12Required = PolicyHelper.isIntentRequired((PolicySubject)wsBinding, Constants.SOAP12_INTENT);
         
-        isMTOMRequired = PolicyHelper.isIntentRequired(wsBinding, Axis2BindingProviderFactory.MTOM_INTENT);
+        isMTOMRequired = PolicyHelper.isIntentRequired((PolicySubject)wsBinding, Axis2BindingProviderFactory.MTOM_INTENT);
         
-        // TODO - this is not correct as there may be other, custom, policies that 
-        // require rampart. For example this is not going to pick up the case
-        // of external policy attachment
-        isRampartRequired = PolicyHelper.isIntentRequired(wsBinding, Constants.AUTHENTICATION_INTENT) ||
-                            PolicyHelper.isIntentRequired(wsBinding, Constants.CONFIDENTIALITY_INTENT) ||
-                            PolicyHelper.isIntentRequired(wsBinding, Constants.INTEGRITY_INTENT);          
+        // if the endpoint contains any WS Policy expressions then we probably need rampart
+        // TODO - need to take into account Axis configuration policy also
+        QName wsPolicyQName = new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "Policy");
+        if (PolicyHelper.getPolicies(endpointReference, wsPolicyQName).size() > 0){
+            isRampartRequired = true;
+        }         
 
         // Validate the configuration for provided policies
         
@@ -166,6 +168,10 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
         configContext = Axis2EngineIntegration.getAxisConfigurationContext(extensionPoints.getServiceDiscovery());
         
         // Apply the configuration from any other policies
+        
+        if (isRampartRequired){
+            Axis2EngineIntegration.loadRampartModule(configContext);
+        }
         
         for (PolicyProvider pp : this.endpointReference.getPolicyProviders()) {
             pp.configureBinding(this);

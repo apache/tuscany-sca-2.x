@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @tuscany.spi.extension.asclient
  */
 public class PolicyHelper {
-    public PolicySet getPolicySet(PolicySubject subject, QName policySetName) {
+    public static PolicySet getPolicySet(PolicySubject subject, QName policySetName) {
         for (PolicySet ps : subject.getPolicySets()) {
             if (ps.getName().equals(policySetName)) {
                 return ps;
@@ -46,7 +46,7 @@ public class PolicyHelper {
         return null;
     }
 
-    public Intent getIntent(Definitions subject, QName intentName) {
+    public static Intent getIntent(Definitions subject, QName intentName) {
         for (Intent i : subject.getIntents()) {
             if (i.getName().equals(intentName)) {
                 return i;
@@ -55,7 +55,7 @@ public class PolicyHelper {
         return null;
     }
 
-    public PolicySet getPolicySet(Definitions subject, QName policySetName) {
+    public static PolicySet getPolicySet(Definitions subject, QName policySetName) {
         for (PolicySet ps : subject.getPolicySets()) {
             if (ps.getName().equals(policySetName)) {
                 return ps;
@@ -64,7 +64,7 @@ public class PolicyHelper {
         return null;
     }
 
-    public Intent getIntent(PolicySubject subject, QName intentName) {
+    public static Intent getIntent(PolicySubject subject, QName intentName) {
         for (Intent i : subject.getRequiredIntents()) {
             if (i.getName().equals(intentName)) {
                 return i;
@@ -73,7 +73,7 @@ public class PolicyHelper {
         return null;
     }
 
-    public Collection<PolicyExpression> getPolicyExpressions(PolicySubject subject, QName policyName) {
+    public static Collection<PolicyExpression> getPolicyExpressions(PolicySubject subject, QName policyName) {
         Collection<PolicyExpression> policies = new ArrayList<PolicyExpression>();
         for (PolicySet ps : subject.getPolicySets()) {
             for (PolicyExpression exp : ps.getPolicies()) {
@@ -85,7 +85,7 @@ public class PolicyHelper {
         return policies;
     }
 
-    public Collection<Object> getPolicies(PolicySubject subject, QName policyName) {
+    public static Collection<Object> getPolicies(PolicySubject subject, QName policyName) {
         Collection<Object> policies = new ArrayList<Object>();
         for (PolicySet ps : subject.getPolicySets()) {
             for (PolicyExpression exp : ps.getPolicies()) {
@@ -95,36 +95,18 @@ public class PolicyHelper {
             }
         }
         return policies;
-    }
-    
-    public static PolicySet getPolicySet(Binding wsBinding, QName intentName) {
-        PolicySet returnPolicySet = null;
+    }   
 
-        if (wsBinding instanceof PolicySubject) {
-            PolicySubject policiedBinding = (PolicySubject)wsBinding;
-            for (PolicySet policySet : policiedBinding.getPolicySets()) {
-                for (Intent intent : policySet.getProvidedIntents()) {
-                    if (intent.getName().equals(intentName)) {
-                        returnPolicySet = policySet;
-                        break;
-                    }
-                }
+    public static boolean isIntentRequired(PolicySubject subject, QName intent) {
+
+        List<Intent> intents = ((PolicySubject)subject).getRequiredIntents();
+        for (Intent i : intents) {
+            if (intent.equals(i.getName())) {
+                return true;
             }
         }
 
-        return returnPolicySet;
-    }
-
-    public static boolean isIntentRequired(Binding wsBinding, QName intent) {
-        if (wsBinding instanceof PolicySubject) {
-            List<Intent> intents = ((PolicySubject)wsBinding).getRequiredIntents();
-            for (Intent i : intents) {
-                if (intent.equals(i.getName())) {
-                    return true;
-                }
-            }
-        }
-        return getPolicySet(wsBinding, intent) != null;
+        return getPolicySet(subject, intent) != null;
     }    
 
 }

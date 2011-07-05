@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.util.logging.Logger;
 
 import javax.wsdl.Port;
+import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
@@ -35,6 +36,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.policy.util.PolicyHelper;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -90,24 +92,18 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
         configContext.setContextRoot(servletHost.getContextPath());
         
         // Determine the configuration from the bindings "mayProvides" intents
-           
-        isSOAP12Required = PolicyHelper.isIntentRequired(wsBinding, Constants.SOAP12_INTENT);
+        // TODO - why don't intents get aggregated to EP correctly?
+        isSOAP12Required = PolicyHelper.isIntentRequired((PolicySubject)wsBinding, Constants.SOAP12_INTENT);
         
-        isMTOMRequired = PolicyHelper.isIntentRequired(wsBinding, Axis2BindingProviderFactory.MTOM_INTENT);
+        isMTOMRequired = PolicyHelper.isIntentRequired((PolicySubject)wsBinding, Axis2BindingProviderFactory.MTOM_INTENT);
         
-        // this is not correct as there may be other, custom, policies that 
-        // require rampart. For example this is not going to pick up the case
-        // of external policy attachment
-        isRampartRequired = PolicyHelper.isIntentRequired(wsBinding, Constants.AUTHENTICATION_INTENT) ||
-                            PolicyHelper.isIntentRequired(wsBinding, Constants.CONFIDENTIALITY_INTENT) ||
-                            PolicyHelper.isIntentRequired(wsBinding, Constants.INTEGRITY_INTENT);                  
-        
-        
-        // Apply the configuration from any other policies
-        
-        for (PolicyProvider pp : endpoint.getPolicyProviders()) {
-            pp.configureBinding(this);
-        }  
+        // if the endpoint contains any WS Policy expressions then we probably need rampart
+        // TODO - need to take into account Axis configuration policy also
+        QName wsPolicyQName = new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "Policy");
+        if (PolicyHelper.getPolicies(endpoint, wsPolicyQName).size() > 0){
+            isRampartRequired = true;
+        }               
+          
 
         // Update port addresses with runtime information
         // We can safely assume there is only one port here because you configure
@@ -142,7 +138,7 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
         // Apply the configuration from the mayProvides intents        
         
         if (isRampartRequired){
-            // TODO - do we need to go back to configurator?
+            Axis2EngineIntegration.loadRampartModule(configContext);
         }
         
         if (isMTOMRequired) {
@@ -152,6 +148,7 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
         if (isJMSRequired){
             // TODO - do we need to go back to configurator?
         }  
+        
         wsBinding.setURI(deployedURI);
         
         // Check the WSDL style as we only support some of them
@@ -178,6 +175,12 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
     public void start() {
         try {
             createAxisService(deployedURI, wsdlPort);
+            
+            // Apply the configuration from any other policies
+            
+            for (PolicyProvider pp : endpoint.getPolicyProviders()) {
+                pp.configureBinding(this);
+            }
            
             if (deployedURI.startsWith("http://") || 
                 deployedURI.startsWith("https://") || 
