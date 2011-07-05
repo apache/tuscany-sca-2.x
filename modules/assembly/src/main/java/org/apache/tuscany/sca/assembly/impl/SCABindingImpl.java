@@ -46,6 +46,7 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject {
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private ExtensionType extensionType;
+    private WireFormat wireFormat ;
 
     /**
      * Constructs a new SCA binding.
@@ -126,17 +127,19 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject {
     }
     
     public WireFormat getRequestWireFormat() {
-        return null;
+        return wireFormat;
     }
     
     public void setRequestWireFormat(WireFormat wireFormat) {  
+        this.wireFormat = wireFormat;
     }
     
     public WireFormat getResponseWireFormat() {
-        return null;
+        return wireFormat;
     }
     
     public void setResponseWireFormat(WireFormat wireFormat) {
+        this.wireFormat = wireFormat;
     }
     
     public OperationSelector getOperationSelector() {
