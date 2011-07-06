@@ -43,7 +43,6 @@ public class FormatJMSTextXMLInJMSObjectOutTestCase {
     }
 
     @Test
-    @Ignore("TUSCANY-3654")
     public void testHelloWorldCreate() throws Exception {
         HelloWorldService helloWorldService = node.getService(HelloWorldService.class, "HelloWorldReferenceComponent");
         
