@@ -51,11 +51,13 @@ import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
-import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.ContributionDescription;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.Version;
 import org.apache.tuscany.sca.shell.jline.JLine;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -71,6 +73,7 @@ public class Shell {
     private String currentDomain = "";
     private Map<String, Node> standaloneNodes = new HashMap<String, Node>();
     private Map<String, Node> nodes = new HashMap<String, Node>();
+    private Map<String, Command> commands = new HashMap<String, Command>();
 
     public static final String[] COMMANDS = new String[] {"addComposite", "bye", "domain", "domains", "domainComposite", "help", "install", "installed", "invoke",
                                                           "load", "nodes", "remove", "run", "save", "services", "start", "started", "stop"};
@@ -112,8 +115,32 @@ public class Shell {
     public Shell(String domainURI, boolean useJLine) {
         this.runtime = TuscanyRuntime.newInstance();
         this.useJline = useJLine;
+        
+        try {
+            initCommands();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        
         if (domainURI != null) {
             domain(domainURI);
+        }
+    }
+
+    void initCommands() throws IOException {
+        for (ServiceDeclaration sd : ServiceDiscovery.getInstance().getServiceDeclarations(Command.class)) {
+            try {
+                Class<?> c = Class.forName(sd.getClassName());
+                try {
+                    Command command = (Command)c.getConstructor(Shell.class).newInstance(this);
+                    commands.put(command.getName(), command);
+                } catch (NoSuchMethodException e) {
+                    Command command = (Command)c.newInstance();
+                    commands.put(command.getName(), command);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -525,6 +552,10 @@ public class Shell {
         return true;
     }
 
+    public Map<String, Command> getCommands() {
+        return commands;
+    }
+    
     public Node getNode() {
         return nodes.get(currentDomain);
     }
