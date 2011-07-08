@@ -801,6 +801,8 @@ public class Shell {
         if (command == null) {
             helpOverview();
         } else if (commands.keySet().contains(command)) {
+            out.println(commands.get(command).getShortHelp());
+            out.println();
             out.println(commands.get(command).getHelp());
         } else if ("help".equalsIgnoreCase(command)) {
             helpHelp();
