@@ -16,5 +16,6 @@
 # under the License.
 org.apache.tuscany.sca.shell.commands.AddComposite
 org.apache.tuscany.sca.shell.commands.start
+org.apache.tuscany.sca.shell.commands.stop
 org.apache.tuscany.sca.shell.commands.Uninstall
 
