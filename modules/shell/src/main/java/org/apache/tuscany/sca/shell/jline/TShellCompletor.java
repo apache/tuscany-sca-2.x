@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.shell.jline;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,6 +33,7 @@ import jline.FileNameCompletor;
 import jline.NullCompletor;
 import jline.SimpleCompletor;
 
+import org.apache.tuscany.sca.shell.Command;
 import org.apache.tuscany.sca.shell.Shell;
 
 /**
@@ -41,7 +43,7 @@ import org.apache.tuscany.sca.shell.Shell;
 public class TShellCompletor extends ArgumentCompletor {
 
     Map<String, Completor[]> completors;
-    final Completor commandCompletor = new SimpleCompletor(Shell.COMMANDS);
+    final Completor commandCompletor;
     final ArgumentDelimiter delim = new WhitespaceArgumentDelimiter();
     final Shell shell;
     
@@ -51,6 +53,8 @@ public class TShellCompletor extends ArgumentCompletor {
     public TShellCompletor(Shell shell) {
         super((Completor)null);
         this.shell = shell;
+        this.commandCompletor = new SimpleCompletor(shell.getCommandNames());
+        
         completors = new HashMap<String, Completor[]>();
         completors.put("help", new Completor[]{commandCompletor, commandCompletor, new NullCompletor()});    
         completors.put("install", new Completor[]{commandCompletor, new InstallCompletor(shell)});    
@@ -63,6 +67,13 @@ public class TShellCompletor extends ArgumentCompletor {
         completors.put("start", new Completor[]{commandCompletor, new ICURICompletor(shell), new CompositeURICompletor(shell), new RemoteNodeCompletor(shell), new NullCompletor()});    
         completors.put("started", new Completor[]{commandCompletor, new ICURICompletor(shell), new CompositeURICompletor(shell), new NullCompletor()});    
         completors.put("stop", new Completor[]{commandCompletor, new ICURICompletor(shell), new CompositeURICompletor(shell), new NullCompletor()});    
+        
+        for (Command c : shell.getCommands().values()) {
+            List<Completor> compleors = new ArrayList<Completor>();
+            compleors.add(commandCompletor);
+            compleors.addAll(Arrays.asList(c.getCompletors()));
+            completors.put(c.getName(), compleors.toArray(new Completor[]{}));
+        }
     }
 
     @Override

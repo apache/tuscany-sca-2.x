@@ -59,11 +59,11 @@ public class AddComposite implements Command {
     @Override
     public String getHelp() {
         StringBuilder helpText = new StringBuilder();
-        helpText.append("Adds a deployable composite to an installed contribution.");
+        helpText.append("Adds a deployable composite to an installed contribution.\n");
         helpText.append("\n");
-        helpText.append("Arguments:");
-        helpText.append("   contributionURI - (required) the URI of the installed contribution");
-        helpText.append("   compositeURL    - (required) the URL to an external composite file");
+        helpText.append("Arguments:\n");
+        helpText.append("   contributionURI - (required) the URI of the installed contribution\n");
+        helpText.append("   compositeURL    - (required) the URL to an external composite file\n");
         return helpText.toString();
     }
 
@@ -79,8 +79,9 @@ public class AddComposite implements Command {
             System.err.println(getShortHelp());
             return true;
         }
-        if (shell.getNode().getInstalledContributionURIs().contains(args[0])) {
+        if (!!!shell.getNode().getInstalledContributionURIs().contains(args[0])) {
             System.err.println("contribution not installed: " + args[0]);
+            return true;
         }
         
         File f = new File(IOHelper.getLocationAsURL(args[1]).toURI());

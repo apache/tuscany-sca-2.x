@@ -75,7 +75,7 @@ public class Shell {
     private Map<String, Node> nodes = new HashMap<String, Node>();
     private Map<String, Command> commands = new HashMap<String, Command>();
 
-    public static final String[] COMMANDS = new String[] {"addComposite", "bye", "domain", "domains", "domainComposite", "help", "install", "installed", "invoke",
+    public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "domainComposite", "help", "install", "installed", "invoke",
                                                           "load", "nodes", "remove", "run", "save", "services", "start", "started", "stop"};
 
     public static void main(final String[] args) throws Exception {
@@ -142,12 +142,6 @@ public class Shell {
                 e.printStackTrace();
             }
         }
-    }
-
-    boolean addComposite(String curi, String compositeURL) throws ActivationException, ValidationException, ContributionReadException, FileNotFoundException, XMLStreamException, URISyntaxException {
-        File f = new File(IOHelper.getLocationAsURL(compositeURL).toURI());
-        getNode().addDeploymentComposite(curi, new FileReader(f));
-        return true;
     }
 
     boolean domain(final String domainURI) {
@@ -552,6 +546,13 @@ public class Shell {
         return true;
     }
 
+    public String[] getCommandNames() {
+        List<String> cmds = new ArrayList<String>();
+        cmds.addAll(commands.keySet());
+        cmds.addAll(Arrays.asList(COMMANDS));
+        return cmds.toArray(new String[]{});
+    }
+
     public Map<String, Command> getCommands() {
         return commands;
     }
@@ -615,12 +616,14 @@ public class Shell {
     Callable<Boolean> eval(final List<String> toks) {
         final String op = toks.size() > 0 ? toks.get(0) : "";
 
-        if (op.equalsIgnoreCase("addComposite"))
+        if (commands.keySet().contains(op)) {
+            toks.remove(0);
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
-                    return addComposite(toks.get(1), toks.get(2));
+                   return commands.get(op).invoke(toks.toArray(new String[0]));
                 }
             };
+        }
         if (op.equalsIgnoreCase("domain"))
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
@@ -797,10 +800,10 @@ public class Shell {
         String command = (toks == null || toks.size() < 2) ? null : toks.get(1);
         if (command == null) {
             helpOverview();
+        } else if (commands.keySet().contains(command)) {
+            out.println(commands.get(command).getHelp());
         } else if ("help".equalsIgnoreCase(command)) {
             helpHelp();
-        } else if ("addComposite".equalsIgnoreCase(command)) {
-            helpAddComposite();
         } else if ("install".equalsIgnoreCase(command)) {
             helpInstall();
         } else if ("installed".equalsIgnoreCase(command)) {
@@ -838,7 +841,11 @@ public class Shell {
         out.println("Commands:");
         out.println();
         out.println("   help");
-        out.println("   addComposite <contributionURI> <compositeURI");
+        
+        for (Command command : commands.values()) {
+            out.println("   " + command.getShortHelp());
+        }
+
         out.println("   domain <domainURI>");
         out.println("   domains");
         out.println("   install [<uri>] <contributionURL> [-metadata <url>] [-duris <uri,uri,...>]");
@@ -860,16 +867,6 @@ public class Shell {
             out.println("Use Tab key for command and argument completion");
         out.println("For detailed help on each command do 'help <command>', for help of startup options do 'help startup'");
         return true;
-    }
-
-    void helpAddComposite() {
-        out.println("   addComposite <contributionURI> <compositeURI");
-        out.println();
-        out.println("   Adds a deployable composite to an installed contribution.");
-        out.println();
-        out.println("   Arguments:");
-        out.println("      contributionURI - (required) the URI of the installed contribution");
-        out.println("      compositeURL    - (required) the URL to an external composite file");
     }
 
     void helpHelp() {
