@@ -15,4 +15,5 @@
 # specific language governing permissions and limitations
 # under the License.
 org.apache.tuscany.sca.shell.commands.AddComposite
+org.apache.tuscany.sca.shell.commands.Uninstall
 
