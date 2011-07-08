@@ -29,18 +29,10 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.atmosphere.cpr.Broadcaster;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 /**
  * Receives callback invocations and sends messages back to the browser.
  */
 public class CometCallbackInvoker implements Invoker {
-
-    /**
-     * JSON converter
-     */
-    private static Gson gson = new GsonBuilder().serializeNulls().create();
 
     protected Operation operation;
     protected EndpointReference endpoint;
@@ -68,7 +60,7 @@ public class CometCallbackInvoker implements Invoker {
         } else {
             String callbackMethod = msg.getTo().getURI();
             Object[] body = msg.getBody();
-            broadcaster.broadcast(callbackMethod + "($.secureEvalJSON('" + gson.toJson(body[0]) + "'))");
+            broadcaster.broadcast(callbackMethod + "($.secureEvalJSON('" + JSONUtil.encodeResponse(body[0]) + "'))");
             response.setBody(Status.OK);
         }
         return response;

@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.binding.comet.runtime.handler;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -31,6 +29,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.binding.comet.runtime.JSONUtil;
 import org.apache.tuscany.sca.binding.comet.runtime.manager.CometEndpointManager;
 import org.apache.tuscany.sca.binding.comet.runtime.manager.CometOperationManager;
 import org.apache.tuscany.sca.binding.comet.runtime.manager.CometSessionManager;
@@ -38,30 +37,21 @@ import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.core.invocation.impl.MessageImpl;
-import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterLifeCyclePolicy;
-import org.atmosphere.cpr.BroadcasterLifeCyclePolicyListener;
 import org.atmosphere.cpr.BroadcasterLifeCyclePolicy.ATMOSPHERE_RESOURCE_POLICY;
+import org.atmosphere.cpr.BroadcasterLifeCyclePolicyListener;
 import org.atmosphere.jersey.JerseyBroadcaster;
 import org.atmosphere.jersey.SuspendResponse;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
  * Handles requests for comet services and for creating a persistent connection.
  */
 @Path("/")
 public class CometBindingHandler {
-
-    /**
-     * JSON converter
-     */
-    private static Gson gson = new GsonBuilder().serializeNulls().create();
 
     /**
      * Suspends the current HTTP connection.
@@ -111,14 +101,15 @@ public class CometBindingHandler {
         RuntimeEndpoint wire = CometEndpointManager.get(url);
         Operation operation = CometOperationManager.get(url);
 
-        final Object[] args = decodeJsonDataForOperation(jsonData, operation);
+        final Object[] args = JSONUtil.decodeJsonParamsForOperation(jsonData, operation);
         Message msg = createMessageWithMockedCometReference(args, sessionId, callbackMethod);
         boolean isVoidReturnType = operation.getOutputType().getLogical().isEmpty();
         if (!isVoidReturnType) {
             Object response = wire.invoke(operation, args);
             Broadcaster broadcaster = CometSessionManager.get(sessionId);
             if (broadcaster != null) {
-                broadcaster.broadcast(callbackMethod + "($.secureEvalJSON('" + gson.toJson(response) + "'))");
+                broadcaster.broadcast(callbackMethod + "($.secureEvalJSON('" + JSONUtil.encodeResponse(response)
+                        + "'))");
             }
         } else {
             wire.invoke(operation, msg);
@@ -149,66 +140,6 @@ public class CometBindingHandler {
         re.setCallbackEndpoint(callbackEndpoint);
         msg.setFrom(re);
         return msg;
-    }
-
-    /**
-     * Convert request parameters from JSON to operation parameter types.
-     * 
-     * @param jsonData
-     *            parameters in JSON array format
-     * @param operation
-     *            the operation to invoke
-     * @return an array of objects
-     */
-    private Object[] decodeJsonDataForOperation(String jsonData, Operation operation) {
-        Object[] args = new Object[operation.getInputType().getLogical().size()];
-        final String[] json = this.parseArray(jsonData);
-        int index = 0;
-        for (final DataType<?> dataType : operation.getInputType().getLogical()) {
-            args[index] = gson.fromJson(json[index], dataType.getPhysical());
-            index++;
-        }
-        return args;
-    }
-
-    /**
-     * Split the JSON array containing the arguments for the method call in
-     * order to avoid converting JSON to Object[]. Converting each object
-     * separately to it's corresponding type avoids type mismatch problems at
-     * service invocation.
-     * 
-     * @param jsonArray
-     *            the JSON array
-     * @return an array of JSON formatted strings
-     */
-    private String[] parseArray(String jsonArray) {
-        List<String> objects = new ArrayList<String>();
-        int bracketNum = 0;
-        int parNum = 0;
-        int startPos = 1;
-        for (int i = 0; i < jsonArray.length(); i++) {
-            switch (jsonArray.charAt(i)) {
-            case '{':
-                bracketNum++;
-                break;
-            case '}':
-                bracketNum--;
-                break;
-            case '[':
-                parNum++;
-                break;
-            case ']':
-                parNum--;
-                break;
-            case ',':
-                if ((bracketNum == 0) && (parNum == 1)) {
-                    objects.add(jsonArray.substring(startPos, i));
-                    startPos = i + 1;
-                }
-            }
-        }
-        objects.add(jsonArray.substring(startPos, jsonArray.length() - 1));
-        return objects.toArray(new String[] {});
     }
 
     public class CometBroadcasterLifeCyclePolicyListener implements BroadcasterLifeCyclePolicyListener {
