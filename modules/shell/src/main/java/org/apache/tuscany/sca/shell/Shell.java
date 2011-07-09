@@ -24,21 +24,16 @@ import static java.lang.System.out;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-
-import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
@@ -75,8 +70,8 @@ public class Shell {
     private Map<String, Node> nodes = new HashMap<String, Node>();
     private Map<String, Command> commands = new HashMap<String, Command>();
 
-    public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "domainComposite", "help", "install", "installed", "invoke",
-                                                          "load", "nodes", "remove", "run", "save", "services", "start", "started", "stop"};
+    public static final String[] COMMANDS = new String[] {"bye", "domain", "domains", "domainComposite", "help", "install", "installed",
+                                                          "load", "nodes", "remove", "run", "save", "services", "started"};
 
     public static void main(final String[] args) throws Exception {
         boolean useJline = true;
@@ -179,7 +174,6 @@ public class Shell {
             out.println("not in domain, use domain command first");
             return true;
         }
-        boolean startDeployables = toks.contains("-start");
         String metaDataURL = null;
         if (toks.contains("-metadata")) {
             metaDataURL = toks.get(toks.indexOf("-metadata") + 1);
@@ -290,57 +284,6 @@ public class Shell {
         return true;
     }
 
-    boolean invoke(final List<String> toks) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchServiceException {
-        String endpointName = toks.get(1);
-        String operationName = toks.get(2);
-        String params[] = new String[toks.size()- 3];
-        System.arraycopy(toks.toArray(), 3, params, 0, params.length);
-        Object proxy = getNode().getService(null, endpointName);
-        Object result = invoke(proxy, operationName, params);
-        if (result != null && result.getClass().isArray()) {
-            out.println(Arrays.toString((Object[])result));
-        } else {
-            out.println(result);
-        }
-        return true;
-    }
-
-    static Object invoke(Object proxy, String operationName, String... params) throws IllegalAccessException, InvocationTargetException {
-        for (Method m : proxy.getClass().getMethods()) {
-            if (m.getName().equals(operationName) && m.getParameterTypes().length == params.length) {
-                Object parameters[] = new Object[params.length];
-                int i = 0;
-                for (Class<?> type : m.getParameterTypes()) {
-                    if (type == byte.class || type == Byte.class) {
-                        parameters[i] = Byte.valueOf(params[i]);
-                    } else if (type == char.class || type == Character.class) {
-                        parameters[i] = params[i].charAt(0);
-                    } else if (type == boolean.class || type == Boolean.class) {
-                        parameters[i] = Boolean.valueOf(params[i]);
-                    } else if (type == short.class || type == Short.class) {
-                        parameters[i] = Short.valueOf(params[i]);
-                    } else if (type == int.class || type == Integer.class) {
-                        parameters[i] = Integer.valueOf(params[i]);
-                    } else if (type == long.class || type == Long.class) {
-                        parameters[i] = Long.valueOf(params[i]);
-                    } else if (type == float.class || type == Float.class) {
-                        parameters[i] = Float.valueOf(params[i]);
-                    } else if (type == double.class || type == Double.class) {
-                        parameters[i] = Double.valueOf(params[i]);
-                    } else if (type == String.class) {
-                        parameters[i] = params[i];
-                    } else {
-                        throw new IllegalArgumentException("Parameter type is not supported: " + type);
-                    }
-                    i++;
-                }
-                Object result = m.invoke(proxy, parameters);
-                return result;
-            }
-        }
-        throw new IllegalArgumentException("Invalid service operation: " + operationName);
-    }
-
     boolean listComposites(final String curi) throws ContributionReadException, ValidationException {
         if (getNode() == null) {
             return true;
@@ -358,15 +301,6 @@ public class Shell {
         Node node = runtime.createNodeFromXML(configXmlUrl);
         currentDomain = node.getDomainName();
         nodes.put(currentDomain, node);
-        return true;
-    }
-
-    boolean remove(final String curi) throws ContributionReadException, ActivationException, ValidationException {
-        if (getNode() == null) {
-            out.println("not in domain, use domain command first");
-            return true;
-        }
-        getNode().uninstallContribution(curi);
         return true;
     }
 
@@ -407,30 +341,6 @@ public class Shell {
         return true;
     }
 
-    public boolean stop(List<String> toks) throws ActivationException {
-        String curi = toks.get(1);
-        if (toks.size() > 2) {
-            getNode().stopComposite(curi, toks.get(2));
-        } else {
-            if (standaloneNodes.containsKey(curi)) {
-//                standaloneNodes.remove(curi).stopComposite(); // TODO continue standalone support?
-            } else if (nodes.containsKey(curi)) {
-                Node n = nodes.remove(curi);
-                n.stop();
-                if (n.getDomainName().equals(currentDomain)) {
-                    currentDomain = "";
-                }
-            } else {
-                out.println("TODO finish stop support");
-                
-//                for (String compositeURI : getNode().getStartedComposites()StartedCompositeURIs(curi)) {
-//                    getNode().stop(curi, compositeURI);
-//                }
-            }
-        }
-        return true;
-    }
-
     public boolean bye() {
         for (Node node : nodes.values()) {
             node.stop();
@@ -440,41 +350,6 @@ public class Shell {
             node.stop();
         }
         return false;
-    }
-
-    boolean start(String curi, String compositeURI) throws ActivationException, ValidationException, ContributionReadException {
-        getNode().startComposite(curi, compositeURI);
-
-//        Contribution c = getNode().getInstalledContribution(curi);
-//        for (Artifact a : c.getArtifacts()) {
-//            if (compositeURI.equals(a.getURI())) {
-//                getNode().start(curi, compositeURI);
-//                return true;
-//            }
-//        }
-//        // external composite file ('composite by value')
-//        try {
-//            URL url = IOHelper.getLocationAsURL(compositeURI);
-//            InputStream is = IOHelper.openStream(url);
-//            BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-//            getNode().start(curi, br);
-//        } catch (Exception e) {
-//            System.out.println(e);
-//        }
-
-        return true;
-    }
-
-    boolean start(String nodeName, String compositeURI, String contributionURL, String... dependentContributionURLs)
-        throws ActivationException, ValidationException {
-        Node node = TuscanyRuntime.runComposite(compositeURI, contributionURL, dependentContributionURLs);
-        standaloneNodes.put(nodeName, node);
-        return true;
-    }
-
-    boolean remoteStart(String contributionURI, String compositeURI, String nodeName) throws ActivationException {
-        getNode().startComposite(contributionURI, compositeURI, nodeName);
-        return true;
     }
 
     boolean started(final List<String> toks) {
@@ -654,12 +529,6 @@ public class Shell {
                     return installed(toks);
                 }
             };
-        if (op.equalsIgnoreCase("invoke"))
-            return new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    return invoke(toks);
-                }
-            };
         if (op.equalsIgnoreCase("load"))
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
@@ -670,12 +539,6 @@ public class Shell {
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
                     return nodes();
-                }
-            };
-        if (op.equalsIgnoreCase("remove"))
-            return new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    return remove(toks.get(1));
                 }
             };
         if (op.equalsIgnoreCase("run"))
@@ -696,12 +559,6 @@ public class Shell {
                     return save(toks.get(1));
                 }
             };
-        if (op.equalsIgnoreCase("stop"))
-            return new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    return stop(toks);
-                }
-            };
         if (op.equalsIgnoreCase("services"))
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
@@ -712,36 +569,6 @@ public class Shell {
             return new Callable<Boolean>() {
                 public Boolean call() throws Exception {
                     return bye();
-                }
-            };
-        if (op.equalsIgnoreCase("start"))
-            return new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    if (currentDomain.length() > 0) {
-                        if (toks.size() == 4) {
-                            return remoteStart(toks.get(1), toks.get(2), toks.get(3));
-                        } else {
-                            return start(toks.get(1), toks.get(2));
-                        }
-                    } else {
-                        String[] duris = null;
-                        if (toks.contains("-duris")) {
-                            int i = toks.indexOf("-duris");
-                            duris = toks.get(i + 1).split(",");
-                            toks.remove(i); toks.remove(i+1);
-                        }
-                        String name = toks.get(1);
-                        String contributionURL;
-                        String compositeURI;
-                        if (toks.size() > 3) {
-                            compositeURI = toks.get(2);
-                            contributionURL = toks.get(3);
-                        } else {
-                            compositeURI = null;
-                            contributionURL = toks.get(2);
-                        }
-                        return start(name, compositeURI, contributionURL, duris);
-                    }
                 }
             };
         if (op.equalsIgnoreCase("started"))
@@ -810,22 +637,14 @@ public class Shell {
             helpInstall();
         } else if ("installed".equalsIgnoreCase(command)) {
             helpInstalled();
-        } else if ("invoke".equalsIgnoreCase(command)) {
-            helpInvoke();
         } else if ("load".equalsIgnoreCase(command)) {
             helpLoad();
-        } else if ("remove".equalsIgnoreCase(command)) {
-            helpRemove();
         } else if ("run".equalsIgnoreCase(command)) {
             helpRun();
         } else if ("save".equalsIgnoreCase(command)) {
             helpSave();
-        } else if ("start".equalsIgnoreCase(command)) {
-            helpStart();
         } else if ("started".equalsIgnoreCase(command)) {
             helpStarted();
-        } else if ("stop".equalsIgnoreCase(command)) {
-            helpStop();
         } else if ("startup".equalsIgnoreCase(command)) {
             helpStartUp();
         } else if ("status".equalsIgnoreCase(command)) {
@@ -852,17 +671,12 @@ public class Shell {
         out.println("   domains");
         out.println("   install [<uri>] <contributionURL> [-metadata <url>] [-duris <uri,uri,...>]");
         out.println("   installed [<contributionURI>]");
-        out.println("   invoke <component>[/<service>] <operation> [<arg0> <arg1> ...]");
-        out.println("   load <configXmlURL>");
         out.println("   nodes");
-        out.println("   remove <contributionURI>");
         out.println("   run <commandsFileURL>");
         out.println("   save <directoryPath>");
         out.println("   services");
-        out.println("   start <curi> <compositeUri> [<nodeName>]");
         out.println("   started");
         out.println("   status");
-        out.println("   stop <curi> <compositeUri>");
         out.println("   bye");
         out.println();
         if (useJline)
@@ -931,20 +745,6 @@ public class Shell {
         out.println("      contributionURI - (optional) the URI of an installed contribution");
     }
 
-    void helpInvoke() {
-        out.println("   invoke <component>[/<service>] <operation> [<arg0> <arg1> ...]");
-        out.println();
-        out.println("   Invokes an operation of a component service.");
-        out.println("   (presently parameters and return values are limited to simple types)");
-        out.println();
-        out.println("   Arguments:");
-        out.println("      component - (required) the name of the component");
-        out.println("      service   - (optional) the name of the component service, which may be omitted");
-        out.println("                             when the component has a single service.");
-        out.println("      operation - (required) the name of the operation");
-        out.println("      args      - (optional) the operation arguments");
-    }
-
     void helpLoad() {
         out.println("   load <configXmlUrl>");
         out.println();
@@ -996,30 +796,6 @@ public class Shell {
         out.println("      none");
     }
 
-    void helpStart() {
-        out.println("   start <curi> <compositeUri>|<contentURL>");
-        out.println("   start <name> [<compositeUri>] <contributionURL> [-duris <uri,uri,...>]");
-        out.println();
-        out.println("   Starts a composite.");
-        out.println("   The composite is added to the domain composite with semantics that correspond to the domain-level");
-        out.println("   composite having an <include> statement that references the supplied composite. All of the composites");
-        out.println("   components become top-level components and the component services become externally visible");
-        out.println("   services (eg. they would be present in a WSDL description of the Domain).");
-        out.println();
-        out.println("   The second form of the start command starts in standalone mode not part of any SCA domain.");
-        out.println();
-        out.println("   Arguments (form1):");
-        out.println("      curi - (required) the URI of an installed contribution");
-        out.println("      compositeUri or contentURL - (required) either the URI of a composite within the contribution");
-        out.println("                                              or a URL to an external composite file.");
-        out.println("   Arguments (form2):");
-        out.println("      name - (required) a name for the started composite/contribution");
-        out.println("      compositeUri - (optional) the URI of a composite within the contribution");
-        out.println("      contributionURL - (required) the URL to the contribution");
-        out.println("      -duris <uri,uri,...> - (optional) specifies the URIs of contributions that are used to resolve the");
-        out.println("               dependencies of the root contribution and other dependent contributions.");
-    }
-
     void helpStarted() {
         out.println("   started [<curi> [<compositeUri>]]");
         out.println();
@@ -1039,22 +815,6 @@ public class Shell {
         out.println();
         out.println("   Arguments:");
         out.println("      none");
-    }
-
-    void helpStop() {
-        out.println("   stop [<curi> [<compositeUri>]]");
-        out.println("   stop <name>");
-        out.println();
-        out.println("   Stops a domain or standalone node or individual composites and contributions in a Domain.");
-        out.println("   If a composite URI is specified then the composite is removed from the Domain Level composite");
-        out.println("   This means that the removal of the components, wires, services and references originally added");
-        out.println("   to the domain level composite by the identified composite. If a contribution URI is specified");
-        out.println("   without a composite URI then all deployed composites composites in the contribution are stopped.");
-        out.println();
-        out.println("   Arguments:");
-        out.println("      curi - (required) the URI of an installed contribution");
-        out.println("      compositeUri - (optional) the URI of a composite");
-        out.println("      name - (required) the name of a standalon node or domain to stop");
     }
 
     void helpBye() {
