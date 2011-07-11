@@ -1,12 +1,15 @@
 package org.apache.tuscany.sca.binding.local;
 
-import org.apache.tuscany.sca.binding.sca.provider.SCABindingAsyncResponseInvoker;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
 import org.apache.tuscany.sca.provider.SCABindingMapper;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
+/*
+ * This service side binding provide doesn't actually serve much purpose as the 
+ * local optimization skips over it. 
+ */
 public class LocalSCAServiceBindingProvider implements EndpointAsyncProvider {
     private RuntimeEndpoint endpoint;
 
@@ -21,7 +24,7 @@ public class LocalSCAServiceBindingProvider implements EndpointAsyncProvider {
 
     @Override
     public InvokerAsyncResponse createAsyncResponseInvoker() {
-        return new SCABindingAsyncResponseInvoker(null, null);
+        return null;
     }
 
     @Override

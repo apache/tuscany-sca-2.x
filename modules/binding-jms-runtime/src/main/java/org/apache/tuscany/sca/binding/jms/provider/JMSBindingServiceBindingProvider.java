@@ -32,7 +32,6 @@ import org.apache.tuscany.sca.binding.jms.transport.TransportServiceInterceptor;
 import org.apache.tuscany.sca.binding.jms.wire.AsyncResponseDestinationInterceptor;
 import org.apache.tuscany.sca.binding.jms.wire.CallbackDestinationInterceptor;
 import org.apache.tuscany.sca.binding.jms.wire.OperationPropertiesInterceptor;
-import org.apache.tuscany.sca.binding.sca.provider.SCABindingAsyncResponseInvoker;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
