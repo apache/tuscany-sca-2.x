@@ -24,4 +24,4 @@
  			
     <!-- MJE 22/06/2010 - add asyncInvocation to the @mayProvide list, for async services support --> 			
 	<sca:bindingType type="sca:binding.sca"  mayProvide="sca:asyncInvocation" alwaysProvides=""/>	 		
- </sca:definitions>
+</sca:definitions>
