@@ -61,7 +61,7 @@ public class ReadTestCase {
     }
 
     @Test
-    public void testReadComponentType() throws Exception {
+    public void testReadComponentType() throws Exception {   	
         InputStream is = getClass().getResourceAsStream("/CalculatorServiceImpl.componentType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         ComponentType componentType = (ComponentType)staxProcessor.read(reader, context);
@@ -71,8 +71,8 @@ public class ReadTestCase {
         assertNotNull(referenceSCABinding);
         
         SCABinding serviceSCABinding   = (SCABinding) componentType.getServices().get(0).getBindings().get(0);
-        assertNotNull(serviceSCABinding);     
-
+        assertNotNull(serviceSCABinding); 
+        
         //new PrintUtil(System.out).print(componentType);
     }
 
@@ -87,7 +87,9 @@ public class ReadTestCase {
         SCABinding serviceSCABinding   = (SCABinding) composite.getComponents().get(1).getServices().get(0).getBindings().get(0);
         
         Assert.assertNotNull(referenceSCABinding);
-        Assert.assertNotNull(serviceSCABinding);        
+        Assert.assertNotNull(serviceSCABinding);  
+        
+        assertNotNull(serviceSCABinding.getRequestWireFormat());        
     }
 
 }

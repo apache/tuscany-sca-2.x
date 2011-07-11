@@ -40,7 +40,9 @@
     <implementation.java class="calculator.AddServiceImpl"/>
     <service name="AddService">
         <interface.java interface="calculator.AddService"/>
-            <binding.sca/>
+            <binding.sca>
+                <wireFormat.default/>
+            </binding.sca>
     </service>        
     </component>
 

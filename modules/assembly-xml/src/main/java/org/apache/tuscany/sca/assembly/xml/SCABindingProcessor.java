@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.assembly.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -28,6 +29,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -58,13 +60,15 @@ public class SCABindingProcessor extends BaseStAXArtifactProcessor implements St
     private SCABindingFactory scaBindingFactory;
     private PolicySubjectProcessor policyProcessor;
     private PolicyFactory  intentAttachPointTypeFactory;
+    private StAXArtifactProcessor<Object> extensionProcessor;
 
 
-    public SCABindingProcessor(FactoryExtensionPoint modelFactories) {
+    public SCABindingProcessor(FactoryExtensionPoint modelFactories, StAXArtifactProcessor<Object> extensionProcessor) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         policyProcessor = new PolicySubjectProcessor(policyFactory);
         this.intentAttachPointTypeFactory = modelFactories.getFactory(PolicyFactory.class);
+        this.extensionProcessor = extensionProcessor;
     }
 
     public QName getArtifactType() {
@@ -97,10 +101,25 @@ public class SCABindingProcessor extends BaseStAXArtifactProcessor implements St
             scaBinding.setURI(uri);
         }
 
-        // Skip to end element
-        while (reader.hasNext()) {
-            if (reader.next() == END_ELEMENT && BINDING_SCA_QNAME.equals(reader.getName())) {
-                break;
+        // Read any sub-elements
+        boolean endFound = false;
+        while (reader.hasNext() && endFound == false) {
+            int nextElementType = reader.next();
+            switch (nextElementType) {
+                case START_ELEMENT:
+                    Object extension = extensionProcessor.read(reader, context);
+                    if (extension != null) {
+                        if (extension instanceof WireFormat) {
+                            scaBinding.setRequestWireFormat((WireFormat)extension);
+                        }
+                    }
+                    break;
+                case END_ELEMENT:
+                	QName endElementName = reader.getName();
+                	if(endElementName.equals(endElementName)){
+                		endFound = true;
+                	}
+                	break;
             }
         }
         return scaBinding;
@@ -125,6 +144,9 @@ public class SCABindingProcessor extends BaseStAXArtifactProcessor implements St
         if (scaBinding.getURI() != null) {
             writer.writeAttribute(URI, scaBinding.getURI());
         }
+        
+        // write wireFormat
+        extensionProcessor.write(scaBinding.getRequestWireFormat(), writer, context);
 
         writer.writeEndElement();
     }
