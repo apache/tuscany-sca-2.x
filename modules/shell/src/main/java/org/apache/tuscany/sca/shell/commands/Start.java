@@ -43,7 +43,7 @@ public class Start implements Command {
 
     @Override
     public String getShortHelp() {
-        return "start <curi> <compositeUri> <remoteNode>";
+        return "start <curi> <compositeUri> [<remoteNode>]";
     }
 
     @Override
