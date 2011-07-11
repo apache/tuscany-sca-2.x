@@ -236,7 +236,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             // The endpoint reference is already resolved to either
             // a service endpoint but no binding was specified in the 
             // target URL and/or the policies have yet to be matched.
-            // TODO - is this really required now
+            // Used when $self references are resolved
             
             selectForwardEndpoint(endpointReference,
                                   endpointReference.getTargetEndpoint().getService().getEndpoints(),
