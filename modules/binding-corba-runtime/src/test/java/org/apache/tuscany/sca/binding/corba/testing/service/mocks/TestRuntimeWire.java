@@ -353,4 +353,16 @@ public class TestRuntimeWire implements RuntimeEndpoint {
         // TODO Auto-generated method stub
         
     }
+    
+    @Override
+    public RuntimeEndpoint getDelegateEndpoint() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public void setDelegateEndpoint(RuntimeEndpoint delegateEndpoint) {
+        // TODO Auto-generated method stub
+        
+    }
 }
