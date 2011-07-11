@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.shell.Command;
 import org.apache.tuscany.sca.shell.Shell;
 import org.apache.tuscany.sca.shell.jline.CompositeURICompletor;
 import org.apache.tuscany.sca.shell.jline.ICURICompletor;
+import org.apache.tuscany.sca.shell.jline.RemoteNodeCompletor;
 
 public class Start implements Command {
 
@@ -42,7 +43,7 @@ public class Start implements Command {
 
     @Override
     public String getShortHelp() {
-        return "start <curi> <compositeUri>";
+        return "start <curi> <compositeUri> <remoteNode>";
     }
 
     @Override
@@ -58,22 +59,26 @@ public class Start implements Command {
         helpText.append("   Arguments:\n");
         helpText.append("      curi         - (required) the URI of an installed contribution\n");
         helpText.append("      compositeUri - (required) the URI of a composite within the contribution to start\n");
+        helpText.append("      remoteNode   - (optional) the name of a remote node which should run the composite\n");
         return helpText.toString();
     }
 
     @Override
     public Completor[] getCompletors() {
-        return new Completor[]{new ICURICompletor(shell), new CompositeURICompletor(shell), new NullCompletor()};
+        return new Completor[]{new ICURICompletor(shell), new CompositeURICompletor(shell), new RemoteNodeCompletor(shell), new NullCompletor()};
     }
 
     @Override
     public boolean invoke(String[] args) throws Exception {
-        if (args.length != 2) {
+        if (args.length == 2) {
+            shell.getNode().startComposite(args[0], args[1]);
+        } else if (args.length == 3) {
+            shell.getNode().startComposite(args[0], args[1], args[2]);
+        } else {
             System.err.println("Wrong number of args");
             System.err.println(getShortHelp());
             return true;
         }
-        shell.getNode().startComposite(args[0], args[1]);
         return true;
     }
 
