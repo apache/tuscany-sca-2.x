@@ -19,9 +19,12 @@
 
 package org.apache.tuscany.sca.binding.sca.provider;
 
+import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.binding.local.LocalSCAReferenceBindingProvider;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.EndpointReferenceAsyncProvider;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.SCABindingMapper;
@@ -30,15 +33,23 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 /**
  * The reference binding provider for the remote sca binding implementation. 
  */
-public class DelegatingSCAReferenceBindingProvider implements EndpointReferenceProvider {
+public class DelegatingSCAReferenceBindingProvider implements EndpointReferenceAsyncProvider {
 
     private ReferenceBindingProvider provider;
+    private RuntimeEndpointReference delegateEndpointReference;
 
     public DelegatingSCAReferenceBindingProvider(RuntimeEndpointReference endpointReference,
                                                  SCABindingMapper mapper) {
-        RuntimeEndpointReference epr = mapper.map(endpointReference);
-        if (epr != null) {
-            provider = epr.getBindingProvider();
+        delegateEndpointReference = mapper.map(endpointReference);
+        if (delegateEndpointReference != null) {
+            endpointReference.setDelegateEndpointReference(delegateEndpointReference);
+            provider = delegateEndpointReference.getBindingProvider();
+               
+            // reset the EPR to binding.sca EPR because the local optimization assumes
+            // this to be the case. 
+            if (provider instanceof LocalSCAReferenceBindingProvider){
+                ((LocalSCAReferenceBindingProvider)provider).setEndpointReference(endpointReference);
+            }         
         }
     }
 
@@ -66,5 +77,18 @@ public class DelegatingSCAReferenceBindingProvider implements EndpointReferenceP
         if (provider instanceof EndpointReferenceProvider) {
             ((EndpointReferenceProvider)provider).configure();
         }
+    }
+    
+    @Override
+    public boolean supportsNativeAsync() {
+        if (provider instanceof EndpointReferenceAsyncProvider) {
+            return ((EndpointReferenceAsyncProvider)provider).supportsNativeAsync();
+        }
+        
+        return false;
+    }
+    
+    public RuntimeEndpointReference getDelegateEndpointReference(){
+        return delegateEndpointReference;
     }
 }

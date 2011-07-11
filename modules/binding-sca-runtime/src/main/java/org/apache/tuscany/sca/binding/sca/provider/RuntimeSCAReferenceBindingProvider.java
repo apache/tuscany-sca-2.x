@@ -19,29 +19,16 @@
 
 package org.apache.tuscany.sca.binding.sca.provider;
 
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.databinding.Mediator;
-import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.EndpointReferenceAsyncProvider;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.SCABindingMapper;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
-import org.oasisopen.sca.ServiceRuntimeException;
-import org.oasisopen.sca.ServiceUnavailableException;
 
 /**
  * The sca reference binding provider mediates between the twin requirements of
@@ -55,148 +42,45 @@ import org.oasisopen.sca.ServiceUnavailableException;
 public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceAsyncProvider {
 
     private RuntimeEndpointReference endpointReference;
-    private RuntimeComponent component;
-    private RuntimeComponentReference reference;
-    private SCABinding binding;
-    private boolean remotable;
     private boolean started = false;
 
-    private ReferenceBindingProvider distributedProvider;
-    private Mediator mediator;
-    private InterfaceContractMapper interfaceContractMapper;
+    private ReferenceBindingProvider delegatingBindingProvider;
     private SCABindingMapper scaBindingMapper;
-    private ExtensionPointRegistry registry;
 
     public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
                                               RuntimeEndpointReference endpointReference) {
-        this.registry = extensionPoints;
     	this.endpointReference = endpointReference;
-        this.component = (RuntimeComponent)endpointReference.getComponent();
-        this.reference = (RuntimeComponentReference)endpointReference.getReference();
-        this.binding = (SCABinding)endpointReference.getBinding();
 
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        this.mediator = utilities.getUtility(Mediator.class);
-        this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
         this.scaBindingMapper = utilities.getUtility(SCABindingMapper.class);
-        remotable = isTargetRemote();
-        getDistributedProvider();
+        getDelegatingProvider();
     }
 
-    private boolean isTargetRemote() {
-        return endpointReference.getTargetEndpoint().isRemote();
-    }
-
-    private ReferenceBindingProvider getDistributedProvider() {
-
-        if (remotable) {
-            // initialize the remote provider if it hasn't been done already
-            if (distributedProvider == null) {
-                if (reference.getInterfaceContract() != null && !reference.getInterfaceContract().getInterface()
-                    .isRemotable()) {
-                    throw new ServiceRuntimeException("Reference interface not remotable for component: " + component
-                        .getName()
-                        + " and reference: "
-                        + reference.getName());
-                }
-
-                if (scaBindingMapper.isRemotable(endpointReference)) {
-                    distributedProvider =
-                        new DelegatingSCAReferenceBindingProvider(endpointReference, scaBindingMapper);
-                }
-            }
+    private ReferenceBindingProvider getDelegatingProvider() {
+        if (delegatingBindingProvider == null) {
+            delegatingBindingProvider = new DelegatingSCAReferenceBindingProvider(endpointReference, scaBindingMapper);
         }
 
-        return distributedProvider;
+        return delegatingBindingProvider;
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        if (remotable && distributedProvider != null) {
-            return distributedProvider.getBindingInterfaceContract();
-        } else {
-            // Check if there is a target
-            RuntimeEndpoint endpoint = (RuntimeEndpoint)endpointReference.getTargetEndpoint();
-            if (endpoint != null) {
-                return endpoint.getComponentTypeServiceInterfaceContract();
-            } else {
-                return endpointReference.getComponentTypeReferenceInterfaceContract();
-            }
-        }
+        return delegatingBindingProvider.getBindingInterfaceContract();
     }
 
     public boolean supportsOneWayInvocation() {
-        if (remotable && distributedProvider != null) {
-            return distributedProvider.supportsOneWayInvocation();
-        } else {
-            return false;
-        }
-    }
-
-    private Invoker getInvoker(RuntimeEndpointReference epr, Operation operation) {
-        Endpoint target = epr.getTargetEndpoint();
-        if (target != null) {
-            RuntimeComponentService service = (RuntimeComponentService)target.getService();
-            if (service != null) { // not a callback wire
-                InvocationChain chain = ((RuntimeEndpoint)target).getInvocationChain(operation);
-
-                boolean passByValue = false;
-                Operation targetOp = chain.getTargetOperation();
-                if (!operation.getInterface().isRemotable()) {
-                    if (interfaceContractMapper.isCompatibleByReference(operation, targetOp, Compatibility.SUBSET)) {
-                        passByValue = false;
-                    }
-                } else {
-                    Reference ref = epr.getReference().getReference();
-                    // The spec says both ref and service needs to allowsPassByReference
-                    boolean allowsPBR =
-                        (epr.getReference().isAllowsPassByReference() || (ref != null && ref.isAllowsPassByReference())) && chain
-                            .allowsPassByReference();
-                    
-                    if (allowsPBR && interfaceContractMapper.isCompatibleByReference(operation,
-                                                                                     targetOp,
-                                                                                     Compatibility.SUBSET)) {
-                        passByValue = false;
-                    } else if (interfaceContractMapper.isCompatibleWithoutUnwrapByValue(operation, targetOp, Compatibility.SUBSET)) {
-                        passByValue = true;
-                    }
-                }
-                // it turns out that the chain source and target operations are the same, and are the operation 
-                // from the target, not sure if thats by design or a bug. The SCA binding invoker needs to know 
-                // the source and target class loaders so pass in the real source operation in the constructor 
-                return chain == null ? null : new SCABindingInvoker(chain, operation, mediator, passByValue, epr, registry);
-            }
-        }
-        return null;
+        return delegatingBindingProvider.supportsOneWayInvocation();
     }
 
     public Invoker createInvoker(Operation operation) {
-        if (remotable && distributedProvider != null) {
-            return distributedProvider.createInvoker(operation);
-        } else {
-            Invoker invoker = getInvoker(endpointReference, operation);
-            if (invoker == null) {
-                throw new ServiceUnavailableException(
-                                                      "Unable to create SCA binding invoker for local target " + component
-                                                          .getName()
-                                                          + " reference "
-                                                          + reference.getName()
-                                                          + " (bindingURI="
-                                                          + binding.getURI()
-                                                          + " operation="
-                                                          + operation.getName()
-                                                          + ")");
-            }
-            return invoker;
-        }
+        return delegatingBindingProvider.createInvoker(operation);
     }
 
     public void start() {
         if (started) {
             return;
         }
-        if (distributedProvider != null) {
-            distributedProvider.start();
-        }
+        getDelegatingProvider().start();
         started = true;
     }
 
@@ -206,22 +90,24 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceAsyn
         }
 
         try {
-            if (distributedProvider != null) {
-                distributedProvider.stop();
-            }
+            getDelegatingProvider().stop();
         } finally {
             started = false;
         }
     }
 
     public void configure() {
-        if (distributedProvider instanceof EndpointReferenceProvider) {
-            ((EndpointReferenceProvider)distributedProvider).configure();
+        if (getDelegatingProvider() instanceof EndpointReferenceProvider) {
+            ((EndpointReferenceProvider)getDelegatingProvider()).configure();
         }
     }
     
     public boolean supportsNativeAsync() {
-        return true;
+        return ((EndpointReferenceAsyncProvider)delegatingBindingProvider).supportsNativeAsync();
+    }
+    
+    public RuntimeEndpointReference getDelegateEndpointReference(){
+        return ((DelegatingSCAReferenceBindingProvider)delegatingBindingProvider).getDelegateEndpointReference();
     }
 
 }

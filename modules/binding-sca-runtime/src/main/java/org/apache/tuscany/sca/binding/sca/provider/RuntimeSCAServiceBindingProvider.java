@@ -19,15 +19,16 @@
 
 package org.apache.tuscany.sca.binding.sca.provider;
 
+import org.apache.tuscany.sca.binding.local.LocalSCABindingInvocationInterceptor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
+import org.apache.tuscany.sca.provider.EndpointProvider;
 import org.apache.tuscany.sca.provider.OptimisingBindingProvider;
 import org.apache.tuscany.sca.provider.SCABindingMapper;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
@@ -40,22 +41,23 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  */
 public class RuntimeSCAServiceBindingProvider implements EndpointAsyncProvider, OptimisingBindingProvider {
     private RuntimeEndpoint endpoint;
-    private RuntimeComponentService service;
+    private SCABindingMapper mapper;
 
-    private ServiceBindingProvider distributedProvider;
+    private ServiceBindingProvider delegatingBindingProvider;
 
     public RuntimeSCAServiceBindingProvider(SCABindingMapper scaBindingMapper, RuntimeEndpoint endpoint) {
         this.endpoint = endpoint;
-        this.service = (RuntimeComponentService)endpoint.getService();
+        this.mapper = scaBindingMapper;
+        getDelegatingProvider();
+    }
 
-        // if there is potentially a wire to this service that crosses the node boundary
-        // then we need to create a remote endpoint 
-        if (service.getInterfaceContract().getInterface().isRemotable()) {
-
-            if (scaBindingMapper.isRemotable(endpoint)) {
-                distributedProvider = new DelegatingSCAServiceBindingProvider(endpoint, scaBindingMapper);
-            }
-        }
+    // if there is potentially a wire to this service that crosses the node boundary
+    // then we need to create a remote endpoint
+    private ServiceBindingProvider getDelegatingProvider() {
+    	if(delegatingBindingProvider == null) {
+			delegatingBindingProvider = new DelegatingSCAServiceBindingProvider(endpoint, mapper);
+    	}
+        return delegatingBindingProvider;
     }
 
     /*
@@ -73,35 +75,26 @@ public class RuntimeSCAServiceBindingProvider implements EndpointAsyncProvider, 
     */
 
     public InterfaceContract getBindingInterfaceContract() {
-        if (distributedProvider != null) {
-            return distributedProvider.getBindingInterfaceContract();
-        } else {
-            return endpoint.getComponentTypeServiceInterfaceContract();
-        }
+        return getDelegatingProvider().getBindingInterfaceContract();
     }
 
     public boolean supportsOneWayInvocation() {
-        if (distributedProvider != null) {
-            return distributedProvider.supportsOneWayInvocation();
-        }
-        return false;
+        return getDelegatingProvider().supportsOneWayInvocation();
     }
 
     public void start() {
-        if (distributedProvider != null) {
-            distributedProvider.start();
-        }
+        getDelegatingProvider().start();
     }
 
     public void stop() {
         endpoint.getBinding().setURI(null);
-        if (distributedProvider != null) {
-            distributedProvider.stop();
-        }
+        getDelegatingProvider().stop();
     }
 
     public void configure() {
-        // TODO Auto-generated method stub   
+        if (getDelegatingProvider() instanceof EndpointProvider) {
+            ((EndpointProvider)getDelegatingProvider()).configure();
+        }
     }
     
     public boolean supportsNativeAsync() {
@@ -109,15 +102,11 @@ public class RuntimeSCAServiceBindingProvider implements EndpointAsyncProvider, 
     }
     
     public InvokerAsyncResponse createAsyncResponseInvoker() {
-        if (distributedProvider != null) {
-            return ((EndpointAsyncProvider)distributedProvider).createAsyncResponseInvoker();
-        } else {
-            return new SCABindingAsyncResponseInvoker(null, null);
-        }
+        return ((EndpointAsyncProvider)getDelegatingProvider()).createAsyncResponseInvoker();
     }
 
     /**
-     * Handles the optimisation for the service side chain, which provides a mechanism for direct local
+     * Handles the optimization for the service side chain, which provides a mechanism for direct local
      * invocation of the service in cases where the component reference is in the same JVM as the 
      * component service.  Effectively, this means skipping any Remote Binding listener and its associated
      * binding chain and data binding processors.
@@ -129,9 +118,13 @@ public class RuntimeSCAServiceBindingProvider implements EndpointAsyncProvider, 
 		// To optimise, place an SCA binding Local Invocation interceptor at the start of the POLICY phase
 		// of the service chain...
 		for (InvocationChain chain : ep.getInvocationChains()) {
-			chain.addHeadInterceptor( Phase.SERVICE_POLICY, new SCABindingLocalInvocationInterceptor() );
+			chain.addHeadInterceptor( Phase.SERVICE_POLICY, new LocalSCABindingInvocationInterceptor() );
 		} // end for
 			
 	} // end method optimiseBinding
+	
+    public RuntimeEndpoint getDelegateEndpoint(){
+        return ((DelegatingSCAServiceBindingProvider)delegatingBindingProvider).getDelegateEndpoint();
+    }
     
 } // end class RuntimeSCAServiceBinding

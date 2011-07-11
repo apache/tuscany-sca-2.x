@@ -39,13 +39,6 @@ public interface SCABindingMapper {
      * @param endpointReference
      * @return The endpoint reference for the mapped binding
      */
-    public RuntimeEndpointReference map(RuntimeEndpointReference endpointReference);
-    
-    /**
-     * Check if the remote SCA binding is supported
-     * @return 
-     */
-    boolean isRemotable(RuntimeEndpoint endpoint);
-    boolean isRemotable(RuntimeEndpointReference endpointReference);
+    public RuntimeEndpointReference map(RuntimeEndpointReference endpointReference);   
 
 }

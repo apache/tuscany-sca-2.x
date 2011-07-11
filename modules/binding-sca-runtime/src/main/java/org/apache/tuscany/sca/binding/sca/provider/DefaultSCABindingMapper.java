@@ -47,6 +47,8 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.SCABindingMapper;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactoryExtensionPoint;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -60,6 +62,7 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
     protected ProviderFactoryExtensionPoint providerFactories;
     protected StAXArtifactProcessorExtensionPoint processors;
     protected QName defaultMappedBinding;
+    protected QName defaultLocalBinding;
     protected boolean supportsDistributedSCA;
 
     public DefaultSCABindingMapper(ExtensionPointRegistry registry, Map<String, String> attributes) {
@@ -67,6 +70,7 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
         providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         defaultMappedBinding = getDefaultMappedBinding(attributes);
+        defaultLocalBinding = new QName(Base.SCA11_TUSCANY_NS, "binding.local");
         supportsDistributedSCA = isDistributed();
     }
 
@@ -151,7 +155,6 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
     }
 
     public RuntimeEndpoint map(RuntimeEndpoint endpoint) {
-
         QName bindingType = chooseBinding(endpoint);
         if (!isBindingSupported(bindingType)) {
             logger.warning("Mapped binding for binding.sca is not supported: " + bindingType);
@@ -242,6 +245,7 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
         return binding;
     }
 
+    /*
     public boolean isRemotable(RuntimeEndpoint endpoint) {
         return supportsDistributedSCA && isBindingSupported(chooseBinding(endpoint));
     }
@@ -249,6 +253,7 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
     public boolean isRemotable(RuntimeEndpointReference endpointReference) {
         return supportsDistributedSCA && isBindingSupported(chooseBinding(endpointReference));
     }
+    */
 
     /**
      * Choose the physical binding for service-side remotable binding.sca 
@@ -256,7 +261,14 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
      * @return
      */
     protected QName chooseBinding(RuntimeEndpoint endpoint) {
-        return defaultMappedBinding;
+        if(endpoint.getService().getInterfaceContract() != null
+                && ((RuntimeComponentService)endpoint.getService()).getInterfaceContract().getInterface().isRemotable()
+                && supportsDistributedSCA
+                && isBindingSupported(defaultMappedBinding)) {
+        	return defaultMappedBinding;
+        }
+        
+        return defaultLocalBinding;
     }
 
     /**
@@ -265,7 +277,21 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
      * @return
      */
     protected QName chooseBinding(RuntimeEndpointReference endpointReference) {
-        return defaultMappedBinding;
+        if(endpointReference.getTargetEndpoint().isRemote()) {
+            RuntimeComponentReference ref = (RuntimeComponentReference)endpointReference.getReference();
+            if(ref.getInterfaceContract() != null && !ref.getInterfaceContract().getInterface().isRemotable()) {
+                throw new ServiceRuntimeException("Reference interface not remotable for component: "
+                        + endpointReference.getComponent().getName()
+                        + " and reference: "
+                        + ref.getName());
+            }
+            
+            if(supportsDistributedSCA && isBindingSupported(defaultMappedBinding)) {
+                return defaultMappedBinding;
+            }
+        }
+        
+        return defaultLocalBinding;
     }
 
 }

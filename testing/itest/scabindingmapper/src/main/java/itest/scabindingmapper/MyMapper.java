@@ -42,20 +42,30 @@ public class MyMapper extends DefaultSCABindingMapper {
 
     @Override
     protected QName chooseBinding(RuntimeEndpoint endpoint) {
-        if (endpoint.getComponent().getName().endsWith("2")) {
-            return JSONPBinding.TYPE;
-        } else {
-            return super.defaultMappedBinding;
+        QName bindingType = super.chooseBinding(endpoint);
+        
+        if (!bindingType.equals(super.defaultLocalBinding)) {
+            if (endpoint.getComponent().getName().endsWith("2")) {
+                bindingType = JSONPBinding.TYPE;
+            } else {
+                bindingType = super.defaultMappedBinding;
+            }
         }
+        return bindingType;
     }
 
     @Override
     protected QName chooseBinding(RuntimeEndpointReference endpointReference) {
-        if (endpointReference.getBinding().getURI().contains("Service2")) {
-            return JSONPBinding.TYPE;
-        } else {
-            return super.defaultMappedBinding;
+        QName bindingType = super.chooseBinding(endpointReference);
+        
+        if (!bindingType.equals(super.defaultLocalBinding)) {
+            if (endpointReference.getBinding().getURI().contains("Service2")) {
+                bindingType = JSONPBinding.TYPE;
+            } else {
+                bindingType = super.defaultMappedBinding;
+            }
         }
+        return bindingType;
     }
 
     /*
