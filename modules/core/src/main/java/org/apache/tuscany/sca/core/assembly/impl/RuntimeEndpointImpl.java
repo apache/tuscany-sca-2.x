@@ -134,6 +134,8 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     protected InterfaceContract bindingInterfaceContract;
     protected InterfaceContract serviceInterfaceContract;
     
+    private RuntimeEndpoint delegateEndpoint;
+    
     /**
      * No-arg constructor for Java serialization
      */
@@ -1038,4 +1040,14 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         
         return interfaceContract.getNormalizedWSDLContract();      
     }    
+    
+    @Override
+    public RuntimeEndpoint getDelegateEndpoint() {
+        return delegateEndpoint;
+    }
+    
+    @Override
+    public void setDelegateEndpoint(RuntimeEndpoint delegateEndpoint) {
+        this.delegateEndpoint = delegateEndpoint;
+    }
 }

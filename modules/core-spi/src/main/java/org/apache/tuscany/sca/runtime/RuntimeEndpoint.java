@@ -92,4 +92,11 @@ public interface RuntimeEndpoint extends Endpoint, Invocable, Serializable {
      */
     public RuntimeEndpointReference getAsyncServerCallback();
     
+    /**
+     * Get/Set the endpoint  that this endpoint  delegates to. This only
+     * comes into play when this endpoint  is configured with an SCA bindng
+     */
+    RuntimeEndpoint getDelegateEndpoint();
+    void setDelegateEndpoint(RuntimeEndpoint delegateEndpoint);
+    
 }

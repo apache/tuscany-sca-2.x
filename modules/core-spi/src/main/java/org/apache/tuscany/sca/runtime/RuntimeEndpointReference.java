@@ -85,4 +85,12 @@ public interface RuntimeEndpointReference extends EndpointReference, Invocable, 
      * of the endpoint until the endpoint reference has been resolved.  
      */
     public void createAsyncCallbackEndpoint();
+    
+    /**
+     * Get/Set the endpoint reference that this endpoint reference delegates to. This only
+     * comes into play when this endpoint reference is configured with an SCA bindng
+     */
+    RuntimeEndpointReference getDelegateEndpointReference();
+    void setDelegateEndpointReference(RuntimeEndpointReference delegateEndpointReference);
+
 }

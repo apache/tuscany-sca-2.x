@@ -126,6 +126,8 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
 
     private boolean started;
     
+    private RuntimeEndpointReference delegateEndpointReference;
+    
     /**
      * No-arg constructor for Java serilization
      */
@@ -788,5 +790,15 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         endpoint.setUnresolved(false);
         
         setCallbackEndpoint(endpoint);
+    }
+    
+    @Override
+    public RuntimeEndpointReference getDelegateEndpointReference() {
+        return delegateEndpointReference;
+    }
+    
+    @Override
+    public void setDelegateEndpointReference(RuntimeEndpointReference delegateEndpointReference) {
+        this.delegateEndpointReference = delegateEndpointReference;
     }
 }
