@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.Invocable;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -72,7 +73,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
 
         try {
         	String msgID = ((CallbackServiceReferenceImpl)callableReference).getMsgID();
-            return invoke(chain, args, wire, msgID );
+            return invoke(method, chain, args, wire, msgID );
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             throw t;
@@ -91,7 +92,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
      * @throws Throwable - if any exception occurs during the invocation
      */
     @Override
-    protected Object invoke(InvocationChain chain, Object[] args, Invocable source, String msgID)
+    protected Object invoke(Method method, InvocationChain chain, Object[] args, Invocable source, String msgID)
                          throws Throwable {
         Message msg = messageFactory.createMessage();
         if (source instanceof RuntimeEndpointReference) {
@@ -105,7 +106,19 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
             }
         }
         Invoker headInvoker = chain.getHeadInvoker();
-        Operation operation = chain.getTargetOperation();
+        
+        Operation operation = null;
+        if(source instanceof RuntimeEndpoint) {
+            for (InvocationChain c : source.getInvocationChains()) {
+                Operation op = c.getTargetOperation();
+                if (method.getName().equals(op.getName())) {
+                    operation = op;
+                    break;
+                }
+            }
+        } else {
+            operation = chain.getTargetOperation();
+        }
         msg.setOperation(operation);
         msg.setBody(args);
 

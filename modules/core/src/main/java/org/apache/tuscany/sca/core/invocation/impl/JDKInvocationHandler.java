@@ -122,7 +122,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             promotedArgs = removeOutOnlyArgs(sourceOp, promotedArgs );
         } 
         
-        Object result = invoke(chain, promotedArgs, source);
+        Object result = invoke(method, chain, promotedArgs, source);
         
         // TODO - Based on the code in JavaInterfaceIntrospectorImpl, it seems there are
         // some cases involving generics that we're not taking into account.
@@ -239,13 +239,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
     protected synchronized InvocationChain getInvocationChain(Method method, Invocable source) {
         if (source instanceof RuntimeEndpoint) {
-            InvocationChain invocationChain = source.getBindingInvocationChain();
-            for (InvocationChain chain : source.getInvocationChains()) {
-                Operation operation = chain.getTargetOperation();
-                if (method.getName().equals(operation.getName())) {
-                    invocationChain.setTargetOperation(operation);
-                }
-            }
+            // [rfeng] Start with the binding invocation chain
             return source.getBindingInvocationChain();
         }
         if (fixedWire && chains.containsKey(method)) {
@@ -273,9 +267,9 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         this.target = endpoint;
     }
     
-    protected Object invoke(InvocationChain chain, Object[] args, Invocable source)
+    protected Object invoke(Method method, InvocationChain chain, Object[] args, Invocable source)
                             throws Throwable {
-    	return invoke( chain, args, source, null );
+    	return invoke( method, chain, args, source, null );
     }
 
     /**
@@ -287,7 +281,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
      * @return - the Response message from the invocation
      * @throws Throwable - if any exception occurs during the invocation
      */
-    protected Object invoke(InvocationChain chain, Object[] args, Invocable source, String msgID)
+    protected Object invoke(Method method, InvocationChain chain, Object[] args, Invocable source, String msgID)
                          throws Throwable {
         Message msg = messageFactory.createMessage();
         if (source instanceof RuntimeEndpointReference) {
@@ -301,7 +295,20 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             }
         }
         Invoker headInvoker = chain.getHeadInvoker();
-        Operation operation = chain.getTargetOperation();
+        Operation operation = null;
+        if(source instanceof RuntimeEndpoint) {
+            // [rfeng] We cannot use the targetOperation from the binding invocation chain.
+            // For each method, we need to find the matching operation so that we can set the operation on to the message
+            for (InvocationChain c : source.getInvocationChains()) {
+                Operation op = c.getTargetOperation();
+                if (method.getName().equals(op.getName())) {
+                    operation = op;
+                    break;
+                }
+            }
+        } else {
+            operation = chain.getTargetOperation();
+        }
         msg.setOperation(operation);
         msg.setBody(args);
 

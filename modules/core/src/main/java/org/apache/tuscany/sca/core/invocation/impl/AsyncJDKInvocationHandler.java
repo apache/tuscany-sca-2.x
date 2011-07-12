@@ -29,7 +29,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -66,7 +65,6 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.invocation.AsyncFaultWrapper;
 import org.apache.tuscany.sca.core.invocation.AsyncResponseException;
-import org.apache.tuscany.sca.core.invocation.AsyncResponseHandler;
 import org.apache.tuscany.sca.core.invocation.AsyncResponseService;
 import org.apache.tuscany.sca.core.invocation.JDKAsyncResponseInvoker;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -373,12 +371,12 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
                 		invokeAsync(chain, args, invocable, future.getUniqueID());
                 	} else {
                 		// Binding does not support native async invocations
-                		invoke(chain, args, invocable, future.getUniqueID());
+                		invoke(asyncMethod, chain, args, invocable, future.getUniqueID());
                 	} // end if
                     // The result is returned asynchronously via the future...
                 } else {
                     // ... the service is synchronous ...
-                    result = invoke(chain, args, invocable);
+                    result = invoke(asyncMethod, chain, args, invocable);
                     Type type = null;
                     if (asyncMethod.getReturnType() == Future.class) {
                         // For callback async method, where a Future is returned
