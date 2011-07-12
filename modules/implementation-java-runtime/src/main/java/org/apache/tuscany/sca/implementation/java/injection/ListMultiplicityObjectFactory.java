@@ -19,7 +19,12 @@
 package org.apache.tuscany.sca.implementation.java.injection;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
@@ -30,21 +35,32 @@ import org.apache.tuscany.sca.core.factory.ObjectFactory;
  *
  * @version $Rev$ $Date$
  */
-public class ListMultiplicityObjectFactory implements ObjectFactory<List<?>> {
+public class ListMultiplicityObjectFactory implements ObjectFactory<Collection<?>> {
 
-    private ObjectFactory[] factories;
+    private Collection<ObjectFactory<?>> factories;
+    private Class<?> collectionType;
 
-    public ListMultiplicityObjectFactory(List<ObjectFactory<?>> factories) {
+    public ListMultiplicityObjectFactory(List<ObjectFactory<?>> factories, Class<?> collectionType) {
         assert factories != null : "Object factories were null";
-        this.factories = factories.toArray(new ObjectFactory[factories.size()]);
+        this.factories = factories;
+        this.collectionType = collectionType;
     }
 
-    public List<?> getInstance() throws ObjectCreationException {
-        List<Object> list = new ArrayList<Object>();
-        for (ObjectFactory factory : factories) {
-            list.add(factory.getInstance());
+    public Collection<?> getInstance() throws ObjectCreationException {
+        Collection<Object> collection = null;
+        if (SortedSet.class.isAssignableFrom(collectionType)) {
+            collection = new TreeSet<Object>();
+        } else if (Set.class.isAssignableFrom(collectionType)) {
+            collection = new HashSet<Object>();
+        } else if (List.class.isAssignableFrom(collectionType)) {
+            collection = new ArrayList<Object>();
+        } else {
+            collection = new ArrayList<Object>();
         }
-        return list;
+        for (ObjectFactory<?> factory : factories) {
+            collection.add(factory.getInstance());
+        }
+        return collection;
     }
 
 }

@@ -151,14 +151,14 @@ public class JavaInstanceFactoryProvider<T> implements InstanceFactoryProvider<T
             if (field.getType().isArray()) {
                 return new FieldInjector<T>(field, new ArrayMultiplicityObjectFactory(interfaceType, factories));
             } else {
-                return new FieldInjector<T>(field, new ListMultiplicityObjectFactory(factories));
+                return new FieldInjector<T>(field, new ListMultiplicityObjectFactory(factories, field.getType()));
             }
         } else if (element.getAnchor() instanceof Method) {
             Method method = (Method)element.getAnchor();
             if (method.getParameterTypes()[0].isArray()) {
                 return new MethodInjector<T>(method, new ArrayMultiplicityObjectFactory(interfaceType, factories));
             } else {
-                return new MethodInjector<T>(method, new ListMultiplicityObjectFactory(factories));
+                return new MethodInjector<T>(method, new ListMultiplicityObjectFactory(factories, method.getParameterTypes()[0]));
             }
         } else {
             throw new InvalidAccessorException("Member must be a field or method: " + element.getName());
