@@ -4,8 +4,6 @@
  */
 package org.oasisopen.sca.client.impl;
 
-import org.oasisopen.sca.client.SCAClientFactoryFinder;
-
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
@@ -14,11 +12,14 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Properties;
 
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.client.SCAClientFactory;
+import org.oasisopen.sca.client.SCAClientFactoryFinder;
 
 /**
  * This is a default implementation of an SCAClientFactoryFinder which is 
@@ -88,9 +89,11 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
      * @return The Context ClassLoader for the current Thread.
      */
     private static ClassLoader getThreadContextClassLoader () {
-        final ClassLoader threadClassLoader = 
-        	Thread.currentThread().getContextClassLoader();
-        return threadClassLoader;
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });
     }
 
     /**
