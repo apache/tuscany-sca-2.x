@@ -58,7 +58,26 @@
          <artifactId>htmlunit</artifactId>
          <version>2.6</version>
          <scope>test</scope>
+         <exclusions>
+             <exclusion>
+                 <groupId>xalan</groupId>
+                 <artifactId>xalan</artifactId>
+             </exclusion> 
+         </exclusions>        
       </dependency>
+
+      <!-- replace HTMLUnit dependency with verstion that Tuscany is using -->
+      <dependency>
+          <groupId>xalan</groupId>
+          <artifactId>xalan</artifactId>
+          <version>2.7.0</version>
+          <exclusions>
+             <exclusion>
+                 <groupId>xml-apis</groupId>
+                 <artifactId>xml-apis</artifactId>
+             </exclusion>                              
+          </exclusions>            
+      </dependency>  
 
    </dependencies>
 
