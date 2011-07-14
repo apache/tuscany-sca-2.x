@@ -170,44 +170,9 @@ public class TuscanyServiceProvider {
             throw new InvocationTargetException((Throwable) response.getBody());
         }
         
-        OMElement responseOM = response.getBody();
-        
-        if (wsBinding.isRpcLiteral()){               
-            // add the response wrapping element
-            OMFactory factory = OMAbstractFactory.getOMFactory();
-            String wrapperNamespace = null;
-            
-            // the rpc style creates a wrapper with a namespace where the namespace is
-            // defined on the wsdl binding operation. If no binding is provided by the 
-            // user then default to the namespace of the WSDL itself. 
-            if (wsBinding.getBinding() != null){
-                Iterator iter = wsBinding.getBinding().getBindingOperations().iterator();
-                loopend:
-                while(iter.hasNext()){
-                    BindingOperation bOp = (BindingOperation)iter.next();
-                    if (bOp.getName().equals(msg.getOperation().getName())){
-                        for (Object ext : bOp.getBindingOutput().getExtensibilityElements()){
-                            if (ext instanceof javax.wsdl.extensions.soap.SOAPBody){
-                                wrapperNamespace = ((javax.wsdl.extensions.soap.SOAPBody)ext).getNamespaceURI();
-                                break loopend;
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if (wrapperNamespace == null){
-                wrapperNamespace =  wsBinding.getUserSpecifiedWSDLDefinition().getNamespace();
-            }
-                      
-            QName operationResponseQName = new QName(wrapperNamespace,
-                                             msg.getOperation().getName() + "Response");
-            OMElement operationResponseElement = factory.createOMElement(operationResponseQName);
-            operationResponseElement.addChild(responseOM);
-            responseOM = operationResponseElement;
-        }
-        
-        return responseOM;
+        // The envelope has already been set up in Axis2ServiceBindingResponseInvoker
+        // so no need to return anything here
+        return null;         
     } // end method 
     
     /**

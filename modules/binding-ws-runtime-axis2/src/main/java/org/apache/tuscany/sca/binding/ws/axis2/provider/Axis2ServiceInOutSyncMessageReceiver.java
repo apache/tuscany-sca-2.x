@@ -48,13 +48,13 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
         try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             
-            OMElement responseOM = (OMElement)provider.invoke(requestOM, inMC, outMC);
-
+            // create the out soap message before the invoke so it's available to the message chain
+            // during response processing
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
-            if (null != responseOM ) {
-                soapEnvelope.getBody().addChild(responseOM);
-            }
             outMC.setEnvelope(soapEnvelope);
+            
+            provider.invoke(requestOM, inMC, outMC);
+            
             outMC.getOperationContext().setProperty(Constants.RESPONSE_WRITTEN, Constants.VALUE_TRUE);
 
         } catch (InvocationTargetException e) {

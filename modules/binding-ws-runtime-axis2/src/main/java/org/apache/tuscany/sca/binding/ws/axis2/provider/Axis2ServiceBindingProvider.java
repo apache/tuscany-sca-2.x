@@ -36,8 +36,11 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.policy.util.PolicyHelper;
+import org.apache.tuscany.sca.provider.EndpointProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -45,7 +48,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.oasisopen.sca.ServiceRuntimeException;
 
-public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implements ServiceBindingProvider {
+public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implements EndpointProvider {
     private static final Logger logger = Logger.getLogger(Axis2ServiceBindingProvider.class.getName());
 
     // Tuscany extensions
@@ -223,6 +226,18 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
 
     public boolean supportsOneWayInvocation() {
         return true;
+    }
+    
+    @Override
+    public void configure() {
+        // add in the response interceptor that turns the response message back into a SOAP
+        // envelope before the response returns through the binding chain
+        InvocationChain bindingChain = endpoint.getBindingInvocationChain();
+        
+        // add transport interceptor
+        bindingChain.addInterceptor(Phase.SERVICE_BINDING_POLICY, 
+                                    new Axis2ServiceBindingResponseInterceptor(endpoint) );
+        
     }
     
     // Service specific utility operations
