@@ -664,34 +664,23 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         // This is strategically placed before the RuntimeInvoker is added to the end of the
         // binding chain as the RuntimeInvoker doesn't need to take part in the response
         // processing and doesn't implement InvokerAsyncResponse
-        if (isAsyncInvocation()){
+        ServiceBindingProvider serviceBindingProvider = getBindingProvider();
+        if (isAsyncInvocation() &&
+            serviceBindingProvider instanceof EndpointAsyncProvider &&
+            ((EndpointAsyncProvider)serviceBindingProvider).supportsNativeAsync()){
             // fix up the invocation chains to point back to the 
             // binding chain so that async response messages 
             // are processed correctly
             for (InvocationChain chain : getInvocationChains()){
                 Invoker invoker = chain.getHeadInvoker();
-                if (invoker instanceof InterceptorAsync){
-                    ((InterceptorAsync)invoker).setPrevious((InvokerAsyncResponse)bindingInvocationChain.getTailInvoker());
-                } else {
-                    // TODO - raise an error. Not doing that while
-                    //        we have the old async mechanism in play
-                }
+                ((InterceptorAsync)invoker).setPrevious((InvokerAsyncResponse)bindingInvocationChain.getTailInvoker());
             } // end for
             
             // fix up the binding chain response path to point back to the 
             // binding provided async response handler
-            ServiceBindingProvider serviceBindingProvider = getBindingProvider();
-            if (serviceBindingProvider instanceof EndpointAsyncProvider){
-                EndpointAsyncProvider asyncEndpointProvider = (EndpointAsyncProvider)serviceBindingProvider;
-                InvokerAsyncResponse asyncResponseInvoker = asyncEndpointProvider.createAsyncResponseInvoker();
-                if (bindingInvocationChain.getHeadInvoker() instanceof  InterceptorAsync){
-                    ((InterceptorAsync)bindingInvocationChain.getHeadInvoker()).setPrevious(asyncResponseInvoker);
-                } else {
-                  //TODO - throw error once the old async code is removed
-                }
-            } else {
-                //TODO - throw error once the old async code is removed
-            } // end if
+            EndpointAsyncProvider asyncEndpointProvider = (EndpointAsyncProvider)serviceBindingProvider;
+            InvokerAsyncResponse asyncResponseInvoker = asyncEndpointProvider.createAsyncResponseInvoker();
+            ((InterceptorAsync)bindingInvocationChain.getHeadInvoker()).setPrevious(asyncResponseInvoker);
         } // end if
         
         // Add the runtime invoker to the end of the binding chain. 
