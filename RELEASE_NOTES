@@ -1,5 +1,5 @@
-Apache Tuscany SCA 2.0-Beta2 January 2010 Release Notes
-=======================================================
+Apache Tuscany SCA 2.0-Beta3 July 2011 Release Notes
+====================================================
 
 Apache Tuscany provides a runtime based on the Service Component
 Architecture. SCA is a set of specifications aimed at simplifying SOA
@@ -51,16 +51,6 @@ In addition Tuscany SCA supports the following host-deployment options: -
      
 See the CHANGES file for a detailed list of the features in this release.
 
-Known Issues
-------------
-
-If when building using the source distribution of tuscany you see build errors 
-relating to use of hazelcast, this is a known issue which occurs in some
-environments where our use of hazelcast doesn't match up with your network
-configuration. If you see these errors please contact us on the mailing list
-as described below. You may wish to build using the
-"mvn -fae"
-command, so that the rest of the build completes before it reports the issue.
 
 Support
 -------
