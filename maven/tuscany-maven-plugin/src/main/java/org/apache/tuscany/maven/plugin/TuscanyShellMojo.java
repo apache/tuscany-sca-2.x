@@ -62,11 +62,7 @@ public class TuscanyShellMojo extends AbstractMojo {
             cs.add(0, domainURI);
             args = cs.toArray(new String[cs.size()]);
         } else {
-            if ("default".equals(domainURI)) {
-                args = new String[]{};
-            } else {
-                args = new String[]{domainURI};
-            }
+            args = new String[]{domainURI};
         }
 
         try {
