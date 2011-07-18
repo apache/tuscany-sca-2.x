@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.client.impl;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.net.URI;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
@@ -37,12 +39,16 @@ import org.oasisopen.sca.client.SCAClientFactoryFinder;
 
 public class SCAClientFactoryImpl extends SCAClientFactory {
 
-    private ExtensionPointRegistry extensionPointRegistry;
-    private DomainRegistry domainRegistry;
-    private boolean remoteClient;
+    protected ExtensionPointRegistry extensionPointRegistry;
+    protected DomainRegistry domainRegistry;
+    protected boolean remoteClient;
     
     public static URI default_domainURI = URI.create("default");
     
+    public static SCAClientFactoryFinder getSCAClientFactoryFinder() {
+        return SCAClientFactory.factoryFinder;
+    }
+
     public static void setSCAClientFactoryFinder(SCAClientFactoryFinder factoryFinder) {
         SCAClientFactory.factoryFinder = factoryFinder;
     }
@@ -52,7 +58,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         findLocalRuntime();
     }   
     
-    private void findLocalRuntime() throws NoSuchDomainException {
+    protected void findLocalRuntime() throws NoSuchDomainException {
         String domainURI = getDomainURI().toString();
         for (ExtensionPointRegistry xpr : ExtensionPointRegistryLocator.getExtensionPointRegistries()) {
             ExtensibleDomainRegistryFactory drf = ExtensibleDomainRegistryFactory.getInstance(xpr);
@@ -105,6 +111,13 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
             serviceInterface = (Class<T>)((RemoteServiceInvocationHandler)handler).serviceInterface;
         }
 
-        return (T)Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[]{serviceInterface}, handler);
+        final Class _serviceInterface = serviceInterface;
+        ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run() {
+               return _serviceInterface.getClassLoader();
+            }
+        });
+
+        return (T)Proxy.newProxyInstance(cl, new Class[]{serviceInterface}, handler);
     }    
 }
