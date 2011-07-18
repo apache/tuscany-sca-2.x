@@ -26,8 +26,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -55,7 +53,6 @@ import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.Version;
 import org.apache.tuscany.sca.shell.jline.JLine;
-import org.oasisopen.sca.NoSuchServiceException;
 
 /**
  * A little SCA command shell.
