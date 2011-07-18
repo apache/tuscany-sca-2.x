@@ -688,13 +688,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ================================================================================
 
 The jars; 
-atmosphere-annotations-0.8-SNAPSHOT.jar,
-atmosphere-compat-jbossweb-0.8-SNAPSHOT.jar, 
-atmosphere-compat-tomcat-0.8-SNAPSHOT.jar, 
-atmosphere-compat-weblogic-0.8-SNAPSHOT.jar, 
-atmosphere-jersey-0.8-SNAPSHOT.jar, 
-atmosphere-runtime-0.8-SNAPSHOT.jar, 
-atmosphere-ping-0.8-SNAPSHOT.jar, 
+atmosphere-annotations-0.7.2.jar,
+atmosphere-compat-jbossweb-0.7.2.jar, 
+atmosphere-compat-tomcat-0.7.2.jar, 
+atmosphere-compat-weblogic-0.7.2.jar, 
+atmosphere-jersey-0.7.2.jar, 
+atmosphere-runtime-0.7.2.jar, 
+atmosphere-ping-0.7.2.jar, 
 jersey-core-1.6.jar,
 jersey-server-1.6.jar,
 jstl-1.1.2.jar,
