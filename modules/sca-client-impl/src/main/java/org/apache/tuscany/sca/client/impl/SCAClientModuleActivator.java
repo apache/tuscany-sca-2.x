@@ -24,7 +24,10 @@ import org.apache.tuscany.sca.core.ModuleActivator;
 public class SCAClientModuleActivator implements ModuleActivator {
     
     public void start() { 
-        SCAClientFactoryImpl.setSCAClientFactoryFinder(new SCAClientFactoryFinderImpl());
+        // Do not replace the finder if it's already been set by some other means
+        if (SCAClientFactoryImpl.getSCAClientFactoryFinder() == null) {
+            SCAClientFactoryImpl.setSCAClientFactoryFinder(new SCAClientFactoryFinderImpl());
+        }
     }
 
     public void stop() {
