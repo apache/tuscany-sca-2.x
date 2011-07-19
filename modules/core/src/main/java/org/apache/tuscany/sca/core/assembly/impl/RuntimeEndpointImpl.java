@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.core.assembly.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -30,6 +31,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.wsdl.Definition;
+import javax.wsdl.WSDLException;
+import javax.wsdl.xml.WSDLReader;
+import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -76,6 +81,10 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InterceptorAsync;
 import org.apache.tuscany.sca.invocation.InvocationChain;
@@ -94,8 +103,8 @@ import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
-import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointSerializer;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -106,6 +115,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
+import org.xml.sax.InputSource;
 
 /**
  * Runtime model for Endpoint that supports java serialization
@@ -130,6 +140,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     private transient ServiceBindingProvider bindingProvider;
     private transient List<PolicyProvider> policyProviders;
     private String xml;
+    private String wsdl;
 
     protected InterfaceContract bindingInterfaceContract;
     protected InterfaceContract serviceInterfaceContract;
@@ -928,6 +939,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                     } // end if
                 } // end if
             } // end if
+            setNormailizedWSDLContract();
         } // end if
         super.resolve();
     } // end method resolve
@@ -1002,6 +1014,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.uri = in.readUTF();
         this.xml = in.readUTF();
+        this.wsdl = in.readUTF();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -1015,7 +1028,63 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 throw new IllegalStateException("No serializer is configured");
             }
         }
+        
+        if (wsdl == null) {
+            wsdl = getWsdl();
+        }
+        out.writeUTF(wsdl);
     }
+    
+    public String getAsXML() {
+        if (xml == null) {
+            this.xml = serializer.write(this);
+        }
+        return xml;
+    }
+    
+    private String getWsdl() {
+        InterfaceContract ic = getComponentServiceInterfaceContract();
+        if (ic == null || ic.getInterface() == null || !!!ic.getInterface().isRemotable()) {
+            return "";
+        }
+        WSDLInterfaceContract wsdlIC = (WSDLInterfaceContract)getGeneratedWSDLContract(getComponentServiceInterfaceContract());
+        if (wsdlIC == null) {
+            return "";
+        }
+        WSDLInterface wsdl = (WSDLInterface)wsdlIC.getInterface();
+        WSDLDefinition d = wsdl.getWsdlDefinition();
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        try {
+            WSDLWriter writer = javax.wsdl.factory.WSDLFactory.newInstance().newWSDLWriter();
+            writer.writeWSDL(d.getDefinition(), outStream);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        return outStream.toString();
+    }
+
+    private void setNormailizedWSDLContract() {
+        if (wsdl == null || wsdl.length() < 1) {
+            return;
+        }
+        try {
+            InterfaceContract ic = getComponentServiceInterfaceContract();
+            WSDLFactory wsdlFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(WSDLFactory.class);
+            WSDLInterfaceContract wsdlIC = wsdlFactory.createWSDLInterfaceContract();
+            WSDLInterface wsdlIface = wsdlFactory.createWSDLInterface();
+            WSDLDefinition wsdlDef = wsdlFactory.createWSDLDefinition();
+            WSDLReader reader = javax.wsdl.factory.WSDLFactory.newInstance().newWSDLReader();
+            InputSource inputSource = new InputSource(new StringReader(wsdl));
+            Definition def = reader.readWSDL("", inputSource);
+            wsdlDef.setDefinition(def);
+            wsdlIface.setWsdlDefinition(wsdlDef);
+            wsdlIC.setInterface(wsdlIface);
+            ic.setNormailizedWSDLContract(wsdlIC);
+        } catch (WSDLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     public InterfaceContract getGeneratedWSDLContract(InterfaceContract interfaceContract) {
 
         if ( interfaceContract.getNormalizedWSDLContract() == null){
