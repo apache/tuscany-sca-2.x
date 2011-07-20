@@ -42,7 +42,7 @@
                          <version>2.2.1</version>
                          <executions>
                              <execution>
-                                 <id>bin</id>
+                                 <id>samples</id>
                                  <phase>package</phase>
                                  <goals>
                                      <goal>single</goal>
@@ -53,8 +53,7 @@
                                      </descriptors>
                                      <tarLongFileMode>gnu</tarLongFileMode>
                                      <finalName>apache-tuscany-samples-${project.version}</finalName>
-                                     <appendAssemblyId>true</appendAssemblyId>
-                                     <ignoreDirFormatExtensions>false</ignoreDirFormatExtensions>
+                                     <appendAssemblyId>false</appendAssemblyId>
                                  </configuration>
                              </execution>
                          </executions>
