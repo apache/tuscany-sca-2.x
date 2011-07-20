@@ -98,7 +98,6 @@ public class JacksonHelper {
         AnnotationIntrospector secondary = new JacksonAnnotationIntrospector();
         AnnotationIntrospector pair = new AnnotationIntrospector.Pair(primary, secondary);
         mapper.getDeserializationConfig().setAnnotationIntrospector(pair);
-        // [rfeng] To avoid complaints about javaClass
         mapper.getDeserializationConfig().set(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, Boolean.FALSE);
         mapper.getSerializationConfig().setAnnotationIntrospector(pair);
         mapper.getSerializationConfig().setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);

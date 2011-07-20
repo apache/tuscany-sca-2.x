@@ -27,6 +27,9 @@ import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * 
@@ -50,10 +53,22 @@ public class JSON2OutputStream implements PushTransformer<Object, OutputStream> 
         } else if (source instanceof JsonParser) {
             JacksonHelper.write((JsonParser)source, sink);
         } else {
-            try {
-                sink.write(source.toString().getBytes("UTF-8"));
-            } catch (Exception e) {
-                throw new TransformationException(e);
+            if (source instanceof String || source instanceof JSONObject
+                || source instanceof JSONArray
+                || source instanceof org.codehaus.jettison.json.JSONObject
+                || source instanceof org.codehaus.jettison.json.JSONArray) {
+                try {
+                    sink.write(source.toString().getBytes("UTF-8"));
+                } catch (Exception e) {
+                    throw new TransformationException(e);
+                }
+            } else {
+                ObjectMapper mapper = JacksonHelper.createObjectMapper(source.getClass());
+                try {
+                    mapper.writeValue(sink, source);
+                } catch (Throwable e) {
+                    throw new TransformationException(e);
+                }
             }
         }
     }
