@@ -6,7 +6,7 @@ Unzip Tuscany binary distribution archive and you get the following:
 tuscany-sca-<version>     
    CHANGES       - A note of the major changes in this release   
    INSTALL       - this help file
-   LICENSE       - the Apache License and any dependecy licenses
+   LICENSE       - the Apache License and any dependency licenses
    NOTICE        - attribution notices associated with the licenses
    README        - readme for the release
    RELEASE_NOTES - description of this release 
