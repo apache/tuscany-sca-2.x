@@ -38,18 +38,15 @@
        </fileSet>
 
        <fileSet>
-          <directory>../../unreleased/samples</directory>
-          <outputDirectory>samples</outputDirectory>
-          <includes>
-             <include>helloworld-contribution</include>
-             <include>helloworld-contribution/**</include>
-             <include>helloworld-contribution/target/*.jar</include>
-          </includes>
+          <directory>../../samples</directory>
+          <outputDirectory>.</outputDirectory>
           <excludes>
-             <exclude>*/.classpath</exclude>
-             <exclude>*/.project</exclude>
-             <exclude>*/target/**</exclude>
-             <exclude>*/.settings/**</exclude>
+             <exclude>**/.classpath</exclude>
+             <exclude>**/.project</exclude>
+             <exclude>**/target</exclude>
+             <exclude>**/target/**</exclude>
+             <exclude>**/.settings</exclude>
+             <exclude>**/.settings/**</exclude>
           </excludes>
        </fileSet>
 
