@@ -49,6 +49,7 @@ public class WebAppHelper {
     private static final String CONTRIBUTION = "contribution";
     private static final String NODE_CONFIGURATION = "node.configuration";
     private static final String DOMAIN_URI = "domain.uri";
+    private static final String DOMAIN_REGISTRY_URI = "domain.registry.uri";
     private static final String NODE_URI = "node.uri";
     private static final String COMPOSITE_URI = "composite.uri";
     public static final String DOMAIN_NAME_ATTR = "org.apache.tuscany.sca.domain.name";
@@ -322,6 +323,10 @@ public class WebAppHelper {
                     configuration.setDomainURI(getDomainName(domainURI));
                     configuration.setDomainRegistryURI(domainURI);
                 }
+            }
+            String domainRegistryURI = configurator.getInitParameter(DOMAIN_REGISTRY_URI);
+            if (domainRegistryURI != null) {
+                configuration.setDomainRegistryURI(domainRegistryURI);
             }
         }
         configuration.setAttribute(ServletContext.class.getName(), servletContext);
