@@ -22,7 +22,7 @@ As this sample uses a standard Java SE main class you can also run it with the m
 
    mvn exec:java
 
-You should see the following oputput:
+You should see the following output:
 
    HelloworldSCAClient, using domainURI uri:default
    Calling HelloworldComponent.sayHello("world")
