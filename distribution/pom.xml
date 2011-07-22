@@ -38,6 +38,7 @@
 
         <module>all</module>
         <module>tomcat</module>
+        <module>samples</module>
     </modules>
 
 </project>
