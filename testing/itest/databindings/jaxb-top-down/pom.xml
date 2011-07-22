@@ -24,12 +24,12 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>itest-databindings</artifactId>
-        <version>2.0-Beta3-SNAPSHOT</version>
+        <version>2.0-Beta3</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>itest-databindings-jaxb-top-down</artifactId>
-    <version>2.0-Beta3-SNAPSHOT</version>
+    <version>2.0-Beta3</version>
     <name>Apache Tuscany SCA iTest Databinding - JAXB Top Down</name>
 
     <repositories>
@@ -45,13 +45,13 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-base-runtime-pom</artifactId>
             <type>pom</type>
-            <version>2.0-Beta3-SNAPSHOT</version>
+            <version>2.0-Beta3</version>
         </dependency>
         
          <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
-            <version>2.0-Beta3-SNAPSHOT</version>
+            <version>2.0-Beta3</version>
         </dependency>    
 
         <dependency>
