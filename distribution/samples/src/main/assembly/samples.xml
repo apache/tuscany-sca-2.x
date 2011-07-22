@@ -50,6 +50,15 @@
           </excludes>
        </fileSet>
 
+       <fileSet>
+          <directory>../..</directory>
+          <outputDirectory>.</outputDirectory>
+          <includes>
+             <include>CHANGES</include>
+             <include>RELEASE_NOTES</include>
+          </includes>
+       </fileSet>
+
     </fileSets>
 
 </assembly>
