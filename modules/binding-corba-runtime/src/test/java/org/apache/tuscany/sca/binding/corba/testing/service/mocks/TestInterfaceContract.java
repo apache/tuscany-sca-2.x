@@ -55,15 +55,15 @@ public class TestInterfaceContract implements InterfaceContract {
         return null;
     }
     
-    // By default there is no normailized contract
+    // By default there is no normalized contract
     // as only Java needs it
     public InterfaceContract getNormalizedWSDLContract() {
         return null;
     }
     
-    // By default there is no normailized contract
+    // By default there is no normalized contract
     // as only Java needs it
-    public void setNormailizedWSDLContract(
+    public void setNormalizedWSDLContract(
             InterfaceContract wsdlInterfaceContract) {
         // do nothing
     }

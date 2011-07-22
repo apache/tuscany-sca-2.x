@@ -31,7 +31,7 @@ public class JavaInterfaceContractImpl extends InterfaceContractImpl implements 
     
     // A cached WSDL version of the Java contract use during normalized
     // interface comparison
-    private InterfaceContract normailizedWSDLInterfaceContract; 
+    private InterfaceContract normalizedWSDLInterfaceContract; 
     
     protected JavaInterfaceContractImpl() {
     }
@@ -43,11 +43,11 @@ public class JavaInterfaceContractImpl extends InterfaceContractImpl implements 
 
     @Override
     public InterfaceContract getNormalizedWSDLContract() {
-        return normailizedWSDLInterfaceContract;
+        return normalizedWSDLInterfaceContract;
     }
     
     @Override
-    public void setNormailizedWSDLContract(InterfaceContract wsdlInterfaceContract) {
-        normailizedWSDLInterfaceContract = wsdlInterfaceContract;
+    public void setNormalizedWSDLContract(InterfaceContract wsdlInterfaceContract) {
+        normalizedWSDLInterfaceContract = wsdlInterfaceContract;
     }
 }

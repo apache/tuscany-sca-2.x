@@ -939,7 +939,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                     } // end if
                 } // end if
             } // end if
-            setNormailizedWSDLContract();
+            setNormalizedWSDLContract();
         } // end if
         super.resolve();
     } // end method resolve
@@ -1063,7 +1063,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         return outStream.toString();
     }
 
-    private void setNormailizedWSDLContract() {
+    private void setNormalizedWSDLContract() {
         if (wsdl == null || wsdl.length() < 1) {
             return;
         }
@@ -1079,7 +1079,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             wsdlDef.setDefinition(def);
             wsdlIface.setWsdlDefinition(wsdlDef);
             wsdlIC.setInterface(wsdlIface);
-            ic.setNormailizedWSDLContract(wsdlIC);
+            ic.setNormalizedWSDLContract(wsdlIC);
         } catch (WSDLException e) {
             throw new RuntimeException(e);
         }

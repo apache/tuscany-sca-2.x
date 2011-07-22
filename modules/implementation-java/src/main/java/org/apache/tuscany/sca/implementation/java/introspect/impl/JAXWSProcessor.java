@@ -282,7 +282,7 @@ public class JAXWSProcessor extends BaseJavaClassVisitor {
             WSDLInterfaceContract wsdlInterfaceContract = wsdlFactory.createWSDLInterfaceContract();
             wsdlInterfaceContract.setInterface(callInterface);
             wsdlInterfaceContract.setLocation(wsdlFileName);
-            javaInterfaceContract.setNormailizedWSDLContract(wsdlInterfaceContract);
+            javaInterfaceContract.setNormalizedWSDLContract(wsdlInterfaceContract);
         }  
         
         // add the service model into the implementation type

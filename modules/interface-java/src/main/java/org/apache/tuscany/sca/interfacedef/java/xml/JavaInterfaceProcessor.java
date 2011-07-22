@@ -419,7 +419,7 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
             WSDLInterfaceContract wsdlInterfaceContract = wsdlFactory.createWSDLInterfaceContract();
             wsdlInterfaceContract.setInterface(wsdlInterface);
             wsdlInterfaceContract.setLocation(javaInterface.getJAXWSWSDLLocation());
-            javaInterfaceContract.setNormailizedWSDLContract(wsdlInterfaceContract);
+            javaInterfaceContract.setNormalizedWSDLContract(wsdlInterfaceContract);
             
             ProcessorContext wsdlContext = new ProcessorContext(javaInterface.getContributionContainingClass(), 
                                                                 context.getMonitor());

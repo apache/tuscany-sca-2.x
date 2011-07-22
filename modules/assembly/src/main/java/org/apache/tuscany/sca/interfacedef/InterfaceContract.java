@@ -95,6 +95,6 @@ public interface InterfaceContract extends Cloneable {
      * 
      * @param wsdlInterfaceContract
      */
-    void setNormailizedWSDLContract(InterfaceContract wsdlInterfaceContract);    
+    void setNormalizedWSDLContract(InterfaceContract wsdlInterfaceContract);    
 
 }

@@ -51,7 +51,7 @@ public class WSDLInterfaceContractImpl extends InterfaceContractImpl implements 
         return this;
     }
     
-    public void setNormailizedWSDLContract(InterfaceContract wsdlInterfaceContract) {
+    public void setNormalizedWSDLContract(InterfaceContract wsdlInterfaceContract) {
         // do nothing as this already is a WSDL contract
     }
     
