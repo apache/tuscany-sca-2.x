@@ -5,7 +5,7 @@ This sample is an alternative version of the helloworld sample which uses the Sp
 
 The changes to the helloworld sample are:
 - update the pom.xml with the additional Spring dependencies
-- add a Spring context xml file
+- add a Spring context xml file to define the Spring application
 - update the composite to use <implementation.spring>
 
 As with all the getting-started samples you can run this sample with:
