@@ -7,12 +7,7 @@ See the README in the top-level samples folder for general information on the Tu
 
 This project has a plain Java SE class with a main method which uses the OASIS SCAClient API to invoke a Helloworld service in a remote SCA domain.
 
-Before running this sample you must have a helloworld service running in a SCA domain somewhere, for example, you can do that by using a separate command prompt to run the Tuscany 
-"Getting Started - Helloworld Sample" with the command 
-
-   mvn tuscany:run -DdomainURI=uri:default
-
-(including that domainURI parameter activates the Tuscany distributed domain) 
+Before running this sample you must have a helloworld service running in a SCA domain somewhere, for example, you can do that by using a separate command prompt to run one of the Tuscany "Getting Started" samples which provide a helloworld service, for examaple, helloworld, or helloworld-spring.
  
 You can then run this SCAClient sample with the Maven command: 
 
