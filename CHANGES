@@ -1,6 +1,9 @@
 Changes With Apache Tuscany SCA 2.0-Beta3 July 2011
 ===================================================
 
+Highlights include:
+- Major enhancements on <binding.comet>. See samples for more details.
+- Added new extension <binding.websocket>. See samples for more details.
 
 Changes With Apache Tuscany SCA 2.0-Beta2 February 2011
 =======================================================
