@@ -31,9 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.wsdl.Definition;
-import javax.wsdl.WSDLException;
-import javax.wsdl.xml.WSDLReader;
 import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -82,7 +79,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -115,7 +111,6 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
-import org.xml.sax.InputSource;
 
 /**
  * Runtime model for Endpoint that supports java serialization
@@ -1067,24 +1062,12 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         if (wsdl == null || wsdl.length() < 1) {
             return;
         }
-        try {
-            InterfaceContract ic = getComponentServiceInterfaceContract();
-            WSDLFactory wsdlFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(WSDLFactory.class);
-            WSDLInterfaceContract wsdlIC = wsdlFactory.createWSDLInterfaceContract();
-            WSDLInterface wsdlIface = wsdlFactory.createWSDLInterface();
-            WSDLDefinition wsdlDef = wsdlFactory.createWSDLDefinition();
-            WSDLReader reader = javax.wsdl.factory.WSDLFactory.newInstance().newWSDLReader();
-            InputSource inputSource = new InputSource(new StringReader(wsdl));
-            Definition def = reader.readWSDL("", inputSource);
-            wsdlDef.setDefinition(def);
-            wsdlIface.setWsdlDefinition(wsdlDef);
-            wsdlIC.setInterface(wsdlIface);
-            ic.setNormalizedWSDLContract(wsdlIC);
-        } catch (WSDLException e) {
-            throw new RuntimeException(e);
+        InterfaceContract ic = getComponentServiceInterfaceContract();
+        if (ic != null) {
+            ic.setNormalizedWSDLContract(WSDLHelper.createWSDLInterfaceContract(registry, wsdl));
         }
     }
-    
+
     public InterfaceContract getGeneratedWSDLContract(InterfaceContract interfaceContract) {
 
         if ( interfaceContract.getNormalizedWSDLContract() == null){

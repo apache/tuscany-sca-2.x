@@ -915,9 +915,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             return true;
         }
         
-        // TODO - is there a better test for this. Would have to cast to the
-        //        correct iface type to get to the resolved flag
-        //        We need to rely on normailzed interfaces in this case!!
+//        // TODO - is there a better test for this. Would have to cast to the
+//        //        correct iface type to get to the resolved flag
+//        //        We need to rely on normailzed interfaces in this case!!
         if (endpointContract.getInterface().getOperations().size() == 0){
             // the interface contract is likely remote but unresolved
             // we discussed this on the ML and decided that we could
