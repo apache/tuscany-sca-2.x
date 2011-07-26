@@ -1,0 +1,102 @@
+Tuscany - Learning More - Binding Comet - PubSub Webapp
+-----------------------------------------------------------------
+
+This sample demonstrates how Tuscany can expose services via Comet techniques 
+as well as how to interact with them using Tuscany's javascript toolkit. It 
+also demonstrates how to push multiple responses for a single request using 
+SCA callbacks via comet techniques.
+
+This project contains a component that registers browser clients' interest in a 
+certain event type. When an event of that type comes in, it notifies all registered
+clients. The event processor exposes a service via the websocket binding which 
+enables server push to clients. Note that Tuscany 2.x doesn't have any conversational
+support so this has to be handled at application level by passing ids back and forth
+between the client and the server. 
+
+By adding <tuscany:binding.comet/> to a service definition, the Tuscany runtime 
+will handle the communication between the browser client and the service 
+implementation using Comet techniques. This enables bidirectional communication
+over HTTP, therefore enabling server push. For more information, check 
+http://en.wikipedia.org/wiki/Comet_(programming).
+
+The comet binding is using the Atmosphere Framework under the hood to acomodate
+as many deployment envorinments as possible. Basically, it checks if the 
+application server supports Servlet 3.0 falling back to a number of native
+comet solutions provided by vendors (Jetty, Tomcat, WebLogic, GlassFish and
+others). If none is available, Atmosphere will fallback to blocking IO.
+
+In order to enable callbacks to push multiple responses, you need to declare the 
+CometCallback in the service definition as follows:
+		<interface.java interface="org.apache.tuscany.sca.sample.comet.ChatService"
+				callbackInterface="org.apache.tuscany.sca.binding.comet.runtime.callback.CometCallback" />
+		<tuscany:binding.comet />
+		<callback>
+			<tuscany:binding.comet />
+		</callback>
+    
+The callback object has methods that facilitate sending messages back to the 
+calling client. It can be injected in the service implementation using the @Callback
+annotation. 
+
+One requirement that service methods have to meet to enable multiple response 
+support is that they have to be annotated with @OneWay to enable non-blocking 
+support. Without it, methods are treated synchronously sending a single response
+which is the object returned by the method call.  
+
+Invoking comet services can be done using Tuscany's javascript API which simulates
+SCA in the browser. It uses the Atmosphere jQuery plugin under the hood. In order 
+to use it, the following script has to be included in the client page: 
+    <script type="text/javascript" 
+            src="tuscany-comet-js/org.apache.tuscany.sca.CometComponentContext.js">
+    </script>
+	
+The javascript toolkit permits choosing between two comet techniques: HTTP streaming 
+and long polling. More detailed information about them can be found on the previously
+mentioned wikipedia page.
+
+First, a connect operation has to be issued in order to initiate communication
+with the server side using the technique of your choice. This is done using the
+connection method as follows:
+	SCA.TuscanyComet.connect('streaming'); // for HTTP streaming
+	SCA.TuscanyComet.connect('long-polling'); // for long polling
+	SCA.TuscanyComet.connect(); // starts with HTTP streaming and falls back to long polling if necessary
+		
+The Tuscany Comet toolkit will inject proxies for all services defined in the composite 
+that are using binding.comet. All invocation and connection management is handled
+under the hood so in order to invoke a comet service, the following should be called:
+	SCA.CometComponentContext.<service name>.<operation name>(<parameters>, callback);
+
+The callback parameter is the function that will handle responses received for a 
+certain service operation. It has a single argument which is the response:
+    function callback(response) {
+        // handle response
+    };
+	
+Note that the data exchange is automatically handled by the binding, so parameters 
+will be mapped to the data types defined in the method definition. Also, the response 
+will have the same data type as the server side object used to wrap the response. 
+Objects are passed over the wire in JSON format.
+
+Another detail worth mentioning is that the binding will use a single HTTP 
+connection to handle communication between a browser client and all services 
+defined using binding.comet in the same composite. Requests and responses will get
+multiplexed via the same channel and get routed to the appropriate service 
+implementation, respectively javascript function. This is done in order to avoid
+the 2 HTTP connection limit imposed by browsers. For more info, check
+http://www.openajax.org/runtime/wiki/The_Two_HTTP_Connection_Limit_Issue.
+
+In order to run the sample, you can execute "mvn clean install t7:run" which will 
+start a Tomcat 7 instance automatically or use "mvn package" and deploy the resulting 
+war to the application server of your choice.
+
+Next, point your browser at 
+    http://localhost:8080/sample-binding-comet-chat-webapp/
+	
+You can now register or unregister for any of a number of events. When an event is fired
+on the server side, the browser client will receive a notification which will be displayed 
+in the page. You can see the persistent HTTP streaming connection or long polling subsequent 
+connections using the developer tools provided by your browser.
+
+The comet binding is an experimental binding so community feedback is much 
+appreciated. Feel free to send comments or suggestions on the Apache Tuscany 
+dev mailing list (dev@tuscany.apache.org).
