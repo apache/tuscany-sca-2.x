@@ -85,6 +85,16 @@
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/binding-comet-runtime/src/main/resources/jquery.json-2.2.min.js</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-python-runtime/src/main/resources/django/utils/simplejson/*</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/testing/compliance-tests/binding-jms/src/test/resources/tuscany-oasis-sca-tests-errors.properties</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/samples/learning-more/binding-comet/chat-webapp/src/main/webapp/jquery/jquery-1.4.2.min.js</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/samples/learning-more/binding-comet/pubsub-webapp/src/main/webapp/jquery/jquery-1.4.2.min.js</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/samples/learning-more/binding-comet/weather-webapp/src/main/webapp/jquery/jquery-1.4.2.min.js</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/samples/learning-more/binding-comet/autocomplete-webapp/src/main/webapp/jquery/jquery-1.4.2.min.js</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/samples/learning-more/binding-comet/autocomplete-webapp/src/main/resources/countries.txt</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/samples/learning-more/binding-websocket/chat-webapp/src/main/webapp/jquery/jquery-1.4.2.min.js</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/samples/learning-more/binding-websocket/pubsub-webapp/src/main/webapp/jquery/jquery-1.4.2.min.js</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/samples/learning-more/binding-websocket/weather-webapp/src/main/webapp/jquery/jquery-1.4.2.min.js</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/samples/learning-more/binding-websocket/autocomplete-webapp/src/main/webapp/jquery/jquery-1.4.2.min.js</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/samples/learning-more/binding-websocket/autocomplete-webapp/src/main/resources/countries.txt</exclude>
                            </excludes>
                         </configuration>
                     </plugin>
