@@ -19,7 +19,7 @@
 <html>
 	<head>
 		<title>Apache Tuscany Websocket Sample</title>
-		<script type="text/javascript" src="jquery/jquery-1.4.2.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript"></script> 
 		<script type="text/javascript" src="org.apache.tuscany.sca.WebsocketComponentContext.js"></script>
 		<script type="text/javascript">
 		$(document).ready(function(){
@@ -35,9 +35,9 @@
 				location.city = $('#city').val();
 				location.country = $('#country').val();
 				$('#locationButton').attr('disabled', 'disabled');
-				$('#tempButton').attr('disabled', '');
-				$('#humButton').attr('disabled', '');
-				$('#precipButton').attr('disabled', '');
+				$('#tempButton').removeAttr('disabled');
+				$('#humButton').removeAttr('disabled');
+				$('#precipButton').removeAttr('disabled');
 			});
 
 			$('#tempButton').click(function(event) {

@@ -18,45 +18,39 @@
 -->
 <html>
 <head>
-<title>Apache Tuscany Comet Sample</title>
-<!-- Tuscany Comet Javascript Toolkit is dependent on jQuery -->
-<script type="text/javascript"
-	src="jquery/jquery-1.4.2.min.js"></script>
-<script type="text/javascript"
-	src="tuscany-comet-js/org.apache.tuscany.sca.CometComponentContext.js"></script>
-<script type="text/javascript">
+	<title>Apache Tuscany Comet Sample</title>
+	<!-- Tuscany Comet Javascript Toolkit is dependent on jQuery -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript"></script> 
+	<script type="text/javascript" src="tuscany-comet-js/org.apache.tuscany.sca.CometComponentContext.js"></script>
+	<script type="text/javascript">
 		$(document).ready(function()
 		{
-			document.getElementById('registerEventButton').onclick = function(event) {
-				document.getElementById('registerEventName').value;
-			}
-
 			// Tuscany Comet specific API
-			document.getElementById('connect').onclick = function(event) {
+			$('#connect').click(function(event) {
                 /* transport can be : long-polling or streaming */
-			 	SCA.TuscanyComet.connect(document.getElementById('transport').value);
-                document.getElementById('connect').value = 'Switch';
-			}
+			 	SCA.TuscanyComet.connect($('#transport').val());
+                $('#connect').val('Switch');
+			});
 			
 
-			document.getElementById('registerEventButton').onclick = function(event) {
-				var eventName = document.getElementById('registerEventName').value;
+			$('#registerEventButton').click(function(event) {
+				var eventName = $('#registerEventName').val();
 				if (registrationIds[eventName] != null) {
 					alert("Already registered for " + eventName + " events");
 				} else {
 					SCA.CometComponentContext.EventProcessorConsumerService.register(eventName, responseReceived);
 				}
-			}
+			});
 
-			document.getElementById('unregisterEventButton').onclick = function(event) {
-				var eventName = document.getElementById('unregisterEventName').value;
+			$('#unregisterEventButton').click(function(event) {
+				var eventName = $('#unregisterEventName').val();
 				if (registrationIds[eventName] != null) {
 					SCA.CometComponentContext.EventProcessorConsumerService.unregister(registrationIds[eventName], responseReceived);
 					registrationIds[eventName] = null;
 				} else {
 					alert("Not registered for " + eventName + " events");
 				}
-			}
+			});
 
 		});
 		
@@ -72,12 +66,12 @@
 				// event notification
 				text = event.name + ": " + event.data;
 			}
-			var textarea = document.getElementById('textarea'); 
-			textarea.value += text + "\n";
-			textarea.scrollTop = textarea.scrollHeight; 
+			var textarea = $('#textarea'); 
+			$(textarea).val($(textarea).val() + text + "\n");
+			$(textarea).scrollTop($(textarea)[0].scrollHeight); 
 		}
 
-		</script>
+	</script>
 </head>
 <body>
 	<div id='sidebar'>

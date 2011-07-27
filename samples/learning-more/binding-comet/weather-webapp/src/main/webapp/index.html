@@ -20,7 +20,7 @@
 	<head>
 		<title>Apache Tuscany Comet Sample</title>
 		<!-- Tuscany Comet Javascript Toolkit is dependent on jQuery -->
-		<script type="text/javascript" src="jquery/jquery-1.4.2.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript"></script> 
 		<script type="text/javascript" src="tuscany-comet-js/org.apache.tuscany.sca.CometComponentContext.js"></script>
 		<script type="text/javascript">
 		$(document).ready(function()
@@ -30,79 +30,78 @@
 			location.city = null;
 			location.country = null;
 
-			document.getElementById('locationButton').disabled = true;
-			document.getElementById('tempCButton').disabled = true;
-			document.getElementById('tempFButton').disabled = true;
-			document.getElementById('humButton').disabled = true;
-			document.getElementById('precipButton').disabled = true;
+			$('#locationButton').attr('disabled', 'disabled');
+			$('#tempCButton').attr('disabled', 'disabled');
+			$('#tempFButton').attr('disabled', 'disabled');
+			$('#humButton').attr('disabled', 'disabled');
+			$('#precipButton').attr('disabled', 'disabled');
 
-			document.getElementById('locationButton').onclick = function(event) {
-				location.city = document.getElementById('city').value;
-				location.country = document.getElementById('country').value;
-				document.getElementById('locationButton').value = 'Switch location';
-				document.getElementById('tempCButton').disabled = false;
-				document.getElementById('tempFButton').disabled = false;
-				document.getElementById('humButton').disabled = false;
-				document.getElementById('precipButton').disabled = false;
-				document.getElementById('tempCText').textContent = 'N/A';
-				document.getElementById('tempCDate').textContent = '';
-				document.getElementById('tempFText').textContent = 'N/A';
-				document.getElementById('tempFDate').textContent = '';
-				document.getElementById('humText').textContent = 'N/A';
-				document.getElementById('humDate').textContent = '';
-				document.getElementById('precipText').textContent = 'N/A';
-				document.getElementById('precipDate').textContent = '';
-			}
+			$('#locationButton').click(function(event) {
+				location.city = $('#city').val();
+				location.country = $('#country').val();
+				$('#locationButton').val('Switch location');
+				$('#tempCButton').removeAttr('disabled');
+				$('#tempFButton').removeAttr('disabled');
+				$('#humButton').removeAttr('disabled');
+				$('#precipButton').removeAttr('disabled');
+				$('#tempCText').text('N/A');
+				$('#tempCDate').text('');
+				$('#tempFText').text('N/A');
+				$('#tempFDate').text('');
+				$('#humText').text('N/A');
+				$('#humDate').text('');
+				$('#precipText').text('N/A');
+				$('#precipDate').textContent('');
+			});
 
 			// Tuscany Comet specific API
-			
-			document.getElementById('connect').onclick = function(event) {
+			$('#connect').click(function(event) {
                 /* transport can be : long-polling or streaming */
-			 	SCA.TuscanyComet.connect(document.getElementById('transport').value);
-                document.getElementById('connect').value = 'Switch';
-                document.getElementById('locationButton').disabled = false;
-			}
+			 	SCA.TuscanyComet.connect($('#transport').val());
+                $('#connect').val('Switch');
+                $('#locationButton').removeAttr('disabled');
+			});
 			
 
-			document.getElementById('tempCButton').onclick = function(event) {
+			$('#tempCButton').click(function(event) {
 				SCA.CometComponentContext.TemperatureService.getTemperature(location, 1, updateTempC);
-				document.getElementById('tempCButton').disabled = true;
-			}
+				$('#tempCButton').removeAttr('disabled');
+			});
 
-			document.getElementById('tempFButton').onclick = function(event) {
+			$('#tempFButton').click(function(event) {
 				SCA.CometComponentContext.TemperatureService.getTemperature(location, 2, updateTempF);
-				document.getElementById('tempFButton').disabled = true;
-			}
+				$('#tempFButton').removeAttr('disabled');
+			});
 
-			document.getElementById('humButton').onclick = function(event) {
+			$('#humButton').click(function(event) {
 				SCA.CometComponentContext.HumidityService.getHumidity(location, updateHum);
-				document.getElementById('humButton').disabled = true;
-			}
+				$('#humButton').removeAttr('disabled');
+			});
 
-			document.getElementById('precipButton').onclick = function(event) {
+			$('#precipButton').click(function(event) {
 				SCA.CometComponentContext.PrecipitationService.getPrecipitation(location, updatePrecip);
-				document.getElementById('precipButton').disabled = true;
-			}
+				$('#precipButton').removeAttr('disabled');
+			});
 		});
 
 		function updateTempC(response) {
-			document.getElementById('tempCText').textContent = response.data;
-			document.getElementById('tempCDate').textContent = response.date;
+			$('#tempCText').text(response.data);
+			$('#tempCDate').text(response.date);
 		}
 
 		function updateTempF(response) {
-			document.getElementById('tempFText').textContent = response.data;
-			document.getElementById('tempFDate').textContent = response.date;
+			$('#tempFText').text(response.data);
+			$('#tempFDate').text(response.date);
 		}
 
 		function updateHum(response) {
-			document.getElementById('humText').textContent = response.data;
-			document.getElementById('humDate').textContent = response.date;
+			$('#humText').text(response.data);
+			$('#humDate').text(response.date);
 		}
 
 		function updatePrecip(response) {
-			document.getElementById('precipText').textContent = response.data;
-			document.getElementById('precipDate').textContent = response.date;
+			$('#precipText').text(response.data);
+			$('#precipDate').text(response.date);
 		}
 		</script>
 	</head>
