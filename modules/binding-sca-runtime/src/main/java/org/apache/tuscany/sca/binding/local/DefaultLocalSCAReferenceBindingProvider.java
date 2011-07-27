@@ -22,13 +22,18 @@ package org.apache.tuscany.sca.binding.local;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.binding.local.LocalSCABindingInvoker;
+import org.apache.tuscany.sca.binding.sca.transform.BindingSCATransformer;
+import org.apache.tuscany.sca.binding.sca.transform.DefaultBindingSCATransformer;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
+import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.interfacedef.Compatibility;
+import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.EndpointReferenceAsyncProvider;
@@ -36,42 +41,85 @@ import org.apache.tuscany.sca.provider.SCABindingMapper;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
+import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
 
-public class LocalSCAReferenceBindingProvider implements EndpointReferenceAsyncProvider {
+public class DefaultLocalSCAReferenceBindingProvider implements EndpointReferenceAsyncProvider {
     private RuntimeEndpointReference endpointReference;
 
-    private InterfaceContractMapper interfaceContractMapper;
-    private ExtensionPointRegistry extensionPoints;
-    private Mediator mediator;
+    protected InterfaceContractMapper interfaceContractMapper;
+    protected ExtensionPointRegistry extensionPoints;
+    protected Mediator mediator;
+    protected InterfaceContract wsdlBindingInterfaceContract;
 
-    public LocalSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints, RuntimeEndpointReference endpointReference, SCABindingMapper mapper) {
+    public DefaultLocalSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints, RuntimeEndpointReference endpointReference, SCABindingMapper mapper) {
         this.extensionPoints = extensionPoints;
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
+        this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);     
         this.mediator = utilities.getUtility(Mediator.class);
 
         this.endpointReference = endpointReference;
     }
+    
+    protected String getDataBinding() {
+        return DOMDataBinding.NAME;
+    }
+
+    private InterfaceContract getWSDLInterfaceContract(InterfaceContract interfaceContract) {
+        InterfaceContract wsdlInterfaceContract = (WSDLInterfaceContract)endpointReference.getGeneratedWSDLContract(interfaceContract);
+
+        // Validation may be unnecessary.  This check may already be guaranteed at this point, not sure.
+        Endpoint target = endpointReference.getTargetEndpoint();
+        InterfaceContract targetInterfaceContract = target.getComponentServiceInterfaceContract();
+        try {
+            interfaceContractMapper.checkCompatibility(wsdlInterfaceContract, targetInterfaceContract, 
+                                                       Compatibility.SUBSET, true, false);
+        } catch (IncompatibleInterfaceContractException exc) {
+            throw new ServiceRuntimeException(exc);
+        }
+
+        String dataBinding = getDataBinding();
+
+        // Clone
+        try {
+            wsdlInterfaceContract = (WSDLInterfaceContract)wsdlInterfaceContract.clone();
+        } catch (CloneNotSupportedException exc) {
+            throw new ServiceRuntimeException(exc);
+        }
+
+        if (wsdlInterfaceContract.getInterface() != null) {             
+            wsdlInterfaceContract.getInterface().resetDataBinding(dataBinding);
+        }
+        if (wsdlInterfaceContract.getCallbackInterface() != null) {
+            wsdlInterfaceContract.getCallbackInterface().resetDataBinding(dataBinding);
+        }
+        return wsdlInterfaceContract;
+
+    }
 
     @Override
     public InterfaceContract getBindingInterfaceContract() {
-        RuntimeEndpoint endpoint = (RuntimeEndpoint) endpointReference.getTargetEndpoint();
-        if (endpoint != null) {
-            return endpoint.getComponentTypeServiceInterfaceContract();
-        } else {
-            return endpointReference.getComponentTypeReferenceInterfaceContract();
+        InterfaceContract componentTypeRefIC = endpointReference.getComponentTypeReferenceInterfaceContract();
+        if (componentTypeRefIC.getInterface().isRemotable()) {
+            this.wsdlBindingInterfaceContract = getWSDLInterfaceContract(componentTypeRefIC);
         }
+
+        // Since we want to disable DataTransformationInterceptor and handle copy in the binding
+        return componentTypeRefIC;
     }
+
+    
 
     @Override
     public Invoker createInvoker(Operation operation) {
         Invoker result = null;
-
+        BindingSCATransformer bindingTransformer = null; 
+            
         Endpoint target = endpointReference.getTargetEndpoint();
         if (target != null) {
             RuntimeComponentService service = (RuntimeComponentService) target.getService();
             if (service != null) { // not a callback wire
+                                
                 InvocationChain chain = ((RuntimeEndpoint) target).getInvocationChain(operation);
 
                 boolean passByValue = false;
@@ -90,15 +138,19 @@ public class LocalSCAReferenceBindingProvider implements EndpointReferenceAsyncP
                         passByValue = false;
                     } else if (interfaceContractMapper.isCompatibleWithoutUnwrapByValue(operation, targetOp, Compatibility.SUBSET)) {
                         passByValue = true;
+                    } else {
+                        throw new IllegalStateException();
                     }
+                    bindingTransformer = getBindingTransformer(operation, chain);
                 }
+                                                
                 // it turns out that the chain source and target operations are
                 // the same, and are the operation
                 // from the target, not sure if thats by design or a bug. The
                 // SCA binding invoker needs to know
                 // the source and target class loaders so pass in the real
                 // source operation in the constructor
-                result = chain == null ? null : new LocalSCABindingInvoker(chain, operation, mediator, passByValue, endpointReference, extensionPoints);
+                result = chain == null ? null : new LocalSCABindingInvoker(chain, operation, passByValue, endpointReference, extensionPoints, bindingTransformer);
             }
         }
 
@@ -108,6 +160,10 @@ public class LocalSCAReferenceBindingProvider implements EndpointReferenceAsyncP
         }
 
         return result;
+    }
+    
+    protected BindingSCATransformer getBindingTransformer(Operation operation, InvocationChain chain) {
+        return new DefaultBindingSCATransformer(mediator, operation, chain);
     }
 
     @Override
@@ -143,4 +199,6 @@ public class LocalSCAReferenceBindingProvider implements EndpointReferenceAsyncP
     public void setEndpointReference(RuntimeEndpointReference endpointReference){
         this.endpointReference = endpointReference;
     }
+    
+
 }

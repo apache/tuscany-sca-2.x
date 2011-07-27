@@ -28,11 +28,11 @@ import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
-public class LocalSCABindingProviderFactory implements BindingProviderFactory<LocalSCABinding> {
+public class XMLWFLocalSCABindingProviderFactory implements BindingProviderFactory<LocalSCABinding> {
     private ExtensionPointRegistry extensionPoints;
     private SCABindingMapper scaBindingMapper;
 
-    public LocalSCABindingProviderFactory(ExtensionPointRegistry extensionPoints) {
+    public XMLWFLocalSCABindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         this.scaBindingMapper = utilities.getUtility(SCABindingMapper.class);
@@ -40,7 +40,7 @@ public class LocalSCABindingProviderFactory implements BindingProviderFactory<Lo
 
     @Override
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
-        return new DefaultLocalSCAReferenceBindingProvider(extensionPoints, endpointReference, scaBindingMapper);
+        return new XMLWFLocalSCAReferenceBindingProvider(extensionPoints, endpointReference, scaBindingMapper);
     }
 
     @Override

@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.binding.sca.provider;
 
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.binding.local.LocalSCAReferenceBindingProvider;
+import org.apache.tuscany.sca.binding.local.DefaultLocalSCAReferenceBindingProvider;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -47,8 +47,8 @@ public class DelegatingSCAReferenceBindingProvider implements EndpointReferenceA
                
             // reset the EPR to binding.sca EPR because the local optimization assumes
             // this to be the case. 
-            if (provider instanceof LocalSCAReferenceBindingProvider){
-                ((LocalSCAReferenceBindingProvider)provider).setEndpointReference(endpointReference);
+            if (provider instanceof DefaultLocalSCAReferenceBindingProvider){
+                ((DefaultLocalSCAReferenceBindingProvider)provider).setEndpointReference(endpointReference);
             }         
         }
     }
