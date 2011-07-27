@@ -45,7 +45,7 @@ public class RemoteExceptionHandlerImpl implements ExceptionHandler {
         String result = INIT;
         try {
             theGood = result = exceptionThrower.theGood();
-            assert result == ExceptionThrower.SO_THEY_SAY;
+            assert result.equals(ExceptionThrower.SO_THEY_SAY);                        
         } catch (Throwable e) {
             assert result == INIT;
             assert false;
