@@ -70,9 +70,9 @@ public abstract class AbstractMessageProcessor implements JMSMessageProcessor {
      */
     public void setOperationName(String operationName, Message message) {
         try {
-
-            message.setStringProperty(operationPropertyName, operationName);
-
+            if (message != null) {
+                message.setStringProperty(operationPropertyName, operationName);
+            }
         } catch (JMSException e) {
             throw new JMSBindingException("Exception setting the operation name on message", e);
         }
