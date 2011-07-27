@@ -9,8 +9,8 @@ of Open Composite Services Architecture (Open CSA) - http://www.oasis-opencsa.or
 Overview
 --------
 
-The Apache Tuscany SCA 2.0-Beta2 release includes implementations of the
-main SCA specifications and recent updates from Open CSA drafts including:
+This Apache Tuscany SCA release includes implementations of the main SCA 
+specifications and recent updates from Open CSA drafts including:
 
         * SCA Assembly Model V1.1 
         * SCA Policy Framework V1.1 
@@ -33,17 +33,12 @@ in the main build in the following Maven pom:
 The distribution also includes implementations of many features not 
 yet defined by SCA specifications, including:
 
-        - SCA bindings for RMI, HTTP, JSON-RPC, ATOM.
+        - SCA bindings for RMI, REST, WebSockets, Comet, HTTP, JSON-RPC, JSONP, ATOM.
         - Databindings for JAXB, Axis2's AXIOM, DOM, SAX and StAX
         - Integration with various web frameworks
 
 The Tuscany SCA Runtime can be configured as a single node SCA domain.
  
-For this Beta2 release the remote Domain support is disabled pending 
-some up-coming changes in the way that domains are addressed and accessed. 
-This means that the scaclient-* samples don't work and cross JVM applications 
-that rely on binding-sca won't work. 
-
 In addition Tuscany SCA supports the following host-deployment options: -
         - running standalone 
         - running in a OSGi enabled runtime Environment (Equinox)
