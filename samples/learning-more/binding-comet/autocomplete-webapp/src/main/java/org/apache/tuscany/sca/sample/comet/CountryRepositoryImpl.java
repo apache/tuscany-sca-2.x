@@ -53,9 +53,11 @@ public class CountryRepositoryImpl implements CountryRepository {
                     .getResourceAsStream(fileName)));
             String line;
             while ((line = reader.readLine()) != null) {
-                Country c = new Country();
-                c.setName(line);
-                countries.add(c);
+                if (!line.startsWith("#")) {
+                    Country c = new Country();
+                    c.setName(line);
+                    countries.add(c);
+                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
