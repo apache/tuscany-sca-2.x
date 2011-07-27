@@ -40,6 +40,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.tuscany.sca.common.xml.dom.impl.SAX2DOMAdapter;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -57,15 +58,19 @@ import org.xml.sax.ext.LexicalHandler;
  * @version $Rev$ $Date$
  * @tuscany.spi.extension.asclient
  */
-public class DOMHelper {
+public class DOMHelper implements LifeCycleListener {
+    protected static final int INITIAL_POOL_SIZE = 8;
+    protected static final int MAX_POOL_SIZE = 64;
     private DocumentBuilderFactory documentBuilderFactory;
     private TransformerFactory transformerFactory;
+    protected ParserPool<DocumentBuilder> builderPool;
+    protected ParserPool<Transformer> transformerPool;
 
     public static DOMHelper getInstance(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         return utilities.getUtility(DOMHelper.class);
     }
-    
+
     public DOMHelper(ExtensionPointRegistry registry) {
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         documentBuilderFactory = factories.getFactory(DocumentBuilderFactory.class);
@@ -84,11 +89,24 @@ public class DOMHelper {
     }
 
     public Document newDocument() {
-        return newDocumentBuilder().newDocument();
+        DocumentBuilder builder = newDocumentBuilder();
+        try {
+            return builder.newDocument();
+        } finally {
+            returnDocumentBuilder(builder);
+        }
 
     }
 
     public DocumentBuilder newDocumentBuilder() {
+        return builderPool.borrowFromPool();
+    }
+
+    public void returnDocumentBuilder(DocumentBuilder builder) {
+        builderPool.returnToPool(builder);
+    }
+
+    private DocumentBuilder createDocumentBuilder() {
         try {
             return documentBuilderFactory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
@@ -98,10 +116,14 @@ public class DOMHelper {
 
     public Document load(String xmlString) throws IOException, SAXException {
         DocumentBuilder builder = newDocumentBuilder();
-        InputSource is = new InputSource(new StringReader(xmlString));
-        return builder.parse(is);
+        try {
+            InputSource is = new InputSource(new StringReader(xmlString));
+            return builder.parse(is);
+        } finally {
+            returnDocumentBuilder(builder);
+        }
     }
-    
+
     public Document load(Source source) {
         Transformer transformer = newTransformer();
         DOMResult result = new DOMResult(newDocument());
@@ -109,6 +131,8 @@ public class DOMHelper {
             transformer.transform(source, result);
         } catch (TransformerException e) {
             throw new IllegalArgumentException(e);
+        } finally {
+            transformerPool.returnToPool(transformer);
         }
         return (Document)result.getNode();
     }
@@ -128,11 +152,21 @@ public class DOMHelper {
             transformer.transform(new DOMSource(node), result);
         } catch (TransformerException e) {
             throw new IllegalArgumentException(e);
+        } finally {
+            returnTransformer(transformer);
         }
         return result.getWriter().toString();
     }
 
-    private Transformer newTransformer() {
+    public Transformer newTransformer() {
+        return transformerPool.borrowFromPool();
+    }
+
+    public void returnTransformer(Transformer transformer) {
+        transformerPool.returnToPool(transformer);
+    }
+
+    private Transformer createTransformer() {
         Transformer transformer = null;
         try {
             transformer = transformerFactory.newTransformer();
@@ -143,12 +177,14 @@ public class DOMHelper {
     }
 
     public void saveAsSAX(Node node, ContentHandler contentHandler) {
-        Transformer transformer = newTransformer();
+        Transformer transformer = transformerPool.borrowFromPool();
         SAXResult result = new SAXResult(contentHandler);
         try {
             transformer.transform(new DOMSource(node), result);
         } catch (TransformerException e) {
             throw new IllegalArgumentException(e);
+        } finally {
+            returnTransformer(transformer);
         }
     }
 
@@ -209,7 +245,7 @@ public class DOMHelper {
         }
         return doc;
     }
-    
+
     public static String getPrefix(Element element, String namespace) {
         if (element.isDefaultNamespace(namespace)) {
             return XMLConstants.DEFAULT_NS_PREFIX;
@@ -226,6 +262,41 @@ public class DOMHelper {
 
     public static interface NodeContentHandler extends ContentHandler, LexicalHandler {
         Node getNode();
+    }
+
+    @Override
+    public void start() {
+        builderPool = new ParserPool<DocumentBuilder>(MAX_POOL_SIZE, INITIAL_POOL_SIZE) {
+
+            @Override
+            protected DocumentBuilder newInstance() {
+                return createDocumentBuilder();
+            }
+
+            @Override
+            protected void resetInstance(DocumentBuilder obj) {
+                obj.reset();
+            }
+        };
+
+        transformerPool = new ParserPool<Transformer>(64, 8) {
+
+            @Override
+            protected Transformer newInstance() {
+                return createTransformer();
+            }
+
+            @Override
+            protected void resetInstance(Transformer obj) {
+                obj.reset();
+            }
+        };
+    }
+
+    @Override
+    public void stop() {
+        builderPool.clear();
+        transformerPool.clear();
     }
 
 }

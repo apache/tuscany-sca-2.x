@@ -20,13 +20,15 @@
 package org.apache.tuscany.sca.common.xml.dom;
 
 import static org.junit.Assert.assertNotNull;
-import junit.framework.Assert;
+
+import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.tuscany.sca.common.xml.sax.SAXHelper;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -76,6 +78,29 @@ public class DOMHelperTestCase {
         assertNotNull(root.getFirstChild());
         xml = helper.saveAsString(root);
         XMLAssert.assertXMLEqual(XML, xml);
+    }
+
+    @Test
+    public void testPool() {
+        DOMHelper helper = DOMHelper.getInstance(registry);
+
+        DocumentBuilder buidler1 = helper.newDocumentBuilder();
+        Assert.assertTrue(helper.builderPool.getObjects().get(buidler1));
+
+        Assert.assertEquals(1, helper.builderPool.inUse());
+
+        DocumentBuilder buidler2 = helper.newDocumentBuilder();
+        Assert.assertTrue(helper.builderPool.getObjects().get(buidler2));
+        Assert.assertEquals(2, helper.builderPool.inUse());
+
+        helper.returnDocumentBuilder(buidler2);
+        Assert.assertFalse(helper.builderPool.getObjects().get(buidler2));
+        Assert.assertEquals(1, helper.builderPool.inUse());
+
+        helper.returnDocumentBuilder(buidler1);
+        Assert.assertFalse(helper.builderPool.getObjects().get(buidler1));
+        Assert.assertEquals(0, helper.builderPool.inUse());
+
     }
 
 }
