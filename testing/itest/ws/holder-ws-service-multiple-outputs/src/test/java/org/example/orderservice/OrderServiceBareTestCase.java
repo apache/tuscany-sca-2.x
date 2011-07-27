@@ -38,6 +38,7 @@ import org.junit.Test;
 /**
  * Tests that the order server responds.
  */
+
 public class OrderServiceBareTestCase {
 
     private static Node node;
@@ -56,7 +57,6 @@ public class OrderServiceBareTestCase {
     }
 
     @Test
-    @Ignore
     public void testOrderReviewBareApprovedSCA() throws IOException {
         OrderServiceBare orderServiceBare =
             node.getService(OrderServiceBare.class, "OrderServiceBareComponent/OrderServiceBare");
@@ -72,7 +72,6 @@ public class OrderServiceBareTestCase {
         testOrderReviewApproved(orderServiceBare);    
     }
 
-    @Ignore
     @Test
     public void testOrderReviewBareRejectedSCA() throws IOException {
         OrderServiceBare orderServiceBare =
@@ -89,7 +88,6 @@ public class OrderServiceBareTestCase {
         testOrderReviewRejected(orderServiceBare);
     }
 
-    @Ignore
     @Test
     public void testOrderReviewInOutBareApprovedSCA() throws IOException {
         OrderServiceBare orderServiceBare =
@@ -106,7 +104,6 @@ public class OrderServiceBareTestCase {
         testOrderReviewApprovedInOutHolder(orderServiceBare);    
     }
 
-    @Ignore
     @Test
     public void testOrderReviewInOutBareRejectedSCA() throws IOException {
         OrderServiceBare orderServiceBare =
@@ -122,8 +119,7 @@ public class OrderServiceBareTestCase {
         assertNotNull(orderServiceBare);            
         testOrderReviewRejectedInOutHolder(orderServiceBare);
     }    
-    
-    @Ignore
+        
     @Test
     public void testOrderReviewBareOutHolderSCA() throws IOException {
         OrderServiceBare orderServiceBare =
