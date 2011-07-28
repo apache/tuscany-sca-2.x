@@ -1,0 +1,23 @@
+Tuscany - Getting Started - Helloworld JSONP Sample
+---------------------------------------------------
+
+This sample extends the helloworld sample to make the helloworld service available as an HTTP endpoint using JSONP.
+JSONP is a protocol supported by many Web clients that enables client requests to a server in a different domain.
+
+The changes to the helloworld sample are:
+- update the pom.xml with the additional dependencies
+- update the composite to use the JSONP binding 
+
+As with all the getting-started samples you can run this sample with:
+
+   mvn tuscany:run 
+
+Then at a web browser enter the following URL:
+
+http://localhost:8080/HelloworldComponent/Helloworld/sayHello?name=world&callback=respFunc
+
+which should return a page saying:
+
+respFunc("Hello world");
+
+

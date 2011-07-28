@@ -87,6 +87,7 @@ Take out these sample tests while the sample reorg happens
               <module>contribution-implementation-java-calculator</module>
               <module>launcher-embedded-jse</module>
               <module>launcher-embedded-osgi</module>
+
 -->
           </modules>
       </profile>

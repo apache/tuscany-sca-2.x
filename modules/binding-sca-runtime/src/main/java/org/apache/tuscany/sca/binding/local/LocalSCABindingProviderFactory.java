@@ -40,7 +40,7 @@ public class LocalSCABindingProviderFactory implements BindingProviderFactory<Lo
 
     @Override
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
-        return new LocalSCAReferenceBindingProvider(extensionPoints, endpointReference, scaBindingMapper);
+        return new DefaultLocalSCAReferenceBindingProvider(extensionPoints, endpointReference, scaBindingMapper);
     }
 
     @Override

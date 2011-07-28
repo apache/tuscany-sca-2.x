@@ -1,0 +1,35 @@
+Tuscany - Getting Started - Helloworld With Dependencies Sample
+---------------------------------------------------------------
+
+This sample extends the helloworld sample to show how to use ZIP format contributions which include dependencys jar which are made available on the contribution classpath. To demonstrate this the Helloworld service is updated to use a Apache Commons Lang 3.0 utility to capatalize the first letter of the name.
+
+The changes to the helloworld sample are:
+- update sample.HelloworldImpl class is updated to use the Apache Commons Lang 3.0 WordUtils utility 
+- the Maven build is updated to use the Assembly plugin to create a ZIP archive of the contrubution which includes the dependency jars
+
+Presently the Tuscany Shell does not work "as is" to run this sample with "mvn tuscany:run". Instead you need to do the following in the helloworld-withdeps directory:
+
+- build the ZIP contribution
+    
+   mvn clean install
+
+- start the Tuscany Shell
+
+   mvn tuscany:shell
+
+- install the sample contribution
+
+  install target\helloworld-withdeps-2.0-Beta3-SNAPSHOT.zip
+
+- start the SCA composite
+
+  start helloworld-withdeps META-INF/helloworld.composite
+
+And then as with the original helloworld sample you may test the service by using the Shell "invoke" command:
+
+   invoke HelloworldComponent sayHello yourName
+
+which should return a hello text with the name capatilized:
+
+   Hello YourName
+

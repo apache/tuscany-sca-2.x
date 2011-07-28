@@ -126,7 +126,7 @@ public class DOMWrapperHandler implements WrapperHandler<Node> {
         for (int j = 0; j < nodes.getLength(); j++) {
             Node node = nodes.item(j);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
-                elementName = new QName(wrapper.getNamespaceURI(), wrapper.getLocalName());
+                elementName = new QName(node.getNamespaceURI(), node.getLocalName());
                 if (!names.contains(elementName)) {
                     return false;
                 }

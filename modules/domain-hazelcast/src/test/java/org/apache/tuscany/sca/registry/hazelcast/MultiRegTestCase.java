@@ -208,7 +208,7 @@ public class MultiRegTestCase {
             }
 
             @Override
-            public void setNormailizedWSDLContract(InterfaceContract wsdlInterfaceContract) {
+            public void setNormalizedWSDLContract(InterfaceContract wsdlInterfaceContract) {
                 // TODO Auto-generated method stub
                 
             }};

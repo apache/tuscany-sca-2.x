@@ -52,6 +52,7 @@
                 <module>component-type</module>
                 <module>contribution-folder</module>
                 <module>contribution-zip</module>
+                <module>data-copy</module>
                 <module>databindings</module>
                 <module>distribution</module>
                 <module>exceptions</module>

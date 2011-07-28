@@ -1,0 +1,107 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<html>
+<head>
+	<title>Apache Tuscany Comet Sample</title>
+	<!-- Tuscany Comet Javascript Toolkit is dependent on jQuery -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript"></script> 
+	<script type="text/javascript" src="tuscany-comet-js/org.apache.tuscany.sca.CometComponentContext.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function()
+		{
+			// Tuscany Comet specific API
+			$('#connect').click(function(event) {
+                /* transport can be : long-polling or streaming */
+			 	SCA.TuscanyComet.connect($('#transport').val());
+                $('#connect').val('Switch');
+			});
+			
+
+			$('#registerEventButton').click(function(event) {
+				var eventName = $('#registerEventName').val();
+				if (registrationIds[eventName] != null) {
+					alert("Already registered for " + eventName + " events");
+				} else {
+					SCA.CometComponentContext.EventProcessorConsumerService.register(eventName, responseReceived);
+				}
+			});
+
+			$('#unregisterEventButton').click(function(event) {
+				var eventName = $('#unregisterEventName').val();
+				if (registrationIds[eventName] != null) {
+					SCA.CometComponentContext.EventProcessorConsumerService.unregister(registrationIds[eventName], responseReceived);
+					registrationIds[eventName] = null;
+				} else {
+					alert("Not registered for " + eventName + " events");
+				}
+			});
+
+		});
+		
+		var registrationIds = {};
+		
+		function responseReceived(event) {
+			var text = '';
+			if (event.id != null) {
+				// registration notification
+				registrationIds[event.name] = event.id;
+				text = "Registered to " + event.name + " with id " + event.id + " at " + event.data;
+			} else {
+				// event notification
+				text = event.name + ": " + event.data;
+			}
+			var textarea = $('#textarea'); 
+			$(textarea).val($(textarea).val() + text + "\n");
+			$(textarea).scrollTop($(textarea)[0].scrollHeight); 
+		}
+
+	</script>
+</head>
+<body>
+	<div id='sidebar'>
+		<h2>Apache Tuscany Comet Sample</h2>
+		<label>Select transport</label> <select id="transport">
+			<option id="streaming" value="streaming">http streaming</option>
+			<option id="long-polling" value="long-polling">long-polling</option>
+		</select> <input id='connect' type='submit' value='Connect' />
+		<h3>PubSub for FAST, MODERATE and SLOW events</h3>
+		<p />
+		<table>
+			<tr>
+				<td>Event name</td>
+				<td><input type="text" id='registerEventName' value='FAST' />
+				</td>
+				<td><input type="button" id='registerEventButton'
+					value='Register' />
+				</td>
+			</tr>
+			<tr>
+				<td>Event name</td>
+				<td><input type="text" id='unregisterEventName' value='FAST' />
+				</td>
+				<td><input type="button" id='unregisterEventButton'
+					value='Unregister' />
+				</td>
+			</tr>
+		</table>
+		<h3>Server notifications</h3>
+		<textarea id="textarea" rows="15" cols="80" readonly></textarea>
+	</div>
+</body>
+</html>

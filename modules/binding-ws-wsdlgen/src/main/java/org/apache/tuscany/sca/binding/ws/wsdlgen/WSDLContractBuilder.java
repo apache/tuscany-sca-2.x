@@ -82,7 +82,7 @@ public class WSDLContractBuilder implements ContractBuilder {
                                                              xsdFactory, 
                                                              documentBuilderFactory, 
                                                              null);
-        javaContract.setNormailizedWSDLContract(wsdlContract);
+        javaContract.setNormalizedWSDLContract(wsdlContract);
 //        BindingWSDLGenerator.printWSDL = false;
         return true;
     }

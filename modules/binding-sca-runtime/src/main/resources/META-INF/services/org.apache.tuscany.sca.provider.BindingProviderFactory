@@ -17,4 +17,5 @@
 
 # Implementation class for the binding extension
 org.apache.tuscany.sca.binding.sca.provider.RuntimeSCABindingProviderFactory;model=org.apache.tuscany.sca.assembly.SCABinding
+#org.apache.tuscany.sca.binding.local.XMLWFLocalSCABindingProviderFactory;model=org.apache.tuscany.sca.binding.local.LocalSCABinding
 org.apache.tuscany.sca.binding.local.LocalSCABindingProviderFactory;model=org.apache.tuscany.sca.binding.local.LocalSCABinding

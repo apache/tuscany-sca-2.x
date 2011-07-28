@@ -1,0 +1,93 @@
+Tuscany - Learning More - Binding Websocket - PubSub Webapp
+-----------------------------------------------------------------
+
+This sample demonstrates how Tuscany can expose services via websockets as well
+as how to interact with them using Tuscany's javascript API. It also demonstrates
+how to push multiple responses from the server to the client for a single request
+using SCA callbacks.
+
+This project contains a component that registers browser clients' interest in a 
+certain event type. When an event of that type comes in, it notifies all registered
+clients. The event processor exposes a service via the websocket binding which 
+enables server push to clients. Note that Tuscany 2.x doesn't have any conversational
+support so this has to be handled at application level by passing ids back and forth
+between the client and the server. 
+
+By adding <tuscany:binding.websocket port="8090"/> to a service definition, the 
+Tuscany runtime will start a websocket server listening for requests coming
+in for the exposed service at the specified port. If no port is specified, the
+runtime will use port 9000 as a default.  
+
+The websocket binding uses embedded Jetty instances as websocket servers. At the
+moment, Jetty 8.0.0-M3 is used which has support for the 00, 01, 06 and 07 
+versions of the websocket protocol drafts.
+
+IN ORDER TO RUN THIS SAMPLE SUCCESSFULLY PLEASE CHECK IF YOUR BROWSER SUPPORTS 
+THE ABOVE WEBSOCKET PROTOCOL VERSIONS AND THAT THE WEBSOCKET SUPPORT IS ENABLED.
+
+In order to enable callbacks to push multiple responses, you need to declare the 
+WebsocketBindingCallback in the service definition as follows:
+
+    <interface.java interface="sample.ChatService"
+                    callbackInterface="org.apache.tuscany.sca.binding.websocket.runtime.WebsocketBindingCallback" />
+    <tuscany:binding.websocket />
+    <callback>
+        <tuscany:binding.websocket />
+    </callback>
+    
+The callback object has methods that facilitate sending messages back to the 
+calling client. It can be injected in the service implementation using the @Callback
+annotation. However, the service implementation for this sample has the COMPOSITE
+scope so the callback reference has to be obtained from the ComponentContext.
+
+One requirement that service methods have to meet to enable multiple response 
+support is that they have to be annotated with @OneWay to enable non-blocking 
+support. Without it, methods are treated synchronously sending a single response
+which is the object returned by the method call.  
+
+The websocket binding also features a javascript API to simulate SCA in the 
+browser. In order to use it, the following script has to be included in the
+client page: 
+    <script type="text/javascript" 
+            src="org.apache.tuscany.sca.WebsocketComponentContext.js">
+    </script>
+	
+This will inject proxies for all services defined in the composite that are 
+using binding.websocket. All invocation and connection management is handled
+under the hood so in order to invoke a websocket service, the following should
+be called:
+	Tuscany.WebsocketComponentContext.<component name>.<service name>.<operation name>(<parameters>);
+
+Given the asynchornous nature of websockets, a function should be defined in
+order to handle responses received for a certain service operation. This should
+be done as follows:
+    Tuscany.WebsocketComponentContext.<component name>.<service name>.<operation name>.responseHandler = function(response) {
+        // handle response
+    };
+	
+Note that the data exchange is automatically handled by the binding, so parameters 
+will be mapped to the data types defined in the method definition. Also, the response 
+will have the same data type as the server side object used to wrap the response. 
+Objects are passed over the wire in JSON format.
+
+Another detail worth mentioning is that the binding will use a single persistent 
+websocket connection to handle communication between a browser client and all services 
+defined using binding.websocket on the same port. Requests and responses will get
+multiplexed via the same channel and get routed to the appropriate service 
+implementation, respectively javascript function.
+
+In order to run the sample, you can execute "mvn jetty:run" which will start a Jetty
+instance automatically or use "mvn package" and deploy the resulting war to the
+application server of your choice.
+
+Next, point your browser at 
+    http://localhost:8080/sample-binding-websocket-chat-webapp/
+	
+You can now register or unregister for any of a number of events. When an event is fired
+on the server side, the browser client will receive a notification which will be displayed 
+in the page. You can see the persistent websocket connection using the developer tools 
+provided by your browser.
+
+The websocket binding is an experimental binding so community feedback is much 
+appreciated. Feel free to send comments or suggestions on the Apache Tuscany 
+dev mailing list (dev@tuscany.apache.org).

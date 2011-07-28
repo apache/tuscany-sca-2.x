@@ -1,6 +1,16 @@
 Changes With Apache Tuscany SCA 2.0-Beta3 July 2011
 ===================================================
 
+Highlights include:
+- Major enhancements on <binding.comet>. See samples for more details.
+- Added new extension <binding.websocket>. See samples for more details.
+- Many other improvements and bug fixes to the Web Service binding, 
+  distributed domain support, samples and many other areas. A complete
+  list of changes since the previous release can be found with the 
+  following SVN command:
+
+  svn log -r 1072933:HEAD https://svn.apache.org/repos/asf/tuscany/sca-java-2.x/tags/2.0-Beta3/
+
 
 Changes With Apache Tuscany SCA 2.0-Beta2 February 2011
 =======================================================

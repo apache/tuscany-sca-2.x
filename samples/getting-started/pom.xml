@@ -32,8 +32,14 @@
 
     <modules>
         <module>helloworld</module>
-        <module>helloworld-webapp</module>
+        <module>helloworld-jaxrs</module>
+        <module>helloworld-jsonp</module>
+        <module>helloworld-jsonrpc</module>
         <module>helloworld-scaclient</module>
+        <module>helloworld-spring</module>
+        <module>helloworld-webapp</module>
+        <module>helloworld-webservice</module>
+        <module>helloworld-withdeps</module>
     </modules>
 
 </project>

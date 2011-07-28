@@ -18,17 +18,23 @@
  */
 package sample;
 
-import org.junit.Assert;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
+import org.junit.Assert;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchServiceException;
 
 public class HelloworldTestCase {
 
     @Test
-    public void testSayHello() throws NoSuchServiceException {
+    public void testSayHello() throws NoSuchServiceException, IOException {
 
         // Run the SCA composite in a Tuscany runtime
         Node node = TuscanyRuntime.runComposite("helloworld.composite", "target/classes");
@@ -40,9 +46,31 @@ public class HelloworldTestCase {
             // test that it works as expected
             Assert.assertEquals("Hello Amelia", helloworld.sayHello("Amelia"));
             
+            // test that has exposed an HTTP endpoint that works as expected
+            // to keep this test simple just do ?wsdl on the endpoint  
+            URL url = new URL("http://localhost:8080/HelloworldComponent/Helloworld?wsdl");
+            Assert.assertTrue(read(url.openStream()).contains("address location="));
+
         } finally {
             // Stop the Tuscany runtime Node
             node.stop();        
+        }
+    }
+
+    private static String read(InputStream is) throws IOException {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(is));
+            StringBuffer sb = new StringBuffer();
+            String str;
+            while ((str = reader.readLine()) != null) {
+                sb.append(str);
+            }
+            return sb.toString();
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
         }
     }
 }

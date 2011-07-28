@@ -38,7 +38,6 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>jse</module>
                 <module>junit</module>
             </modules>
         </profile>

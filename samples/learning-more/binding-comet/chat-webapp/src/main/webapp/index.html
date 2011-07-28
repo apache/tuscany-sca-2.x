@@ -1,0 +1,109 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<html>
+	<head>
+		<title>Apache Tuscany Comet Sample</title>
+		<!-- Tuscany Comet Javascript Toolkit is dependent on jQuery -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript"></script> 
+		<script type="text/javascript" src="tuscany-comet-js/org.apache.tuscany.sca.CometComponentContext.js"></script>
+		<script type="text/javascript">
+		var user = "";
+		
+		$(document).ready(function()
+		{
+			$("#chat").hide();
+			$("#username").focus();
+			
+			// Tuscany Comet specific API
+			SCA.TuscanyComet.connect();
+			
+			$("#register").click(function() {
+				register(messageCallback);
+			});
+			
+			$("#username").keyup(function(e) {
+				if(e.keyCode == 13) {
+					register(messageCallback);
+				}
+			});
+			
+			function register(callback) {
+				SCA.CometComponentContext.ChatService.register(callback);
+				user = $("#username").val();
+				$("#login").hide();
+				$("#chat").show();
+				$("#message").focus();
+			}
+			
+			$("#send").click(function() {
+				postMessage(user, $("#message").val(), postCallback);
+			});
+			
+			$("#message").keyup(function(e) {
+				if(e.keyCode == 13) {
+					postMessage(user, $("#message").val(), postCallback);
+				}
+			});
+			
+			function postMessage(user, message, callback) {
+				SCA.CometComponentContext.ChatService.postMessage(user, message, callback);
+				$("#message").val("");
+				$("#message").focus();
+			}
+			
+		});
+
+		// this method is invoked on new messages because the CometCallback object is saved
+		// during the register call so uses it's callback to push data back
+		function messageCallback(response) {
+			var textarea = document.getElementById('textarea'); 
+			textarea.value += response + "\n";
+			textarea.scrollTop = textarea.scrollHeight; 
+		}
+		
+		function postCallback(response) {
+		}
+
+		</script>
+	</head>
+	<body>
+		<h2>Apache Tuscany Comet Sample</h2>
+		<h3>Chat</h3>
+		<p/>
+		<div id="login">
+		<table>
+			<tr>
+				<td>Nickname</td>
+				<td><input type="text" id='username'/></td>
+				<td><input type="button" id='register' value='Login'/></td>
+			</tr>
+		</table>
+		</div>
+		<div id="chat">
+		<h3>Server notifications</h3>
+		<textarea id="textarea" rows="15" cols="30" readonly></textarea>
+		<table>
+			<tr>
+				<td><input type="text" id='message'/></td>
+				<td><input type="button" id='send' value='Send'/></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

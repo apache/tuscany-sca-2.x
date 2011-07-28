@@ -1,0 +1,114 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<html>
+	<head>
+		<title>Apache Tuscany Websocket Sample</title>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript"></script> 
+		<script type="text/javascript" src="org.apache.tuscany.sca.WebsocketComponentContext.js"></script>
+		<script type="text/javascript">
+		$(document).ready(function(){
+			var location = {};
+			location.city = null;
+			location.country = null;
+
+			$('#tempButton').attr('disabled', 'disabled');
+			$('#humButton').attr('disabled', 'disabled');
+			$('#precipButton').attr('disabled', 'disabled');
+
+			$('#locationButton').click(function(event) {
+				location.city = $('#city').val();
+				location.country = $('#country').val();
+				$('#locationButton').attr('disabled', 'disabled');
+				$('#tempButton').removeAttr('disabled');
+				$('#humButton').removeAttr('disabled');
+				$('#precipButton').removeAttr('disabled');
+			});
+
+			$('#tempButton').click(function(event) {
+				Tuscany.WebsocketComponentContext.c1.TemperatureService.getTemperature(location);
+				$('#tempButton').attr('disabled', 'disabled');
+			});
+			
+			Tuscany.WebsocketComponentContext.c1.TemperatureService.getTemperature.responseHandler = function(response) {
+				$('#tempText').text(response.data);
+				$('#tempDate').text(response.date);
+			}
+
+			$('#humButton').click(function(event) {
+				Tuscany.WebsocketComponentContext.c1.HumidityService.getHumidity(location);
+				$('#humButton').attr('disabled', 'disabled');
+			});
+			
+			Tuscany.WebsocketComponentContext.c1.HumidityService.getHumidity.responseHandler = function(response) {
+				$('#humText').text(response.data);
+				$('#humDate').text(response.date);
+			}
+
+			$('#precipButton').click(function(event) {
+				Tuscany.WebsocketComponentContext.c2.PrecipitationService.getPrecipitation(location);
+				$('#precipButton').attr('disabled', 'disabled');
+			});
+			
+			Tuscany.WebsocketComponentContext.c2.PrecipitationService.getPrecipitation.responseHandler = function(response) {
+				$('#precipText').text(response.data);
+				$('#precipDate').text(response.date);
+			}
+		});
+		</script>
+	</head>
+	<body>
+		<div id='sidebar'>
+		<h2>Apache Tuscany Weather Sample</h2>
+		<h3>Weather Monitor</h3>
+		<p/>
+		<table>
+			<tr>
+				<td>City</td>
+				<td><input type="text" id='city' value='Brasov'/></td>
+			</tr>
+			<tr>
+				<td>Country</td>
+				<td><input type="text" id ='country' value='Romania'/></td>
+			</tr>
+		</table>
+		<input type="button" id='locationButton' value='Set location'/>
+		<p/>
+		<table>
+			<tr>
+				<th align="left">Temperature:</th>
+				<td><span id='tempText'>N/A</span></td>
+				<td><input type='button' id='tempButton' value="Update"/></td>
+				<td><span id='tempDate'></span>
+			</tr>
+			<tr>
+				<th align="left">Humidity:</th>
+				<td><span id='humText'>N/A</span></td>
+				<td><input type='button' id='humButton' value="Update"/></td>
+				<td><span id='humDate'></span>
+			</tr>
+			<tr>
+				<th align="left">Precipitation probability:</th>
+				<td><span id='precipText'>N/A</span></td>
+				<td><input type='button' id='precipButton' value="Update"/></td>
+				<td><span id='precipDate'></span>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

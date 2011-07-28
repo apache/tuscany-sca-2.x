@@ -45,7 +45,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-<!-- TUSCANY-3748 - comment out the tests for the Beta2 Release as OASIS haven't released yet
+<!-- TUSCANY-3748 - comment out the tests for the Beta2 Release as OASIS haven't
                 <module>assembly</module>
                 <module>java-caa</module>
                 <module>java-ci</module>

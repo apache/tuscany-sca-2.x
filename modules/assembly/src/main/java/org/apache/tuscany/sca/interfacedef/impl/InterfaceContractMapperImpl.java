@@ -42,16 +42,16 @@ import org.apache.tuscany.sca.policy.ExtensionType;
  * @version $Rev$ $Date$
  */
 public class InterfaceContractMapperImpl implements InterfaceContractMapper {
-    
+
     protected ExtensionPointRegistry registry;
     protected BuilderExtensionPoint builders;
     protected ContractBuilder contractBuilder;
-    
+
     public InterfaceContractMapperImpl(ExtensionPointRegistry registry){
         this.registry = registry;
         this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
     }
-    
+
     public boolean isCompatible(DataType source, DataType target, boolean passByValue) {
         return isCompatible(source, target, passByValue, null);   
     }
@@ -75,23 +75,21 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             // being the same in both cases and just compare the type names directly. 
             // TODO - is this right?
             XMLType sourceLogicalType = null;
-            
-            // There is some nesting of data types (when GeneratedDataType is used) so
-            // dig a bit deeper to find the real data type
-            if (source.getLogical() instanceof DataType<?>){
-                sourceLogicalType = (XMLType)((DataType<?>)source.getLogical()).getLogical();
-            } else {
-                sourceLogicalType = (XMLType)source.getLogical();
-            }
-            
-            XMLType targetLogicalType = null; 
-            
-            if (target.getLogical() instanceof DataType<?>){
-                targetLogicalType = (XMLType)((DataType<?>)target.getLogical()).getLogical();
-            } else {
-                targetLogicalType = (XMLType)target.getLogical();
-            }
-            
+
+            // There is some nesting of data types (when GeneratedDataTypes or arrays are used) so
+            // dig a bit deeper to find the real data type. Use a loop since for a multidimensional 
+            // array, we might need to go more than one level deep.
+            while (source.getLogical() instanceof DataType<?>) {
+                source = (DataType<?>)source.getLogical();
+            }            
+            sourceLogicalType = (XMLType)source.getLogical();
+
+            XMLType targetLogicalType = null;
+            while (target.getLogical() instanceof DataType<?>) {
+                target = (DataType<?>)target.getLogical();
+            }            
+            targetLogicalType = (XMLType)target.getLogical();
+
             // The logical type seems to be null in some cases, e.g. when the 
             // argument or return type is something like a Map. 
             // TODO - check when some type give rise to a null logical type
@@ -99,11 +97,11 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
                 targetLogicalType.getTypeName() == null) {
                 return true;
             }
-            
+
             boolean match = sourceLogicalType.getTypeName().equals(targetLogicalType.getTypeName());
-            
+
             if (!match){
-                
+
                 QName anyType = new QName("http://www.w3.org/2001/XMLSchema", "anyType");
                 if (sourceLogicalType.getTypeName().equals(anyType) || 
                     targetLogicalType.getTypeName().equals(anyType)){
@@ -118,11 +116,11 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
                                      sourceLogicalType.getTypeName() + 
                                      " target = " + 
                                      targetLogicalType.getTypeName() +
-                                     " don't match for");
+                        " don't match for");
                     }
                 }
             }
-            
+
             return match; 
         }
 
@@ -139,7 +137,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
     public boolean isMutuallyCompatible(InterfaceContract source, InterfaceContract target) {
         ExtensionType ext = source.getInterface().getExtensionType();
         InterfaceContract sourceContract = null;
-        
+
         // Are the forward interfaces equal?
         if (isMutuallyCompatible(source.getInterface(), target.getInterface())) {
             // Is there a Callback interface?
@@ -200,7 +198,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
     public boolean isCompatible(Operation source, Operation target, Compatibility compatibilityType, boolean byValue) {
         return isCompatible(source, target, compatibilityType, true, null);
     }
-    
+
     public boolean isCompatible(Operation source, Operation target, Compatibility compatibilityType, boolean byValue, Audit audit) {
         if (source == target) {
             return true;
@@ -271,30 +269,30 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             checkTargetWrapper = false;
         }
 
-/* TODO - Why are we assuming compatibility if one side is wrapped and the other is not?
+        /* TODO - Why are we assuming compatibility if one side is wrapped and the other is not?
         if (checkSourceWrapper != checkTargetWrapper) {
             return true;
         }
-*/
-       
+         */
+
         if ( sourceOutputType.size() != targetOutputType.size()) {
-        	  if (audit != null){
-                  audit.append("different number of output types");
-                  audit.appendSeperator();
-              } 
-              return false;
+            if (audit != null){
+                audit.append("different number of output types");
+                audit.appendSeperator();
+            } 
+            return false;
         }
-               
+
         for ( int i=0; i < sourceOutputType.size(); i++) {
-        	 if (!isCompatible(targetOutputType.get(i), sourceOutputType.get(i), passByValue, audit)) {
-                 if (audit != null){
-                     audit.append(" output types");
-                     audit.appendSeperator();
-                 } 
-                 return false;
-             }
+            if (!isCompatible(targetOutputType.get(i), sourceOutputType.get(i), passByValue, audit)) {
+                if (audit != null){
+                    audit.append(" output types");
+                    audit.appendSeperator();
+                } 
+                return false;
+            }
         }
-       
+
 
         if (sourceInputType.size() != targetInputType.size()) {
             if (audit != null){
@@ -355,7 +353,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             return isCompatible(source, target, compatibilityType, true);
         }
     }
-    
+
     // FIXME: How to improve the performance for the lookup
     private Operation getOperation(List<Operation> operations, String name) {
         for (Operation op : operations) {
@@ -371,86 +369,86 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
      * Presence of both method variants indicates a state of partial development
      */
     public boolean checkCompatibility(InterfaceContract source,
-			                          InterfaceContract target, 
-			                          Compatibility compatibility,
-			                          boolean ignoreCallback, 
-			                          boolean silent, 
-			                          Audit audit)
-			throws IncompatibleInterfaceContractException {
+                                      InterfaceContract target, 
+                                      Compatibility compatibility,
+                                      boolean ignoreCallback, 
+                                      boolean silent, 
+                                      Audit audit)
+        throws IncompatibleInterfaceContractException {
 
-		if (source == target) {
-			// Shortcut for performance
-			return true;
-		}
+        if (source == target) {
+            // Shortcut for performance
+            return true;
+        }
 
-		if (source == null || target == null) {
-			return false;
-		}
+        if (source == null || target == null) {
+            return false;
+        }
 
-		if (source.getInterface() == target.getInterface()) {
-			return ignoreCallback
-					|| isCallbackCompatible(source, target, silent);
-		}
+        if (source.getInterface() == target.getInterface()) {
+            return ignoreCallback
+            || isCallbackCompatible(source, target, silent);
+        }
 
-		if (source.getInterface() == null || target.getInterface() == null) {
-			return false;
-		}
+        if (source.getInterface() == null || target.getInterface() == null) {
+            return false;
+        }
 
-		if (source.getInterface().isDynamic()
-				|| target.getInterface().isDynamic()) {
-			return ignoreCallback
-					|| isCallbackCompatible(source, target, silent);
-		}
+        if (source.getInterface().isDynamic()
+            || target.getInterface().isDynamic()) {
+            return ignoreCallback
+            || isCallbackCompatible(source, target, silent);
+        }
 
-		if (source.getInterface().isRemotable() != target.getInterface()
-				.isRemotable()) {
-			if (!silent) {
-				audit.append("Remotable settings do not match: "+ source + "," + target); // TODO see if serialization is sufficient
-				audit.appendSeperator();
-				throw new IncompatibleInterfaceContractException(
-						"Remotable settings do not match", source, target);
-				
-			} else {
-				return false;
-			}
-		}
+        if (source.getInterface().isRemotable() != target.getInterface()
+            .isRemotable()) {
+            if (!silent) {
+                audit.append("Remotable settings do not match: "+ source + "," + target); // TODO see if serialization is sufficient
+                audit.appendSeperator();
+                throw new IncompatibleInterfaceContractException(
+                                                                 "Remotable settings do not match", source, target);
 
-		for (Operation operation : source.getInterface().getOperations()) {
-			Operation targetOperation = map(target.getInterface(), operation);
-			if (targetOperation == null) {
-				if (!silent) {
-	                audit.append("Operation " + operation.getName()+ " not found on target"); 
-	                audit.appendSeperator();
-					throw new IncompatibleInterfaceContractException(
-							"Operation " + operation.getName()
-									+ " not found on target", source, target);
-				} else {
-					return false;
-				}
-			}
+            } else {
+                return false;
+            }
+        }
 
-			if (!silent) {
-				if (audit == null)
-					audit = new Audit();
-				if (!isCompatible(operation, targetOperation,
-						Compatibility.SUBSET, true, audit)) {
+        for (Operation operation : source.getInterface().getOperations()) {
+            Operation targetOperation = map(target.getInterface(), operation);
+            if (targetOperation == null) {
+                if (!silent) {
+                    audit.append("Operation " + operation.getName()+ " not found on target"); 
+                    audit.appendSeperator();
+                    throw new IncompatibleInterfaceContractException(
+                                                                     "Operation " + operation.getName()
+                                                                     + " not found on target", source, target);
+                } else {
+                    return false;
+                }
+            }
+
+            if (!silent) {
+                if (audit == null)
+                    audit = new Audit();
+                if (!isCompatible(operation, targetOperation,
+                                  Compatibility.SUBSET, true, audit)) {
                     audit.append("Operations called " + operation.getName()+ " are not compatible"); 
                     audit.appendSeperator();
-					throw new IncompatibleInterfaceContractException(
-							"Operations called " + operation.getName()
-									+ " are not compatible " + audit, source,
-							target);
-				}
-			} else {
-				if (!isCompatible(operation, targetOperation,
-						Compatibility.SUBSET)) {
-					return false;
-				}
-			}
-		}
+                    throw new IncompatibleInterfaceContractException(
+                                                                     "Operations called " + operation.getName()
+                                                                     + " are not compatible " + audit, source,
+                                                                     target);
+                }
+            } else {
+                if (!isCompatible(operation, targetOperation,
+                                  Compatibility.SUBSET)) {
+                    return false;
+                }
+            }
+        }
 
-		return ignoreCallback || isCallbackCompatible(source, target, silent);
-	}
+        return ignoreCallback || isCallbackCompatible(source, target, silent);
+    }
 
     /*
      * The old checkCompatibility operation without auditing. This just delegates to the new one for the time
@@ -463,10 +461,10 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
                                       boolean ignoreCallback,
                                       boolean silent) 
         throws IncompatibleInterfaceContractException {
-      
+
         // create dummy audit object.
         Audit audit = new Audit();
-        
+
         return checkCompatibility(source, 
                                   target, 
                                   compatibility, 
@@ -475,8 +473,8 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
                                   audit);
     }
 
-    
-    
+
+
     protected boolean isCallbackCompatible(InterfaceContract source, InterfaceContract target, boolean silent)
         throws IncompatibleInterfaceContractException {
         if (source.getCallbackInterface() == null && target.getCallbackInterface() == null) {
@@ -557,7 +555,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             return false;
         }
     }
-    
+
     public boolean isCompatibleSubset(InterfaceContract source, InterfaceContract target) {
 
         try {

@@ -1,26 +1,26 @@
-Tuscany - Getting Started - Helloworld Sample
----------------------------------------------
+Tuscany - Getting Started - Helloworld JSONRPC Sample
+-----------------------------------------------------
 
-This sample demonstrates a simple helloworld style SCA application and how to run that with Tuscany.
+This sample extends the helloworld sample to make the helloworld service available as a JSON-RPC endpoint.
+JSON-RPC is a protocol for doing remote procedure calls encoded in JSON.
 
-See the README in the top-level samples folder for general information on the Tuscany samples.
+The changes to the helloworld sample are:
+- update the pom.xml with the additional dependencies
+- update the composite to use the JSON-RPC binding 
 
-This project creates an SCA contribution with a deployable composite named helloworld.composite.
-The composite defines an SCA component, HelloworldComponent, which provides a Helloworld service, 
-the component is implemented by a Java class. 
-
-You can use the contribution by starting the composite in the Tuscany Shell. To do that run the 
-following command in the helloworld folder:
+As with all the getting-started samples you can run this sample with:
 
    mvn tuscany:run 
 
-
+Then at a web browser enter the following URL:
+(JSON-RPC aruguments are base64 encoded, so in this URL "WyJXb3JsZCJd" unecoded is "["World"]")
 
    http://localhost:8080/HelloworldComponent/Helloworld?method=sayHello&params=WyJXb3JsZCJd&id=1
 
-
+which should return a page saying:
 
    {"id":1,"result":"Hello World"}
+
 
 
 

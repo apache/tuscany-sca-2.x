@@ -1,0 +1,159 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<html>
+	<head>
+		<title>Apache Tuscany Comet Sample</title>
+		<!-- Tuscany Comet Javascript Toolkit is dependent on jQuery -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript"></script> 
+		<script type="text/javascript" src="tuscany-comet-js/org.apache.tuscany.sca.CometComponentContext.js"></script>
+		<script type="text/javascript">
+		$(document).ready(function()
+		{
+			// Initialization
+			var location = new Object();
+			location.city = null;
+			location.country = null;
+
+			$('#locationButton').attr('disabled', 'disabled');
+			$('#tempCButton').attr('disabled', 'disabled');
+			$('#tempFButton').attr('disabled', 'disabled');
+			$('#humButton').attr('disabled', 'disabled');
+			$('#precipButton').attr('disabled', 'disabled');
+
+			$('#locationButton').click(function(event) {
+				location.city = $('#city').val();
+				location.country = $('#country').val();
+				$('#locationButton').val('Switch location');
+				$('#tempCButton').removeAttr('disabled');
+				$('#tempFButton').removeAttr('disabled');
+				$('#humButton').removeAttr('disabled');
+				$('#precipButton').removeAttr('disabled');
+				$('#tempCText').text('N/A');
+				$('#tempCDate').text('');
+				$('#tempFText').text('N/A');
+				$('#tempFDate').text('');
+				$('#humText').text('N/A');
+				$('#humDate').text('');
+				$('#precipText').text('N/A');
+				$('#precipDate').textContent('');
+			});
+
+			// Tuscany Comet specific API
+			$('#connect').click(function(event) {
+                /* transport can be : long-polling or streaming */
+			 	SCA.TuscanyComet.connect($('#transport').val());
+                $('#connect').val('Switch');
+                $('#locationButton').removeAttr('disabled');
+			});
+			
+
+			$('#tempCButton').click(function(event) {
+				SCA.CometComponentContext.TemperatureService.getTemperature(location, 1, updateTempC);
+				$('#tempCButton').removeAttr('disabled');
+			});
+
+			$('#tempFButton').click(function(event) {
+				SCA.CometComponentContext.TemperatureService.getTemperature(location, 2, updateTempF);
+				$('#tempFButton').removeAttr('disabled');
+			});
+
+			$('#humButton').click(function(event) {
+				SCA.CometComponentContext.HumidityService.getHumidity(location, updateHum);
+				$('#humButton').removeAttr('disabled');
+			});
+
+			$('#precipButton').click(function(event) {
+				SCA.CometComponentContext.PrecipitationService.getPrecipitation(location, updatePrecip);
+				$('#precipButton').removeAttr('disabled');
+			});
+		});
+
+		function updateTempC(response) {
+			$('#tempCText').text(response.data);
+			$('#tempCDate').text(response.date);
+		}
+
+		function updateTempF(response) {
+			$('#tempFText').text(response.data);
+			$('#tempFDate').text(response.date);
+		}
+
+		function updateHum(response) {
+			$('#humText').text(response.data);
+			$('#humDate').text(response.date);
+		}
+
+		function updatePrecip(response) {
+			$('#precipText').text(response.data);
+			$('#precipDate').text(response.date);
+		}
+		</script>
+	</head>
+	<body>
+		<div id='sidebar'>
+		<h2>Apache Tuscany Comet Sample</h2>
+		<label>Select transport</label>
+    	<select id="transport">
+    		<option id="streaming" value="streaming">http streaming</option>
+			<option id="long-polling" value="long-polling">long-polling</option>
+    	</select>
+    	<input id='connect' type='submit' value='Connect'/>
+		<h3>Weather Monitor</h3>
+		<p/>
+		<table>
+			<tr>
+				<td>City</td>
+				<td><input type="text" id='city' value='Brasov'/></td>
+			</tr>
+			<tr>
+				<td>Country</td>
+				<td><input type="text" id ='country' value='Romania'/></td>
+			</tr>
+		</table>
+		<input type="button" id='locationButton' value='Set location'/>
+		<p/>
+		<table>
+			<tr>
+				<th align="left">Temperature (Celsius):</th>
+				<td><span id='tempCText'>N/A</span></td>
+				<td><input type='button' id='tempCButton' value="Update"/></td>
+				<td><span id='tempCDate'></span>
+			</tr>
+			<tr>
+				<th align="left">Temperature (Fahrenheit):</th>
+				<td><span id='tempFText'>N/A</span></td>
+				<td><input type='button' id='tempFButton' value="Update"/></td>
+				<td><span id='tempFDate'></span>
+			</tr>
+			<tr>
+				<th align="left">Humidity:</th>
+				<td><span id='humText'>N/A</span></td>
+				<td><input type='button' id='humButton' value="Update"/></td>
+				<td><span id='humDate'></span>
+			</tr>
+			<tr>
+				<th align="left">Precipitation probability:</th>
+				<td><span id='precipText'>N/A</span></td>
+				<td><input type='button' id='precipButton' value="Update"/></td>
+				<td><span id='precipDate'></span>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>
