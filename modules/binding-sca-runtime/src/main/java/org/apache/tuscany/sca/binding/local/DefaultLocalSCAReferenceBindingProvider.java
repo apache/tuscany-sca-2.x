@@ -50,8 +50,9 @@ public class DefaultLocalSCAReferenceBindingProvider implements EndpointReferenc
     protected InterfaceContractMapper interfaceContractMapper;
     protected ExtensionPointRegistry extensionPoints;
     protected Mediator mediator;
-    protected InterfaceContract wsdlBindingInterfaceContract;
-
+    protected InterfaceContract componentTypeRefInterfaceContract;
+    protected InterfaceContract wsdlBindingInterfaceContract;      // Computed lazily
+    
     public DefaultLocalSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints, RuntimeEndpointReference endpointReference, SCABindingMapper mapper) {
         this.extensionPoints = extensionPoints;
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
@@ -65,8 +66,12 @@ public class DefaultLocalSCAReferenceBindingProvider implements EndpointReferenc
         return DOMDataBinding.NAME;
     }
 
-    private InterfaceContract getWSDLInterfaceContract(InterfaceContract interfaceContract) {
-        InterfaceContract wsdlInterfaceContract = (WSDLInterfaceContract)endpointReference.getGeneratedWSDLContract(interfaceContract);
+    protected InterfaceContract getWSDLBindingInterfaceContract() {
+        if (this.wsdlBindingInterfaceContract != null) {
+            return this.wsdlBindingInterfaceContract;
+        }
+        
+        InterfaceContract wsdlInterfaceContract = (WSDLInterfaceContract)endpointReference.getGeneratedWSDLContract(componentTypeRefInterfaceContract);
 
         // Validation may be unnecessary.  This check may already be guaranteed at this point, not sure.
         Endpoint target = endpointReference.getTargetEndpoint();
@@ -93,19 +98,16 @@ public class DefaultLocalSCAReferenceBindingProvider implements EndpointReferenc
         if (wsdlInterfaceContract.getCallbackInterface() != null) {
             wsdlInterfaceContract.getCallbackInterface().resetDataBinding(dataBinding);
         }
+        this.wsdlBindingInterfaceContract = wsdlInterfaceContract;
+        
         return wsdlInterfaceContract;
-
     }
 
     @Override
     public InterfaceContract getBindingInterfaceContract() {
-        InterfaceContract componentTypeRefIC = endpointReference.getComponentTypeReferenceInterfaceContract();
-        if (componentTypeRefIC.getInterface().isRemotable()) {
-            this.wsdlBindingInterfaceContract = getWSDLInterfaceContract(componentTypeRefIC);
-        }
-
         // Since we want to disable DataTransformationInterceptor and handle copy in the binding
-        return componentTypeRefIC;
+        this.componentTypeRefInterfaceContract = endpointReference.getComponentTypeReferenceInterfaceContract();
+        return componentTypeRefInterfaceContract;
     }
 
     

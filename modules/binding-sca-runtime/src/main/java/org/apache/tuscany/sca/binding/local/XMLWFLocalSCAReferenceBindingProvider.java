@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.binding.sca.transform.BindingSCATransformer;
 import org.apache.tuscany.sca.binding.sca.transform.DefaultBindingSCATransformer;
 import org.apache.tuscany.sca.binding.sca.transform.XMLWFBindingSCATransformer;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.provider.SCABindingMapper;
@@ -36,8 +37,12 @@ public class XMLWFLocalSCAReferenceBindingProvider extends DefaultLocalSCARefere
         super(extensionPoints, endpointReference, mapper);
     }
     
-    protected BindingSCATransformer getBindingTransformer(Operation operation, InvocationChain chain) {
-        Operation wsdlBindingOperation = interfaceContractMapper.map(wsdlBindingInterfaceContract.getInterface(), operation);                        
+    protected BindingSCATransformer getBindingTransformer(Operation operation, InvocationChain chain) { 
+        InterfaceContract bindingInterfaceContract = getWSDLBindingInterfaceContract();   
+        if (!bindingInterfaceContract.getInterface().isRemotable()) {
+            throw new IllegalStateException("This method should only have been called for a remotable interface.");
+        }
+        Operation wsdlBindingOperation = interfaceContractMapper.map(bindingInterfaceContract.getInterface(), operation);                        
         return new XMLWFBindingSCATransformer(mediator, operation, wsdlBindingOperation, chain);                
     }
 }
