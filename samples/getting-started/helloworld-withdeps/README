@@ -19,7 +19,7 @@ Presently the Tuscany Shell does not work "as is" to run this sample with "mvn t
 
 - install the sample contribution
 
-  install target\helloworld-withdeps-2.0-Beta3-SNAPSHOT.zip
+  install target\helloworld-withdeps-2.0-Beta3.zip
 
 - start the SCA composite
 

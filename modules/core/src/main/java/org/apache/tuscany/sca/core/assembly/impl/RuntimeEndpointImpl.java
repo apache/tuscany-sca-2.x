@@ -1064,7 +1064,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         }
         InterfaceContract ic = getComponentServiceInterfaceContract();
         if (ic != null) {
-            ic.setNormalizedWSDLContract(WSDLHelper.createWSDLInterfaceContract(registry, wsdl));
+            // ic.setNormalizedWSDLContract(WSDLHelper.createWSDLInterfaceContract(registry, wsdl));
         }
     }
 

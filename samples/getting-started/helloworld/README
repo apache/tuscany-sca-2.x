@@ -38,6 +38,6 @@ This project used the following answers:
 
    Define value for property 'groupId': : org.apache.tuscany.sca.samples
    Define value for property 'artifactId': : helloworld-contribution
-   Define value for property 'version': 1.0-SNAPSHOT: 2.0-Beta3-SNAPSHOT
+   Define value for property 'version': 1.0-SNAPSHOT: 2.0-Beta3
    Define value for property 'package': org.apache.tuscany.sca.samples: sample  
 
