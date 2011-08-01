@@ -102,6 +102,22 @@ public class CrossContribTestCase {
 
     @Test
     @Ignore
+    public void testDOMSCA() throws Exception {
+        ClientIntf client = node.getService(ClientIntf.class, "ClientSCA");
+        assertNotNull(client);
+        client.callDOM();
+    }
+
+    @Test
+    @Ignore
+    public void testDOMWS() throws Exception {
+        ClientIntf client = node.getService(ClientIntf.class, "ClientWS");
+        assertNotNull(client);
+        client.callDOM();
+    }
+    
+    @Test
+    @Ignore
     public void testJSONSCA() throws Exception {
         ClientIntf client = node.getService(ClientIntf.class, "ClientSCA");
         assertNotNull(client);
@@ -116,21 +132,7 @@ public class CrossContribTestCase {
         client.callJSON();
     }
 
-    @Test
-    @Ignore
-    public void testSDOWS() throws Exception {
-        ClientIntf client = node.getService(ClientIntf.class, "ClientWS");
-        assertNotNull(client);
-        client.callSDO();
-    }
 
-    @Test
-    @Ignore
-    public void testSDOSCA() throws Exception {
-        ClientIntf client = node.getService(ClientIntf.class, "ClientSCA");
-        assertNotNull(client);
-        client.callSDO();
-    }
 
     @Test
     public void testDOMIdentitySCA() throws Exception {

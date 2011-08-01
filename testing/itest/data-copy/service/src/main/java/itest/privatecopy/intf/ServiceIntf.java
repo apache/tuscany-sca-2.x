@@ -37,20 +37,14 @@ public interface ServiceIntf {
     boolean areNamesTheSameObjects(Name name1, Name name2);
     Name greet(Name name);
     
-    //@DataBinding("JSON")
-    //@RequestWrapper(localName = "greetJSON", targetNamespace = "http://intf/internal/itest/", className = "org.codehaus.jettison.json.JSONObject")
-    //@ResponseWrapper(localName = "greetJSONResponse", targetNamespace = "http://intf/internal/itest/", className = "org.codehaus.jettison.json.JSONObject")
-
-    String greetJSON(JSONObject name);
+    //@RequestWrapper(localName = "greetJSON", targetNamespace = "http://intf.privatecopy.itest/", className = "org.codehaus.jettison.json.JSONObject")
+    //@ResponseWrapper(localName = "greetJSONResponse", targetNamespace = "http://intf.privatecopy.itest/", className = "org.codehaus.jettison.json.JSONObject")
+    String greetJSON(JSONObject name);    
     
-    //@RequestWrapper(localName = "greetSDO", targetNamespace = "http://intf/internal/itest/", className = "commonj.sdo.DataObject")
-    //@ResponseWrapper(localName = "greetSDOResponse", targetNamespace = "http://intf/internal/itest/", className = "commonj.sdo.DataObject")
-    //@DataBinding("commonj.sdo.DataObject")
-    void greetSDO(DataObject name);
+    //@RequestWrapper(localName = "greetDOM", targetNamespace = "http://intf.privatecopy.itest/", className = "org.w3c.dom.Node")
+    //@ResponseWrapper(localName = "greetDOMResponse", targetNamespace = "http://intf.privatecopy.itest/", className = "org.w3c.dom.Node")
+    String greetDOM(Node name);
     
-    //@RequestWrapper(localName = "greetDOM", targetNamespace = "http://intf/internal/itest/", className = "org.w3c.dom.Node")
-    //@ResponseWrapper(localName = "greetDOMResponse", targetNamespace = "http://intf/internal/itest/", className = "org.w3c.dom.Node")
-    //@DataBinding("org.w3c.dom.Node")    
-    Node greetDOM(Node name);
+    Node returnDOM(Node name);
 
 }

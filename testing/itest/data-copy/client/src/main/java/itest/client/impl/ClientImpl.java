@@ -86,12 +86,12 @@ public class ClientImpl implements ClientIntf {
         assertEquals("good", retVal);
     }
     
-    @Override
-    public void callSDO() {    
+//    @Override
+    public void callDOM() {    
         Name name = new Name();
-        name.setFirstName("SDO");
-        name.setLastName("ODS");
-        service.greetSDO(name);
+        name.setFirstName("DOM");
+        name.setLastName("MOD");
+        String retVal = service.greetDOM(name);
         //assertEquals("good", retVal);
     }
     
@@ -107,7 +107,7 @@ public class ClientImpl implements ClientIntf {
             InputSource is = new InputSource( new StringReader(nameString) );
             Document doc = builder.parse(is);
             Node name = doc.getDocumentElement();
-            Node retVal = service.greetDOM(name);
+            Node retVal = service.returnDOM(name);
             assertNotSame("PBV should result in different object", name, retVal);
         } catch (Exception e) {
         	throw new RuntimeException(e);

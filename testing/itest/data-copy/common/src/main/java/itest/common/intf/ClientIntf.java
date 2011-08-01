@@ -26,6 +26,6 @@ public interface ClientIntf {
     void callJAXBCrossContribution();
     void callObjectGraphCheck(int caseNumber);
     void callJSON();
-    void callSDO();
-	void testRoundTripDOMIdentity();
+    void callDOM();
+    void testRoundTripDOMIdentity();
 }

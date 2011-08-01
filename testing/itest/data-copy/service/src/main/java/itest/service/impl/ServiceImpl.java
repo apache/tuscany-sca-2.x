@@ -61,21 +61,17 @@ public class ServiceImpl implements ServiceIntf {
         return "good";
     }
 
+
     @Override
-    public void greetSDO(DataObject name) {
-        DataObject firstNameDO = (DataObject)((List)name.get("firstName")).get(0);
-        DataObject lastNameDO = (DataObject)((List)name.get("lastName")).get(0);
-        Object firstName = firstNameDO.get(0);
-        Object lastName = lastNameDO.get(0);
-        //assertEquals("SDO", firstName);
-        //assertEquals("ODS", lastName);
-        //return "good";
+    public String greetDOM(Node name) {
+	return "fail";
+    }
+    
+    @Override
+    public Node returnDOM(Node name) {
+        return name;
     }
 
-	@Override
-	public Node greetDOM(Node name) {
-		return name;
-	}
 }
 
 
