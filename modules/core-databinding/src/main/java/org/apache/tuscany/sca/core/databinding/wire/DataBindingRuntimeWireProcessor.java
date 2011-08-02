@@ -24,7 +24,7 @@ import java.util.List;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
-import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.databinding.util.OperationDataBindingHelper;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -46,86 +46,6 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
     public DataBindingRuntimeWireProcessor(ExtensionPointRegistry registry) {
         super();
         this.mediator = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
-    }
-
-    public boolean isTransformationRequired(DataType source, DataType target) {
-        if (source == null || target == null) { // void return type
-            return false;
-        }
-        if (source == target) {
-            return false;
-        }
-
-        // Output type can be null
-        if (source == null && target == null) {
-            return false;
-        } else if (source == null || target == null) {
-            return true;
-        }
-        String sourceDataBinding = source.getDataBinding();
-        String targetDataBinding = target.getDataBinding();
-        if (sourceDataBinding == targetDataBinding) {
-            return false;
-        }
-        if (sourceDataBinding == null || targetDataBinding == null) {
-            // TODO: If any of the databinding is null, then no transformation
-            return false;
-        }
-        return !sourceDataBinding.equals(targetDataBinding);
-    }
-
-    public boolean isTransformationRequired(Operation source, Operation target) {
-        if (source == target) {
-            return false;
-        }
-
-        if (source.isWrapperStyle() != target.isWrapperStyle()) {
-            return true;
-        }
-
-        // Check output type
-        List<DataType> sourceOutputType = source.getOutputType().getLogical();
-        List<DataType> targetOutputType = target.getOutputType().getLogical();
-
-        int outputSize = sourceOutputType.size();
-        if ( outputSize != targetOutputType.size() ) {
-        	return true;
-        }
-        
-        for (int i = 0; i < outputSize; i++) {
-            if (isTransformationRequired(sourceOutputType.get(i), targetOutputType.get(i))) {
-                return true;
-            }
-        }       
-
-        List<DataType> sourceInputType = source.getInputType().getLogical();
-        List<DataType> targetInputType = target.getInputType().getLogical();
-
-        int size = sourceInputType.size();
-        if (size != targetInputType.size()) {
-            // TUSCANY-1682: The wrapper style may have different arguments
-            return true;
-        }
-        for (int i = 0; i < size; i++) {
-            if (isTransformationRequired(sourceInputType.get(i), targetInputType.get(i))) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private boolean isTransformationRequired(InterfaceContract sourceContract,
-                                             Operation sourceOperation,
-                                             InterfaceContract targetContract,
-                                             Operation targetOperation) {
-        if (targetContract == null) {
-            targetContract = sourceContract;
-        }
-        if (sourceContract == targetContract) {
-            return false;
-        }
-        return isTransformationRequired(sourceOperation, targetOperation);
     }
 
     public void process(RuntimeEndpoint endpoint) {
@@ -184,6 +104,20 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
             }
         }
         
+    }
+    
+
+    private boolean isTransformationRequired(InterfaceContract sourceContract,
+                                             Operation sourceOperation,
+                                             InterfaceContract targetContract,
+                                             Operation targetOperation) {
+        if (targetContract == null) {
+            targetContract = sourceContract;
+        }
+        if (sourceContract == targetContract) {
+            return false;
+        }
+        return OperationDataBindingHelper.isTransformationRequired(sourceOperation, targetOperation);
     }
 
 }

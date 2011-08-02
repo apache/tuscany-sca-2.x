@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.binding.sca.transform;
 
+/**
+*
+* @version $Rev$ $Date$
+*/
 public interface BindingSCATransformer {
     Object transformInput(Object body);
     Object transformOutput(Object body);

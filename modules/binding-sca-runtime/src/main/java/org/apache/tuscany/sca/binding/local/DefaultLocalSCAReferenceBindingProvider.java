@@ -23,10 +23,12 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.binding.local.LocalSCABindingInvoker;
 import org.apache.tuscany.sca.binding.sca.transform.BindingSCATransformer;
-import org.apache.tuscany.sca.binding.sca.transform.DefaultBindingSCATransformer;
+import org.apache.tuscany.sca.binding.sca.transform.SameDBCopyTransformer;
+import org.apache.tuscany.sca.binding.sca.transform.WSDLMediateTransformer;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
+import org.apache.tuscany.sca.databinding.util.OperationDataBindingHelper;
 import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
@@ -44,6 +46,10 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
 
+/**
+*
+* @version $Rev$ $Date$
+*/
 public class DefaultLocalSCAReferenceBindingProvider implements EndpointReferenceAsyncProvider {
     private RuntimeEndpointReference endpointReference;
 
@@ -143,7 +149,7 @@ public class DefaultLocalSCAReferenceBindingProvider implements EndpointReferenc
                     } else {
                         throw new IllegalStateException();
                     }
-                    bindingTransformer = getBindingTransformer(operation, chain);
+                    bindingTransformer = getBindingTransformer(operation, targetOp);
                 }
                                                 
                 // it turns out that the chain source and target operations are
@@ -164,8 +170,20 @@ public class DefaultLocalSCAReferenceBindingProvider implements EndpointReferenc
         return result;
     }
     
-    protected BindingSCATransformer getBindingTransformer(Operation operation, InvocationChain chain) {
-        return new DefaultBindingSCATransformer(mediator, operation, chain);
+    protected BindingSCATransformer getBindingTransformer(Operation sourceOperation, Operation targetOperation) {   
+    	boolean differentDataBindings = OperationDataBindingHelper.isTransformationRequired(sourceOperation, targetOperation);
+
+    	if (differentDataBindings) { 
+    		InterfaceContract bindingInterfaceContract = getWSDLBindingInterfaceContract();   
+    		if (!bindingInterfaceContract.getInterface().isRemotable()) {
+    			throw new IllegalStateException("This method should only have been called for a remotable interface.");
+    		}
+    		Operation wsdlBindingOperation = interfaceContractMapper.map(bindingInterfaceContract.getInterface(), sourceOperation);                        
+    		return new WSDLMediateTransformer(mediator, sourceOperation, wsdlBindingOperation, targetOperation);                
+    	} else {
+    		return new SameDBCopyTransformer(mediator,  sourceOperation, targetOperation);
+    	}
+
     }
 
     @Override

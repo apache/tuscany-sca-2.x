@@ -26,18 +26,22 @@ import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 
-public class XMLWFBindingSCATransformer implements BindingSCATransformer {
+/**
+*
+* @version $Rev$ $Date$
+*/
+public class WSDLMediateTransformer implements BindingSCATransformer {
 
     private Mediator mediator;
     private Operation sourceOperation;
     private Operation wsdlBindingOperation;
     private Operation targetOperation;
     
-    public XMLWFBindingSCATransformer(Mediator mediator, Operation sourceOperation, Operation wsdlBindingOperation, InvocationChain chain) {
+    public WSDLMediateTransformer(Mediator mediator, Operation sourceOperation, Operation wsdlBindingOperation, Operation targetOperation) {
         this.mediator = mediator;
         this.sourceOperation = sourceOperation;
         this.wsdlBindingOperation = wsdlBindingOperation;
-        this.targetOperation = chain.getTargetOperation();
+        this.targetOperation = targetOperation;
     }
     
     @Override

@@ -23,16 +23,20 @@ import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 
-public class DefaultBindingSCATransformer implements BindingSCATransformer {
+/**
+*
+* @version $Rev$ $Date$
+*/
+public class SameDBCopyTransformer implements BindingSCATransformer {
 
     private Mediator mediator;
     private Operation sourceOperation;
     private Operation targetOperation;
     
-    public DefaultBindingSCATransformer(Mediator mediator, Operation sourceOperation, InvocationChain chain) {
+    public SameDBCopyTransformer(Mediator mediator, Operation sourceOperation, Operation targetOperation) {
         this.mediator = mediator;
         this.sourceOperation = sourceOperation;
-        this.targetOperation = chain.getTargetOperation();
+        this.targetOperation = targetOperation;
     }
     
     @Override

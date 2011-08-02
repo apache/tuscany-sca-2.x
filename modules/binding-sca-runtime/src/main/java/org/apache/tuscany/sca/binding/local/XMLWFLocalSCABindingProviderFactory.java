@@ -28,6 +28,10 @@ import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
+/**
+*
+* @version $Rev$ $Date$
+*/
 public class XMLWFLocalSCABindingProviderFactory implements BindingProviderFactory<LocalSCABinding> {
     private ExtensionPointRegistry extensionPoints;
     private SCABindingMapper scaBindingMapper;
