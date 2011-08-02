@@ -92,7 +92,7 @@ public class ClientImpl implements ClientIntf {
         name.setFirstName("DOM");
         name.setLastName("MOD");
         String retVal = service.greetDOM(name);
-        //assertEquals("good", retVal);
+        assertEquals("SUCCESS", retVal);
     }
     
     @Override

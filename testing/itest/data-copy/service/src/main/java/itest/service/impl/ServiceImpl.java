@@ -19,11 +19,18 @@
 
 package itest.service.impl;
 
-import java.util.List;
+import java.io.StringReader;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+
 
 import commonj.sdo.DataObject;
 
@@ -63,15 +70,33 @@ public class ServiceImpl implements ServiceIntf {
 
 
     @Override
-    public String greetDOM(Node name) {
-	return "fail";
+    //public String greetDOM(Node name) {
+    public Node greetDOM(Node name) {
+        Node retVal = null;
+        
+        try {
+            assertEquals("DOMMOD", name.getTextContent());
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+
+            String retString = "<?xml version=\"1.0\" ?>" + 
+            "<return>SUCCESS</return>";
+            InputSource is = new InputSource( new StringReader(retString) );
+            Document doc = builder.parse(is);
+            retVal = doc.getDocumentElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return retVal;
     }
-    
+
     @Override
     public Node returnDOM(Node name) {
         return name;
     }
 
 }
+
 
 

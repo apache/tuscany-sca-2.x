@@ -100,16 +100,14 @@ public class CrossContribTestCase {
         client.callObjectGraphCheck(2);
     }
 
-    @Test
-    @Ignore
+    @Test  // Fails for 3894, (rename test)
     public void testDOMSCA() throws Exception {
         ClientIntf client = node.getService(ClientIntf.class, "ClientSCA");
         assertNotNull(client);
         client.callDOM();
     }
 
-    @Test
-    @Ignore
+    @Test    // Output DB treated as DOM, rather than String
     public void testDOMWS() throws Exception {
         ClientIntf client = node.getService(ClientIntf.class, "ClientWS");
         assertNotNull(client);

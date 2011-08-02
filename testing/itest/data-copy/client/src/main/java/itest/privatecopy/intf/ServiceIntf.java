@@ -33,15 +33,7 @@ public interface ServiceIntf {
     Name greet(Name name);
     boolean areNamesTheSameObjects(Name name1, Name name2);
     
-    // Use JAXB on input parm on the client side
     String greetJSON(Name name);
-
-//    @RequestWrapper(localName = "greetDOM", targetNamespace = "http://intf/internal/itest/", className = "org.w3c.dom.Node")
-//    @ResponseWrapper(localName = "greetDOMResponse", targetNamespace = "http://intf/internal/itest/", className = "org.w3c.dom.Node")
-//    @DataBinding("org.w3c.dom.Node")  
-
-    // Use JAXB on input parm on the client side
-    String greetDOM(Name name);    
-    
+    String greetDOM(Name name);        
     Node returnDOM(Node name);
 }
