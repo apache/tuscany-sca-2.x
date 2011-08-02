@@ -161,7 +161,8 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
             return null;
         }
 
-        // create a copy of the endpoint  but with the web service binding in
+        // create a copy of the endpoint ready to set the remote binding. The original endpoint
+        // retains binding.sca
         RuntimeEndpoint ep = null;
         try {
             ep = (RuntimeEndpoint)endpoint.clone();
@@ -185,7 +186,8 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
             return null;
         }
 
-        // create a copy of the endpoint  but with the web service binding in
+        // create a copy of the endpoint reference ready to set the remote binding. The original
+        // endpoint reference reatins binding.sca
         RuntimeEndpointReference epr = null;
         try {
             epr = (RuntimeEndpointReference)endpointReference.clone();
