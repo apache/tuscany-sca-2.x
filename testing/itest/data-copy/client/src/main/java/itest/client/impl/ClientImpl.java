@@ -82,8 +82,7 @@ public class ClientImpl implements ClientIntf {
         Name name = new Name();
         name.setFirstName("Jason");
         name.setLastName("Nosaj");
-        String retVal = service.greetJSON(name);
-        assertEquals("good", retVal);
+        service.greetJSON(name);        
     }
     
 //    @Override

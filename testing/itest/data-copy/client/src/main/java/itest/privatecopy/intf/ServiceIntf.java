@@ -33,7 +33,7 @@ public interface ServiceIntf {
     Name greet(Name name);
     boolean areNamesTheSameObjects(Name name1, Name name2);
     
-    String greetJSON(Name name);
+    void greetJSON(Name name);
     String greetDOM(Name name);        
     Node returnDOM(Node name);
 }

@@ -56,7 +56,7 @@ public class ServiceImpl implements ServiceIntf {
     }
 
     @Override
-    public String greetJSON(JSONObject name) {
+    public void greetJSON(JSONObject name) {
         try {
             String firstName = name.getString("firstName");
             String lastName = name.getString("lastName");
@@ -65,7 +65,6 @@ public class ServiceImpl implements ServiceIntf {
         } catch (JSONException exc) {
             throw new RuntimeException(exc);
         }
-        return "good";
     }
 
 

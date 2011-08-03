@@ -37,8 +37,8 @@ public interface ServiceIntf {
     boolean areNamesTheSameObjects(Name name1, Name name2);
     Name greet(Name name);
     
-    //@RequestWrapper(localName = "greetJSON", targetNamespace = "http://intf.privatecopy.itest/", className = "org.codehaus.jettison.json.JSONObject")
-    String greetJSON(JSONObject name);    
+    @RequestWrapper(localName = "greetJSON", targetNamespace = "http://intf.privatecopy.itest/", className = "org.codehaus.jettison.json.JSONObject")
+    void greetJSON(JSONObject name);    
     
     @RequestWrapper(localName = "greetDOM", targetNamespace = "http://intf.privatecopy.itest/", className = "org.w3c.dom.Node")
     // Won't work because of 2931 - lack of separation of req. vs. resp
