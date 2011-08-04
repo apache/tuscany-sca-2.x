@@ -118,41 +118,14 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String serviceName) {
         RuntimeComponentContext componentContext = null;
 
-        // If the component is a composite, then we need to find the
-        // non-composite component that provides the requested service
-        if (getImplementation() instanceof Composite) {
-            for (ComponentService componentService : getServices()) {
-                String bindingName = null;
-                if (serviceName != null) {
-                    int index = serviceName.indexOf('/');
-                    if (index != -1) {
-                        bindingName = serviceName.substring(index + 1);
-                        serviceName = serviceName.substring(0, index);
-                    }
-                }
-                if (serviceName == null || serviceName.equals(componentService.getName())) {
-                    CompositeService compositeService = (CompositeService)componentService.getService();
-                    if (compositeService != null) {
-                        componentContext =
-                            ((RuntimeComponent)compositeService.getPromotedComponent()).getComponentContext();
-                        serviceName = compositeService.getPromotedService().getName();
-                        if (bindingName != null) {
-                            serviceName = serviceName + "/" + bindingName;
-                        }
-                        return componentContext.createSelfReference(businessInterface, serviceName);
-                    }
-                    break;
-                }
-            }
-            // No matching service found
-            throw new ServiceRuntimeException("Composite service not found: " + serviceName);
+        // TUSCANY-3904 Removed implementation.composite path
+
+        componentContext = getComponentContext();
+        if (serviceName != null) {
+            return componentContext.createSelfReference(businessInterface, serviceName);
         } else {
-            componentContext = getComponentContext();
-            if (serviceName != null) {
-                return componentContext.createSelfReference(businessInterface, serviceName);
-            } else {
-                return componentContext.createSelfReference(businessInterface);
-            }
+            return componentContext.createSelfReference(businessInterface);
         }
+
     }
 }
