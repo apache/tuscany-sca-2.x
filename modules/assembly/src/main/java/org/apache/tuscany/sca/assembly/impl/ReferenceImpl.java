@@ -53,7 +53,10 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
     @Override
     public Object clone() throws CloneNotSupportedException {
         ReferenceImpl clone = (ReferenceImpl)super.clone();
-        clone.bindings = new ArrayList<Binding>(bindings);
+        clone.bindings = new ArrayList<Binding>();
+        for (Binding binding : getBindings()){
+            clone.bindings.add((Binding)binding.clone());
+        }
         clone.targets = new ArrayList<ComponentService>(targets);
         // clone the endpoint references themselves and set the reference pointer back to 
         // this new refrence

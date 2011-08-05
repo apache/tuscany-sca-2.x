@@ -50,7 +50,9 @@ public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneab
     public Object clone() throws CloneNotSupportedException {
         ServiceImpl clone = (ServiceImpl)super.clone();
         clone.bindings = new ArrayList<Binding>();
-        clone.bindings.addAll(getBindings());
+        for (Binding binding : getBindings()){
+            clone.bindings.add((Binding)binding.clone());
+        }
         return clone;
     }
 

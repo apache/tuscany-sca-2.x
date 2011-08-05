@@ -583,6 +583,15 @@ public class DeployerImpl implements Deployer {
 
         for (Contribution contribution : contributionList) {
             for (Composite composite : contribution.getDeployables()) {
+                // TUSCANY-3907 - clone the top level composite before we includr
+                //                it so that the composite model retained within 
+                //                the CompositeModelResolver is not changed by the build
+                try {
+                    composite = (Composite)composite.clone();
+                } catch (CloneNotSupportedException ex){
+                   // it is supported on Composite 
+                }
+                
                 // Include the node composite in the top-level composite
                 domainComposite.getIncludes().add(composite);
             }
