@@ -67,7 +67,7 @@ public class CompositeImpl extends ImplementationImpl implements Composite, Clon
             clone.components.add(clonedComponent);
         }
         
-        // reset the references and services so the get re-resolved
+        // reset the references and services so they get re-resolved
         for (Service service : clone.getServices()) {
             CompositeService compositeService = (CompositeService)service;
             // Force the promoted component/service to be rebuilt against the clone
