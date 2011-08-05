@@ -38,7 +38,7 @@
     </dependencies>
 
   <modules>
-                <!-- module>async-services</module removed due to hang, see TUSCANY-3886 -->
+                <!--module>async-services</module--> <!-- removed due to hang, see TUSCANY-3886 -->
                 <module>base</module>
                 <module>builder</module>
                 <module>bpel</module>
@@ -50,12 +50,16 @@
                 <module>callback-two-composites</module>
                 <module>callback-two-nodes</module>
                 <module>component-type</module>
+<!-- new test waiting for context discussion to bottom out
+                <module>context</module>
+-->
                 <module>contribution-folder</module>
                 <module>contribution-zip</module>
                 <module>data-copy</module>
                 <module>databindings</module>
                 <module>distribution</module>
                 <module>exceptions</module>
+                <module>implementation-composite</module>
                 <module>implementation-spring</module>
                 <module>import-export</module>
                 <module>interfaces</module>
