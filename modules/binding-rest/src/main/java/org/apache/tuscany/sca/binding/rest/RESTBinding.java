@@ -35,4 +35,6 @@ public interface RESTBinding extends Binding {
     QName TYPE = new QName(SCA11_TUSCANY_NS, "binding.rest");
     
     public List<HTTPHeader> getHttpHeaders();
+
+    public boolean isCORS();
 }

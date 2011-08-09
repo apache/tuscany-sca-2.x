@@ -108,4 +108,8 @@ class RESTBindingImpl implements RESTBinding {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    public boolean isCORS() {
+        return true;
+    }
 }
