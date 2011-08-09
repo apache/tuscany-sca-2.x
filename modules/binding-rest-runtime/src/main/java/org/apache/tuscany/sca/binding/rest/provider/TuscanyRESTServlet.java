@@ -69,6 +69,17 @@ public class TuscanyRESTServlet extends RestServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        if (binding.isCORS()) {
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
+            if (request.getMethod().equals("OPTIONS")) {
+                response.setHeader("Access-Control-Allow-Methods", "DELETE, GET, OPTIONS, POST, PUT");
+                response.setHeader("Access-Control-Max-Age", "1728000");
+                return;
+            }
+        }
+
         //create context
         HTTPContext bindingContext = new HTTPContext();
         bindingContext.setHttpRequest(request);
