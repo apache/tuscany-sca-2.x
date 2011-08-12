@@ -20,8 +20,11 @@
 package org.apache.tuscany.sca.binding.ws.axis2;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.List;
 
@@ -35,9 +38,12 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointImpl;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
+import org.junit.Ignore;
 
 /**
  * Test ?wsdl works and that the returned WSDL has the correct endpoint
@@ -46,7 +52,7 @@ import org.apache.tuscany.sca.node.NodeFactory;
  */
 public class QuestionMarkWSDLIncludeTestCase extends TestCase {
 
-    private Node node;
+    private NodeImpl node;
 
     /**
      * Tests ?wsdl works and returns the correct port endpoint from the WSDL
@@ -82,11 +88,29 @@ public class QuestionMarkWSDLIncludeTestCase extends TestCase {
         }
         throw new RuntimeException("no SOAPAddress");
     }
+    
+/*
+    public void testWSDLWrite(){
+        RuntimeEndpointImpl endpoint = (RuntimeEndpointImpl)node.getDomainComposite().getComponents().get(0).getServices().get(0).getEndpoints().get(0);
+        try
+        {
+            ByteArrayOutputStream byteStream = new ByteArrayOutputStream(); 
+            ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
+            objectStream.writeObject(endpoint);
+            objectStream.close();
+            System.out.println(byteStream.toString());
+        }
+        catch(IOException ex)
+        {
+            ex.printStackTrace();
+        }        
+    } 
+*/
 
     @Override
     protected void setUp() throws Exception {
         String contribution = "target/classes";
-        node = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/ws/axis2/questionmark-wsdl-include.composite", new Contribution("test", contribution));
+        node = (NodeImpl)NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/ws/axis2/questionmark-wsdl-include.composite", new Contribution("test", contribution));
         node.start();
     }
 

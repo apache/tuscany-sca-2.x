@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -26,6 +30,7 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMText;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointImpl;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
@@ -60,7 +65,6 @@ public class HelloWorldWSDLMergedTestCase extends TestCase {
         Assert.assertEquals("Hello petra", ((OMText)child.getFirstOMChild()).getText());
     }  
     
-    @Ignore
     public void testHelloWorldRepeating() throws Exception {
         for (int i = 0; i < 2; i++){
             OMFactory fac = OMAbstractFactory.getOMFactory();
@@ -78,6 +82,25 @@ public class HelloWorldWSDLMergedTestCase extends TestCase {
             helloWorld = node.getService(HelloWorldOM.class, "HelloWorldWSDLMergedComponent");
         }
     }
+   
+    
+/*
+    public void testWSDLWrite(){
+        RuntimeEndpointImpl endpoint = (RuntimeEndpointImpl)node.getDomainComposite().getComponents().get(0).getServices().get(0).getEndpoints().get(0);
+        try
+        {
+            ByteArrayOutputStream byteStream = new ByteArrayOutputStream(); 
+            ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
+            objectStream.writeObject(endpoint);
+            objectStream.close();
+            System.out.println(byteStream.toString());
+        }
+        catch(IOException ex)
+        {
+            ex.printStackTrace();
+        }        
+    }
+*/     
     
     @Override
     protected void tearDown() throws Exception {
