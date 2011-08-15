@@ -433,6 +433,8 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                 WSDLInterface wsdlInterface = null;
                 try {
                     wsdlInterface = wsdlFactory.createWSDLInterface(portType, wsdlDefinition, resolver, context.getMonitor());
+                    // save the wsdlDefinition that was used to generated the interface
+                    wsdlInterface.setWsdlDefinition(wsdlDefinition);
                 } catch (InvalidInterfaceException e) {
                 	warning(monitor, "InvalidInterfaceException", wsdlFactory, model.getName(), e.getMessage()); 
                 }
