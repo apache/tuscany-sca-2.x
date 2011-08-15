@@ -106,9 +106,7 @@ public class WSDLSerializationTestCase extends TestCase {
     }
 */    
     
-    public void testTuscanySerialization() throws Exception {  
-        
-/*       
+    public void testTuscanySerialization() throws Exception {         
         
         // read in WSDL
         String contributionLocation = "target/classes";
@@ -128,7 +126,12 @@ public class WSDLSerializationTestCase extends TestCase {
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
             try {
                 WSDLWriter writer = WSDLFactory.newInstance().newWSDLWriter();
-                String baseURI = wsdlDefinition.getLocation().toString();
+                String baseURI = null;
+                if (wsdlDefinition.getLocation() != null) {
+                    baseURI = wsdlDefinition.getLocation().toString();
+                } else {
+                    baseURI = "GeneratedWSDL";
+                }
                 outStream.write(baseURI.getBytes());
                 outStream.write(separator);            
                 writer.writeWSDL(definition, outStream);
@@ -277,8 +280,7 @@ public class WSDLSerializationTestCase extends TestCase {
             Assert.fail();
         }
         
-        node.stop();
-*/        
+        node.stop();        
     }
     
     public void writeSchema(OutputStream outStream, XmlSchema schema) throws IOException {
