@@ -913,20 +913,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             matchAudit.append("Match because there is no interface contract on the reference ");
             matchAudit.appendSeperator();
             return true;
-        }
-        
-//        // TODO - is there a better test for this. Would have to cast to the
-//        //        correct iface type to get to the resolved flag
-//        //        We need to rely on normailzed interfaces in this case!!
-        if (endpointContract.getInterface().getOperations().size() == 0){
-            // the interface contract is likely remote but unresolved
-            // we discussed this on the ML and decided that we could
-            // live with this for the case where there is no central matching of references
-            // to services. Any errors will be detected when the message flows.
-            matchAudit.append("Match because the endpoint is remote and we don't have a copy of it's interface contract ");
-            matchAudit.appendSeperator();
-            return true;
-        }
+        }        
         
         // If the contracts are not of the same type or normalized interfaces are available
         // use them

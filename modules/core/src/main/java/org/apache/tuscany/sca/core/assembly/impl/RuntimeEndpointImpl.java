@@ -24,13 +24,17 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.wsdl.Definition;
+import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -110,6 +114,11 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.work.WorkScheduler;
+import org.apache.tuscany.sca.xsd.XSDefinition;
+import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaImport;
+import org.apache.ws.commons.schema.XmlSchemaInclude;
+import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -117,6 +126,8 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint, Externalizable {
     private static final long serialVersionUID = 1L;
+    private static final byte separator[] = {'_', 'X', '_'};
+    
     private transient CompositeContext compositeContext;
     private transient RuntimeWireProcessor wireProcessor;
     private transient ProviderFactoryExtensionPoint providerFactories;
@@ -1037,27 +1048,85 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         return xml;
     }
     
-    private String getWsdl() {
-        InterfaceContract ic = getComponentServiceInterfaceContract();
-        if (ic == null || ic.getInterface() == null || !!!ic.getInterface().isRemotable()) {
+    private String getWsdl() {       
+        InterfaceContract ic = getBindingInterfaceContract();
+        if (ic == null || ic.getInterface() == null || !ic.getInterface().isRemotable()) {
             return "";
         }
-        WSDLInterfaceContract wsdlIC = (WSDLInterfaceContract)getGeneratedWSDLContract(getComponentServiceInterfaceContract());
+        WSDLInterfaceContract wsdlIC = (WSDLInterfaceContract)getGeneratedWSDLContract(ic);
         if (wsdlIC == null) {
             return "";
         }
         WSDLInterface wsdl = (WSDLInterface)wsdlIC.getInterface();
-        WSDLDefinition d = wsdl.getWsdlDefinition();
+        WSDLDefinition wsdlDefinition = wsdl.getWsdlDefinition();
+        Definition definition = wsdlDefinition.getDefinition();
+        
+        // write out a flattened WSDL along with XSD
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         try {
-            WSDLWriter writer = javax.wsdl.factory.WSDLFactory.newInstance().newWSDLWriter();
-            writer.writeWSDL(d.getDefinition(), outStream);
+            WSDLWriter writer = WSDLFactory.newInstance().newWSDLWriter();
+            String baseURI = null;
+            if (wsdlDefinition.getLocation() != null) {
+                baseURI = wsdlDefinition.getLocation().toString();
+            } else {
+                baseURI = "generated.wsdl";
+            }
+            outStream.write(baseURI.getBytes());
+            outStream.write(separator);            
+            writer.writeWSDL(definition, outStream);
+            for (WSDLDefinition importedWSDLDefintion : wsdlDefinition.getImportedDefinitions()){
+                outStream.write(separator);
+                baseURI = importedWSDLDefintion.getLocation().toString();
+                outStream.write(baseURI.getBytes());
+                outStream.write(separator);
+                writer.writeWSDL(importedWSDLDefintion.getDefinition(), outStream);
+            }
+            for (XSDefinition xsdDefinition : wsdlDefinition.getXmlSchemas()){
+                // we store a reference to the schema schema. We don't need to write that out.
+                if (!xsdDefinition.getNamespace().equals("http://www.w3.org/2001/XMLSchema") &&
+                    xsdDefinition.getSchema() != null){
+                    writeSchema(outStream, xsdDefinition.getSchema());
+                }
+            }           
         } catch (Exception e){
             throw new RuntimeException(e);
         }
-        return outStream.toString();
-    }
 
+        String wsdlString = outStream.toString();
+/*        
+        System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS\n" + 
+                           wsdlString +
+                           "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n");
+*/                           
+        return wsdlString;
+    }
+       
+    public void writeSchema(OutputStream outStream, XmlSchema schema) throws IOException {
+        // TODO - this doesn't write schema in the non-namespace namespace
+        if (schema != null &&
+            schema.getTargetNamespace() != null &&
+            !schema.getTargetNamespace().equals("http://www.w3.org/2001/XMLSchema") &&
+            schema.getNamespaceContext() != null){ 
+            outStream.write(separator);
+            String baseURI = schema.getSourceURI();
+            outStream.write(baseURI.getBytes());
+            outStream.write(separator);
+            schema.write(outStream);
+            
+            for (Iterator<?> i = schema.getIncludes().getIterator(); i.hasNext();) {
+                XmlSchemaObject obj = (XmlSchemaObject)i.next();
+                XmlSchema ext = null;
+                if (obj instanceof XmlSchemaInclude) {
+                    ext = ((XmlSchemaInclude)obj).getSchema();
+                }
+                if (obj instanceof XmlSchemaImport) {
+                    ext = ((XmlSchemaImport)obj).getSchema();
+                }
+                writeSchema(outStream, ext);
+            } 
+        }
+    }  
+    
     private void setNormalizedWSDLContract() {
         if (wsdl == null || wsdl.length() < 1) {
             return;
