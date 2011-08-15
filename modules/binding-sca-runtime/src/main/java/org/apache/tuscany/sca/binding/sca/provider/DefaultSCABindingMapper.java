@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ServiceDeclarationParser;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.provider.ProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
@@ -263,10 +264,12 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
      * @return
      */
     protected QName chooseBinding(RuntimeEndpoint endpoint) {
-        if(endpoint.getService().getInterfaceContract() != null
-                && ((RuntimeComponentService)endpoint.getService()).getInterfaceContract().getInterface().isRemotable()
-                && supportsDistributedSCA
-                && isBindingSupported(defaultMappedBinding)) {
+        InterfaceContract interfaceContract = endpoint.getService().getInterfaceContract();
+        if(interfaceContract != null
+           && interfaceContract.getInterface() != null
+           && interfaceContract.getInterface().isRemotable()
+           && supportsDistributedSCA
+           && isBindingSupported(defaultMappedBinding)) {
         	return defaultMappedBinding;
         }
         
