@@ -63,6 +63,7 @@
                 <module>implementation-spring</module>
                 <module>import-export</module>
                 <module>interfaces</module>
+                <module>interface-matching</module>
                 <module>java-lifecycle-exceptions</module>
                 <module>jms</module>
                 <module>lifecycle</module>
