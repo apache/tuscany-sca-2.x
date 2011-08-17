@@ -152,7 +152,7 @@ public class ExtensibleStAXArtifactProcessor implements StAXArtifactProcessor<Ob
         // Delegate to the processor associated with the element QName
         int event = source.getEventType();
         if (event == XMLStreamConstants.START_DOCUMENT) {
-            source.nextTag();
+            while (source.next() != XMLStreamReader.START_ELEMENT);
         }
         QName name = source.getName();
         StAXArtifactProcessor<?> processor = (StAXArtifactProcessor<?>)processors.getProcessor(name);
