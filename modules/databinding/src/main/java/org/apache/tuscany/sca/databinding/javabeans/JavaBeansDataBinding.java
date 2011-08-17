@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.databinding.javabeans;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,6 +31,8 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.databinding.BaseDataBinding;
@@ -88,7 +91,16 @@ public class JavaBeansDataBinding extends BaseDataBinding {
                 //     because Collection classes are loaded by the System ClassLoader but their contents
                 //     may be loaded from another ClassLoader
                 //
-                ClassLoader classLoaderToUse = targetDataType.getPhysical().getClassLoader();
+                final DataType fTargetDataType = targetDataType;
+                ClassLoader classLoaderToUse = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                    public ClassLoader run() {
+                        ClassLoader cl = fTargetDataType.getPhysical().getClassLoader();
+                        return cl;
+                    }
+                });
+                
+                
+                
                 if (classLoaderToUse == null) {
                     classLoaderToUse = clazz.getClassLoader();
                 }

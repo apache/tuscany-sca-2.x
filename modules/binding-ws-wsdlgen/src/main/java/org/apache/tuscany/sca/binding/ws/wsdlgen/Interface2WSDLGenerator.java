@@ -21,6 +21,9 @@ package org.apache.tuscany.sca.binding.ws.wsdlgen;
 
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -118,7 +121,17 @@ public class Interface2WSDLGenerator {
         this.dataBindings = dataBindings;
         this.xsdFactory = xsdFactory;
         this.monitor = monitor;
-        this.factory = WSDLFactory.newInstance();
+        try{
+            this.factory = AccessController.doPrivileged(new PrivilegedExceptionAction<WSDLFactory>() {
+                public WSDLFactory run() throws WSDLException{
+                    WSDLFactory factory =  WSDLFactory.newInstance();
+                    return factory;
+                 }
+            });
+        } catch (PrivilegedActionException e){
+            throw (WSDLException) e.getException();
+        }
+        
     }
 
     /**

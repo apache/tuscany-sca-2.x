@@ -18,8 +18,12 @@
  */
 package org.apache.tuscany.sca.implementation.java.invocation;
 
+
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +98,12 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
         // store the current thread context classloader
         // as we need to replace it with the class loader
         // used to load the java class as per SCA Spec
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        final ClassLoader tccl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                public ClassLoader run() {
+                    ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                    return tccl;
+                 }
+            });
         
         try {
             // The following call might create a new conversation, as a result, the msg.getConversationID() might 
@@ -107,7 +116,7 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
             	injectCallbacks(wrapper, (JavaInterface)interfaze.getCallbackInterface());
             }
             
-            Object instance = wrapper.getInstance();
+            final Object instance = wrapper.getInstance();
 
             // If the method couldn't be computed statically, or the instance being
             // invoked is a user-specified callback object that doesn't implement
@@ -125,8 +134,14 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
             // Set the thread context classloader of the thread used to invoke an operation 
             // of a Java POJO component implementation is the class loader of the contribution 
             // that contains the POJO implementation class.
+            AccessController.doPrivileged(new PrivilegedAction() {
+                public Object run() {
+                    Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
+                    return null;
+                 }
+            });
             
-            Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
+            
             
             int argumentHolderCount = 0;
 
@@ -245,8 +260,14 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
         } catch (Exception e) {
             msg.setFaultBody(e);           
         } finally {
-            // set the tccl 
-            Thread.currentThread().setContextClassLoader(tccl);
+            // set the tccl
+            AccessController.doPrivileged(new PrivilegedAction() {
+                public Object run() {
+                    Thread.currentThread().setContextClassLoader(tccl);
+                    return null;
+                 }
+            });
+            
         }
         return msg;
     }

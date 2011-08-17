@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.lang.ref.SoftReference;
 import java.net.URI;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -472,7 +473,14 @@ public class JAXBContextCache {
         for (Class<?> cls : classes) {
             Package pkg = getPackage(cls);
             if (pkg != null) {
-                pkgs.put(pkg, cls.getClassLoader());
+                final Class fcls = cls;
+                ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                public ClassLoader run() {
+                    ClassLoader cl = fcls.getClassLoader();
+                    return cl;
+                 }
+            });
+                pkgs.put(pkg, cl);
             }
         }
         return pkgs;
