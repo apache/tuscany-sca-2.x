@@ -23,14 +23,13 @@
            
     <component name="Client">
 		<implementation.java class="org.apache.tuscany.sca.itest.Service1ClientImpl"/>
-        <reference name="service1">
-            <binding.jms uri="jms:queue:Service1AsyncServer"/>
-        </reference>
+        <reference name="service1" target="AsyncServiceComponent"/>
     </component>
     
     <component name="AsyncServiceComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.Service1AsyncServerImpl2"/>
         <service name="Service1AsyncServer">
+            <interface.java interface="org.apache.tuscany.sca.itest.Service1AsyncServer"/>
             <binding.jms />
         </service>
     </component>
