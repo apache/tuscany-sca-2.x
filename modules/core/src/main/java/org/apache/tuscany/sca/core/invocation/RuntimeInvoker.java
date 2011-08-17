@@ -82,6 +82,7 @@ public class RuntimeInvoker implements Invoker, InvokerAsyncRequest {
             ((InvokerAsyncRequest)invocable.getBindingInvocationChain().getHeadInvoker()).invokeAsyncRequest(msg);
         } catch (Throwable t ) {
         	// TODO - consider what best to do with exception
+            t.printStackTrace();
         } finally {
             ThreadMessageContext.setMessageContext(context);
         } // end try
