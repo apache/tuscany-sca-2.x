@@ -154,7 +154,7 @@ public class JAXBPropertyDescriptor implements Comparable<JAXBPropertyDescriptor
             }
 
             // There are 3 different types of setters that can occur.
-            // 1) Normal Attomic Setter : setFoo(type)
+            // 1) Normal Atomic Setter : setFoo(type)
             // 2) Indexed Array Setter : setFoo(type[])
             // 3) No Setter case if the property is a List<T>.
 
