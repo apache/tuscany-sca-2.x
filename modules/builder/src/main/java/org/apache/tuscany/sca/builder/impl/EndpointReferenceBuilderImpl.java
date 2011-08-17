@@ -417,6 +417,9 @@ public class EndpointReferenceBuilderImpl {
             //        autowire case. We need to think about if there is a more correct answer. 
             for (ComponentReference leafRef : leafComponentReferences){
                 int insertLocation = 0;
+                if (!leafRef.isNonOverridable()) {
+                    leafRef.getEndpointReferences().clear();
+                }                
                 for (EndpointReference epr : componentReference.getEndpointReferences()){
                     // copy the epr
                     EndpointReference eprCopy = copyHigherReference(epr, leafRef);
