@@ -434,24 +434,28 @@ public class NodeImpl implements Node {
     }
 
     protected List<Contribution> calculateDependentContributions(ContributionDescription cd) throws ContributionReadException, ValidationException {
-        List<Contribution> dependentContributions = new ArrayList<Contribution>();
+        Map<String, Contribution> dependentContributions = new HashMap<String, Contribution>();
         if (cd.getDependentContributionURIs() != null && cd.getDependentContributionURIs().size() > 0) {
             // if the install specified dependent uris use just those contributions
             for (String uri : cd.getDependentContributionURIs()) {
-                ContributionDescription dependee = domainRegistry.getInstalledContribution(uri);
-                if (dependee != null) {
-                    dependentContributions.add(loadContribution(dependee));
+                if (!!!dependentContributions.containsKey(uri)) {
+                    ContributionDescription dependee = domainRegistry.getInstalledContribution(uri);
+                    if (dependee != null) {
+                        dependentContributions.put(uri, loadContribution(dependee));
+                    }
                 }
             }
         } else {
             for (Import imprt : loadContribution(cd).getImports()) {
                 for (ContributionDescription exportingIC : findExportingContributions(imprt)) {
-                    dependentContributions.add(loadContribution(exportingIC));
+                    if (!!!dependentContributions.containsKey(exportingIC.getURI())) {
+                        dependentContributions.put(exportingIC.getURI(), loadContribution(exportingIC));
+                    }
                 }
             }
         }
         // TODO: there is also the location attribute on the import which should be taken into account
-        return dependentContributions;
+        return new ArrayList<Contribution>(dependentContributions.values());
     }
 
     private List<ContributionDescription> findExportingContributions(Import imprt) {
