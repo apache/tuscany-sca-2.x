@@ -86,7 +86,6 @@
               <exclude>**/POL_3002_TestCase.java</exclude>
               <exclude>**/POL_4015_TestCase.java</exclude>
               <exclude>**/POL_4016_TestCase.java</exclude>
-              <exclude>**/POL_4020_TestCase.java</exclude>
            </excludes>
          </configuration>
       </plugin>
