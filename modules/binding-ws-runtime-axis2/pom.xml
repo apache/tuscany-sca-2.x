@@ -301,19 +301,6 @@
             </exclusions>
         </dependency>               
    
-        <!--  replace the Rampart xalan with the version Tuscany is using -->
-        <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-            <version>2.7.0</version>
-            <exclusions>
-               <exclusion>
-                   <groupId>xml-apis</groupId>
-                   <artifactId>xml-apis</artifactId>
-               </exclusion>                              
-            </exclusions>            
-        </dependency>       
-
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
