@@ -28,13 +28,31 @@ import org.apache.tuscany.sca.invocation.Message;
 public final class ThreadMessageContext {
 
     private static final ThreadLocal<Message> CONTEXT = new ThreadLocal<Message>();
+    
+    private static final ThreadLocal<Message> PREVIOUS_CONTEXT = new ThreadLocal<Message>();
 
     private ThreadMessageContext() {
     }
 
+    /**
+     * Set the WorkContext for the current thread.
+     * The current work context is returned and must be restored after the invocation is complete.
+     * Typical usage would be:
+     * <pre>
+     *   WorkContext old = PojoWorkContextTunnel.setThreadWorkContext(newContext);
+     *   try {
+     *      ... invoke user code ...
+     *   } finally {
+     *     PojoWorkContextTunnel.setThreadWorkContext(old);
+     *   }
+     * </pre>
+     * @param context
+     * @return the current work context for the thread; this must be restored after the invocation is made
+     */
     public static Message setMessageContext(Message context) {
         Message old = CONTEXT.get();
         CONTEXT.set(context);
+        PREVIOUS_CONTEXT.set(old);
         return old;
     }
 
@@ -46,6 +64,10 @@ public final class ThreadMessageContext {
     public static Message getMessageContext() {
         return CONTEXT.get();
     }
+    
+    public static Message getPreviousMessageContext() {
+        return PREVIOUS_CONTEXT.get();
+    }
 
     /**
      * Removes and state from the current thread to ensure that
@@ -53,5 +75,9 @@ public final class ThreadMessageContext {
      */
     public static void removeMessageContext() {
         CONTEXT.remove();
+    }
+
+    public static void removePreviousMessageContext() {
+        PREVIOUS_CONTEXT.remove();
     }
 }
