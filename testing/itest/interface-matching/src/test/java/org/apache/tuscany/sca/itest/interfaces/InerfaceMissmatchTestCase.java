@@ -150,4 +150,40 @@ public class InerfaceMissmatchTestCase {
         node2.stop();
 
     }
+    
+    /**
+     * Remoteable client and service interfaces where the parameter types of one of the operations don't match.
+     * Components running in the seaprate composite/JVM, i.e. there is a remote registry
+     * Both of the interfaces are converted to WSDL and Tuscany is able to detect miss-match.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testCallbackDistributedRemotable() throws Exception {
+        
+        String [] contributions = {"./target/classes"};
+        Node node1 = NodeFactory.newInstance().createNode(URI.create("tuscany:InerfaceMissmatchTestCase"), 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/missmatch/distributed/MissmatchDistributedClient.composite", 
+                                                                     contributions);
+        node1.start();
+
+        Node node2 = NodeFactory.newInstance().createNode(URI.create("tuscany:InerfaceMissmatchTestCase"), 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/missmatch/distributed/MissmatchCallbackDistributedService.composite", 
+                                                                     contributions);
+        node2.start();
+        
+        ClientComponent local = node1.getService(ClientComponent.class, "DistributedClientComponent");
+        ParameterObject po = new ParameterObject();
+        
+        try {
+            local.foo1(po);
+            Assert.fail("Expected exception indicating that interfaces don't match");
+        } catch (ServiceRuntimeException ex){
+            Assert.assertTrue(ex.getMessage().startsWith("Unable to bind []"));
+        }
+        
+        node1.stop();
+        node2.stop();
+
+    }
 }
