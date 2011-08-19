@@ -90,9 +90,10 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             }            
             targetLogicalType = (XMLType)target.getLogical();
 
-            // The logical type seems to be null in some cases, e.g. when the 
-            // argument or return type is something like a Map. 
-            // TODO - check when some type give rise to a null logical type
+            // The logical type is null in some cases. This is when the 
+            // runtime can't determine the XML type for a particular type, for
+            // example for a non-JAXB Java bean. This makes interface checking
+            // rather lenient with errors being detected at runtime
             if (sourceLogicalType.getTypeName() == null ||
                 targetLogicalType.getTypeName() == null) {
                 return true;
