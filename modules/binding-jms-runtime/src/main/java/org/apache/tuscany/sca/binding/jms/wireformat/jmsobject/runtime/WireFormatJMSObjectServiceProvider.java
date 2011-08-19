@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
+import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSObject;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -45,11 +46,13 @@ public class WireFormatJMSObjectServiceProvider implements WireFormatProvider {
     private InterfaceContract interfaceContract; 
     private HashMap<String,Class<?>> singleArgMap;
     private boolean wrapSingle = true;
+    private JMSResourceFactory jmsResourceFactory ;
 
-    public WireFormatJMSObjectServiceProvider(ExtensionPointRegistry registry, RuntimeEndpoint endpoint) {
+    public WireFormatJMSObjectServiceProvider(ExtensionPointRegistry registry, RuntimeEndpoint endpoint, JMSResourceFactory jmsResourceFactory) {
         super();
         this.registry = registry;
         this.endpoint = endpoint;
+        this.jmsResourceFactory = jmsResourceFactory;
         this.binding = (JMSBinding)endpoint.getBinding();
         this.singleArgMap = new HashMap<String,Class<?>>();
         
@@ -104,7 +107,7 @@ public class WireFormatJMSObjectServiceProvider implements WireFormatProvider {
      */
     public Interceptor createInterceptor() {
 
-        return new WireFormatJMSObjectServiceInterceptor(registry, null, endpoint, this.singleArgMap, wrapSingle);
+        return new WireFormatJMSObjectServiceInterceptor(registry, jmsResourceFactory, endpoint, this.singleArgMap, wrapSingle);
     }
 
     /**
