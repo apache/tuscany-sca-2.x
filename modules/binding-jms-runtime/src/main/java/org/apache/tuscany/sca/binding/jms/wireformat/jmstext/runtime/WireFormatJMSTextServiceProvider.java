@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.jms.wireformat.jmstext.runtime;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
+import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSText;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -36,13 +37,16 @@ public class WireFormatJMSTextServiceProvider implements WireFormatProvider {
     private ExtensionPointRegistry registry;
     private RuntimeEndpoint endpoint;
     private JMSBinding binding;
-    private InterfaceContract interfaceContract; 
+    private InterfaceContract interfaceContract;
+    private JMSResourceFactory jmsResourceFactory; 
 
     public WireFormatJMSTextServiceProvider(ExtensionPointRegistry registry,
-                                            RuntimeEndpoint endpoint) {
+                                            RuntimeEndpoint endpoint, 
+                                            JMSResourceFactory jmsResourceFactory) {
         super();
         this.registry = registry;
         this.endpoint = endpoint;
+        this.jmsResourceFactory = jmsResourceFactory;
         this.binding = (JMSBinding)endpoint.getBinding();
         
         // configure the service based on this wire format
@@ -88,7 +92,7 @@ public class WireFormatJMSTextServiceProvider implements WireFormatProvider {
     /**
      */
     public Interceptor createInterceptor() {
-        return new WireFormatJMSTextServiceInterceptor(registry, null, endpoint);
+        return new WireFormatJMSTextServiceInterceptor(registry, jmsResourceFactory, endpoint);
     }
 
     /**
