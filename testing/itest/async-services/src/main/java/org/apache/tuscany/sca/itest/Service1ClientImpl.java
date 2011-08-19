@@ -36,10 +36,15 @@ public class Service1ClientImpl implements Service1 {
     @Override
     public String operation1(String input) {
 
-        String resp = service1.operation1(input);
+        String resp = "";
+        resp += service1.operation1(input);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         resp += invokeAsyncType1(input);
         resp += invokeAsyncType2(input);
-        
         return resp;
     }
 
