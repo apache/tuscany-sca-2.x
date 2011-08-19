@@ -19,14 +19,14 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
            xmlns:foo="http://foo" targetNamespace="http://foo"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           name="MissmatchLocal" >
+           name="MissmatchRemoteable" >
 
     <component name="LocalClientComponent">
-        <implementation.java class="org.apache.tuscany.sca.itest.interfaces.LocalClientComponentImpl" />
+        <implementation.java class="org.apache.tuscany.sca.itest.interfaces.ClientComponentImpl" />
         <reference name="aCallBackService" target="LocalServiceComponent" />
     </component> 
     
     <component name="LocalServiceComponent">
-        <implementation.java class="org.apache.tuscany.sca.itest.interfaces.LocalServiceMissmatchComponentImpl" />
+        <implementation.java class="org.apache.tuscany.sca.itest.interfaces.ServiceMissmatchComponentImpl" />
     </component>  
 </composite>

@@ -30,11 +30,10 @@ import org.junit.Test;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 public class InerfaceMissmatchTestCase {
-   
+    
+    
     @Test
-    @Ignore("Interfaces are not detected as being incompatible")
     public void testLocal() throws Exception {
-     
         String [] contributions = {"./target/classes"};
         Node node1 = NodeFactory.newInstance().createNode(URI.create("tuscany:InerfaceMissmatchTestCase"), 
                                                                      "org/apache/tuscany/sca/itest/interfaces/missmatch/local/MissmatchLocal.composite", 
@@ -50,11 +49,37 @@ public class InerfaceMissmatchTestCase {
         } catch (ServiceRuntimeException ex){
             Assert.assertTrue(ex.getMessage().startsWith("Unable to bind []"));
         }
+        
+        node1.stop();
+        
+    }
+   
+    @Test
+    public void testNonDistributedRemotable() throws Exception {
+     
+        String [] contributions = {"./target/classes"};
+        Node node1 = NodeFactory.newInstance().createNode(URI.create("tuscany:InerfaceMissmatchTestCase"), 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/missmatch/local/MissmatchRemoteable.composite", 
+                                                                     contributions);
+        node1.start();
+        
+        ClientComponent local = node1.getService(ClientComponent.class, "LocalClientComponent");
+        ParameterObject po = new ParameterObject();
+        
+        try {
+            local.foo1(po);
+        } catch (ServiceRuntimeException ex){
+            //Assert.assertTrue(ex.getMessage().startsWith("Unable to bind []"));
+            Assert.fail("It seems that the matching process can't tell that these don't match as it has a " +
+                        "String on one side and a complex type (Java Object) on the other");
+        }
+        
+        node1.stop();
     }
   
     
     @Test
-    public void testDistributed() throws Exception {
+    public void testDistributedRemotable() throws Exception {
         
         String [] contributions = {"./target/classes"};
         Node node1 = NodeFactory.newInstance().createNode(URI.create("tuscany:InerfaceMissmatchTestCase"), 
@@ -76,6 +101,9 @@ public class InerfaceMissmatchTestCase {
         } catch (ServiceRuntimeException ex){
             Assert.assertTrue(ex.getMessage().startsWith("Unable to bind []"));
         }
+        
+        node1.stop();
+        node2.stop();
 
     }
 }
