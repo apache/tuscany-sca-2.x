@@ -91,6 +91,12 @@ public class WireFormatJMSBytesServiceInterceptor extends InterceptorAsyncImpl {
     public Message invokeResponse(Message msg) {
         // get the jms context
         JMSBindingContext context = msg.getBindingContext();
+        // The Binding Context may be null on an asynchronous response - in which case, create a new one
+        if(context == null) {
+            context = createBindingContext();
+            msg.setBindingContext(context);
+        }
+
         Session session = context.getJmsResponseSession();
 
         javax.jms.Message responseJMSMsg;
@@ -114,7 +120,13 @@ public class WireFormatJMSBytesServiceInterceptor extends InterceptorAsyncImpl {
         this.next = next;
     }
     
-	public Message processRequest(Message msg) {
+    private JMSBindingContext createBindingContext() {
+        JMSBindingContext context = new JMSBindingContext();
+        context.setJmsResourceFactory(jmsResourceFactory);
+        return context;
+    }
+
+    public Message processRequest(Message msg) {
 		return invokeRequest(msg);
 	} // end method processRequest
 

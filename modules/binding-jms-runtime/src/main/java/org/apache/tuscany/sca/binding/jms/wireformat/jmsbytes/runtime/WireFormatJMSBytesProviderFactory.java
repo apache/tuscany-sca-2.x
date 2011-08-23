@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.runtime;
 
+import org.apache.tuscany.sca.binding.jms.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactoryExtensionPoint;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytes;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
@@ -31,10 +34,12 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
  */
 public class WireFormatJMSBytesProviderFactory implements WireFormatProviderFactory<WireFormatJMSBytes> {
     private ExtensionPointRegistry registry;
+    private JMSResourceFactoryExtensionPoint jmsRFEP;
     
     public WireFormatJMSBytesProviderFactory(ExtensionPointRegistry registry) {
         super();
         this.registry = registry;
+        jmsRFEP = (JMSResourceFactoryExtensionPoint)registry.getExtensionPoint(JMSResourceFactoryExtensionPoint.class);
     }
 
     /**
@@ -46,7 +51,8 @@ public class WireFormatJMSBytesProviderFactory implements WireFormatProviderFact
     /**
       */
     public WireFormatProvider createServiceWireFormatProvider(RuntimeEndpoint endpoint) {
-        return new WireFormatJMSBytesServiceProvider(registry, endpoint);
+        JMSResourceFactory jmsRF = jmsRFEP.createJMSResourceFactory((JMSBinding)endpoint.getBinding());
+        return new WireFormatJMSBytesServiceProvider(registry, endpoint, jmsRF);
     }
 
     /**
