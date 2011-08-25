@@ -29,6 +29,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
@@ -463,54 +464,106 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
     }
 
     /**
-     * Selects a callback endpoint from a list of possible candidates
+     * This code is very similar to the code in EnpointReferenceBuilder.fixUpCallbackLinks()
+     * but here we are selecting endpoint/endpoint references at runtime. 
+     * 
+     * To recap the general model is as follows:
+     * 
+     *  Forward EPR  -----------> Forward EP (target EP)
+     *     |                          |
+     *     \/                         \/
+     *  Callback EP <------------ Callback EPR 
+     * 
+     * The question then becomes how to construct this model given that
+     * target resolution can happen at runtime and EPR and EP can be 
+     * distributed across the domain. 
+     * 
+     * The forward link is resolved by searching in the registry for an EP 
+     * that matches the EPR. 
+     * 
+     * At build time we've made the assumption that, if the user configures
+     * a callback binding at all, they will choose the same binding as the
+     * forward call (TODO - this may be a bold assumption). So here we just
+     * assume that the callback endpoint that is set on the reference
+     * at build time matches. This may not be true if the callback bindings
+     * are configured differently on the reference and service. 
      * 
      * @param endpointReference
      * @param endpoints
      */
     private void selectCallbackEndpoint(EndpointReference endpointReference, ComponentService callbackService, Audit matchAudit, BuilderContext builderContext, boolean runtime) {
-      
-        // find the first callback endpoint that matches a callback endpoint reference
-        // at the service
-        RuntimeEndpoint callbackEndpoint = null;
-        match:
-        for ( EndpointReference callbackEndpointReference : endpointReference.getTargetEndpoint().getCallbackEndpointReferences()){
-            for (Endpoint endpoint : callbackService.getEndpoints()){
-                if (haveMatchingPolicy(callbackEndpointReference, endpoint, matchAudit, builderContext) &&
-                    haveMatchingInterfaceContracts(callbackEndpointReference, endpoint, matchAudit)){
-                    callbackEndpoint = (RuntimeEndpoint)endpoint;
-                    break match;
-                }
-            }
-        }
         
-        // if no callback endpoint was found or if the binding is the SCA binding and it doesn't match 
-        // the forward binding then create a new callback endpoint
-        // TODO - there is a hole here in that the user may explicitly specify an SCA binding for the
-        //        callback that is different from the forward binding. Waiting for feedback form OASIS
-        //        before doing more drastic surgery to fix this corner case as there are other things
-        //        wrong with the default case, such as what to do about policy
-        if (callbackEndpoint == null ||
-            (callbackEndpoint.getBinding().getType().equals(SCABinding.TYPE) &&
-             !endpointReference.getBinding().getType().equals(SCABinding.TYPE))){
-            // no endpoint in place so we need to create one 
+        // A simplifying assumption here is that the user will only specify a callback binding
+        // of the same type as the forward binding in order to specify further configuration
+        // We can then assume that if there is no callback endpoint that matches already then we have 
+        // picked up binding config from the service and we can create a callback endpoint to match
+        
+        // So having said this we look in three places for the callback binding. 
+        // 1/ in callback endpoints at the reference
+        //      - will find it here if the user has manually configured a callback binding at the reference
+        // 2/ in the service callback structure 
+        //      - will find it here if the user has manually configured a callback binding at the service
+        // 3/ in the service callback reference structure
+        //      - will find it here if the system has constructed the callback binding based on the forward binding
+        //
+        // 2 and 3 are conflated in the distributed case as be write any derived callback bindings out into the
+        // callback structure as the endpoint is serialized across the domain
+        
+        RuntimeEndpoint callbackEndpoint = null;
+        
+        // 1/ look in callback endpoints at the reference
+        //      - exploiting the assumption that the user will specific callback bindings of 
+        //        the same type as the forward binding
+        match1:
+        for(Endpoint loopCallbackEndpoint : callbackService.getEndpoints()){
+            if(loopCallbackEndpoint.getBinding().getType().equals(endpointReference.getBinding().getType())){
+                callbackEndpoint = (RuntimeEndpoint)loopCallbackEndpoint;
+                break match1;
+            }
+        }   
+        
+        // if no callback endpoint was found then create a new callback endpoint
+        if (callbackEndpoint == null ){
             callbackEndpoint = (RuntimeEndpoint)assemblyFactory.createEndpoint();
             callbackEndpoint.setComponent(endpointReference.getComponent());
             callbackEndpoint.setService(callbackService);
             
             Binding forwardBinding = endpointReference.getBinding();
             Binding callbackBinding = null;
-            for (EndpointReference callbackEPR : endpointReference.getTargetEndpoint().getCallbackEndpointReferences()){
-                if (callbackEPR.getBinding().getType().equals(forwardBinding.getType())){
-                    try {
-                        callbackBinding = (Binding)callbackEPR.getBinding().clone();
-                    } catch (CloneNotSupportedException ex){
-                        
-                    }  
-                    break;
+            
+            // 2/  look in the service callback structure 
+            Callback serviceCallback = endpointReference.getTargetEndpoint().getService().getCallback();
+            
+            if (serviceCallback != null){
+                for(Binding loopCallbackBinding : serviceCallback.getBindings()){
+                    if(loopCallbackBinding.getType().equals(endpointReference.getBinding().getType())){
+                        callbackBinding = loopCallbackBinding;
+                        break;
+                    }
+                }
+            }
+
+            // 3/ look in the service endpoint callback reference structure
+            ComponentReference callbackReference = endpointReference.getTargetEndpoint().getService().getCallbackReference();
+            
+            if (callbackReference != null){
+                for (EndpointReference loopEndpointReference : callbackReference.getEndpointReferences()){
+                    if (loopEndpointReference.getBinding().getType().equals(endpointReference.getBinding().getType())){
+                        callbackBinding = loopEndpointReference.getBinding();
+                        break;
+                    }
                 }
             }
             
+            // if all else fails clone the forward binding
+            // TODO - do we ever get here?
+            if (callbackBinding == null){
+                try {
+                    callbackBinding = (Binding)forwardBinding.clone();
+                } catch (CloneNotSupportedException ex){
+                }  
+            }
+
             // get the callback binding URI by looking at the SCA binding 
             // that will have been added at build time
             callbackBinding.setURI(null);
@@ -530,7 +583,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             build(callbackEndpoint);
             
             // Only activate the callback endpoint if the bind is being done at runtime
-            // and hence everything else is running. If we don't activate here then the
+            // and hence everything else is running. If it's build time then the
             // endpoint will be activated at the same time as all the other endpoints
             if (runtime) {
                 // activate it
@@ -543,7 +596,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             }
         } 
         
-        endpointReference.setCallbackEndpoint(callbackEndpoint);
+        // finally set the callback endpoint into the forward reference
+        endpointReference.setCallbackEndpoint(callbackEndpoint);       
     }
     
     private void build(Endpoint endpoint) {
@@ -913,13 +967,18 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             matchAudit.append("Match because there is no interface contract on the reference ");
             matchAudit.appendSeperator();
             return true;
-        }        
+        }     
         
-        // If the contracts are not of the same type or normalized interfaces are available
-        // use them
+        if (endpoint.isRemote()){
+            matchAudit.append("Match because endpoint is remote");
+            matchAudit.appendSeperator();
+            return true;
+        }
+        
+        // If the contracts are not of the same type use normailized interfaces
         if (endpointReferenceContract.getClass() != endpointContract.getClass() ||
             endpointReferenceContract.getNormalizedWSDLContract() != null ||
-             endpointContract.getNormalizedWSDLContract() != null) {
+            endpointContract.getNormalizedWSDLContract() != null) {
             endpointReferenceContract = ((RuntimeEndpointReference)endpointReference).getGeneratedWSDLContract(endpointReferenceContract);
             endpointContract = ((RuntimeEndpoint)endpoint).getGeneratedWSDLContract(endpointContract);
         }        

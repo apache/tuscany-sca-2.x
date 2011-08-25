@@ -771,7 +771,7 @@ public class EndpointReferenceBuilderImpl {
      * to present the callback services and references. These are identifiable as their names
      * will match the name of the forward reference or service to which they relate. In the general
      * endpoint reference and endpoint processing we will have created endpoints and endpoint references 
-     * for these callback services and references. We now need to related forward endpoint references with
+     * for these callback services and references. We now need to relate forward endpoint references with
      * callback endpoints and forward endpoints with callback endpoint references. Here's the model...
      * 
      *    Client Component                                     Target Component
@@ -782,8 +782,11 @@ public class EndpointReferenceBuilderImpl {
      *        Service   \/ (for the callback)                      Reference \/  (for the callback)
      *            Endpoint <--------------------------------------------EndpointReference
      *  
-     * TODO - there are issues here with callback binding multiplicities and which callback 
-     *        endpoint is associated with which endpointreference
+     * TODO - there are issues here with callback binding multiplicities that the OASIS spec
+     *        is not very clear on. We need to decide which callback endpoint is associated with 
+     *        which endpointreference. For the time being we select the first one that matches the 
+     *        forward binding type as we assume that the user is simply using the callback binding
+     *        configuration to further configure the type of binding they used for the forward call.
      * 
      * @param reference
      * @param component
@@ -796,22 +799,33 @@ public class EndpointReferenceBuilderImpl {
             List<Endpoint> callbackEndpoints = reference.getCallbackService().getEndpoints();
             if (!callbackEndpoints.isEmpty()) {
                 for (EndpointReference endpointReference : reference.getEndpointReferences()){
-                    // [rfeng] FIXME: how to select the callback endpoints?
-                    endpointReference.setCallbackEndpoint(callbackEndpoints.get(0));
+                    for(Endpoint callbackEndpoint : callbackEndpoints){
+                        if((endpointReference.getBinding() != null) &&
+                           (callbackEndpoint.getBinding() != null) &&
+                           (callbackEndpoint.getBinding().getType().equals(endpointReference.getBinding().getType()))){
+                            endpointReference.setCallbackEndpoint(callbackEndpoint);
+                            break;
+                        }
+                    }
                 }
             }
         }
         
         // fix up links between endpoints and endpoint references that represent callbacks
         for (ComponentService service : component.getServices()) {
-            if ((service.getInterfaceContract() != null) && (service.getInterfaceContract()
-                .getCallbackInterface() != null)) {
+            if ((service.getInterfaceContract() != null) && 
+                (service.getInterfaceContract().getCallbackInterface() != null)) {
                 if (reference.getName().equals(service.getName())) {
                     for (Endpoint endpoint : service.getEndpoints()) {
-                        endpoint.getCallbackEndpointReferences().addAll(reference
-                            .getEndpointReferences());
+                        for ( EndpointReference callbackEndpointReference : reference.getEndpointReferences()){
+                            if((endpoint.getBinding() == null) &&
+                               (callbackEndpointReference.getBinding() == null) &&
+                               (callbackEndpointReference.getBinding().getType().equals(endpoint.getBinding().getType()))){
+                                endpoint.getCallbackEndpointReferences().add(callbackEndpointReference);
+                                break;
+                            }
+                        }
                     }
-                    break;
                 } 
             } 
         } 

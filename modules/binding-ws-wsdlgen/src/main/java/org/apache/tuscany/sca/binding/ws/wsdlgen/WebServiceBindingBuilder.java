@@ -45,9 +45,11 @@ public class WebServiceBindingBuilder implements BindingBuilder<WebServiceBindin
      * Create a calculated WSDL document and save it in the Web Service binding. 
      */
     public void build(Component component, Contract contract, WebServiceBinding binding, BuilderContext context, boolean rebuild) {
-        // in some cases (callback service endpoint processing) we need to re-generate the 
-        // WSDL doc from a ws binding that already has one. 
+        // in some cases (callback service endpoint processing) we need to re-set the binding interface contract
+        // and re-generate the WSDL doc from it. This is because the callback binding may be cloned from the 
+        // forward binding
         if (rebuild == true){
+            binding.setBindingInterfaceContract(null);
             binding.setGeneratedWSDLDocument(null);
         }
         BindingWSDLGenerator.generateWSDL(component, contract, binding, extensionPoints, context.getMonitor());

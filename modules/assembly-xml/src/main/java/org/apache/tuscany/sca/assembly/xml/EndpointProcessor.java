@@ -26,10 +26,12 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -114,7 +116,20 @@ public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArti
                     if (endpoint.getBinding() != null) {
                         Binding binding = (Binding)endpoint.getBinding().clone();
                         service.getBindings().add(binding);
-                    }                
+                    } 
+                    // put both manually configured AND automatically generated callback bindings
+                    // into the wrapping model so that we can pass callback configuarion via
+                    // the registry
+                    if (service.getCallbackReference() != null) {
+                        Callback callback = service.getCallback();
+                        if(callback == null){
+                            callback = assemblyFactory.createCallback();
+                        }
+                        for (EndpointReference epr : service.getCallbackReference().getEndpointReferences()){
+                            callback.getBindings().add(epr.getBinding());
+                        }
+                        service.setCallback(callback);
+                    }
                 }
             }
             return composite;
