@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.itest.interfaces;
 
 import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 
 @Service(ServiceComponent.class)
@@ -26,7 +27,11 @@ public class ServiceComponentImpl implements ServiceComponent {
 
     @Callback
     protected CallbackInterface callback;
-
+ 
+/*    
+    @Reference
+    protected ServiceComponent chainedCallbackReference;
+*/
     private static ParameterObject po;
 
     public void callback(String str) {

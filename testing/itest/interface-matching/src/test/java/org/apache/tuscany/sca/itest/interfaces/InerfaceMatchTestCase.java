@@ -80,13 +80,14 @@ public class InerfaceMatchTestCase {
         
         String [] contributions = {"./target/classes"};
         Node node1 = NodeFactory.newInstance().createNode(URI.create("uri:default"), 
-                                                                     "org/apache/tuscany/sca/itest/interfaces/missmatch/distributed/MissmatchDistributedClient.composite", 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/missmatch/distributed/MatchDistributedClient.composite", 
                                                                      contributions);
         node1.start();
 
         Node node2 = NodeFactory.newInstance().createNode(URI.create("uri:default"), 
                                                                      "org/apache/tuscany/sca/itest/interfaces/missmatch/distributed/MatchDistributedService.composite", 
                                                                      contributions);
+        
         // for default binding on node2 to use a different port from node 1(which will default to 8080
         ((NodeImpl)node2).getConfiguration().addBinding(WebServiceBinding.TYPE, "http://localhost:8081/");
         ((NodeImpl)node2).getConfiguration().addBinding(SCABinding.TYPE, "http://localhost:8081/");
@@ -99,8 +100,16 @@ public class InerfaceMatchTestCase {
             String response = local.foo1(po);
             Assert.assertEquals("AComponent", response);
         } catch (ServiceRuntimeException ex){
-            Assert.fail("Unexpected exception " + ex.toString());
+            Assert.fail("Unexpected exception with foo " + ex.toString());
         }
+        
+        try {
+            local.callback("Callback");
+            String response = local.getCallbackValue();
+            Assert.assertEquals("Callback", response);
+        } catch (ServiceRuntimeException ex){
+            Assert.fail("Unexpected exception with callback" + ex.toString());
+        }        
         
         node1.stop();
         node2.stop();
