@@ -388,7 +388,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 
         if (source.getInterface() == target.getInterface()) {
             return ignoreCallback
-            || isCallbackCompatible(source, target, silent);
+            || isCallbackCompatible(source, target, silent, audit);
         }
 
         if (source.getInterface() == null || target.getInterface() == null) {
@@ -398,7 +398,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         if (source.getInterface().isDynamic()
             || target.getInterface().isDynamic()) {
             return ignoreCallback
-            || isCallbackCompatible(source, target, silent);
+            || isCallbackCompatible(source, target, silent, audit);
         }
 
         if (source.getInterface().isRemotable() != target.getInterface()
@@ -448,7 +448,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             }
         }
 
-        return ignoreCallback || isCallbackCompatible(source, target, silent);
+        return ignoreCallback || isCallbackCompatible(source, target, silent, audit);
     }
 
     /*
@@ -476,13 +476,15 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 
 
 
-    protected boolean isCallbackCompatible(InterfaceContract source, InterfaceContract target, boolean silent)
+    protected boolean isCallbackCompatible(InterfaceContract source, InterfaceContract target, boolean silent, Audit audit)
         throws IncompatibleInterfaceContractException {
         if (source.getCallbackInterface() == null && target.getCallbackInterface() == null) {
             return true;
         }
         if (source.getCallbackInterface() == null || target.getCallbackInterface() == null) {
             if (!silent) {
+                audit.append("Callback interface doesn't match as one of the callback interfaces is null");
+                audit.appendSeperator();
                 throw new IncompatibleInterfaceContractException("Callback interface doesn't match as one of the callback interfaces is null", source, target);
             } else {
                 return false;
@@ -494,6 +496,8 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
                 getOperation(target.getCallbackInterface().getOperations(), operation.getName());
             if (targetOperation == null) {
                 if (!silent) {
+                    audit.append("Callback operation not found on target " + operation.getName());
+                    audit.appendSeperator();
                     throw new IncompatibleInterfaceContractException("Callback operation not found on target", source,
                                                                      target, null, targetOperation);
                 } else {
@@ -504,6 +508,8 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
                 // FIXME: for remotable operation, only compare name for now
                 if (!operation.equals(targetOperation)) {
                     if (!silent) {
+                        audit.append("Target callback operation is not compatible " + operation.getName());
+                        audit.appendSeperator();
                         throw new IncompatibleInterfaceContractException("Target callback operation is not compatible",
                                                                          source, target, operation, targetOperation);
                     } else {
