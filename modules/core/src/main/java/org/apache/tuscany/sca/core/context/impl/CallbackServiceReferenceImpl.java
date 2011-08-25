@@ -18,10 +18,14 @@
  */
 package org.apache.tuscany.sca.core.context.impl;
 
+import java.net.URI;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.context.ThreadMessageContext;
 import org.apache.tuscany.sca.core.invocation.Constants;
@@ -125,6 +129,29 @@ public class CallbackServiceReferenceImpl<B> extends ServiceReferenceImpl<B> {
             try {
                 RuntimeEndpointReference epr = (RuntimeEndpointReference)endpointReference.clone();
                 epr.setTargetEndpoint(resolvedEndpoint);
+                
+                // TUSCANY-3932
+                // If the resolved endpoint has a binding with a absolute URI then assume
+                // that URL has been passed in in the forward message and really treat it
+                // as a resolved endpoint.
+                Binding callbackBinding = resolvedEndpoint.getBinding();
+                if ( callbackBinding != null){
+                    URI callbackBindingURI = null;
+                    try {
+                        callbackBindingURI = new URI(callbackBinding.getURI());
+                    } catch (Exception ex){
+                        // ignore it, we test for null next
+                    }
+                    if (callbackBindingURI != null &&
+                        callbackBindingURI.isAbsolute()){
+                        epr.setBinding(callbackBinding);
+                        // TODO - What else?
+                        build(epr);
+                        epr.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
+                        epr.setUnresolved(false);
+                    }
+                }
+
                 return epr;
             } catch (CloneNotSupportedException e) {
                 // will not happen
@@ -134,5 +161,16 @@ public class CallbackServiceReferenceImpl<B> extends ServiceReferenceImpl<B> {
             return null;
         }
     }
+    
+    private void build(EndpointReference endpointReference) {
+        BindingBuilder builder = builders.getBindingBuilder(endpointReference.getBinding().getType());
+        if (builder != null) {
+            builder.build(endpointReference.getComponent(),
+                          endpointReference.getReference(),
+                          endpointReference.getBinding(),
+                          new BuilderContext(registry),
+                          false);
+        }
+    }    
 
 }
