@@ -70,6 +70,7 @@ public class WSDLHelper {
      * that happen without needing the external file but i've not been able to find the correct configuration to 
      * get that to happen with all the schema objects created correctly. 
      */
+/*
     public static WSDLInterfaceContract createWSDLInterfaceContractViaFile(ExtensionPointRegistry registry, String wsdl) {
         File wsdlFile = null;
         try {
@@ -102,16 +103,16 @@ public class WSDLHelper {
             wsdlFile.delete();
             
             return wsdlIC;
-/*
-        } catch (InvalidWSDLException e) {
-            //* TODO: Also, this doesn't seem to work reliably and sometimes the schema objects don't get built correctly
-            //* org.apache.tuscany.sca.interfacedef.wsdl.impl.InvalidWSDLException: Element cannot be resolved: {http://sample/}sayHello
-            //*         at org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLOperationIntrospectorImpl$WSDLPart.<init>(WSDLOperationIntrospectorImpl.java:276)
-            //* It seems like it works ok for me with IBM JDK but not with a Sun one        
-            // I'm still trying to track this down but committing like this to see if anyone has any ideas 
-            e.printStackTrace();
-            return null;
-*/            
+
+//        } catch (InvalidWSDLException e) {
+//            //* TODO: Also, this doesn't seem to work reliably and sometimes the schema objects don't get built correctly
+//            //* org.apache.tuscany.sca.interfacedef.wsdl.impl.InvalidWSDLException: Element cannot be resolved: {http://sample/}sayHello
+//            //*         at org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLOperationIntrospectorImpl$WSDLPart.<init>(WSDLOperationIntrospectorImpl.java:276)
+//            //* It seems like it works ok for me with IBM JDK but not with a Sun one        
+//            // I'm still trying to track this down but committing like this to see if anyone has any ideas 
+//            e.printStackTrace();
+//            return null;
+            
         } catch(Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -132,24 +133,53 @@ public class WSDLHelper {
         }
         return f;
     }
+*/
     
     /*
      * A rework of the above code that 
      *
      * 1 - doesn't use a intermediate file
-     * 2 - takes care of imports/includes
-     * 3 - takes care of call and callback interfaces (It doesn't yet but needs to)
+     * 2 - doesn't use the Tuscany contribution code
+     * 3 - takes care of imports/includes
+     * 4 - takes care of call and callback interfaces 
      * 
      * Re. point 1 - In theory it's neater but the Tuscany processors/resolvers don't know how to do this
      *      so there is quite a bit of code here. I don't really like it but we can sleep on it
      *      and look at how to integrate it into the runtime or even take a different approach to
      *      moving the interface about 
      */
-    
-    public static WSDLInterfaceContract createWSDLInterfaceContract(ExtensionPointRegistry registry, String wsdl) {
+    public static WSDLInterfaceContract createWSDLInterfaceContract(ExtensionPointRegistry registry, String wsdl, String wsdlCallback) {
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory wsdlFactory = modelFactories.getFactory(org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory.class);
+        
+        WSDLInterfaceContract wsdlInterfaceContract = wsdlFactory.createWSDLInterfaceContract();
+        wsdlInterfaceContract.setInterface(createWSDLInterface(registry, wsdl));
+        if (wsdlCallback != null && wsdlCallback.length() > 0){
+            wsdlInterfaceContract.setCallbackInterface(createWSDLInterface(registry, wsdlCallback));
+        }
+        
+        return wsdlInterfaceContract;
+    }
+
+    /**
+     * Read a single WSDL interface and it's associated XSD from a string
+     * 
+     * @param registry
+     * @param wsdl
+     * @return
+     */
+    public static WSDLInterface createWSDLInterface(ExtensionPointRegistry registry, String wsdl) {
         try {
-            // need to read all the WSDL and XSD in from the wsdl string. The WSDL and XSD appear sequentially in
+            // Read all the WSDL and XSD in from the wsdl string. The WSDL and XSD appear sequentially in
             // the following format:
+            //
+            // filename
+            // _X_
+            // wsdl xml
+            // _X_
+            // xsd xml
+            // _X_
+            // xsd xml
             //
             // So we need to read each WSDL and XSD separately and then fix up the includes/imports as appropriate
             String xmlArray[] = wsdl.split("_X_");
@@ -262,14 +292,27 @@ public class WSDLHelper {
             PortType portType = (PortType)topWSDLDefinition.getDefinition().getAllPortTypes().values().iterator().next();
             WSDLInterface readWSDLInterface = wsdlFactory.createWSDLInterface(portType, topWSDLDefinition, extensibleResolver, null);        
             
-            WSDLInterfaceContract wsdlInterfaceContract = wsdlFactory.createWSDLInterfaceContract();
-            wsdlInterfaceContract.setInterface(readWSDLInterface);
-            return wsdlInterfaceContract;
+            return readWSDLInterface;
         } catch(Exception e) {
             throw new RuntimeException(e);
         }
     }
     
+    /*
+     * WSDL is provided in the following string form:
+     * 
+     * _X_
+     * the_original_path_to_a_wsdl_file
+     * _X_
+     * the WSDL XML
+     * _X_ 
+     * the_original_path_to_a_related_xsd_file
+     * _X_
+     * the XSD XML
+     * etc. 
+     *
+     * This structure, and the classes that specialize it, represent this format in memory
+     */
     private static class XMLString {
         private String baseURI;
         private String xmlString;
@@ -322,6 +365,10 @@ public class WSDLHelper {
         }
     }    
 
+    /*
+     * A WSDL locator used to find WSDL in memory based on the map
+     * of all WSDL/XSD that have been read from the input string
+     */
     private static class WSDLLocatorImpl implements WSDLLocator {
         private Map<String, XMLString> xmlMap;
         private String baseURI;
@@ -360,6 +407,10 @@ public class WSDLHelper {
         }
     }
     
+    /*
+     * A local URIResolver used to find XSD in memory based on the map
+     * of all WSDL/XSD that have been read from the input string
+     */
     private static class XSDURIResolverImpl extends DefaultURIResolver {
         
         private Map<String, XMLString> xmlMap;
@@ -380,6 +431,9 @@ public class WSDLHelper {
         }
     }
     
+    /*
+     * Retrieve the input source for the given URI
+     */
     private static InputSource getInputSource(String uri, Map<String, XMLString> xmlMap){
         String xmlString = xmlMap.get(uri).getXmlString();
         InputStream inputStream = new ByteArrayInputStream(xmlString.getBytes());
@@ -388,6 +442,10 @@ public class WSDLHelper {
         return inputSource;
     }    
     
+    /*
+     * Remove patch from filename so that XSD/WSDL data can be found in memory
+     * rather than on the remote file system
+     */
     private static String getFilenameWithoutPath(String filename){
         // work out what the file name is that is being imported
         // XSDs imports are written out by Tuscany with an relative web address such as

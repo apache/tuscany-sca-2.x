@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.wsdl.Definition;
+import javax.wsdl.WSDLException;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
@@ -147,6 +148,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     private transient List<PolicyProvider> policyProviders;
     private String xml;
     private String wsdl;
+    private String wsdlCallback;
 
     protected InterfaceContract bindingInterfaceContract;
     protected InterfaceContract serviceInterfaceContract;
@@ -1020,7 +1022,10 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.uri = in.readUTF();
         this.xml = in.readUTF();
+/*         
         this.wsdl = in.readUTF();
+        this.wsdlCallback = in.readUTF();
+*/
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -1035,10 +1040,17 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             }
         }
         
+/*        
         if (wsdl == null) {
             wsdl = getWsdl();
         }
         out.writeUTF(wsdl);
+        
+        if (wsdlCallback == null) {
+            wsdlCallback = getWsdlCallback();
+        }
+        out.writeUTF(wsdlCallback);
+*/        
     }
     
     public String getAsXML() {
@@ -1049,7 +1061,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     }
     
     private String getWsdl() {       
-        InterfaceContract ic = getBindingInterfaceContract();
+        InterfaceContract ic = getComponentServiceInterfaceContract();
         if (ic == null || ic.getInterface() == null || !ic.getInterface().isRemotable()) {
             return "";
         }
@@ -1057,55 +1069,99 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         if (wsdlIC == null) {
             return "";
         }
-        WSDLInterface wsdl = (WSDLInterface)wsdlIC.getInterface();
-        WSDLDefinition wsdlDefinition = wsdl.getWsdlDefinition();
-        Definition definition = wsdlDefinition.getDefinition();
         
-        // write out a flattened WSDL along with XSD
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        
         try {
-            WSDLWriter writer = WSDLFactory.newInstance().newWSDLWriter();
-            String baseURI = null;
-            if (wsdlDefinition.getLocation() != null) {
-                baseURI = wsdlDefinition.getLocation().toString();
-            } else {
-                baseURI = "generated.wsdl";
-            }
-            outStream.write(baseURI.getBytes());
-            outStream.write(separator);            
-            writer.writeWSDL(definition, outStream);
-            for (WSDLDefinition importedWSDLDefintion : wsdlDefinition.getImportedDefinitions()){
-                outStream.write(separator);
-                baseURI = importedWSDLDefintion.getLocation().toString();
-                outStream.write(baseURI.getBytes());
-                outStream.write(separator);
-                writer.writeWSDL(importedWSDLDefintion.getDefinition(), outStream);
-            }
-            for (XSDefinition xsdDefinition : wsdlDefinition.getXmlSchemas()){
-                // we store a reference to the schema schema. We don't need to write that out.
-                if (!xsdDefinition.getNamespace().equals("http://www.w3.org/2001/XMLSchema") &&
-                    xsdDefinition.getSchema() != null){
-                    writeSchema(outStream, xsdDefinition.getSchema());
-                }
-            }           
+            // write out a flattened WSDL along with XSD
+            WSDLInterface wsdl = (WSDLInterface)wsdlIC.getInterface();
+            WSDLDefinition wsdlDefinition = wsdl.getWsdlDefinition();
+            writeWSDL(outStream, wsdlDefinition);      
         } catch (Exception e){
             throw new RuntimeException(e);
         }
 
         String wsdlString = outStream.toString();
-/*        
-        System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS\n" + 
-                           wsdlString +
-                           "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n");
-*/                           
+                        
         return wsdlString;
     }
-       
-    public void writeSchema(OutputStream outStream, XmlSchema schema) throws IOException {
+    
+    private String getWsdlCallback() {       
+        InterfaceContract ic = getComponentServiceInterfaceContract();
+        if (ic == null || ic.getCallbackInterface() == null || !ic.getCallbackInterface().isRemotable()) {
+            return "";
+        }
+        WSDLInterfaceContract wsdlIC = (WSDLInterfaceContract)getGeneratedWSDLContract(ic);
+        if (wsdlIC == null) {
+            return "";
+        }
+        
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        
+        try {
+            // write out a flattened Callback WSDL along with XSD
+            WSDLInterface wsdl = (WSDLInterface)wsdlIC.getCallbackInterface();
+            WSDLDefinition wsdlDefinition = wsdl.getWsdlDefinition();
+            writeWSDL(outStream, wsdlDefinition);      
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+        String wsdlString = outStream.toString();
+                        
+        return wsdlString;
+    }
+    
+    /**
+     * Write the WSDL followed by all it's XSD 
+     * 
+     * @param outStream
+     * @param wsdlDefinition
+     * @throws IOException
+     * @throws WSDLException
+     */
+    private void writeWSDL(OutputStream outStream, WSDLDefinition wsdlDefinition) throws IOException, WSDLException {
+        Definition definition = wsdlDefinition.getDefinition();
+        WSDLWriter writer = WSDLFactory.newInstance().newWSDLWriter();
+        String baseURI = null;
+        if (wsdlDefinition.getLocation() != null) {
+            baseURI = wsdlDefinition.getLocation().toString();
+        } else {
+            baseURI = "generated.wsdl";
+        }
+        outStream.write(baseURI.getBytes());
+        outStream.write(separator);            
+        writer.writeWSDL(definition, outStream);
+        for (WSDLDefinition importedWSDLDefintion : wsdlDefinition.getImportedDefinitions()){
+            outStream.write(separator);
+            baseURI = importedWSDLDefintion.getLocation().toString();
+            outStream.write(baseURI.getBytes());
+            outStream.write(separator);
+            writer.writeWSDL(importedWSDLDefintion.getDefinition(), outStream);
+        }
+        for (XSDefinition xsdDefinition : wsdlDefinition.getXmlSchemas()){
+            // we store a reference to the schema schema. We don't need to write that out.
+            if (!xsdDefinition.getNamespace().equals("http://www.w3.org/2001/XMLSchema") &&
+                xsdDefinition.getSchema() != null){
+                writeSchema(outStream, xsdDefinition.getSchema());
+            }
+        }  
+    }
+    
+    /**
+     * Write an XSD
+     * 
+     * @param outStream
+     * @param schema
+     * @throws IOException
+     */
+    private void writeSchema(OutputStream outStream, XmlSchema schema) throws IOException {
         // TODO - this doesn't write schema in the non-namespace namespace
         if (schema != null &&
+/*                
             schema.getTargetNamespace() != null &&
             !schema.getTargetNamespace().equals("http://www.w3.org/2001/XMLSchema") &&
+*/            
             schema.getNamespaceContext() != null){ 
             outStream.write(separator);
             String baseURI = schema.getSourceURI();
@@ -1133,7 +1189,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         }
         InterfaceContract ic = getComponentServiceInterfaceContract();
         if (ic != null) {
-            ic.setNormalizedWSDLContract(WSDLHelper.createWSDLInterfaceContract(registry, wsdl));
+            ic.setNormalizedWSDLContract(WSDLHelper.createWSDLInterfaceContract(registry, wsdl, wsdlCallback));
         }
     }
 
