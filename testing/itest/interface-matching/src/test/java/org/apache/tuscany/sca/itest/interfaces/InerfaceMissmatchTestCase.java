@@ -23,8 +23,11 @@ import java.net.URI;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -123,7 +126,12 @@ public class InerfaceMissmatchTestCase {
      * @throws Exception
      */
     @Test
+    @Ignore("Remote missmatch testing disabled in the binder")
     public void testDistributedRemotable() throws Exception {
+        
+        // Force the remote default binding to be web services
+        System.setProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding", 
+                           "{http://docs.oasis-open.org/ns/opencsa/sca/200912}binding.ws");
         
         String [] contributions = {"./target/classes"};
         Node node1 = NodeFactory.newInstance().createNode(URI.create("tuscany:InerfaceMissmatchTestCase"), 
@@ -134,6 +142,9 @@ public class InerfaceMissmatchTestCase {
         Node node2 = NodeFactory.newInstance().createNode(URI.create("tuscany:InerfaceMissmatchTestCase"), 
                                                                      "org/apache/tuscany/sca/itest/interfaces/missmatch/distributed/MissmatchDistributedService.composite", 
                                                                      contributions);
+        // for default binding on node2 to use a different port from node 1(which will default to 8080
+        ((NodeImpl)node2).getConfiguration().addBinding(WebServiceBinding.TYPE, "http://localhost:8081/");
+        ((NodeImpl)node2).getConfiguration().addBinding(SCABinding.TYPE, "http://localhost:8081/");        
         node2.start();
         
         ClientComponent local = node1.getService(ClientComponent.class, "DistributedClientComponent");
@@ -159,7 +170,12 @@ public class InerfaceMissmatchTestCase {
      * @throws Exception
      */
     @Test
+    @Ignore("Remote missmatch testing disabled in the binder")    
     public void testCallbackDistributedRemotable() throws Exception {
+        
+        // Force the remote default binding to be web services
+        System.setProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding", 
+                           "{http://docs.oasis-open.org/ns/opencsa/sca/200912}binding.ws");
         
         String [] contributions = {"./target/classes"};
         Node node1 = NodeFactory.newInstance().createNode(URI.create("tuscany:InerfaceMissmatchTestCase"), 
@@ -170,6 +186,9 @@ public class InerfaceMissmatchTestCase {
         Node node2 = NodeFactory.newInstance().createNode(URI.create("tuscany:InerfaceMissmatchTestCase"), 
                                                                      "org/apache/tuscany/sca/itest/interfaces/missmatch/distributed/MissmatchCallbackDistributedService.composite", 
                                                                      contributions);
+        // for default binding on node2 to use a different port from node 1(which will default to 8080
+        ((NodeImpl)node2).getConfiguration().addBinding(WebServiceBinding.TYPE, "http://localhost:8081/");
+        ((NodeImpl)node2).getConfiguration().addBinding(SCABinding.TYPE, "http://localhost:8081/");        
         node2.start();
         
         ClientComponent local = node1.getService(ClientComponent.class, "DistributedClientComponent");
