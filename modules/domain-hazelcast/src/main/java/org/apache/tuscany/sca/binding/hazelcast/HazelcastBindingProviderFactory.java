@@ -39,7 +39,7 @@ public class HazelcastBindingProviderFactory implements BindingProviderFactory<H
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
         InterfaceContract interfaceContract = endpointReference.getGeneratedWSDLContract(endpointReference.getComponentReferenceInterfaceContract());
         interfaceContract.getInterface().resetDataBinding(DOMDataBinding.NAME);
-        return new HazelcastReferenceBindingProvider(extensionsRegistry, endpointReference.getBinding().getURI(), interfaceContract);
+        return new HazelcastReferenceBindingProvider(extensionsRegistry, endpointReference.getTargetEndpoint().getURI(), interfaceContract);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {

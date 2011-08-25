@@ -225,16 +225,14 @@ public class BindingURIBuilderImpl implements CompositeBuilder {
 
             // calculate the base URI
             URI baseURI = null;
-            if (!(binding instanceof SCABinding)) {
-                if (defaultBindings != null) {
-                    List<String> uris = defaultBindings.get(binding.getType());
+            if (defaultBindings != null) {
+                List<String> uris = defaultBindings.get(binding.getType());
+                if (uris != null && uris.size() > 0) {
+                    baseURI = new URI(addSlashToPath(uris.get(0)));
+                } else {
+                    uris = defaultBindings.get(DEFAULT);
                     if (uris != null && uris.size() > 0) {
                         baseURI = new URI(addSlashToPath(uris.get(0)));
-                    } else {
-                        uris = defaultBindings.get(DEFAULT);
-                        if (uris != null && uris.size() > 0) {
-                            baseURI = new URI(addSlashToPath(uris.get(0)));
-                        }
                     }
                 }
             }
