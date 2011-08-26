@@ -25,6 +25,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -103,7 +105,7 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
      * @param factoryInterface The lookup key (factory interface)
      * @return The factory
      */    
-    public <T> T getFactory(Class<T> factoryInterface) {
+    public <T> T getFactory(final Class<T> factoryInterface) {
         Object factory = factories.get(factoryInterface);
         if (factory == null) {
 
@@ -128,12 +130,37 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
                     
                     // If the input interface is an abstract class
                     if (!factoryInterface.isInterface() && Modifier.isAbstract(factoryInterface.getModifiers())) {
-                        Method newInstanceMethod = factoryInterface.getDeclaredMethod("newInstance");
-                        ClassLoader tccl = setContextClassLoader(factoryInterface.getClassLoader());
+                    
+                        Method newInstanceMethod;
                         try {
-                            
-                            // Create a new instance
-                            factory = newInstanceMethod.invoke(null);
+                            newInstanceMethod = AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
+                                public Method run() throws Exception {
+                                    return factoryInterface.getDeclaredMethod("newInstance");
+                                }
+                            });
+                        } catch (PrivilegedActionException e){
+                            throw (Exception)e.getException();
+                        }
+                        
+                        ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                            public ClassLoader run() {
+                                ClassLoader cl = factoryInterface.getClassLoader();
+                                return cl;
+                            }
+                        });
+                        ClassLoader tccl = setContextClassLoader(cl);
+                        try {
+                            try {
+                                final Method fnewInstanceMethod = newInstanceMethod;
+                                factory = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                                public Object run() throws Exception {
+                                    Object factory = fnewInstanceMethod.invoke(null);
+                                    return factory;
+                                }
+                            });
+                            } catch (PrivilegedActionException e){
+                                throw (Exception)e.getException();
+                            }
                             
                             // Cache the factory
                             factories.put(factoryInterface, factory);

@@ -146,9 +146,13 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
 
     public <T> T createCallbackProxy(ServiceReference<T> callbackReference) throws ProxyCreationException {
         assert callbackReference != null;
-        Class<T> interfaze = callbackReference.getBusinessInterface();
+        final Class<T> interfaze = callbackReference.getBusinessInterface();
         InvocationHandler handler = new JDKCallbackInvocationHandler(messageFactory, callbackReference);
-        ClassLoader cl = interfaze.getClassLoader();
+        ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run() {
+                return interfaze.getClassLoader();
+            }
+        });
         T proxy = interfaze.cast(newProxyInstance(cl, new Class[] {interfaze}, handler));
         ((ServiceReferenceExt<T>)callbackReference).setProxy(proxy);
         return proxy;

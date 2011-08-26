@@ -29,6 +29,9 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +39,7 @@ import java.util.Map;
 import javax.wsdl.Definition;
 import javax.wsdl.PortType;
 import javax.wsdl.Types;
+import javax.wsdl.WSDLException;
 import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 
@@ -227,11 +231,30 @@ public class WSDLHelper {
             // read
             for (XMLString xmlString : xmlMap.values()){
                 if (xmlString instanceof WSDLInfo){
-                    WSDLReader reader =  javax.wsdl.factory.WSDLFactory.newInstance().newWSDLReader();
+                    WSDLReader reader;
+                    try {
+                        reader =  AccessController.doPrivileged(new PrivilegedExceptionAction<WSDLReader>() {
+                            public WSDLReader run() throws WSDLException {
+                                return javax.wsdl.factory.WSDLFactory.newInstance().newWSDLReader();                         
+                            }
+                        });
+                    } catch (PrivilegedActionException e){
+                        throw (WSDLException)e.getException();
+                    }
                     reader.setFeature("javax.wsdl.verbose", false);
                     reader.setFeature("javax.wsdl.importDocuments", true);
-                    WSDLLocatorImpl locator = new WSDLLocatorImpl(xmlString.getBaseURI(), xmlMap);
-                    Definition readDefinition = reader.readWSDL(locator);
+                    final WSDLLocatorImpl locator = new WSDLLocatorImpl(xmlString.getBaseURI(), xmlMap);
+                    final WSDLReader freader = reader;
+                    Definition readDefinition;
+                    try {
+                        readDefinition = AccessController.doPrivileged(new PrivilegedExceptionAction<Definition>() {
+                            public Definition run() throws WSDLException {
+                                return freader.readWSDL(locator);                        
+                            }
+                        });
+                    } catch (PrivilegedActionException e){
+                        throw (WSDLException)e.getException();
+                    }
                     
                     WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
                     wsdlDefinition.setDefinition(readDefinition);
