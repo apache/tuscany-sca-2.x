@@ -270,7 +270,7 @@ public class WSDLHelper {
                        }
                    }
                    
-                   // link to in-line types
+                   // extract any in-line types in the Tuscany model
                    Types types = wsdlDefinition.getDefinition().getTypes();
                    if ( types != null){
                        for (int i=0; i < types.getExtensibilityElements().size(); i++){
@@ -443,7 +443,7 @@ public class WSDLHelper {
     }    
     
     /*
-     * Remove patch from filename so that XSD/WSDL data can be found in memory
+     * Remove path from filename so that XSD/WSDL data can be found in memory
      * rather than on the remote file system
      */
     private static String getFilenameWithoutPath(String filename){
