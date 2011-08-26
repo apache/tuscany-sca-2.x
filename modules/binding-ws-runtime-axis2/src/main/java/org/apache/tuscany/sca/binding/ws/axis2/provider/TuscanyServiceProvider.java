@@ -252,7 +252,17 @@ public class TuscanyServiceProvider {
             if (callbackAddrElement != null) {
                 callbackAddress = callbackAddrElement.getText();
                 OMElement refParms = from.getFirstChildWithName(QNAME_WSA_REFERENCE_PARAMETERS);
-                if( refParms != null ) msg.getHeaders().put(WS_REF_PARMS, refParms);
+                if( refParms != null ) {
+                    msg.getHeaders().put(WS_REF_PARMS, refParms);
+                    Iterator iter = refParms.getChildrenWithLocalName("CALLBACK_EP_URI");
+                    if (iter != null && iter.hasNext()){
+                        OMElement callbackEPURI = (OMElement)iter.next();
+                        if (callbackEPURI != null){
+                            msg.getHeaders().put("CALLBACK_EP_URI", callbackEPURI.getText());
+                        }
+                    }
+                }
+                
             }
         } // end if
     	

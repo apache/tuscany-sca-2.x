@@ -89,6 +89,7 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
     public static final QName QNAME_WSA_MESSAGEID =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_MESSAGE_ID, AddressingConstants.WSA_DEFAULT_PREFIX);
     
+    public static final QName QNAME_CALLACK_EP_URI = new QName(org.apache.tuscany.sca.assembly.xml.Constants.SCA11_TUSCANY_NS, "CALLBACK_EP_URI");
 
     private RuntimeEndpointReference endpointReference;
     private ServiceClient serviceClient;
@@ -243,6 +244,11 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
         if (callbackEndpoint != null) {
             // Load the actual callback endpoint URI into an Axis EPR ready to form the content of the wsa:From header
             EndpointReference fromEPR = new EndpointReference(callbackEndpoint.getBinding().getURI());
+            
+            // pass the callback structure URI as a reference parameter
+            // this allows callback endpoints to be looked up via the registry when
+            // the ws binding is being used as a delegate from the sca binding
+            fromEPR.addReferenceParameter(QNAME_CALLACK_EP_URI, callbackEndpoint.getURI());
            
             addWSAFromHeader( sh, fromEPR );
             addWSAActionHeader( sh );
