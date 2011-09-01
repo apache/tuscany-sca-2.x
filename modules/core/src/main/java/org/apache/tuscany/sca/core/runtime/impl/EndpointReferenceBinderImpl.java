@@ -969,8 +969,22 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             return true;
         }     
         
+/*  For testing this code turns off remote interface matching completely   
         if (endpoint.isRemote()){
             matchAudit.append("Match because endpoint is remote");
+            matchAudit.appendSeperator();
+            return true;
+        }
+*/       
+        
+        // If the remote interface was not retrieved successfully from the registry for whatever reason
+        // then assume the interfaces match and leave the checking until runtime. We looking for an interface
+        // with no operations defined to tell us this. 
+        if ((endpointContract.getInterface().getOperations().size() == 0 &&
+             endpointContract.getNormalizedWSDLContract() == null) ||
+            (endpointContract.getNormalizedWSDLContract() != null &&
+             endpointContract.getNormalizedWSDLContract().getInterface().getOperations().size() == 0)){
+            matchAudit.append("Match because the endpoint is remote and we don't have a copy of it's interface contract ");
             matchAudit.appendSeperator();
             return true;
         }

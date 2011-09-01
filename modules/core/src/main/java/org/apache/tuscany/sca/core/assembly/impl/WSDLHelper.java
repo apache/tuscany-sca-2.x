@@ -40,6 +40,9 @@ import javax.wsdl.Definition;
 import javax.wsdl.PortType;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
+import javax.wsdl.extensions.ExtensibilityElement;
+import javax.wsdl.extensions.UnknownExtensibilityElement;
+import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 
@@ -63,6 +66,8 @@ import org.apache.tuscany.sca.xsd.xml.XSDModelResolver;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 public class WSDLHelper {
@@ -295,17 +300,38 @@ public class WSDLHelper {
                    
                    // extract any in-line types in the Tuscany model
                    Types types = wsdlDefinition.getDefinition().getTypes();
-                   if ( types != null){
+                   if ( types != null){                       
+/*  read XSD from WSDL rather than from registry 
                        for (int i=0; i < types.getExtensibilityElements().size(); i++){
+                       
                            String schemaName = xmlString.getBaseURI() + "#" + i++;
                            XSDInfo xsdInfo = (XSDInfo)xmlMap.get(getFilenameWithoutPath(schemaName));
                            if (xsdInfo != null){
                                wsdlDefinition.getXmlSchemas().add(xsdInfo.getXsdDefinition());
                            }
+*/ 
+                       int index = 0;
+                       for (Object ext : types.getExtensibilityElements()) {
+                           ExtensibilityElement extElement = (ExtensibilityElement)ext;
+                           Element element = null;
+                           if (extElement instanceof Schema) {
+                               element = ((Schema)extElement).getElement();
+                           }
+                           if (element != null) {
+                               XSDefinition xsDefinition = xsdFactory.createXSDefinition();
+                               xsDefinition.setUnresolved(true);
+                               xsDefinition.setNamespace(element.getAttribute("targetNamespace"));
+                               xsDefinition.setDocument(element.getOwnerDocument());
+                               XmlSchema schema = schemaCollection.read(element, null);
+                               xsDefinition.setSchema(schema);
+                               xsDefinition.setLocation(URI.create(xmlString.getBaseURI() + "#" + index));
+                               wsdlDefinition.getXmlSchemas().add(xsDefinition);
+                               index++;
+                           }
                        }
                    }
                 } else {
-                    // Schema should already be linked via the schema model
+                    // TODO
                 }
             }
             
@@ -484,5 +510,5 @@ public class WSDLHelper {
             return filename.substring(wsdlIndex + 1);
         }
         // What happens with generated WSDL?
-    }      
+    }  
 }

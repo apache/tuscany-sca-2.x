@@ -1021,11 +1021,10 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.uri = in.readUTF();
-        this.xml = in.readUTF();
-/*         
+        this.xml = in.readUTF();       
         this.wsdl = in.readUTF();
         this.wsdlCallback = in.readUTF();
-*/
+
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -1039,8 +1038,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 throw new IllegalStateException("No serializer is configured");
             }
         }
-        
-/*        
+              
         if (wsdl == null) {
             wsdl = getWsdl();
         }
@@ -1049,8 +1047,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         if (wsdlCallback == null) {
             wsdlCallback = getWsdlCallback();
         }
-        out.writeUTF(wsdlCallback);
-*/        
+        out.writeUTF(wsdlCallback);        
     }
     
     public String getAsXML() {
@@ -1065,7 +1062,16 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         if (ic == null || ic.getInterface() == null || !ic.getInterface().isRemotable()) {
             return "";
         }
-        WSDLInterfaceContract wsdlIC = (WSDLInterfaceContract)getGeneratedWSDLContract(ic);
+        
+        WSDLInterfaceContract wsdlIC = null;
+        try {
+            wsdlIC = (WSDLInterfaceContract)getGeneratedWSDLContract(ic);
+        } catch (Exception ex){
+            // ignore WSDL generation errors as the service interface may have
+            // types that can't be converted to XML easily
+            return "";
+        }
+        
         if (wsdlIC == null) {
             return "";
         }
@@ -1091,7 +1097,16 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         if (ic == null || ic.getCallbackInterface() == null || !ic.getCallbackInterface().isRemotable()) {
             return "";
         }
-        WSDLInterfaceContract wsdlIC = (WSDLInterfaceContract)getGeneratedWSDLContract(ic);
+        
+        WSDLInterfaceContract wsdlIC = null;
+        try {
+            wsdlIC = (WSDLInterfaceContract)getGeneratedWSDLContract(ic);
+        } catch (Exception ex){
+            // ignore WSDL generation errors as the service interface may have
+            // types that can't be converted to XML easily
+            return "";
+        }
+    
         if (wsdlIC == null) {
             return "";
         }
@@ -1139,13 +1154,16 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             outStream.write(separator);
             writer.writeWSDL(importedWSDLDefintion.getDefinition(), outStream);
         }
+/* Exclude the XSD for the time being to see if we can get comparison working
+ * with the operation signatures but ignoring parameter types    
         for (XSDefinition xsdDefinition : wsdlDefinition.getXmlSchemas()){
             // we store a reference to the schema schema. We don't need to write that out.
             if (!xsdDefinition.getNamespace().equals("http://www.w3.org/2001/XMLSchema") &&
                 xsdDefinition.getSchema() != null){
                 writeSchema(outStream, xsdDefinition.getSchema());
             }
-        }  
+        } 
+*/
     }
     
     /**
