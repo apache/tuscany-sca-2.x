@@ -34,6 +34,7 @@ Bundle-Description: Apache Tuscany SCA Core Runtime
 Import-Package: javax.security.auth,
  javax.wsdl,
  javax.wsdl.extensions,
+ javax.wsdl.extensions.schema,
  javax.wsdl.factory,
  javax.wsdl.xml,
  javax.xml.namespace,
