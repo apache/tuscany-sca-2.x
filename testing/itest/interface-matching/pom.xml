@@ -43,18 +43,31 @@
             <scope>test</scope>
         </dependency>      
              
-        <!-- Going with web services  -->   
+        <!-- Going with web services delegate for majority of tests -->   
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
             <version>2.0-SNAPSHOT</version>
-        </dependency>
+        </dependency>      
                 
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty</artifactId>
             <version>6.1.19</version>
         </dependency>  
+        
+         <!-- Use RMI delegate for non-JAXB test -->   
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-rmi-runtime</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>  
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-rmi</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>         
         
     </dependencies>
 </project>

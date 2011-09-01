@@ -27,6 +27,8 @@ import org.oasisopen.sca.annotation.Remotable;
 public interface CallbackInterface {
 
     void callbackMethod(String str);
+    
+    void callbackMethod1(String str);
 
     void modifyParameter(ParameterObject po);
 

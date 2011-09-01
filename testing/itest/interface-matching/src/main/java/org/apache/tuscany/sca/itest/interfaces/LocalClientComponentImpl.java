@@ -30,6 +30,11 @@ public class LocalClientComponentImpl implements ClientComponent, LocalCallbackI
     private static String callbackValue;
     private static String onewayValue;
 
+    public String foo(ParameterObject po) {
+        po.field1 = "AComponent";
+        return aCallBackService.foo("AComponent");
+    }
+    
     public String foo1(ParameterObject po) {
         po.field1 = "AComponent";
         return aCallBackService.foo("AComponent");

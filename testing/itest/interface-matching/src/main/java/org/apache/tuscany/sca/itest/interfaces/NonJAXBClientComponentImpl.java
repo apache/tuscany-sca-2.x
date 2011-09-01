@@ -23,10 +23,10 @@ import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 
 @Service(ClientComponent.class)
-public class ClientComponentImpl implements ClientComponent, CallbackInterface {
+public class NonJAXBClientComponentImpl implements ClientComponent, CallbackInterface {
 
     @Reference
-    protected ServiceComponent aCallBackService;
+    protected NonJAXBServiceComponent aCallBackService;
     private static String callbackValue;
     private static String onewayValue;
     
@@ -36,8 +36,8 @@ public class ClientComponentImpl implements ClientComponent, CallbackInterface {
     }    
 
     public String foo1(ParameterObject po) {
-        po.field1 = "AComponent";
-        return aCallBackService.foo1("AComponent");
+        NonJAXBParameterObject nonJAXBPO = new NonJAXBParameterObject(po.field1);
+        return aCallBackService.foo1(nonJAXBPO);
     }
 
     public String foo2(String str) throws Exception {

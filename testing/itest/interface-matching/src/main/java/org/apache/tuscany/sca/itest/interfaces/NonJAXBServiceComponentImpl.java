@@ -22,8 +22,8 @@ import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 
-@Service(ServiceComponent.class)
-public class ServiceComponentImpl implements ServiceComponent {
+@Service(NonJAXBServiceComponent.class)
+public class NonJAXBServiceComponentImpl implements NonJAXBServiceComponent {
 
     @Callback
     protected CallbackInterface callback;
@@ -38,8 +38,8 @@ public class ServiceComponentImpl implements ServiceComponent {
         return str;
     }
     
-    public String foo1(String str){
-        return str;
+    public String foo1(NonJAXBParameterObject po){
+        return po.field1;
     }
     
     public void callback(String str) {

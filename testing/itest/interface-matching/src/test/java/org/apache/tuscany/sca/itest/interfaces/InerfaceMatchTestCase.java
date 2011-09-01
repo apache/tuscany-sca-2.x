@@ -113,6 +113,59 @@ public class InerfaceMatchTestCase {
         
         node1.stop();
         node2.stop();
-
     }
+    
+    /**
+     * Remoteable client and service interfaces where the interfaces match but
+     * where there is a parameter that can't be converted to/from XML using JAXB
+     * Components running in the seaprate composite/JVM, i.e. there is a remote registry
+     * 
+     * @throws Exception
+     */
+    @Test
+    @Ignore("Can't get RMI binding working as a delegate for some reason")
+    public void testDistributedRemotableNonJAXB() throws Exception {
+        
+        // Force the remote default binding to be rmi as I want something that doesn't depend on
+        // WSDL so that I can test what happens when the registry tries to generate WSDL
+        System.setProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding", 
+                           "{http://tuscany.apache.org/xmlns/sca/1.1}binding.rmi");
+        
+        String [] contributions = {"./target/classes"};
+        Node node1 = NodeFactory.newInstance().createNode(URI.create("uri:default"), 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/missmatch/distributed/MatchNonJAXBDistributedClient.composite", 
+                                                                     contributions);
+        node1.start();
+
+        Node node2 = NodeFactory.newInstance().createNode(URI.create("uri:default"), 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/missmatch/distributed/MatchNonJAXBDistributedService.composite", 
+                                                                     contributions);
+        
+        // for default binding on node2 to use a different port from node 1(which will default to 8080
+        // Don't need to do this as not testing callbacks here
+        //((NodeImpl)node2).getConfiguration().addBinding(WebServiceBinding.TYPE, "http://localhost:8081/");
+        //((NodeImpl)node2).getConfiguration().addBinding(SCABinding.TYPE, "http://localhost:8081/");
+        node2.start();
+        
+        ClientComponent local = node1.getService(ClientComponent.class, "DistributedClientComponent");
+        ParameterObject po = new ParameterObject();
+        
+        try {
+            String response = local.foo1(po);
+            Assert.assertEquals("AComponent", response);
+        } catch (ServiceRuntimeException ex){
+            Assert.fail("Unexpected exception with foo " + ex.toString());
+        }
+        
+        try {
+            local.callback("Callback");
+            String response = local.getCallbackValue();
+            Assert.assertEquals("Callback", response);
+        } catch (ServiceRuntimeException ex){
+            Assert.fail("Unexpected exception with callback" + ex.toString());
+        }        
+        
+        node1.stop();
+        node2.stop();
+    }    
 }

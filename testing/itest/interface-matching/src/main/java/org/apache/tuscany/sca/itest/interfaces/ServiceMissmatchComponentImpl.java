@@ -29,6 +29,14 @@ public class ServiceMissmatchComponentImpl implements ServiceMissmatchComponent 
 
     private static ParameterObject po;
 
+    public String foo(ParameterObject po) {
+        return po.field1;
+    }
+    
+    public String foo1(ParameterObject po, String str){
+        return str;
+    }  
+    
     public void callback(String str) {
         callback.callbackMethod(str);
     }
@@ -36,10 +44,6 @@ public class ServiceMissmatchComponentImpl implements ServiceMissmatchComponent 
     public void modifyParameter() {
         po = new ParameterObject("CallBack");
         callback.modifyParameter(po);
-    }
-
-    public String foo(ParameterObject po) {
-        return po.field1;
     }
 
     public ParameterObject getPO() {

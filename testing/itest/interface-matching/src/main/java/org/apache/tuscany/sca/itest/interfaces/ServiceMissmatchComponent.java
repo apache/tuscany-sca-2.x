@@ -28,7 +28,11 @@ import org.oasisopen.sca.annotation.Remotable;
 @Callback(CallbackInterface.class)
 public interface ServiceMissmatchComponent {
 
+    // infrastructure won't detect difference between String and ParameterObject
     String foo(ParameterObject po);
+    
+    // Infrastructure will detect difference between parameter numbers
+    String foo1(ParameterObject po, String str);
 
     void callback(String str);
 

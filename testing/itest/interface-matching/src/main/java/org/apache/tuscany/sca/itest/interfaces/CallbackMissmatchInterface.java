@@ -27,6 +27,8 @@ import org.oasisopen.sca.annotation.Remotable;
 public interface CallbackMissmatchInterface {
 
     void callbackMethod(ParameterObject po);
+    
+    void callbackMethod1(ParameterObject po, String str);
 
     void modifyParameter(ParameterObject po);
 

@@ -19,42 +19,23 @@
 package org.apache.tuscany.sca.itest.interfaces;
 
 import org.oasisopen.sca.annotation.Callback;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Service;
+import org.oasisopen.sca.annotation.Remotable;
 
-@Service(ServiceComponent.class)
-public class ServiceComponentImpl implements ServiceComponent {
+/**
+ * Local be-directional callBackService
+ */
+@Remotable
+@Callback(CallbackInterface.class)
+public interface NonJAXBServiceComponent {
 
-    @Callback
-    protected CallbackInterface callback;
- 
-/*    
-    @Reference
-    protected ServiceComponent chainedCallbackReference;
-*/
-    private static ParameterObject po;
-
-    public String foo(String str) {
-        return str;
-    }
+    String foo(String str);
     
-    public String foo1(String str){
-        return str;
-    }
-    
-    public void callback(String str) {
-        callback.callbackMethod(str);
-    }
+    String foo1(NonJAXBParameterObject po);
 
-    public void modifyParameter() {
-        po = new ParameterObject("CallBack");
-        callback.modifyParameter(po);
-    }
+    void callback(String str);
 
+    void modifyParameter();
 
-
-    public ParameterObject getPO() {
-        return po;
-    }
+    ParameterObject getPO();
 
 }

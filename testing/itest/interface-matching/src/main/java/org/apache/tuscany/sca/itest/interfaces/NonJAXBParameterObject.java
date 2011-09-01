@@ -6,36 +6,46 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
+
 package org.apache.tuscany.sca.itest.interfaces;
 
-import org.oasisopen.sca.annotation.Callback;
-import org.oasisopen.sca.annotation.Remotable;
+import java.io.Serializable;
 
 /**
- * Local be-directional callBackService
+ * 
+ * A bean that cannont be converted to/from XML using JAXB as there is no
+ * default constructor
+ *
  */
-@Remotable
-@Callback(CallbackInterface.class)
-public interface ServiceComponent {
+public class NonJAXBParameterObject implements Serializable {
+    private static final long serialVersionUID = 1L;
+    public String field1;
 
-    String foo(String str);
-    
-    String foo1(String str);
 
-    void callback(String str);
+    public NonJAXBParameterObject(String field1) {
+        this.field1 = field1;
+    }
 
-    void modifyParameter();
-
-    ParameterObject getPO();
-
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (o instanceof NonJAXBParameterObject) {
+            NonJAXBParameterObject other = (NonJAXBParameterObject)o;
+            if (field1 != null) {
+                return field1.equals(other.field1);
+            }
+        }
+        return false;
+    }
 }

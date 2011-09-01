@@ -30,7 +30,7 @@ public class ServiceCallbackMissmatchComponentImpl implements ServiceCallbackMis
     private static ParameterObject po;
 
     public void callback(String str) {
-        callback.callbackMethod(po);
+        callback.callbackMethod1(po, str);
     }
 
     public void modifyParameter() {

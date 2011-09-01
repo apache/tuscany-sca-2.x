@@ -110,9 +110,7 @@ public class InerfaceMissmatchTestCase {
         try {
             local.foo1(po);
         } catch (ServiceRuntimeException ex){
-            //Assert.assertTrue(ex.getMessage().startsWith("Unable to bind []"));
-            Assert.fail("It seems that the matching process can't tell that these don't match as it has a " +
-                        "String on one side and a complex type (Java Object) on the other");
+            Assert.assertTrue(ex.getMessage().startsWith("Unable to bind []"));
         }
         
         node1.stop();
@@ -126,7 +124,6 @@ public class InerfaceMissmatchTestCase {
      * @throws Exception
      */
     @Test
-    @Ignore("Remote missmatch testing disabled in the binder")
     public void testDistributedRemotable() throws Exception {
         
         // Force the remote default binding to be web services
@@ -159,7 +156,6 @@ public class InerfaceMissmatchTestCase {
         
         node1.stop();
         node2.stop();
-
     }
     
     /**
@@ -169,8 +165,7 @@ public class InerfaceMissmatchTestCase {
      * 
      * @throws Exception
      */
-    @Test
-    @Ignore("Remote missmatch testing disabled in the binder")    
+    @Test  
     public void testCallbackDistributedRemotable() throws Exception {
         
         // Force the remote default binding to be web services

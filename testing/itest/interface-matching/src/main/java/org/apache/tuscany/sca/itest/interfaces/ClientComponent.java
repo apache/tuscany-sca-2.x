@@ -25,6 +25,8 @@ import org.oasisopen.sca.annotation.OneWay;
  * itest for interface: local,method-overloading
  */
 public interface ClientComponent {
+    
+    String foo(ParameterObject po);
 
     String foo1(ParameterObject po);
 
