@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostHelper;
+import org.apache.tuscany.sca.host.http.client.HttpClientFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
@@ -43,16 +44,18 @@ public class AtomBindingProviderFactory implements BindingProviderFactory<AtomBi
     private MessageFactory messageFactory;
     private Mediator mediator;
     private ServletHost servletHost;
+    private HttpClientFactory httpClientFactory;
 
     public AtomBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.servletHost = ServletHostHelper.getServletHost(extensionPoints);
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.messageFactory = modelFactories.getFactory(MessageFactory.class);
         this.mediator = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
+        this.httpClientFactory = HttpClientFactory.getInstance(extensionPoints);
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
-        return new AtomReferenceBindingProvider(endpointReference, mediator);
+        return new AtomReferenceBindingProvider(httpClientFactory, endpointReference, mediator);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {

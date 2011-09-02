@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
  * @version $Rev$ $Date$
  */
 class AtomReferenceBindingProvider implements ReferenceBindingProvider {
+    private HttpClientFactory httpClientFactory;
     private EndpointReference endpointReference;
     private RuntimeComponentReference reference;
     private AtomBinding binding;
@@ -56,11 +57,13 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
      * @param binding
      * @param mediator
      */
-    AtomReferenceBindingProvider(EndpointReference endpointReference,
+    AtomReferenceBindingProvider(HttpClientFactory httpClientFactory,
+                                 EndpointReference endpointReference,
                                  Mediator mediator) {
+        this.httpClientFactory = httpClientFactory;
         this.endpointReference = endpointReference;
-        this.reference = (RuntimeComponentReference) endpointReference.getReference();
-        this.binding = (AtomBinding) endpointReference.getBinding();
+        this.reference = (RuntimeComponentReference)endpointReference.getReference();
+        this.binding = (AtomBinding)endpointReference.getBinding();
         this.mediator = mediator;
 
         // Prepare authorization header
@@ -121,8 +124,7 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
 
         // Find the get operation on the reference interface
         // Create an HTTP client
-        HttpClientFactory clientFactory = new HttpClientFactory();
-        httpClient = clientFactory.createHttpClient();
+        httpClient = httpClientFactory.createHttpClient();
     }
 
     public void stop() {

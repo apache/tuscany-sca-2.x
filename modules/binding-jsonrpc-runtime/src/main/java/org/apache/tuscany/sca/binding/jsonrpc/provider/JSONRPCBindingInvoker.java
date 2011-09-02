@@ -183,6 +183,10 @@ public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
                     // JavaScript exceptions.
                     throw new ServiceRuntimeException("Unable to parse response", e);
                 }
+            } else {
+                // Consume the content so the connection can be released
+                response.getEntity().consumeContent();
+                throw new ServiceRuntimeException("Abnormal HTTP response: " + response.getStatusLine().toString());
             }
         } catch (Exception e) {
             // e.printStackTrace();

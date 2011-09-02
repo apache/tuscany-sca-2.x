@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostHelper;
+import org.apache.tuscany.sca.host.http.client.HttpClientFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
@@ -40,16 +41,18 @@ public class JSONRPCBindingProviderFactory implements BindingProviderFactory<JSO
 
     private MessageFactory messageFactory;
     private ServletHost servletHost;
+    private HttpClientFactory httpClientFactory;
 
     public JSONRPCBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.servletHost = ServletHostHelper.getServletHost(extensionPoints);
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         messageFactory = modelFactories.getFactory(MessageFactory.class);
+        this.httpClientFactory = HttpClientFactory.getInstance(extensionPoints);
     }
     
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
         
-        return new JSONRPCReferenceBindingProvider(endpointReference);
+        return new JSONRPCReferenceBindingProvider(httpClientFactory, endpointReference);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {

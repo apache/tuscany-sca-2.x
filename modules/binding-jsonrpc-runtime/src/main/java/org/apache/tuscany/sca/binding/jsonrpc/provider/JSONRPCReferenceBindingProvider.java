@@ -39,10 +39,11 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
     private RuntimeComponentReference reference;
     private InterfaceContract referenceContract;
 
+    private HttpClientFactory httpClientFactory;
     private HttpClient httpClient;
 
-    public JSONRPCReferenceBindingProvider(EndpointReference endpointReference) {
-
+    public JSONRPCReferenceBindingProvider(HttpClientFactory httpClientFactory, EndpointReference endpointReference) {
+        this.httpClientFactory = httpClientFactory;
         this.endpointReference = endpointReference;
         this.reference = (RuntimeComponentReference)endpointReference.getReference();
 
@@ -74,8 +75,7 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
 
     public void start() {
         // Create an HTTP client
-        HttpClientFactory clientFactory = new HttpClientFactory();
-        httpClient = clientFactory.createHttpClient();
+        httpClient = httpClientFactory.createHttpClient();
     }
 
     public void stop() {
