@@ -23,6 +23,8 @@ import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnManagerParams;
+import org.apache.http.conn.params.ConnPerRoute;
+import org.apache.http.conn.params.ConnPerRouteBean;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -34,18 +36,29 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.LifeCycleListener;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 
 /**
  * @version $Rev$ $Date$
  */
-public class HttpClientFactory {
+public class HttpClientFactory implements LifeCycleListener {
+
+    private HttpClient httpClient;
+
+    public static HttpClientFactory getInstance(ExtensionPointRegistry registry) {
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        return utilities.getUtility(HttpClientFactory.class);
+    }
 
     public HttpClient createHttpClient() {
         HttpParams defaultParameters = new BasicHttpParams();
         //defaultParameters.setIntParameter(HttpConnectionManagerParams.MAX_TOTAL_CONNECTIONS, 10);
 
-        ConnManagerParams.setMaxTotalConnections(defaultParameters, 160);
-        // ConnManagerParams.setMaxConnectionsPerRoute(defaultParameters, ConnPerRoute);
+        ConnManagerParams.setMaxTotalConnections(defaultParameters, 1024);
+        ConnPerRoute connPerRoute = new ConnPerRouteBean(256);
+        ConnManagerParams.setMaxConnectionsPerRoute(defaultParameters, connPerRoute);
 
         HttpProtocolParams.setContentCharset(defaultParameters, HTTP.UTF_8);
         HttpConnectionParams.setConnectionTimeout(defaultParameters, 60000);
@@ -58,8 +71,25 @@ public class HttpClientFactory {
         ClientConnectionManager connectionManager =
             new ThreadSafeClientConnManager(defaultParameters, supportedSchemes);
 
-
-
         return new DefaultHttpClient(connectionManager, defaultParameters);
+    }
+
+    @Override
+    public void start() {
+        if (httpClient == null) {
+            httpClient = createHttpClient();
+        }
+    }
+
+    @Override
+    public void stop() {
+        if (httpClient != null) {
+            httpClient.getConnectionManager().shutdown();
+            httpClient = null;
+        }
+    }
+
+    public HttpClient getHttpClient() {
+        return httpClient;
     }
 }
