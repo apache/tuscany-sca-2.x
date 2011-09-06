@@ -23,7 +23,8 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.policy.xml;version="2.0.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.policy.wspolicy
 Bundle-DocURL: http://www.apache.org/
-Export-Package: org.apache.tuscany.sca.policy.wspolicy.xml;version="2.0.0";
+Export-Package: org.apache.tuscany.sca.policy.wspolicy;version="2.0.0",
+  org.apache.tuscany.sca.policy.wspolicy.xml;version="2.0.0";
   uses:="javax.xml.stream,
    junit.framework,
    org.apache.tuscany.sca.contribution.resolver,

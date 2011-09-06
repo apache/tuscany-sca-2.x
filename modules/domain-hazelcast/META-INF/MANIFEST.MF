@@ -15,6 +15,7 @@ Import-Package: javax.wsdl,
  javax.wsdl.factory,
  javax.wsdl.xml,
  javax.xml.stream,
+ javax.xml.namespace,
  com.hazelcast.client,
  com.hazelcast.config,
  com.hazelcast.core,
@@ -39,6 +40,7 @@ Import-Package: javax.wsdl,
  org.oasisopen.sca.annotation,
  org.w3c.dom,
  org.xml.sax
-Export-Package: org.apache.tuscany.sca.registry.hazelcast;version="2.0.0";
- uses:="org.apache.tuscany.sca.runtime,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.core"
+Export-Package: org.apache.tuscany.sca.binding.hazelcast;version="2.0.0",
+ org.apache.tuscany.sca.registry.hazelcast;version="2.0.0";
+   uses:="org.apache.tuscany.sca.runtime,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.core"
 

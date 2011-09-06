@@ -34,3 +34,4 @@ Tool: Bnd-0.0.238
 Specification-Vendor: The Apache Software Foundation
 Implementation-Version: 1.2.10
 Implementation-Vendor: The Apache Software Foundation
+Bundle-ClassPath: axiom-impl-1.2.10.jar
