@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.databinding.json.jackson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -41,6 +43,7 @@ public class Object2JSONTestCase {
         private String friends[];
         private List<String> books;
         private YourBean you;
+        private Date date;
 
         public String getName() {
             return name;
@@ -90,6 +93,80 @@ public class Object2JSONTestCase {
             this.you = you;
         }
 
+        public Date getDate() {
+            return date;
+        }
+
+        public void setDate(Date date) {
+            this.date = date;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + age;
+            result = prime * result + ((books == null) ? 0 : books.hashCode());
+            result = prime * result + ((date == null) ? 0 : date.hashCode());
+            result = prime * result + Arrays.hashCode(friends);
+            result = prime * result + ((name == null) ? 0 : name.hashCode());
+            result = prime * result + (vip ? 1231 : 1237);
+            result = prime * result + ((you == null) ? 0 : you.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            MyBean other = (MyBean)obj;
+            if (age != other.age) {
+                return false;
+            }
+            if (books == null) {
+                if (other.books != null) {
+                    return false;
+                }
+            } else if (!books.equals(other.books)) {
+                return false;
+            }
+            if (date == null) {
+                if (other.date != null) {
+                    return false;
+                }
+            } else if (!date.equals(other.date)) {
+                return false;
+            }
+            if (!Arrays.equals(friends, other.friends)) {
+                return false;
+            }
+            if (name == null) {
+                if (other.name != null) {
+                    return false;
+                }
+            } else if (!name.equals(other.name)) {
+                return false;
+            }
+            if (vip != other.vip) {
+                return false;
+            }
+            if (you == null) {
+                if (other.you != null) {
+                    return false;
+                }
+            } else if (!you.equals(other.you)) {
+                return false;
+            }
+            return true;
+        }
+
     }
 
     public static class YourBean {
@@ -111,6 +188,40 @@ public class Object2JSONTestCase {
         public void setName(String name) {
             this.name = name;
         }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + id;
+            result = prime * result + ((name == null) ? 0 : name.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            YourBean other = (YourBean)obj;
+            if (id != other.id) {
+                return false;
+            }
+            if (name == null) {
+                if (other.name != null) {
+                    return false;
+                }
+            } else if (!name.equals(other.name)) {
+                return false;
+            }
+            return true;
+        }
     }
 
     @Test
@@ -121,6 +232,7 @@ public class Object2JSONTestCase {
         me.setFriends(new String[] {"John", "Mike"});
         me.setVip(true);
         me.setName("Me");
+        me.setDate(new Date());
         YourBean you = new YourBean();
         you.setId(123);
         you.setName(null);
@@ -136,6 +248,7 @@ public class Object2JSONTestCase {
         //        String json =
         //            "{\"age\":30,\"books\":[],\"friends\":[\"John\",\"Mike\"],\"name\":\"Me\",\"vip\":true,\"you\":{\"id\":123,\"name\":null}}";
         //        Assert.assertEquals(json, result.toString());
+        Assert.assertEquals(v, me);
     }
 
     @Test

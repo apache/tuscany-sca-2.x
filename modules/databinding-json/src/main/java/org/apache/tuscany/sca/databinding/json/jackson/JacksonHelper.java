@@ -43,6 +43,7 @@ import org.codehaus.jackson.map.deser.CustomDeserializerFactory;
 import org.codehaus.jackson.map.deser.StdDeserializerProvider;
 import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
 import org.codehaus.jackson.map.ser.CustomSerializerFactory;
+import org.codehaus.jackson.map.util.StdDateFormat;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.codehaus.jackson.xc.XmlAdapterJsonDeserializer;
 import org.codehaus.jackson.xc.XmlAdapterJsonSerializer;
@@ -99,8 +100,10 @@ public class JacksonHelper {
         AnnotationIntrospector pair = new AnnotationIntrospector.Pair(primary, secondary);
         mapper.getDeserializationConfig().setAnnotationIntrospector(pair);
         mapper.getDeserializationConfig().set(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, Boolean.FALSE);
+        mapper.getDeserializationConfig().setDateFormat(StdDateFormat.getBlueprintISO8601Format());
         mapper.getSerializationConfig().setAnnotationIntrospector(pair);
         mapper.getSerializationConfig().setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+        mapper.getSerializationConfig().setDateFormat(StdDateFormat.getBlueprintISO8601Format());
         return mapper;
     }
 
