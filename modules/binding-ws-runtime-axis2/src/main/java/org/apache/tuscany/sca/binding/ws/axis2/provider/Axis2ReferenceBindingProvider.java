@@ -355,8 +355,8 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
         }
         try {
 
-            XMLStreamReader parser =
-                XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(wsBinding.getEndPointReference()));
+            DOMSource domSource = new DOMSource(wsBinding.getEndPointReference());
+            XMLStreamReader parser = XMLInputFactory.newInstance().createXMLStreamReader(domSource);
             StAXOMBuilder builder = new StAXOMBuilder(parser);
             OMElement omElement = builder.getDocumentElement();
             org.apache.axis2.addressing.EndpointReference epr = EndpointReferenceHelper.fromOM(omElement);
