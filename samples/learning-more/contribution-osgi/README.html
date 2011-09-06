@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.3  (Win32)">
+	<META NAME="AUTHOR" CONTENT="ant ">
+	<META NAME="CREATED" CONTENT="20110315;9485571">
+	<META NAME="CHANGED" CONTENT="20110906;11493347">
+	<STYLE TYPE="text/css">
+	<!--
+		@page { margin: 2cm }
+		P { margin-bottom: 0.21cm }
+		H1 { margin-bottom: 0.21cm }
+		H1.western { font-family: "Arial", sans-serif; font-size: 16pt }
+		H1.cjk { font-family: "SimSun"; font-size: 16pt }
+		H1.ctl { font-family: "Mangal"; font-size: 16pt }
+		PRE.cjk { font-family: "NSimSun", monospace }
+		A:link { so-language: zxx }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-GB" DIR="LTR">
+<H1 CLASS="western">Contribution OSGi</H1>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<PRE CLASS="western"><FONT FACE="Times New Roman, serif"><FONT SIZE=3>This sample packages the calculator sample as an OSGi bundle. The main differences over and above the basic calculator sample is that the bundle has a bundle activator. When the bundle is installed and started in OSGi the bundle activator starts the Tuscany runtime and runs the sample. </FONT></FONT>
+
+<FONT FACE="Times New Roman, serif"><FONT SIZE=3>See samples/running_tuscany/osgi for instructions for installing the Tuscany runtime in OSGi. Once the runtime is installed this contribution can be installed from the OSGi command line using the following command. </FONT></FONT>
+
+<FONT FACE="Courier New, monospace"><FONT SIZE=2>osgi&gt; install file:///c:\path\to\Tuscany\installation\samples\learning-more\contribution-osgi\target\sample-contribution-osgi.jar</FONT></FONT>
+
+<FONT FACE="Times New Roman, serif"><FONT SIZE=3>This should give rise to a message indicating the bundle ID as follows:</FONT></FONT>
+
+<FONT FACE="Courier New, monospace"><FONT SIZE=2>Bundle id is 264</FONT></FONT>
+
+<FONT FACE="Times New Roman, serif"><FONT SIZE=3>The bundle can then be started using:</FONT></FONT>
+
+<FONT FACE="Courier New, monospace"><FONT SIZE=2>osgi&gt; start 264</FONT></FONT></PRE>
+</BODY>
+</HTML>
