@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-Version: 2.0.0
+Bundle-Name: Sample Calculator OSGi
+Bundle-Activator: calculator.CalculatorActivator
+Bundle-ManifestVersion: 2
+Import-Package: org.oasisopen.sca.annotation;version="2.0.0",
+ org.apache.tuscany.sca;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.osgi.framework,
+ org.osgi.service.component;resolution:=optional,
+ org.osgi.service.packageadmin,
+ org.osgi.util.tracker
+Bundle-SymbolicName: sample.calculator.osgi
+Bundle-Vendor: The Apache Software Foundation
+Eclipse-LazyStart: true
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

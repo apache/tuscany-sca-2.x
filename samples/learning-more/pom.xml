@@ -40,6 +40,9 @@
             <modules>
                 <module>binding-comet</module>
                 <module>binding-websocket</module>
+<!--
+                <module>contribution-osgi</module>
+-->
             </modules>
         </profile>
     </profiles>    
