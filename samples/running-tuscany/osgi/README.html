@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.3  (Win32)">
+	<META NAME="AUTHOR" CONTENT="ant ">
+	<META NAME="CREATED" CONTENT="20110315;9485571">
+	<META NAME="CHANGED" CONTENT="20110906;11330986">
+	<STYLE TYPE="text/css">
+	<!--
+		@page { margin: 2cm }
+		P { margin-bottom: 0.21cm }
+		H1 { margin-bottom: 0.21cm }
+		H1.western { font-family: "Arial", sans-serif; font-size: 16pt }
+		H1.cjk { font-family: "SimSun"; font-size: 16pt }
+		H1.ctl { font-family: "Mangal"; font-size: 16pt }
+		PRE.cjk { font-family: "NSimSun", monospace }
+		H2 { margin-bottom: 0.21cm }
+		H2.western { font-family: "Arial", sans-serif; font-size: 14pt; font-style: italic }
+		H2.cjk { font-family: "SimSun"; font-size: 14pt; font-style: italic }
+		H2.ctl { font-family: "Mangal"; font-size: 14pt; font-style: italic }
+		A:link { so-language: zxx }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-GB" DIR="LTR">
+<H1 CLASS="western">Running the Tuscany runtime from OSGi</H1>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<PRE CLASS="western"><FONT FACE="Times New Roman, serif"><FONT SIZE=3>The Tuscany runtime can be run in and OSGi container. </FONT></FONT></PRE><H2 CLASS="western">
+Running in Equinox</H2>
+<P STYLE="margin-bottom: 0cm">On Windows, run</P>
+<PRE CLASS="western">
+cd modules
+java -jar osgi-3.5.0-v20090520.jar -configuration ..\features\configuration -clean -console
+
+<FONT FACE="Times New Roman, serif"><FONT SIZE=3>On *Unix, run</FONT></FONT>
+
+cd modules
+java -jar osgi-3.5.0-v20090520.jar -configuration ../features/configuration -clean -console
+
+<FONT FACE="Times New Roman, serif"><FONT SIZE=3>You should see the osgi console:</FONT></FONT>
+
+osgi&gt;
+
+<FONT FACE="Times New Roman, serif"><FONT SIZE=3>You can run &quot;ss&quot; command under the osgi&gt; to see the status of the bundles:</FONT></FONT>
+
+osgi&gt; ss
+
+<FONT FACE="Times New Roman, serif"><FONT SIZE=3>Then you can install and start contributions as bundles by doing the following:</FONT></FONT>
+
+osgi&gt; install file:///./path/to/contribution_bundle.jar
+
+<FONT FACE="Times New Roman, serif"><FONT SIZE=3>For example, on Windows, </FONT></FONT>
+
+<FONT FACE="Times New Roman, serif"><FONT SIZE=3><FONT FACE="Courier New, monospace"><FONT SIZE=2>osgi&gt; install file:///c:\path\to\Tuscany\installation\samples\learning-more\contribution-osgi\target\sample-contribution-osgi.jar</FONT></FONT></FONT></FONT>
+
+<FONT FACE="Times New Roman, serif"><FONT SIZE=3>Note. This sample contribution contains a bundle activator to fire up the Tuscany runtime. We are not relying on any Tuscany runtime service to detect the installation of the ontribution bundle. </FONT></FONT></PRE><H2 CLASS="western">
+Running on Felix</H2>
+<P STYLE="margin-bottom: 0cm">See
+http://tuscany.apache.org/documentation-2x/running-tuscany-sca-2x-with-equinox-and-felix.html</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+</BODY>
+</HTML>
