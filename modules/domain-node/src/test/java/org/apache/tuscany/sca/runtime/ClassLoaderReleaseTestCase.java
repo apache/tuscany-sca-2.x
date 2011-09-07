@@ -39,10 +39,13 @@ public class ClassLoaderReleaseTestCase {
     public void testInstallDeployable() throws IOException, ActivationException{
         File f = copyFile("src/test/resources/sample-helloworld.jar");
         Node node = TuscanyRuntime.runComposite(null, f.toURI().toURL().toString());
-        Assert.assertFalse(f.delete());
-        Map<String, List<String>> scuris = node.getStartedCompositeURIs();
-        node.stopCompositeAndUninstallUnused(scuris.keySet().iterator().next(), scuris.get(scuris.keySet().iterator().next()).get(0));
-        Assert.assertTrue(f.delete());
+        // this delete should fail on Windows as the jar is locked, but the doesn't seem to happen in 'nix
+        boolean b = f.delete();
+        if (!b) {
+            Map<String, List<String>> scuris = node.getStartedCompositeURIs();
+            node.stopCompositeAndUninstallUnused(scuris.keySet().iterator().next(), scuris.get(scuris.keySet().iterator().next()).get(0));
+            Assert.assertTrue(f.delete());
+        }
     }
     
     private File copyFile(String fileName) throws IOException {
