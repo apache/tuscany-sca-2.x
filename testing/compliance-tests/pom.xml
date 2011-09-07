@@ -50,9 +50,7 @@
                 <module>java-ci</module>
                 <module>policy</module>
                 <module>binding-ws</module>
-<!--   
                 <module>binding-jms</module>
--->
             </modules>
         </profile>
 
@@ -65,9 +63,7 @@
                 <module>java-ci</module>
                 <module>policy</module>
                 <module>binding-ws</module>
-<!--   
                 <module>binding-jms</module>
--->
             </modules>
         </profile>
     </profiles>
