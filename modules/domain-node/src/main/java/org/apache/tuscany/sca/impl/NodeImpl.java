@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.impl;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -60,6 +61,8 @@ import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.oasisopen.sca.NoSuchServiceException;
 
+import sun.misc.ClassLoaderUtil;
+
 public class NodeImpl implements Node {
     private static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
 
@@ -77,6 +80,8 @@ public class NodeImpl implements Node {
     private boolean endpointsIncludeDomainName;
     private boolean quietLogging;
 
+    private boolean releaseOnUnload;
+
     public NodeImpl(Deployer deployer,
                      CompositeActivator compositeActivator,
                      DomainRegistry domainRegistry,
@@ -92,16 +97,27 @@ public class NodeImpl implements Node {
 
         domainRegistry.addContributionListener(new ContributionListener() {
             public void contributionUpdated(String uri) {
-                loadedContributions.remove(uri);
+                unloadContribution(uri);
             }
             public void contributionRemoved(String uri) {
-                loadedContributions.remove(uri);
+                unloadContribution(uri);
+            }
+            private void unloadContribution(String curi) {
+                Contribution c = loadedContributions.remove(curi);
+                if (releaseOnUnload && (c != null)) {
+                    ClassLoader cl = c.getClassLoader();
+                    if (cl instanceof URLClassLoader) {
+                        ClassLoaderUtil.releaseLoader((URLClassLoader)cl);
+                    }
+                }
             }
         });
 
         endpointsIncludeDomainName = !TuscanyRuntime.DEFAUL_DOMAIN_NAME.equals(domainRegistry.getDomainName());
         
         UtilityExtensionPoint utilities = extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class);
+        this.releaseOnUnload = Boolean.parseBoolean(utilities.getUtility(RuntimeProperties.class).getProperties().getProperty(RuntimeProperties.RELEASE_ON_UNLOAD, "true"));
+
         this.quietLogging = Boolean.parseBoolean(utilities.getUtility(RuntimeProperties.class).getProperties().getProperty(RuntimeProperties.QUIET_LOGGING));
         if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "domain: " + domainRegistry.getDomainName() + (!domainRegistry.getDomainName().equals(domainRegistry.getDomainURI()) ? "" : (" domainURI: " + domainRegistry.getDomainURI())));
     }
