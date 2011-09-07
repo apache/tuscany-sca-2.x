@@ -31,6 +31,11 @@ public interface RuntimeProperties {
      *  When true log with Level.FINE instead of Level.INFO
      */
     public static final String QUIET_LOGGING = "org.apache.tuscany.sca.quietLogging";
+
+    /**
+     *  When true attempt to release the ClassLoader used by a COntribution when its unloaded
+     */
+    public static final String RELEASE_ON_UNLOAD = "org.apache.tuscany.sca.releaseOnUnload";
     
     Properties getProperties();
     void setProperties(Properties properties);
