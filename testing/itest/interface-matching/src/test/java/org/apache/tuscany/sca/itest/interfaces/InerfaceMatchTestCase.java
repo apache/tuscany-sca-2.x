@@ -20,9 +20,6 @@
 package org.apache.tuscany.sca.itest.interfaces;
 
 import java.net.URI;
-import java.util.List;
-
-import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
 
@@ -30,7 +27,6 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.configuration.BindingConfiguration;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -118,7 +114,7 @@ public class InerfaceMatchTestCase {
     /**
      * Remoteable client and service interfaces where the interfaces match but
      * where there is a parameter that can't be converted to/from XML using JAXB
-     * Components running in the seaprate composite/JVM, i.e. there is a remote registry
+     * Components running in the separate composite/JVM, i.e. there is a remote registry
      * 
      * @throws Exception
      */

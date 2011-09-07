@@ -28,7 +28,6 @@ import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.oasisopen.sca.ServiceRuntimeException;
 
