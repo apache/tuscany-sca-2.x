@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLOperation;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.AbstractWSDLTestCase;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -65,9 +66,26 @@ public class WrapperStyleOperationTestCase extends AbstractWSDLTestCase {
         definition = resolver.resolveModel(WSDLDefinition.class, definition, context);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         WSDLInterface wi = wsdlFactory.createWSDLInterface(portType, definition, resolver, context.getMonitor());
-        WSDLOperation op = (WSDLOperation) wi.getOperations().get(1);
+        WSDLOperation op = (WSDLOperation) wi.getOperations().get(0);
+        Assert.assertTrue(op.isWrapperStyle());
+        op = (WSDLOperation) wi.getOperations().get(1);
         Assert.assertFalse(op.isWrapperStyle());
         op = (WSDLOperation) wi.getOperations().get(2);
+        Assert.assertFalse(op.isWrapperStyle());
+    }
+
+
+    @Test
+    @Ignore("TUSCANY-3943")
+    public final void testDisabledWrappedOperation() throws Exception {
+        ProcessorContext context = new ProcessorContext();
+        URL url = getClass().getResource("../xml/disabledwrapped-stockquote.wsdl");
+        WSDLDefinition definition = (WSDLDefinition)documentProcessor.read(null, new URI("disabledwrapped-stockquote.wsdl"), url, context);
+        resolver.addModel(definition, context);
+        definition = resolver.resolveModel(WSDLDefinition.class, definition, context);
+        PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
+        WSDLInterface wi = wsdlFactory.createWSDLInterface(portType, definition, resolver, context.getMonitor());
+        WSDLOperation op = (WSDLOperation) wi.getOperations().get(0);
         Assert.assertFalse(op.isWrapperStyle());
     }
 
