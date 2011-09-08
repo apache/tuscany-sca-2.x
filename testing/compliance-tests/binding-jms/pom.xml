@@ -53,23 +53,17 @@
 
         <dependency>
             <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-core</artifactId>
+            <artifactId>activemq-all</artifactId>
             <version>5.2.0</version>
         </dependency>
 
          <!-- This is need when running with Sun JDK which gets an unsupported operation exception creating an XMLStreamReader from a DOMSource
              when Tuscany is writing a property value  -->
-         <dependency>
-            <groupId>org.codehaus.woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
-            <version>3.2.4</version>
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>stax</groupId>
-                    <artifactId>stax-api</artifactId>
-                </exclusion>
-            </exclusions>
+        <dependency>
+           <groupId>org.codehaus.woodstox</groupId>
+           <artifactId>wstx-asl</artifactId>
+           <version>3.2.9</version>
+ 	     <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -93,7 +87,6 @@
            <excludes>
               <exclude>**/BJM_6015_2_TestCase.java</exclude>
               <exclude>**/BJM_6015_3_TestCase.java</exclude>
-              <exclude>**/BJM_6017_1_TestCase.java</exclude>
            </excludes>
          </configuration>
       </plugin>
