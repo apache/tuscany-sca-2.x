@@ -37,7 +37,6 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloServiceSimpleClientImpl" />
         <reference name="helloServiceSimple" target="HelloServiceSimpleComponent/HelloServiceSimple">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.HelloServiceSimple"/>
-            <binding.sca/>
         </reference>
     </component>
     
@@ -46,7 +45,6 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloLocalServiceSimpleClientImpl" />
         <reference name="helloLocalServiceSimple" target="HelloServiceSimpleComponent/HelloLocalServiceSimple">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.HelloLocalServiceSimple"/>
-            <binding.sca/>
         </reference>
     </component>
 

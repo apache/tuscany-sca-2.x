@@ -40,7 +40,6 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.GenericsServiceClientImpl" />
         <reference name="genericsService" target="GenericsServiceComponent/GenericsService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.GenericsService"/>
-            <binding.sca/>
         </reference>
     </component>
     
@@ -49,7 +48,6 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.GenericsLocalServiceClientImpl" />
         <reference name="genericsLocalService" target="GenericsServiceComponent/GenericsLocalService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.GenericsLocalService"/>
-            <binding.sca/>
         </reference>
     </component>
 

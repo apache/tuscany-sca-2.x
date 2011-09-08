@@ -37,7 +37,6 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesServiceClientImpl" />
         <reference name="standardTypesService" target="StandardTypesServiceComponent/StandardTypesService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesService"/>
-            <binding.sca/>
         </reference>
     </component>
     
@@ -46,7 +45,6 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesLocalServiceClientImpl" />
         <reference name="standardTypesLocalService" target="StandardTypesServiceComponent/StandardTypesLocalService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesLocalService"/>
-            <binding.sca/>
         </reference>
     </component>
 

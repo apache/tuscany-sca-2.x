@@ -37,7 +37,6 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.PrimitivesServiceClientImpl" />
         <reference name="primitivesService" target="PrimitivesServiceComponent/PrimitivesService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesService"/>
-            <binding.sca/>
         </reference>
     </component>
     
@@ -46,7 +45,6 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.PrimitivesLocalServiceClientImpl" />
         <reference name="primitivesLocalService" target="PrimitivesServiceComponent/PrimitivesLocalService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesLocalService"/>
-            <binding.sca/>
         </reference>
     </component>
 
