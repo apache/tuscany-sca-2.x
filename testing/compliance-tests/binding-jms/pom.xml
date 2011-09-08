@@ -91,7 +91,9 @@
          <configuration>
            <argLine>-Xms256m -Xmx1024m</argLine>
            <excludes>
-              <!-- exclude>**/POJO_8011_TestCase.java</exclude -->
+              <exclude>**/BJM_6015_2_TestCase.java</exclude>
+              <exclude>**/BJM_6015_3_TestCase.java</exclude>
+              <exclude>**/BJM_6017_1_TestCase.java</exclude>
            </excludes>
          </configuration>
       </plugin>
