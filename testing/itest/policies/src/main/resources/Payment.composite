@@ -35,8 +35,8 @@
 
     <component name="Payment">
         <implementation.java class="org.apache.tuscany.sca.itest.policies.impl.PaymentImpl" />
-        <reference name="creditCardPayment" target="CreditCardPayment">
-            <binding.sca requires="sca:integrity tuscany:logging">
+        <reference name="creditCardPayment">
+            <binding.sca requires="sca:integrity tuscany:logging" uri="CreditCardPayment">
             </binding.sca>
         </reference>
         <reference name="customerRegistry" target="Customer/Registry" requires="sca:suspendsTransaction tuscany:logging"/>
