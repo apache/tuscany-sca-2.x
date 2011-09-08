@@ -29,9 +29,9 @@ public class Service1ClientImpl implements Service1 {
     @Reference
     Service1AsyncClient service1;
     
-    static Object threeMutex = new Object();
-    static String threeResp;
-    static Throwable threeEx;
+    Object threeMutex = new Object();
+    String threeResp;
+    Throwable threeEx;
     
     @Override
     public String operation1(String input) {
@@ -60,10 +60,12 @@ public class Service1ClientImpl implements Service1 {
     
     private String invokeAsyncType2(String input) {
         // three
+        System.out.println("invokeAsyncType2 entry");
         AsyncHandler<String> ah = new AsyncHandler<String>() {
             @Override
             public void handleResponse(Response<String> res) {
                 try {
+                    System.out.println("invokeAsyncType2 callback handler invoked");
                     threeResp = res.get();
                 } catch (Throwable e) {
                     threeEx = e;
@@ -78,7 +80,8 @@ public class Service1ClientImpl implements Service1 {
             synchronized (threeMutex) {
                 if (threeResp == null && threeEx == null) {
                     try {
-                        threeMutex.wait(3000);
+                        threeMutex.wait(15000);
+                        System.out.println("invokeAsyncType2 mutex notified or wait expired");
                     } catch (InterruptedException e) {
                     }   
                 }
