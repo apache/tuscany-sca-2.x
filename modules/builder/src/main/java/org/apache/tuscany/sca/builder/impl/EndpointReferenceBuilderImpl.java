@@ -589,15 +589,10 @@ public class EndpointReferenceBuilderImpl {
      */
     private boolean bindingsIdentifyTargets(ComponentReference reference) {
         for (Binding binding : reference.getBindings()) {
-            // <binding.sca without a URI does not identify a target
-            if ((binding instanceof SCABinding) && (binding.getURI() == null))
-                continue;
-            // any other binding implies a target
-            // TODO Processing for other binding types
             return true;
-        } // end for
+        } 
         return false;
-    } // end bindingsIdentifyTargets
+    }
 
     /**
      * Helper method which obtains a list of targets for a reference
