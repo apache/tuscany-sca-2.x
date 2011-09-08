@@ -29,6 +29,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.xml.ws.AsyncHandler;
 import javax.xml.ws.Response;
 
 import org.apache.tuscany.sca.core.invocation.AsyncFaultWrapper;
@@ -58,7 +59,8 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 	private String uniqueID = UUID.randomUUID().toString();
 	
 	private ClassLoader classLoader = null;
-	
+	private AsyncHandler callback;
+
 	protected AsyncInvocationFutureImpl() {
 		super();
 	} // end constructor
@@ -161,6 +163,9 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 		} finally {
 			lock.unlock();
 		} // end try
+		if (callback != null) {
+			callback.handleResponse(this);
+		}
 	} // end method setFault( Throwable )
 	
 	/**
@@ -203,6 +208,9 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 		} finally {
 			lock.unlock();
 		} // end try
+		if (callback != null) {
+			callback.handleResponse(this);
+		}
 			
 	} // end method setResponse
 	
@@ -242,6 +250,14 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 	 */
 	public void setClassLoader(ClassLoader classLoader) {
 		this.classLoader = classLoader;
+	}
+
+	/**
+	 * Sets the callback handler, when the client uses the async callback method
+	 * @param classLoader - the classloader of the business interface
+	 */
+	public void setCallback(AsyncHandler callback) {
+		this.callback = callback;
 	}
 
 

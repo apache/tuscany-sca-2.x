@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -111,17 +110,14 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
 
     private static final long serialVersionUID = 1L;
 
-    private static int invocationCount = 10; // # of threads to use
-    private static long maxWaitTime = 30; // Max wait time for completion = 30sec
-    
-    // Run the async service invocations using a ThreadPoolExecutor
-    private ExecutorService theExecutor;
+    // Run the async service invocations using a WorkScheduler
+    private WorkScheduler scheduler;
 
     public AsyncJDKInvocationHandler(ExtensionPointRegistry registry,
                                      MessageFactory messageFactory,
                                      ServiceReference<?> callableReference ) {
         super(messageFactory, callableReference);
-        initExecutorService(registry);
+        initWorkScheduler(registry);
     }
 
     public AsyncJDKInvocationHandler(ExtensionPointRegistry registry,
@@ -129,15 +125,13 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
                                      Class<?> businessInterface,
                                      Invocable source ) {
         super(messageFactory, businessInterface, source);
-        initExecutorService(registry);
+        initWorkScheduler(registry);
     }
 
-    private final void initExecutorService(ExtensionPointRegistry registry) {
+    private final void initWorkScheduler(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        WorkScheduler scheduler = utilities.getUtility(WorkScheduler.class);
-        theExecutor = scheduler.getExecutorService();
-
-    } // end method initExecutorService
+        scheduler = utilities.getUtility(WorkScheduler.class);
+    } // end method initWorkScheduler
 
     /**
      * Perform the invocation of the operation
@@ -157,7 +151,7 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
         if (isAsyncCallback(method)) {
             return doInvokeAsyncCallback(proxy, method, args);
         } else if (isAsyncPoll(method)) {
-            return doInvokeAsyncPoll(proxy, method, args);
+            return doInvokeAsyncPoll(proxy, method, args, null);
         } else {
             // Regular synchronous method call
             return doInvokeSync(proxy, method, args);
@@ -196,11 +190,13 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
      *           type of the response
      */
     @SuppressWarnings("unchecked")
-    protected Response doInvokeAsyncPoll(Object proxy, Method asyncMethod, Object[] args) {
+    protected Response doInvokeAsyncPoll(Object proxy, Method asyncMethod, Object[] args, AsyncHandler callback) {
         Method method = getNonAsyncMethod(asyncMethod);
         Class<?> returnType = method.getReturnType();
         // Allocate the Future<?> / Response<?> object - note: Response<?> is a subclass of Future<?>
         AsyncInvocationFutureImpl future = AsyncInvocationFutureImpl.newInstance(returnType, getInterfaceClassloader());
+        if (callback != null)
+            future.setCallback(callback);
         try {
             invokeAsync(proxy, method, args, future, asyncMethod);
         } catch (Exception e) {
@@ -226,12 +222,12 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
             AsyncInvocationFutureImpl future =
                 AsyncInvocationFutureImpl.newInstance(returnType, getInterfaceClassloader());
             invokeAsync(proxy, method, args, future, method);
-            // Wait for some maximum time for the result - 1000 seconds here
+            // Wait for some maximum time for the result - 120 seconds here
             // Really, if the service is async, the client should use async client methods to invoke the service
             // - and be prepared to wait a *really* long time
             Object response = null;
             try {
-                response = future.get(1000, TimeUnit.SECONDS);
+                response = future.get(120, TimeUnit.SECONDS);
             } catch (ExecutionException ex) {
                 throw ex.getCause();
             }
@@ -254,20 +250,10 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
     @SuppressWarnings("unchecked")
     private Object doInvokeAsyncCallback(final Object proxy, final Method asyncMethod, final Object[] args)
         throws Exception {
-        Future<Response> future = theExecutor.submit(new Callable<Response>() {
 
-            @Override
-            public Response call() {
-                AsyncHandler handler = (AsyncHandler)args[args.length - 1];
-                Response response = doInvokeAsyncPoll(proxy, asyncMethod, Arrays.copyOf(args, args.length - 1));
-                // Invoke the callback handler, if present
-                if (handler != null) {
-                    handler.handleResponse(response);
-                } // end if
-                return response;
-            }
-        });
-        return future.get();
+        AsyncHandler callback = (AsyncHandler)args[args.length - 1];
+        Response response = doInvokeAsyncPoll(proxy, asyncMethod, Arrays.copyOf(args, args.length - 1), callback);
+        return response;
 
     } // end method doInvokeAsyncCallback
 
@@ -326,7 +312,7 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
         } // end if   
 
         // Perform the invocations on separate thread...
-        theExecutor.submit(new separateThreadInvoker(chain, args, source, future, asyncMethod, isAsyncService));
+        scheduler.scheduleWork(new SeparateThreadInvoker(chain, args, source, future, asyncMethod, isAsyncService));
 
         return;
     } // end method invokeAsync
@@ -337,7 +323,7 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
      * 
      * This supports both synchronous services and asynchronous services
      */
-    private class separateThreadInvoker implements Runnable {
+    private class SeparateThreadInvoker implements Runnable {
 
         private AsyncInvocationFutureImpl future;
         private Method asyncMethod;
@@ -346,7 +332,7 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
         private Invocable invocable;
         private boolean isAsyncService;
 
-        public separateThreadInvoker(InvocationChain chain,
+        public SeparateThreadInvoker(InvocationChain chain,
                                      Object[] args,
                                      Invocable invocable,
                                      AsyncInvocationFutureImpl future,
@@ -420,6 +406,9 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
                         future.setWrappedFault(new AsyncFaultWrapper(s));
                     } // end if 
                 } // end if
+                else {
+                    future.setWrappedFault(new AsyncFaultWrapper(s));
+                }
             } catch (AsyncResponseException ar) {
                 // This exception is received in the case where the Binding does not support async invocation
             	// natively - the initial invocation is effectively synchronous with this exception thrown to
@@ -431,7 +420,7 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
 
         } // end method run
 
-    } // end class separateThreadInvoker
+    } // end class SeparateThreadInvoker
 
     /**
      * Attaches a future to the callback endpoint - so that the Future is triggered when a response is

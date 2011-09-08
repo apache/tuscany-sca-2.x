@@ -82,8 +82,13 @@ public class AsyncFaultWrapper {
 				Constructor cons = xclass.getConstructor(String.class, Throwable.class);
 				return (Throwable) cons.newInstance(faultMessage, getContainedFault().retrieveFault());
 			} else {
-				Constructor cons = xclass.getConstructor(String.class);
-				return (Throwable) cons.newInstance(faultMessage);
+			    try {
+				    Constructor cons = xclass.getConstructor(String.class);
+				    return (Throwable) cons.newInstance(faultMessage);
+				} catch (NoSuchMethodException e) {
+				    Constructor cons = xclass.getConstructor();
+				    return (Throwable) cons.newInstance();
+				}
 			} // end if
 		} catch (Exception e) {
 			return e;
