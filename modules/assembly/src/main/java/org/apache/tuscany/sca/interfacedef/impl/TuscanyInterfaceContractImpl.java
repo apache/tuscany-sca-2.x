@@ -16,37 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.itest.interfaces;
+package org.apache.tuscany.sca.interfacedef.impl;
 
-import java.util.List;
-
-import org.oasisopen.sca.annotation.Callback;
-import org.oasisopen.sca.annotation.Remotable;
 
 /**
- * Local be-directional callBackService
+ * Represents a Java interface contract.
+ * 
+ * @version $Rev: 1149451 $ $Date: 2011-07-22 05:12:56 +0100 (Fri, 22 Jul 2011) $
  */
-@Remotable
-@Callback(CallbackInterface.class)
-public interface ServiceMissmatchComponent {
+public class TuscanyInterfaceContractImpl extends InterfaceContractImpl {
+    
+    
+    public TuscanyInterfaceContractImpl() {
+    }
 
-    // infrastructure won't detect difference between String and ParameterObject
-    String foo(ParameterObject po);
-    
-    // Infrastructure will detect difference between parameter numbers
-    String foo1(ParameterObject po, String str);
+    @Override
+    public TuscanyInterfaceContractImpl clone() throws CloneNotSupportedException {
+        return (TuscanyInterfaceContractImpl) super.clone();
+    }
 
-    void callback(String str);
-
-    void modifyParameter();
-
-    ParameterObject getPO();
-    
-    void inArray(String[] stringArray);
-    
-    String[] outArray();     
-    
-    void inCollection(List<String> stringArray);
-    
-    List<String> outCollection();      
 }

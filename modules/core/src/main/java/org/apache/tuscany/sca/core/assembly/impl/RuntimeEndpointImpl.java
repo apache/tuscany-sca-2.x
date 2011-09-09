@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.core.assembly.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -38,8 +39,11 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -58,6 +62,7 @@ import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.impl.EndpointImpl;
+import org.apache.tuscany.sca.assembly.xml.InterfaceContractProcessor;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
@@ -147,8 +152,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     private transient ServiceBindingProvider bindingProvider;
     private transient List<PolicyProvider> policyProviders;
     private String xml;
-    private String wsdl;
-    private String wsdlCallback;
+    private String interfaceContractXML;
 
     protected InterfaceContract bindingInterfaceContract;
     protected InterfaceContract serviceInterfaceContract;
@@ -1022,8 +1026,10 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.uri = in.readUTF();
         this.xml = in.readUTF();       
-        this.wsdl = in.readUTF();
+        this.interfaceContractXML = in.readUTF();
+/*        
         this.wsdlCallback = in.readUTF();
+*/        
 
     }
 
@@ -1038,16 +1044,11 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 throw new IllegalStateException("No serializer is configured");
             }
         }
-              
-        if (wsdl == null) {
-            wsdl = getWsdl();
-        }
-        out.writeUTF(wsdl);
         
-        if (wsdlCallback == null) {
-            wsdlCallback = getWsdlCallback();
+        if (interfaceContractXML == null) {
+            interfaceContractXML = getXMLFromTuscanyInterfaceContract();
         }
-        out.writeUTF(wsdlCallback);        
+        out.writeUTF(interfaceContractXML);
     }
     
     public String getAsXML() {
@@ -1055,6 +1056,44 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             this.xml = serializer.write(this);
         }
         return xml;
+    }
+    
+    private String getXMLFromTuscanyInterfaceContract() throws IOException{
+        String interfaceContract = null;
+        try {
+            InterfaceContractProcessor processor = new InterfaceContractProcessor(registry);
+            ProcessorContext context = new ProcessorContext();
+            FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
+            processor.write(getComponentServiceInterfaceContract(), writer, context);
+            writer.close();
+            interfaceContract = bos.toString();
+        } catch (Exception ex){
+            throw new IOException(ex);
+        }
+        //System.out.println("Generated IC XML: " + interfaceContract);
+        return interfaceContract;
+    }
+    
+    private InterfaceContract getTuscanyInterfaceContractFromXML() {  
+        InterfaceContract interfaceContract = null;
+        //System.out.println("Reading IC XML: " + interfaceContractXML);
+        if (interfaceContractXML != null && interfaceContractXML.length() > 0){
+            try {
+                FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+                InterfaceContractProcessor processor = new InterfaceContractProcessor(registry);
+                ProcessorContext context = new ProcessorContext();
+                ByteArrayInputStream bis = new ByteArrayInputStream(interfaceContractXML.getBytes());
+                XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
+                XMLStreamReader reader = inputFactory.createXMLStreamReader(bis);
+                interfaceContract = processor.read(reader, context);
+            } catch (Exception ex){
+                new ServiceRuntimeException(ex);  
+            }
+        }
+        return interfaceContract;
     }
     
     private String getWsdl() {       
@@ -1202,12 +1241,15 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     }  
     
     private void setNormalizedWSDLContract() {
-        if (wsdl == null || wsdl.length() < 1) {
+        if (interfaceContractXML == null || interfaceContractXML.length() < 1) {
             return;
         }
         InterfaceContract ic = getComponentServiceInterfaceContract();
         if (ic != null) {
+/*            
             ic.setNormalizedWSDLContract(WSDLHelper.createWSDLInterfaceContract(registry, wsdl, wsdlCallback));
+*/            
+            ic.setNormalizedWSDLContract(getTuscanyInterfaceContractFromXML());
         }
     }
 

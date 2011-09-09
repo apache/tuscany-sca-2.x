@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.itest.interfaces;
 
+import java.util.List;
+
 import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Service;
 
@@ -49,5 +51,18 @@ public class ServiceMissmatchComponentImpl implements ServiceMissmatchComponent 
     public ParameterObject getPO() {
         return po;
     }
-
+    
+    public void inArray(String[] stringArray) {
+    }  
+    
+    public String[] outArray() {
+        return null;
+    } 
+    
+    public void inCollection(List<String> stringArray) {
+    }  
+    
+    public List<String> outCollection() {
+        return null;
+    }     
 }

@@ -148,13 +148,16 @@ public class InerfaceMissmatchTestCase {
         
         try {
             local.foo1(po);
+            node1.stop();
+            node2.stop();
             Assert.fail("Expected exception indicating that interfaces don't match");
         } catch (ServiceRuntimeException ex){
+            node1.stop();
+            node2.stop();
             Assert.assertTrue(ex.getMessage().startsWith("Unable to bind []"));
         }
         
-        node1.stop();
-        node2.stop();
+
     }
     
     /**
@@ -190,13 +193,14 @@ public class InerfaceMissmatchTestCase {
         
         try {
             local.foo1(po);
+            node1.stop();
+            node2.stop();
             Assert.fail("Expected exception indicating that interfaces don't match");
         } catch (ServiceRuntimeException ex){
+            node1.stop();
+            node2.stop();
             Assert.assertTrue(ex.getMessage().startsWith("Unable to bind []"));
         }
-        
-        node1.stop();
-        node2.stop();
 
     }
 }
