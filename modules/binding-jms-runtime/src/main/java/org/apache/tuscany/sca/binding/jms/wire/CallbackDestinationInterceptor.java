@@ -18,24 +18,22 @@
  */
 package org.apache.tuscany.sca.binding.jms.wire;
 
-import java.util.List;
-
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.Topic;
 
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
-import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+
+import org.apache.tuscany.sca.assembly.Binding;
 
 /**
  * JMS Binding Interceptor class that deals with a callback destination address on the service side
@@ -99,13 +97,25 @@ public class CallbackDestinationInterceptor extends InterceptorAsyncImpl {
                 
             // Place the Callback destination name into the Callback EPRs for the service endpoint
             if (callbackdestName != null) {
-            	List<EndpointReference> refs = endpoint.getCallbackEndpointReferences();
-            	for (EndpointReference ref : refs ) {
-            		if  (ref.getBinding() instanceof JMSBinding ) {
-            			JMSBinding callbackBinding = (JMSBinding) ref.getBinding();
-            			callbackBinding.setDestinationName(callbackdestName);
-            		} // end if
-            	} // end for
+                for (Binding b : service.getCallback().getBindings()) {
+                    if (b instanceof JMSBinding) {
+                        JMSBinding callbackBinding;
+                        try {
+                            callbackBinding = (JMSBinding)((JMSBinding)b).clone();
+                        } catch (CloneNotSupportedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        callbackBinding.setDestinationName(callbackdestName);
+                        msg.getHeaders().put("CALLBACK_BINDING", callbackBinding);
+                    }
+                }
+//            	List<EndpointReference> refs = endpoint.getCallbackEndpointReferences();
+//            	for (EndpointReference ref : refs ) {
+//            		if  (ref.getBinding() instanceof JMSBinding ) {
+//            			JMSBinding callbackBinding = (JMSBinding) ref.getBinding();
+//            			callbackBinding.setDestinationName(callbackdestName);
+//            		} // end if
+//            	} // end for
             } // end if  
 
 // Callback ID not used at present            

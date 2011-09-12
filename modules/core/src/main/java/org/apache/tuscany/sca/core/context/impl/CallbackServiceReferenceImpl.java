@@ -150,7 +150,20 @@ public class CallbackServiceReferenceImpl<B> extends ServiceReferenceImpl<B> {
                         }
                     }
                 }
-/*                
+
+                // This is used by the JMS binding to enable setting the JMS callback destination from the
+                // request, see CallbackDestinationInterceptor in the JMS binding module. It gets the JMS
+                // compliance tests passing again but doesn't seem like the perfect fix, when the changes
+                // mentioned below for TUSCANY-3932 happen it should fix this properly.
+                Message msgContext = ThreadMessageContext.getMessageContext();
+                if (msgContext != null){
+                    Binding b = (Binding)msgContext.getHeaders().get("CALLBACK_BINDING");
+                    if (b != null) {
+                        endpointReference.setBinding(b);
+                    }
+                }
+                
+                /*                
                 // TUSCANY-3932
                 // If the resolved endpoint has a binding with a absolute URI then assume
                 // that URL has been passed in in the forward message and really treat it
