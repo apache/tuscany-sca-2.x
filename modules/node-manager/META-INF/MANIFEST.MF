@@ -9,7 +9,8 @@ Bundle-Version: 2.0.0
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Node Manager
-Import-Package: org.apache.tuscany.sca.assembly;version="2.0.0",
+Import-Package: javax.ws.rs,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.node;version="2.0.0",
  org.apache.tuscany.sca.node.configuration;version="2.0.0",
  org.apache.tuscany.sca.node.extensibility;version="2.0.0",
