@@ -25,8 +25,8 @@
     <component name="Service">
        <implementation.java class="itest.service.impl.ServiceImpl"/>
        <service name="ServiceIntf">
-           <binding.sca name="sca"/>
            <binding.ws name="ws" uri="http://localhost:8085/Service/ServiceIntf"/>
+           <binding.sca name="sca"/>
            <tuscany:binding.rmi name="rmi" uri="rmi://localhost:8099/Service"/>
        </service>
     </component>   

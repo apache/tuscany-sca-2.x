@@ -413,9 +413,22 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             }
         } else {
             // find the first endpoint that matches this endpoint reference
+            boolean findTargetSCABinding = false;
+            
+            // TUSCANY-3941 check for the case where the user has provided a 
+            //              binding.sca at the reference and make sure we pick
+            //              a binding.sca at the service regardless of how many
+            //              other bindings are provided
+            if (endpointReference.getBinding() != null &&
+                endpointReference.getBinding() instanceof SCABinding ){
+                findTargetSCABinding = true;
+            }
+            
             for (Endpoint endpoint : endpoints){
                 if (haveMatchingPolicy(endpointReference, endpoint, matchAudit, builderContext) &&
-                    haveMatchingInterfaceContracts(endpointReference, endpoint, matchAudit)){
+                    haveMatchingInterfaceContracts(endpointReference, endpoint, matchAudit) &&
+                    (findTargetSCABinding == false ||
+                     (findTargetSCABinding == true && endpoint.getBinding() instanceof SCABinding))){
                     matchedEndpoint = endpoint;
                     break;
                 }

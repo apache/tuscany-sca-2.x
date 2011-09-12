@@ -22,10 +22,17 @@ xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
     targetNamespace="http://itest"
     name="ClientComposite">
            
-    <component name="ClientSCA">
+    <component name="ClientSCAAlternative">
        <implementation.java class="itest.client.impl.ClientImpl"/>
        <reference name="service" target="Service"/>
     </component>   
+  
+    <component name="ClientSCA">
+       <implementation.java class="itest.client.impl.ClientImpl"/>
+       <reference name="service">
+           <binding.sca uri="Service"/>
+       </reference>
+    </component>      
     
     <component name="ClientWS">
        <implementation.java class="itest.client.impl.ClientImpl"/>

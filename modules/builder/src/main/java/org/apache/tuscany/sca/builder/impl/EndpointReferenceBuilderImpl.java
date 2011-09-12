@@ -325,6 +325,11 @@ public class EndpointReferenceBuilderImpl {
                         // so that the binder can test it against the fully populated
                         // registry
                         endpoint = createEndpoint(component, uri);
+                        if (binding instanceof SCABinding) {
+                            // TUSCANY-3941
+                            // if it's an SCA binding we store it to influence the matching at runtime
+                            endpointRef.setBinding(binding);
+                        }
                         endpointRef.setStatus(EndpointReference.Status.WIRED_TARGET_IN_BINDING_URI); 
                     } catch (Exception ex) {
                         // the target string definitely isn't an SCA target string

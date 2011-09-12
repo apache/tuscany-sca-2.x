@@ -25,8 +25,12 @@ import itest.common.intf.ClientIntf;
 
 import java.net.URI;
 
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -51,6 +55,24 @@ public class CrossContribTestCase {
         ClientIntf client = node.getService(ClientIntf.class, "ClientSCA");
         assertNotNull(client);
         client.callJAXBCrossContribution();
+    }
+    
+    // TUSCANY-3941 - make sure binding.sca is matched properly when 
+    //                it's used to carry the target URI. Not much to do with
+    //                JAXB but this is a convenient test
+    @Test
+    public void testJAXBCrossContributionSCAAlternative() throws Exception {
+        ClientIntf client = node.getService(ClientIntf.class, "ClientSCAAlternative");
+        assertNotNull(client);
+        client.callJAXBCrossContribution();
+        
+        // Get the binding from the ClientSCA component
+        Binding binding = ((NodeImpl)node).getDomainComposite().getComponents().get(2).getReferences().get(0).getEndpointReferences().get(0).getBinding();
+        assertEquals(true, binding instanceof SCABinding);
+        
+        // Get the binding from the ClientSCAAlternative component
+        Binding alternativeBinding = ((NodeImpl)node).getDomainComposite().getComponents().get(1).getReferences().get(0).getEndpointReferences().get(0).getBinding();
+        assertEquals(true, alternativeBinding instanceof WebServiceBinding);
     }
 
 
