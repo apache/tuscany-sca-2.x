@@ -21,7 +21,7 @@
 
     <component name="Foo1Component">
         <implementation.java class="org.apache.tuscany.sca.itest.cdi.Foo1" />
-        <property name="bar" value="foobar" />
+        <property name="bar" value="fubar" />
     </component>
 
     <component name="Foo2Component">
