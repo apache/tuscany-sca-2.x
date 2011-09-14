@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.implementation.java.databinding;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -65,13 +67,16 @@ public class PropertyDataTypeProcessor extends BaseJavaClassVisitor {
             JavaElementImpl element = type.getPropertyMembers().get(name);
             introspect(property, element);
             DataType dt = property.getDataType();
-            if (dt.getLogical() instanceof XMLType) {
-                XMLType xmlType = (XMLType)dt.getLogical();
+            Object logical = dt.getLogical();
+            if (logical instanceof XMLType &&
+                logical != XMLType.UNKNOWN) {
+                XMLType xmlType = (XMLType)logical;
                 property.setXSDType(xmlType.getTypeName());
                 property.setXSDElement(xmlType.getElementName());
             } else {
                 Class<?> baseType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
-                property.setXSDType(JavaXMLMapper.getXMLType(baseType));
+                QName typeName = JavaXMLMapper.getXMLType(baseType);                   
+                property.setXSDType(typeName);
             }
         }
         super.visitEnd(clazz, type);

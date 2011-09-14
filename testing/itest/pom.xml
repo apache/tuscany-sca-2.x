@@ -76,9 +76,7 @@
                 <module>policy</module>
                 <module>policies</module>
                 <module>policy-transaction</module>  
-<!-- wait until databinding-sdo is in
                 <module>properties</module>
--->
                 <module>recursive-multi-level</module>
                 <module>references</module>
                 <module>scaclient-api</module>

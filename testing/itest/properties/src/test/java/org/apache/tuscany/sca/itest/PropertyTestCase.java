@@ -284,7 +284,7 @@ public class PropertyTestCase {
         ComplexPropertyBean propBean = propertyService.getComplexPropertyTwo();
         assertNotNull(propBean);
         assertEquals(10, propBean.intArray[0]);
-        assertEquals((float)22, propBean.numberSetArray[1].floatNumber);
+        assertEquals((float)22, propBean.numberSetArray[1].floatNumber, 0.1);
     }
 
     /**
@@ -299,7 +299,7 @@ public class PropertyTestCase {
         ComplexPropertyBean propBean = propertyService.getComplexPropertyThree();
         assertNotNull(propBean);
         assertEquals("TestElementString_1", propBean.stringArray[0]);
-        assertEquals((float)22, propBean.numberSetArray[1].floatNumber);
+        assertEquals((float)22, propBean.numberSetArray[1].floatNumber, 0.1);
     }
 
     /**
@@ -314,7 +314,7 @@ public class PropertyTestCase {
         Object[] propBeanCollection = propertyService.getComplexPropertyFour().toArray();
         assertNotNull(propBeanCollection);
         assertEquals(1, ((ComplexPropertyBean)propBeanCollection[0]).getIntegerNumber());
-        assertEquals(222.222, ((ComplexPropertyBean)propBeanCollection[1]).getDoubleNumber());
+        assertEquals(222.222, ((ComplexPropertyBean)propBeanCollection[1]).getDoubleNumber(), 0.1);
         assertEquals(33, ((ComplexPropertyBean)propBeanCollection[2]).getNumberSet().getIntegerNumber());
     }
 

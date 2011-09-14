@@ -37,10 +37,10 @@ import org.oasisopen.sca.annotation.Service;
 @Service(MyService.class)
 public class MyServiceImpl implements MyService {
 
-    @Property(name = "location")
+    @Property(name = "location", required=false)
     protected String location = "RTP";
 
-    @Property(name = "year")
+    @Property(name = "year", required=false)
     protected String year = "2006";
 
     @ComponentName

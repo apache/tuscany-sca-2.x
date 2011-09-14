@@ -35,7 +35,6 @@ public class PropertyComponentImpl implements PropertyComponent {
     @Context
     protected ComponentContext context;
 
-    @Property
     protected ComplexPropertyBean complexPropertyOne;
 
     @Property
@@ -77,6 +76,11 @@ public class PropertyComponentImpl implements PropertyComponent {
 
     public String getYear() {
         return year;
+    }
+    
+    @Property
+    public void setComplexPropertyOne(ComplexPropertyBean complexPropertyOne){
+        this.complexPropertyOne = complexPropertyOne;
     }
 
     public ComplexPropertyBean getComplexPropertyOne() {

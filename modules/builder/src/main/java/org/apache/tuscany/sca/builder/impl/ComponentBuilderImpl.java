@@ -80,6 +80,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.ExtensionType;
@@ -97,7 +98,7 @@ import org.xml.sax.InputSource;
 public class ComponentBuilderImpl {
     protected static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     protected static final String BINDING_SCA = "binding.sca";
-    protected static final QName BINDING_SCA_QNAME = new QName(SCA11_NS, BINDING_SCA);
+    protected static final QName BINDING_SCA_QNAME = new QName(SCA11_NS, BINDING_SCA);  
 
     private CompositeComponentTypeBuilderImpl componentTypeBuilder;
     protected ComponentPolicyBuilderImpl policyBuilder;
@@ -348,6 +349,16 @@ public class ComponentBuilderImpl {
             // configure the property value based on the @file attribute
             processPropertyFileAttribute(component, componentProperty, monitor);
             
+            // Check that a type or element are specified
+            if (componentProperty.getXSDElement() == null && componentProperty.getXSDType() == null) {
+                Monitor.error(monitor, 
+                              this, 
+                              Messages.ASSEMBLY_VALIDATION, 
+                              "NoTypeForComponentProperty", 
+                              component.getName(), 
+                              componentProperty.getName());
+            }
+            
             // Check that a value is supplied
             if (componentProperty.isMustSupply() && !isPropertyValueSet(componentProperty)) {
                 Monitor.error(monitor, 
@@ -560,6 +571,13 @@ public class ComponentBuilderImpl {
             
             if (property != null) {
                 componentProperty.setProperty(property);
+                // copy the types up if not specified at the component level 
+                if (componentProperty.getXSDElement() == null){
+                    componentProperty.setXSDElement(property.getXSDElement());
+                }
+                if (componentProperty.getXSDType() == null){
+                    componentProperty.setXSDType(property.getXSDType());
+                }
             } else {
                 Monitor.error(monitor,
                               this,
@@ -640,19 +658,10 @@ public class ComponentBuilderImpl {
             if (componentProperty.getXSDElement() == null) {
                 componentProperty.setXSDElement(componentTypeProperty.getXSDElement());
             }
-
-            // Check that a type or element are specified
-            if (componentProperty.getXSDElement() == null && componentProperty.getXSDType() == null) {
-                Monitor.error(monitor, 
-                              this, 
-                              Messages.ASSEMBLY_VALIDATION, 
-                              "NoTypeForComponentProperty", 
-                              component.getName(), 
-                              componentProperty.getName());
-            }
             
             // check that the types specified in the component type and component property match
             if ( componentProperty.getXSDElement() != null &&
+                 componentTypeProperty.getXSDElement() != null &&
                  !componentProperty.getXSDElement().equals(componentTypeProperty.getXSDElement())){
                 Monitor.error(monitor, 
                               this, 
@@ -665,7 +674,8 @@ public class ComponentBuilderImpl {
             }
             
             if ( componentProperty.getXSDType() != null &&
-                    !componentProperty.getXSDType().equals(componentTypeProperty.getXSDType())){
+                 componentTypeProperty.getXSDType() != null &&                 
+                 !componentProperty.getXSDType().equals(componentTypeProperty.getXSDType())){
                 Monitor.error(monitor, 
                               this, 
                               Messages.ASSEMBLY_VALIDATION, 
@@ -840,6 +850,12 @@ public class ComponentBuilderImpl {
 	
 	                if (node != null) {
 	                    componentProperty.setValue(node);
+	                    if(componentProperty.getXSDElement() == null){
+	                        componentProperty.setXSDElement(sourceProp.getXSDElement());
+	                    }
+                       if(componentProperty.getXSDType() == null){
+                            componentProperty.setXSDType(sourceProp.getXSDType());
+                        }
 	                } else {
 	                    Monitor.warning(monitor,
 	                                    this,

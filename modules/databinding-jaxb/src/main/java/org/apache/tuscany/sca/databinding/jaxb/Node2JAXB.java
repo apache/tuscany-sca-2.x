@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.databinding.jaxb;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.util.ValidationEventCollector;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.PullTransformer;
@@ -34,12 +36,14 @@ import org.w3c.dom.Node;
  */
 public class Node2JAXB extends BaseTransformer<Node, Object> implements PullTransformer<Node, Object> {
     private JAXBContextHelper contextHelper;
+    private ValidationEventCollector validationEventCollector = new ValidationEventCollector();
     
     public Node2JAXB(ExtensionPointRegistry registry) {
         contextHelper = JAXBContextHelper.getInstance(registry);
     }
 
     public Object transform(Node source, TransformationContext context) {
+        Object response = null;
         if (source == null)
             return null;
         try {
@@ -48,12 +52,27 @@ public class Node2JAXB extends BaseTransformer<Node, Object> implements PullTran
             Object result;
             // TUSCANY-3791
             synchronized(source){
+                /* some debug code
+                System.setProperty("jaxb.debug", "true");
+                unmarshaller.setListener(new DebugListener());
+                */
+                validationEventCollector.reset();
+                unmarshaller.setEventHandler(validationEventCollector);
                 result = unmarshaller.unmarshal(source, JAXBContextHelper.getJavaType(context.getTargetDataType()));
             }
-            return JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);
+            response = JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);
         } catch (Exception e) {
             throw new TransformationException(e);
         }
+        
+        if (validationEventCollector.hasEvents()){
+            String validationErrors = "";
+            for(ValidationEvent event : validationEventCollector.getEvents()){
+                validationErrors += "Event: " + event.getMessage() + " ";
+            }
+            throw new TransformationException(validationErrors);
+        }
+        return response;
     }
 
     @Override
@@ -75,5 +94,16 @@ public class Node2JAXB extends BaseTransformer<Node, Object> implements PullTran
     public String getTargetDataBinding() {
         return JAXBDataBinding.NAME;
     }
-
+    
+    /* some debug code
+    class DebugListener extends Unmarshaller.Listener {
+        public void beforeUnmarshal(Object target, Object parent) {
+            
+        }
+        
+        public void afterUnmarshal(Object target, Object parent) {
+            
+        }
+    }
+    */
 }

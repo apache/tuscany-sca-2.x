@@ -17,5 +17,6 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-
-<filePropertyTest>fileValue</filePropertyTest>
+<values xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912">
+    <value>fileValue</value>
+</values>

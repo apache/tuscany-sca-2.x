@@ -17,9 +17,9 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<value>
+<values xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912">
     <manyFilePropertyValues>fileValueOne</manyFilePropertyValues>
     <manyFilePropertyValues>fileValueTwo</manyFilePropertyValues>
     <manyFilePropertyValues>fileValueThree</manyFilePropertyValues>
     <manyFilePropertyValues>fileValueFour</manyFilePropertyValues>
-</value>
+</values>

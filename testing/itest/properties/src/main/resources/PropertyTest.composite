@@ -43,13 +43,13 @@
         </value>
     </property>
 
-    <property name="moreComplex" type="foo:MyMoreComplexType">
-        <value>
+    <property name="moreComplex" type="MyMoreComplexType">
+        <value xmlns="">
             <numberSetArray>
                 <integerNumber>1</integerNumber>
                 <floatNumber>11</floatNumber>
                 <doubleNumber>111</doubleNumber>
-            </numberSetArray>
+            </numberSetArray>           
             <numberSetArray>
                 <integerNumber>2</integerNumber>
                 <floatNumber>22</floatNumber>
@@ -68,12 +68,12 @@
                 <integerNumber>54</integerNumber>
                 <floatNumber>158.68</floatNumber>
                 <doubleNumber>369.04</doubleNumber>
-            </numberSet>
+            </numberSet>           
         </value>
     </property>
     
-    <property name="complexFoo" type="foo:MyMoreComplexType">
-        <value>
+    <property name="complexFoo" type="MyMoreComplexType">
+        <value xmlns="">
             <stringArray>TestString_3</stringArray>
             <stringArray>TestString_4</stringArray>
             <intArray>100</intArray>
@@ -114,15 +114,15 @@
         <property name="nosource">aValue</property>
         <property name="fileProperty" file="fileProperty.txt"/>
         <property name="manyValuesFileProperty" many="true" file="manyValuesFileProperty.txt"/>
-        <property name="nonFileProperty"  file="fileProperty.txt" source="$complex/foo:c"/>
+        <property name="nonFileProperty" source="$complex/foo:c"/>
         <property name="two" source="$number">25</property>
     </component>
 
     <component name="PropertyComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.PropertyComponentImpl"/>
         <property name="complexPropertyOne" source="$moreComplex"></property>
-        <property name="complexPropertyTwo" type="foo:MyMoreComplexType">
-            <value>
+        <property name="complexPropertyTwo" type="MyMoreComplexType">
+            <value xmlns="">
                 <stringArray>TestString_1</stringArray>
                 <stringArray>TestString_2</stringArray>
                 <intArray>10</intArray>
@@ -150,7 +150,7 @@
             </value>
         </property>
         <property name="complexPropertyThree" element="foo:PropertyThreeElement">
-            <PropertyThreeElement xmlns="http://foo">
+            <PropertyThreeElement xmlns="">
                 <stringArray>TestElementString_1</stringArray>
                 <stringArray>TestElementString_2</stringArray>
                 <intArray>10</intArray>
@@ -177,8 +177,8 @@
                 </numberSet>
             </PropertyThreeElement>
         </property>
-        <property name="complexPropertyFour" element="foo:PropertyFourElement" many="true">
-            <PropertyFourElement xmlns="http://foo">
+        <property name="complexPropertyFour" element="PropertyFourElement" many="true">
+            <PropertyFourElement xmlns="">
                 <integerNumber>1</integerNumber>
                 <floatNumber>11.11</floatNumber>
                 <doubleNumber>111.111</doubleNumber>
@@ -188,7 +188,7 @@
                     <doubleNumber>11111.11111</doubleNumber>
                 </numberSet>
             </PropertyFourElement>
-            <PropertyFourElement xmlns="http://foo">
+            <PropertyFourElement xmlns="">
                 <integerNumber>2</integerNumber>
                 <floatNumber>22.22</floatNumber>
                 <doubleNumber>222.222</doubleNumber>
@@ -198,7 +198,7 @@
                     <doubleNumber>22222.22222</doubleNumber>
                 </numberSet>
             </PropertyFourElement>
-            <PropertyFourElement xmlns="http://foo">
+            <PropertyFourElement xmlns="">
                 <integerNumber>3</integerNumber>
                 <floatNumber>33.33</floatNumber>
                 <doubleNumber>333.333</doubleNumber>

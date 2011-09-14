@@ -16,7 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<MyRCProps xmlns="http://test.sca.jaxb/rcprops">
-    <AInt>20</AInt>
-    <BInteger>20</BInteger>
-</MyRCProps>
+
+<values xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912">
+	<MyRCProps xmlns="http://test.sca.jaxb/rcprops">
+	    <AInt>20</AInt>
+	    <BInteger>20</BInteger>
+	</MyRCProps>
+</values>
