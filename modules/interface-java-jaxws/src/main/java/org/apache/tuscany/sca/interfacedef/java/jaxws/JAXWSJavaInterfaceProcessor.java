@@ -306,7 +306,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 }
                 
                 List<ElementInfo> inputElements = new ArrayList<ElementInfo>();
-                for (int i = 0; i < method.getParameterTypes().length; i++) {
+                for (int i = 0; i < operation.getInputType().getLogical().size(); i++) {
                     WebParam param = getAnnotation(method, i, WebParam.class);
                     ns = param != null ? param.targetNamespace() : "";
                     // Default to "" for doc-lit-wrapped && non-header
