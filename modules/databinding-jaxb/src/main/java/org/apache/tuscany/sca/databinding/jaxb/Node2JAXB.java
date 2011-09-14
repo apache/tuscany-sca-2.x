@@ -46,7 +46,7 @@ public class Node2JAXB extends BaseTransformer<Node, Object> implements PullTran
             JAXBContext jaxbContext = contextHelper.createJAXBContext(context, false);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             Object result;
-            // TUSCANY-3971
+            // TUSCANY-3791
             synchronized(source){
                 result = unmarshaller.unmarshal(source, JAXBContextHelper.getJavaType(context.getTargetDataType()));
             }
