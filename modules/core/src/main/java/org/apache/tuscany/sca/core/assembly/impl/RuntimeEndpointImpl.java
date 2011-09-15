@@ -828,7 +828,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
      * @param topCompositeService
      * @return
      */
-    private ComponentService getPromotedComponentService(CompositeService compositeService) {
+    public ComponentService getPromotedComponentService(CompositeService compositeService) {
         ComponentService componentService = compositeService.getPromotedService();
         if (componentService != null) {
             Service service = componentService.getService();
@@ -855,7 +855,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
      * @param compositeService
      * @return
      */
-    private Component getPromotedComponent(CompositeService compositeService) {
+    public Component getPromotedComponent(CompositeService compositeService) {
         ComponentService componentService = compositeService.getPromotedService();
         if (componentService != null) {
             Service service = componentService.getService();
