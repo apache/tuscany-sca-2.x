@@ -1,0 +1,20 @@
+This module is a Maven plugin for generating diagrams for SCA composites.
+
+To configure the project add the following to the pom.xml:
+
+   <build>
+      ...
+      <plugins>
+         <plugin>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-diagram-plugin</artifactId>
+         </plugin>
+      ...
+      </plugins>
+   </build>
+
+
+Optional parameters are:
+  outputDirectory - The output directory for the generated diagrams, default to ${project.build.directory}/composite-diagrams
+  composites - A list of composite files
+
