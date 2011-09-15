@@ -44,7 +44,13 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-websocket</artifactId>
-			<version>8.0.0.M3</version>
+			<version>8.0.1.v20110908</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>8.0.1.v20110908</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -61,6 +67,12 @@
 			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
+
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>3.0.1</version>
+</dependency>
 
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
