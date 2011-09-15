@@ -148,6 +148,9 @@
         <module>binding-corba</module>
         <module>binding-corba-runtime</module>
 
+        <!-- Composite diagram generator -->
+        <module>composite-diagram</module>
+
         <!-- 
             Runtime collection features 
 
