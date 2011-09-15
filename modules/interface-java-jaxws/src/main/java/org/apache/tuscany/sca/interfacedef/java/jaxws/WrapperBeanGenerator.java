@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
+import org.oasisopen.sca.ResponseDispatch;
 
 public class WrapperBeanGenerator extends BaseBeanGenerator {
 
@@ -71,7 +73,15 @@ public class WrapperBeanGenerator extends BaseBeanGenerator {
                 Type[] genericParamTypes = m.getGenericParameterTypes();
                 Annotation[][] paramAnnotations = m.getParameterAnnotations();
                 List<BeanProperty> properties = new ArrayList<BeanProperty>();
-                for (int i = 0; i < paramTypes.length; i++) {
+
+                boolean asyncMethod = m.getName().endsWith("Async") && paramTypes.length > 0 && ResponseDispatch.class.equals(paramTypes[paramTypes.length-1]);
+                int length = paramTypes.length;
+                if (asyncMethod) {
+                    length -= 1;
+                }
+                
+                for (int i = 0; i < length; i++) {
+                    
                     String propNS = "";
                     String propName = "arg" + i;
 
@@ -87,6 +97,7 @@ public class WrapperBeanGenerator extends BaseBeanGenerator {
                         }
                         propNS = webParam.targetNamespace();
                     }
+                    
                     if (mode.equals(WebParam.Mode.IN) || mode.equals(WebParam.Mode.INOUT)) {
                         java.lang.reflect.Type genericParamType = getHolderValueType(genericParamTypes[i]);
                         Class<?> paramType = CodeGenerationHelper.getErasure(genericParamType);
@@ -133,7 +144,14 @@ public class WrapperBeanGenerator extends BaseBeanGenerator {
                 Annotation[][] paramAnns = m.getParameterAnnotations();
                 Class<?>[] paramTypes = m.getParameterTypes();
                 java.lang.reflect.Type[] genericParamTypes = m.getGenericParameterTypes();
-                for (int i = 0; i < paramTypes.length; i++) {
+
+                boolean asyncMethod = m.getName().endsWith("Async") && paramTypes.length > 0 && ResponseDispatch.class.equals(paramTypes[paramTypes.length-1]);
+                int length = paramTypes.length;
+                if (asyncMethod) {
+                    length -= 1;
+                }
+                
+                for (int i = 0; i < length; i++) {
                     WebParam webParam = findAnnotation(paramAnns[i], WebParam.class);
                     if (webParam != null) {
                         if (webParam.header() || webParam.mode() == WebParam.Mode.IN) {
@@ -166,6 +184,9 @@ public class WrapperBeanGenerator extends BaseBeanGenerator {
 
                 WebResult webResult = m.getAnnotation(WebResult.class);
                 Class<?> returnType = m.getReturnType();
+                if (asyncMethod) {
+                    returnType = (Class<?>)((ParameterizedType)genericParamTypes[genericParamTypes.length-1]).getActualTypeArguments()[0];
+                }
                 if (!((webResult != null && webResult.header()) || returnType == Void.TYPE)) {
                     String propName = "return";
                     String propNS = "";
@@ -181,7 +202,7 @@ public class WrapperBeanGenerator extends BaseBeanGenerator {
 
                     List<Annotation> jaxb = findJAXBAnnotations(m.getAnnotations());
 
-                    Type genericReturnType = m.getGenericReturnType();
+                    Type genericReturnType = asyncMethod? returnType : m.getGenericReturnType();
                     BeanProperty prop = new BeanProperty(propNS, propName, returnType, genericReturnType, true);
                     prop.getJaxbAnnotaions().addAll(jaxb);
                     properties.add(prop);
