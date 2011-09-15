@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- MyValueComposite Wires examples -->
+
+<composite     xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+
+               targetNamespace="http://foo.com"
+
+               name="MyValueComposite2" >
+
+ 	<include name="store"/>
+ 	<include name="Calculator"/>
+ 	<include name="supplychain"/>
+
+   <service name="MyValueService" promote="MyValueServiceComponent">
+
+         <interface.java interface="services.myvalue.MyValueService"/>
+
+         <binding.ws port="http://www.myvalue.org/MyValueService#
+
+               wsdl.endpoint(MyValueService/MyValueServiceSOAP)"/>
+
+   </service>
+
+ 
+
+   <component name="MyValueServiceComponent">
+
+         <implementation.java
+
+               class="services.myvalue.MyValueServiceImpl"/>
+
+         <property name="currency">EURO</property>
+
+         <service name="myValueService"/>
+
+         <reference name="customerService"/>
+
+         <reference name="stockQuoteService"/>
+
+   </component>
+
+ 
+
+   <wire source="MyValueServiceComponent/stockQuoteService"
+
+         target="StockQuoteMediatorComponent"/>
+
+ 
+
+   <component name="StockQuoteMediatorComponent">
+
+         <implementation.java class="services.myvalue.SQMediatorImpl"/>
+
+         <property name="currency">EURO</property>
+
+         <reference name="stockQuoteService"/>
+
+   </component>
+
+ 
+
+   <reference name="CustomerService"
+
+         promote="MyValueServiceComponent/customerService">
+
+         <interface.java interface="services.customer.CustomerService"/>
+
+         <binding.sca/>
+
+   </reference>
+
+ 
+
+   <reference name="StockQuoteService" 
+
+         promote="StockQuoteMediatorComponent">
+
+         <interface.java
+
+               interface="services.stockquote.StockQuoteService"/>
+
+         <binding.ws port="http://www.stockquote.org/StockQuoteService#
+
+               wsdl.endpoint(StockQuoteService/StockQuoteServiceSOAP)"/>
+
+   </reference>
+
+ 
+
+</composite>
