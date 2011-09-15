@@ -197,20 +197,27 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
     private Operation getSyncFormOfOperation( JavaOperation operation ) {
     	if( isAsyncServerOperation( operation ) ) {
             JavaOperation syncOperation = new JavaOperationImpl();
-            String opName = operation.getName().substring(0, operation.getName().length() - 5 );
+//            String opName = operation.getName().substring(0, operation.getName().length() - 5 );
+            String opName = operation.getName();
         	
             // Prepare the list of equivalent input parameters, which simply excludes the (final) DispatchResponse object
             // and the equivalent return parameter, which is the (generic) type from the DispatchResponse object
             DataType<List<DataType>> requestParams = operation.getInputType();
 
-        	DataType<List<DataType>> inputType = prepareSyncInputParams( requestParams );
-            DataType<List<DataType>> returnDataType = prepareSyncReturnParam( requestParams );
+//        	DataType<List<DataType>> inputType = prepareSyncInputParams( requestParams );
+//            DataType<List<DataType>> returnDataType = prepareSyncReturnParam( requestParams );
             List<DataType> faultDataTypes = prepareSyncFaults( operation );
         	
-        	syncOperation.setName(opName);
-        	syncOperation.setAsyncServer(true);
-            syncOperation.setInputType(inputType);
-            syncOperation.setOutputType(returnDataType);
+            syncOperation.setName(opName);
+            syncOperation.setAsyncServer(true);
+            syncOperation.setWrapper(operation.getWrapper());
+            syncOperation.setWrapperStyle(operation.isWrapperStyle());
+            syncOperation.setHasArrayWrappedOutput(operation.hasArrayWrappedOutput());
+            syncOperation.setNotSubjectToWrapping(operation.isNotSubjectToWrapping());
+//            syncOperation.setInputType(inputType);
+//            syncOperation.setOutputType(returnDataType);
+            syncOperation.setInputType(operation.getInputType());
+            syncOperation.setOutputType(operation.getOutputType());
             syncOperation.setFaultTypes(faultDataTypes);
             syncOperation.setNonBlocking(operation.isNonBlocking());
             syncOperation.setJavaMethod(operation.getJavaMethod());
@@ -300,6 +307,10 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
      * @return - true if the operation has the form of an async operation, false otherwise
      */
     private boolean isAsyncServerOperation( Operation operation ) {
+        
+        if (operation.isAsyncServer()) {
+            return true;
+        }
     	// Async form operations have:
     	// 1) void return type (equivalent to an output logical List of size '0')
     	// 2) name ending in "Async"

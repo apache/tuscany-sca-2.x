@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.interfacedef.java.impl;
 
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_INPUT;
+import static org.apache.tuscany.sca.interfacedef.Operation.IDL_OUTPUT;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -44,8 +47,6 @@ import org.apache.tuscany.sca.interfacedef.InvalidCallbackException;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.InvalidOperationException;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import static org.apache.tuscany.sca.interfacedef.Operation.IDL_INPUT;
-import static org.apache.tuscany.sca.interfacedef.Operation.IDL_OUTPUT;
 import org.apache.tuscany.sca.interfacedef.OverloadedOperationException;
 import org.apache.tuscany.sca.interfacedef.ParameterMode;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -55,7 +56,9 @@ import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.oasisopen.sca.ResponseDispatch;
 import org.oasisopen.sca.annotation.AsyncFault;
+import org.oasisopen.sca.annotation.AsyncInvocation;
 import org.oasisopen.sca.annotation.OneWay;
 import org.oasisopen.sca.annotation.Remotable;
 
@@ -173,9 +176,10 @@ public class JavaInterfaceIntrospectorImpl {
         method.getParameterAnnotations();
     } // end method checkMethodAnnotations
 
-    private Class<?>[] getActualTypes(Type[] types, Class<?>[] rawTypes, Map<String, Type> typeBindings) {
-        Class<?>[] actualTypes = new Class<?>[types.length];
-        for (int i = 0; i < actualTypes.length; i++) {
+    private Class<?>[] getActualTypes(Type[] types, Class<?>[] rawTypes, Map<String, Type> typeBindings, boolean ignoreAsyncHolder) {
+        int x = ignoreAsyncHolder ? types.length -1 : types.length;
+        Class<?>[] actualTypes = new Class<?>[x];
+        for (int i = 0; i < x; i++) {
             actualTypes[i] = getActualType(types[i], rawTypes[i], typeBindings);
         }
         return actualTypes;
@@ -212,6 +216,8 @@ public class JavaInterfaceIntrospectorImpl {
                 }
             }
         }
+        
+        boolean isAsyncService = clazz.isAnnotationPresent(AsyncInvocation.class);
 
         Method[] methods = clazz.getMethods();
         List<Operation> operations = new ArrayList<Operation>(methods.length);
@@ -223,6 +229,14 @@ public class JavaInterfaceIntrospectorImpl {
                 continue;
             }
             String name = method.getName();
+
+            Class<?> lastParameter = method.getParameterTypes().length > 0 ? method.getParameterTypes()[method.getParameterTypes().length-1] : null;
+            boolean isAsyncMethod = isAsyncService && name.endsWith("Async") && lastParameter != null && ResponseDispatch.class.equals(lastParameter);
+
+            if (isAsyncMethod) {
+                name = name.substring(0, name.length()-5);
+            }
+
             if (remotable && names.contains(name)) {
                 throw new OverloadedOperationException(method);
             }
@@ -230,11 +244,18 @@ public class JavaInterfaceIntrospectorImpl {
                 names.add(name);
             }
 
-            Class<?> returnType = getActualType(method.getGenericReturnType(), method.getReturnType(), typeBindings);
-            Class<?>[] parameterTypes =
-                getActualTypes(method.getGenericParameterTypes(), method.getParameterTypes(), typeBindings);
+            Class<?>[] parameterTypes = getActualTypes(method.getGenericParameterTypes(), method.getParameterTypes(), typeBindings, isAsyncMethod);
+
+            Class<?> returnType;
+            if (isAsyncMethod) {
+                ParameterizedType t = (ParameterizedType)method.getGenericParameterTypes()[method.getGenericParameterTypes().length-1];
+                returnType = (Class<?>)t.getActualTypeArguments()[0];
+            } else {
+                returnType = getActualType(method.getGenericReturnType(), method.getReturnType(), typeBindings);
+            }
+
             Class<?>[] faultTypes =
-                getActualTypes(method.getGenericExceptionTypes(), method.getExceptionTypes(), typeBindings);
+                getActualTypes(method.getGenericExceptionTypes(), method.getExceptionTypes(), typeBindings, false);
             Class<?>[] allOutputTypes = getOutputTypes(returnType, parameterTypes);
 
             // For async server interfaces, faults are described using the @AsyncFaults annotation
@@ -266,8 +287,11 @@ public class JavaInterfaceIntrospectorImpl {
             if (returnType == void.class) {
                 operation.setReturnTypeVoid(true);
             } else {
-                 returnDataType = new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, returnType, 
-                     method.getGenericReturnType(), xmlReturnType);
+                if (isAsyncMethod) {
+                    returnDataType = new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, returnType, returnType, xmlReturnType);
+                } else {
+                    returnDataType = new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, returnType, method.getGenericReturnType(), xmlReturnType);
+                }
                  operation.setReturnTypeVoid(false);
                  outputDataTypes.add(returnDataType);
             }
@@ -327,7 +351,8 @@ public class JavaInterfaceIntrospectorImpl {
             operation.setFaultTypes(faultDataTypes);
             operation.setNonBlocking(nonBlocking);
             operation.setJavaMethod(method);
-            operation.setHasArrayWrappedOutput(hasMultipleOutputs);     
+            operation.setHasArrayWrappedOutput(hasMultipleOutputs); 
+            operation.setAsyncServer(isAsyncMethod);
             operations.add(operation);
         }
         return operations;

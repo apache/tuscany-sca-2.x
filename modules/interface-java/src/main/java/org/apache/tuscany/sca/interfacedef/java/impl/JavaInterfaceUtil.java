@@ -81,6 +81,8 @@ public final class JavaInterfaceUtil {
             for (Method m : implClass.getMethods()) {
                 if (m.getName().equals(name) && m.getParameterTypes().length == numParams) {
                     matchingMethods.add(m);
+                } else if (m.getName().equals(name + "Async") && m.getParameterTypes().length == numParams + 1) {
+                    matchingMethods.add(m);
                 }
             }
             
@@ -113,6 +115,11 @@ public final class JavaInterfaceUtil {
      * @throws NoSuchMethodException if no such method exists
      */
     public static Method findAsyncServerMethod(Class<?> implClass, JavaOperation operation) throws NoSuchMethodException {
+        
+        if (operation.getJavaMethod() != null) {
+            return operation.getJavaMethod();
+        }
+        
         String name = operation.getJavaMethod().getName();
         List<Operation> actualOps = (List<Operation>) operation.getInterface().getAttributes().get("ASYNC-SERVER-OPERATIONS");
         Operation matchingOp = null;
