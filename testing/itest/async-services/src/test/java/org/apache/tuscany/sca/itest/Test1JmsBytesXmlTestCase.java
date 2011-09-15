@@ -24,11 +24,9 @@ import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchServiceException;
 
-@Ignore
 public class Test1JmsBytesXmlTestCase {
 
     protected TuscanyRuntime runtime;
