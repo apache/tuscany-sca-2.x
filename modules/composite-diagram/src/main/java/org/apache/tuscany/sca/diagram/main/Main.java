@@ -118,11 +118,15 @@ public class Main {
         }
         File dir = new File(outFileDir);
         String[] compositeFiles = cli.getArgs();
-        generate(dir, isSvg, isHtml, false, compositeFiles);
+        generate(dir, null, isSvg, isHtml, false, compositeFiles);
     }
 
-    public static void generate(File dir, boolean isSvg, boolean isHtml, boolean isJpeg, String... compositeFiles)
-        throws Exception {
+    public static void generate(File dir,
+                                String baseURL,
+                                boolean isSvg,
+                                boolean isHtml,
+                                boolean isJpeg,
+                                String... compositeFiles) throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         for (String str : compositeFiles) {
 
@@ -134,7 +138,7 @@ public class Main {
                 EntityBuilder eb = new EntityBuilder(doc);
                 CompositeEntity comp = eb.buildCompositeEntity();
 
-                DiagramGenerator dg = new DiagramGenerator(comp, isHtml);
+                DiagramGenerator dg = new DiagramGenerator(comp, isHtml, baseURL);
                 Document svg = dg.buildSVGDocument();
 
                 if (isJpeg) {

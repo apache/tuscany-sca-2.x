@@ -45,6 +45,7 @@ import org.w3c.dom.Element;
 
 public class DiagramGenerator {
 
+    private static final String XLINK_NS = "http://www.w3.org/1999/xlink";
     private CompositeEntity comp;
     private Document doc;
     private String svgNS;
@@ -54,6 +55,7 @@ public class DiagramGenerator {
     private int diagramHeight, diagramWidth;
 
     private boolean isHtml;
+    private final String baseURL;
 
     private int lastUsedChangingFactor = 0;
 
@@ -82,10 +84,11 @@ public class DiagramGenerator {
      * Constructor to generate a SVG diagram for a given CompositeEntity
      * Object.
      */
-    public DiagramGenerator(CompositeEntity comp, boolean isHtml) {
+    public DiagramGenerator(CompositeEntity comp, boolean isHtml, String baseURL) {
 
         this.comp = comp;
         this.isHtml = isHtml;
+        this.baseURL = baseURL;
 
     }
 
@@ -100,6 +103,8 @@ public class DiagramGenerator {
 
         // Get the root element (the 'svg' element).
         svgRoot = doc.getDocumentElement();
+
+        svgRoot.setAttribute("xmlns:xlink", XLINK_NS);
 
         setDiagramHeight(comp.getHeight() + 200);
         setDiagramWidth(comp.getWidth() + 400);
@@ -311,7 +316,18 @@ public class DiagramGenerator {
             Element property = pro.addElement(doc, svgNS, x, y, propLen);
             Element text = Text.addTextElement(doc, svgNS, x, y - Constant.SPACING_FOR_TEXT, prop);
 
-            svgRoot.appendChild(property);
+            Element child = property;
+            if (baseURL != null) {
+                Element link = doc.createElementNS(svgNS, "a");
+                link.setAttributeNS(XLINK_NS, "xlink:href", baseURL + "/components/"
+                    + ent.getName()
+                    + "/properties/"
+                    + prop);
+                link.appendChild(property);
+                child = link;
+            }
+            
+            svgRoot.appendChild(child);
             svgRoot.appendChild(text);
 
             x += (propLen + Constant.SPACING_FOR_COMPONENT_OF_PROPERTY);
@@ -330,8 +346,20 @@ public class DiagramGenerator {
         for (String ref : setRefOrder(ent)) {
             ReferenceArtifact refer = new ReferenceArtifact();
             Element polygon = refer.addElement(doc, svgNS, x, y, refHeight);
+
+            Element child = polygon;
+            if (baseURL != null) {
+                Element link = doc.createElementNS(svgNS, "a");
+                link.setAttributeNS(XLINK_NS, "xlink:href", baseURL + "/components/"
+                    + ent.getName()
+                    + "/services/"
+                    + ref);
+                link.appendChild(polygon);
+                child = link;
+            }
+
             Element text = Text.addTextElement(doc, svgNS, x, y - Constant.SPACING_FOR_TEXT, ref);
-            svgRoot.appendChild(polygon);
+            svgRoot.appendChild(child);
             svgRoot.appendChild(text);
 
             y += (refHeight + Constant.SPACING_FOR_COMPONENT_OF_REFERENCE);
@@ -450,7 +478,18 @@ public class DiagramGenerator {
             else
                 text = Text.addTextElement(doc, svgNS, x, y - Constant.SPACING_FOR_TEXT, "");
 
-            svgRoot.appendChild(polygon);
+            Element child = polygon;
+            if (baseURL != null) {
+                Element link = doc.createElementNS(svgNS, "a");
+                link.setAttributeNS(XLINK_NS, "xlink:href", baseURL + "/components/"
+                    + ent.getName()
+                    + "/services/"
+                    + ser);
+                link.appendChild(polygon);
+                child = link;
+            }
+
+            svgRoot.appendChild(child);
             svgRoot.appendChild(text);
 
             y += (serHeight + Constant.SPACING_FOR_COMPONENT_OF_SERVICE);
@@ -558,6 +597,15 @@ public class DiagramGenerator {
         ComponentArtifact comp = new ComponentArtifact();
         //System.err.println(ent.getX());
         Element com = comp.addElement(doc, svgNS, ent.getX(), ent.getY(), ent.getHeight(), ent.getWidth());
+
+        Element component = com;
+        if (baseURL != null) {
+            Element link = doc.createElementNS(svgNS, "a");
+            link.setAttributeNS(XLINK_NS, "xlink:href", baseURL + "/components/" + ent.getName());
+            link.appendChild(com);
+            component = link;
+        }
+
         Element text =
             Text.addTextElement(doc,
                                 svgNS,
@@ -565,7 +613,7 @@ public class DiagramGenerator {
                                 ent.getY() + (ent.getHeight() + Constant.COMPONENT_TEXT_SPACING),
                                 ent.getName());
 
-        svgRoot.appendChild(com);
+        svgRoot.appendChild(component);
         svgRoot.appendChild(text);
 
         comp.setName(ent.getName());

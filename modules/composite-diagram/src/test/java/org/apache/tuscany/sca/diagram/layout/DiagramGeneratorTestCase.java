@@ -25,7 +25,7 @@ public class DiagramGeneratorTestCase {
         for (File xml : new File("input").listFiles()) {
             if (xml.getName().endsWith(".xml")) {
                 System.out.println(xml);
-                Main.generate(new File("target"), true, false, false, xml.toString());
+                Main.generate(new File("target"), null, true, false, false, xml.toString());
             }
         }
     }

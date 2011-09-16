@@ -70,6 +70,11 @@ public class TuscanyDiagramMojo extends AbstractMojo {
     private File outputDirectory;
 
     /**
+     * @parameter The base URL for the clickable blocks
+     */
+    private String baseURL;
+
+    /**
      * @parameter
      */
     private boolean generateSVG = true;
@@ -97,6 +102,7 @@ public class TuscanyDiagramMojo extends AbstractMojo {
             try {
                 getLog().info("Generating diagram for " + f);
                 org.apache.tuscany.sca.diagram.main.Main.generate(outputDirectory,
+                                                                  baseURL,
                                                                   generateSVG,
                                                                   generateHTML,
                                                                   generateJPG,
