@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
  * CSS style element
  */
 public class Style {
-    private String css = "rect.composite {" + "          fill: #E5E5E5;"
+    private static final String DEFAULT_CSS = "rect.composite {" + "          fill: #E5E5E5;"
         + "          stroke: #919191;"
         + "          alignment-baseline: middle;"
         + "      }\n"
@@ -68,27 +68,33 @@ public class Style {
         + "        alignment-baseline: middle;"
         + "      }\n";
 
-    public Element addElement(Document document, String svgNs, String css) {
+    private static volatile String css;
+
+    public Element addElement(Document document, String svgNs, String styleSheet) {
 
         Element style = document.createElementNS(svgNs, "style");
         style.setAttributeNS(null, "type", "text/css");
 
-        if (css != null) {
-            this.css = css;
+        if (styleSheet == null) {
+            try {
+                if (css == null) {
+                    css = readCSS();
+                }
+            } catch (IOException e) {
+                // Ignore
+                css = DEFAULT_CSS;
+            }
+            styleSheet = css;
         }
-        try {
-            this.css = readCSS();
-        } catch (IOException e) {
-            // Ignore
-        }
-        CDATASection cdata = document.createCDATASection(this.css);
+
+        CDATASection cdata = document.createCDATASection(styleSheet);
         style.appendChild(cdata);
 
         return style;
     }
 
-    private String readCSS() throws IOException {
-        InputStream is = getClass().getResourceAsStream("composite-diagram.css");
+    private static String readCSS() throws IOException {
+        InputStream is = Style.class.getResourceAsStream("composite-diagram.css");
         InputStreamReader reader = new InputStreamReader(is, "UTF-8");
 
         StringWriter sw = new StringWriter();
