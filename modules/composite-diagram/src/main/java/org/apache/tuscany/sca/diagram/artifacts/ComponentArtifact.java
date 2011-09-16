@@ -41,9 +41,10 @@ public class ComponentArtifact extends Artifact {
         rectangle.setAttributeNS(null, "ry", getRoundCorner());
         rectangle.setAttributeNS(null, "width", width + "");
         rectangle.setAttributeNS(null, "height", height + "");
-        rectangle.setAttributeNS(null, "fill", "#3D59AB");
-        rectangle.setAttributeNS(null, "stroke", "#104E8B");
-        rectangle.setAttributeNS(null, "fill-opacity", "0.75");
+//        rectangle.setAttributeNS(null, "fill", "#3D59AB");
+//        rectangle.setAttributeNS(null, "stroke", "#104E8B");
+//        rectangle.setAttributeNS(null, "fill-opacity", "0.75");
+        rectangle.setAttributeNS(null, "class", "component");
         return rectangle;
     }
 

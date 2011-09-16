@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.diagram.artifacts.NormalWire;
 import org.apache.tuscany.sca.diagram.artifacts.PropertyArtifact;
 import org.apache.tuscany.sca.diagram.artifacts.ReferenceArtifact;
 import org.apache.tuscany.sca.diagram.artifacts.ServiceArtifact;
+import org.apache.tuscany.sca.diagram.artifacts.Style;
 import org.apache.tuscany.sca.diagram.artifacts.Text;
 import org.apache.tuscany.sca.diagram.artifacts.WireArtifact;
 import org.apache.tuscany.sca.diagram.layout.ComponentEntity;
@@ -111,6 +112,8 @@ public class DiagramGenerator {
         setDiagramWidth(comp.getWidth() + 400);
 
         svgRoot.setAttributeNS(null, "viewBox", "0 0 " + getDiagramWidth() + " " + getDiagramHeight());
+
+        svgRoot.appendChild(new Style().addElement(doc, svgNS, null));
 
         addLayer();
         addComposite();
@@ -319,15 +322,10 @@ public class DiagramGenerator {
 
             Element child = property;
             if (baseURL != null) {
-                Element link = doc.createElementNS(svgNS, "a");
-                link.setAttributeNS(XLINK_NS, "xlink:href", baseURL + "/components/"
-                    + ent.getName()
-                    + "/properties/"
-                    + prop);
-                link.appendChild(property);
-                child = link;
+                String url = baseURL + "/components/" + ent.getName() + "/properties/" + prop;
+                child = createLink(property, url);
             }
-            
+
             svgRoot.appendChild(child);
             svgRoot.appendChild(text);
 
@@ -350,13 +348,8 @@ public class DiagramGenerator {
 
             Element child = polygon;
             if (baseURL != null) {
-                Element link = doc.createElementNS(svgNS, "a");
-                link.setAttributeNS(XLINK_NS, "xlink:href", baseURL + "/components/"
-                    + ent.getName()
-                    + "/services/"
-                    + ref);
-                link.appendChild(polygon);
-                child = link;
+                String url = baseURL + "/components/" + ent.getName() + "/services/" + ref;
+                child = createLink(polygon, url);
             }
 
             Element text = Text.addTextElement(doc, svgNS, x, y - Constant.SPACING_FOR_TEXT, ref);
@@ -481,13 +474,8 @@ public class DiagramGenerator {
 
             Element child = polygon;
             if (baseURL != null) {
-                Element link = doc.createElementNS(svgNS, "a");
-                link.setAttributeNS(XLINK_NS, "xlink:href", baseURL + "/components/"
-                    + ent.getName()
-                    + "/services/"
-                    + ser);
-                link.appendChild(polygon);
-                child = link;
+                String url = baseURL + "/components/" + ent.getName() + "/services/" + ser;
+                child = createLink(polygon, url);
             }
 
             svgRoot.appendChild(child);
@@ -601,10 +589,8 @@ public class DiagramGenerator {
 
         Element component = com;
         if (baseURL != null) {
-            Element link = doc.createElementNS(svgNS, "a");
-            link.setAttributeNS(XLINK_NS, "xlink:href", baseURL + "/components/" + ent.getName());
-            link.appendChild(com);
-            component = link;
+            String url = baseURL + "/components/" + ent.getName();
+            component = createLink(com, url);
         }
 
         Element text =
@@ -618,7 +604,7 @@ public class DiagramGenerator {
         svgRoot.appendChild(text);
 
         comp.setName(ent.getName());
-        
+
         if (ent.getImplementation() == null) {
             return;
         }
@@ -641,9 +627,20 @@ public class DiagramGenerator {
                                 ent.getY() + (ent.getHeight() / 4 + Constant.COMPONENT_TEXT_SPACING),
                                 ent.getImplementation());
         text2.setAttributeNS(null, "font-size", "10");
+        if (baseURL != null) {
+            String url = baseURL + "/components/" + ent.getName() + "/implementation";
+            implElement = createLink(implElement, url);
+        }
         svgRoot.appendChild(implElement);
         svgRoot.appendChild(text2);
-        
+
+    }
+
+    private Element createLink(Element com, String url) {
+        Element link = doc.createElementNS(svgNS, "a");
+        link.setAttributeNS(XLINK_NS, "xlink:href", url);
+        link.appendChild(com);
+        return link;
     }
 
     private void addComposite() {

@@ -38,6 +38,7 @@ public class NormalWire extends WireArtifact {
         int y2 = aService.getyCoordinate() + aService.getHeight() / 2;
 
         polyline = setWireAttributes(x1, y1, x2, y2, polyline, changingFactor, color);
+        polyline.setAttributeNS(null, "class", "wire normalWire");
 
         return polyline;
     }

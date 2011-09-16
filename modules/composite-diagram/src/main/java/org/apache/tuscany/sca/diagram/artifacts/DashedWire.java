@@ -58,7 +58,9 @@ public class DashedWire extends WireArtifact {
 
         polyline = setWireAttributes(x1, y1, x2, y2, polyline, changingFactor, color);
 
-        polyline.setAttributeNS(null, "stroke-dasharray", "3 3");
+//        polyline.setAttributeNS(null, "stroke-dasharray", "3 3");
+        polyline.setAttributeNS(null, "class", "wire dashedWire");
+
 
         return polyline;
     }

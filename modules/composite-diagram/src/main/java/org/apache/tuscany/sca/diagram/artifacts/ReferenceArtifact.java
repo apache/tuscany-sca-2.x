@@ -74,6 +74,8 @@ public class ReferenceArtifact extends Artifact {
 
         polygon.setAttributeNS(null, "fill", "#BF3EFF");
         polygon.setAttributeNS(null, "stroke", "#68228B");
+        polygon.setAttributeNS(null, "class", "reference");
+
 
         return polygon;
     }

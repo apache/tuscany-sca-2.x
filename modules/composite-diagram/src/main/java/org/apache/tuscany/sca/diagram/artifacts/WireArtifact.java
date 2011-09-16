@@ -79,6 +79,8 @@ public abstract class WireArtifact {
         polyline.setAttributeNS(null, "stroke", color);
         polyline.setAttributeNS(null, "stroke-width", "2");
         polyline.setAttributeNS(null, "fill", "none");
+        
+        polyline.setAttributeNS(null, "class", "wire");
 
         return polyline;
     }

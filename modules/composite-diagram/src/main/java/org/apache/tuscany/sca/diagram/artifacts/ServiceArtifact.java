@@ -74,7 +74,7 @@ public class ServiceArtifact extends Artifact {
 
         polygon.setAttributeNS(null, "fill", "#00CD66");
         polygon.setAttributeNS(null, "stroke", "#008B45");
-
+        polygon.setAttributeNS(null, "class", "service");
         return polygon;
     }
 

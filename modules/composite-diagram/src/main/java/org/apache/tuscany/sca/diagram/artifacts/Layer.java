@@ -45,6 +45,7 @@ public class Layer extends Artifact {
         rectangle.setAttributeNS(null, "fill", "#E5E5D0");
         rectangle.setAttributeNS(null, "stroke", "#919191");
         rectangle.setAttributeNS(null, "alignment-baseline", "middle");
+        rectangle.setAttributeNS(null, "class", "layer");
 
         return rectangle;
     }

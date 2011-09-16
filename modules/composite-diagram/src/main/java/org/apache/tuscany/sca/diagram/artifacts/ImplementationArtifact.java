@@ -45,6 +45,8 @@ public class ImplementationArtifact extends Artifact {
         rectangle.setAttributeNS(null, "stroke", "black");
         rectangle.setAttributeNS(null, "stroke-width", "1");
         rectangle.setAttributeNS(null, "fill-opacity", "0.1");
+        
+        rectangle.setAttributeNS(null, "class", "implementation");
         return rectangle;
     }
 

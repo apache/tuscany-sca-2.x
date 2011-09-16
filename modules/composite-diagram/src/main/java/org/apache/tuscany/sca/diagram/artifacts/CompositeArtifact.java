@@ -42,9 +42,10 @@ public class CompositeArtifact extends Artifact {
         rectangle.setAttributeNS(null, "ry", getRoundCorner());
         rectangle.setAttributeNS(null, "width", width + "");
         rectangle.setAttributeNS(null, "height", height + "");
-        rectangle.setAttributeNS(null, "fill", "#E5E5E5");
-        rectangle.setAttributeNS(null, "stroke", "#919191");
-        rectangle.setAttributeNS(null, "alignment-baseline", "middle");
+//        rectangle.setAttributeNS(null, "fill", "#E5E5E5");
+//        rectangle.setAttributeNS(null, "stroke", "#919191");
+//        rectangle.setAttributeNS(null, "alignment-baseline", "middle");
+        rectangle.setAttributeNS(null, "class", "composite");
 
         return rectangle;
     }

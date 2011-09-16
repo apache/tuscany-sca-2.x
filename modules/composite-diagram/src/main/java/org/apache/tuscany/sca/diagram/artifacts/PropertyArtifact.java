@@ -46,6 +46,8 @@ public class PropertyArtifact extends Artifact {
         rectangle.setAttributeNS(null, "fill", "#EEEE00");
         rectangle.setAttributeNS(null, "stroke", "#EEC900");
         //rectangle.setAttributeNS(null, "fill-opacity", "0.75");
+        
+        rectangle.setAttributeNS(null, "class", "property");
 
         return rectangle;
     }

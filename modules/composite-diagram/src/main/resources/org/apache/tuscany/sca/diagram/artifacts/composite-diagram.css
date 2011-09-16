@@ -1,0 +1,45 @@
+rect.layer {
+	fill: #E5E5D0;
+	stroke: #919191;
+	alignment-baseline: middle;
+}
+
+rect.composite {
+	fill: #E5E5E5;
+	stroke: #919191;
+	alignment-baseline: middle;
+}
+
+rect.component {
+	fill: #3D59AB;
+	stroke: #104E8B;
+	fill-opacity: 0.75;
+}
+
+rect.property {
+	fill: #EEEE00;
+	stroke: #EEC900;
+}
+
+polygon.reference {
+	fill: #BF3EFF;
+	stroke: #68228B;
+}
+
+polygon.service {
+	fill: #00CD66;
+	stroke: #008B45;
+}
+
+polyline.wire {
+	stroke-width: 2;
+	fill: none;
+}
+
+polyline.normalWire {
+	
+}
+
+polyline.dashedWire {
+	stroke-dasharray: "3 3";
+}

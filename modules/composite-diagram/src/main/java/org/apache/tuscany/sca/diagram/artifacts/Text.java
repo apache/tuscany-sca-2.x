@@ -32,7 +32,7 @@ public class Text {
         text.setAttributeNS(null, "dominant-baseline", "mathematical");
         text.setAttributeNS(null, "font-size", "15");
         text.setTextContent(content);
-
+        text.setAttributeNS(null, "class", "name");
         return text;
     }
 }
