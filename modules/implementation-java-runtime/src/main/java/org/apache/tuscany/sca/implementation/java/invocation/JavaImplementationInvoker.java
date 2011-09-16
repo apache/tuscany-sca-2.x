@@ -84,7 +84,7 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
 
     @SuppressWarnings("unchecked")
     public Message invoke(Message msg) {
-    	
+        
         Operation op = msg.getOperation();
         if (op == null) {
             op = this.operation;
@@ -104,6 +104,7 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
                     return tccl;
                  }
             });
+        ClassLoader contributionClassloader = null;
         
         try {
             // The following call might create a new conversation, as a result, the msg.getConversationID() might 
@@ -131,17 +132,19 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
                 }
             }
             
-            // Set the thread context classloader of the thread used to invoke an operation 
+            // TUSCANY-3946 - If the TCCL has not already been set to the contribution classloader then
+            // set it  so that the thread context classloader of the thread used to invoke an operation 
             // of a Java POJO component implementation is the class loader of the contribution 
-            // that contains the POJO implementation class.
-            AccessController.doPrivileged(new PrivilegedAction() {
-                public Object run() {
-                    Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
-                    return null;
-                 }
-            });
-            
-            
+            // used to load the POJO implementation class.
+            contributionClassloader = instance.getClass().getClassLoader();
+            if (tccl != contributionClassloader){
+                AccessController.doPrivileged(new PrivilegedAction() {
+                    public Object run() {
+                        Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
+                        return null;
+                     }
+                });
+            }
             
             int argumentHolderCount = 0;
 
@@ -260,14 +263,16 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
         } catch (Exception e) {
             msg.setFaultBody(e);           
         } finally {
-            // set the tccl
-            AccessController.doPrivileged(new PrivilegedAction() {
-                public Object run() {
-                    Thread.currentThread().setContextClassLoader(tccl);
-                    return null;
-                 }
-            });
-            
+            // reset the tccl if it was replaced above
+            // with the contribution classloader
+            if (tccl != contributionClassloader){
+                AccessController.doPrivileged(new PrivilegedAction() {
+                    public Object run() {
+                        Thread.currentThread().setContextClassLoader(tccl);
+                        return null;
+                     }
+                });
+            }
         }
         return msg;
     }
