@@ -31,6 +31,8 @@ public abstract class Entity {
     private ArrayList<String> properties = new ArrayList<String>();
 
     private HashSet<String> adjacentEntities = new HashSet<String>();
+    
+    private String implementation;
 
     public abstract void referenceHeight();
 
@@ -255,5 +257,14 @@ public abstract class Entity {
     public Entity getParent() {
         return parent;
     }
+    
+    public String getImplementation() {
+        return implementation;
+    }
+
+    public void setImplementation(String implementation) {
+        this.implementation = implementation;
+    }
+
 
 }

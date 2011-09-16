@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.diagram.artifacts.ComponentArtifact;
 import org.apache.tuscany.sca.diagram.artifacts.CompositeArtifact;
 import org.apache.tuscany.sca.diagram.artifacts.Constant;
 import org.apache.tuscany.sca.diagram.artifacts.DashedWire;
+import org.apache.tuscany.sca.diagram.artifacts.ImplementationArtifact;
 import org.apache.tuscany.sca.diagram.artifacts.Layer;
 import org.apache.tuscany.sca.diagram.artifacts.Link;
 import org.apache.tuscany.sca.diagram.artifacts.NormalWire;
@@ -617,6 +618,32 @@ public class DiagramGenerator {
         svgRoot.appendChild(text);
 
         comp.setName(ent.getName());
+        
+        if (ent.getImplementation() == null) {
+            return;
+        }
+        // Add the implementation
+        ImplementationArtifact impl = new ImplementationArtifact();
+        impl.setName(ent.getImplementation());
+        impl.setContainerName(ent.getName());
+        Element implElement =
+            impl.addElement(doc,
+                            svgNS,
+                            ent.getX() + ent.getWidth() / 4,
+                            ent.getY() + ent.getHeight() / 4,
+                            ent.getHeight() / 2,
+                            ent.getWidth() / 2);
+
+        Element text2 =
+            Text.addTextElement(doc,
+                                svgNS,
+                                ent.getX() + ent.getWidth() / 4,
+                                ent.getY() + (ent.getHeight() / 4 + Constant.COMPONENT_TEXT_SPACING),
+                                ent.getImplementation());
+        text2.setAttributeNS(null, "font-size", "10");
+        svgRoot.appendChild(implElement);
+        svgRoot.appendChild(text2);
+        
     }
 
     private void addComposite() {

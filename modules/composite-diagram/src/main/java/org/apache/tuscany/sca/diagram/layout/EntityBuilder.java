@@ -340,6 +340,7 @@ public class EntityBuilder {
                 elts[i].setId(i);
                 elts[i].setName(nVal.getAttribute("name"));
 
+                setImplementation(nVal, elts[i]);
                 setServices(nVal, elts[i]);
                 setReferences(nVal, elts[i]);
                 setProperties(nVal, elts[i]);
@@ -682,6 +683,39 @@ public class EntityBuilder {
 
         }
 
+    }
+
+    private void setImplementation(Element nVal, ComponentEntity ent) {
+        NodeList nodes = nVal.getChildNodes();
+
+        for (int i = 0; i < nodes.getLength(); i++) {
+            if (nodes.item(i) instanceof Element) {
+                Element elt = (Element)nodes.item(i);
+                String name = elt.getNodeName();
+                if (name != null && name.contains(":")) {
+                    name = name.substring(name.indexOf(':') + 1).trim();
+                }
+                if (name != null && name.startsWith("implementation.")) {
+                    String type = name.substring("implementation.".length());
+                    if ("implementation.java".equals(name)) {
+                        String cls = elt.getAttribute("class");
+                        ent.setImplementation(type + ":" + extractClassName(cls));
+                    } else {
+                        ent.setImplementation(type);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    
+    private String extractClassName(String classAttr){
+        if(classAttr==null) {
+            return "";
+        } else {
+            int index = classAttr.lastIndexOf('.');
+            return classAttr.substring(index+1);
+        }
     }
 
     /**
