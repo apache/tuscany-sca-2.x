@@ -130,59 +130,53 @@ public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
 
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 //success 
-                try {
-                    entity = response.getEntity();
-                    String entityResponse = EntityUtils.toString(entity);
-                    entity.consumeContent();
-                    if (!db.equals(JSONDataBinding.NAME)) {
-                        JSONObject jsonResponse = new JSONObject(entityResponse);
 
-                        if (!jsonResponse.has("result")) {
-                            processException(jsonResponse);
-                        }
-                        DataType<List<DataType>> outputType = operation.getOutputType();
-                        DataType returnType =
-                            (outputType != null && !outputType.getLogical().isEmpty()) ? outputType.getLogical().get(0)
-                                : null;
+                entity = response.getEntity();
+                String entityResponse = EntityUtils.toString(entity);
+                entity.consumeContent();
+                if (!db.equals(JSONDataBinding.NAME)) {
+                    JSONObject jsonResponse = new JSONObject(entityResponse);
 
-                        if (returnType == null) {
-                            msg.setBody(null);
-                            return msg;
-                        }
+                    if (!jsonResponse.has("result")) {
+                        processException(jsonResponse);
+                    }
+                    DataType<List<DataType>> outputType = operation.getOutputType();
+                    DataType returnType =
+                        (outputType != null && !outputType.getLogical().isEmpty()) ? outputType.getLogical().get(0)
+                            : null;
 
-                        //check requestId
-                        if (!requestId.equalsIgnoreCase(jsonResponse.optString("id"))) {
-                            throw new ServiceRuntimeException("Invalid response id:" + requestId);
-                        }
-
-                        Object rawResult = jsonResponse.get("result");
-                        if (rawResult == null) {
-                            processException(jsonResponse);
-                        }
-
-                        Class<?> returnClass = returnType.getPhysical();
-                        Type genericReturnType = returnType.getGenericType();
-
-                        ObjectMapper mapper = createObjectMapper(returnClass);
-                        String json = rawResult.toString();
-
-                        // Jackson requires the quoted String so that readValue can work
-                        if (returnClass == String.class) {
-                            json = "\"" + json + "\"";
-                        }
-                        Object body = mapper.readValue(json, TypeFactory.type(genericReturnType));
-
-                        msg.setBody(body);
-                    } else {
-                        msg.setBody(entityResponse);
+                    if (returnType == null) {
+                        msg.setBody(null);
+                        return msg;
                     }
 
-                } catch (Exception e) {
-                    //FIXME Exceptions are not handled correctly here
-                    // They should be reported to the client JavaScript as proper
-                    // JavaScript exceptions.
-                    throw new ServiceRuntimeException("Unable to parse response", e);
+                    //check requestId
+                    if (!requestId.equalsIgnoreCase(jsonResponse.optString("id"))) {
+                        throw new ServiceRuntimeException("Invalid response id:" + requestId);
+                    }
+
+                    Object rawResult = jsonResponse.get("result");
+                    if (rawResult == null) {
+                        processException(jsonResponse);
+                    }
+
+                    Class<?> returnClass = returnType.getPhysical();
+                    Type genericReturnType = returnType.getGenericType();
+
+                    ObjectMapper mapper = createObjectMapper(returnClass);
+                    String json = rawResult.toString();
+
+                    // Jackson requires the quoted String so that readValue can work
+                    if (returnClass == String.class) {
+                        json = "\"" + json + "\"";
+                    }
+                    Object body = mapper.readValue(json, TypeFactory.type(genericReturnType));
+
+                    msg.setBody(body);
+                } else {
+                    msg.setBody(entityResponse);
                 }
+
             } else {
                 // Consume the content so the connection can be released
                 response.getEntity().consumeContent();
@@ -241,6 +235,7 @@ public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
      * Generate and throw exception based on the data in the 'responseMessage'
      */
     protected void processException(JSONObject responseMessage) throws JSONException {
+        // FIXME: We need to find a way to build Java exceptions out of the json-rpc error
         JSONObject error = (JSONObject)responseMessage.get("error");
         if (error != null) {
             throw new ServiceRuntimeException(error.toString());

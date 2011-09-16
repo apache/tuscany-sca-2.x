@@ -16,9 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
- package org.apache.tuscany.sca.binding.jsonrpc.provider;
+package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Utility class to create a Simple Method Description (SMD) descriptor
@@ -29,28 +33,99 @@ import java.lang.reflect.Method;
  * @version $Rev$ $Date$
  */
 class JavaToSmd {
-    
+
     static String interfaceToSmd(Class<?> klazz, String serviceUrl) {
-        String name = klazz.getSimpleName();
-        Method[] methods = klazz.getMethods();
-        
-        StringBuffer smdSb = new StringBuffer();
-        smdSb.append("{\"SMDVersion\":\".1\",\"objectName\":\"" + name + "\",\"serviceType\":\"JSON-RPC\",\"serviceURL\":\""+ serviceUrl + "\",\"methods\":[");
-        for (int i = 0; i < methods.length; i++) {
-            if (i != 0) smdSb.append(",");
-            Class<?>[] params = methods[i].getParameterTypes();            
-            smdSb.append("{\"name\":\""+methods[i].getName() + "\",\"parameters\":[");
-            for (int j = 0; j < params.length; j++) {
-                if (j != 0) smdSb.append(",");
-                // right now Dojo doesn't look at the type value, so we'll default it to STRING
-                // also, since we can't introspect the method parameter names we'll just create an incrementing parameter name
-                smdSb.append("{\"name\":\"param" + j + "\",\"type\":\"STRING\"}");  
+        try {
+            String name = klazz.getSimpleName();
+            Method[] methods = klazz.getMethods();
+
+            JSONObject smd = new JSONObject();
+            smd.put("SMDVersion", ".1");
+            smd.put("objectName", name);
+            smd.put("serviceType", "JSON-RPC");
+            smd.put("serviceURL", serviceUrl);
+
+            JSONArray services = new JSONArray();
+            for (int i = 0; i < methods.length; i++) {
+                JSONObject service = new JSONObject();
+                Class<?>[] params = methods[i].getParameterTypes();
+                JSONArray paramArray = new JSONArray();
+                for (int j = 0; j < params.length; j++) {
+                    JSONObject param = new JSONObject();
+                    param.put("name", "param" + j);
+                    param.put("type", getJSONType(params[j]));
+                    paramArray.put(param);
+                }
+                service.put("name", methods[i].getName());
+                service.put("parameters", paramArray);
+                services.put(service);
             }
-            smdSb.append("]}");
+
+            smd.put("methods", services);
+
+            return smd.toString(2);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
         }
-        smdSb.append("]}");
-        
-        return smdSb.toString();        
+
+    }
+
+    static String interfaceToSmd20(Class<?> klazz, String serviceUrl) {
+        try {
+            String name = klazz.getSimpleName();
+            Method[] methods = klazz.getMethods();
+
+            JSONObject smd = new JSONObject();
+            smd.put("SMDVersion", "2.0");
+            smd.put("transport", "POST");
+            smd.put("envelope", "JSON-RPC-1.0");
+            smd.put("target", serviceUrl);
+            smd.put("id", klazz.getName());
+            smd.put("description", "JSON-RPC service provided by Tuscany: " + name);
+
+            JSONObject services = new JSONObject();
+            for (int i = 0; i < methods.length; i++) {
+                JSONObject service = new JSONObject();
+                Class<?>[] params = methods[i].getParameterTypes();
+                JSONArray paramArray = new JSONArray();
+                for (int j = 0; j < params.length; j++) {
+                    JSONObject param = new JSONObject();
+                    param.put("name", "param" + j);
+                    param.put("type", getJSONType(params[j]));
+                    paramArray.put(param);
+                }
+                service.put("parameters", paramArray);
+                services.put(methods[i].getName(), service);
+            }
+
+            smd.put("services", services);
+
+            return smd.toString(2);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+
+    }
+
+    private static String getJSONType(Class<?> type) {
+        if (type == boolean.class || type == Boolean.class) {
+            return "boolean";
+        }
+        if (type == String.class) {
+            return "string";
+        }
+        if (byte.class == type || short.class == type
+            || int.class == type
+            || long.class == type
+            || float.class == type
+            || double.class == type
+            || Number.class.isAssignableFrom(type)) {
+            return "number";
+        }
+        if (type.isArray() || Collection.class.isAssignableFrom(type)) {
+            return "array";
+        }
+        return "object";
     }
 
 }

@@ -60,7 +60,7 @@ public class EchoClientImpl implements Echo {
     }
 
     public void echoBusinessException() throws EchoBusinessException {
-        throw new UnsupportedOperationException("UNsupported !");
+        echoReference.echoBusinessException();
     }
 
     public int echoInt(int param) {
@@ -80,7 +80,7 @@ public class EchoClientImpl implements Echo {
     }
 
     public void echoRuntimeException() throws RuntimeException {
-        throw new UnsupportedOperationException("UNsupported !");
+        echoReference.echoRuntimeException();
     }
 
     public Set echoSet(HashSet set) {

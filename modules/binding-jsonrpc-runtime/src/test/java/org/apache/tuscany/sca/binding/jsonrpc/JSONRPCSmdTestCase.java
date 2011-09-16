@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,6 +34,8 @@ import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
+
+import echo.Echo;
 
 /**
  * @version $Rev$ $Date$
@@ -51,7 +54,9 @@ public class JSONRPCSmdTestCase {
     public static void setUp() throws Exception {
         try {
             String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCSmdTestCase.class);
-            node = NodeFactory.newInstance().createNode("JSONRPCBinding.composite", new Contribution("test", contribution));
+            node =
+                NodeFactory.newInstance()
+                    .createNode("JSONRPCBinding.composite", new Contribution("test", contribution));
             node.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,12 +74,13 @@ public class JSONRPCSmdTestCase {
      */
     public void testJSONRPCSmdSpecialCharacters() throws Exception {
         WebConversation wc = new WebConversation();
-        WebRequest request   = new GetMethodWebRequest(SMD_URL);
+        WebRequest request = new GetMethodWebRequest(SMD_URL);
         WebResponse response = wc.getResource(request);
 
         Assert.assertEquals(200, response.getResponseCode());
-        Assert.assertNotNull(response.getText());
+        JSONObject smd = new JSONObject(response.getText());
+        Assert.assertEquals(Echo.class.getMethods().length, smd.getJSONArray("methods").length());
 
-        //System.out.println(">>>SMD:" + response.getText());
+        // System.out.println(">>>SMD:\n" + response.getText());
     }
 }

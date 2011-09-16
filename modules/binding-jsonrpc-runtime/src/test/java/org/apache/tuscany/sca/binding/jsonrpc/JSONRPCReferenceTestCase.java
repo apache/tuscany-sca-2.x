@@ -35,6 +35,7 @@ public class JSONRPCReferenceTestCase {
     private static final String SERVICE_URL = "http://localhost:8085/SCADomain" + SERVICE_PATH;
 
     private static Node nodeServer;
+    private static Node node;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -42,6 +43,11 @@ public class JSONRPCReferenceTestCase {
             String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCReferenceTestCase.class);
             nodeServer = NodeFactory.newInstance().createNode("JSONRPCBinding.composite", new Contribution("testServer", contribution));
             nodeServer.start();
+            
+            contribution = ContributionLocationHelper.getContributionLocation(JSONRPCReferenceTestCase.class);
+            node = NodeFactory.newInstance().createNode("JSONRPCReference.composite", new Contribution("testClient", contribution));
+            node.start();
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -50,37 +56,31 @@ public class JSONRPCReferenceTestCase {
     @AfterClass
     public static void tearDown() throws Exception {
         nodeServer.stop();
+        node.stop();
     }
     
     @Test
     public void testInvokeReference() throws Exception {
-        Node node = null;
-
-        String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCReferenceTestCase.class);
-        node = NodeFactory.newInstance().createNode("JSONRPCReference.composite", new Contribution("testClient", contribution));
-        node.start();
-
         Echo echoComponent = node.getService(Echo.class,"EchoComponentWithReference");
         String result = echoComponent.echo("ABC");
         Assert.assertEquals("echo: ABC", result);
-        if (node != null) {
-            node.stop();
-        }
     }
 
     @Test
     public void testInvokeReferenceVoidOperation() throws Exception {
-        Node node = null;
-
-        String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCReferenceTestCase.class);
-        node = NodeFactory.newInstance().createNode("JSONRPCReference.composite", new Contribution("testClient", contribution));
-        node.start();
-
         Echo echoComponent = node.getService(Echo.class,"EchoComponentWithReference");
         echoComponent.echoVoid();
-
-        if (node != null) {
-            node.stop();
+    }
+    
+    @Test(expected = Exception.class)
+    public void testInvokeReferenceException() throws Exception {
+        Echo echoComponent = node.getService(Echo.class, "EchoComponentWithReference");
+        try {
+            echoComponent.echoBusinessException();
+        } catch (Exception e) {
+            System.err.println(e);
+            throw e;
         }
     }
+
 }
