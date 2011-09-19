@@ -195,8 +195,12 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         Service service = assemblyFactory.createService();
         JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         service.setInterfaceContract(interfaceContract);
-        
-        JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(interfaze);
+
+        // The implementation class can have a Remotable annotation.  This forces all service
+        // interfaces to be remotable even if the interfaces do not have a Remotable annotation.
+        boolean forceRemotable = clazz.getAnnotation(Remotable.class) != null;
+
+        JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(interfaze, forceRemotable);
 
         if (name == null) {
             String serviceName = interfaze.getSimpleName();
@@ -212,19 +216,11 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         } else {
             service.setName(name);
         }
-
-        
-        boolean remotable = clazz.getAnnotation(Remotable.class) != null;
-        if (remotable){
-            callInterface.setRemotable(true);
-        }
+ 
         service.getInterfaceContract().setInterface(callInterface);
         
         if (callInterface.getCallbackClass() != null) {
-            JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass());
-            if (remotable){
-                callbackInterface.setRemotable(true);
-            }
+            JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass(), forceRemotable);
             service.getInterfaceContract().setCallbackInterface(callbackInterface);
         }
         return service;

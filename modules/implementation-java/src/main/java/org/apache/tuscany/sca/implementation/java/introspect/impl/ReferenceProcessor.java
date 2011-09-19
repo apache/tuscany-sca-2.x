@@ -45,6 +45,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.AllowsPassByReference;
 import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Processes an {@link @Reference} annotation, updating the component type with
@@ -219,11 +220,27 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
             }
             baseType = JavaIntrospectionHelper.getBusinessInterface(baseType, genericType);
         }
+        // The reference can have a Remotable annotation.  This forces the interface to be
+        // remotable even if the interface doesn't have a Remotable annotation.
+        boolean forceRemotable = element.getAnnotation(Remotable.class) != null;
+        // If the reference element is a setter method, element.getAnnotation() looks at
+        // the method-level annotations only.  Compliance test POJO_8017 puts the
+        // Remotable annotation on the setter method's argument, so we need some special
+        // logic to look at the argument.
+        if (!forceRemotable && element.getElementType() == ElementType.PARAMETER && (element.getAnchor() instanceof Method)) {
+            Annotation argAnnotations[] = ((Method)element.getAnchor()).getParameterAnnotations()[0];
+        	for (int j = 0; j < argAnnotations.length; j++) {
+        		if (argAnnotations[j].annotationType() == Remotable.class) {
+        		    forceRemotable = true;
+        		    break;
+        		}
+        	}
+        }
         try {
-            JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(baseType);
+            JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(baseType, forceRemotable);
             reference.getInterfaceContract().setInterface(callInterface);
             if (callInterface.getCallbackClass() != null) {
-                JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass());
+                JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass(), forceRemotable);
                 reference.getInterfaceContract().setCallbackInterface(callbackInterface);
             }
         } catch (InvalidInterfaceException e) {

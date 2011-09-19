@@ -41,8 +41,9 @@ public abstract class JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
     
     private List<JavaInterfaceVisitor> visitors = new ArrayList<JavaInterfaceVisitor>();
     private JavaInterfaceIntrospectorImpl introspector;
-    private Map<Class<?>, JavaInterface> cache  = Collections.synchronizedMap(new WeakHashMap<Class<?>, JavaInterface>());
-    
+    private Map<Class<?>, JavaInterface> normalCache  = Collections.synchronizedMap(new WeakHashMap<Class<?>, JavaInterface>());
+    private Map<Class<?>, JavaInterface> forceRemotableCache  = Collections.synchronizedMap(new WeakHashMap<Class<?>, JavaInterface>());
+
     public JavaInterfaceFactoryImpl() {
         introspector = new JavaInterfaceIntrospectorImpl(this);
     }
@@ -50,13 +51,32 @@ public abstract class JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
     public JavaInterface createJavaInterface() {
         return new JavaInterfaceImpl();
     }
-    
+
     public JavaInterface createJavaInterface(Class<?> interfaceClass) throws InvalidInterfaceException {
+        return createJavaInterface(interfaceClass, false);
+    }
+
+    /**
+     * Creates a new Java interface model from an interface class.
+     *
+     * The forceRemotable argument allows the caller to force the interface to be remotable. 
+     * The ServiceProcessor and ReferenceProcessor introspectors use this argument to
+     * propagate a @Remotable annotation on an implementation class, field, or setter method
+     * to the corresponding service or reference interface.  The remotable flag must be set
+     * on the interface model prior to instrospection since some introspectors build
+     * different models for remotable vs local interfaces.  This also means separate caches
+     * must be kept for interfaces that are processed normally vs. those forced to be remotable.
+     */
+    public JavaInterface createJavaInterface(Class<?> interfaceClass, boolean forceRemotable) throws InvalidInterfaceException {
         // TODO: Review if the sharing of JavaInterface is ok
         synchronized (interfaceClass) {
+            Map<Class<?>, JavaInterface> cache = (forceRemotable ? forceRemotableCache : normalCache);
             JavaInterface javaInterface = cache.get(interfaceClass);
             if (javaInterface == null) {
                 javaInterface = createJavaInterface();
+                if (forceRemotable) {
+                   javaInterface.setRemotable(true);
+                }
                 introspector.introspectInterface(javaInterface, interfaceClass);
                 // Now that all introspection is complete we can mark the interface resolved
                 javaInterface.setUnresolved(false);

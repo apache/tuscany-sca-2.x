@@ -45,7 +45,15 @@ public interface JavaInterfaceFactory {
      * @return
      */
     JavaInterface createJavaInterface(Class<?> interfaceClass) throws InvalidInterfaceException;
-    
+
+    /**
+     * Creates a new Java interface model from an interface class.
+     * @param interfaceClass the interface class to introspect.
+     * @param forceRemotable allows the caller to force the interface remotable to be remotable.
+     * @return
+     */
+    JavaInterface createJavaInterface(Class<?> interfaceClass, boolean forceRemotable) throws InvalidInterfaceException;
+
     /**
      * Creates the contents of a Java interface model from an interface class.
      * @param javaInterface the Java interface model
