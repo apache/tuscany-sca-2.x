@@ -11,13 +11,20 @@ Bundle-Version: 2.0.0
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Composite Diagram
-Import-Package: org.apache.tuscany.sca.assembly;version="2.0.0"
- javax.xml.namespace,
+Import-Package: javax.xml.namespace,
  javax.xml.parsers,
  javax.xml.transform,
  javax.xml.transform.dom,
  javax.xml.transform.stream,
+ org.apache.commons.cli;resolution:=optional,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.node;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.node.configuration;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.node.extensibility;version="2.0.0";resolution:=optional,
  org.w3c.dom
+Import-Package-TODO: org.apache.batik.transcoder;resolution:=optional,
+ org.apache.batik.transcoder.image;resolution:=optional,
+ org.apache.batik.dom.svg;resolution:=optional 
 Bundle-SymbolicName: org.apache.tuscany.sca.diagram
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
