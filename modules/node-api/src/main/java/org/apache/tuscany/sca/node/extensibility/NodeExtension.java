@@ -24,15 +24,39 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 
+/**
+ * An extended Node interface to provide more metadata for Tuscany extensions 
+ * @version $Rev $Date$
+ * @tuscany.spi.extension.asclient
+ */
 public interface NodeExtension extends Node {
 
+    /**
+     * Get the node URI
+     * @return The Tuscany node URI
+     */
     String getURI();
 
+    /**
+     * Get the domain URI
+     * @return The SCA domain URI
+     */
     String getDomainURI();
 
+    /**
+     * Get the node configuration
+     * @return The node cofiguration
+     */
     NodeConfiguration getConfiguration();
 
+    /**
+     * Get the domain composite
+     * @return The domain composite
+     */
     Composite getDomainComposite();
-
+    
+    /**
+     * Get the extension point registry
+     */
     ExtensionPointRegistry getExtensionPointRegistry();
 }

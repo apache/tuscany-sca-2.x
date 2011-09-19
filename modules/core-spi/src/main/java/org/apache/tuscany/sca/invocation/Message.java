@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.invocation;
 
-import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Endpoint;

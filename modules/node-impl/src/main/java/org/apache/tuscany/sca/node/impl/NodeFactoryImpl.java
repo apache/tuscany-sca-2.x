@@ -73,6 +73,7 @@ import org.apache.tuscany.sca.node.configuration.DefaultNodeConfigurationFactory
 import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
+import org.apache.tuscany.sca.node.extensibility.NodeExtension;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
@@ -481,5 +482,23 @@ public class NodeFactoryImpl extends NodeFactory {
     public void setAutoDestroy(boolean b) {
         autoDestroy = b;
     }
+    
+    /**
+     * Create and load a node
+     * @param configuration
+     * @return The node
+     */
+    public NodeExtension loadNode(NodeConfiguration configuration) {
+        Node node = createNode(configuration);
+        
+        try {
+            NodeImpl nodeImpl = ((NodeImpl) node);
+            nodeImpl.load();
+            return nodeImpl;
+        } catch (Throwable e) {
+            throw new ServiceRuntimeException(e);
+        } 
+    }
+    
     
 }

@@ -39,9 +39,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.node.configuration.DefaultNodeConfigurationFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
+import org.apache.tuscany.sca.node.extensibility.NodeExtension;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -633,10 +635,27 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
      */
     public abstract NodeConfiguration loadConfiguration(InputStream xml, URL base);
 
-    public abstract <T> T getExtensionPointRegistry();
+    /**
+     * Get the ExtensionPointRegistry
+     * @return
+     */
+    public abstract ExtensionPointRegistry getExtensionPointRegistry();
 
+    /**
+     * Initialize the factory
+     */
     public abstract void init();
 
-    public void setAutoDestroy(boolean b) {
-    }
+    /**
+     * Set auto destroy flag when all nodes are stopped
+     * @param b
+     */
+    public abstract void setAutoDestroy(boolean b);
+    
+    /**
+     * Create and load the node for the purpose of metadata introspection
+     * @param configuration
+     * @return The extended Node
+     */
+    public abstract NodeExtension loadNode(NodeConfiguration configuration);
 }

@@ -53,8 +53,8 @@ import org.apache.tuscany.sca.node.extensibility.NodeActivatorExtensionPoint;
 import org.apache.tuscany.sca.node.extensibility.NodeExtension;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
-import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -114,50 +114,29 @@ public class NodeImpl implements Node, NodeExtension {
     public Node start() {
         logger.log(nodeFactory.quietLogging? Level.FINE : Level.INFO, "Starting node: " + configuration.getURI() + " domain: " + configuration.getDomainURI());
 
-        nodeFactory.init();
-        nodeFactory.addNode(configuration, this);
-        this.proxyFactory = nodeFactory.proxyFactory;
-
         try {
-            Monitor monitor = nodeFactory.monitorFactory.createMonitor();
-            ProcessorContext context = new ProcessorContext(monitor);
+            load();
 
-            // Set up the thead context monitor
-            Monitor tcm = nodeFactory.monitorFactory.setContextMonitor(monitor);
-            try {
-                // Use the lack of the contributions collection as an indicator for when the node
-                // is being started for the first time. If it is the first time do all the work
-                // to read the contributions and create the domain composite
-                if (contributions == null) {
-                    contributions = nodeFactory.loadContributions(configuration, context);
-                }
+            nodeFactory.addNode(configuration, this);
+            this.proxyFactory = nodeFactory.proxyFactory;
 
-                if (domainComposite == null) {
+            // Set up the node context
+            UtilityExtensionPoint utilities = nodeFactory.registry.getExtensionPoint(UtilityExtensionPoint.class);
+            this.compositeActivator = utilities.getUtility(CompositeActivator.class);
 
-                    UtilityExtensionPoint utilities = nodeFactory.registry.getExtensionPoint(UtilityExtensionPoint.class);
-                    this.compositeActivator = utilities.getUtility(CompositeActivator.class);
+            DomainRegistryFactory domainRegistryFactory =
+                ExtensibleDomainRegistryFactory.getInstance(nodeFactory.registry);
+            DomainRegistry domainRegistry =
+                domainRegistryFactory.getEndpointRegistry(configuration.getDomainRegistryURI(),
+                                                          configuration.getDomainURI());
 
-                    domainComposite = nodeFactory.configureNode(configuration, contributions, context);
-
-                    DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(nodeFactory.registry);
-                    DomainRegistry domainRegistry =
-                        domainRegistryFactory.getEndpointRegistry(configuration.getDomainRegistryURI(), configuration.getDomainURI());
-
-                    this.compositeContext =
-                        new CompositeContext(nodeFactory.registry,
-                                             domainRegistry,
-                                             domainComposite,
-                                             configuration.getDomainURI(),
-                                             configuration.getURI(),
-                                             nodeFactory.getDeployer().getSystemDefinitions());
-                    // Pass down the context attributes
-                    compositeContext.getAttributes().putAll(configuration.getAttributes());
-                }
-
-            } finally {
-                // Reset the thread context monitor
-                nodeFactory.monitorFactory.setContextMonitor(tcm);
-            }
+            this.compositeContext =
+                new CompositeContext(nodeFactory.registry, domainRegistry, domainComposite,
+                                     configuration.getDomainURI(), configuration.getURI(), nodeFactory
+                                         .getDeployer().getSystemDefinitions());
+            // Pass down the context attributes
+            compositeContext.getAttributes().putAll(configuration.getAttributes());
+            
 
             // Activate the composite
             compositeActivator.activate(compositeContext, domainComposite);
@@ -195,6 +174,33 @@ public class NodeImpl implements Node, NodeExtension {
             throw new IllegalStateException(e);
         }
 
+    }
+
+    public void load() throws Throwable {
+        nodeFactory.init();
+
+        Monitor monitor = nodeFactory.monitorFactory.createMonitor();
+        ProcessorContext context = new ProcessorContext(monitor);
+
+        // Set up the thead context monitor
+        Monitor tcm = nodeFactory.monitorFactory.setContextMonitor(monitor);
+        try {
+            // Use the lack of the contributions collection as an indicator for when the node
+            // is being started for the first time. If it is the first time do all the work
+            // to read the contributions and create the domain composite
+            if (contributions == null) {
+                contributions = nodeFactory.loadContributions(configuration, context);
+            }
+
+            if (domainComposite == null) {
+                domainComposite = nodeFactory.configureNode(configuration, contributions, context);
+            }
+
+
+        } finally {
+            // Reset the thread context monitor
+            nodeFactory.monitorFactory.setContextMonitor(tcm);
+        }
     }
 
     public void stop() {
