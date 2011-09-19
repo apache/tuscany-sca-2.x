@@ -85,6 +85,8 @@
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/binding-comet-runtime/src/main/resources/jquery.json-2.2.min.js</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-python-runtime/src/main/resources/django/utils/simplejson/*</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/testing/compliance-tests/binding-jms/src/test/resources/tuscany-oasis-sca-tests-errors.properties</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/composite-diagram/input/**/*.*</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/composite-diagram/output/**/*.*</exclude>
                            </excludes>
                         </configuration>
                     </plugin>
