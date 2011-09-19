@@ -24,23 +24,23 @@
 
     <!-- POLICY SETS -->
     <policySet name="ps1" provides="authorization" appliesTo="sca:implementation">
-        <authorization>
-            <permitAll />
-        </authorization>
+        <tuscany:authorization>
+            <tuscany:permitAll />
+        </tuscany:authorization>
     </policySet>
 
     <!-- POLICY SETS -->
     <policySet name="ps2" provides="authorization" appliesTo="sca:implementation">
-        <authorization>
-            <allow roles="r1 r2" />
-        </authorization>
+        <tuscany:authorization>
+            <tuscany:allow roles="r1 r2" />
+        </tuscany:authorization>
     </policySet>
 
     <!-- POLICY SETS -->
     <policySet name="ps3" provides="authorization" appliesTo="sca:implementation">
-        <authorization>
-            <denyAll />
-        </authorization>
+        <tuscany:authorization>
+            <tuscany:denyAll />
+        </tuscany:authorization>
     </policySet>
 
     <!-- POLICY SETS -->
@@ -59,22 +59,22 @@
 
     <!-- POLICY SETS -->
     <policySet name="ps6" provides="authorization" appliesTo="sca:implementation">
-        <permitAll />
+        <tuscany:permitAll />
     </policySet>
 
     <!-- POLICY SETS -->
     <policySet name="ps7" provides="authorization" appliesTo="sca:implementation">
-        <allow roles="r1 r2" />
+        <tuscany:allow roles="r1 r2" />
     </policySet>
 
     <!-- POLICY SETS -->
     <policySet name="ps8" provides="authorization" appliesTo="sca:implementation">
-        <denyAll />
+        <tuscany:denyAll />
     </policySet>
 
     <!-- POLICY SETS -->
     <policySet name="ps9" provides="securityIdentity" appliesTo="sca:implementation">
-        <runAs role="admin" />
+        <tuscany:runAs role="admin" />
     </policySet>
 
 </definitions>

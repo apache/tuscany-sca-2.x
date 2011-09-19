@@ -31,6 +31,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy;
@@ -44,7 +45,7 @@ import org.junit.Test;
  * @version $Rev$ $Date$
  */
 public class PolicyProcessorTestCase {
-    private final static String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
+   
     private final static List<String> SEQ =
         Arrays.asList("permitAll",
                       "allow [r1, r2]",
@@ -62,10 +63,10 @@ public class PolicyProcessorTestCase {
         Map<QName, StAXArtifactProcessor> processors = new HashMap<QName, StAXArtifactProcessor>();
         processors.put(AuthorizationPolicy.NAME, new AuthorizationPolicyProcessor(null));
         processors.put(SecurityIdentityPolicy.NAME, new SecurityIdentityPolicyProcessor(null));
-        processors.put(new QName(SCA11_NS, "allow"), new AuthorizationPolicyProcessor(null));
-        processors.put(new QName(SCA11_NS, "permitAll"), new AuthorizationPolicyProcessor(null));
-        processors.put(new QName(SCA11_NS, "denyAll"), new AuthorizationPolicyProcessor(null));
-        processors.put(new QName(SCA11_NS, "runAs"), new SecurityIdentityPolicyProcessor(null));
+        processors.put(new QName(Constants.SCA11_TUSCANY_NS, "allow"), new AuthorizationPolicyProcessor(null));
+        processors.put(new QName(Constants.SCA11_TUSCANY_NS, "permitAll"), new AuthorizationPolicyProcessor(null));
+        processors.put(new QName(Constants.SCA11_TUSCANY_NS, "denyAll"), new AuthorizationPolicyProcessor(null));
+        processors.put(new QName(Constants.SCA11_TUSCANY_NS, "runAs"), new SecurityIdentityPolicyProcessor(null));
         InputStream is = getClass().getResourceAsStream("mock_policy_definitions.xml");
         XMLInputFactory factory = XMLInputFactory.newInstance();
         XMLStreamReader reader = factory.createXMLStreamReader(is);
