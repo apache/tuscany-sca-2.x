@@ -117,4 +117,40 @@ public abstract class Artifact {
         return containerName;
     }
 
+    /**
+     * Parse the component/service|reference/binding names
+     * @param compoundName
+     * @return An array of names
+     */
+    public static String[] parseNames(String compoundName) {
+        String[] names = new String[] {"", "", ""};
+        if (compoundName != null) {
+            String[] parts = compoundName.split("/");
+            for (int i = 0; i < parts.length; i++) {
+                names[i] = parts[i];
+            }
+        }
+        return names;
+    }
+
+    public static boolean matches(String compoundName, String... parts) {
+        String names[] = parseNames(compoundName);
+        if (parts.length > names.length) {
+            return false;
+        }
+        for (int i = 0; i < parts.length; i++) {
+            if (parts[i].length() > 0 && names[i].length() > 0 && !names[i].equals(parts[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Artifact [containerName=").append(containerName).append(", name=").append(name).append("]");
+        return builder.toString();
+    }
+
 }

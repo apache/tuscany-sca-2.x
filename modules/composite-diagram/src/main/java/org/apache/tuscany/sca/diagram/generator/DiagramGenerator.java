@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.tuscany.sca.diagram.artifacts.Artifact;
 import org.apache.tuscany.sca.diagram.artifacts.ComponentArtifact;
 import org.apache.tuscany.sca.diagram.artifacts.CompositeArtifact;
 import org.apache.tuscany.sca.diagram.artifacts.Constant;
@@ -154,7 +155,7 @@ public class DiagramGenerator {
             String compositeRef = entry.getKey();
             ArrayList<String> componentRef = entry.getValue();
 
-            ReferenceArtifact r1 = getRef(compositeRef);
+            ReferenceArtifact r1 = getRef(comp.getName() + "/" + compositeRef);
 
             for (String ref : componentRef) {
 
@@ -175,7 +176,7 @@ public class DiagramGenerator {
             String compositeSer = entry.getKey();
             String componentSer = entry.getValue();
 
-            ServiceArtifact s1 = getSer(compositeSer);
+            ServiceArtifact s1 = getSer(comp.getName() + "/" + compositeSer);
             ServiceArtifact s2 = getSer(componentSer);
 
             if (s1 != null && s2 != null) {
@@ -238,7 +239,7 @@ public class DiagramGenerator {
                 String ref = entry.getKey();
                 String ser = entry.getValue();
 
-                ReferenceArtifact r = getRef(ref);
+                ReferenceArtifact r = getRef(ent.getName() + "/" + ref);
                 ServiceArtifact s = getSer(ser);
 
                 if (r != null && s != null) {
@@ -292,7 +293,7 @@ public class DiagramGenerator {
     private ServiceArtifact getSer(String ser) {
 
         for (ServiceArtifact s : sers) {
-            if (s.getContainerName().equals(ser) || s.getName().equals(ser)) {
+            if (Artifact.matches(ser, s.getContainerName(), s.getName())) {
                 return s;
             }
         }
@@ -303,7 +304,7 @@ public class DiagramGenerator {
 
         for (ReferenceArtifact r : refs) {
 
-            if (r.getContainerName().equals(ref) || r.getName().equals(ref)) {
+            if (Artifact.matches(ref, r.getContainerName(), r.getName())) {
                 return r;
             }
         }

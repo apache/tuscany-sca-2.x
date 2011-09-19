@@ -284,5 +284,12 @@ public abstract class Entity {
         this.implementation = implementation;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Entity [id=").append(id).append(", name=").append(name).append("]");
+        return builder.toString();
+    }
+
 
 }

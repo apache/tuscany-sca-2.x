@@ -30,10 +30,13 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
+import org.apache.tuscany.sca.diagram.artifacts.Artifact;
 
 public class TuscanyCompositeEntityBuilder {
 
@@ -61,15 +64,16 @@ public class TuscanyCompositeEntityBuilder {
 
         ComponentEntity[] comps = buildComponentEntities();
 
+        buildTargets(comps);
         buildWires(tuscanyComp.getWires(), comps);
 
         composite = new CompositeEntity(compositeName);
 
         setParent(comps);
 
-        System.out.println("ComponentEntity " + comps[0].getId());
+        // System.out.println("ComponentEntity " + comps[0].getId());
         int[][] conns = buildConnectionMatrix(comps);
-        System.out.println("ComponentEntity " + conns[0][0]);
+        // System.out.println("ComponentEntity " + conns[0][0]);
 
         composite.setComponentList(comps);
         composite.setConnections(conns);
@@ -77,7 +81,7 @@ public class TuscanyCompositeEntityBuilder {
         LayoutBuilder buildLayout = new LayoutBuilder(comps, conns);
         buildLayout.placeEntities();
 
-        System.out.println("conns " + conns[0][0]);
+        // System.out.println("conns " + conns[0][0]);
 
         buildCompositeService();
         buildCompositeReference();
@@ -173,20 +177,24 @@ public class TuscanyCompositeEntityBuilder {
     }
 
     private String extractComp(ComponentEntity[] elts, String str, boolean isReference) {
-
+        String[] names = Artifact.parseNames(str);
         if (isReference) {
             for (ComponentEntity elt : elts) {
-                for (String ref : elt.getReferences()) {
-                    if (ref.equals(str)) {
-                        return elt.getName();
+                if (elt.getName().equals(names[0])) {
+                    for (String ref : elt.getReferences()) {
+                        if (ref.equals(names[1])) {
+                            return elt.getName();
+                        }
                     }
                 }
             }
         } else {
             for (ComponentEntity elt : elts) {
-                for (String ser : elt.getServices()) {
-                    if (ser.equals(str)) {
-                        return elt.getName();
+                if (elt.getName().equals(names[0])) {
+                    for (String ser : elt.getServices()) {
+                        if (ser.equals(names[1])) {
+                            return elt.getName();
+                        }
                     }
                 }
             }
@@ -231,6 +239,22 @@ public class TuscanyCompositeEntityBuilder {
 
         return elts;
 
+    }
+
+    private void buildTargets(ComponentEntity[] components) {
+
+        for (Component c : tuscanyComp.getComponents()) {
+            ComponentEntity sourceComponent = findEntity(components, c.getName());
+            for (ComponentReference ref : c.getReferences()) {
+                for (EndpointReference epr : ref.getEndpointReferences()) {
+                    Endpoint ep = epr.getTargetEndpoint();
+                    if (ep != null && ep.getComponent() != null && ep.getService() != null) {
+                        createConnection(sourceComponent, ref.getName(), ep.getComponent().getName(), ep.getService()
+                            .getName());
+                    }
+                }
+            }
+        }
     }
 
     private void buildWires(List<Wire> wires, ComponentEntity[] elts) {
@@ -281,12 +305,12 @@ public class TuscanyCompositeEntityBuilder {
 
         if (reference != null && service != null) {
 
-            ent.addToRefToSerMap(reference, service);
+            ent.addToRefToSerMap(reference, serviceComp + "/" + service);
             ent.addAnAdjacentEntity(serviceComp);
             addToConnectedEntities(referenceComp, serviceComp);
             addToConnectedEntities(serviceComp, referenceComp);
         } else if (reference == null && service != null) {
-            ent.addToRefToSerMap(referenceComp, service);
+            ent.addToRefToSerMap(referenceComp, serviceComp + "/" + service);
             ent.addAnAdjacentEntity(serviceComp);
             addToConnectedEntities(referenceComp, serviceComp);
             addToConnectedEntities(serviceComp, referenceComp);
@@ -319,7 +343,7 @@ public class TuscanyCompositeEntityBuilder {
     }
 
     private void addToConnectedEntities(String ent1, String ent2) {
-        System.err.println(ent1 + " : " + ent2);
+        // System.err.println(ent1 + " : " + ent2);
         ArrayList<String> list;
         if (connectedEntities.containsKey(ent1)) {
             list = connectedEntities.get(ent1);

@@ -29,6 +29,7 @@ import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -51,6 +52,10 @@ import org.apache.tuscany.sca.diagram.generator.DiagramGenerator;
 import org.apache.tuscany.sca.diagram.html.HTMLWrapper;
 import org.apache.tuscany.sca.diagram.layout.CompositeEntity;
 import org.apache.tuscany.sca.diagram.layout.EntityBuilder;
+import org.apache.tuscany.sca.diagram.layout.TuscanyCompositeEntityBuilder;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
+import org.apache.tuscany.sca.node.extensibility.NodeExtension;
 import org.w3c.dom.Document;
 
 public class Main {
@@ -183,20 +188,27 @@ public class Main {
     }
 
     private static String extractSvg(Document svg) throws Exception {
-
-        // Set up the output transformer
-        TransformerFactory transfac = TransformerFactory.newInstance();
-        Transformer trans = transfac.newTransformer();
-
         // Print the DOM node
 
         StringWriter sw = new StringWriter();
         StreamResult result = new StreamResult(sw);
-        DOMSource source = new DOMSource(svg);
-        trans.transform(source, result);
+
+        transform(svg, result);
         String svgString = sw.toString();
 
         return svgString;
+    }
+
+    private static void transform(Document svg, StreamResult result) throws Exception {
+        // Set up the output transformer
+        TransformerFactory transfac = TransformerFactory.newInstance();
+
+        Transformer trans = transfac.newTransformer();
+        trans.setOutputProperty(OutputKeys.INDENT, "yes");
+        trans.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+
+        DOMSource source = new DOMSource(svg);
+        trans.transform(source, result);
     }
 
     public static void svgToJPEG(File svg, File jpeg) throws IOException, TranscoderException {
@@ -278,6 +290,36 @@ public class Main {
         svg.close();
         png.flush();
         png.close();
+    }
+
+    /**
+     * Generate the SVG diagram from 
+     * @param configuration
+     * @param classLoader
+     * @return The XML string for the SVG
+     * @throws Exception
+     */
+    public static String generateDiagram(NodeConfiguration configuration, ClassLoader classLoader, String baseURL)
+        throws Exception {
+        ClassLoader currentTCCL = null;
+        if (classLoader != null) {
+            currentTCCL = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(classLoader);
+        }
+
+        try {
+            NodeFactory factory = NodeFactory.getInstance();
+            NodeExtension node = factory.loadNode(configuration);
+            TuscanyCompositeEntityBuilder builder = new TuscanyCompositeEntityBuilder(node.getDomainComposite());
+            CompositeEntity compositeEntity = builder.buildCompositeEntity();
+            DiagramGenerator generator = new DiagramGenerator(compositeEntity, false, baseURL);
+            Document doc = generator.buildSVGDocument();
+            return extractSvg(doc);
+        } finally {
+            if (currentTCCL != null) {
+                Thread.currentThread().setContextClassLoader(currentTCCL);
+            }
+        }
     }
 
 }

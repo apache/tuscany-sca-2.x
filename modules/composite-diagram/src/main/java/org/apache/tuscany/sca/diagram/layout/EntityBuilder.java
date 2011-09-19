@@ -121,7 +121,7 @@ public class EntityBuilder {
                     if (service == null) {
                         composite.addToPromoteAService(compositeSer, serviceComp);
                     } else {
-                        composite.addToPromoteAService(compositeSer, service);
+                        composite.addToPromoteAService(compositeSer, serviceComp + "/" + service);
                     }
                 }
 
@@ -157,7 +157,7 @@ public class EntityBuilder {
                         if (reference == null) {
                             composite.addToPromoteAReference(compositeRef, referenceComp);
                         } else {
-                            composite.addToPromoteAReference(compositeRef, reference);
+                            composite.addToPromoteAReference(compositeRef, referenceComp + "/" + reference);
                         }
                     }
 
@@ -504,12 +504,12 @@ public class EntityBuilder {
 
         if (reference != null && service != null) {
 
-            ent.addToRefToSerMap(reference, service);
+            ent.addToRefToSerMap(reference, serviceComp + "/" + service);
             ent.addAnAdjacentEntity(serviceComp);
             addToConnectedEntities(referenceComp, serviceComp);
             addToConnectedEntities(serviceComp, referenceComp);
         } else if (reference == null && service != null) {
-            ent.addToRefToSerMap(referenceComp, service);
+            ent.addToRefToSerMap(referenceComp, serviceComp + "/" + service);
             ent.addAnAdjacentEntity(serviceComp);
             addToConnectedEntities(referenceComp, serviceComp);
             addToConnectedEntities(serviceComp, referenceComp);
@@ -708,13 +708,13 @@ public class EntityBuilder {
             }
         }
     }
-    
-    private String extractClassName(String classAttr){
-        if(classAttr==null) {
+
+    private String extractClassName(String classAttr) {
+        if (classAttr == null) {
             return "";
         } else {
             int index = classAttr.lastIndexOf('.');
-            return classAttr.substring(index+1);
+            return classAttr.substring(index + 1);
         }
     }
 

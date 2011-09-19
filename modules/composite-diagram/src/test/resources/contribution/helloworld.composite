@@ -17,15 +17,18 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            targetNamespace="http://sample"
            xmlns:sample="http://sample"
-           name="IdleTest">
+           name="HelloWorld">
 
-   <component name="AddServiceComponent">
-        <implementation.java class="calculator.AddServiceImpl"/>
+    <component name="HelloComponent">
+		<implementation.java class="org.apache.tuscany.sca.diagram.test.HelloWorldImpl"/>
+        <reference name="delegate" target="Hello2Component" />
     </component>
 
-    
+    <component name="Hello2Component">
+        <implementation.java class="org.apache.tuscany.sca.diagram.test.HelloWorld2Impl"/>
+    </component>
 
 </composite>
