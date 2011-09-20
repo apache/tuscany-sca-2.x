@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.binding.sca.provider;
 
 import java.io.StringReader;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -46,10 +44,8 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.provider.ProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.SCABindingMapper;
-import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
-import org.apache.tuscany.sca.runtime.DomainRegistryFactoryExtensionPoint;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -64,7 +60,7 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
     protected StAXArtifactProcessorExtensionPoint processors;
     protected QName defaultMappedBinding;
     protected QName defaultLocalBinding;
-    protected boolean supportsDistributedSCA;
+    // protected boolean supportsDistributedSCA;
 
     public DefaultSCABindingMapper(ExtensionPointRegistry registry, Map<String, String> attributes) {
         this.registry = registry;
@@ -72,7 +68,7 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
         processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         defaultMappedBinding = getDefaultMappedBinding(attributes);
         defaultLocalBinding = new QName(Base.SCA11_TUSCANY_NS, "binding.local");
-        supportsDistributedSCA = isDistributed();
+        // supportsDistributedSCA = isDistributed();
     }
 
     protected QName getDefaultMappedBinding(Map<String, String> attributes) {
@@ -136,21 +132,6 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
             }
         } catch (Throwable e) {
             throw new ServiceRuntimeException(e);
-        }
-        return true;
-    }
-
-    // FIXME: [rfeng] This is a HACK to check if we should make binding.sca remotable
-    // by checking if we have distributed domain registry present
-    protected boolean isDistributed() {
-        DomainRegistryFactoryExtensionPoint factories =
-            registry.getExtensionPoint(DomainRegistryFactoryExtensionPoint.class);
-        List<DomainRegistryFactory> list = factories.getDomainRegistryFactories();
-        if (list.size() == 1) {
-            String[] schemes = list.get(0).getSupportedSchemes();
-            if (Arrays.asList(schemes).contains("local")) {
-                return false;
-            }
         }
         return true;
     }
@@ -264,11 +245,13 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
      * @return
      */
     protected QName chooseBinding(RuntimeEndpoint endpoint) {
+        DomainRegistry domainRegistry = endpoint.getCompositeContext().getEndpointRegistry();
+        boolean distributed = domainRegistry.isDistributed();
         InterfaceContract interfaceContract = endpoint.getService().getInterfaceContract();
         if(interfaceContract != null
            && interfaceContract.getInterface() != null
            && interfaceContract.getInterface().isRemotable()
-           && supportsDistributedSCA
+           && distributed
            && isBindingSupported(defaultMappedBinding)) {
         	return defaultMappedBinding;
         }
@@ -282,6 +265,8 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
      * @return
      */
     protected QName chooseBinding(RuntimeEndpointReference endpointReference) {
+        DomainRegistry domainRegistry = endpointReference.getCompositeContext().getEndpointRegistry();
+        boolean distributed = domainRegistry.isDistributed();
         if(endpointReference.getTargetEndpoint().isRemote()) {
             RuntimeComponentReference ref = (RuntimeComponentReference)endpointReference.getReference();
             if(ref.getInterfaceContract() != null && !ref.getInterfaceContract().getInterface().isRemotable()) {
@@ -291,7 +276,7 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
                         + ref.getName());
             }
             
-            if(supportsDistributedSCA && isBindingSupported(defaultMappedBinding)) {
+            if(distributed && isBindingSupported(defaultMappedBinding)) {
                 return defaultMappedBinding;
             }
         }

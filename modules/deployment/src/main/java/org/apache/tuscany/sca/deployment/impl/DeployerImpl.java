@@ -939,5 +939,10 @@ public class DeployerImpl implements Deployer {
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public boolean isDistributed() {
+            return false;
+        }
     }
 }

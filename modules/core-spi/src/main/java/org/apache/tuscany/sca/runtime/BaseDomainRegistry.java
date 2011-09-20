@@ -195,4 +195,9 @@ public abstract class BaseDomainRegistry implements DomainRegistry, LifeCycleLis
         }
         return domainComposite;
     }
+
+    @Override
+    public boolean isDistributed() {
+        return true;
+    }
 }

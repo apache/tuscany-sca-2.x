@@ -34,6 +34,12 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
  */
 public interface DomainRegistry {
     /**
+     * Indicate if the domain is distributed
+     * @return
+     */
+    boolean isDistributed();
+    
+    /**
      * Add an enpoint to the registry. If the endpoint URI is the same as an existing endpoint in the registry,
      * the existing one will be updated
      * @param endpoint

@@ -265,4 +265,9 @@ public class DomainRegistryImpl extends BaseDomainRegistry implements DomainRegi
         }
         return null;
     }
+
+    @Override
+    public boolean isDistributed() {
+        return false;
+    }
 }
