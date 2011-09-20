@@ -531,12 +531,15 @@ public class Axis2EngineIntegration {
     //========================================================= 
     
     public static String getPortAddress(Port port) {
-        Object ext = port.getExtensibilityElements().get(0);
-        if (ext instanceof SOAPAddress) {
-            return ((SOAPAddress)ext).getLocationURI();
-        }
-        if (ext instanceof SOAP12Address) {
-            return ((SOAP12Address)ext).getLocationURI();
+        List<?> es = port.getExtensibilityElements();
+        if (es != null && es.size() > 0) {
+            Object ext = es.get(0);
+            if (ext instanceof SOAPAddress) {
+                return ((SOAPAddress)ext).getLocationURI();
+            }
+            if (ext instanceof SOAP12Address) {
+                return ((SOAP12Address)ext).getLocationURI();
+            }
         }
         return null;
     }
