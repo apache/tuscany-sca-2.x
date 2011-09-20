@@ -60,7 +60,7 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
     protected StAXArtifactProcessorExtensionPoint processors;
     protected QName defaultMappedBinding;
     protected QName defaultLocalBinding;
-    // protected boolean supportsDistributedSCA;
+    protected boolean alwaysDistributed;
 
     public DefaultSCABindingMapper(ExtensionPointRegistry registry, Map<String, String> attributes) {
         this.registry = registry;
@@ -68,7 +68,9 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
         processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         defaultMappedBinding = getDefaultMappedBinding(attributes);
         defaultLocalBinding = new QName(Base.SCA11_TUSCANY_NS, "binding.local");
-        // supportsDistributedSCA = isDistributed();
+        if (attributes != null && "true".equalsIgnoreCase(attributes.get("alwaysDistributed"))) {
+            alwaysDistributed = true;
+        }
     }
 
     protected QName getDefaultMappedBinding(Map<String, String> attributes) {
@@ -246,7 +248,7 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
      */
     protected QName chooseBinding(RuntimeEndpoint endpoint) {
         DomainRegistry domainRegistry = endpoint.getCompositeContext().getEndpointRegistry();
-        boolean distributed = domainRegistry.isDistributed();
+        boolean distributed = alwaysDistributed || domainRegistry.isDistributed();
         InterfaceContract interfaceContract = endpoint.getService().getInterfaceContract();
         if(interfaceContract != null
            && interfaceContract.getInterface() != null
@@ -266,7 +268,7 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
      */
     protected QName chooseBinding(RuntimeEndpointReference endpointReference) {
         DomainRegistry domainRegistry = endpointReference.getCompositeContext().getEndpointRegistry();
-        boolean distributed = domainRegistry.isDistributed();
+        boolean distributed = alwaysDistributed || domainRegistry.isDistributed();
         if(endpointReference.getTargetEndpoint().isRemote()) {
             RuntimeComponentReference ref = (RuntimeComponentReference)endpointReference.getReference();
             if(ref.getInterfaceContract() != null && !ref.getInterfaceContract().getInterface().isRemotable()) {

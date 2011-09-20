@@ -38,6 +38,7 @@ public class MyMapper extends DefaultSCABindingMapper {
 
     public MyMapper(ExtensionPointRegistry registry, Map<String, String> attributes) {
         super(registry, attributes);
+        alwaysDistributed = true;
     }
 
     @Override
@@ -66,15 +67,6 @@ public class MyMapper extends DefaultSCABindingMapper {
             }
         }
         return bindingType;
-    }
-
-    /*
-     * Probably others don't need to override this is they have a remotable endpoint registry, this itest
-     * doesn't so just fiddle the test  
-     */
-    @Override
-    protected boolean isDistributed() {
-        return true;
     }
 
 }
