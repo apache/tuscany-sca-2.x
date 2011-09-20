@@ -105,6 +105,7 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
 
     public Collection<ServiceDeclaration> getServiceDeclarations(String name, boolean byRanking) throws IOException {
         Collection<ServiceDeclaration> declarations = getServiceDiscoverer().getServiceDeclarations(name);
+        // declarations = removeDuplicateDeclarations(declarations);
         // Check if any of the service declarations has attributes that are overrided
         if (!serviceAttributes.isEmpty()) {
             for (ServiceDeclaration declaration : declarations) {
@@ -119,18 +120,6 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
         }
         if (!declarations.isEmpty()) {
             List<ServiceDeclaration> declarationList = new ArrayList<ServiceDeclaration>(declarations);
-            /*
-            for (ServiceDeclaration sd1 : declarations) {
-                for (Iterator<ServiceDeclaration> i = declarationList.iterator(); i.hasNext();) {
-                    ServiceDeclaration sd2 = i.next();
-                    if (sd1 != sd2 && sd1.getAttributes().equals(sd2.getAttributes())) {
-                        logger
-                            .warning("Duplicate service declarations: " + sd1.getLocation() + "," + sd2.getLocation());
-                        i.remove();
-                    }
-                }
-            }
-            */
             Collections.sort(declarationList, ServiceComparator.DESCENDING_ORDER);
             return declarationList;
         } else {
@@ -294,11 +283,11 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
      */
     public static Collection<ServiceDeclaration> removeDuplicateDeclarations(Collection<ServiceDeclaration> declarations) {
         // Use LinkedHashMap to maintain the insertion order
-        Map<String, ServiceDeclaration> map = new LinkedHashMap<String, ServiceDeclaration>();
+        Map<Map<String, String>, ServiceDeclaration> map = new LinkedHashMap<Map<String, String>, ServiceDeclaration>();
         for (ServiceDeclaration sd : declarations) {
-            ServiceDeclaration existed = map.put(sd.getClassName(), sd);
+            ServiceDeclaration existed = map.put(sd.getAttributes(), sd);
             if (existed != null) {
-                logger.warning("Duplicate service declaration is ignored: " + existed + " <-> " + sd);
+                logger.warning("Duplicate service declaration is detected: " + existed + " <-> " + sd);
             }
         }
         return map.values();
