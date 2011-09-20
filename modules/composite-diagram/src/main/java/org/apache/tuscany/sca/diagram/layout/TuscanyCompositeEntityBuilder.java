@@ -58,9 +58,8 @@ public class TuscanyCompositeEntityBuilder {
 
     public CompositeEntity buildCompositeEntity() {
 
-        String compositeName;
-        compositeName = tuscanyComp.getName().getLocalPart();
-        System.out.println("compositeName " + compositeName);
+        String compositeName = tuscanyComp.getName().getLocalPart();
+        // System.out.println("compositeName " + compositeName);
 
         ComponentEntity[] comps = buildComponentEntities();
 
