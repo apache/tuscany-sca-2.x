@@ -117,7 +117,6 @@ public class NodeImpl implements Node, NodeExtension {
         try {
             load();
 
-            nodeFactory.addNode(configuration, this);
             this.proxyFactory = nodeFactory.proxyFactory;
 
             // Set up the node context
@@ -178,6 +177,8 @@ public class NodeImpl implements Node, NodeExtension {
 
     public void load() throws Throwable {
         nodeFactory.init();
+        
+        nodeFactory.addNode(configuration, this);
 
         Monitor monitor = nodeFactory.monitorFactory.createMonitor();
         ProcessorContext context = new ProcessorContext(monitor);
