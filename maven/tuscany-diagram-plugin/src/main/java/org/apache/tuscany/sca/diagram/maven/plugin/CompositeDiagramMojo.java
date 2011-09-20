@@ -27,7 +27,6 @@ import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.project.MavenProject;
 
 /**
  * Maven Mojo to generate the diagrams for SCA composites 
@@ -38,21 +37,7 @@ import org.apache.maven.project.MavenProject;
  * @phase generate-sources
  * @description 
  */
-public class TuscanyDiagramMojo extends AbstractMojo {
-
-    /**
-     * The maven project.
-     *
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
-     */
-    private MavenProject project;
-
-    /**
-     * @parameter expression="${contributions}" 
-     */
-    private File[] contributions;
+public class CompositeDiagramMojo extends AbstractMojo {
 
     /**
      * @parameter expression="${composites}" 
