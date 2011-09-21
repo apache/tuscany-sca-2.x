@@ -600,10 +600,12 @@ public class DeployerImpl implements Deployer {
         // build the top level composite
         BuilderContext builderContext = new BuilderContext(systemDefinitions, bindingMap, monitor);
         compositeBuilder.build(domainComposite, builderContext);
-        // analyzeProblems(monitor);
-   
-        // do build time reference binding
-        buildTimeReferenceBind(domainComposite, builderContext);        
+
+        // only do the local build if we know no errors have been detected   
+        if (!monitor.isErrorDetected()) {
+            // do build time reference binding
+            buildTimeReferenceBind(domainComposite, builderContext);     
+        }
 
         return domainComposite;
     }

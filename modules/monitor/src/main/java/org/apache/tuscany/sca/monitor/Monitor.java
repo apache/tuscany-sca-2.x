@@ -361,4 +361,18 @@ public abstract class Monitor {
             reset();
         }
     }
+    
+    public boolean isErrorDetected() {
+        
+        boolean errorDetected = false;
+        
+        for (Problem problem : getProblems()) {
+            if ((problem.getSeverity() == Severity.ERROR)) {
+                errorDetected = true;
+                break;
+            }
+        }
+        
+        return errorDetected;
+    }
 }
