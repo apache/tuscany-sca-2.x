@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.websocket.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
@@ -32,8 +33,8 @@ public class WebsocketBindingDispatcher {
 
     private Map<String, WebsocketServiceInvoker> invokers = new HashMap<String, WebsocketServiceInvoker>();
 
-    public void addOperation(String uri, RuntimeEndpoint endpoint, Operation operation) {
-        invokers.put(uri, new WebsocketServiceInvoker(operation, endpoint));
+    public void addOperation(String uri, ExtensionPointRegistry extensionPoints, RuntimeEndpoint endpoint, Operation operation) {
+        invokers.put(uri, new WebsocketServiceInvoker(extensionPoints, operation, endpoint));
     }
 
     public WebsocketServiceInvoker dispatch(String uri) {

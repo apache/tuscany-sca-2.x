@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.binding.websocket.WebsocketBinding;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -38,10 +39,12 @@ public class WebsocketServiceBindingProvider implements ServiceBindingProvider {
     private static final int DEFAULT_PORT = 9000;
     private static final String JAVASCRIPT_RESOURCE_PATH = "/org.apache.tuscany.sca.WebsocketComponentContext.js";
     private static Map<Integer, WebsocketServer> servers = new HashMap<Integer, WebsocketServer>();
+    private ExtensionPointRegistry extensionPoints;
     private RuntimeEndpoint endpoint;
     private ServletHost servletHost;
 
-    public WebsocketServiceBindingProvider(RuntimeEndpoint endpoint, ServletHost servletHost) {
+    public WebsocketServiceBindingProvider(ExtensionPointRegistry extensionPoints, RuntimeEndpoint endpoint, ServletHost servletHost) {
+        this.extensionPoints = extensionPoints;
         this.endpoint = endpoint;
         this.servletHost = servletHost;
     }
@@ -58,7 +61,7 @@ public class WebsocketServiceBindingProvider implements ServiceBindingProvider {
             String service = endpoint.getService().getName();
             for (Operation op : getBindingInterfaceContract().getInterface().getOperations()) {
                 String operation = op.getName();
-                server.getDispatcher().addOperation(component + "." + service + "." + operation, endpoint, op);
+                server.getDispatcher().addOperation(component + "." + service + "." + operation, extensionPoints, endpoint, op);
             }
             JavascriptGenerator.generateServiceProxy(component, service, getBindingInterfaceContract().getInterface()
                     .getOperations(), port);

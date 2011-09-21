@@ -34,9 +34,11 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
  */
 public class WebsocketBindingProviderFactory implements BindingProviderFactory<WebsocketBinding> {
 
+    private ExtensionPointRegistry extensionPoints;
     private ServletHost servletHost;
 
     public WebsocketBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
+        this.extensionPoints = extensionPoints;
         this.servletHost = ServletHostHelper.getServletHost(extensionPoints);
     }
 
@@ -49,7 +51,7 @@ public class WebsocketBindingProviderFactory implements BindingProviderFactory<W
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {
-        return new WebsocketServiceBindingProvider(endpoint, servletHost);
+        return new WebsocketServiceBindingProvider(extensionPoints, endpoint, servletHost);
     }
 
 }

@@ -21,9 +21,11 @@ package org.apache.tuscany.sca.binding.websocket.runtime;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointImpl;
-import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointReferenceImpl;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.core.invocation.impl.MessageImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -36,10 +38,14 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  */
 public class WebsocketServiceInvoker {
 
+    protected AssemblyFactory assemblyFactory;
     protected Operation operation;
     protected RuntimeEndpoint endpoint;
 
-    public WebsocketServiceInvoker(Operation operation, RuntimeEndpoint endpoint) {
+    public WebsocketServiceInvoker(ExtensionPointRegistry extensionPoints, Operation operation, RuntimeEndpoint endpoint) {
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
+        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        
         this.operation = operation;
         this.endpoint = endpoint;
     }
@@ -63,8 +69,8 @@ public class WebsocketServiceInvoker {
         Message msg = new MessageImpl();
         msg.getHeaders().put(Constants.MESSAGE_ID, channel.getId());
         msg.setBody(args);
-        EndpointReference re = new RuntimeEndpointReferenceImpl();
-        RuntimeEndpointImpl callbackEndpoint = new RuntimeEndpointImpl();
+        EndpointReference re = assemblyFactory.createEndpointReference(); //new RuntimeEndpointReferenceImpl();
+        Endpoint callbackEndpoint = assemblyFactory.createEndpoint(); //new RuntimeEndpointImpl();
         callbackEndpoint.setURI(request.getOperation());
         re.setCallbackEndpoint(callbackEndpoint);
         msg.setFrom(re);
