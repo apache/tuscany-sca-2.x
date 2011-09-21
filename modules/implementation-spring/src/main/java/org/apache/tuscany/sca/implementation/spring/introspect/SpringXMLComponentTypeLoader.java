@@ -996,6 +996,9 @@ public class SpringXMLComponentTypeLoader {
         // to 1..1 - for Spring implementations, this is the only multiplicity supported
         reference.setName(name);
         reference.setMultiplicity(Multiplicity.ONE_ONE);
+        
+        // For Spring references, we allow pass-by-reference
+        reference.setAllowsPassByReference(true);
 
         // Set the call interface and, if present, the callback interface
         JavaInterface callInterface = javaFactory.createJavaInterface(interfaze);
