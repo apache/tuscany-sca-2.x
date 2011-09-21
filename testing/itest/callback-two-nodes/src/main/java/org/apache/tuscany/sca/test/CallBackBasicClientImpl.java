@@ -35,6 +35,8 @@ public class CallBackBasicClientImpl implements CallBackBasicClient, CallBackBas
 
         // This tests basic callback patterns.
 
+        callBackCount = 0; // reset static incase theres multiple runs
+        
         // Test1 is the basic callback where the target calls back prior to
         // returning to the client.
         test1a();
