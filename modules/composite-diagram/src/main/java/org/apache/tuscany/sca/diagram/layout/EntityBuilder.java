@@ -77,7 +77,7 @@ public class EntityBuilder {
 
         addInclusions(docEle);
 
-        composite.setAttributes();
+        composite.build();
 
         return composite;
     }
@@ -345,9 +345,7 @@ public class EntityBuilder {
                 setReferences(nVal, elts[i]);
                 setProperties(nVal, elts[i]);
 
-                elts[i].referenceHeight();
-                elts[i].serviceHeight();
-                elts[i].propertyLength();
+                elts[i].build();
             }
         }
 

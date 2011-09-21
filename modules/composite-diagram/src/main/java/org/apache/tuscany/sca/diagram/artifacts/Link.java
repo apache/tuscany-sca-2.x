@@ -33,7 +33,7 @@ public class Link {
         Element link = document.createElementNS(svgNs, "a");
         link.setAttributeNS(null, "xlink:href", fileName);
         link.setAttributeNS(null, "xlink:show", "new");
-        link.setTextContent(" " + compName + " ,");
+        link.setTextContent(" [" + compName + "] ");
 
         return link;
     }

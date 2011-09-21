@@ -36,15 +36,15 @@ public class CompositeArtifact extends Artifact {
         this.setyCoordinate(y);
 
         Element rectangle = document.createElementNS(svgNs, "rect");
-        rectangle.setAttributeNS(null, "x", x + "");
-        rectangle.setAttributeNS(null, "y", y + "");
+        rectangle.setAttributeNS(null, "x", String.valueOf(x));
+        rectangle.setAttributeNS(null, "y", String.valueOf(y));
         rectangle.setAttributeNS(null, "rx", getRoundCorner());
         rectangle.setAttributeNS(null, "ry", getRoundCorner());
-        rectangle.setAttributeNS(null, "width", width + "");
-        rectangle.setAttributeNS(null, "height", height + "");
-//        rectangle.setAttributeNS(null, "fill", "#E5E5E5");
-//        rectangle.setAttributeNS(null, "stroke", "#919191");
-//        rectangle.setAttributeNS(null, "alignment-baseline", "middle");
+        rectangle.setAttributeNS(null, "width", String.valueOf(width));
+        rectangle.setAttributeNS(null, "height", String.valueOf(height));
+        //        rectangle.setAttributeNS(null, "fill", "#E5E5E5");
+        //        rectangle.setAttributeNS(null, "stroke", "#919191");
+        //        rectangle.setAttributeNS(null, "alignment-baseline", "middle");
         rectangle.setAttributeNS(null, "class", "composite");
 
         return rectangle;

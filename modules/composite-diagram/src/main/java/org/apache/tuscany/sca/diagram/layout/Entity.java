@@ -22,41 +22,32 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public abstract class Entity {
-
-    private int id = -1; //a unique integer id (0..n)
-    private String name; // a unique name
-    private int spaceFactor = 2; //which determines the free space surrounded by this
-    private int x; // x coordinate
-    private int y; // y coordinate
-    private int level = -1; // corresponding row which this entity is placed
-    private int lane = -1; // corresponding column which this entity is placed
-    private boolean isPossitionSet = false;
-    private int height; // height of the entity
-    private int width; // width of the entity
-    private int refHeight; // height of a reference element
-    private int serHeight; // height of a service element
-    private int propLength; // length of a property element
-    private int defaultNoOfSers; // default # of service elements
-    private int defaultNoOfRefs; // default # of reference elements
-    private int defaultNoOfProps; // default # of property elements
-    private int startPosition = 0;
-    private Entity parent = null;
-
-    private ArrayList<String> references = new ArrayList<String>();
-
-    private ArrayList<String> services = new ArrayList<String>();
-
-    private ArrayList<String> properties = new ArrayList<String>();
-
-    private HashSet<String> adjacentEntities = new HashSet<String>();
+    protected int id = -1; //a unique integer id (0..n)
+    protected String name; // a unique name
+    protected int spaceFactor = 2; //which determines the free space surrounded by this
+    protected int x; // x coordinate
+    protected int y; // y coordinate
+    protected int level = -1; // corresponding row which this entity is placed
+    protected int lane = -1; // corresponding column which this entity is placed
+    protected boolean isPossitionSet = false;
+    protected int height; // height of the entity
+    protected int width; // width of the entity
+    protected int refHeight; // height of a reference element
+    protected int serHeight; // height of a service element
+    protected int propWidth; // length of a property element
     
-    private String implementation;
+    protected int startPosition = 0;
+    protected Entity parent = null;
 
-    public abstract void referenceHeight();
+    protected ArrayList<String> references = new ArrayList<String>();
 
-    public abstract void serviceHeight();
+    protected ArrayList<String> services = new ArrayList<String>();
 
-    public abstract void propertyLength();
+    protected ArrayList<String> properties = new ArrayList<String>();
+
+    protected HashSet<String> adjacentEntities = new HashSet<String>();
+
+    protected String implementation;
 
     public String getName() {
         return name;
@@ -71,7 +62,7 @@ public abstract class Entity {
     }
 
     public void setX(int init) {
-        this.x = init + width * spaceFactor * lane;
+        this.x = init + getWidth() * spaceFactor * lane;
     }
 
     public int getY() {
@@ -79,7 +70,7 @@ public abstract class Entity {
     }
 
     public void setY(int init) {
-        this.y = init + height * spaceFactor * level;
+        this.y = init + getHeight() * spaceFactor * level;
     }
 
     public int getLevel() {
@@ -130,36 +121,12 @@ public abstract class Entity {
         this.serHeight = serHeight;
     }
 
-    public int getPropLength() {
-        return propLength;
+    public int getPropWidth() {
+        return propWidth;
     }
 
-    public void setPropLength(int propLength) {
-        this.propLength = propLength;
-    }
-
-    public int getDefaultNoOfSers() {
-        return defaultNoOfSers;
-    }
-
-    public void setDefaultNoOfSers(int defaultNoOfSers) {
-        this.defaultNoOfSers = defaultNoOfSers;
-    }
-
-    public int getDefaultNoOfRefs() {
-        return defaultNoOfRefs;
-    }
-
-    public void setDefaultNoOfRefs(int defaultNoOfRefs) {
-        this.defaultNoOfRefs = defaultNoOfRefs;
-    }
-
-    public int getDefaultNoOfProps() {
-        return defaultNoOfProps;
-    }
-
-    public void setDefaultNoOfProps(int defaultNoOfProps) {
-        this.defaultNoOfProps = defaultNoOfProps;
+    public void setPropWidth(int propLength) {
+        this.propWidth = propLength;
     }
 
     public int getNoOfRefs() {
@@ -275,7 +242,7 @@ public abstract class Entity {
     public Entity getParent() {
         return parent;
     }
-    
+
     public String getImplementation() {
         return implementation;
     }
@@ -291,5 +258,8 @@ public abstract class Entity {
         return builder.toString();
     }
 
-
+    /**
+     * Adjust the items and coordinates
+     */
+    public abstract void build();
 }

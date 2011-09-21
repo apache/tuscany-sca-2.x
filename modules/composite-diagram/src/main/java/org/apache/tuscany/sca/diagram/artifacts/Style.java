@@ -108,7 +108,8 @@ public class Style {
             }
         }
         reader.close();
-        return sw.toString();
-
+        String template = sw.toString();
+        // Remove the ASF license header
+        return template.replaceFirst("/\\*(?:.|[\\n\\r])*?\\*/", "");
     }
 }

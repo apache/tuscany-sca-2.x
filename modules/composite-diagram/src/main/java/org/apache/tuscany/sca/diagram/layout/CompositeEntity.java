@@ -39,8 +39,8 @@ public class CompositeEntity extends Entity {
     //	public static final int defaultNoOfProps= Component.DEFAULT_WIDTH / (Property.MAXIMUM_HEIGHT+Property.SPACING); 
 
     private final String fileNameSuffix = "_diagram";
-    private int maxInternalLevel = 0;
-    private int maxInternalLane = 0;
+    private int maxInternalLevel = -1;
+    private int maxInternalLane = -1;
     private ComponentEntity[] componentList;
     private int[][] connections;
     private HashMap<String, String> promoteAService = new HashMap<String, String>();
@@ -50,7 +50,6 @@ public class CompositeEntity extends Entity {
     //private HashSet<String> connectedEntities = new HashSet<String>();
 
     public CompositeEntity(String name) {
-
         setStartPosition(200);
         setLevel(0);
         setLane(0);
@@ -59,101 +58,57 @@ public class CompositeEntity extends Entity {
         setY(getStartPosition() / 2);
 
         setName(name);
-        //componentList = comps;
-        //setConnections(conns);
 
+        setRefHeight(Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPOSITE_OF_REFERENCE);
+        setSerHeight(Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPOSITE_OF_SERVICE);
+        setPropWidth(Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPOSITE_OF_PROPERTY);
     }
 
-    public void referenceHeight() {
-        //System.err.println(getDefaultNoOfRefs() + " kkkkkkk "+getNoOfRefs());
+    public void build() {
+        int h = 0;
+        int w = 0;
 
-        if (getDefaultNoOfRefs() < getNoOfRefs()) {
-
-            setRefHeight((getHeight() / getNoOfRefs()) - Constant.SPACING_FOR_COMPOSITE_OF_REFERENCE);
-        } else
-            setRefHeight(Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPOSITE_OF_REFERENCE);
-    }
-
-    public void serviceHeight() {
-        if (getDefaultNoOfSers() < getNoOfSers()) {
-            setSerHeight((getHeight() / getNoOfSers()) - Constant.SPACING_FOR_COMPOSITE_OF_SERVICE);
-        } else
-            setSerHeight(Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPOSITE_OF_SERVICE);
-    }
-
-    public void propertyLength() {
-        if (getDefaultNoOfProps() < getNoOfProps()) {
-
-            setPropLength((getWidth() / getNoOfProps()) - Constant.SPACING_FOR_COMPOSITE_OF_PROPERTY);
-        } else
-            setPropLength(Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPOSITE_OF_PROPERTY);
-    }
-
-    //	/**
-    //	 * Put a value to referenceToServiceMap
-    //	 * @param ref
-    //	 * @param ser
-    //	 * @return successfully added or not
-    //	 */
-    //	//assumption there can not be two services for the same reference
-    //	public boolean addToRefToSerMap(String ref, String ser){
-    //		//ref = ref.toLowerCase();
-    //		//ser = ser.toLowerCase();
-    //		
-    //		if (referenceToServiceMap.containsKey(ref))
-    //			return false;
-    //		
-    //		referenceToServiceMap.put(ref, ser);
-    //		return true;
-    //	}
-    //	
-    //	/**
-    //	 * Retrieve a service name for a given reference
-    //	 * @param ref
-    //	 * @return service name
-    //	 */
-    //	public String getSerOfRef(String ref){
-    //		//ref = ref.toLowerCase();
-    //		
-    //		if (!referenceToServiceMap.containsKey(ref))
-    //			return null;
-    //		
-    //		return referenceToServiceMap.get(ref);
-    //	}
-    //	
-    //	public HashMap<String, String> getReferenceToServiceMap() {
-    //		return referenceToServiceMap;
-    //	}
-    //	
-    //	public void setReferenceToServiceMap(
-    //			HashMap<String, String> referenceToServiceMap) {
-    //		this.referenceToServiceMap = referenceToServiceMap;
-    //	}
-
-    public void calcHeight(int initPoint) {
-        setHeight((Constant.COMPONENT_DEFAULT_HEIGHT * getSpaceFactor()) * (maxInternalLevel + 1) + initPoint);
-    }
-
-    public void calcWidth(int initPoint) {
-        //System.err.println("maxInternalLane "+maxInternalLane);
-        setWidth((Constant.COMPONENT_DEFAULT_WIDTH * getSpaceFactor()) * (maxInternalLane + 1) + initPoint);
-    }
-
-    private int max(int a, int b) {
-        if (a >= b)
-            return a;
-        return b;
-    }
-
-    public void setMaxInternalProperties() {
-
+        int lastHeight = 0;
+        // int lastWidth = 0;
         for (ComponentEntity ent : componentList) {
 
-            maxInternalLevel = max(maxInternalLevel, ent.getLevel());
-            maxInternalLane = max(maxInternalLane, ent.getLane());
-
+            if (ent.getLevel() > maxInternalLevel) {
+                maxInternalLevel = ent.getLevel();
+                lastHeight = ent.getHeight();
+                h += ent.getHeight() * getSpaceFactor();
+            }
+            if (ent.getLane() > maxInternalLane) {
+                maxInternalLane = ent.getLane();
+                // lastWidth = ent.getWidth();
+                w += ent.getWidth() * getSpaceFactor();
+            }
         }
-        //System.out.println("++++++ "+maxInternalLevel+" +++++ "+maxInternalLane);
+
+        // For last level, no spacing is needed
+        h -= lastHeight * (getSpaceFactor() - 1);
+        // w -= lastWidth * (getSpaceFactor() - 1);
+
+        // Find the services height
+        int size1 = services.size();
+        int total1 = size1 * serHeight + (size1 + 1) * Constant.SPACING_FOR_COMPOSITE_OF_SERVICE;
+
+        // Find the references height
+        int size2 = references.size();
+        int total2 = size2 * refHeight + (size2 + 1) * Constant.SPACING_FOR_COMPOSITE_OF_REFERENCE;
+
+        int total = Math.max(total1, total2);
+
+        if (!includedComposites.isEmpty()) {
+            height = Math.max(total, h) + 80 + getY();
+        } else {
+            height = Math.max(total, h) + getY();
+        }
+
+        // Find the properties width
+        int size3 = properties.size();
+        int total3 = size3 * propWidth + (size3 + 1) * Constant.SPACING_FOR_COMPOSITE_OF_PROPERTY;
+
+        width = Math.max(w, total3) + getX();
     }
 
     public int getMaxInternalLevel() {
@@ -226,24 +181,6 @@ public class CompositeEntity extends Entity {
 
     public int[][] getConnections() {
         return connections;
-    }
-
-    public void setAttributes() {
-
-        setMaxInternalProperties();
-
-        //System.out.println("++++++ "+this.maxInternalLevel);
-
-        calcHeight(getY());
-        calcWidth(getX());
-
-        setDefaultNoOfSers(getHeight() / (Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPOSITE_OF_SERVICE + Constant.SPACING_FOR_COMPOSITE_OF_SERVICE));
-        setDefaultNoOfRefs(getHeight() / (Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPOSITE_OF_REFERENCE + Constant.SPACING_FOR_COMPOSITE_OF_REFERENCE));
-        setDefaultNoOfProps(getWidth() / (Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPOSITE_OF_PROPERTY + Constant.SPACING_FOR_COMPOSITE_OF_PROPERTY));
-
-        referenceHeight();
-        serviceHeight();
-        propertyLength();
     }
 
     public ArrayList<String> getIncludedComposites() {

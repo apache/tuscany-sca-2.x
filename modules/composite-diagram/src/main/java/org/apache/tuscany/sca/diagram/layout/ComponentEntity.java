@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.diagram.layout;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tuscany.sca.diagram.artifacts.Constant;
 
@@ -30,50 +31,36 @@ import org.apache.tuscany.sca.diagram.artifacts.Constant;
  */
 public class ComponentEntity extends Entity {
 
-    //	private String componentName;
-    //	private int X, Y, level=-1, lane=-1, refHeight, serHeight, propLength;
-    //	private final int height= Component.DEFAULT_HEIGHT, width= Component.DEFAULT_WIDTH;
-    //	public static final int defaultNoOfSers= Component.DEFAULT_HEIGHT / (Service.MAXIMUM_HEIGHT+Service.SPACING);
-    //	public static final int defaultNoOfRefs= Component.DEFAULT_HEIGHT / (Reference.MAXIMUM_HEIGHT+Reference.SPACING); //same value for defaultNoOfSers
-    //	public static final int defaultNoOfProps= Component.DEFAULT_WIDTH / (Property.MAXIMUM_HEIGHT+Property.SPACING); 
-
-    private HashMap<String, String> referenceToServiceMap = new HashMap<String, String>();
-
-    //private HashSet<String> connectedEntities = new HashSet<String>();
+    private Map<String, String> referenceToServiceMap = new HashMap<String, String>();
 
     public ComponentEntity() {
-
         setStartPosition(200);
         setHeight(Constant.COMPONENT_DEFAULT_HEIGHT);
         setWidth(Constant.COMPONENT_DEFAULT_WIDTH);
 
-        setDefaultNoOfSers(Constant.COMPONENT_DEFAULT_HEIGHT / (Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPONENT_OF_SERVICE + Constant.SPACING_FOR_COMPONENT_OF_SERVICE));
-        setDefaultNoOfRefs(Constant.COMPONENT_DEFAULT_HEIGHT / (Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPONENT_OF_REFERENCE + Constant.SPACING_FOR_COMPONENT_OF_REFERENCE));
-        setDefaultNoOfProps(Constant.COMPONENT_DEFAULT_WIDTH / (Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPONENT_OF_PROPERTY + Constant.SPACING_FOR_COMPONENT_OF_PROPERTY));
+        setRefHeight(Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPONENT_OF_REFERENCE);
+        setSerHeight(Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPONENT_OF_SERVICE);
+        setPropWidth(Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPONENT_OF_PROPERTY);
     }
 
-    public void referenceHeight() {
-        if (getDefaultNoOfRefs() < getNoOfRefs()) {
+    public void build() {
+        // Find the services height
+        int size1 = services.size();
+        int total1 = size1 * serHeight + (size1 + 1) * Constant.SPACING_FOR_COMPONENT_OF_SERVICE;
 
-            setRefHeight((Constant.COMPONENT_DEFAULT_HEIGHT / getNoOfRefs()) - Constant.SPACING_FOR_COMPONENT_OF_REFERENCE);
-        } else
-            setRefHeight(Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPONENT_OF_REFERENCE);
-    }
+        // Find the references height
+        int size2 = references.size();
+        int total2 = size2 * refHeight + (size2 + 1) * Constant.SPACING_FOR_COMPONENT_OF_REFERENCE;
 
-    public void serviceHeight() {
-        if (getDefaultNoOfSers() < getNoOfSers()) {
+        int total = Math.max(total1, total2);
+        height = Math.max(total, height);
 
-            setSerHeight((Constant.COMPONENT_DEFAULT_HEIGHT / getNoOfSers()) - Constant.SPACING_FOR_COMPONENT_OF_SERVICE);
-        } else
-            setSerHeight(Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPONENT_OF_SERVICE);
-    }
+        // Find the properties width
+        int size3 = properties.size();
+        int total3 = size3 * propWidth + (size3 + 1) * Constant.SPACING_FOR_COMPONENT_OF_PROPERTY;
 
-    public void propertyLength() {
-        if (getDefaultNoOfProps() < getNoOfProps()) {
+        width = Math.max(width, total3);
 
-            setPropLength((Constant.COMPONENT_DEFAULT_WIDTH / getNoOfProps()) - Constant.SPACING_FOR_COMPONENT_OF_PROPERTY);
-        } else
-            setPropLength(Constant.DEFAULT_MAXIMUM_HEIGHT_FOR_COMPONENT_OF_PROPERTY);
     }
 
     /**
@@ -108,7 +95,7 @@ public class ComponentEntity extends Entity {
         return referenceToServiceMap.get(ref);
     }
 
-    public HashMap<String, String> getReferenceToServiceMap() {
+    public Map<String, String> getReferenceToServiceMap() {
         return referenceToServiceMap;
     }
 

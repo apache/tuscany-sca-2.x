@@ -35,12 +35,12 @@ public class ComponentArtifact extends Artifact {
         this.setyCoordinate(y);
 
         Element rectangle = document.createElementNS(svgNs, "rect");
-        rectangle.setAttributeNS(null, "x", x + "");
-        rectangle.setAttributeNS(null, "y", y + "");
+        rectangle.setAttributeNS(null, "x", String.valueOf(x));
+        rectangle.setAttributeNS(null, "y", String.valueOf(y));
         rectangle.setAttributeNS(null, "rx", getRoundCorner());
         rectangle.setAttributeNS(null, "ry", getRoundCorner());
-        rectangle.setAttributeNS(null, "width", width + "");
-        rectangle.setAttributeNS(null, "height", height + "");
+        rectangle.setAttributeNS(null, "width", String.valueOf(width));
+        rectangle.setAttributeNS(null, "height", String.valueOf(height));
 //        rectangle.setAttributeNS(null, "fill", "#3D59AB");
 //        rectangle.setAttributeNS(null, "stroke", "#104E8B");
 //        rectangle.setAttributeNS(null, "fill-opacity", "0.75");

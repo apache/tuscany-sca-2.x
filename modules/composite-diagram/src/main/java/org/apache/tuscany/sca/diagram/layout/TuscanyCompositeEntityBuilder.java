@@ -88,7 +88,7 @@ public class TuscanyCompositeEntityBuilder {
 
         addInclusions();
 
-        composite.setAttributes();
+        composite.build();
 
         return composite;
     }
@@ -231,9 +231,7 @@ public class TuscanyCompositeEntityBuilder {
             setReferences(aComp.getReferences(), elts[i]);
             setProperties(aComp.getProperties(), elts[i]);
 
-            elts[i].referenceHeight();
-            elts[i].serviceHeight();
-            elts[i].propertyLength();
+            elts[i].build();
         }
 
         return elts;

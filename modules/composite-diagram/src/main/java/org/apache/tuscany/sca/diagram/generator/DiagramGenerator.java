@@ -62,12 +62,12 @@ public class DiagramGenerator {
 
     private int lastUsedChangingFactor = 0;
 
-    enum changingFactor {
+    enum ChangingFactor {
         a(20), b(25), c(30), d(35), e(40), f(15);
 
         private final int val;
 
-        private changingFactor(int x) {
+        private ChangingFactor(int x) {
             val = x;
         }
 
@@ -77,7 +77,7 @@ public class DiagramGenerator {
 
     };
 
-    enum color {
+    enum Color {
         black
     }//, violet, red, green};
 
@@ -190,15 +190,15 @@ public class DiagramGenerator {
         if (!comp.getIncludedComposites().isEmpty()) {
 
             Layer inclusionLayer = new Layer();
-            int constant = 5;
+            int constant = 10;
             int x0 = comp.getX() + constant;
-            int y0 = comp.getY() + comp.getHeight() - (Constant.COMPONENT_DEFAULT_HEIGHT / 2 + constant);
-            int height = Constant.COMPONENT_DEFAULT_HEIGHT / 2;
+            int y0 = comp.getY() + comp.getHeight() - (80 + constant);
+            int height = 80;
             int width = comp.getWidth() - constant * 2;
 
-            Element layerElt = inclusionLayer.addElement(doc, svgNS, x0, y0, height, width, "#E5E5C0");
+            Element layerElt = inclusionLayer.addElement(doc, svgNS, x0, y0, height, width);
 
-            Element text = Text.addTextElement(doc, svgNS, x0 + constant, y0 + constant * 2, "Included Composites");
+            Element text = Text.addTextElement(doc, svgNS, x0 + constant, y0 + constant * 2, "Included Composites: ");
 
             svgRoot.appendChild(layerElt);
             svgRoot.appendChild(text);
@@ -255,8 +255,8 @@ public class DiagramGenerator {
      */
     private String getColor() {
 
-        previousWireColor = previousWireColor % color.values().length;
-        return color.values()[previousWireColor++].toString();
+        previousWireColor = previousWireColor % Color.values().length;
+        return Color.values()[previousWireColor++].toString();
     }
 
     /**
@@ -264,8 +264,8 @@ public class DiagramGenerator {
      */
     private int getChangingFactor() {
 
-        lastUsedChangingFactor = lastUsedChangingFactor % changingFactor.values().length;
-        return changingFactor.values()[lastUsedChangingFactor++].getVal();
+        lastUsedChangingFactor = lastUsedChangingFactor % ChangingFactor.values().length;
+        return ChangingFactor.values()[lastUsedChangingFactor++].getVal();
 
     }
 
@@ -312,7 +312,7 @@ public class DiagramGenerator {
     }
 
     private void addComponentProperties(ComponentEntity ent) {
-        int propLen = ent.getPropLength();
+        int propLen = ent.getPropWidth();
         int x = ent.getX() + Constant.SPACING_FOR_COMPONENT_OF_PROPERTY;
         int y = ent.getY() - propLen / 2;
 
@@ -559,7 +559,7 @@ public class DiagramGenerator {
     }
 
     private void addCompositeProperties() {
-        int propLen = comp.getPropLength();
+        int propLen = comp.getPropWidth();
 
         int x =
             comp.getX() + getStartingPoint(comp.getWidth(), propLen, Constant.SPACING_FOR_COMPOSITE_OF_PROPERTY, comp
