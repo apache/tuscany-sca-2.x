@@ -28,6 +28,7 @@ import java.util.List;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -96,11 +97,12 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
         try {
             visitConstructor(ctor, type);
             fail();
-        } catch (InvalidConstructorException e) {
+        } catch (InvalidResourceException e) {
             // expected
         }
     }
 
+    @Ignore("TUSCANY-3950") // no names in constructor annotation now
     @Test
     public void testNoMatchingNames() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -121,8 +123,8 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
 
         }
 
-        @org.oasisopen.sca.annotation.Constructor("myResource")
-        public Foo(@Resource Integer resource) {
+        @org.oasisopen.sca.annotation.Constructor()
+        public Foo(@Resource(name = "myResource") Integer resource) {
 
         }
 
@@ -149,13 +151,13 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
 
         }
 
-        @org.oasisopen.sca.annotation.Constructor("myProp")
-        public BadFoo(@Resource Integer res, @Resource Integer res2) {
+        @org.oasisopen.sca.annotation.Constructor()
+        public BadFoo(@Resource(name = "myResource") Integer res, @Resource Integer res2) {
 
         }
 
-        @org.oasisopen.sca.annotation.Constructor({"myRes", "myRes2"})
-        public BadFoo(@Resource List res, @Resource(name = "myOtherRes") List res2) {
+        @org.oasisopen.sca.annotation.Constructor()
+        public BadFoo(@Resource(name = "myResource") List res, @Resource(name = "myOtherRes") List res2) {
 
         }
 

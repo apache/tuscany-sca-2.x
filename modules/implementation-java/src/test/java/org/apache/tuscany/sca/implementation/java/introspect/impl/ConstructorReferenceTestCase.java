@@ -105,7 +105,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
         try {
             visitConstructor(ctor, type);
             fail();
-        } catch (InvalidConstructorException e) {
+        } catch (InvalidReferenceException e) {
             // expected
         }
     }
@@ -139,7 +139,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
 
         }
 
-        @org.oasisopen.sca.annotation.Constructor("myRef2")
+        @org.oasisopen.sca.annotation.Constructor()
         public Foo(@Reference(name = "myRef2") Integer prop) {
 
         }
@@ -170,12 +170,12 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
 
         }
 
-        @org.oasisopen.sca.annotation.Constructor("myRef")
+        @org.oasisopen.sca.annotation.Constructor()
         public BadFoo(@Reference Integer ref, @Reference Integer ref2) {
 
         }
 
-        @org.oasisopen.sca.annotation.Constructor({"myRef", "myRef2"})
+        @org.oasisopen.sca.annotation.Constructor()
         public BadFoo(@Reference List ref, @Reference(name = "myOtherRef")List ref2) {
 
         }

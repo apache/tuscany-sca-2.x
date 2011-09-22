@@ -145,8 +145,7 @@ public abstract class SCAClientFactory {
      * @return a proxy to the target service, in the specified SCA Domain 
      * that implements the business interface <B>.
      * @throws NoSuchServiceException Service requested was not found
-     * @throws NoSuchDomainException Domain requested was not found
      */
     public abstract <T> T getService(Class<T> interfaze, String serviceURI) 
-        throws NoSuchServiceException, NoSuchDomainException;    
+        throws NoSuchServiceException;    
 }

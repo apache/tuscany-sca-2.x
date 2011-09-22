@@ -11,7 +11,7 @@ package org.oasisopen.sca;
  * <p> The serialized QNames are used with the @Requires annotation 
  * to specify a policy intent. The policy intent strings in this
  * interface do not have a corresponding Java annotation, so these
- * policy intents have ot be specified through the use of the
+ * policy intents have to be specified through the use of the
  * @Requires annotation.
  */
 public interface Constants {

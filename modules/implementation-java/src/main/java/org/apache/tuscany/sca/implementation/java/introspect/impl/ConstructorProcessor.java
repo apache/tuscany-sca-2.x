@@ -76,11 +76,6 @@ public class ConstructorProcessor extends BaseJavaClassVisitor {
             type.setConstructor(definition);
         }
         JavaParameterImpl[] parameters = definition.getParameters();
-        String[] value = annotation.value();
-        boolean isDefault = value.length == 0 || (value.length == 1 && "".equals(value[0]));
-        if (!isDefault && value.length != parameters.length) {
-            throw new InvalidConstructorException("Invalid Number of names in @Constructor");
-        }
         
         for (JavaParameterImpl p : parameters) {
             if (!hasAnnotation(p)) {
@@ -88,9 +83,6 @@ public class ConstructorProcessor extends BaseJavaClassVisitor {
             }
         }
 
-        for (int i = 0; i < parameters.length; i++) {
-            parameters[i].setName(i < value.length ? value[i] : "");
-        }
         type.setConstructor(definition);
     }
 

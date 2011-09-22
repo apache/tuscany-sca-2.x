@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
@@ -65,6 +66,7 @@ public class ConstructorProcessorTestCase {
         }
     }
 
+    @Ignore("TUSCANY-3950") // no names in constructor annotation now
     @Test
     public void testConstructorAnnotation() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -117,19 +119,19 @@ public class ConstructorProcessorTestCase {
 
     private static class BadFoo {
 
-        @org.oasisopen.sca.annotation.Constructor("foo")
+        @org.oasisopen.sca.annotation.Constructor()
         public BadFoo(String foo) {
 
         }
 
-        @org.oasisopen.sca.annotation.Constructor( {"foo", "bar"})
-        public BadFoo(String foo, String bar) {
+        @org.oasisopen.sca.annotation.Constructor()
+        public BadFoo(@Property String foo, @Property String bar) {
 
         }
     }
 
     private static class Foo {
-        @org.oasisopen.sca.annotation.Constructor("foo")
+        @org.oasisopen.sca.annotation.Constructor()
         public Foo(@Property String foo) {
 
         }
@@ -141,8 +143,8 @@ public class ConstructorProcessorTestCase {
     }
 
     private static class BadAnnotation {
-        @org.oasisopen.sca.annotation.Constructor("foo")
-        public BadAnnotation(String foo, Foo ref) {
+        @org.oasisopen.sca.annotation.Constructor()
+        public BadAnnotation(@Property String foo, Foo ref) {
         }
     }
 

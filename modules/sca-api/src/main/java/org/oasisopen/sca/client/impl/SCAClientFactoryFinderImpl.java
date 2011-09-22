@@ -4,6 +4,8 @@
  */
 package org.oasisopen.sca.client.impl;
 
+import org.oasisopen.sca.client.SCAClientFactoryFinder;
+
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
@@ -19,7 +21,6 @@ import java.util.Properties;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.client.SCAClientFactory;
-import org.oasisopen.sca.client.SCAClientFactoryFinder;
 
 /**
  * This is a default implementation of an SCAClientFactoryFinder which is 
@@ -61,6 +62,7 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
      * instance of the SCAClient
      * @param classLoader   ClassLoader that may be used when creating a new 
      * instance of the SCAClient
+     * @param domainURI		URI for the Domain to which this client instance is connected
      * @return new instance of the SCAClientFactory
      * @throws ServiceRuntimeException Failed to create SCAClientFactory
      * Implementation.
@@ -79,7 +81,7 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
 					                   classLoader);
 		final SCAClientFactory factory =
 			instantiateSCAClientFactoryClass(factoryImplClass,
-								   domainURI );
+								   domainURI, properties );
 		return factory;
 	}
     
@@ -89,11 +91,12 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
      * @return The Context ClassLoader for the current Thread.
      */
     private static ClassLoader getThreadContextClassLoader () {
-        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            public ClassLoader run() {
-                return Thread.currentThread().getContextClassLoader();
-            }
-        });
+        return AccessController.doPrivileged(
+                new PrivilegedAction<ClassLoader>() {
+             public ClassLoader run() {
+                 return Thread.currentThread().getContextClassLoader();
+             }
+         });
     }
 
     /**
@@ -101,6 +104,10 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
      * implementation from the specified Properties, the System Properties
      * or the specified ClassLoader.
      * 
+     * @param properties    Properties that may be used when creating a new 
+     * instance of the SCAClient
+     * @param classLoader   ClassLoader that may be used when creating a new 
+     * instance of the SCAClient
      * @return The class name of the SCAClientFactorySPI implementation
      * @throw ServiceRuntimeException Failed to find implementation for 
      * SCAClientFactorySPI.
@@ -134,6 +141,8 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
      * Attempts to find the class name for the SCAClientFactorySPI 
      * implementation from the specified Properties.
      * 
+     * @param properties    Properties that may be used when creating a new 
+     * instance of the SCAClient
      * @return The class name for the SCAClientFactorySPI implementation 
      * or <code>null</code> if not found.
      */
@@ -156,6 +165,8 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
      * Attempts to find the class name for the SCAClientFactorySPI 
      * implementation from the META-INF/services directory
      * 
+     * @param cl   ClassLoader that may be used when creating a new 
+     * instance of the SCAClient
      * @return The class name for the SCAClientFactorySPI implementation or
      * <code>null</code> if not found.
      */
@@ -218,6 +229,8 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
      * 
      * @param factoryImplClassName The name of the SCAClientFactory 
      * Implementation class to load
+     * @param classLoader   ClassLoader that may be used when creating a new 
+     * instance of the SCAClient
      * @return The specified SCAClientFactory Implementation class
      * @throws ServiceRuntimeException Failed to load the SCAClientFactory 
      * Implementation class 
@@ -252,20 +265,23 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
      *  
      * @param factoryImplClass The SCAClientFactorySPI Implementation 
      * class to instantiate.
+     * @param domainURI		URI for the Domain to which this client instance is connected
+     * @param properties    Properties that may be used when creating a new 
+     * instance of the SCAClient
      * @return An instance of the SCAClientFactorySPI Implementation class
      * @throws ServiceRuntimeException Failed to instantiate the specified 
      * specified SCAClientFactorySPI Implementation class  
      */
     private static SCAClientFactory instantiateSCAClientFactoryClass(
     			Class<? extends SCAClientFactory> factoryImplClass,
-        		URI domainURI)
+        		URI domainURI, Properties properties)
         throws NoSuchDomainException, ServiceRuntimeException {
         
         try {
             Constructor<? extends SCAClientFactory> URIConstructor = 
-            	factoryImplClass.getConstructor(URI.class);
+            	factoryImplClass.getConstructor(URI.class, Properties.class);
             SCAClientFactory provider = 
-               URIConstructor.newInstance( domainURI );
+               URIConstructor.newInstance( domainURI, properties );
             return provider;
         } catch (Throwable ex) {
             throw new ServiceRuntimeException(

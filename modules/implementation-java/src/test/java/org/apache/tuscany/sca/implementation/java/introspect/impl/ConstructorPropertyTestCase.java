@@ -31,6 +31,7 @@ import java.util.List;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.oasisopen.sca.annotation.Property;
 
@@ -99,11 +100,12 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
         try {
             visitConstructor(ctor, type);
             fail();
-        } catch (InvalidConstructorException e) {
+        } catch (InvalidPropertyException e) {
             // expected
         }
     }
 
+    @Ignore("TUSCANY-3950") // no names in constructor annotation now
     @Test
     public void testNoMatchingNames() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -129,8 +131,8 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
 
         }
 
-        @org.oasisopen.sca.annotation.Constructor("myProp")
-        public Foo(@Property Integer prop) {
+        @org.oasisopen.sca.annotation.Constructor()
+        public Foo(@Property(name = "myProp") Integer prop) {
 
         }
 
@@ -157,13 +159,13 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
 
         }
 
-        @org.oasisopen.sca.annotation.Constructor("myProp")
-        public BadFoo(@Property Integer prop, @Property Integer prop2) {
+        @org.oasisopen.sca.annotation.Constructor()
+        public BadFoo(@Property(name = "myProp") Integer prop, @Property Integer prop2) {
 
         }
 
-        @org.oasisopen.sca.annotation.Constructor({"myRef", "myRef2"})
-        public BadFoo(@Property List ref, @Property(name = "myOtherRef")List ref2) {
+        @org.oasisopen.sca.annotation.Constructor()
+        public BadFoo(@Property(name = "myRef") List ref, @Property(name = "myOtherRef")List ref2) {
 
         }
 

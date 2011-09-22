@@ -10,7 +10,8 @@ import java.util.Properties;
 
 import org.oasisopen.sca.NoSuchDomainException;
 
-/* A Service Provider Interface representing a SCAClientFactory finder.  
+/**
+ * A Service Provider Interface representing a SCAClientFactory finder.  
  * SCA provides a default reference implementation of this interface.
  * SCA runtime vendors can create alternative implementations of this 
  * interface that use different class loading or lookup mechanisms.

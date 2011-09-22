@@ -33,12 +33,12 @@ public @interface ManagedTransaction {
 	 * The serialized QName of the managedTransaction.local policy intent,
 	 * for use with the SCA @Requires annotation.
 	 */
-    String MANAGEDTRANSACTION_MESSAGE = MANAGEDTRANSACTION + ".local";
+    String MANAGEDTRANSACTION_LOCAL = MANAGEDTRANSACTION + ".local";
     /**
 	 * The serialized QName of the managedTransaction.global policy intent,
 	 * for use with the SCA @Requires annotation.
 	 */
-    String MANAGEDTRANSACTION_TRANSPORT = MANAGEDTRANSACTION + ".global";
+    String MANAGEDTRANSACTION_GLOBAL = MANAGEDTRANSACTION + ".global";
 
     /**
      * List of managedTransaction qualifiers (such as "global" or "local").
