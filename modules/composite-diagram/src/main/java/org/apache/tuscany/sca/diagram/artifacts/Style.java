@@ -60,7 +60,7 @@ public class Style {
         + "      polyline.normalWire {"
         + "      }\n"
         + "      polyline.dashedWire {"
-        + "          stroke-dasharray: \"3 3\";"
+        + "          stroke-dasharray: 3,3;"
         + "      }\n"
         + "      rect.layer {"
         + "        fill: #E5E5D0;"
