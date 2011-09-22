@@ -40,7 +40,6 @@ import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.jaxws.JAXWSBindingProvider;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
@@ -57,7 +56,6 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider {
     private Endpoint wsEndpoint;
     
     public JAXWSServiceBindingProvider(RuntimeEndpoint endpoint,
-                                       ServletHost servletHost,
                                        FactoryExtensionPoint modelFactories,
                                        DataBindingExtensionPoint dataBindings, String defaultPort) {
         
@@ -65,7 +63,6 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider {
         this.wsBinding = (WebServiceBinding)endpoint.getBinding();
         
         jaxwsBindingProvider = new JAXWSBindingProvider(endpoint, 
-                                                        servletHost,
                                                         modelFactories,
                                                         dataBindings,
                                                         defaultPort);

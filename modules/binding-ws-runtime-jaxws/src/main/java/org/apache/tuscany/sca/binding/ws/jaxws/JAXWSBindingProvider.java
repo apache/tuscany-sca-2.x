@@ -46,7 +46,6 @@ import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
@@ -84,7 +83,6 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
     }
 
     public JAXWSBindingProvider(RuntimeEndpoint endpoint,
-                                ServletHost servletHost,
                                 FactoryExtensionPoint modelFactories,
                                 DataBindingExtensionPoint dataBindings, String defaultPort) {
 

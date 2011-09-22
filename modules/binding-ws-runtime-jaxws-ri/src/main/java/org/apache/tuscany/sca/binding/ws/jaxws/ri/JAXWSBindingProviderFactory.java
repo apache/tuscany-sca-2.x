@@ -18,15 +18,12 @@
  */
 package org.apache.tuscany.sca.binding.ws.jaxws.ri;
 
-import java.util.List;
 
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -43,16 +40,11 @@ import org.apache.tuscany.sca.runtime.RuntimeProperties;
 public class JAXWSBindingProviderFactory implements BindingProviderFactory<WebServiceBinding> {
 
     private FactoryExtensionPoint modelFactories;
-    private ServletHost servletHost;
     private DataBindingExtensionPoint dataBindings;
     private String defaultPort = "8085";
 
     public JAXWSBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
-        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
-        List<ServletHost> hosts = servletHosts.getServletHosts();
-        if (!hosts.isEmpty()) {
-            this.servletHost = hosts.get(0);
-        }
+
         modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
 
@@ -68,7 +60,7 @@ public class JAXWSBindingProviderFactory implements BindingProviderFactory<WebSe
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {
-        return new JAXWSServiceBindingProvider(endpoint, servletHost, modelFactories, dataBindings, defaultPort);
+        return new JAXWSServiceBindingProvider(endpoint, modelFactories, dataBindings, defaultPort);
     }
 
     public Class<WebServiceBinding> getModelType() {
