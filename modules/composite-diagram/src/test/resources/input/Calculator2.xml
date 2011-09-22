@@ -17,10 +17,8 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           targetNamespace="http://sample"
-           xmlns:sample="http://sample"
-           name="Calculator2">
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" targetNamespace="http://sample"
+    xmlns:sample="http://sample" name="Calculator2">
 
     <component name="CalculatorServiceComponent">
         <implementation.java class="calculator.CalculatorServiceImpl" />
@@ -28,11 +26,17 @@
         <reference name="subtractService" target="SubtractServiceComponent" />
         <reference name="multiplyService" target="MultiplyServiceComponent" />
         <reference name="divideService" target="DivideServiceComponent" />
-        
+
         <reference name="addService2" target="AddServiceComponent2" />
         <reference name="subtractService2" target="SubtractServiceComponent2" />
         <reference name="multiplyService2" target="MultiplyServiceComponent2" />
         <reference name="divideService2" target="DivideServiceComponent2" />
+
+        <reference name="addService3" target="AddServiceComponent3" />
+        <reference name="subtractService3" target="SubtractServiceComponent3" />
+        <reference name="multiplyService3" target="MultiplyServiceComponent3" />
+        <reference name="divideService3" target="DivideServiceComponent3" />
+
     </component>
 
     <component name="AddServiceComponent">
@@ -64,6 +68,22 @@
     </component>
 
     <component name="DivideServiceComponent2">
+        <implementation.java class="calculator.DivideServiceImpl" />
+    </component>
+
+    <component name="AddServiceComponent3">
+        <implementation.java class="calculator.AddServiceImpl" />
+    </component>
+
+    <component name="SubtractServiceComponent3">
+        <implementation.java class="calculator.SubtractServiceImpl" />
+    </component>
+
+    <component name="MultiplyServiceComponent3">
+        <implementation.java class="calculator.MultiplyServiceImpl" />
+    </component>
+
+    <component name="DivideServiceComponent3">
         <implementation.java class="calculator.DivideServiceImpl" />
     </component>
 

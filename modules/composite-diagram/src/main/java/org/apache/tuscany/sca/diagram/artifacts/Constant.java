@@ -41,4 +41,6 @@ public final class Constant {
 
     public static final int SPACING_FOR_TEXT = 2;
 
+    public static final int MAX_LEVELS = 8;
+
 }

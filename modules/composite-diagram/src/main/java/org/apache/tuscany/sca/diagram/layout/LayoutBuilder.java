@@ -19,19 +19,23 @@
 
 package org.apache.tuscany.sca.diagram.layout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LayoutBuilder {
 
     private Entity[] elts = null;
     private int[][] conns = null;
-    private Entity startEnt = null;
-    private int currentMaxLevel = 0;
+    private int maxLevels = 8;
 
     /**
      * Constructor which takes set of entities and their connection matrix
+     * @param maxLevels TODO
      */
-    public LayoutBuilder(Entity[] entities, int[][] connections) {
+    public LayoutBuilder(Entity[] entities, int[][] connections, int maxLevels) {
         elts = entities;
-        conns = connections;
+        conns = connections.clone();
+        this.maxLevels = maxLevels;
     }
 
     /**
@@ -63,50 +67,12 @@ public class LayoutBuilder {
      */
     public Entity[] placeEntities() {
 
-        /**
-         * Finding the starting entity
-         */
-        for (int i = 0; i < elts.length; i++) {
-            //System.out.println("ELts "+elts.length);
-            Entity ent = elts[i];
-            if (isConnected(ent.getId())) {
-                setPosition(ent, 0, 0);
-                startEnt = ent;
-                //System.out.println("startEnt "+ent.getId());
-                break;
-            }
+        sortEntities();
 
-        }
-
-        if (startEnt != null) {
-            assignPositions(startEnt);
-        }
-
-        assignPositionsOfOtherConncetedEntities();//such as a different cluster of components
-        assignPositionsOfIdleEntities();
         assignCoordinates();
 
         return elts;
 
-    }
-
-    private void assignPositionsOfIdleEntities() {
-
-        for (Entity ent : elts) {
-            if (!ent.isPossitionSet()) {
-
-                setPosition(ent, currentMaxLevel++, 0);
-            }
-        }
-    }
-
-    private void assignPositionsOfOtherConncetedEntities() {
-
-        for (Entity ent : elts) {
-            if (!ent.isPossitionSet() && isConnected(ent.getId())) {
-                assignPositions(ent);
-            }
-        }
     }
 
     private void assignCoordinates() {
@@ -115,27 +81,6 @@ public class LayoutBuilder {
             ent.setX(ent.getParent().getX() + ent.getStartPosition());
             ent.setY(ent.getParent().getY() + ent.getStartPosition() / 2);
         }
-    }
-
-    private void assignPositions(Entity ent) {
-        int id = ent.getId();
-        int[] entConns = conns[id];
-
-        for (int i = 0; i < entConns.length; i++) {
-            if (entConns[i] == 1) {
-                Entity nextEnt = findEntity(i);
-
-                //				if(nextEnt.isPossitionSet()){
-                //					currentMaxLevel = nextEnt.getLevel()+1; // for diagram clearness purpose
-                //				}
-                if (nextEnt != null && !nextEnt.isPossitionSet()) {
-                    setPosition(nextEnt, currentMaxLevel, ent.getLane() + 1);
-                    assignPositions(nextEnt);
-                }
-            }
-
-        }
-        currentMaxLevel = ent.getLevel() + 1;
     }
 
     private Entity findEntity(int i) {
@@ -148,36 +93,65 @@ public class LayoutBuilder {
         return null;
     }
 
-    /**
-     * If there's at least 1 connection, this will return true
-     */
-    private boolean isConnected(int id) {
-        int[] entConns = conns[id];
-
-        //System.out.println("entConns "+entConns.length);
-        for (int i = 0; i < entConns.length; i++) {
-
-            if (entConns[i] == 1) {
-                return true;
-            }
-
-        }
-
-        return false;
-    }
-
     private void setPosition(Entity ent, int level, int lane) {
         ent.setLevel(level);
         ent.setLane(lane);
-        ent.setPossitionSet(true);
+        ent.setPositionSet(true);
     }
 
-    public Entity getStartEnt() {
-        return startEnt;
-    }
+    /**
+     * Perform a topological sort on the graph so that we can place the entities into level/lane grids
+     */
+    private void sortEntities() {
+        int lane = 0;
+        while (true) {
+            List<Integer> ids = new ArrayList<Integer>();
+            for (int i = 0; i < conns.length; i++) {
+                Entity ent = findEntity(i);
+                if (ent.isPositionSet()) {
+                    continue;
+                }
+                boolean beingConnected = false;
+                for (int j = 0; j < conns.length; j++) {
+                    if (conns[j][i] == 1) {
+                        beingConnected = true;
+                        break;
+                    }
+                }
+                if (!beingConnected) {
+                    ids.add(i);
+                }
+            }
 
-    public void setStartEnt(Entity startEnt) {
-        this.startEnt = startEnt;
+            if (ids.isEmpty()) {
+                boolean end = true;
+                // There might be circular dependencies
+                for (Entity e : elts) {
+                    if (!e.isPositionSet()) {
+                        // Pick the first one 
+                        ids.add(e.getId());
+                        end = false;
+                        break;
+                    }
+                }
+                if (end) {
+                    return;
+                }
+            }
+            int level = 0;
+            for (int i : ids) {
+                setPosition(findEntity(i), level++, lane);
+                if (maxLevels > 0 && (level % maxLevels == 0)) {
+                    level = 0;
+                    lane++;
+                }
+                for (int j = 0; j < conns.length; j++) {
+                    // Remove the connections from i
+                    conns[i][j] = 0;
+                }
+            }
+            lane++;
+        }
     }
 
 }

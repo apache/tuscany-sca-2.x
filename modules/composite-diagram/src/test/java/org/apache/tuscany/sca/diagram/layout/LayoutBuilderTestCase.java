@@ -20,10 +20,6 @@ package org.apache.tuscany.sca.diagram.layout;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.diagram.layout.ComponentEntity;
-import org.apache.tuscany.sca.diagram.layout.CompositeEntity;
-import org.apache.tuscany.sca.diagram.layout.Entity;
-import org.apache.tuscany.sca.diagram.layout.LayoutBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -66,12 +62,11 @@ public class LayoutBuilderTestCase {
             }
         }
 
-        lb = new LayoutBuilder(ents, conns);
+        lb = new LayoutBuilder(ents, conns, 4);
 
         ents = lb.placeEntities();
 
         Assert.assertEquals(5, ents.length);
-        Assert.assertEquals(0, lb.getStartEnt().getId());
 
         Assert.assertEquals(0, ents[0].getLevel());
         Assert.assertEquals(0, ents[1].getLevel());
@@ -102,12 +97,11 @@ public class LayoutBuilderTestCase {
         }
         conns[3][4] = 0;
 
-        lb = new LayoutBuilder(ents, conns);
+        lb = new LayoutBuilder(ents, conns, 4);
 
         ents = lb.placeEntities();
 
         Assert.assertEquals(5, ents.length);
-        Assert.assertEquals(0, lb.getStartEnt().getId());
 
         Assert.assertEquals(0, ents[0].getLevel());
         Assert.assertEquals(0, ents[1].getLevel());
@@ -136,24 +130,23 @@ public class LayoutBuilderTestCase {
             }
         }
 
-        lb = new LayoutBuilder(ents, conns);
+        lb = new LayoutBuilder(ents, conns, 4);
 
         ents = lb.placeEntities();
 
         Assert.assertEquals(5, ents.length);
-        Assert.assertEquals(1, lb.getStartEnt().getId());
 
-        Assert.assertEquals(1, ents[0].getLevel());
+        Assert.assertEquals(0, ents[0].getLevel());
         Assert.assertEquals(0, ents[1].getLevel());
         Assert.assertEquals(0, ents[2].getLevel());
         Assert.assertEquals(0, ents[3].getLevel());
-        Assert.assertEquals(1, ents[4].getLevel());
+        Assert.assertEquals(0, ents[4].getLevel());
 
         Assert.assertEquals(0, ents[0].getLane());
-        Assert.assertEquals(0, ents[1].getLane());
-        Assert.assertEquals(2, ents[2].getLane());
-        Assert.assertEquals(1, ents[3].getLane());
-        Assert.assertEquals(1, ents[4].getLane());
+        Assert.assertEquals(1, ents[1].getLane());
+        Assert.assertEquals(3, ents[2].getLane());
+        Assert.assertEquals(4, ents[3].getLane());
+        Assert.assertEquals(2, ents[4].getLane());
 
     }
 }

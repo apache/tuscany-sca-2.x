@@ -29,13 +29,13 @@ public abstract class Entity {
     protected int y; // y coordinate
     protected int level = -1; // corresponding row which this entity is placed
     protected int lane = -1; // corresponding column which this entity is placed
-    protected boolean isPossitionSet = false;
+    protected boolean positionSet = false;
     protected int height; // height of the entity
     protected int width; // width of the entity
     protected int refHeight; // height of a reference element
     protected int serHeight; // height of a service element
     protected int propWidth; // length of a property element
-    
+
     protected int startPosition = 0;
     protected Entity parent = null;
 
@@ -211,12 +211,12 @@ public abstract class Entity {
         return id;
     }
 
-    public void setPossitionSet(boolean isPossitionSet) {
-        this.isPossitionSet = isPossitionSet;
+    public void setPositionSet(boolean isPositionSet) {
+        this.positionSet = isPositionSet;
     }
 
-    public boolean isPossitionSet() {
-        return isPossitionSet;
+    public boolean isPositionSet() {
+        return positionSet;
     }
 
     public int getSpaceFactor() {

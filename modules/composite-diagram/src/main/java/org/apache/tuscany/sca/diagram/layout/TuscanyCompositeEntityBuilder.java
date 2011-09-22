@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.diagram.artifacts.Artifact;
+import org.apache.tuscany.sca.diagram.artifacts.Constant;
 
 public class TuscanyCompositeEntityBuilder {
 
@@ -77,7 +78,7 @@ public class TuscanyCompositeEntityBuilder {
         composite.setComponentList(comps);
         composite.setConnections(conns);
 
-        LayoutBuilder buildLayout = new LayoutBuilder(comps, conns);
+        LayoutBuilder buildLayout = new LayoutBuilder(comps, conns, Constant.MAX_LEVELS);
         buildLayout.placeEntities();
 
         // System.out.println("conns " + conns[0][0]);

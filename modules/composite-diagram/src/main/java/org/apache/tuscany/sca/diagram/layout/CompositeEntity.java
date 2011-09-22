@@ -68,25 +68,17 @@ public class CompositeEntity extends Entity {
         int h = 0;
         int w = 0;
 
-        int lastHeight = 0;
-        // int lastWidth = 0;
         for (ComponentEntity ent : componentList) {
 
             if (ent.getLevel() > maxInternalLevel) {
                 maxInternalLevel = ent.getLevel();
-                lastHeight = ent.getHeight();
-                h += ent.getHeight() * getSpaceFactor();
+                h += (ent.getHeight() + Constant.COMPONENT_DEFAULT_HEIGHT);
             }
             if (ent.getLane() > maxInternalLane) {
                 maxInternalLane = ent.getLane();
-                // lastWidth = ent.getWidth();
-                w += ent.getWidth() * getSpaceFactor();
+                w += (ent.getWidth() + Constant.COMPONENT_DEFAULT_WIDTH);
             }
         }
-
-        // For last level, no spacing is needed
-        h -= lastHeight * (getSpaceFactor() - 1);
-        // w -= lastWidth * (getSpaceFactor() - 1);
 
         // Find the services height
         int size1 = services.size();

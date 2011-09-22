@@ -109,7 +109,10 @@ public class Style {
         }
         reader.close();
         String template = sw.toString();
-        // Remove the ASF license header
-        return template.replaceFirst("/\\*(?:.|[\\n\\r])*?\\*/", "");
+        // return template.replaceFirst("/\\*(?:.|[\\n\\r])*?\\*/", ""); // Unfortunately it causes StackOverFlow in Apache Jenkins build
+        int i1 = template.indexOf("/*");
+        int i2 = template.indexOf("*/", i1);
+        String result = template.substring(0, i1) + template.substring(i2 + 2, template.length());
+        return result;
     }
 }

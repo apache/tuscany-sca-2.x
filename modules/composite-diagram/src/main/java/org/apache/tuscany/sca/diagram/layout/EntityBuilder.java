@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.diagram.layout;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.tuscany.sca.diagram.artifacts.Constant;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -66,7 +67,7 @@ public class EntityBuilder {
         composite.setComponentList(comps);
         composite.setConnections(conns);
 
-        LayoutBuilder buildLayout = new LayoutBuilder(comps, conns);
+        LayoutBuilder buildLayout = new LayoutBuilder(comps, conns, Constant.MAX_LEVELS);
         buildLayout.placeEntities();
 
         //System.out.println("conns "+conns[0][0]);
@@ -207,70 +208,6 @@ public class EntityBuilder {
         int[][] connections = new int[comps.length][comps.length];
         connections = initConnections(connections);
 
-        //		//sec. 5.4 in the spec
-        //		NodeList nl = docEle.getElementsByTagName("wire");
-        //		//System.out.println("^^^^^^^^^ "+nl.getLength());
-        //		if(nl != null && nl.getLength() > 0 ) {
-        //			
-        //			for(int i = 0 ; i < nl.getLength();i++) {
-        //				
-        //				Element elt = (Element)nl.item(i);
-        //				
-        //				String source = elt.getAttribute("source");
-        //				String target = elt.getAttribute("target");
-        //				
-        //				String service, serviceComp, reference, referenceComp;
-        //				
-        //				String[] arr1 = extractComp(target);
-        //				serviceComp = arr1[0];
-        //				service = arr1[1];
-        //				
-        //				String[] arr2 = extractComp(source);
-        //				referenceComp = arr2[0];
-        //				reference = arr2[1];
-
-        //				//System.out.println("^^^^^^^^^ "+source+" ::: "+target);
-        //				if(target.contains("/")){
-        //					String[] arr = target.split("/");
-        //					serviceComp = arr[0];
-        //					service = arr[1];
-        //				}
-        //				else{
-        //					serviceComp = target;
-        //					service = null;
-        //				}
-        //				
-        //				if(source.contains("/")){
-        //					String[] arr = source.split("/");
-        //					referenceComp = arr[0];
-        //					reference = arr[1];
-        //				}
-        //				else{
-        //					referenceComp = source;
-        //					reference = null;
-        //				}
-        //				//sec. 5.4 in the spec
-        //		NodeList nl = docEle.getElementsByTagName("wire");
-        //		//System.out.println("^^^^^^^^^ "+nl.getLength());
-        //		if(nl != null && nl.getLength() > 0 ) {
-        //			
-        //			for(int i = 0 ; i < nl.getLength();i++) {
-        //				
-        //				Element elt = (Element)nl.item(i);
-        //				
-        //				String source = elt.getAttribute("source");
-        //				String target = elt.getAttribute("target");
-        //				
-        //				String service, serviceComp, reference, referenceComp;
-        //				
-        //				String[] arr1 = extractComp(target);
-        //				serviceComp = arr1[0];
-        //				service = arr1[1];
-        //				
-        //				String[] arr2 = extractComp(source);
-        //				referenceComp = arr2[0];
-        //				reference = arr2[1];
-
         for (Entity ent : comps) {
             for (String name : ent.getAdjacentEntities()) {
                 ComponentEntity e2 = findEntity(comps, name);
@@ -281,18 +218,7 @@ public class EntityBuilder {
             }
 
         }
-        //				ComponentEntity e1 = findEntity(comps, referenceComp);
-        //				ComponentEntity e2 = findEntity(comps, serviceComp);
-        //				
-        //				System.out.println("^^^^^^^^^ "+e1.getName());
-        //				if(e1 != null && e2 != null){
-        //					System.out.println("^^^^^^^^^ "+e1.getId());
-        //					connections[e1.getId()][e2.getId()] = 1;
-        //					createConnection(e1, reference, serviceComp, service);
-        //				}
-        //			}
-        //		}
-        //		
+
         return connections;
     }
 
