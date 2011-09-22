@@ -65,20 +65,8 @@ public class CompositeEntity extends Entity {
     }
 
     public void build() {
-        int h = 0;
-        int w = 0;
-
-        for (ComponentEntity ent : componentList) {
-
-            if (ent.getLevel() > maxInternalLevel) {
-                maxInternalLevel = ent.getLevel();
-                h += (ent.getHeight() + Constant.COMPONENT_DEFAULT_HEIGHT);
-            }
-            if (ent.getLane() > maxInternalLane) {
-                maxInternalLane = ent.getLane();
-                w += (ent.getWidth() + Constant.COMPONENT_DEFAULT_WIDTH);
-            }
-        }
+        int h = height;
+        int w = width;
 
         // Find the services height
         int size1 = services.size();
@@ -183,121 +171,12 @@ public class CompositeEntity extends Entity {
         return fileNameSuffix;
     }
 
-    //	public int getNoOfRefs(){
-    //		return references.size();
-    //	}
-    //	
-    //	public int getNoOfSers(){
-    //		return services.size();
-    //	}
-    //	
-    //	public int getNoOfProps(){
-    //		return properties.size();
-    //	}
-    //	
-    //	public int getNoOfAdjacentUnits(){
-    //		return adjacentEntities.size();
-    //	}
-    //	
-    //	/**
-    //	 * Put a value to referenceToServiceMap
-    //	 * @param ref
-    //	 * @param ser
-    //	 * @return successfully added or not
-    //	 */
-    //	//assumption there can not be two services for the same reference
-    //	public boolean addToRefToSerMap(String ref, String ser){
-    //		//ref = ref.toLowerCase();
-    //		//ser = ser.toLowerCase();
-    //		
-    //		if (referenceToServiceMap.containsKey(ref))
-    //			return false;
-    //		
-    //		referenceToServiceMap.put(ref, ser);
-    //		return true;
-    //	}
-    //	
-    //	/**
-    //	 * Retrieve a service name for a given reference
-    //	 * @param ref
-    //	 * @return service name
-    //	 */
-    //	public String getSerOfRef(String ref){
-    //		//ref = ref.toLowerCase();
-    //		
-    //		if (!referenceToServiceMap.containsKey(ref))
-    //			return null;
-    //		
-    //		return referenceToServiceMap.get(ref);
-    //	}
-    //	
-    //	public void addAService(String serName){
-    //		//serName = serName.toLowerCase();
-    //		services.add(serName);
-    //		
-    //	}
-    //	
-    //	public void addAReference(String refName){
-    //		//refName = refName.toLowerCase();
-    //		references.add(refName);
-    //		
-    //	}
-    //	
-    //	public void addAProperty(String propName){
-    //		//propName = propName.toLowerCase();
-    //		properties.add(propName);
-    //		
-    //	}
-    //	
-    //	public void addAnAdjacentEntity(String x){
-    ////		System.out.println("eee "+x);
-    //		adjacentEntities.add(x);
-    //		
-    //	}
-    //	
-    //	public void addAnConnectedEntity(String x){
-    ////		System.out.println("eee "+x);
-    //		adjacentEntities.add(x);
-    //		
-    //	}
-    //	
-    //	public HashMap<String, String> getReferenceToServiceMap() {
-    //		return referenceToServiceMap;
-    //	}
-    //	public void setReferenceToServiceMap(
-    //			HashMap<String, String> referenceToServiceMap) {
-    //		this.referenceToServiceMap = referenceToServiceMap;
-    //	}
-    //	public ArrayList<String> getProperties() {
-    //		return properties;
-    //	}
-    //	public void setProperties(ArrayList<String> properties) {
-    //		this.properties = properties;
-    //	}
-    //	public HashSet<String> getAdjacentEntities() {
-    //		return adjacentEntities;
-    //	}
-    //	public void setAdjacentEntities(HashSet<String> adjacentEntities) {
-    //		this.adjacentEntities = adjacentEntities;
-    //	}
-    //	public void setServices(ArrayList<String> services) {
-    //		this.services = services;
-    //	}
-    //	
-    //	public ArrayList<String> getServices() {
-    //		return services;
-    //	}
-    //	
-    //	public ArrayList<String> getReferences() {
-    //		return references;
-    //	}
+    public void setMaxInternalLevel(int maxInternalLevel) {
+        this.maxInternalLevel = maxInternalLevel;
+    }
 
-    //	public void setConnectedEntities(HashSet<String> connectedEntities) {
-    //		this.connectedEntities = connectedEntities;
-    //	}
-    //
-    //	public HashSet<String> getConnectedEntities() {
-    //		return connectedEntities;
-    //	}
+    public void setMaxInternalLane(int maxInternalLane) {
+        this.maxInternalLane = maxInternalLane;
+    }
 
 }

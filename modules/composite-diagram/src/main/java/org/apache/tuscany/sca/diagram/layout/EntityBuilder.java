@@ -64,6 +64,10 @@ public class EntityBuilder {
 
         LayoutBuilder buildLayout = new LayoutBuilder(comps, conns, Constant.MAX_LEVELS);
         buildLayout.placeEntities();
+        composite.setHeight(buildLayout.getTotalHeight());
+        composite.setWidth(buildLayout.getTotalWidth());
+        composite.setMaxInternalLane(buildLayout.getTotalLane());
+        composite.setMaxInternalLevel(buildLayout.getTotalLevel());
 
         //System.out.println("conns "+conns[0][0]);
 

@@ -35,7 +35,8 @@ public class LayoutBuilder {
     private int totalLevel;
     private int totalLane;
 
-    private Entity[][] grid;
+    private int totalHeight;
+    private int totalWidth;
 
     private int[][] graph;
 
@@ -94,7 +95,7 @@ public class LayoutBuilder {
         sortEntities();
 
         // Build the grid for entities
-        grid = new Entity[totalLane + 1][totalLevel + 1];
+        Entity[][] grid = new Entity[totalLane + 1][totalLevel + 1];
         int[] height = new int[totalLevel + 1];
         int[] width = new int[totalLane + 1];
 
@@ -115,6 +116,9 @@ public class LayoutBuilder {
         for (int j = 1; j < totalLevel + 1; j++) {
             height[j] += height[j - 1];
         }
+
+        totalWidth = width[totalLane];
+        totalHeight = height[totalLevel];
 
         for (int i = 0; i < totalLane + 1; i++) {
             for (int j = 0; j < totalLevel + 1; j++) {
@@ -271,6 +275,22 @@ public class LayoutBuilder {
             }
             lane++;
         }
+    }
+
+    public int getTotalLevel() {
+        return totalLevel;
+    }
+
+    public int getTotalLane() {
+        return totalLane;
+    }
+
+    public int getTotalHeight() {
+        return totalHeight;
+    }
+
+    public int getTotalWidth() {
+        return totalWidth;
     }
 
 }
