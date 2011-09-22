@@ -77,7 +77,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
     }
 
     @Override
-    public <T> T getService(Class<T> serviceInterface, String serviceURI) throws NoSuchServiceException, NoSuchDomainException {
+    public <T> T getService(Class<T> serviceInterface, String serviceURI) throws NoSuchServiceException{
         
         String serviceName = null;
         if (serviceURI.contains("/")) {
@@ -105,7 +105,13 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
             handler = new RemoteServiceInvocationHandler(extensionPointRegistry, domainRegistry, serviceURI, serviceInterface);
         } else {
             // no local runtime
-            handler = new RemoteServiceInvocationHandler(extensionPointRegistry, domainRegistry, getDomainURI().toString(), serviceURI, serviceInterface);
+            // TUSCANY-3590 - convert NoSuchDomainException to NoSuchService exception while 
+            //                we findout why this interface has changed
+            try {
+                handler = new RemoteServiceInvocationHandler(extensionPointRegistry, domainRegistry, getDomainURI().toString(), serviceURI, serviceInterface);
+            } catch (NoSuchDomainException ex){
+                throw new NoSuchServiceException(ex);
+            }
         }
         if (serviceInterface == null) {
             serviceInterface = (Class<T>)((RemoteServiceInvocationHandler)handler).serviceInterface;
