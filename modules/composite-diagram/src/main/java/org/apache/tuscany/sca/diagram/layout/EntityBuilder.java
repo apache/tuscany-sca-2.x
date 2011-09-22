@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.diagram.layout;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import org.apache.tuscany.sca.diagram.artifacts.Constant;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,12 +28,10 @@ public class EntityBuilder {
 
     private Document dom;
 
-    //components connected to each other are tracked using following map
-    private HashMap<String, ArrayList<String>> connectedEntities = new HashMap<String, ArrayList<String>>();
     private int totalWidth = 0;
     private int totalHeight = 0;
 
-    CompositeEntity composite = null;
+    private CompositeEntity composite = null;
 
     /**
      * Constructor which initiates the DOM document
@@ -430,45 +425,17 @@ public class EntityBuilder {
 
             ent.addToRefToSerMap(reference, serviceComp + "/" + service);
             ent.addAnAdjacentEntity(serviceComp);
-            addToConnectedEntities(referenceComp, serviceComp);
-            addToConnectedEntities(serviceComp, referenceComp);
         } else if (reference == null && service != null) {
             ent.addToRefToSerMap(referenceComp, serviceComp + "/" + service);
             ent.addAnAdjacentEntity(serviceComp);
-            addToConnectedEntities(referenceComp, serviceComp);
-            addToConnectedEntities(serviceComp, referenceComp);
         } else if (reference != null && service == null) {
             ent.addToRefToSerMap(reference, serviceComp);
             ent.addAnAdjacentEntity(serviceComp);
-            addToConnectedEntities(referenceComp, serviceComp);
-            addToConnectedEntities(serviceComp, referenceComp);
         } else {
             ent.addToRefToSerMap(referenceComp, serviceComp);
             ent.addAnAdjacentEntity(serviceComp);
-            addToConnectedEntities(referenceComp, serviceComp);
-            addToConnectedEntities(serviceComp, referenceComp);
         }
     }
-
-    //	private void calculateProperties(ComponentEntity[] elts) {
-    //		int level=0, lane=0;
-    //
-    //		for(ComponentEntity ent: elts){
-    //			level = max(level, ent.getLevel());
-    //			lane = max(lane, ent.getLane());
-    //
-    //		}
-    //		totalHeight += spaceY*(level+1) + initPoint;
-    //		totalWidth += spaceX*(lane+1) + initPoint;
-    //		
-    //		System.err.println(totalHeight + " :: "+totalWidth);
-    //	}
-
-    //	private int max(int a, int b){
-    //		if(a>=b)
-    //			return a;
-    //		return b;
-    //	}
 
     @SuppressWarnings("unused")
     private void print(ComponentEntity[] elts) {
@@ -483,106 +450,6 @@ public class EntityBuilder {
                 + " : "
                 + ent.getY());
         }
-    }
-
-    //	private void positionEntities(ComponentEntity[] ents){
-    //		
-    //		for(ComponentEntity ent: ents){
-    //			if(ent.getAdjacentEntities().size() != 0 || ents.length==1){
-    //				setPosition(ent, initPoint, initPoint, 0, 0);
-    //				levelCount.add(0, 1);
-    //				startEnt = ent;
-    //				System.err.println(ent.getName());
-    //				break;
-    //			}
-    //		}
-    //		
-    //
-    //		if(startEnt != null)
-    //			assignPositions(ents, startEnt);
-    //
-    //	}
-    //
-    //	private void assignPositions(ComponentEntity[] ents, ComponentEntity ent){
-    //		int i=0;
-    //		if(ent.getAdjacentEntities().size()>0){
-    //			
-    //			System.out.println(ent.getName());
-    //			for(String name: ent.getAdjacentEntities()){
-    //				//System.out.println("eee "+name);
-    //				for(ComponentEntity aEnt: ents){
-    //					i++;
-    //					if(name.equalsIgnoreCase(aEnt.getName())){
-    //						int lane = ent.getLane()+1;
-    //						if(levelCount.size()<= lane){
-    //							levelCount.add(lane, 1);
-    //							setPosition(aEnt, ent.getX()+spaceX, ent.getY(), 0, lane);
-    //						}
-    //						else{
-    //							int level = levelCount.get(lane);
-    //							levelCount.add(lane, level+1);
-    //							setPosition(aEnt, ent.getX()+spaceX, ent.getY()+spaceY*level, level, lane);
-    //						}
-    //						if(i<ents.length)
-    //							assignPositions(ents, aEnt);
-    ////						else
-    ////							System.out.println(i+ " <<<<< "+ents.length);
-    //						break;
-    //					}
-    //
-    //				}
-    //			}
-    //		}
-    //
-    //
-    //		else{
-    //			ArrayList<String> conns = connectedEntities.get(ent.getName());
-    //			System.err.println(conns.size());
-    //			if(conns.size()>0){
-    //
-    //				for(String conn: conns){
-    //					System.err.println("conn "+conn +" : "+ent.getName());
-    //					for(ComponentEntity e: ents){
-    //						if(e.getLane() == -1 && e.getName().equals(conn)){
-    //
-    //							int lane = ent.getLane()-1;
-    //							System.err.println(lane);
-    //							int level = levelCount.get(lane);
-    //							levelCount.add(lane, level+1);
-    //							setPosition(e, ent.getX()-spaceX, ent.getY()+spaceY*level, level, lane);
-    //
-    //							break;
-    //						}
-    //					}
-    //				}
-    //			}
-    //		}
-    //	}
-    //
-    //	private void setPosition(ComponentEntity ent, int x, int y, int level, int lane){
-    //		ent.setX(x);
-    //		ent.setY(y);
-    //		ent.setLevel(level);
-    //		ent.setLane(lane);
-    //	}
-    //
-    //
-    //	private String[] splitValues(String str){
-    //		return str.split("/");
-    //	}
-
-    private void addToConnectedEntities(String ent1, String ent2) {
-        //System.err.println(ent1+" : "+ent2);
-        ArrayList<String> list;
-        if (connectedEntities.containsKey(ent1)) {
-            list = connectedEntities.get(ent1);
-
-        } else {
-            list = new ArrayList<String>();
-
-        }
-        list.add(ent2);
-        connectedEntities.put(ent1, list);
     }
 
     private void setServices(Element nVal, ComponentEntity ent) {

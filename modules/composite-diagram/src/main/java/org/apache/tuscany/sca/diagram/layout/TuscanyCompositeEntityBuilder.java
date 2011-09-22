@@ -19,9 +19,9 @@
 
 package org.apache.tuscany.sca.diagram.layout;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
@@ -32,18 +32,19 @@ import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.diagram.artifacts.Artifact;
 import org.apache.tuscany.sca.diagram.artifacts.Constant;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 
 public class TuscanyCompositeEntityBuilder {
 
     private Composite tuscanyComp;
-    //components connected to each other are tracked using following map
-    private HashMap<String, ArrayList<String>> connectedEntities = new HashMap<String, ArrayList<String>>();
+
     private int totalWidth = 0;
     private int totalHeight = 0;
 
@@ -228,6 +229,20 @@ public class TuscanyCompositeEntityBuilder {
             elts[i].setId(i);
             elts[i].setName(aComp.getName());
 
+            Implementation implementation = aComp.getImplementation();
+            if (implementation != null) {
+                String impl = "";
+                QName type = implementation.getType();
+                if (JavaImplementation.TYPE.equals(type)) {
+                    impl = "java:" + ((JavaImplementation)implementation).getJavaClass().getSimpleName();
+                } else if (implementation instanceof Composite) {
+                    impl = "composite:" + ((Composite)implementation).getName().getLocalPart();
+                } else {
+                    impl = type.getLocalPart();
+                }
+                elts[i].setImplementation(impl);
+            }
+
             setServices(aComp.getServices(), elts[i]);
             setReferences(aComp.getReferences(), elts[i]);
             setProperties(aComp.getProperties(), elts[i]);
@@ -305,23 +320,15 @@ public class TuscanyCompositeEntityBuilder {
 
             ent.addToRefToSerMap(reference, serviceComp + "/" + service);
             ent.addAnAdjacentEntity(serviceComp);
-            addToConnectedEntities(referenceComp, serviceComp);
-            addToConnectedEntities(serviceComp, referenceComp);
         } else if (reference == null && service != null) {
             ent.addToRefToSerMap(referenceComp, serviceComp + "/" + service);
             ent.addAnAdjacentEntity(serviceComp);
-            addToConnectedEntities(referenceComp, serviceComp);
-            addToConnectedEntities(serviceComp, referenceComp);
         } else if (reference != null && service == null) {
             ent.addToRefToSerMap(reference, serviceComp);
             ent.addAnAdjacentEntity(serviceComp);
-            addToConnectedEntities(referenceComp, serviceComp);
-            addToConnectedEntities(serviceComp, referenceComp);
         } else {
             ent.addToRefToSerMap(referenceComp, serviceComp);
             ent.addAnAdjacentEntity(serviceComp);
-            addToConnectedEntities(referenceComp, serviceComp);
-            addToConnectedEntities(serviceComp, referenceComp);
         }
     }
 
@@ -338,20 +345,6 @@ public class TuscanyCompositeEntityBuilder {
                 + " : "
                 + ent.getY());
         }
-    }
-
-    private void addToConnectedEntities(String ent1, String ent2) {
-        // System.err.println(ent1 + " : " + ent2);
-        ArrayList<String> list;
-        if (connectedEntities.containsKey(ent1)) {
-            list = connectedEntities.get(ent1);
-
-        } else {
-            list = new ArrayList<String>();
-
-        }
-        list.add(ent2);
-        connectedEntities.put(ent1, list);
     }
 
     private void setServices(List<ComponentService> sers, ComponentEntity ent) {
