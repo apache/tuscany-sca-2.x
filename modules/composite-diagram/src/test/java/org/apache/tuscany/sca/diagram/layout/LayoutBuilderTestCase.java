@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.diagram.layout;
 
+import java.util.Arrays;
+import java.util.List;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -147,6 +150,27 @@ public class LayoutBuilderTestCase {
         Assert.assertEquals(3, ents[2].getLane());
         Assert.assertEquals(4, ents[3].getLane());
         Assert.assertEquals(2, ents[4].getLane());
+
+    }
+
+    @Test
+    public void testPlaceEntities3() throws Exception {
+
+        /*
+         * 0----1---2
+         *  |   |    
+         *  +---3---4
+         */
+        conns = new int[5][5];
+        conns[0][1] = 1;
+        conns[0][3] = 1;
+        conns[1][2] = 1;
+        conns[1][3] = 1;
+        conns[2][4] = 1;
+
+        lb = new LayoutBuilder(ents, conns, 4);
+        List<Integer> sorted = lb.sortEntities();
+        Assert.assertEquals(Arrays.asList(0, 1, 3, 2, 4), sorted);
 
     }
 }

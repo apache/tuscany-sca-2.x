@@ -22,6 +22,7 @@
 
     <component name="CalculatorServiceComponent">
         <implementation.java class="calculator.CalculatorServiceImpl" />
+
         <reference name="addService" target="AddServiceComponent" />
         <reference name="subtractService" target="SubtractServiceComponent" />
         <reference name="multiplyService" target="MultiplyServiceComponent" />
@@ -32,12 +33,18 @@
         <reference name="multiplyService2" target="MultiplyServiceComponent2" />
         <reference name="divideService2" target="DivideServiceComponent2" />
 
-        <reference name="addService3" target="AddServiceComponent3" />
-        <reference name="subtractService3" target="SubtractServiceComponent3" />
-        <reference name="multiplyService3" target="MultiplyServiceComponent3" />
-        <reference name="divideService3" target="DivideServiceComponent3" />
+        <reference name="delegate" target="CalculatorServiceComponent2" />
 
     </component>
+
+    <component name="CalculatorServiceComponent2">
+        <implementation.java class="calculator.CalculatorServiceImpl" />
+        <reference name="addService" target="AddServiceComponent3" />
+        <reference name="subtractService" target="SubtractServiceComponent3" />
+        <reference name="multiplyService" target="MultiplyServiceComponent3" />
+        <reference name="divideService" target="DivideServiceComponent3" />
+    </component>
+
 
     <component name="AddServiceComponent">
         <implementation.java class="calculator.AddServiceImpl" />
@@ -85,6 +92,10 @@
 
     <component name="DivideServiceComponent3">
         <implementation.java class="calculator.DivideServiceImpl" />
+    </component>
+
+    <component name="AddServiceComponent4">
+        <implementation.java class="calculator.AddServiceImpl" />
     </component>
 
 </composite>

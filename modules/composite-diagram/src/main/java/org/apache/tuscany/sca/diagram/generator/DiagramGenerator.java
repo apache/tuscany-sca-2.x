@@ -63,7 +63,7 @@ public class DiagramGenerator {
     private int lastUsedChangingFactor = 0;
 
     enum ChangingFactor {
-        a(20), b(25), c(30), d(35), e(40), f(15);
+        a(20), b(40), c(60), d(80), e(100), f(120), g(140), h(160);
 
         private final int val;
 
@@ -387,14 +387,8 @@ public class DiagramGenerator {
                 if (ent.getName().equals(eName)) {
                     for (String s : sers) {
                         for (String s1 : ent.getServices()) {
-                            //System.err.println("XXXXX "+ s1 +" ::: "+s);
                             if (s1.equals(s) || s.equals(ent.getName())) {
-                                //System.err.println("|||||||| "+ sers.size()+ " ||| " + refs.size()+"|| "+orderedRefs.length);
                                 if (orderedRefs[ent.getLevel()] == null) {
-                                    //System.err.println("XXXXX "+ sers.get(1)+ " ::::::: "+refs.get(1));
-                                    //									System.err.println("XXXXX "+ sers.get(2)+ " ::::::: "+refs.get(2));
-                                    //									System.err.println("XXXXX "+ sers.get(3)+ " ::::::: "+refs.get(3));
-                                    //System.err.println("XXXXX "+ refs.get(sers.indexOf(s))+" ::: "+ent.getLevel()+" ::: "+ent.getName());
                                     orderedRefs[ent.getLevel()] = refs.get(sers.indexOf(s));
                                     break;
                                 } else {
@@ -404,10 +398,6 @@ public class DiagramGenerator {
                                             orderedRefs[i] = refs.get(sers.indexOf(s));
                                             break;
                                         }
-                                        //										else{
-                                        //											if(i==orderedRefs.length)
-                                        //												System.out.println("GRRR");
-                                        //										}
                                     }
                                 }
                             }
