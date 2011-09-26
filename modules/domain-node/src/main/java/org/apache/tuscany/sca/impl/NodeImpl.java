@@ -47,6 +47,9 @@ import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.contribution.resolver.ClassReference;
+import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
@@ -323,6 +326,12 @@ public class NodeImpl implements Node {
         } catch (ValidationException e) {
             loadedContributions.remove(cd.getURI());
             throw e;
+        }
+        if (contribution.getClassLoader() == null && contribution.getModelResolver() instanceof ExtensibleModelResolver) {
+            ModelResolver o = ((ExtensibleModelResolver)contribution.getModelResolver()).getModelResolverInstance(ClassReference.class);
+            if (o instanceof ClassLoader) {
+                contribution.setClassLoader((ClassLoader)o);        
+            }
         }
     }
     
