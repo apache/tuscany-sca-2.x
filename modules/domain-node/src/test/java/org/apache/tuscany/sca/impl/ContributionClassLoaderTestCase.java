@@ -40,7 +40,10 @@ public class ContributionClassLoaderTestCase {
         Contribution contribution = node.getContribution(curi);
         Assert.assertNull(contribution.getClassLoader());
         node.validateContribution(curi);
-        Assert.assertNotNull(contribution.getClassLoader());
+        ClassLoader cl1 = contribution.getClassLoader();
+        Assert.assertNotNull(cl1);
+        node.startComposite(curi, "helloworld.composite");
+        Assert.assertEquals(cl1, node.getContribution(curi).getClassLoader());
     }
     
 }
