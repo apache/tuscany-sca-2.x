@@ -49,6 +49,7 @@ public class TransactionInterceptor implements PhasedInterceptor {
         this.outbound = outbound;
         this.interactionPolicy = interactionPolicy;
         this.implementationPolicy = implementationPolicy;
+        this.phase = phase;
     }
 
     /**
