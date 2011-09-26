@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.assembly.xml.Utils;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.monitor.ValidationException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -40,7 +39,6 @@ public class DomainCompositeTestCase {
         testIt(node);
     }
 
-    @Ignore("TUSCANY-3953")
     @Test
     public void distributedDomain() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
         TuscanyRuntime runtime = TuscanyRuntime.newInstance();

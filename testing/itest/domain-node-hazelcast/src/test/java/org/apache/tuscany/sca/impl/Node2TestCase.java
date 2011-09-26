@@ -64,7 +64,6 @@ public class Node2TestCase {
         Assert.assertNotNull(c);
     }
 
-    @Ignore("TUSCANY-3953")
     @Test
     public void DistributedInstall() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
         TuscanyRuntime runtime = TuscanyRuntime.newInstance();
@@ -154,7 +153,6 @@ public class Node2TestCase {
         Assert.assertEquals(1, scs.size());            
     }
 
-    @Ignore("TUSCANY-3953")
     @Test
     public void importExportDistributedValidate() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
         TuscanyRuntime runtime = TuscanyRuntime.newInstance();
@@ -196,7 +194,6 @@ public class Node2TestCase {
         node.stopComposite("sample-helloworld", "helloworld.composite");
     }
 
-    @Ignore("TUSCANY-3953")
     @Test
     public void startDistributedTest() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, InterruptedException {
         TuscanyRuntime runtime = TuscanyRuntime.newInstance();

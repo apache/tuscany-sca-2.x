@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: ant
+Build-Jdk: 1.6.0_18
+Extension-Name: sample-helloworld
+Implementation-Title: Apache Tuscany SCA Sample Helloworld
+Implementation-Vendor: The Apache Software Foundation
+Implementation-Vendor-Id: org.apache
+Implementation-Version: 2.0-SNAPSHOT
+Specification-Title: Apache Tuscany SCA Sample Helloworld
+Specification-Vendor: The Apache Software Foundation
+Specification-Version: 2.0-SNAPSHOT
+

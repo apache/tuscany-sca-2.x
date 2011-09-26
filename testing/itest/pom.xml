@@ -58,6 +58,7 @@
                 <module>data-copy</module>
                 <module>databindings</module>
                 <module>distribution</module>
+                <module>domain-node-hazelcast</module>
                 <module>exceptions</module>
                 <module>implementation-composite</module>
                 <module>implementation-spring</module>

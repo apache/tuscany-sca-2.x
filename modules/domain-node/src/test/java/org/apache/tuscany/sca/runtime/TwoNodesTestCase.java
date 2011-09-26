@@ -24,12 +24,14 @@ import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
 
 import sample.Helloworld;
 
+@Ignore("TUSCANY-3953")
 public class TwoNodesTestCase {
 
     @Test
