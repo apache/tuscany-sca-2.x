@@ -136,7 +136,13 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
             // set it  so that the thread context classloader of the thread used to invoke an operation 
             // of a Java POJO component implementation is the class loader of the contribution 
             // used to load the POJO implementation class.
-            contributionClassloader = instance.getClass().getClassLoader();
+            contributionClassloader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                public ClassLoader run() {
+                    ClassLoader contributionClassloader = instance.getClass().getClassLoader();
+                    return contributionClassloader;
+                 }
+            });
+            
             if (tccl != contributionClassloader){
                 AccessController.doPrivileged(new PrivilegedAction() {
                     public Object run() {
