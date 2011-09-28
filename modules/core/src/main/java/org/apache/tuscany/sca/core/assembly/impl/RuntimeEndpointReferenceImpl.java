@@ -475,6 +475,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         //        used at the moment by binding.sca when it resets the
         //        source interface contract for local wires
         this.chains = null;
+        invocationChainMap.clear();
 
         if (getStatus() == EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED){
             setStatus(EndpointReference.Status.NOT_CONFIGURED);
