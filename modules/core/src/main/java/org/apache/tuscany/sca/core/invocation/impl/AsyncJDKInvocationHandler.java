@@ -194,19 +194,20 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
         Method method = getNonAsyncMethod(asyncMethod);
         Class<?> returnType = method.getReturnType();
         // Allocate the Future<?> / Response<?> object - note: Response<?> is a subclass of Future<?>
-        AsyncInvocationFutureImpl future = AsyncInvocationFutureImpl.newInstance(returnType, getInterfaceClassloader());
+        AsyncInvocationFutureImpl future = AsyncInvocationFutureImpl.newInstance(returnType, businessInterface);
         if (callback != null)
             future.setCallback(callback);
         try {
             invokeAsync(proxy, method, args, future, asyncMethod);
-        } catch (Exception e) {
-            future.setWrappedFault(new AsyncFaultWrapper(e));
         } catch (Throwable t) {
-            Exception e =
-                new ServiceRuntimeException("Received Throwable: " + t.getClass().getName()
-                    + " when invoking: "
-                    + asyncMethod.getName(), t);
-            future.setWrappedFault(new AsyncFaultWrapper(e));
+            // invokeAsync schedules a separate Runnable to run the request.  Any exception caught here
+            // is a runtime exception, not an application exception.
+            if (!(t instanceof ServiceRuntimeException)) {
+                t = new ServiceRuntimeException("Received Throwable: " + t.getClass().getName()
+                        + " when invoking: "
+                        + asyncMethod.getName(), t);
+            }
+            future.setFault(t);
         } // end try 
         return future;
     } // end method doInvokeAsyncPoll
@@ -220,7 +221,7 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
             // Target service is asynchronous
             Class<?> returnType = method.getReturnType();
             AsyncInvocationFutureImpl future =
-                AsyncInvocationFutureImpl.newInstance(returnType, getInterfaceClassloader());
+                AsyncInvocationFutureImpl.newInstance(returnType, businessInterface);
             invokeAsync(proxy, method, args, future, method);
             // Wait for some maximum time for the result - 120 seconds here
             // Really, if the service is async, the client should use async client methods to invoke the service
@@ -403,11 +404,11 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
                     if ("AsyncResponse".equals(e.getMessage())) {
                         // Do nothing...
                     } else {
-                        future.setWrappedFault(new AsyncFaultWrapper(s));
+                        future.setFault(s);
                     } // end if 
                 } // end if
                 else {
-                    future.setWrappedFault(new AsyncFaultWrapper(s));
+                    future.setFault(s);
                 }
             } catch (AsyncResponseException ar) {
                 // This exception is received in the case where the Binding does not support async invocation
@@ -415,7 +416,9 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
             	// indicate that the service received the request but will send the response separately - do nothing			
             } catch (Throwable t) {
                 //System.out.println("Async invoke got exception: " + t.toString());
-                future.setWrappedFault(new AsyncFaultWrapper(t));
+                // If we invoked a sync service, this might be an application exception.
+                // The databinding ensured the exception is type-compatible with the application.
+                future.setFault(t);
             } // end try
 
         } // end method run
@@ -734,12 +737,4 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
         }
         throw new IllegalStateException("No synchronous method matching async method " + asyncMethod.getName());
     } // end method getNonAsyncMethod
-
-    /**
-     * Gets the classloader of the business interface
-     * @return
-     */
-    private ClassLoader getInterfaceClassloader() {
-        return businessInterface.getClassLoader();
-    }
 }

@@ -58,7 +58,7 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 	
 	private String uniqueID = UUID.randomUUID().toString();
 	
-	private ClassLoader classLoader = null;
+	private Class businessInterface = null;
 	private AsyncHandler callback;
 
 	protected AsyncInvocationFutureImpl() {
@@ -73,9 +73,9 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 	 * @param classLoader - the classloader used for the business interface to which this Future applies
 	 * @return - an instance of AsyncInvocationFutureImpl<V>
 	 */
-	public static <V> AsyncInvocationFutureImpl<V> newInstance( Class<V> type, ClassLoader classLoader ) {
+	public static <V> AsyncInvocationFutureImpl<V> newInstance( Class<V> type, Class businessInterface ) {
 		AsyncInvocationFutureImpl<V> future = new AsyncInvocationFutureImpl<V>();
-		future.setClassLoader( classLoader );
+		future.setBusinessInterface( businessInterface );
 		return future;
 	}
 
@@ -179,7 +179,7 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 		Throwable e;
 		try {
 			 // Set the TCCL to the classloader of the business interface
-            Thread.currentThread().setContextClassLoader(this.getClassLoader());
+            Thread.currentThread().setContextClassLoader(this.getBusinessInterface().getClassLoader());
 			e = w.retrieveFault();
 		} finally {
 			Thread.currentThread().setContextClassLoader(tccl);
@@ -237,24 +237,24 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 	}
 	
 	/**
-	 * Gets the classloader associated with the business interface to which this Future relates
-	 * @return the ClassLoader of the business interface
+	 * Gets the business interface to which this Future relates
+	 * @return the business interface
 	 */
-	public ClassLoader getClassLoader() {
-		return classLoader;
+	public Class getBusinessInterface() {
+		return businessInterface;
 	}
 
 	/**
-	 * Sets the classloader associated with the business interface to which this Future relates
+	 * Sets the business interface to which this Future relates
 	 * @param classLoader - the classloader of the business interface
 	 */
-	public void setClassLoader(ClassLoader classLoader) {
-		this.classLoader = classLoader;
+	public void setBusinessInterface(Class businessInterface) {
+		this.businessInterface = businessInterface;
 	}
 
 	/**
 	 * Sets the callback handler, when the client uses the async callback method
-	 * @param classLoader - the classloader of the business interface
+	 * @param callback - the client's callback object
 	 */
 	public void setCallback(AsyncHandler callback) {
 		this.callback = callback;
