@@ -93,7 +93,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
     public static final QName CONVERSATION_ID_REFPARM_QN =
         new QName(SCA11_TUSCANY_NS, "ConversationID", TUSCANY_PREFIX);
 
-    private Dispatch<SOAPMessage> dispatch;
+    protected Dispatch<SOAPMessage> dispatch;
     private MessageFactory messageFactory;
     private Operation operation;
     private WebServiceBinding wsBinding;
@@ -111,7 +111,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         this.dispatch = createDispatch(wsBinding);
     }
 
-    private Dispatch<SOAPMessage> createDispatch(WebServiceBinding wsBinding) {
+    protected Dispatch<SOAPMessage> createDispatch(WebServiceBinding wsBinding) {
         URL wsdlLocation = null;
         try {
             wsdlLocation = new URL(wsBinding.getGeneratedWSDLDocument().getDocumentBaseURI());
