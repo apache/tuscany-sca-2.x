@@ -25,10 +25,10 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.xml.XMLStringDataBinding;
 
 /**
@@ -49,10 +49,15 @@ public class String2JAXB extends BaseTransformer<String, Object> implements
         }
         try {
             JAXBContext jaxbContext = contextHelper.createJAXBContext(context, false);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            
             StreamSource streamSource = new StreamSource(new StringReader(source));
-            Object result = unmarshaller.unmarshal(streamSource, JAXBContextHelper.getJavaType(context.getTargetDataType()));
-            return JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);
+            Unmarshaller unmarshaller = contextHelper.getUnmarshaller(jaxbContext);
+            try {
+                Object result = unmarshaller.unmarshal(streamSource, JAXBContextHelper.getJavaType(context.getTargetDataType()));
+                return JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);
+            } finally {
+                contextHelper.releaseJAXBUnmarshaller(jaxbContext, unmarshaller);
+            }
         } catch (Exception e) {
             throw new TransformationException(e);
         }

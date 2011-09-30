@@ -23,10 +23,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PushTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.xml.sax.ContentHandler;
 
 /**
@@ -57,9 +57,15 @@ public class JAXB2SAX extends BaseTransformer<Object, ContentHandler> implements
     public void transform(Object source, ContentHandler target, TransformationContext tContext) {
         try {
             JAXBContext context = contextHelper.createJAXBContext(tContext, true);
-            Marshaller marshaller = context.createMarshaller();
             Object jaxbElement = JAXBContextHelper.createJAXBElement(context, tContext.getSourceDataType(), source);
-            marshaller.marshal(jaxbElement, target);
+            Marshaller marshaller = contextHelper.getMarshaller(context);
+            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
+
+            try {
+                marshaller.marshal(jaxbElement, target);
+            } finally {
+                contextHelper.releaseJAXBMarshaller(context, marshaller);
+            }
         } catch (Exception e) {
             throw new TransformationException(e);
         }

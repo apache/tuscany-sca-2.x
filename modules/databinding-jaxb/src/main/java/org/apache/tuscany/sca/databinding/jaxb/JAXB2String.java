@@ -25,10 +25,10 @@ import javax.xml.bind.Marshaller;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.xml.XMLStringDataBinding;
 
 /**
@@ -44,11 +44,15 @@ public class JAXB2String extends BaseTransformer<Object, String> implements Pull
     public String transform(Object source, TransformationContext tContext) {
         try {
             JAXBContext context = contextHelper.createJAXBContext(tContext, true);
-            Marshaller marshaller = context.createMarshaller();
             StringWriter writer = new StringWriter();
             StreamResult result = new StreamResult(writer);
             Object jaxbElement = JAXBContextHelper.createJAXBElement(context, tContext.getSourceDataType(), source);
-            marshaller.marshal(jaxbElement, result);
+            Marshaller marshaller = contextHelper.getMarshaller(context);
+            try {
+                marshaller.marshal(jaxbElement, result);
+            } finally {
+                contextHelper.releaseJAXBMarshaller(context, marshaller);
+            }
             return writer.toString();
         } catch (Exception e) {
             throw new TransformationException(e);

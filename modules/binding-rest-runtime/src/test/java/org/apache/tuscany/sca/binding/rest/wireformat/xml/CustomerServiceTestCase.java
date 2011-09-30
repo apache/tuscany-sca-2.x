@@ -40,9 +40,9 @@ import com.meterware.httpunit.WebResponse;
 public class CustomerServiceTestCase {
     private static final String SERVICE_URL = "http://localhost:8085/Customer";
 
-    private static final String GET_RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Customer xmlns:ns2=\"http://tuscany.apache.org/xmlns/sca/databinding/jaxb/1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"customer\"><email>john@domain.com</email><id>John</id><name>John</name></Customer>";
-    private static final String UPDATED_ITEM = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Customer xmlns:ns2=\"http://customer.services/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"customer\"><email>john@updated-domain.com</email><id>John</id><name>John</name></Customer>";
-    private static final String GET_UPDATED_RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Customer xmlns:ns2=\"http://tuscany.apache.org/xmlns/sca/databinding/jaxb/1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"customer\"><email>john@updated-domain.com</email><id>John</id><name>John</name></Customer>";
+    private static final String GET_RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><ns2:root xmlns:ns2=\"http://tuscany.apache.org/xmlns/sca/databinding/jaxb/1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"customer\"><email>john@domain.com</email><id>John</id><name>John</name></ns2:root>";
+    private static final String UPDATED_ITEM = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><ns2:root xmlns:ns2=\"http://customer.services/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"customer\"><email>john@updated-domain.com</email><id>John</id><name>John</name></ns2:root>";
+    private static final String GET_UPDATED_RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><ns2:root xmlns:ns2=\"http://tuscany.apache.org/xmlns/sca/databinding/jaxb/1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"customer\"><email>john@updated-domain.com</email><id>John</id><name>John</name></ns2:root>";
 
     private static Node node;
 

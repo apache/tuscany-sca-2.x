@@ -23,10 +23,10 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.BaseTransformer;
 
 /**
  *
@@ -36,23 +36,29 @@ public class XMLStreamReader2JAXB extends BaseTransformer<XMLStreamReader, Objec
     PullTransformer<XMLStreamReader, Object> {
 
     private JAXBContextHelper contextHelper;
-    
+
     public XMLStreamReader2JAXB(ExtensionPointRegistry registry) {
         contextHelper = JAXBContextHelper.getInstance(registry);
     }
-    
+
     public Object transform(XMLStreamReader source, TransformationContext context) {
         if (source == null) {
             return null;
         }
         try {
             JAXBContext jaxbContext = contextHelper.createJAXBContext(context, false);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            // FIXME: [rfeng] If the java type is Object.class, the unmarshalled result will be
-            // a DOM Node
-            Object result = unmarshaller.unmarshal(source, JAXBContextHelper.getJavaType(context.getTargetDataType()));
-            source.close();
-            return JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);
+            Unmarshaller unmarshaller = contextHelper.getUnmarshaller(jaxbContext);
+            try {
+                // FIXME: [rfeng] If the java type is Object.class, the unmarshalled result will be
+                // a DOM Node
+                Object result =
+                    unmarshaller.unmarshal(source, JAXBContextHelper.getJavaType(context.getTargetDataType()));
+                source.close();
+                return JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);
+            } finally {
+                contextHelper.releaseJAXBUnmarshaller(jaxbContext, unmarshaller);
+            }
+
         } catch (Exception e) {
             throw new TransformationException(e);
         }

@@ -58,9 +58,14 @@ public class JAXB2OutputStream extends BaseTransformer<Object, OutputStream> imp
     public void transform(Object source, OutputStream target, TransformationContext tContext) {
         try {
             JAXBContext context = contextHelper.createJAXBContext(tContext, true);
-            Marshaller marshaller = context.createMarshaller();
             Object jaxbElement = JAXBContextHelper.createJAXBElement(context, tContext.getSourceDataType(), source);
-            marshaller.marshal(jaxbElement, target);
+            Marshaller marshaller = contextHelper.getMarshaller(context);
+            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
+            try {
+                marshaller.marshal(jaxbElement, target);
+            } finally {
+                contextHelper.releaseJAXBMarshaller(context, marshaller);
+            }
         } catch (Exception e) {
             throw new TransformationException(e);
         }

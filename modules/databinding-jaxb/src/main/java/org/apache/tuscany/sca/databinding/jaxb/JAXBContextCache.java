@@ -199,6 +199,7 @@ public class JAXBContextCache {
         if (marshaller == null) {
             marshaller = context.createMarshaller();
         }
+        marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
         marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
         return marshaller;
     }

@@ -14,6 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-org.apache.tuscany.sca.databinding.jaxb.JAXB2OutputStream;source=javax.xml.bind.JAXBElement;target=java.io.OutputStream,weight=50,public=true
-org.apache.tuscany.sca.databinding.jaxb.JAXB2OutputStream;source=java:complexType;target=java.io.OutputStream,weight=50,public=true
-org.apache.tuscany.sca.databinding.jaxb.JAXB2OutputStream;source=java:simpleType;target=java.io.OutputStream,weight=50,public=true
+org.apache.tuscany.sca.databinding.jaxb.JAXB2OutputStream;source=javax.xml.bind.JAXBElement;target=java.io.OutputStream,weight=50,public=false
+org.apache.tuscany.sca.databinding.jaxb.JAXB2OutputStream;source=java:complexType;target=java.io.OutputStream,weight=50,public=false
+org.apache.tuscany.sca.databinding.jaxb.JAXB2OutputStream;source=java:simpleType;target=java.io.OutputStream,weight=50,public=false

@@ -23,10 +23,10 @@ import javax.xml.bind.Marshaller;
 
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -38,25 +38,32 @@ import org.w3c.dom.Node;
 public class JAXB2Node extends BaseTransformer<Object, Node> implements PullTransformer<Object, Node> {
     private DOMHelper helper;
     private JAXBContextHelper contextHelper;
-    
+
     public JAXB2Node(ExtensionPointRegistry registry) {
         super();
         helper = DOMHelper.getInstance(registry);
         contextHelper = JAXBContextHelper.getInstance(registry);
     }
-    
+
     public Node transform(Object source, TransformationContext tContext) {
-//        if (source == null) {
-//            return null;
-//        }
+        //        if (source == null) {
+        //            return null;
+        //        }
         try {
             JAXBContext context = contextHelper.createJAXBContext(tContext, true);
-            Marshaller marshaller = context.createMarshaller();
+
             // FIXME: The default Marshaller doesn't support
             // marshaller.getNode()
             Document document = helper.newDocument();
             Object jaxbElement = JAXBContextHelper.createJAXBElement(context, tContext.getSourceDataType(), source);
-            marshaller.marshal(jaxbElement, document);
+            Marshaller marshaller = contextHelper.getMarshaller(context);
+            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
+
+            try {
+                marshaller.marshal(jaxbElement, document);
+            } finally {
+                contextHelper.releaseJAXBMarshaller(context, marshaller);
+            }
             return DOMDataBinding.adjustElementName(tContext, document.getDocumentElement());
         } catch (Exception e) {
             throw new TransformationException(e);

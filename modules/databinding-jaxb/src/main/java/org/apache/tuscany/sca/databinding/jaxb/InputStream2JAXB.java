@@ -47,10 +47,15 @@ public class InputStream2JAXB extends BaseTransformer<InputStream, Object> imple
         }
         try {
             JAXBContext jaxbContext = contextHelper.createJAXBContext(context, false);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             StreamSource streamSource = new StreamSource(source);
-            Object result = unmarshaller.unmarshal(streamSource, JAXBContextHelper.getJavaType(context.getTargetDataType()));
-            return JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);
+            Unmarshaller unmarshaller = contextHelper.getUnmarshaller(jaxbContext);
+            try {
+                Object result =
+                    unmarshaller.unmarshal(streamSource, JAXBContextHelper.getJavaType(context.getTargetDataType()));
+                return JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);
+            } finally {
+                contextHelper.releaseJAXBUnmarshaller(jaxbContext, unmarshaller);
+            }
         } catch (Exception e) {
             throw new TransformationException(e);
         }

@@ -24,10 +24,10 @@ import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.util.ValidationEventCollector;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.w3c.dom.Node;
 
 /**
@@ -36,19 +36,18 @@ import org.w3c.dom.Node;
  */
 public class Node2JAXB extends BaseTransformer<Node, Object> implements PullTransformer<Node, Object> {
     private JAXBContextHelper contextHelper;
-    private ValidationEventCollector validationEventCollector = new ValidationEventCollector();
     
     public Node2JAXB(ExtensionPointRegistry registry) {
         contextHelper = JAXBContextHelper.getInstance(registry);
     }
 
     public Object transform(Node source, TransformationContext context) {
+        ValidationEventCollector validationEventCollector = new ValidationEventCollector();
         Object response = null;
         if (source == null)
             return null;
         try {
             JAXBContext jaxbContext = contextHelper.createJAXBContext(context, false);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             Object result;
             // TUSCANY-3791
             synchronized(source){
@@ -56,9 +55,14 @@ public class Node2JAXB extends BaseTransformer<Node, Object> implements PullTran
                 System.setProperty("jaxb.debug", "true");
                 unmarshaller.setListener(new DebugListener());
                 */
-                validationEventCollector.reset();
-                unmarshaller.setEventHandler(validationEventCollector);
-                result = unmarshaller.unmarshal(source, JAXBContextHelper.getJavaType(context.getTargetDataType()));
+                Unmarshaller unmarshaller = contextHelper.getUnmarshaller(jaxbContext);
+                try {
+                    validationEventCollector.reset();
+                    unmarshaller.setEventHandler(validationEventCollector);
+                    result = unmarshaller.unmarshal(source, JAXBContextHelper.getJavaType(context.getTargetDataType()));
+                } finally {
+                    contextHelper.releaseJAXBUnmarshaller(jaxbContext, unmarshaller);
+                }
             }
             response = JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);
         } catch (Exception e) {
