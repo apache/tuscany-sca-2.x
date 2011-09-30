@@ -56,6 +56,7 @@ public class CatalogServiceTestCase {
             String contribution = ContributionLocationHelper.getContributionLocation(CatalogServiceTestCase.class);
             node = NodeFactory.newInstance().createNode("store.composite", new Contribution("catalog", contribution));
             node.start();
+            System.out.println();
         } catch (Exception e) {
             e.printStackTrace();
         }

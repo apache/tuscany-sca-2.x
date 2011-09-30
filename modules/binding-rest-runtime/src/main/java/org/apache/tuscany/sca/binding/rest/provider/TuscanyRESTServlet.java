@@ -158,8 +158,8 @@ public class TuscanyRESTServlet extends RestServlet {
         });
 
         ProvidersRegistry providers = config.getProvidersRegistry();
-        providers.addProvider(new DataBindingJAXRSReader(registry), 0.001, true);
-        providers.addProvider(new DataBindingJAXRSWriter(registry), 0.001, true);
+        providers.addProvider(new DataBindingJAXRSReader(registry), 0.2, true);
+        providers.addProvider(new DataBindingJAXRSWriter(registry), 0.2, true);
 
         config.getResponseUserHandlers().add(new TuscanyResponseHandler());
 

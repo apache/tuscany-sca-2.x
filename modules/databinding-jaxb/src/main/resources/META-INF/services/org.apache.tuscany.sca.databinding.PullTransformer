@@ -30,4 +30,11 @@ org.apache.tuscany.sca.databinding.jaxb.JAXB2Node;source=java:simpleType,target=
 org.apache.tuscany.sca.databinding.jaxb.XMLStreamReader2JAXB;source=javax.xml.stream.XMLStreamReader,target=java:complexType,weight=90000
 org.apache.tuscany.sca.databinding.jaxb.XMLStreamReader2JAXB;source=javax.xml.stream.XMLStreamReader,target=java:simpleType,weight=90000
 
+org.apache.tuscany.sca.databinding.jaxb.InputStream2JAXB;source=application/xml#java.io.InputStream;target=javax.xml.bind.JAXBElement,weight=50,public=true
+org.apache.tuscany.sca.databinding.jaxb.InputStream2JAXB;source=application/xml#java.io.InputStream;target=javax.xml.bind.JAXBElement,weight=50,public=true
+org.apache.tuscany.sca.databinding.jaxb.InputStream2JAXB;source=application/xml#java.io.InputStream;target=java:simpleType,weight=50,public=true
+
+org.apache.tuscany.sca.databinding.jaxb.InputStream2JAXB;source=text/xml#java.io.InputStream;target=javax.xml.bind.JAXBElement,weight=50,public=true
+org.apache.tuscany.sca.databinding.jaxb.InputStream2JAXB;source=text/xml#java.io.InputStream;target=java:complexType,weight=50,public=true
+org.apache.tuscany.sca.databinding.jaxb.InputStream2JAXB;source=text/xml#java.io.InputStream;target=java:simpleType,weight=50,public=true
 

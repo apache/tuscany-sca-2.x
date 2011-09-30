@@ -20,8 +20,8 @@
 package services.store;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.oasisopen.sca.annotation.Init;
@@ -54,7 +54,7 @@ public class FruitsCatalogImpl implements Catalog {
         return items;
     }
 
-    public Item getItemById(String itemId) {
+    public Item getItemById(String itemId, Date date) {
         return catalog.get(itemId);
     }
 

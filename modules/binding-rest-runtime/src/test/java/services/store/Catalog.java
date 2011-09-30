@@ -19,8 +19,11 @@
 
 package services.store;
 
+import java.util.Date;
+
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -37,7 +40,7 @@ public interface Catalog {
     
     @GET
     @Path("{id}")
-    Item getItemById(@PathParam("id") String itemId);
+    Item getItemById(@PathParam("id") String itemId, @HeaderParam("If-Modified-Since") Date date);
     
     @POST
     void addItem(Item item);

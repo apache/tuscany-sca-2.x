@@ -84,7 +84,7 @@ public abstract class DataBindingJAXRSProvider {
     }
 
     protected DataType createDataType(Class<?> type, Type genericType) {
-        DataType dataType = new DataTypeImpl(null, type, type, genericType);
+        DataType dataType = new DataTypeImpl(null, type, genericType, genericType);
         dataBindingExtensionPoint.introspectType(dataType, null);
         return dataType;
     }

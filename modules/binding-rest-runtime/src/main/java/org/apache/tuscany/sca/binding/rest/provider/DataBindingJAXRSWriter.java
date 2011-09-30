@@ -25,6 +25,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 
+import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -39,6 +40,7 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
  * The generic JAX-RS message body writer based on Tuscany's databindingframework
  */
 @Provider
+@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.WILDCARD}) 
 public class DataBindingJAXRSWriter<T> extends DataBindingJAXRSProvider implements MessageBodyWriter<T> {
 
     public DataBindingJAXRSWriter(ExtensionPointRegistry registry) {
