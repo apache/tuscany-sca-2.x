@@ -448,6 +448,10 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         }
 
         started = true;
+
+        if (!getReference().getName().startsWith("$self$."))
+            compositeContext.getEndpointRegistry().addEndpointReference(this);
+
         // InterfaceContract bindingContract = getBindingInterfaceContract();
         // endpoint.setInterfaceContract(bindingContract);
     }

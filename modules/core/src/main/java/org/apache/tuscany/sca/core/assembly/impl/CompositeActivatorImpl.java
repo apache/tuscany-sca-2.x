@@ -630,7 +630,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     epr.isAsyncInvocation()){
                     // it's resolved so start it now
                     try {
-                        start(compositeContext, epr);
+                        // The act of getting invocation chains starts the reference in the late binding case
+                        // so just use that here
+                        epr.getInvocationChains();
                     } catch (Throwable ex){
                         Monitor.error(monitor, this, "core-messages", "StartException", ex);
                         rethrow(ex);
@@ -650,7 +652,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
             stop(epr);
         }
     }
-    
+
+    @Deprecated    
     public void start(CompositeContext compositeContext, RuntimeEndpointReference endpointReference) {
         compositeContext.getEndpointRegistry().addEndpointReference(endpointReference);
         
