@@ -24,6 +24,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -36,9 +38,13 @@ public class ContributionHelper {
 
     public static List<URL> getNestedJarUrls(final Contribution contribution) throws IOException {
         List<URL> urls = new ArrayList<URL>();
-        boolean isZipContribution = contribution.getLocation().endsWith(".zip");
-        URI uri = URI.create(contribution.getLocation());
-        boolean isFolderContribution = !isZipContribution && uri.getScheme().equals("file") && new File(uri.getSchemeSpecificPart()).isDirectory();
+        final boolean isZipContribution = contribution.getLocation().endsWith(".zip");
+        final URI uri = URI.create(contribution.getLocation());
+        boolean isFolderContribution = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            public Boolean run() {
+               return !isZipContribution && uri.getScheme().equals("file") && new File(uri.getSchemeSpecificPart()).isDirectory();
+            }
+        });
         if (isZipContribution || isFolderContribution) {
             for (Artifact a : contribution.getArtifacts()) {
                 if (a.getLocation().endsWith(".jar")) {
