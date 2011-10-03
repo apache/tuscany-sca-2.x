@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.protocol;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,4 +34,12 @@ public abstract class JsonRpc20Result {
     }
 
     public abstract JSONObject toJSONObject() throws JSONException;
+
+    public void write(Writer writer) throws IOException {
+        try {
+            toJSONObject().write(writer);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
 }

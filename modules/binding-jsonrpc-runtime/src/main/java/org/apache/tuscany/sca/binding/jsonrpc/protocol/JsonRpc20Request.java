@@ -87,4 +87,20 @@ public class JsonRpc20Request {
     public boolean isNotification() {
         return id == null;
     }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public Object getId() {
+        return id;
+    }
+
+    public Object[] getParams() {
+        return params;
+    }
+
+    public Map<String, Object> getMappedParams() {
+        return mappedParams;
+    }
 }

@@ -32,9 +32,9 @@ import org.json.JSONObject;
  * 
  * @version $Rev$ $Date$
  */
-class JavaToSmd {
+public class JavaToSmd {
 
-    static String interfaceToSmd(Class<?> klazz, String serviceUrl) {
+    public static String interfaceToSmd(Class<?> klazz, String serviceUrl) {
         try {
             String name = klazz.getSimpleName();
             Method[] methods = klazz.getMethods();
@@ -70,7 +70,7 @@ class JavaToSmd {
 
     }
 
-    static String interfaceToSmd20(Class<?> klazz, String serviceUrl) {
+    public static String interfaceToSmd20(Class<?> klazz, String serviceUrl) {
         try {
             String name = klazz.getSimpleName();
             Method[] methods = klazz.getMethods();

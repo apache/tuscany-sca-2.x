@@ -62,7 +62,7 @@ public class JsonRpc20Error extends JsonRpc20Result {
         this.data = stackTrace(t);
     }
 
-    private static String stackTrace(Throwable t) {
+    public static String stackTrace(Throwable t) {
         StringWriter sw = new StringWriter();
         t.printStackTrace(new PrintWriter(sw));
         return sw.toString();
