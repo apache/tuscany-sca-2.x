@@ -73,7 +73,7 @@
          <configuration>
            <argLine>-Xms256m -Xmx1024m</argLine>
            <excludes>
-              <exclude>**/POJO_10004_TestCase.java</exclude>
+              <exclude>**/POJO_10004_TestCase.java</exclude> <!-- TUSCANY-3880 -->
            </excludes>
          </configuration>
       </plugin>
