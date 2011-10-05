@@ -738,8 +738,7 @@ public class ComponentBuilderImpl {
                         // create schema factory for XML schema
                         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
                                       
-			// Equivalent to getSchema().getSchemaDocument(), but allows us to support older versions of XmlSchema
-                        Document schemaDom = xsdDefinition.getSchema().getAllSchemas()[0]; 
+                        Document schemaDom = xsdDefinition.getSchema().getSchemaDocument(); 
                         
                         String valueSchema = null; 
                         Schema schema = null;
