@@ -20,11 +20,14 @@
 package org.apache.tuscany.sca.binding.rest.provider;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,6 +36,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.MessageBodyWriter;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
@@ -43,8 +48,10 @@ import org.apache.tuscany.sca.common.http.ThreadHTTPContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
 import org.apache.wink.common.internal.registry.ProvidersRegistry;
+import org.apache.wink.common.model.wadl.WADLGenerator;
 import org.apache.wink.server.handlers.HandlersChain;
 import org.apache.wink.server.handlers.MessageContext;
+import org.apache.wink.server.handlers.RequestHandler;
 import org.apache.wink.server.handlers.ResponseHandler;
 import org.apache.wink.server.internal.DeploymentConfiguration;
 import org.apache.wink.server.internal.servlet.RestServlet;
@@ -53,9 +60,13 @@ import org.apache.wink.server.internal.servlet.RestServlet;
  *
  */
 public class TuscanyRESTServlet extends RestServlet {
-    private static final Logger logger = Logger.getLogger(TuscanyRESTServlet.class.getName());
-
     private static final long serialVersionUID = 89997233133964915L;
+    
+    private static final Logger logger = Logger.getLogger(TuscanyRESTServlet.class.getName());
+    
+    private static final Annotation[] annotations = new Annotation[0];
+
+    
     private ExtensionPointRegistry registry;
     private RESTBinding binding;
     private Class<?> resourceClass;
@@ -89,7 +100,14 @@ public class TuscanyRESTServlet extends RestServlet {
         try {
             //store in thread local
             ThreadHTTPContext.setHTTPContext(bindingContext);
-            super.service(request, response);
+            
+            // handle special ?wadl request
+            String query = request.getQueryString();
+            if(query != null && query.indexOf("wadl") >= 0) {
+                handleWadlRequest(request, response);
+            } else {
+                super.service(request, response);
+            }
         } finally {
             //remove
             ThreadHTTPContext.removeHTTPContext();
@@ -164,6 +182,51 @@ public class TuscanyRESTServlet extends RestServlet {
         config.getResponseUserHandlers().add(new TuscanyResponseHandler());
 
         return config;
+    }
+    
+    private void handleWadlRequest(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            org.apache.wink.common.model.wadl.Application wadlDocument = null;
+            WADLGenerator generator = new WADLGenerator();
+            Set<Class<?>> classes = new HashSet<Class<?>>();
+            classes.add(resourceClass);
+            wadlDocument = generator.generate(binding.getURI(), classes);
+            
+            MessageBodyWriter<org.apache.wink.common.model.wadl.Application> writer = 
+                this.getDeploymentConfiguration().getProvidersRegistry().
+                     getMessageBodyWriter(org.apache.wink.common.model.wadl.Application.class, 
+                                          org.apache.wink.common.model.wadl.Application.class,
+                                          annotations, 
+                                          MediaType.APPLICATION_XML_TYPE,
+                                          null);
+            
+            writer.writeTo(wadlDocument, 
+                           org.apache.wink.common.model.wadl.Application.class, 
+                           org.apache.wink.common.model.wadl.Application.class, 
+                           annotations,
+                           MediaType.APPLICATION_XML_TYPE,
+                           null, response.getOutputStream());
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+    }
+    
+    class TuscanyWadlRequestHandler implements RequestHandler {
+
+        @Override
+        public void init(Properties properties) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void handleRequest(MessageContext messageContext, HandlersChain handlersChain) throws Throwable {
+            // TODO Auto-generated method stub
+            
+        }
+        
     }
 
     /**
