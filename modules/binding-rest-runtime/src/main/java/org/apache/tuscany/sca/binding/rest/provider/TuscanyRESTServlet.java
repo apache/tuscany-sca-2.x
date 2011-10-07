@@ -51,7 +51,6 @@ import org.apache.wink.common.internal.registry.ProvidersRegistry;
 import org.apache.wink.common.model.wadl.WADLGenerator;
 import org.apache.wink.server.handlers.HandlersChain;
 import org.apache.wink.server.handlers.MessageContext;
-import org.apache.wink.server.handlers.RequestHandler;
 import org.apache.wink.server.handlers.ResponseHandler;
 import org.apache.wink.server.internal.DeploymentConfiguration;
 import org.apache.wink.server.internal.servlet.RestServlet;
@@ -209,22 +208,6 @@ public class TuscanyRESTServlet extends RestServlet {
             
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        
-    }
-    
-    class TuscanyWadlRequestHandler implements RequestHandler {
-
-        @Override
-        public void init(Properties properties) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void handleRequest(MessageContext messageContext, HandlersChain handlersChain) throws Throwable {
-            // TODO Auto-generated method stub
-            
         }
         
     }
