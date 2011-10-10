@@ -53,6 +53,7 @@
 <!-- new test waiting for context discussion to bottom out
                 <module>context</module>
 -->
+                <module>contribution-doc-lit-disablewrapped</module>
                 <module>contribution-folder</module>
                 <module>contribution-zip</module>
                 <module>data-copy</module>
