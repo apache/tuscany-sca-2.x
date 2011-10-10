@@ -27,7 +27,13 @@ import org.json.JSONObject;
 
 public abstract class JsonRpc20Result {
     protected Object id;
+    protected volatile JSONObject response;
 
+    protected JsonRpc20Result(JSONObject response) {
+        super();
+        this.response = response;
+    }
+    
     protected JsonRpc20Result(Object id) {
         super();
         this.id = id;

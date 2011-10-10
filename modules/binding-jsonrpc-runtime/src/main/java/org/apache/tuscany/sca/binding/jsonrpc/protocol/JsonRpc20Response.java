@@ -30,8 +30,16 @@ public class JsonRpc20Response extends JsonRpc20Result {
         this.result = result;
     }
 
+    public JsonRpc20Response(JSONObject response) {
+        super(response);
+        this.result = response.opt("result");
+    }
+
     public JSONObject toJSONObject() throws JSONException {
-        JSONObject response = new JSONObject();
+        if (response != null) {
+            return response;
+        }
+        response = new JSONObject();
         response.put("jsonrpc", "2.0");
         response.put("id", id);
         response.put("result", result);

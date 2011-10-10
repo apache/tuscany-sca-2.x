@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.protocol;
 
+import java.util.Arrays;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +66,17 @@ public class JsonRpc10Request {
             throw new IllegalArgumentException("Invalid request: params is not a JSON array - " + args);
         }
 
+    }
+
+    public JSONObject toJSONObject() throws JSONException {
+        JSONObject req = new JSONObject();
+        req.put("id", id);
+        req.put("method", method);
+        if (params != null) {
+            JSONArray args = new JSONArray(Arrays.asList(params));
+            req.put("params", args);
+        }
+        return req;
     }
 
     public boolean isNotification() {

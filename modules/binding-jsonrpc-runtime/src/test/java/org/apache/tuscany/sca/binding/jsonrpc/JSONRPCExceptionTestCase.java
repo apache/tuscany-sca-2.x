@@ -75,7 +75,7 @@ public class JSONRPCExceptionTestCase{
 
         JSONObject jsonErr = new JSONObject(response.getText()).getJSONObject("error");
 
-        Assert.assertEquals("Runtime Exception", jsonErr.getString("msg"));
+        Assert.assertEquals("Runtime Exception", jsonErr.getString("message"));
     }
 
     @Test
@@ -90,6 +90,6 @@ public class JSONRPCExceptionTestCase{
 
         JSONObject jsonErr = new JSONObject(response.getText()).getJSONObject("error");
 
-        Assert.assertEquals("Business Exception", jsonErr.getString("msg"));
+        Assert.assertEquals("Business Exception", jsonErr.getString("message"));
     }   
 }

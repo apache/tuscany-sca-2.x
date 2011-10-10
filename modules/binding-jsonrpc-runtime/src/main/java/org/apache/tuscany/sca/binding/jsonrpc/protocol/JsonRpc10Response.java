@@ -37,9 +37,17 @@ import org.json.JSONObject;
  * </ul> 
  */
 public class JsonRpc10Response {
+    public static final int REMOTE_EXCEPTION = 490;
     private Object id;
     private Object result;
     private Object error;
+    
+    private volatile JSONObject response;
+
+    public JsonRpc10Response(JSONObject response) {
+        super();
+        this.response = response;
+    }
 
     public JsonRpc10Response(Object id, Object result, Object error) {
         super();
@@ -51,8 +59,32 @@ public class JsonRpc10Response {
         }
     }
 
+    public JsonRpc10Response(Object id, Throwable t) {
+        super();
+        this.id = id;
+        this.result = null;
+        try {
+            JSONObject obj = new JSONObject();
+            // obj.put("msg", t.getMessage());
+            obj.put("code", REMOTE_EXCEPTION);
+            obj.put("message", t.getMessage());
+            JSONObject exception = new JSONObject();
+            exception.put("class", t.getClass().getName());
+            exception.put("message", t.getMessage());
+            exception.put("stackTrace", JsonRpc20Error.stackTrace(t));
+            obj.put("data", exception);
+            this.error = obj;
+        } catch (JSONException e) {
+            throw new IllegalArgumentException(e);
+        }
+
+    }
+
     public JSONObject toJSONObject() throws JSONException {
-        JSONObject response = new JSONObject();
+        if (response != null) {
+            return response;
+        }
+        response = new JSONObject();
         response.put("id", id);
         if (result != null) {
             response.put("result", result);

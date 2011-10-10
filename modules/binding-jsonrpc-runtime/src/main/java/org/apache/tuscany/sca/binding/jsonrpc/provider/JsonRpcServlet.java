@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jsonrpc.protocol;
+package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,15 +25,27 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
+import javax.security.auth.login.LoginException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.binding.jsonrpc.provider.JavaToSmd;
+import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
+import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc10Request;
+import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc10Response;
+import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc20BatchRequest;
+import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc20Error;
+import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc20Request;
+import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc20Response;
+import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc20Result;
+import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
+import org.apache.tuscany.sca.databinding.json.jackson.JacksonHelper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -89,6 +101,7 @@ public class JsonRpcServlet extends HttpServlet {
 
     private void handleJsonRpcInvocation(HttpServletRequest request, HttpServletResponse response)
         throws UnsupportedEncodingException, IOException, ServletException {
+        StringWriter data = new StringWriter();
         // Decode using the charset in the request if it exists otherwise
         // use UTF-8 as this is what all browser implementations use.
         // The JSON-RPC-Java JavaScript client is ASCII clean so it
@@ -98,17 +111,42 @@ public class JsonRpcServlet extends HttpServlet {
         if (charset == null) {
             charset = "UTF-8";
         }
-        // default POST style
-        BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), charset));
-        StringWriter data = new StringWriter();
-        // Read the request into charArray
-        char[] buf = new char[4096];
-        int ret;
-        while ((ret = in.read(buf, 0, 4096)) != -1) {
-            data.write(buf, 0, ret);
+
+        if (request.getMethod().equals("GET")) {
+            // if using GET Support (see http://groups.google.com/group/json-rpc/web/json-rpc-over-http)
+
+            //parse the GET QueryString
+            try {
+                String params =
+                    new String(Base64.decodeBase64(URLDecoder.decode(request.getParameter("params"), charset)
+                        .getBytes()));
+                StringBuilder sb = new StringBuilder();
+                sb.append("{");
+                sb.append("\"method\": \"" + request.getParameter("method") + "\",");
+                sb.append("\"params\": " + params + ",");
+                sb.append("\"id\":" + request.getParameter("id"));
+                sb.append("}");
+
+                data.write(sb.toString());
+            } catch (Throwable e) {
+                JsonRpc10Response error = new JsonRpc10Response(request.getParameter("id"), e);
+                error.write(response.getWriter());
+                return;
+            }
+        } else {
+
+            // default POST style
+            BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), charset));
+            // Read the request into charArray
+            char[] buf = new char[4096];
+            int ret;
+            while ((ret = in.read(buf, 0, 4096)) != -1) {
+                data.write(buf, 0, ret);
+            }
         }
 
         String json = data.toString().trim();
+
         try {
             if (json.startsWith("[")) {
                 JSONArray input = new JSONArray(json);
@@ -123,7 +161,7 @@ public class JsonRpcServlet extends HttpServlet {
                 JSONArray responses = batchReq.getBatchResponse().toJSONArray();
                 responses.write(response.getWriter());
             } else {
-                JSONObject input = new JSONObject(data.toString());
+                JSONObject input = JacksonHelper.read(json);
                 if (input.has("jsonrpc")) {
                     JsonRpc20Request jsonReq = new JsonRpc20Request(input);
                     JsonRpc20Result jsonResult = invoke(jsonReq);
@@ -139,7 +177,7 @@ public class JsonRpcServlet extends HttpServlet {
         }
     }
 
-    private JsonRpc20Result invoke(JsonRpc20Request request) {
+    private JsonRpc20Result invoke(JsonRpc20Request request) throws Exception {
 
         // invoke the request
         String method = request.getMethod();
@@ -153,6 +191,12 @@ public class JsonRpcServlet extends HttpServlet {
         requestMessage.setOperation(jsonOperation);
 
         requestMessage.getHeaders().put("RequestMessage", request);
+
+        if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
+            requestMessage.setBody(new Object[] {JacksonHelper.write(request.toJSONObject())});
+        } else {
+            requestMessage.setBody(params);
+        }
         requestMessage.setBody(params);
 
         Message responseMessage = null;
@@ -170,25 +214,29 @@ public class JsonRpcServlet extends HttpServlet {
         }
 
         if (!responseMessage.isFault()) {
-
-            if (jsonOperation.getOutputType().getLogical().size() == 0) {
-                // void operation (json-rpc notification)
-                try {
-                    JsonRpc20Response response = new JsonRpc20Response(request.getId(), null);
-                    return response;
-                } catch (Exception e) {
-                    throw new ServiceRuntimeException("Unable to create JSON response", e);
-                }
-
+            if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
+                result = responseMessage.getBody();
+                return new JsonRpc20Response(JacksonHelper.read(result.toString()));
             } else {
-                // regular operation returning some value
-                try {
-                    result = responseMessage.getBody();
-                    JsonRpc20Response response = new JsonRpc20Response(request.getId(), result);
-                    //get response to send to client
-                    return response;
-                } catch (Exception e) {
-                    throw new ServiceRuntimeException("Unable to create JSON response", e);
+                if (jsonOperation.getOutputType().getLogical().size() == 0) {
+                    // void operation (json-rpc notification)
+                    try {
+                        JsonRpc20Response response = new JsonRpc20Response(request.getId(), null);
+                        return response;
+                    } catch (Exception e) {
+                        throw new ServiceRuntimeException("Unable to create JSON response", e);
+                    }
+
+                } else {
+                    // regular operation returning some value
+                    try {
+                        result = responseMessage.getBody();
+                        JsonRpc20Response response = new JsonRpc20Response(request.getId(), result);
+                        //get response to send to client
+                        return response;
+                    } catch (Exception e) {
+                        throw new ServiceRuntimeException("Unable to create JSON response", e);
+                    }
                 }
             }
 
@@ -202,7 +250,7 @@ public class JsonRpcServlet extends HttpServlet {
 
     }
 
-    private JsonRpc10Response invoke(JsonRpc10Request request) {
+    private JsonRpc10Response invoke(JsonRpc10Request request) throws Exception {
 
         // invoke the request
         String method = request.getMethod();
@@ -216,42 +264,42 @@ public class JsonRpcServlet extends HttpServlet {
         requestMessage.setOperation(jsonOperation);
 
         requestMessage.getHeaders().put("RequestMessage", request);
-        requestMessage.setBody(params);
+        if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
+            requestMessage.setBody(new Object[] {JacksonHelper.write(request.toJSONObject())});
+        } else {
+            requestMessage.setBody(params);
+        }
 
         Message responseMessage = null;
         try {
 
             //result = wire.invoke(jsonOperation, args);
             responseMessage = endpoint.getInvocationChain(jsonOperation).getHeadInvoker().invoke(requestMessage);
-        } catch (RuntimeException re) {
-            if (re.getCause() instanceof javax.security.auth.login.LoginException) {
-                throw re;
+        } catch (RuntimeException e) {
+            if (e.getCause() instanceof LoginException) {
+                throw e;
             } else {
-                JsonRpc10Response error = new JsonRpc10Response(request.getId(), null, re.toString());
+                JsonRpc10Response error = new JsonRpc10Response(request.getId(), e);
                 return error;
             }
         }
 
         if (!responseMessage.isFault()) {
-
-            if (jsonOperation.getOutputType().getLogical().size() == 0) {
-                // void operation (json-rpc notification)
-                try {
+            if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
+                result = responseMessage.getBody();
+                return new JsonRpc10Response(JacksonHelper.read(result.toString()));
+            } else {
+                if (jsonOperation.getOutputType().getLogical().size() == 0) {
+                    // void operation (json-rpc notification)
                     JsonRpc10Response response = new JsonRpc10Response(request.getId(), JSONObject.NULL, null);
                     return response;
-                } catch (Exception e) {
-                    throw new ServiceRuntimeException("Unable to create JSON response", e);
-                }
 
-            } else {
-                // regular operation returning some value
-                try {
+                } else {
+                    // regular operation returning some value
                     result = responseMessage.getBody();
                     JsonRpc10Response response = new JsonRpc10Response(request.getId(), result, null);
                     //get response to send to client
                     return response;
-                } catch (Exception e) {
-                    throw new ServiceRuntimeException("Unable to create JSON response", e);
                 }
             }
 
@@ -259,8 +307,7 @@ public class JsonRpcServlet extends HttpServlet {
             //exception thrown while executing the invocation
             Throwable exception = (Throwable)responseMessage.getBody();
 
-            JsonRpc10Response error =
-                new JsonRpc10Response(request.getId(), null, JsonRpc20Error.stackTrace(exception));
+            JsonRpc10Response error = new JsonRpc10Response(request.getId(), exception);
             return error;
         }
 
@@ -300,7 +347,12 @@ public class JsonRpcServlet extends HttpServlet {
     protected void handleSMDRequest(HttpServletRequest request, HttpServletResponse response) throws IOException,
         UnsupportedEncodingException {
         String serviceUrl = request.getRequestURL().toString();
-        String smd = JavaToSmd.interfaceToSmd20(serviceInterface, serviceUrl);
+        String smd = null;
+        if (JSONRPCBinding.VERSION_20.equals(((JSONRPCBinding)binding).getVersion())) {
+            smd = JavaToSmd.interfaceToSmd20(serviceInterface, serviceUrl);
+        } else {
+            smd = JavaToSmd.interfaceToSmd(serviceInterface, serviceUrl);
+        }
 
         response.setContentType("application/json;charset=utf-8");
         OutputStream out = response.getOutputStream();

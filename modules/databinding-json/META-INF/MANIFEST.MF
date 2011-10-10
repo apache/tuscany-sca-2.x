@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.databinding.json;version="2.0.0",
- org.apache.tuscany.sca.databinding.json.axiom;version="2.0.0"
+ org.apache.tuscany.sca.databinding.json.axiom;version="2.0.0",
+ org.apache.tuscany.sca.databinding.json.jackson;version="2.0.0"
 SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA Data Binding for JSON
 Bundle-Vendor: The Apache Software Foundation

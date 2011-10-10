@@ -59,7 +59,7 @@ public class JsonRpc20Error extends JsonRpc20Result {
         super(id);
         this.code = INTERNAL_ERROR;
         this.messaege = t.getMessage();
-        this.data = stackTrace(t);
+        this.data = t;
     }
 
     public static String stackTrace(Throwable t) {
@@ -68,14 +68,36 @@ public class JsonRpc20Error extends JsonRpc20Result {
         return sw.toString();
     }
 
+    public JsonRpc20Error(JSONObject response) {
+        super(response);
+        this.id = response.opt("id");
+        this.code = response.optInt("code");
+        this.messaege = response.optString("message");
+        this.data = response.opt("data");
+    }
+
     public JSONObject toJSONObject() throws JSONException {
-        JSONObject response = new JSONObject();
+        if (response != null) {
+            return response;
+        }
+
+        response = new JSONObject();
         response.put("jsonrpc", "2.0");
         response.put("id", id);
         JSONObject error = new JSONObject();
         error.put("code", code);
         error.put("message", messaege);
-        error.put("data", data);
+
+        if (data instanceof Throwable) {
+            Throwable t = (Throwable)data;
+            JSONObject exception = new JSONObject();
+            exception.put("class", t.getClass().getName());
+            exception.put("message", t.getMessage());
+            exception.put("stackTrace", JsonRpc20Error.stackTrace(t));
+            response.put("data", exception);
+        } else {
+            error.put("data", data);
+        }
         response.put("error", error);
 
         return response;

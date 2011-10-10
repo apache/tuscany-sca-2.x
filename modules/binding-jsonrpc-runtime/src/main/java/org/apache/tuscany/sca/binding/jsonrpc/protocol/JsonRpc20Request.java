@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.protocol;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -47,6 +48,21 @@ public class JsonRpc20Request {
         this.method = method;
         this.params = null;
         this.mappedParams = mappedParams;
+    }
+
+    public JSONObject toJSONObject() throws JSONException {
+        JSONObject req = new JSONObject();
+        req.put("jsonrpc", "2.0");
+        req.put("id", id);
+        req.put("method", method);
+        if (params != null) {
+            JSONArray args = new JSONArray(Arrays.asList(params));
+            req.put("params", args);
+        } else {
+            JSONObject args = new JSONObject(mappedParams);
+            req.put("params", args);
+        }
+        return req;
     }
 
     public JsonRpc20Request(JSONObject req) throws JSONException {

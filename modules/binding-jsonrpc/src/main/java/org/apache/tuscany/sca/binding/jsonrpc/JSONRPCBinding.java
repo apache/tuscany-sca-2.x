@@ -29,5 +29,11 @@ import org.apache.tuscany.sca.assembly.Binding;
  * @version $Rev$ $Date$
  */
 public interface JSONRPCBinding extends Binding {
-	QName TYPE = new QName(SCA11_TUSCANY_NS, "binding.jsonrpc");
+    QName TYPE = new QName(SCA11_TUSCANY_NS, "binding.jsonrpc");
+    String VERSION_10 = "1.0";
+    String VERSION_20 = "2.0";
+
+    String getVersion();
+
+    void setVersion(String version);
 }

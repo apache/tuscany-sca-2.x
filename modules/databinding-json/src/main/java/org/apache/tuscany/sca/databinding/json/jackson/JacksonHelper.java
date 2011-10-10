@@ -47,12 +47,15 @@ import org.codehaus.jackson.map.util.StdDateFormat;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.codehaus.jackson.xc.XmlAdapterJsonDeserializer;
 import org.codehaus.jackson.xc.XmlAdapterJsonSerializer;
+import org.json.JSONObject;
+
+import com.fasterxml.jackson.module.jsonorg.JsonOrgModule;
 
 /**
  * 
  */
 public class JacksonHelper {
-    private final static ObjectMapper MAPPER = createMapper();
+    public final static ObjectMapper MAPPER = createMapper();
     private final static JsonFactory FACTORY = new MappingJsonFactory(createMapper());
 
     public static ObjectMapper createMapper() {
@@ -85,6 +88,8 @@ public class JacksonHelper {
                             StdDeserializerProvider deserializerProvider =
                                 new StdDeserializerProvider(deserializerFactory);
                             mapper = new ObjectMapper();
+                            mapper.registerModule(new JsonOrgModule());
+
                             mapper.setSerializerFactory(serializerFactory);
                             mapper.setDeserializerProvider(deserializerProvider);
                         }
@@ -94,6 +99,7 @@ public class JacksonHelper {
         }
         if (mapper == null) {
             mapper = new ObjectMapper();
+            mapper.registerModule(new JsonOrgModule());
         }
         AnnotationIntrospector primary = new JaxbAnnotationIntrospector();
         AnnotationIntrospector secondary = new JacksonAnnotationIntrospector();
@@ -177,6 +183,43 @@ public class JacksonHelper {
             generator.writeTree(node);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
+        }
+    }
+
+    public static JSONObject read(InputStream is) throws IOException {
+        try {
+            return MAPPER.readValue(is, JSONObject.class);
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+    }
+
+    /**
+     * Read from String into a org.json.JSONObject
+     * @param json
+     * @return
+     */
+    public static JSONObject read(String json) {
+        try {
+            return MAPPER.readValue(json, JSONObject.class);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public static void write(JSONObject json, OutputStream out) throws IOException {
+        try {
+            MAPPER.writeValue(out, json);
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+    }
+    
+    public static String write(JSONObject json) throws IOException {
+        try {
+            return MAPPER.writeValueAsString(json);
+        } catch (Exception e) {
+            throw new IOException(e);
         }
     }
 

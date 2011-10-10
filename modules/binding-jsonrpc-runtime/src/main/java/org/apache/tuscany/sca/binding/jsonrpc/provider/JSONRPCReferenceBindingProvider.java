@@ -70,7 +70,7 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
 
     public Invoker createInvoker(Operation operation) {
         // final Interface intf = reference.getInterfaceContract().getInterface();
-        return new JSONRPCBindingInvoker(endpointReference, operation, httpClient);
+        return new JsonRpcInvoker(endpointReference, operation, httpClient);
     }
 
     public void start() {

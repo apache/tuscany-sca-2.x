@@ -97,8 +97,8 @@ public class JSONHelper {
                 if (type == JSONArray.class || type.isArray() || Collection.class.isAssignableFrom(type)) {
                     return new JSONArray(json);
                 }
-                return new org.json.JSONObject(json);
-            } catch (org.json.JSONException e) {
+                return JacksonHelper.MAPPER.readValue(json, org.json.JSONObject.class);
+            } catch (Exception e) {
                 throw new IllegalArgumentException(e);
             }
         }

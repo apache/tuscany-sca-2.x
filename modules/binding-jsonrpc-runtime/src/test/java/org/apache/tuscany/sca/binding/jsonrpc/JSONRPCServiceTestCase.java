@@ -106,6 +106,6 @@ public class JSONRPCServiceTestCase {
         Assert.assertEquals(200, response.getResponseCode());
         
         JSONObject jsonResp = new JSONObject(response.getText());
-        Assert.assertEquals(0, jsonResp.getString("result").length());
+        Assert.assertTrue(jsonResp.isNull("result"));
     }
 }

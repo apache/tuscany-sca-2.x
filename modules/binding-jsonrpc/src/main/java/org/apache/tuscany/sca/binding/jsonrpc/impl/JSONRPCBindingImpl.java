@@ -33,11 +33,12 @@ import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 public class JSONRPCBindingImpl implements JSONRPCBinding {
     private String name;
     private String uri;
+    private String version = VERSION_10;
 
     public QName getType() {
-		return TYPE;
-	}
-    
+        return TYPE;
+    }
+
     public String getName() {
         return name;
     }
@@ -67,25 +68,33 @@ public class JSONRPCBindingImpl implements JSONRPCBinding {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
-    
+
     public WireFormat getRequestWireFormat() {
         return null;
     }
-    
-    public void setRequestWireFormat(WireFormat wireFormat) {  
+
+    public void setRequestWireFormat(WireFormat wireFormat) {
     }
-    
+
     public WireFormat getResponseWireFormat() {
         return null;
     }
-    
+
     public void setResponseWireFormat(WireFormat wireFormat) {
     }
-    
+
     public OperationSelector getOperationSelector() {
         return null;
     }
-    
+
     public void setOperationSelector(OperationSelector operationSelector) {
-    }    
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 }

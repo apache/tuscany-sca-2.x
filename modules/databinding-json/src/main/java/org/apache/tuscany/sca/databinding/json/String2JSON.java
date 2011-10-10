@@ -19,10 +19,10 @@
 
 package org.apache.tuscany.sca.databinding.json;
 
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.BaseTransformer;
 
 /**
  * @version $Rev$ $Date$
@@ -41,7 +41,7 @@ public class String2JSON extends BaseTransformer<String, Object> implements Pull
 
     public Object transform(String source, TransformationContext context) {
         try {
-            Class type = null;
+            Class<?> type = null;
             if (context != null && context.getTargetDataType() != null) {
                 type = context.getTargetDataType().getPhysical();
             }

@@ -21,16 +21,11 @@ package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
+import java.util.UUID;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -42,24 +37,19 @@ import org.apache.http.entity.EntityTemplate;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
+import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc10Request;
+import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc20Request;
 import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
+import org.apache.tuscany.sca.databinding.json.jackson.JacksonHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.codehaus.jackson.map.AnnotationIntrospector;
-import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.deser.CustomDeserializerFactory;
-import org.codehaus.jackson.map.deser.StdDeserializerProvider;
-import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
-import org.codehaus.jackson.map.ser.CustomSerializerFactory;
 import org.codehaus.jackson.map.type.TypeFactory;
-import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
-import org.codehaus.jackson.xc.XmlAdapterJsonDeserializer;
-import org.codehaus.jackson.xc.XmlAdapterJsonSerializer;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -68,14 +58,14 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * 
  * @version $Rev$ $Date$
  */
-public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
+public class JsonRpcInvoker implements Invoker, DataExchangeSemantics {
     private EndpointReference endpointReference;
     private Operation operation;
     private String uri;
     private ObjectMapper mapper;
     private HttpClient httpClient;
 
-    public JSONRPCBindingInvoker(EndpointReference endpointReference, Operation operation, HttpClient httpClient) {
+    public JsonRpcInvoker(EndpointReference endpointReference, Operation operation, HttpClient httpClient) {
         this.endpointReference = endpointReference;
         this.operation = operation;
         this.uri = endpointReference.getBinding().getURI();
@@ -87,35 +77,36 @@ public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
         HttpPost post = null;
         HttpResponse response = null;
         try {
-            String requestId = "1";
+            String requestId = UUID.randomUUID().toString();
             post = new HttpPost(uri);
             HttpEntity entity = null;
             Object[] args = msg.getBody();
             final String db = msg.getOperation().getWrapper().getDataBinding();
 
             if (!db.equals(JSONDataBinding.NAME)) {
-
-                // Construct a map to hold JSON-RPC request
-                final Map<String, Object> jsonRequest = new HashMap<String, Object>();
-                jsonRequest.put("method", "Service" + "." + msg.getOperation().getName());
-
-                List<Object> params = null;
+                Object[] params = new Object[0];
                 // Extract the arguments
                 args = msg.getBody();
 
-                if (args != null) {
-                    params = Arrays.asList(args);
-                } else {
-                    params = Collections.emptyList();
+                if (args instanceof Object[]) {
+                    params = (Object[])args;
                 }
 
-                jsonRequest.put("params", params);
-                jsonRequest.put("id", requestId);
+                JSONObject jsonReq = null;
+                if (JSONRPCBinding.VERSION_20.equals(((JSONRPCBinding)endpointReference.getBinding()).getVersion())) {
+                    JsonRpc20Request req = new JsonRpc20Request(requestId, msg.getOperation().getName(), params);
+                    jsonReq = req.toJSONObject();
+                } else {
+                    JsonRpc10Request req = new JsonRpc10Request(requestId, msg.getOperation().getName(), params);
+                    jsonReq = req.toJSONObject();
+                }
+                final String json = jsonReq.toString(4);
 
                 // Create content producer so that we can stream the json result out
                 ContentProducer cp = new ContentProducer() {
                     public void writeTo(OutputStream outstream) throws IOException {
-                        mapper.writeValue(outstream, jsonRequest);
+                        // mapper.writeValue(outstream, req.toJSONObject().toString());
+                        outstream.write(json.getBytes("UTF-8"));
                     }
                 };
                 entity = new EntityTemplate(cp);
@@ -137,7 +128,7 @@ public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
                 if (!db.equals(JSONDataBinding.NAME)) {
                     JSONObject jsonResponse = new JSONObject(entityResponse);
 
-                    if (!jsonResponse.has("result")) {
+                    if (!jsonResponse.isNull("error")) {
                         processException(jsonResponse);
                     }
                     DataType<List<DataType>> outputType = operation.getOutputType();
@@ -156,9 +147,6 @@ public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
                     }
 
                     Object rawResult = jsonResponse.get("result");
-                    if (rawResult == null) {
-                        processException(jsonResponse);
-                    }
 
                     Class<?> returnClass = returnType.getPhysical();
                     Type genericReturnType = returnType.getGenericType();
@@ -182,65 +170,71 @@ public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
                 response.getEntity().consumeContent();
                 throw new ServiceRuntimeException("Abnormal HTTP response: " + response.getStatusLine().toString());
             }
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Error e) {
+            throw e;
         } catch (Exception e) {
             // e.printStackTrace();
             msg.setFaultBody(e);
+        } catch (Throwable e) {
+            throw new ServiceRuntimeException(e);
         }
 
         return msg;
     }
 
     public static ObjectMapper createObjectMapper(Class<?> cls) {
-        ObjectMapper mapper = new ObjectMapper();
-        if (cls != null) {
-            // Workaround for http://jira.codehaus.org/browse/JACKSON-413
-            Package pkg = cls.getPackage();
-            if (pkg != null) {
-                XmlJavaTypeAdapters adapters = pkg.getAnnotation(XmlJavaTypeAdapters.class);
-                if (adapters != null) {
-                    CustomSerializerFactory serializerFactory = new CustomSerializerFactory();
-                    CustomDeserializerFactory deserializerFactory = new CustomDeserializerFactory();
-                    for (XmlJavaTypeAdapter a : adapters.value()) {
-                        XmlAdapter xmlAdapter = null;
-                        try {
-                            xmlAdapter = a.value().newInstance();
-                        } catch (Throwable e) {
-                            // Ignore
-                        }
-                        if (xmlAdapter != null) {
-                            XmlAdapterJsonDeserializer deserializer = new XmlAdapterJsonDeserializer(xmlAdapter, null);
-                            XmlAdapterJsonSerializer serializer = new XmlAdapterJsonSerializer(xmlAdapter, null);
-                            deserializerFactory.addSpecificMapping(a.type(), deserializer);
-                            serializerFactory.addGenericMapping(a.type(), serializer);
-                            StdDeserializerProvider deserializerProvider =
-                                new StdDeserializerProvider(deserializerFactory);
-                            mapper.setSerializerFactory(serializerFactory);
-                            mapper.setDeserializerProvider(deserializerProvider);
-                        }
-                    }
-                }
-            }
-        }
-        AnnotationIntrospector primary = new JaxbAnnotationIntrospector();
-        AnnotationIntrospector secondary = new JacksonAnnotationIntrospector();
-        AnnotationIntrospector pair = new AnnotationIntrospector.Pair(primary, secondary);
-        mapper.getDeserializationConfig().setAnnotationIntrospector(pair);
-        // [rfeng] To avoid complaints about javaClass
-        mapper.getDeserializationConfig().set(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, Boolean.FALSE);
-        mapper.getSerializationConfig().setAnnotationIntrospector(pair);
-        return mapper;
+        return JacksonHelper.createObjectMapper(cls);
     }
 
     /**
      * Generate and throw exception based on the data in the 'responseMessage'
      */
-    protected void processException(JSONObject responseMessage) throws JSONException {
+    protected void processException(JSONObject responseMessage) throws Throwable {
         // FIXME: We need to find a way to build Java exceptions out of the json-rpc error
-        JSONObject error = (JSONObject)responseMessage.get("error");
+        JSONObject error = (JSONObject)responseMessage.opt("error");
         if (error != null) {
+            Object data = error.opt("data");
+            if (data instanceof JSONObject) {
+                JSONObject fault = (JSONObject)data;
+                String javaClass = fault.optString("class");
+                String message = fault.optString("message");
+                String stackTrace = fault.optString("stackTrace");
+                if (javaClass != null) {
+                    if (stackTrace != null) {
+                        message = message + "\n" + stackTrace;
+                    }
+                    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+                    if (operation instanceof JavaOperation) {
+                        Method method = ((JavaOperation)operation).getJavaMethod();
+                        classLoader = method.getDeclaringClass().getClassLoader();
+                    }
+                    Class<? extends Throwable> exceptionClass =
+                        (Class<? extends Throwable>)Class.forName(javaClass, false, classLoader);
+                    Constructor<? extends Throwable> ctor = null;
+                    Throwable ex = null;
+                    try {
+                        ctor = exceptionClass.getConstructor(String.class, Throwable.class);
+                        ex = ctor.newInstance(message, null);
+                    } catch (NoSuchMethodException e1) {
+                        try {
+                            ctor = exceptionClass.getConstructor(String.class);
+                            ex = ctor.newInstance(message);
+                        } catch (NoSuchMethodException e2) {
+                            try {
+                                ctor = exceptionClass.getConstructor(Throwable.class);
+                                ex = ctor.newInstance(null);
+                            } catch (NoSuchMethodException e3) {
+                                ctor = exceptionClass.getConstructor();
+                                ex = ctor.newInstance();
+                            }
+                        }
+                    }
+                    throw ex;
+                }
+            }
             throw new ServiceRuntimeException(error.toString());
-        } else {
-            throw new ServiceRuntimeException(responseMessage.toString());
         }
     }
 
