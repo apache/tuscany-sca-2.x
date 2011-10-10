@@ -22,42 +22,34 @@ package org.apache.tuscany.sca.binding.jsonrpc.protocol;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
 
 public class JsonRpc20BatchRequest {
     private List<JsonRpc20Request> requests = new ArrayList<JsonRpc20Request>();
     // The corresponding batch response
     private JsonRpc20BatchResponse batchResponse;
 
-    public JsonRpc20BatchRequest(JSONArray array) {
+    public JsonRpc20BatchRequest(ArrayNode array) {
         super();
         batchResponse = new JsonRpc20BatchResponse();
-        for (int i = 0; i < array.length(); i++) {
-            Object req = null;
-            try {
-                req = array.get(i);
-            } catch (JSONException e1) {
-                // It shouldn't happen
-                throw new IllegalArgumentException(e1);
-            }
-            if (req instanceof JSONObject) {
+        for (int i = 0; i < array.size(); i++) {
+            JsonNode req = array.get(i);
+            if (req instanceof ObjectNode) {
                 try {
-                    requests.add(new JsonRpc20Request((JSONObject)req));
+                    requests.add(new JsonRpc20Request((ObjectNode)req));
                     batchResponse.getResponses().add(null);
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     // We should return invalid request errors
                     JsonRpc20Error error =
-                        new JsonRpc20Error(JSONObject.NULL, JsonRpc20Error.PARSE_ERROR, JsonRpc20Error.PARSE_ERROR_MSG,
-                                           req);
+                        new JsonRpc20Error(null, JsonRpc20Error.PARSE_ERROR, JsonRpc20Error.PARSE_ERROR_MSG, req);
                     batchResponse.getResponses().add(error);
                 }
             } else {
                 // We should return invalid request errors
                 JsonRpc20Error error =
-                    new JsonRpc20Error(JSONObject.NULL, JsonRpc20Error.INVALID_REQUEST,
-                                       JsonRpc20Error.INVALID_REQUEST_MSG, req);
+                    new JsonRpc20Error(null, JsonRpc20Error.INVALID_REQUEST, JsonRpc20Error.INVALID_REQUEST_MSG, req);
                 batchResponse.getResponses().add(error);
             }
         }

@@ -19,31 +19,19 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.protocol;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ObjectNode;
 
-public class JsonRpc20Response extends JsonRpc20Result {
-    private Object result;
+public class JsonRpc20Response extends JsonRpcResponse {
 
-    public JsonRpc20Response(Object id, Object result) {
-        super(id);
-        this.result = result;
+    public JsonRpc20Response(JsonNode id, JsonNode result) {
+        super(id, result);
+        this.jsonNode.put("jsonrpc", "2.0");
+
     }
 
-    public JsonRpc20Response(JSONObject response) {
-        super(response);
-        this.result = response.opt("result");
-    }
-
-    public JSONObject toJSONObject() throws JSONException {
-        if (response != null) {
-            return response;
-        }
-        response = new JSONObject();
-        response.put("jsonrpc", "2.0");
-        response.put("id", id);
-        response.put("result", result);
-        return response;
+    public JsonRpc20Response(ObjectNode jsonNode) {
+        super(jsonNode);
     }
 
 }

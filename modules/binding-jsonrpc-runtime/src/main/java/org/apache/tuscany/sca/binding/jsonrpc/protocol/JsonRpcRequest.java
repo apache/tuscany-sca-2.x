@@ -19,12 +19,13 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.protocol;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
-import org.apache.tuscany.sca.databinding.json.jackson.JacksonHelper;
-import org.json.JSONObject;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.JsonNodeFactory;
+import org.codehaus.jackson.node.NullNode;
+import org.codehaus.jackson.node.ObjectNode;
 
 /**
  * http://json-rpc.org/wiki/specification
@@ -38,51 +39,54 @@ import org.json.JSONObject;
  */
 public abstract class JsonRpcRequest {
     protected String method;
-    protected Object id;
+    protected JsonNode id;
     protected Object[] params;
 
-    protected JSONObject jsonObject;
+    protected ObjectNode jsonNode;
 
-    public JsonRpcRequest(Object id, String method, Object[] params) {
+    public JsonRpcRequest(ObjectNode jsonNode) {
+        super();
+        this.jsonNode = jsonNode;
+    }
+
+    public JsonRpcRequest(JsonNode id, String method, Object[] params) {
         super();
         this.id = id;
         this.method = method;
         this.params = params;
-    }
-
-    protected JsonRpcRequest(JSONObject jsonObject) {
-        super();
-        this.jsonObject = jsonObject;
-    }
-
-    public JSONObject toJSONObject() throws Exception {
-        if (jsonObject != null) {
-            return jsonObject;
-        } else {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            write(bos);
-            ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-            jsonObject = JacksonHelper.MAPPER.readValue(bis, JSONObject.class);
+        ObjectNode req = JsonNodeFactory.instance.objectNode();
+        req.put("method", method);
+        req.put("id", id);
+        if (params != null) {
+            ArrayNode args = JsonNodeFactory.instance.arrayNode();
+            for (Object p : params) {
+                args.add(JsonNodeFactory.instance.POJONode(p));
+            }
+            req.put("params", args);
         }
-        return jsonObject;
+        this.jsonNode = req;
     }
 
     public abstract void write(OutputStream os) throws Exception;
 
     public boolean isNotification() {
-        return id == null || id == JSONObject.NULL;
+        return id == null || (id instanceof NullNode);
     }
 
     public String getMethod() {
         return method;
     }
 
-    public Object getId() {
+    public JsonNode getId() {
         return id;
     }
 
     public Object[] getParams() {
         return params;
+    }
+
+    public ObjectNode getJsonNode() {
+        return jsonNode;
     }
 
 }

@@ -23,61 +23,61 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.databinding.json.jackson.JacksonHelper;
-import org.json.JSONArray;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.JsonNodeFactory;
+import org.codehaus.jackson.node.ObjectNode;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 public class JsonRpc20Request extends JsonRpcRequest {
 
-    protected Map<String, Object> mappedParams;
+    protected ObjectNode mappedParams;
 
-    public JsonRpc20Request(Object id, String method, Object[] params) {
-        super(id, method, params);
+    public JsonRpc20Request(String id, String method, Object[] params) {
+        super(JsonNodeFactory.instance.textNode(id), method, params);
+        this.jsonNode.put("jsonrpc", "2.0");
         this.mappedParams = null;
     }
 
-    public JsonRpc20Request(Object id, String method, Map<String, Object> mappedParams) {
-        super(id, method, null);
+    public JsonRpc20Request(String id, String method, ObjectNode mappedParams) {
+        super(JsonNodeFactory.instance.textNode(id), method, null);
+        this.jsonNode.put("jsonrpc", "2.0");
         this.mappedParams = mappedParams;
+        this.jsonNode.put("params", mappedParams);
     }
 
-    public JsonRpc20Request(JSONObject req) throws JSONException {
+    public JsonRpc20Request(ObjectNode req) throws JSONException {
         super(req);
-        if (req.has("jsonrpc") && "2.0".equals(req.getString("jsonrpc"))) {
-            method = req.getString("method");
-            id = req.opt("id");
-            Object args = req.opt("params");
-            if (args instanceof JSONArray) {
-                // Positional parameters
-                JSONArray array = (JSONArray)args;
-                params = new Object[array.length()];
-                mappedParams = null;
-                for (int i = 0; i < params.length; i++) {
-                    params[i] = array.get(i);
-                }
-            } else if (args instanceof JSONObject) {
-                JSONObject map = (JSONObject)args;
-                mappedParams = new HashMap<String, Object>();
-                params = null;
-                Iterator<String> keys = map.keys();
-                while (keys.hasNext()) {
-                    String key = keys.next();
-                    Object value = map.get(key);
-                    mappedParams.put(key, value);
-                }
-            } else if (args == null) {
-                params = new Object[0];
-                mappedParams = null;
-            } else {
-                throw new IllegalArgumentException("Invalid request: params is not a JSON array or object - " + args);
+        JsonNode node = req.get("jsonrpc");
+        boolean v20 = node != null && "2.0".equals(node.getTextValue());
+        if (!v20) {
+            throw new IllegalArgumentException("Invalid request: jsonrpc attribute must be \"2.0\"");
+        }
+        method = req.get("method").getTextValue();
+        JsonNode idNode = req.get("id");
+        if (idNode != null) {
+            id = idNode;
+        }
+        JsonNode args = req.get("params");
+        if (args instanceof ArrayNode) {
+            // Positional parameters
+            ArrayNode array = (ArrayNode)args;
+            params = new Object[array.size()];
+            for (int i = 0; i < params.length; i++) {
+                params[i] = array.get(i);
             }
+        } else if (args instanceof ObjectNode) {
+            ObjectNode map = (ObjectNode)args;
+            mappedParams = map;
+            params = null;
+        } else if (args == null) {
+            params = new Object[0];
         } else {
-            throw new IllegalArgumentException("Invalid request: missing jsonrpc attribute");
+            throw new IllegalArgumentException("Invalid request: params is not a JSON array - " + args);
         }
     }
 
@@ -107,7 +107,7 @@ public class JsonRpc20Request extends JsonRpcRequest {
 
     }
 
-    public Map<String, Object> getMappedParams() {
+    public ObjectNode getMappedParams() {
         return mappedParams;
     }
 }

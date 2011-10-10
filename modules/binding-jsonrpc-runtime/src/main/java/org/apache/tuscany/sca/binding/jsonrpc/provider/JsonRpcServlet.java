@@ -19,11 +19,8 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
@@ -43,15 +40,17 @@ import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc20BatchRequest;
 import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc20Error;
 import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc20Request;
 import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc20Response;
-import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc20Result;
+import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpcResponse;
 import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.apache.tuscany.sca.databinding.json.jackson.JacksonHelper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.JsonNodeFactory;
+import org.codehaus.jackson.node.ObjectNode;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 public class JsonRpcServlet extends HttpServlet {
@@ -101,7 +100,7 @@ public class JsonRpcServlet extends HttpServlet {
 
     private void handleJsonRpcInvocation(HttpServletRequest request, HttpServletResponse response)
         throws UnsupportedEncodingException, IOException, ServletException {
-        StringWriter data = new StringWriter();
+
         // Decode using the charset in the request if it exists otherwise
         // use UTF-8 as this is what all browser implementations use.
         // The JSON-RPC-Java JavaScript client is ASCII clean so it
@@ -112,6 +111,7 @@ public class JsonRpcServlet extends HttpServlet {
             charset = "UTF-8";
         }
 
+        JsonNode root = null;
         if (request.getMethod().equals("GET")) {
             // if using GET Support (see http://groups.google.com/group/json-rpc/web/json-rpc-over-http)
 
@@ -127,49 +127,39 @@ public class JsonRpcServlet extends HttpServlet {
                 sb.append("\"id\":" + request.getParameter("id"));
                 sb.append("}");
 
-                data.write(sb.toString());
+                root = JacksonHelper.MAPPER.readTree(sb.toString());
             } catch (Throwable e) {
-                JsonRpc10Response error = new JsonRpc10Response(request.getParameter("id"), e);
+                JsonRpc10Response error =
+                    new JsonRpc10Response(JsonNodeFactory.instance.textNode(request.getParameter("id")), e);
                 error.write(response.getWriter());
                 return;
             }
         } else {
-
-            // default POST style
-            BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), charset));
-            // Read the request into charArray
-            char[] buf = new char[4096];
-            int ret;
-            while ((ret = in.read(buf, 0, 4096)) != -1) {
-                data.write(buf, 0, ret);
-            }
+            root = JacksonHelper.MAPPER.readTree(request.getReader());
         }
 
-        String json = data.toString().trim();
-
         try {
-            if (json.startsWith("[")) {
-                JSONArray input = new JSONArray(json);
+            if (root.isArray()) {
+                ArrayNode input = (ArrayNode)root;
                 JsonRpc20BatchRequest batchReq = new JsonRpc20BatchRequest(input);
                 for (int i = 0; i < batchReq.getRequests().size(); i++) {
-                    JsonRpc20Result result = batchReq.getBatchResponse().getResponses().get(i);
+                    JsonRpcResponse result = batchReq.getBatchResponse().getResponses().get(i);
                     if (result == null) {
                         result = invoke(batchReq.getRequests().get(i));
                         batchReq.getBatchResponse().getResponses().set(i, result);
                     }
                 }
-                JSONArray responses = batchReq.getBatchResponse().toJSONArray();
-                responses.write(response.getWriter());
+                ArrayNode responses = batchReq.getBatchResponse().toJSONArray();
+                JacksonHelper.MAPPER.writeValue(response.getWriter(), responses);
             } else {
-                JSONObject input = JacksonHelper.read(json);
-                if (input.has("jsonrpc")) {
-                    JsonRpc20Request jsonReq = new JsonRpc20Request(input);
-                    JsonRpc20Result jsonResult = invoke(jsonReq);
+                if (root.has("jsonrpc")) {
+                    JsonRpc20Request jsonReq = new JsonRpc20Request((ObjectNode)root);
+                    JsonRpcResponse jsonResult = invoke(jsonReq);
                     if (jsonResult != null) {
                         jsonResult.write(response.getWriter());
                     }
                 } else {
-                    JsonRpc10Request jsonReq = new JsonRpc10Request(input);
+                    JsonRpc10Request jsonReq = new JsonRpc10Request((ObjectNode)root);
                     JsonRpc10Response jsonResult = invoke(jsonReq);
                     if (jsonResult != null) {
                         jsonResult.write(response.getWriter());
@@ -181,7 +171,7 @@ public class JsonRpcServlet extends HttpServlet {
         }
     }
 
-    private JsonRpc20Result invoke(JsonRpc20Request request) throws Exception {
+    private JsonRpcResponse invoke(JsonRpc20Request request) throws Exception {
         if (request.isNotification()) {
             return null;
         }
@@ -199,7 +189,7 @@ public class JsonRpcServlet extends HttpServlet {
         requestMessage.getHeaders().put("RequestMessage", request);
 
         if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
-            requestMessage.setBody(new Object[] {JacksonHelper.write(request.toJSONObject())});
+            requestMessage.setBody(new Object[] {JacksonHelper.toString(request.getJsonNode())});
         } else {
             requestMessage.setBody(params);
         }
@@ -222,7 +212,7 @@ public class JsonRpcServlet extends HttpServlet {
         if (!responseMessage.isFault()) {
             if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
                 result = responseMessage.getBody();
-                return new JsonRpc20Response(JacksonHelper.read(result.toString()));
+                return new JsonRpc20Response((ObjectNode)JacksonHelper.MAPPER.readTree(result.toString()));
             } else {
                 if (jsonOperation.getOutputType().getLogical().size() == 0) {
                     // void operation (json-rpc notification)
@@ -237,7 +227,7 @@ public class JsonRpcServlet extends HttpServlet {
                     // regular operation returning some value
                     try {
                         result = responseMessage.getBody();
-                        JsonRpc20Response response = new JsonRpc20Response(request.getId(), result);
+                        JsonRpc20Response response = new JsonRpc20Response(request.getId(), (JsonNode)result);
                         //get response to send to client
                         return response;
                     } catch (Exception e) {
@@ -273,7 +263,7 @@ public class JsonRpcServlet extends HttpServlet {
 
         requestMessage.getHeaders().put("RequestMessage", request);
         if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
-            requestMessage.setBody(new Object[] {JacksonHelper.write(request.toJSONObject())});
+            requestMessage.setBody(new Object[] {JacksonHelper.toString(request.getJsonNode())});
         } else {
             requestMessage.setBody(params);
         }
@@ -295,17 +285,18 @@ public class JsonRpcServlet extends HttpServlet {
         if (!responseMessage.isFault()) {
             if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
                 result = responseMessage.getBody();
-                return new JsonRpc10Response(JacksonHelper.read(result.toString()));
+                return new JsonRpc10Response((ObjectNode)JacksonHelper.MAPPER.readTree(result.toString()));
             } else {
                 if (jsonOperation.getOutputType().getLogical().size() == 0) {
                     // void operation (json-rpc notification)
-                    JsonRpc10Response response = new JsonRpc10Response(request.getId(), JSONObject.NULL, null);
+                    JsonRpc10Response response =
+                        new JsonRpc10Response(request.getId(), JsonNodeFactory.instance.nullNode());
                     return response;
 
                 } else {
                     // regular operation returning some value
                     result = responseMessage.getBody();
-                    JsonRpc10Response response = new JsonRpc10Response(request.getId(), result, null);
+                    JsonRpc10Response response = new JsonRpc10Response(request.getId(), (JsonNode)result);
                     //get response to send to client
                     return response;
                 }

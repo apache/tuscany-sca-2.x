@@ -20,16 +20,12 @@
 package org.apache.tuscany.sca.binding.jsonrpc.protocol;
 
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.sca.databinding.json.jackson.JacksonHelper;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.JsonNodeFactory;
+import org.codehaus.jackson.node.ObjectNode;
 
 /**
  * http://json-rpc.org/wiki/specification
@@ -43,19 +39,19 @@ import org.json.JSONObject;
  */
 public class JsonRpc10Request extends JsonRpcRequest {
 
-    public JsonRpc10Request(Object id, String method, Object[] params) {
-        super(id, method, params);
+    public JsonRpc10Request(String id, String method, Object[] params) {
+        super(JsonNodeFactory.instance.textNode(id), method, params);
     }
 
-    public JsonRpc10Request(JSONObject req) throws JSONException {
+    public JsonRpc10Request(ObjectNode req) {
         super(req);
-        method = req.getString("method");
-        id = req.opt("id");
-        Object args = req.opt("params");
-        if (args instanceof JSONArray) {
+        method = req.get("method").getTextValue();
+        id = req.get("id");
+        JsonNode args = req.get("params");
+        if (args instanceof ArrayNode) {
             // Positional parameters
-            JSONArray array = (JSONArray)args;
-            params = new Object[array.length()];
+            ArrayNode array = (ArrayNode)args;
+            params = new Object[array.size()];
             for (int i = 0; i < params.length; i++) {
                 params[i] = array.get(i);
             }
@@ -67,21 +63,7 @@ public class JsonRpc10Request extends JsonRpcRequest {
     }
 
     public void write(OutputStream os) throws Exception {
-        // Construct a map to hold JSON-RPC request
-        final Map<String, Object> map = new HashMap<String, Object>();
-        map.put("id", id);
-        map.put("method", method);
-
-        List<Object> parameters = null;
-
-        if (params != null) {
-            parameters = Arrays.asList(params);
-        } else {
-            parameters = Collections.emptyList();
-        }
-
-        map.put("params", parameters);
-        JacksonHelper.MAPPER.writeValue(os, map);
+        JacksonHelper.MAPPER.writeValue(os, getJsonNode());
 
     }
 

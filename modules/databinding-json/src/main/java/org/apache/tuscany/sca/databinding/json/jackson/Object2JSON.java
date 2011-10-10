@@ -58,14 +58,13 @@ public class Object2JSON implements PullTransformer<Object, Object> {
             }
             ObjectMapper mapper = JacksonHelper.createObjectMapper(targetType);
             String value = mapper.writeValueAsString(source);
-            if (targetType == String.class || targetType == Object.class || targetType.isPrimitive()) {
+            if (JsonNode.class.isAssignableFrom(targetType)) {
+                return JacksonHelper.createJsonParser(value).readValueAsTree();
+            } else if (targetType == String.class || targetType == Object.class || targetType.isPrimitive()) {
                 return value;
             } else if (targetType == BigDecimal.class) {
                 return value.toString();
-            } else if (JsonNode.class.isAssignableFrom(targetType)) {
-                return JacksonHelper.createJsonParser(value).readValueAsTree();
-            }
-            if (JsonParser.class.isAssignableFrom(targetType)) {
+            } else if (JsonParser.class.isAssignableFrom(targetType)) {
                 return JacksonHelper.createJsonParser(value);
             } else {
                 return JSONHelper.toJSON(value, targetType);

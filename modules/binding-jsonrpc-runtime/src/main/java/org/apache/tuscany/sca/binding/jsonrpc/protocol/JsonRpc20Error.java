@@ -19,16 +19,11 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.protocol;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.JsonNodeFactory;
+import org.codehaus.jackson.node.ObjectNode;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-public class JsonRpc20Error extends JsonRpc20Result {
-    private final int code; // The error code
-    private final String messaege; // The error message
-    private final Object data; // The json data for the error
+public class JsonRpc20Error extends JsonRpcResponse {
 
     public static final int PARSE_ERROR = 32700;
     public static final String PARSE_ERROR_MSG =
@@ -48,59 +43,24 @@ public class JsonRpc20Error extends JsonRpc20Result {
 
     // -32099 to -32000        Server error    Reserved for implementation-defined server-errors.
 
-    public JsonRpc20Error(Object id, int code, String messaege, Object data) {
-        super(id);
-        this.code = code;
-        this.messaege = messaege;
-        this.data = data;
+    public JsonRpc20Error(JsonNode id, Throwable t) {
+        super(id, t);
+        this.jsonNode.put("jsonrpc", "2.0");
+        this.jsonNode.put("code", INTERNAL_ERROR);
     }
 
-    public JsonRpc20Error(Object id, Throwable t) {
-        super(id);
-        this.code = INTERNAL_ERROR;
-        this.messaege = t.getMessage();
-        this.data = t;
-    }
-
-    public static String stackTrace(Throwable t) {
-        StringWriter sw = new StringWriter();
-        t.printStackTrace(new PrintWriter(sw));
-        return sw.toString();
-    }
-
-    public JsonRpc20Error(JSONObject response) {
-        super(response);
-        this.id = response.opt("id");
-        this.code = response.optInt("code");
-        this.messaege = response.optString("message");
-        this.data = response.opt("data");
-    }
-
-    public JSONObject toJSONObject() throws JSONException {
-        if (response != null) {
-            return response;
-        }
-
-        response = new JSONObject();
-        response.put("jsonrpc", "2.0");
-        response.put("id", id);
-        JSONObject error = new JSONObject();
+    public JsonRpc20Error(JsonNode id, int code, String message, JsonNode data) {
+        super(id, JsonNodeFactory.instance.nullNode());
+        this.jsonNode.put("jsonrpc", "2.0");
+        ObjectNode error = JsonNodeFactory.instance.objectNode();
         error.put("code", code);
-        error.put("message", messaege);
+        error.put("message", message);
+        error.put("data", data);
+        this.jsonNode.put("error", error);
+    }
 
-        if (data instanceof Throwable) {
-            Throwable t = (Throwable)data;
-            JSONObject exception = new JSONObject();
-            exception.put("class", t.getClass().getName());
-            exception.put("message", t.getMessage());
-            exception.put("stackTrace", JsonRpc20Error.stackTrace(t));
-            response.put("data", exception);
-        } else {
-            error.put("data", data);
-        }
-        response.put("error", error);
-
-        return response;
+    public JsonRpc20Error(ObjectNode jsonNode) {
+        super(jsonNode);
     }
 
 }

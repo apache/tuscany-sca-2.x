@@ -49,9 +49,11 @@ import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
-import org.json.JSONObject;
+import org.codehaus.jackson.node.NullNode;
+import org.codehaus.jackson.node.ObjectNode;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -63,14 +65,12 @@ public class JsonRpcInvoker implements Invoker, DataExchangeSemantics {
     private EndpointReference endpointReference;
     private Operation operation;
     private String uri;
-    private ObjectMapper mapper;
     private HttpClient httpClient;
 
     public JsonRpcInvoker(EndpointReference endpointReference, Operation operation, HttpClient httpClient) {
         this.endpointReference = endpointReference;
         this.operation = operation;
         this.uri = endpointReference.getBinding().getURI();
-        this.mapper = createObjectMapper(null);
         this.httpClient = httpClient;
     }
 
@@ -129,9 +129,9 @@ public class JsonRpcInvoker implements Invoker, DataExchangeSemantics {
                 String entityResponse = EntityUtils.toString(entity);
                 entity.consumeContent();
                 if (!db.equals(JSONDataBinding.NAME)) {
-                    JSONObject jsonResponse = new JSONObject(entityResponse);
+                    ObjectNode jsonResponse = (ObjectNode)JacksonHelper.MAPPER.readTree(entityResponse);
 
-                    if (!jsonResponse.isNull("error")) {
+                    if (jsonResponse.has("error") && jsonResponse.get("error") != NullNode.instance) {
                         processException(jsonResponse);
                     }
                     DataType<List<DataType>> outputType = operation.getOutputType();
@@ -145,22 +145,18 @@ public class JsonRpcInvoker implements Invoker, DataExchangeSemantics {
                     }
 
                     //check requestId
-                    if (!requestId.equalsIgnoreCase(jsonResponse.optString("id"))) {
+                    if (!requestId.equalsIgnoreCase(jsonResponse.get("id").getTextValue())) {
                         throw new ServiceRuntimeException("Invalid response id:" + requestId);
                     }
 
-                    Object rawResult = jsonResponse.get("result");
+                    JsonNode rawResult = jsonResponse.get("result");
 
                     Class<?> returnClass = returnType.getPhysical();
                     Type genericReturnType = returnType.getGenericType();
 
                     ObjectMapper mapper = createObjectMapper(returnClass);
-                    String json = rawResult.toString();
+                    String json = mapper.writeValueAsString(rawResult);
 
-                    // Jackson requires the quoted String so that readValue can work
-                    if (returnClass == String.class) {
-                        json = "\"" + json + "\"";
-                    }
                     Object body = mapper.readValue(json, TypeFactory.type(genericReturnType));
 
                     msg.setBody(body);
@@ -191,19 +187,28 @@ public class JsonRpcInvoker implements Invoker, DataExchangeSemantics {
         return JacksonHelper.createObjectMapper(cls);
     }
 
+    private String opt(ObjectNode node, String name) {
+        JsonNode value = node.get(name);
+        if (value == null) {
+            return null;
+        } else {
+            return value.getValueAsText();
+        }
+    }
+
     /**
      * Generate and throw exception based on the data in the 'responseMessage'
      */
-    protected void processException(JSONObject responseMessage) throws Throwable {
+    protected void processException(ObjectNode responseMessage) throws Throwable {
         // FIXME: We need to find a way to build Java exceptions out of the json-rpc error
-        JSONObject error = (JSONObject)responseMessage.opt("error");
+        JsonNode error = responseMessage.get("error");
         if (error != null) {
-            Object data = error.opt("data");
-            if (data instanceof JSONObject) {
-                JSONObject fault = (JSONObject)data;
-                String javaClass = fault.optString("class");
-                String message = fault.optString("message");
-                String stackTrace = fault.optString("stackTrace");
+            Object data = error.get("data");
+            if (data instanceof ObjectNode) {
+                ObjectNode fault = (ObjectNode)data;
+                String javaClass = opt(fault, "class");
+                String message = opt(fault, "message");
+                String stackTrace = opt(fault, "stackTrace");
                 if (javaClass != null) {
                     if (stackTrace != null) {
                         message = message + "\n" + stackTrace;

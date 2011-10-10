@@ -214,6 +214,6 @@ public class JSONRPCDataTypeTestCase {
 
         JSONObject jsonResp = new JSONObject(response.getText());
 
-        Assert.assertEquals("12345.67", jsonResp.get("result"));
+        Assert.assertEquals(12345.67, jsonResp.get("result"));
     }    
 }

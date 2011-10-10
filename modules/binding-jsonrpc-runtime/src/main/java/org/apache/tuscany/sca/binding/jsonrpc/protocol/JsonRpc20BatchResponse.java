@@ -22,24 +22,24 @@ package org.apache.tuscany.sca.binding.jsonrpc.protocol;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.JsonNodeFactory;
 
 public class JsonRpc20BatchResponse {
-    private List<JsonRpc20Result> results = new ArrayList<JsonRpc20Result>();
+    private List<JsonRpcResponse> results = new ArrayList<JsonRpcResponse>();
 
     public JsonRpc20BatchResponse() {
         super();
     }
 
-    public List<JsonRpc20Result> getResponses() {
+    public List<JsonRpcResponse> getResponses() {
         return results;
     }
 
-    public JSONArray toJSONArray() throws JSONException {
-        JSONArray jsonArray = new JSONArray();
-        for (JsonRpc20Result result : results) {
-            jsonArray.put(result.toJSONObject());
+    public ArrayNode toJSONArray() {
+        ArrayNode jsonArray = JsonNodeFactory.instance.arrayNode();
+        for (JsonRpcResponse result : results) {
+            jsonArray.add(result.getJsonNode());
         }
         return jsonArray;
     }

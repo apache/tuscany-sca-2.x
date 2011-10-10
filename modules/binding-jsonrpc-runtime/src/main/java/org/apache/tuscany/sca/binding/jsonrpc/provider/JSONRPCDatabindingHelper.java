@@ -19,14 +19,13 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
 import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.codehaus.jackson.JsonNode;
 
 /**
  * JSONRPC Binding helper class to handle setting the proper
@@ -46,20 +45,22 @@ public class JSONRPCDatabindingHelper {
             if (inputType != null) {
                 List<DataType> logical = inputType.getLogical();
                 for (DataType inArg : logical) {
-                    if (!SimpleJavaDataBinding.NAME.equals(inArg.getDataBinding()) ||
-                        inArg.getPhysical() == BigDecimal.class) {
-                        inArg.setDataBinding(JSONDataBinding.NAME);
-                    } 
+                    inArg.setDataBinding(JSONDataBinding.NAME);
+                    inArg.setPhysical(JsonNode.class);
+//                    if (!SimpleJavaDataBinding.NAME.equals(inArg.getDataBinding()) || inArg.getPhysical() == BigDecimal.class) {
+//                        inArg.setDataBinding(JSONDataBinding.NAME);
+//                    }
                 }
             }
 
-            for (DataType outputType : operation.getOutputType().getLogical() ) {
-            	if (outputType != null) {
-            		if (!SimpleJavaDataBinding.NAME.equals(outputType.getDataBinding()) ||
-            				outputType.getPhysical() == BigDecimal.class   ) {
-            			outputType.setDataBinding(JSONDataBinding.NAME);
-            		}
-            	}
+            for (DataType outputType : operation.getOutputType().getLogical()) {
+                if (outputType != null) {
+                    outputType.setDataBinding(JSONDataBinding.NAME);
+                    outputType.setPhysical(JsonNode.class);
+//                    if (!SimpleJavaDataBinding.NAME.equals(outputType.getDataBinding()) || outputType.getPhysical() == BigDecimal.class) {
+//                        outputType.setDataBinding(JSONDataBinding.NAME);
+//                    }
+                }
             }
         }
     }
