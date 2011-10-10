@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -44,9 +45,8 @@ import com.meterware.httpunit.WebResponse;
  */
 public class JSONRPCServiceTestCase {
 
-    private static final String SERVICE_PATH = "/EchoService";
-
-    private static final String SERVICE_URL = "http://localhost:8085/SCADomain" + SERVICE_PATH;
+    private static String SERVICE_URL;
+    private static String SERVICE20_URL;
 
     private static Node node;
 
@@ -56,6 +56,8 @@ public class JSONRPCServiceTestCase {
             String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCServiceTestCase.class);
             node = NodeFactory.newInstance().createNode("JSONRPCBinding.composite", new Contribution("test", contribution));
             node.start();
+            SERVICE_URL = node.getEndpointAddress("EchoComponent/Echo/Echo");
+            SERVICE20_URL = node.getEndpointAddress("EchoComponent/Echo/jsonrpc20");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,6 +80,40 @@ public class JSONRPCServiceTestCase {
 
         JSONObject jsonResp = new JSONObject(response.getText());
         Assert.assertEquals("echo: Hello JSON-RPC", jsonResp.getString("result"));
+    }
+    
+    @Test
+    public void testEchoWithJSONRPC20Binding() throws Exception {
+        JSONObject jsonRequest = new JSONObject("{ \"jsonrpc\": \"2.0\", \"method\": \"echo\", \"params\": [\"Hello JSON-RPC\"], \"id\": 1}");
+
+        WebConversation wc = new WebConversation();
+        WebRequest request   = new PostMethodWebRequest( SERVICE20_URL, new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")),"application/json");
+        WebResponse response = wc.getResource(request);
+
+        Assert.assertEquals(200, response.getResponseCode());
+
+        JSONObject jsonResp = new JSONObject(response.getText());
+        Assert.assertEquals("echo: Hello JSON-RPC", jsonResp.getString("result"));
+    }
+    
+    
+    @Test
+    public void testEchoWithJSONRPC20BindingBatch() throws Exception {
+        JSONObject jsonRequest1 = new JSONObject("{ \"jsonrpc\": \"2.0\", \"method\": \"echo\", \"params\": [\"Hello JSON-RPC\"], \"id\": 1}");
+        JSONObject jsonRequest2 = new JSONObject("{ \"jsonrpc\": \"2.0\", \"method\": \"echo\", \"params\": [\"Hello JSON-RPC 2.0\"], \"id\": 2}");
+        JSONArray batchReq = new JSONArray();
+        batchReq.put(jsonRequest1);
+        batchReq.put(jsonRequest2);
+        
+        WebConversation wc = new WebConversation();
+        WebRequest request   = new PostMethodWebRequest( SERVICE20_URL, new ByteArrayInputStream(batchReq.toString().getBytes("UTF-8")),"application/json");
+        WebResponse response = wc.getResource(request);
+
+        Assert.assertEquals(200, response.getResponseCode());
+
+        JSONArray jsonResp = new JSONArray(response.getText());
+        Assert.assertEquals("echo: Hello JSON-RPC", ((JSONObject) jsonResp.get(0)).getString("result"));
+        Assert.assertEquals("echo: Hello JSON-RPC 2.0", ((JSONObject) jsonResp.get(1)).getString("result"));
     }
 
     @Test

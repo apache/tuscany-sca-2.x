@@ -165,11 +165,15 @@ public class JsonRpcServlet extends HttpServlet {
                 if (input.has("jsonrpc")) {
                     JsonRpc20Request jsonReq = new JsonRpc20Request(input);
                     JsonRpc20Result jsonResult = invoke(jsonReq);
-                    jsonResult.write(response.getWriter());
+                    if (jsonResult != null) {
+                        jsonResult.write(response.getWriter());
+                    }
                 } else {
                     JsonRpc10Request jsonReq = new JsonRpc10Request(input);
                     JsonRpc10Response jsonResult = invoke(jsonReq);
-                    jsonResult.write(response.getWriter());
+                    if (jsonResult != null) {
+                        jsonResult.write(response.getWriter());
+                    }
                 }
             }
         } catch (Throwable e) {
@@ -178,7 +182,9 @@ public class JsonRpcServlet extends HttpServlet {
     }
 
     private JsonRpc20Result invoke(JsonRpc20Request request) throws Exception {
-
+        if (request.isNotification()) {
+            return null;
+        }
         // invoke the request
         String method = request.getMethod();
         Object[] params = request.getParams();
@@ -251,7 +257,9 @@ public class JsonRpcServlet extends HttpServlet {
     }
 
     private JsonRpc10Response invoke(JsonRpc10Request request) throws Exception {
-
+        if (request.isNotification()) {
+            return null;
+        }
         // invoke the request
         String method = request.getMethod();
         Object[] params = request.getParams();

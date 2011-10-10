@@ -31,9 +31,6 @@ import org.junit.Test;
 import echo.Echo;
 
 public class JSONRPCReferenceTestCase {
-    private static final String SERVICE_PATH = "/EchoService";
-    private static final String SERVICE_URL = "http://localhost:8085/SCADomain" + SERVICE_PATH;
-
     private static Node nodeServer;
     private static Node node;
 
@@ -75,6 +72,30 @@ public class JSONRPCReferenceTestCase {
     @Test(expected = Exception.class)
     public void testInvokeReferenceException() throws Exception {
         Echo echoComponent = node.getService(Echo.class, "EchoComponentWithReference");
+        try {
+            echoComponent.echoBusinessException();
+        } catch (Exception e) {
+            System.err.println(e);
+            throw e;
+        }
+    }
+    
+    @Test
+    public void testInvokeReference20() throws Exception {
+        Echo echoComponent = node.getService(Echo.class,"EchoComponentWithReference20");
+        String result = echoComponent.echo("ABC");
+        Assert.assertEquals("echo: ABC", result);
+    }
+
+    @Test
+    public void testInvokeReferenceVoidOperation20() throws Exception {
+        Echo echoComponent = node.getService(Echo.class,"EchoComponentWithReference20");
+        echoComponent.echoVoid();
+    }
+    
+    @Test(expected = Exception.class)
+    public void testInvokeReferenceException20() throws Exception {
+        Echo echoComponent = node.getService(Echo.class, "EchoComponentWithReference20");
         try {
             echoComponent.echoBusinessException();
         } catch (Exception e) {

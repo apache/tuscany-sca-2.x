@@ -80,7 +80,7 @@ public class JsonRpc10Request {
     }
 
     public boolean isNotification() {
-        return id == null;
+        return id == null || id == JSONObject.NULL;
     }
 
     public String getMethod() {

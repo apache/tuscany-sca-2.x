@@ -57,6 +57,12 @@
             <groupId>com.fasterxml</groupId>
             <artifactId>jackson-module-json-org</artifactId>
             <version>0.9.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         
         <dependency>

@@ -271,6 +271,7 @@ The following components come under Apache Software License 2.0
  jackson-core-asl-1.8.5.jar
  jackson-mapper-asl-1.8.5.jar
  jackson-xc-1.8.5.jar
+ jackson-module-json-org-0.9.1.jar
  jettison-1.2.jar
  jetty-6.1.26.jar
  jetty-util-6.1.26.jar

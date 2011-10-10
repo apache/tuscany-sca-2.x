@@ -48,7 +48,9 @@ public class HelloworldTestCase {
             // test that has exposed an HTTP endpoint that works as expected
             // JSONRPC args are base64 encoded, ["World"] = WyJXb3JsZCJd  
             URL url = new URL("http://localhost:8080/HelloworldComponent/Helloworld?method=sayHello&params=WyJXb3JsZCJd&id=1");
-            Assert.assertEquals("{\"id\":1,\"result\":\"Hello World\"}", read(url.openStream()));
+            String response = read(url.openStream());
+            System.out.println(response);
+            Assert.assertTrue(response.contains("\"id\":1,\"result\":\"Hello World\""));
 
         } finally {
             // Stop the Tuscany runtime Node
