@@ -19,16 +19,11 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.protocol;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.sca.databinding.json.jackson.JacksonHelper;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -41,48 +36,53 @@ import org.json.JSONObject;
  * <li>id - The request id. This can be of any type. It is used to match the response with the request that it is replying to.
  * </ul> 
  */
-public class JsonRpc10Request extends JsonRpcRequest {
+public abstract class JsonRpcRequest {
+    protected String method;
+    protected Object id;
+    protected Object[] params;
 
-    public JsonRpc10Request(Object id, String method, Object[] params) {
-        super(id, method, params);
+    protected JSONObject jsonObject;
+
+    public JsonRpcRequest(Object id, String method, Object[] params) {
+        super();
+        this.id = id;
+        this.method = method;
+        this.params = params;
     }
 
-    public JsonRpc10Request(JSONObject req) throws JSONException {
-        super(req);
-        method = req.getString("method");
-        id = req.opt("id");
-        Object args = req.opt("params");
-        if (args instanceof JSONArray) {
-            // Positional parameters
-            JSONArray array = (JSONArray)args;
-            params = new Object[array.length()];
-            for (int i = 0; i < params.length; i++) {
-                params[i] = array.get(i);
-            }
-        } else if (args == null) {
-            params = new Object[0];
-        } else {
-            throw new IllegalArgumentException("Invalid request: params is not a JSON array - " + args);
-        }
+    protected JsonRpcRequest(JSONObject jsonObject) {
+        super();
+        this.jsonObject = jsonObject;
     }
 
-    public void write(OutputStream os) throws Exception {
-        // Construct a map to hold JSON-RPC request
-        final Map<String, Object> map = new HashMap<String, Object>();
-        map.put("id", id);
-        map.put("method", method);
-
-        List<Object> parameters = null;
-
-        if (params != null) {
-            parameters = Arrays.asList(params);
+    public JSONObject toJSONObject() throws Exception {
+        if (jsonObject != null) {
+            return jsonObject;
         } else {
-            parameters = Collections.emptyList();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            write(bos);
+            ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+            jsonObject = JacksonHelper.MAPPER.readValue(bis, JSONObject.class);
         }
+        return jsonObject;
+    }
 
-        map.put("params", parameters);
-        JacksonHelper.MAPPER.writeValue(os, map);
+    public abstract void write(OutputStream os) throws Exception;
 
+    public boolean isNotification() {
+        return id == null || id == JSONObject.NULL;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public Object getId() {
+        return id;
+    }
+
+    public Object[] getParams() {
+        return params;
     }
 
 }

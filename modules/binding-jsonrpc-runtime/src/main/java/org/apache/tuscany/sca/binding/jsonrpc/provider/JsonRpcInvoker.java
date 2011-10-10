@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc10Request;
 import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpc20Request;
+import org.apache.tuscany.sca.binding.jsonrpc.protocol.JsonRpcRequest;
 import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.apache.tuscany.sca.databinding.json.jackson.JacksonHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -92,21 +93,23 @@ public class JsonRpcInvoker implements Invoker, DataExchangeSemantics {
                     params = (Object[])args;
                 }
 
-                JSONObject jsonReq = null;
+                JsonRpcRequest req = null;
                 if (JSONRPCBinding.VERSION_20.equals(((JSONRPCBinding)endpointReference.getBinding()).getVersion())) {
-                    JsonRpc20Request req = new JsonRpc20Request(requestId, msg.getOperation().getName(), params);
-                    jsonReq = req.toJSONObject();
+                    req = new JsonRpc20Request(requestId, msg.getOperation().getName(), params);
                 } else {
-                    JsonRpc10Request req = new JsonRpc10Request(requestId, msg.getOperation().getName(), params);
-                    jsonReq = req.toJSONObject();
+                    req = new JsonRpc10Request(requestId, msg.getOperation().getName(), params);
                 }
-                final String json = jsonReq.toString(4);
+                final JsonRpcRequest json = req;
 
                 // Create content producer so that we can stream the json result out
                 ContentProducer cp = new ContentProducer() {
                     public void writeTo(OutputStream outstream) throws IOException {
                         // mapper.writeValue(outstream, req.toJSONObject().toString());
-                        outstream.write(json.getBytes("UTF-8"));
+                        try {
+                            json.write(outstream);
+                        } catch (Exception e) {
+                            throw new IOException(e);
+                        }
                     }
                 };
                 entity = new EntityTemplate(cp);

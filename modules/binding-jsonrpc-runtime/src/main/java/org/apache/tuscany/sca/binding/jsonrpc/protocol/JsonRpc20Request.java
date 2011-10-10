@@ -19,54 +19,35 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.protocol;
 
+import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.databinding.json.jackson.JacksonHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class JsonRpc20Request {
-    private final String method;
-    private final Object id;
-    private final Object[] params;
-    private final Map<String, Object> mappedParams;
+public class JsonRpc20Request extends JsonRpcRequest {
+
+    protected Map<String, Object> mappedParams;
 
     public JsonRpc20Request(Object id, String method, Object[] params) {
-        super();
-        this.id = id;
-        this.method = method;
-        this.params = params;
+        super(id, method, params);
         this.mappedParams = null;
     }
 
     public JsonRpc20Request(Object id, String method, Map<String, Object> mappedParams) {
-        super();
-        this.id = id;
-        this.method = method;
-        this.params = null;
+        super(id, method, null);
         this.mappedParams = mappedParams;
     }
 
-    public JSONObject toJSONObject() throws JSONException {
-        JSONObject req = new JSONObject();
-        req.put("jsonrpc", "2.0");
-        req.put("id", id);
-        req.put("method", method);
-        if (params != null) {
-            JSONArray args = new JSONArray(Arrays.asList(params));
-            req.put("params", args);
-        } else {
-            JSONObject args = new JSONObject(mappedParams);
-            req.put("params", args);
-        }
-        return req;
-    }
-
     public JsonRpc20Request(JSONObject req) throws JSONException {
-        super();
+        super(req);
         if (req.has("jsonrpc") && "2.0".equals(req.getString("jsonrpc"))) {
             method = req.getString("method");
             id = req.opt("id");
@@ -100,20 +81,30 @@ public class JsonRpc20Request {
         }
     }
 
-    public boolean isNotification() {
-        return id == null || id == JSONObject.NULL;
-    }
+    public void write(OutputStream os) throws Exception {
+        // Construct a map to hold JSON-RPC request
+        final Map<String, Object> jsonRequest = new HashMap<String, Object>();
+        jsonRequest.put("jsonrpc", "2.0");
+        jsonRequest.put("id", id);
+        jsonRequest.put("method", method);
 
-    public String getMethod() {
-        return method;
-    }
+        if (mappedParams != null) {
+            jsonRequest.put("params", mappedParams);
+        }
 
-    public Object getId() {
-        return id;
-    }
+        else {
+            List<Object> parameters = null;
 
-    public Object[] getParams() {
-        return params;
+            if (params != null) {
+                parameters = Arrays.asList(params);
+            } else {
+                parameters = Collections.emptyList();
+            }
+
+            jsonRequest.put("params", parameters);
+        }
+        JacksonHelper.MAPPER.writeValue(os, jsonRequest);
+
     }
 
     public Map<String, Object> getMappedParams() {

@@ -27,36 +27,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.oasisopen.sca.annotation.AllowsPassByReference;
 import org.oasisopen.sca.annotation.Reference;
 
 import bean.TestBean;
 
+@AllowsPassByReference
 public class EchoClientImpl implements Echo {
     @Reference
+    @AllowsPassByReference
     protected Echo echoReference;
 
     public String echo(String msg) {
         return echoReference.echo(msg);
     }
-    
+
     public void echoVoid() {
         echoReference.echoVoid();
     }
 
-    public int[] echoArrayInt(int[] intArray) {
-        throw new UnsupportedOperationException("UNsupported !");
-    }
-
-    public String[] echoArrayString(String[] stringArray) {
-        throw new UnsupportedOperationException("UNsupported !");
-    }
-
-    public TestBean echoBean(TestBean testBean) {
-        throw new UnsupportedOperationException("UNsupported !");
-    }
-
-    public boolean echoBoolean(boolean param) {
-        throw new UnsupportedOperationException("UNsupported !");
+    public void echoRuntimeException() throws RuntimeException {
+        echoReference.echoRuntimeException();
     }
 
     public void echoBusinessException() throws EchoBusinessException {
@@ -64,34 +55,48 @@ public class EchoClientImpl implements Echo {
     }
 
     public int echoInt(int param) {
-        throw new UnsupportedOperationException("UNsupported !");
+        return echoReference.echoInt(param);
     }
 
     public double echoDouble(double param) {
-        throw new UnsupportedOperationException("UNsupported !");
+        return echoReference.echoDouble(param);
     }
 
-    public List echoList(ArrayList list) {
-        throw new UnsupportedOperationException("UNsupported !");
+    public boolean echoBoolean(boolean param) {
+        return echoReference.echoBoolean(param);
     }
 
     public Map echoMap(HashMap map) {
-        throw new UnsupportedOperationException("UNsupported !");
+        return echoReference.echoMap(map);
     }
 
-    public void echoRuntimeException() throws RuntimeException {
-        echoReference.echoRuntimeException();
+    public TestBean echoBean(TestBean testBean) {
+        return echoReference.echoBean(testBean);
+    }
+
+    public List echoList(ArrayList list) {
+        return echoReference.echoList(list);
+    }
+
+    public String[] echoArrayString(String[] stringArray) {
+        return echoReference.echoArrayString(stringArray);
+    }
+
+    public int[] echoArrayInt(int[] intArray) {
+        return echoReference.echoArrayInt(intArray);
     }
 
     public Set echoSet(HashSet set) {
-        throw new UnsupportedOperationException("UNsupported !");
+        return echoReference.echoSet(set);
     }
 
     public void get\u03a9\u03bb\u03c0() {
-        throw new UnsupportedOperationException("UNsupported !");
+        echoReference.get\u03a9\u03bb\u03c0();
     }
 
     public BigDecimal echoBigDecimal(BigDecimal param) {
-        throw new UnsupportedOperationException("UNsupported !");
+        return echoReference.echoBigDecimal(param);
     }
+
+
 }

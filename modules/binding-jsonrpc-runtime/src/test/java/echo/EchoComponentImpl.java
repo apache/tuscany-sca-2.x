@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.oasisopen.sca.annotation.AllowsPassByReference;
+
 import bean.TestBean;
 
 /**
@@ -34,6 +36,7 @@ import bean.TestBean;
  *
  * @version $Rev$ $Date$
  */
+@AllowsPassByReference
 public class EchoComponentImpl implements Echo {
 
     public String echo(String msg) {
@@ -80,6 +83,7 @@ public class EchoComponentImpl implements Echo {
         TestBean testBean = new TestBean();
         testBean.setTestString(testBean1.getTestString());
         testBean.setTestInt(testBean1.getTestInt());
+        testBean.setStringArray(testBean1.getTestStringArray());
         return testBean;
     }
 

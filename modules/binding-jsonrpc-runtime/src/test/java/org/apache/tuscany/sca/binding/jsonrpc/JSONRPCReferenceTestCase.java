@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.binding.jsonrpc;
 
+import java.util.Arrays;
+
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.node.Contribution;
@@ -28,6 +30,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import bean.TestBean;
 import echo.Echo;
 
 public class JSONRPCReferenceTestCase {
@@ -38,13 +41,17 @@ public class JSONRPCReferenceTestCase {
     public static void setUp() throws Exception {
         try {
             String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCReferenceTestCase.class);
-            nodeServer = NodeFactory.newInstance().createNode("JSONRPCBinding.composite", new Contribution("testServer", contribution));
+            nodeServer =
+                NodeFactory.newInstance().createNode("JSONRPCBinding.composite",
+                                                     new Contribution("testServer", contribution));
             nodeServer.start();
-            
+
             contribution = ContributionLocationHelper.getContributionLocation(JSONRPCReferenceTestCase.class);
-            node = NodeFactory.newInstance().createNode("JSONRPCReference.composite", new Contribution("testClient", contribution));
+            node =
+                NodeFactory.newInstance().createNode("JSONRPCReference.composite",
+                                                     new Contribution("testClient", contribution));
             node.start();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,20 +62,31 @@ public class JSONRPCReferenceTestCase {
         nodeServer.stop();
         node.stop();
     }
-    
+
     @Test
     public void testInvokeReference() throws Exception {
-        Echo echoComponent = node.getService(Echo.class,"EchoComponentWithReference");
+        Echo echoComponent = node.getService(Echo.class, "EchoComponentWithReference");
         String result = echoComponent.echo("ABC");
         Assert.assertEquals("echo: ABC", result);
     }
 
     @Test
+    public void testInvokeBeanReference() throws Exception {
+        Echo echoComponent = node.getService(Echo.class, "EchoComponentWithReference");
+        TestBean bean = new TestBean();
+        bean.setTestInt(1);
+        bean.setTestString("123");
+        bean.setStringArray(Arrays.asList("A", "B"));
+        TestBean result = echoComponent.echoBean(bean);
+        Assert.assertEquals(bean, result);
+    }
+
+    @Test
     public void testInvokeReferenceVoidOperation() throws Exception {
-        Echo echoComponent = node.getService(Echo.class,"EchoComponentWithReference");
+        Echo echoComponent = node.getService(Echo.class, "EchoComponentWithReference");
         echoComponent.echoVoid();
     }
-    
+
     @Test(expected = Exception.class)
     public void testInvokeReferenceException() throws Exception {
         Echo echoComponent = node.getService(Echo.class, "EchoComponentWithReference");
@@ -79,20 +97,20 @@ public class JSONRPCReferenceTestCase {
             throw e;
         }
     }
-    
+
     @Test
     public void testInvokeReference20() throws Exception {
-        Echo echoComponent = node.getService(Echo.class,"EchoComponentWithReference20");
+        Echo echoComponent = node.getService(Echo.class, "EchoComponentWithReference20");
         String result = echoComponent.echo("ABC");
         Assert.assertEquals("echo: ABC", result);
     }
 
     @Test
     public void testInvokeReferenceVoidOperation20() throws Exception {
-        Echo echoComponent = node.getService(Echo.class,"EchoComponentWithReference20");
+        Echo echoComponent = node.getService(Echo.class, "EchoComponentWithReference20");
         echoComponent.echoVoid();
     }
-    
+
     @Test(expected = Exception.class)
     public void testInvokeReferenceException20() throws Exception {
         Echo echoComponent = node.getService(Echo.class, "EchoComponentWithReference20");
