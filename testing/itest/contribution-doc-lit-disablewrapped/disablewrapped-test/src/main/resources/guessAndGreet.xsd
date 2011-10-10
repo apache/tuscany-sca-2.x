@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema elementFormDefault="qualified" targetNamespace="http://test.sca.soafp/jaxb" xmlns:tns="http://test.sca.soafp/jaxb" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xsd="http://www.w3.org/2001/XMLSchema" jaxb:version="2.0" xmlns="http://www.w3.org/2001/XMLSchema">
+
+    <annotation>
+        <appinfo>
+            <jaxb:schemaBindings>
+                <jaxb:package name="test.soafp.jaxb.types"/>
+            </jaxb:schemaBindings>
+        </appinfo>
+    </annotation>
+
+    <complexType name="Person">
+        <sequence>
+            <element name="firstName" type="string"/>
+            <element name="lastName" type="string"/>
+            <element name="greeting" type="string"/>
+            <element name="child" minOccurs="0" type="tns:Person"/>
+        </sequence>
+    </complexType>
+
+    <!-- 1. Fault of named, complex type --> 
+    <element name="incorrectGuessFault" type="tns:IncorrectGuessFault"/>
+    <complexType name="IncorrectGuessFault">
+        <sequence>
+            <element name="guess" type="xsd:int"/>
+            <element name="hint" type="xsd:string"/>
+        </sequence>
+    </complexType>
+    
+    <!-- 2. Fault of named, simple (built-in) type --> 
+    <element name="wayTooHighFault" type="xsd:integer"/>
+
+    <!-- 3. Fault of anonymous, simple user-defined type --> 
+    <element name="wayTooLowFault">
+        <simpleType>
+            <!-- Error code RC, so -200 < RC < -100 -->
+            <restriction base="xsd:int">
+                <minInclusive value="-200"/>
+                <maxInclusive value="-100"/>
+            </restriction>
+        </simpleType>
+    </element>
+
+    <!-- 4. Fault of named, simple user-defined type --> 
+    <element name="oneTwoThreeFault" type="tns:OneTwoThreeType"/>
+    <simpleType name="OneTwoThreeType">
+        <!-- Want to see what happens when I violate the enum restriction
+        <annotation><appinfo>
+                <jaxb:typesafeEnumClass name="OneTwoThreeType">
+                  <jaxb:typesafeEnumMember name="ONE" value="1"/>
+                  <jaxb:typesafeEnumMember name="TWO" value="2"/>
+                  <jaxb:typesafeEnumMember name="THREE" value="3"/>
+                </jaxb:typesafeEnumClass>
+        </appinfo></annotation>
+        -->
+        <restriction base="xsd:integer">
+            <enumeration value="1"/>
+            <enumeration value="2"/>
+            <enumeration value="3"/>
+        </restriction>
+    </simpleType>
+
+    <!-- 5. Fault of anonymous, complex type --> 
+    <!-- Easier to work across SDO/JAXB if we start with capital letter in elem name -->
+    <element name="GameOverFault">
+        <complexType>
+            <sequence>
+                <element name="guess" type="xsd:int"/>
+                <element name="correct" type="xsd:integer"/>
+            </sequence>
+        </complexType>
+    </element>
+</schema>

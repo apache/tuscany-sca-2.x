@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<wsdl:definitions targetNamespace="http://test.sca.soafp/jaxb/disablewrapped" xmlns:tns="http://test.sca.soafp/jaxb/disablewrapped" xmlns:gng="http://test.sca.soafp/jaxb" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jaxws="http://java.sun.com/xml/ns/jaxws" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    name="DisableWrapped">
+
+    <jaxws:bindings>
+        <!-- Non-wrapped by virtue of the fact that wrappering has been disabled -->
+        <jaxws:enableWrapperStyle>false</jaxws:enableWrapperStyle>
+    </jaxws:bindings>
+
+    <wsdl:types>
+        <schema elementFormDefault="qualified" targetNamespace="http://test.sca.soafp/jaxb/disablewrapped" jaxb:version="2.0" xmlns="http://www.w3.org/2001/XMLSchema">
+
+            <annotation>
+                <appinfo>
+                    <jaxb:schemaBindings>
+                        <jaxb:package name="org.apache.tuscany.sca.binding.sca.jaxb.iface"/>
+                    </jaxb:schemaBindings>
+                </appinfo>
+            </annotation>
+
+            <import namespace="http://test.sca.soafp/jaxb" schemaLocation="guessAndGreet.xsd"/>
+
+            <element name="sendGuessAndName">
+                <complexType>
+                    <sequence>
+                        <element name="name" type="xsd:string"/>
+                        <element name="guess" type="xsd:int"/>
+                        <element name="person" minOccurs="0" type="gng:Person"/>
+                    </sequence>
+                </complexType>
+            </element>
+
+           <element name="sendGuessAndNameResponse">
+                <complexType>
+                    <sequence>
+                        <element name="person" type="gng:Person"/>
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </wsdl:types>
+
+    <wsdl:message name="sendGuessAndNameRequest">
+        <wsdl:part element="tns:sendGuessAndName" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:message name="sendGuessAndNameResponse">
+        <wsdl:part element="tns:sendGuessAndNameResponse" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:message name="wayTooLowFaultMsg">
+        <wsdl:part element="gng:wayTooLowFault" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:message name="oneTwoThreeFaultMsg">
+        <wsdl:part element="gng:oneTwoThreeFault" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:message name="wayTooHighFaultMsg">
+        <wsdl:part element="gng:wayTooHighFault" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:message name="incorrectGuessFaultMsg">
+        <wsdl:part element="gng:incorrectGuessFault" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:message name="gameOverFaultMsg">
+        <wsdl:part element="gng:GameOverFault" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:portType name="GuessAndGreetDisableWrapped">
+        <wsdl:operation name="sendGuessAndName">
+            <wsdl:input message="tns:sendGuessAndNameRequest" name="sendGuessAndNameRequest"/>
+            <wsdl:output message="tns:sendGuessAndNameResponse" name="sendGuessAndNameResponse"/>
+            <wsdl:fault message="tns:wayTooLowFaultMsg" name="wayTooLowFaultMsg"/>
+            <wsdl:fault message="tns:wayTooHighFaultMsg" name="wayTooHighFaultMsg"/>
+            <wsdl:fault message="tns:oneTwoThreeFaultMsg" name="oneTwoThreeFaultMsg"/>
+            <wsdl:fault message="tns:incorrectGuessFaultMsg" name="incorrectGuessFaultMsg"/>
+            <wsdl:fault message="tns:gameOverFaultMsg" name="gameOverFaultMsg"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="GuessAndGreetSoapBinding" type="tns:GuessAndGreetDisableWrapped">
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="sendGuessAndName">
+            <wsdlsoap:operation soapAction="urn:sendGuessAndName"/>
+            <wsdl:input name="sendGuessAndNameRequest">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="sendGuessAndNameResponse">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="wayTooLowFaultMsg">
+                <wsdlsoap:fault use="literal" name="wayTooLowFaultMsg"/>
+            </wsdl:fault>
+            <wsdl:fault name="wayTooHighFaultMsg">
+                <wsdlsoap:fault use="literal" name="wayTooHighFaultMsg"/>
+            </wsdl:fault>
+            <wsdl:fault name="oneTwoThreeFaultMsg">
+                <wsdlsoap:fault use="literal" name="oneTwoThreeFaultMsg"/>
+            </wsdl:fault>
+            <wsdl:fault name="incorrectGuessFaultMsg">
+                <wsdlsoap:fault use="literal" name="incorrectGuessFaultMsg"/>
+            </wsdl:fault>
+            <wsdl:fault name="gameOverFaultMsg">
+                <wsdlsoap:fault use="literal" name="gameOverFaultMsg"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="GuessAndGreetService">
+        <wsdl:port binding="tns:GuessAndGreetSoapBinding" name="GuessAndGreetSoapPort">
+            <wsdlsoap:address location=""/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>
+
+

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+        targetNamespace="http://www.tuscany.apache.org/itests/binding/sca/jaxb"
+        xmlns:tns="http://www.tuscany.apache.org/itests/binding/sca/jaxb"
+        xmlns:sca="http://www.ibm.com/xmlns/prod/websphere/sca/1.0/2007/06"
+        name="DisableWrapped">
+
+    <component name="GuessAndGreetComponent">
+        <implementation.java class="org.apache.tuscany.sca.binding.sca.DisableWrappedImpl"/>
+
+        <service name="GuessAndGreetDisableWrapped">
+            <interface.wsdl interface="http://test.sca.soafp/jaxb/disablewrapped#wsdl.interface(GuessAndGreetDisableWrapped)" />
+            <binding.sca/>
+        </service>
+    </component>
+</composite>

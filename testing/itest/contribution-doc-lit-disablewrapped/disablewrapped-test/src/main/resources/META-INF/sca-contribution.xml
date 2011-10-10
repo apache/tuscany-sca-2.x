@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+              xmlns:itest="http://www.tuscany.apache.org/itests/binding/sca/jaxb">
+   <deployable composite="itest:DisableWrapped"/>
+</contribution>
