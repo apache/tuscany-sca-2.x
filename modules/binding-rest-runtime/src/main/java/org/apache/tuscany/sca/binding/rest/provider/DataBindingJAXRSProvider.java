@@ -61,6 +61,9 @@ public abstract class DataBindingJAXRSProvider {
     }
 
     protected <A extends Annotation> A getAnnotation(Annotation[] annotations, Class<A> type) {
+        if(annotations == null) {
+            return null;
+        }
         for (Annotation a : annotations) {
             if (a.annotationType() == type) {
                 return type.cast(a);
