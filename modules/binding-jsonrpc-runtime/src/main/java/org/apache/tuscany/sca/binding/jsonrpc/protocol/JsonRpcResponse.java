@@ -54,7 +54,7 @@ public abstract class JsonRpcResponse {
         super();
         ObjectNode response = JsonNodeFactory.instance.objectNode();
         response.put("id", id);
-        response.put("result", JsonNodeFactory.instance.nullNode());
+        // response.put("result", JsonNodeFactory.instance.nullNode());
         response.put("error", mapError(t));
         this.jsonNode = response;
     }
@@ -64,7 +64,7 @@ public abstract class JsonRpcResponse {
         ObjectNode response = JsonNodeFactory.instance.objectNode();
         response.put("id", id);
         response.put("result", result);
-        response.put("error", JsonNodeFactory.instance.nullNode());
+        // response.put("error", JsonNodeFactory.instance.nullNode());
         this.jsonNode = response;
     }
 
