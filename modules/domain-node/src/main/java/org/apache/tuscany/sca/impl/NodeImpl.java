@@ -473,7 +473,7 @@ public class NodeImpl implements Node {
         } else {
             for (Import imprt : loadContribution(cd).getImports()) {
                 for (ContributionDescription exportingIC : findExportingContributions(imprt)) {
-                    if (!!!dependentContributions.containsKey(exportingIC.getURI())) {
+                    if (!!!dependentContributions.containsKey(exportingIC.getURI()) && !!!cd.getURI().equals(exportingIC.getURI())) {
                         dependentContributions.put(exportingIC.getURI(), loadContribution(exportingIC));
                     }
                 }
