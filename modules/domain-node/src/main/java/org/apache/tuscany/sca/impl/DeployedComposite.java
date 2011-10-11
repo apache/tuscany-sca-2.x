@@ -92,6 +92,8 @@ public class DeployedComposite {
         contributions.add(contribution);
         contributions.get(0).getDeployables().clear();
         contributions.get(0).getDeployables().add(composite);
+        
+        contributions.addAll(dependedOnContributions);
 
         Map<QName, List<String>> bs = new HashMap<QName, List<String>>();
         if (endpointsIncludeDomainName) {
@@ -99,7 +101,7 @@ public class DeployedComposite {
         }
 
         Monitor monitor = deployer.createMonitor();
-        builtComposite = deployer.build(contributions, dependedOnContributions, bs, monitor);
+        builtComposite = deployer.build(contributions, contributions, bs, monitor);
         monitor.analyzeProblems();
 
         // TODO: Ideally deployer.build would set the name and uri to what this needs
