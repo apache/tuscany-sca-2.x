@@ -318,9 +318,10 @@ public class EndpointReferenceBuilderImpl {
                     // parts in the uri. 
                     EndpointReference endpointRef = createEndpointRef(component, reference, binding, null, false);
                     Endpoint endpoint = null;
-                    try {
-                        getSCATargetParts(uri);
+
+                    String[] parts = getSCATargetParts(uri);
                         
+                    if (parts != null){
                         // the target uri might be an SCA target so create an endpoint
                         // so that the binder can test it against the fully populated
                         // registry
@@ -330,8 +331,8 @@ public class EndpointReferenceBuilderImpl {
                             // if it's an SCA binding we store it to influence the matching at runtime
                             endpointRef.setBinding(binding);
                         }
-                        endpointRef.setStatus(EndpointReference.Status.WIRED_TARGET_IN_BINDING_URI); 
-                    } catch (Exception ex) {
+                        endpointRef.setStatus(EndpointReference.Status.WIRED_TARGET_IN_BINDING_URI);
+                    } else { 
                         // the target string definitely isn't an SCA target string
                         // so we can assume here that the user has configured a
                         // resolved binding
@@ -671,7 +672,7 @@ public class EndpointReferenceBuilderImpl {
     private String[] getSCATargetParts(String targetName){
         String[] parts = targetName.split("/");
         if (parts.length < 1 || parts.length > 3) {
-            throw new IllegalArgumentException("Invalid target URI: " + targetName);
+            return null;
         } 
         return parts;
     }
@@ -691,6 +692,10 @@ public class EndpointReferenceBuilderImpl {
     private Endpoint createEndpoint(Component component, String targetName) {
         String[] parts = getSCATargetParts(targetName);
 
+        if (parts == null){
+            throw new IllegalArgumentException("Invalid target URI: " + targetName);
+        }
+        
         // Find the parent uri
         String uri = component.getURI();
         int index = uri.lastIndexOf('/');
