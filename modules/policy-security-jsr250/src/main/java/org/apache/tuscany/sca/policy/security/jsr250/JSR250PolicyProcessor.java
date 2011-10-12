@@ -27,21 +27,15 @@ import javax.annotation.security.RunAs;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
-import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
-import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy;
 import org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy;
 
