@@ -4,6 +4,7 @@ Bundle-Name: Sample Calculator OSGi
 Bundle-Activator: calculator.CalculatorActivator
 Bundle-ManifestVersion: 2
 Import-Package: org.oasisopen.sca.annotation;version="2.0.0",
+ org.oasisopen.sca;version="2.0.0",
  org.apache.tuscany.sca;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
  org.osgi.framework,

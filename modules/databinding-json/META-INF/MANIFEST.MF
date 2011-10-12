@@ -33,8 +33,6 @@ Import-Package: javax.xml.namespace,
  org.codehaus.jettison.badgerfish,
  org.codehaus.jettison.json,
  org.codehaus.jettison.mapped,
- org.jabsorb,
- org.jabsorb.serializer,
  org.json,
  org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.json
