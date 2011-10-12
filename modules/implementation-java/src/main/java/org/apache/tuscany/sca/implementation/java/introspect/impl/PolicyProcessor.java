@@ -33,6 +33,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
@@ -40,7 +41,10 @@ import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
+import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -79,9 +83,8 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
         // Read intents on the Java implementation class
         readPolicySetAndIntents((PolicySubject)type, clazz);
 
-        /*
-        // FIXME: [rfeng] We might want to refactor this out
         // Find the business methods in the implementation class for all services
+        // this operation collection will have policy added to it relating to JSR250 annotations
         Set<Method> methods = new HashSet<Method>();
         for (Service service : type.getServices()) {
             for (Operation op : service.getInterfaceContract().getInterface().getOperations()) {
@@ -100,7 +103,9 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
             JavaOperation op = javaInterfaceFactory.createJavaOperation(method);
             type.getOperations().add(op);
         }
-
+      
+        /* In OASIS we don't generally read policy attached to arbitrary methods
+         * unless they relate to references
         // Read the operation-level policy settings for the implementation
         for (Operation op : type.getOperations()) {
             JavaOperation operation = (JavaOperation)op;
@@ -122,7 +127,6 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
             Reference reference = referenceMap.get(e.getKey());
             readPolicySetAndIntents(reference, e.getValue().getAnchor());
         }
-
     }
 
     private void readPolicySetAndIntents(PolicySubject subject, AnnotatedElement element) {
