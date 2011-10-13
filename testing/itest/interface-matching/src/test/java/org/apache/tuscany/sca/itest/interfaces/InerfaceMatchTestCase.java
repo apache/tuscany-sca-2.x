@@ -44,7 +44,7 @@ public class InerfaceMatchTestCase {
     public void testLocal() throws Exception {
         String [] contributions = {"./target/classes"};
         Node node1 = NodeFactory.newInstance().createNode(URI.create("uri:default"), 
-                                                                     "org/apache/tuscany/sca/itest/interfaces/missmatch/local/MatchLocal.composite", 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/match/local/MatchLocal.composite", 
                                                                      contributions);
         node1.start();
         
@@ -76,12 +76,12 @@ public class InerfaceMatchTestCase {
         
         String [] contributions = {"./target/classes"};
         Node node1 = NodeFactory.newInstance().createNode(URI.create("uri:default"), 
-                                                                     "org/apache/tuscany/sca/itest/interfaces/missmatch/distributed/MatchDistributedClient.composite", 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/match/distributed/MatchDistributedClient.composite", 
                                                                      contributions);
         node1.start();
 
         Node node2 = NodeFactory.newInstance().createNode(URI.create("uri:default"), 
-                                                                     "org/apache/tuscany/sca/itest/interfaces/missmatch/distributed/MatchDistributedService.composite", 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/match/distributed/MatchDistributedService.composite", 
                                                                      contributions);
         
         // for default binding on node2 to use a different port from node 1(which will default to 8080
@@ -129,12 +129,12 @@ public class InerfaceMatchTestCase {
         
         String [] contributions = {"./target/classes"};
         Node node1 = NodeFactory.newInstance().createNode(URI.create("uri:default"), 
-                                                                     "org/apache/tuscany/sca/itest/interfaces/missmatch/distributed/MatchNonJAXBDistributedClient.composite", 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/match/distributed/MatchNonJAXBDistributedClient.composite", 
                                                                      contributions);
         node1.start();
 
         Node node2 = NodeFactory.newInstance().createNode(URI.create("uri:default"), 
-                                                                     "org/apache/tuscany/sca/itest/interfaces/missmatch/distributed/MatchNonJAXBDistributedService.composite", 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/match/distributed/MatchNonJAXBDistributedService.composite", 
                                                                      contributions);
         
         // for default binding on node2 to use a different port from node 1(which will default to 8080
