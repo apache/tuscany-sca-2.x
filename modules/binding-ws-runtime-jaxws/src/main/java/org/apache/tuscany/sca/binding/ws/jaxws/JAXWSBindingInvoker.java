@@ -184,6 +184,8 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
                 fe.setFaultName(entry.getElementQName());
                 msg.setFaultBody(fe);
             }
+        } else {
+            msg.setFaultBody(e);
         }
     }
 
