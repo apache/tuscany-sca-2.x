@@ -1187,6 +1187,7 @@ public class ComponentBuilderImpl {
                 InterfaceContract contract = (InterfaceContract)service.getInterfaceContract().clone();
                 contract.setInterface(contract.getCallbackInterface());
                 contract.setCallbackInterface(null);
+                contract.setNormalizedWSDLContract(null);
                 callbackReference.setInterfaceContract(contract);
             } catch (CloneNotSupportedException e) {
                 // will not happen
@@ -1244,6 +1245,7 @@ public class ComponentBuilderImpl {
                     InterfaceContract implContract = (InterfaceContract)implService.getInterfaceContract().clone();
                     implContract.setInterface(implContract.getCallbackInterface());
                     implContract.setCallbackInterface(null);
+                    implContract.setNormalizedWSDLContract(null);
                     implReference.setInterfaceContract(implContract);
                 } catch (CloneNotSupportedException e) {
                     // will not happen
@@ -1302,6 +1304,7 @@ public class ComponentBuilderImpl {
                 InterfaceContract contract = (InterfaceContract)reference.getInterfaceContract().clone();
                 contract.setInterface(contract.getCallbackInterface());
                 contract.setCallbackInterface(null);
+                contract.setNormalizedWSDLContract(null);
                 callbackService.setInterfaceContract(contract);
             } catch (CloneNotSupportedException e) {
                 // will not happen
@@ -1359,6 +1362,7 @@ public class ComponentBuilderImpl {
                     InterfaceContract implContract = (InterfaceContract)implReference.getInterfaceContract().clone();
                     implContract.setInterface(implContract.getCallbackInterface());
                     implContract.setCallbackInterface(null);
+                    implContract.setNormalizedWSDLContract(null);
                     implService.setInterfaceContract(implContract);
                 } catch (CloneNotSupportedException e) {
                     // will not happen
