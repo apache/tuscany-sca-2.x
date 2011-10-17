@@ -35,7 +35,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 public class InerfaceMatchTestCase {
     
     /**
-     * Non-remoteable client and service interfaces where the interfaces match.
+     * Non-remotable client and service interfaces where the interfaces match.
      * Components running in the same composite/JVM, i.e. no remote registry
      * 
      * @throws Exception
@@ -62,8 +62,8 @@ public class InerfaceMatchTestCase {
     }
   
     /**
-     * Remoteable client and service interfaces where the interfaces match.
-     * Components running in the seaprate composite/JVM, i.e. there is a remote registry
+     * Remotable client and service interfaces where the interfaces match.
+     * Components running in the separate composite/JVM, i.e. there is a remote registry
      * 
      * @throws Exception
      */
@@ -84,7 +84,7 @@ public class InerfaceMatchTestCase {
                                                                      "org/apache/tuscany/sca/itest/interfaces/match/distributed/MatchDistributedService.composite", 
                                                                      contributions);
         
-        // for default binding on node2 to use a different port from node 1(which will default to 8080
+        // force default binding on node2 to use a different port from node 1(which will default to 8080
         ((NodeImpl)node2).getConfiguration().addBinding(WebServiceBinding.TYPE, "http://localhost:8081/");
         ((NodeImpl)node2).getConfiguration().addBinding(SCABinding.TYPE, "http://localhost:8081/");
         node2.start();
@@ -112,7 +112,7 @@ public class InerfaceMatchTestCase {
     }
     
     /**
-     * Remoteable client and service interfaces where the interfaces match but
+     * Remotable client and service interfaces where the interfaces match but
      * where there is a parameter that can't be converted to/from XML using JAXB
      * Components running in the separate composite/JVM, i.e. there is a remote registry
      * 
@@ -137,10 +137,55 @@ public class InerfaceMatchTestCase {
                                                                      "org/apache/tuscany/sca/itest/interfaces/match/distributed/MatchNonJAXBDistributedService.composite", 
                                                                      contributions);
         
-        // for default binding on node2 to use a different port from node 1(which will default to 8080
+        // force default binding on node2 to use a different port from node 1(which will default to 8080
         // Don't need to do this as not testing callbacks here
         //((NodeImpl)node2).getConfiguration().addBinding(WebServiceBinding.TYPE, "http://localhost:8081/");
         //((NodeImpl)node2).getConfiguration().addBinding(SCABinding.TYPE, "http://localhost:8081/");
+        node2.start();
+        
+        ClientComponent local = node1.getService(ClientComponent.class, "DistributedClientComponent");
+        ParameterObject po = new ParameterObject();
+        
+        try {
+            String response = local.foo1(po);
+            Assert.assertEquals("AComponent", response);
+        } catch (ServiceRuntimeException ex){
+            Assert.fail("Unexpected exception with foo " + ex.toString());
+        }
+        
+        try {
+            local.callback("Callback");
+            String response = local.getCallbackValue();
+            Assert.assertEquals("Callback", response);
+        } catch (ServiceRuntimeException ex){
+            Assert.fail("Unexpected exception with callback" + ex.toString());
+        }        
+        
+        node1.stop();
+        node2.stop();
+    }    
+    
+    /**
+     * Remotable client and service interfaces where the interfaces match and the service has policy.
+     * Components running in the separate composite/JVM, i.e. there is a remote registry
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testPolicyDistributedRemotable() throws Exception {
+        
+        
+        String [] contributions = {"./target/classes"};
+        Node node1 = NodeFactory.newInstance().createNode(URI.create("uri:default"), 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/match/distributed/MatchPolicyDistributedClient.composite", 
+                                                                     contributions);
+        node1.start();
+
+        Node node2 = NodeFactory.newInstance().createNode(URI.create("uri:default"), 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/match/distributed/MatchPolicyDistributedService.composite", 
+                                                                     contributions);
+        // force binding.ws on node2 to use a different port from node 1(which will default to 8080
+        ((NodeImpl)node2).getConfiguration().addBinding(WebServiceBinding.TYPE, "http://localhost:8081/");
         node2.start();
         
         ClientComponent local = node1.getService(ClientComponent.class, "DistributedClientComponent");

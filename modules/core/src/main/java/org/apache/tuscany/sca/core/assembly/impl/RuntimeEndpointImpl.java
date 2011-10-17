@@ -925,7 +925,12 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     @Override
     protected synchronized void resolve() {
         if (xml != null && component == null) {
-            if (compositeContext == null) {
+            // TUSCANY-3958 - when an endpoint arrives at the remote side of the 
+            //                domain registry it's composite context is set, but to 
+            //                a default that's not that useful. We can tell because it
+            //                doesn't set the system definitions
+            if (compositeContext == null || 
+                compositeContext.getSystemDefinitions() == null) {
                 compositeContext = CompositeContext.getCurrentCompositeContext();
                 if (compositeContext != null) {
                     bind(compositeContext);
@@ -934,6 +939,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             if (serializer != null) {
                 RuntimeEndpointImpl ep = (RuntimeEndpointImpl)serializer.readEndpoint(xml);
                 copyFrom(ep);
+                serializer.resolveEndpoint(this);
             } else {
             	// In this case, we assume that we're running on a detached (non Tuscany) thread and
             	// as a result we need to connect back to the Tuscany environment...

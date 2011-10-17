@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -41,6 +44,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  *
@@ -87,6 +91,10 @@ public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArti
             endpoint.setComponent(component);
             endpoint.setService(service);
             endpoint.setBinding(binding);
+            
+            // retrieve the stash of intents and policy sets from the component
+            endpoint.getRequiredIntents().addAll(component.getRequiredIntents());
+            endpoint.getPolicySets().addAll(component.getPolicySets());
         }
         return endpoint;
     }
@@ -108,6 +116,14 @@ public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArti
                 composite.getComponents().add(component);
                 component.getReferences().clear();
                 component.getServices().clear();
+                
+                // stash endpoint intents and policy sets on the component so that they are all
+                // in one place
+                component.getRequiredIntents().clear();
+                component.getRequiredIntents().addAll(endpoint.getRequiredIntents());
+                component.getPolicySets().clear();
+                component.getPolicySets().addAll(endpoint.getPolicySets());
+                
                 if (endpoint.getService() != null) {
                     ComponentService service = (ComponentService)endpoint.getService().clone();
                     component.getServices().add(service);
@@ -143,5 +159,11 @@ public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArti
     }
 
     public void resolve(Endpoint model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+        // the only thing we'll resolve here is the policy model as the endpoint 
+        // matching algorithm needs to look inside the policy model
+        
+        for (PolicySet policySet : model.getPolicySets()){
+            extensionProcessor.resolve(policySet, resolver, context);
+        }
     }
 }

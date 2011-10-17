@@ -28,10 +28,6 @@ public class ServiceComponentImpl implements ServiceComponent {
     @Callback
     protected CallbackInterface callback;
  
-/*    
-    @Reference
-    protected ServiceComponent chainedCallbackReference;
-*/
     private static ParameterObject po;
 
     public String foo(String str) {

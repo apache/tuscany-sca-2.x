@@ -33,4 +33,6 @@ public interface EndpointSerializer {
     Endpoint readEndpoint(String xml);
 
     String write(Endpoint endpoint);
+    
+    void resolveEndpoint(Endpoint endpoint);
 }
