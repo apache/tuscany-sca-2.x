@@ -55,6 +55,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
     private BundleContext context;
     private Version version;
     private BundleTracker bundleTracker;
+    private BundleTracker tuscanyProviderBundleTracker;
 
     public EquinoxServiceDiscoverer(BundleContext context) {
         this.context = context;
@@ -63,12 +64,15 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         if (this.version.equals(Version.emptyVersion)) {
             this.version = Version.parseVersion("1.1");
         }
-        bundleTracker = new ActiveBundleTracker(context);
+        bundleTracker = new ActiveBundleTracker(context, false);
         bundleTracker.open();
+        tuscanyProviderBundleTracker = new ActiveBundleTracker(context, true);
+        tuscanyProviderBundleTracker.open();
     }
 
     public void stop() {
         bundleTracker.close();
+        tuscanyProviderBundleTracker.close();
     }
 
     private Version getSCAVersion(Bundle bundle) {
@@ -76,23 +80,42 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         return Version.parseVersion(header);
     }
 
-    public static class ActiveBundleTracker extends BundleTracker {
+    public class ActiveBundleTracker extends BundleTracker {
+
+        private boolean isTuscanyService;
 
         /**
          * @param context
          * @param stateMask
          * @param customizer
          */
-        public ActiveBundleTracker(BundleContext context) {
-            super(context, Bundle.RESOLVED | Bundle.ACTIVE | Bundle.STARTING, null);
+        public ActiveBundleTracker(BundleContext context, boolean isTuscanyService) {
+            super(context, Bundle.INSTALLED | Bundle.RESOLVED | Bundle.ACTIVE | Bundle.STARTING | Bundle.STOPPING, null);
+            this.isTuscanyService = isTuscanyService;
         }
 
         @Override
         public Object addingBundle(Bundle bundle, BundleEvent event) {
-            if (event != null && event.getType() == BundleEvent.STOPPED) {
+            if (!isProviderBundle(bundle, isTuscanyService))
                 return null;
-            }
             return super.addingBundle(bundle, event);
+        }
+
+        private boolean isProviderBundle(Bundle bundle, boolean isTuscanyService) {
+            if (bundle.getBundleId() == 0 || bundle.getSymbolicName().startsWith("1.x-osgi-bundle")
+                || bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null) {
+                // Skip system bundle as it has access to the application classloader
+                // Skip the 1.x runtime bundle as this has 1.x services in it
+                //    For testing running 1.x and 2.x in same VM.
+                //    Don't know what final form will be yet.
+                // Skip bundle fragments too
+                return false;
+            }
+            if (isTuscanyService) {
+                Version scaVersion = getSCAVersion(bundle);
+                return scaVersion.compareTo(version) == 0;
+            }
+            return true;
         }
 
     }
@@ -224,43 +247,12 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
     }
 
-    private boolean isProviderBundle(Bundle bundle, boolean isTuscanyService) {
-        if (bundle.getBundleId() == 0 || bundle.getSymbolicName().startsWith("1.x-osgi-bundle")
-            || bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null) {
-            // Skip system bundle as it has access to the application classloader
-            // Skip the 1.x runtime bundle as this has 1.x services in it
-            //    For testing running 1.x and 2.x in same VM.
-            //    Don't know what final form will be yet.
-            // Skip bundle fragments too
-            return false;
-        }
-        // FIXME: [rfeng] What bundles should be searched? ACTIVE and STARTING?
-        if ((bundle.getState() & Bundle.UNINSTALLED) != 0) {
-            return false;
-        }
-        if (isTuscanyService) {
-            Version scaVersion = getSCAVersion(bundle);
-            return scaVersion.compareTo(version) == 0;
-        }
-        return true;
-    }
-
-    protected Collection<Bundle> getBundles(boolean isTuscanyService) {
-        // return bundles.keySet();
-        Set<Bundle> set = new HashSet<Bundle>();
-        for (Bundle b : context.getBundles()) {
-            if (isProviderBundle(b, isTuscanyService)) {
-                set.add(b);
-            }
-            /*
-            else {
-                if (b.getBundleId() != 0 && isTuscanyService) {
-                    logger.warning("Bundle is skipped for service discovery: " + toString(b));
-                }
-            }
-            */
-        }
-        return set;
+    protected Bundle[] getBundles(boolean isTuscanyService) {
+        // Use the tracked bundles.
+        if (isTuscanyService)
+            return tuscanyProviderBundleTracker.getBundles();
+        else
+            return bundleTracker.getBundles();
     }
 
     public Collection<ServiceDeclaration> getServiceDeclarations(final String _serviceName) {
@@ -284,58 +276,61 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
               
               Set<URL> visited = new HashSet<URL>();
               //System.out.println(">>>> getServiceDeclarations()");
-              for (Bundle bundle : getBundles(isTuscanyService)) {
-                  //            if (!isProviderBundle(bundle)) {
-                  //                continue;
-                  //            }
-                  Enumeration<URL> urls = null;
-                  try {
-                      // Use getResources to find resources on the classpath of the bundle
-                      // Please note there are cases that getResources will return null even
-                      // the bundle containing such entries:
-                      // 1. There is a match on Import-Package or DynamicImport-Package, and another
-                      // bundle exports the resource package, there is a possiblity that it doesn't
-                      // find the containing entry
-                      // 2. The bundle cannot be resolved, then getResources will return null
-                      urls = bundle.getResources(serviceName);
-                      if (urls == null) {
-                          URL entry = bundle.getEntry(serviceName);
-                          if (entry != null) {
-                              logger.warning("Unresolved resource " + serviceName + " found in bundle: " + EquinoxServiceDiscoverer.toString(bundle));
-                              try {
-                                  bundle.start();
-                              } catch (BundleException e) {
-                                  logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
-                              }
-                              // urls = Collections.enumeration(Arrays.asList(entry));
-                          }
-                      }
-                  } catch (IOException e) {
-                      logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
-                  }
-                  if (urls == null) {
-                      continue;
-                  }
-                  while (urls.hasMoreElements()) {
-                      final URL url = urls.nextElement();
-              
-                      if (!visited.add(url)) {
-                          // The URL has already been processed
-                          continue;
-                      }
-              
-                      if (debug) {
-                          logger.fine("Reading service provider file: " + url.toExternalForm());
-                      }
+              Bundle[] bundles = getBundles(isTuscanyService);
+              if (bundles != null) {
+                  for (Bundle bundle : bundles) {
+                      //            if (!isProviderBundle(bundle)) {
+                      //                continue;
+                      //            }
+                      Enumeration<URL> urls = null;
                       try {
-                          for (Map<String, String> attributes : ServiceDeclarationParser.load(url, isPropertyFile)) {
-                              String className = attributes.get("class");
-                              ServiceDeclarationImpl descriptor =
-                                  new ServiceDeclarationImpl(bundle, url, className, attributes);
-                              descriptors.add(descriptor);
+                          // Use getResources to find resources on the classpath of the bundle
+                          // Please note there are cases that getResources will return null even
+                          // the bundle containing such entries:
+                          // 1. There is a match on Import-Package or DynamicImport-Package, and another
+                          // bundle exports the resource package, there is a possiblity that it doesn't
+                          // find the containing entry
+                          // 2. The bundle cannot be resolved, then getResources will return null
+                          urls = bundle.getResources(serviceName);
+                          if (urls == null) {
+                              URL entry = bundle.getEntry(serviceName);
+                              if (entry != null) {
+                                  logger.warning("Unresolved resource " + serviceName + " found in bundle: " + EquinoxServiceDiscoverer.toString(bundle));
+                                  try {
+                                      bundle.start();
+                                  } catch (BundleException e) {
+                                      logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
+                                  }
+                                  // urls = Collections.enumeration(Arrays.asList(entry));
+                              }
                           }
                       } catch (IOException e) {
                           logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
+                      }
+                      if (urls == null) {
+                          continue;
+                      }
+                      while (urls.hasMoreElements()) {
+                          final URL url = urls.nextElement();
+                  
+                          if (!visited.add(url)) {
+                              // The URL has already been processed
+                              continue;
+                          }
+                  
+                          if (debug) {
+                              logger.fine("Reading service provider file: " + url.toExternalForm());
+                          }
+                          try {
+                              for (Map<String, String> attributes : ServiceDeclarationParser.load(url, isPropertyFile)) {
+                                  String className = attributes.get("class");
+                                  ServiceDeclarationImpl descriptor =
+                                      new ServiceDeclarationImpl(bundle, url, className, attributes);
+                                  descriptors.add(descriptor);
+                              }
+                          } catch (IOException e) {
+                              logger.log(Level.SEVERE, "Bundle: " + bundle.getSymbolicName() + " - " + e.getMessage(), e);
+                          }
                       }
                   }
               }
