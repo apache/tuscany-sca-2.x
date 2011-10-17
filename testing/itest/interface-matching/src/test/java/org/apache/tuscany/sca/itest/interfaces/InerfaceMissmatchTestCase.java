@@ -201,6 +201,45 @@ public class InerfaceMissmatchTestCase {
             node2.stop();
             Assert.assertTrue(ex.getMessage().startsWith("Unable to bind []"));
         }
-
     }
+    
+    /**
+     * Remotable client and service interfaces where the interfaces match and the service and reference
+     * have missmatching policy.
+     * Components running in the separate composite/JVM, i.e. there is a remote registry
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testPolicyDistributedRemotable() throws Exception {
+        
+        
+        String [] contributions = {"./target/classes"};
+        Node node1 = NodeFactory.newInstance().createNode(URI.create("uri:default"), 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/missmatch/distributed/MissmatchPolicyDistributedClient.composite", 
+                                                                     contributions);
+        node1.start();
+
+        Node node2 = NodeFactory.newInstance().createNode(URI.create("uri:default"), 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/missmatch/distributed/MissmatchPolicyDistributedService.composite", 
+                                                                     contributions);
+        // force binding.ws on node2 to use a different port from node 1(which will default to 8080
+        ((NodeImpl)node2).getConfiguration().addBinding(WebServiceBinding.TYPE, "http://localhost:8081/");
+        node2.start();
+        
+        ClientComponent local = node1.getService(ClientComponent.class, "DistributedClientComponent");
+        ParameterObject po = new ParameterObject();
+        
+        try {
+            String response = local.foo1(po);
+            node1.stop();
+            node2.stop();            
+            Assert.fail("Expected exception indicating that interfaces don't match");
+        } catch (ServiceRuntimeException ex){
+            node1.stop();
+            node2.stop();
+            Assert.assertTrue(ex.getMessage().startsWith("Unable to bind []"));
+        }
+        
+    }     
 }

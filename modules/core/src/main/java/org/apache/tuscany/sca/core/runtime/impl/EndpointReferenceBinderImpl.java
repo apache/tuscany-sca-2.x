@@ -444,11 +444,11 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             // TUSCANY-3873 - add policy from the service
             //                we don't care about intents at this stage
             endpointReference.getPolicySets().addAll(matchedEndpoint.getPolicySets());
+            
             // TODO - we need to re-run the appliesTo processing here but there is some question about what 
             //        appliesTo means. It's also difficult to get to the PolicyAppliesToBuilder from here and
             //        need a new EntensionInterface to support access. So for now I'm just cheating and looking to 
             //        see if the XPath expression contains the binding type as a string while we discuss appliesTo
-            
             List<PolicySet> psToRemove = new ArrayList<PolicySet>();
             
             for (PolicySet ps : endpointReference.getPolicySets() ) {
@@ -765,18 +765,14 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             systemDefinitions = ((RuntimeEndpoint)endpoint).getCompositeContext().getSystemDefinitions();
         }
         
-        for (BindingType loopBindingType : systemDefinitions.getBindingTypes()){
-            if (loopBindingType.getType().equals(binding.getType())){
-                bindingType = loopBindingType;
-                break;
-            }
-        }
+        bindingType = systemDefinitions.getBindingType(binding.getType());
         
         // Before we start examining intents, remove any whose constrained
         // types don't include the binding type
         removeConstrainedIntents(endpointReference, bindingType);
         
         List<Intent> eprIntents = new ArrayList<Intent>();
+        List<Intent> eprMayProvideInterationIntents = new ArrayList<Intent>();
         eprIntents.addAll(endpointReference.getRequiredIntents());
         
         // first check the binding type
@@ -787,6 +783,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             } else if (bindingType != null &&
                        bindingType.getMayProvidedIntents().contains(intent)){
                 eprIntents.remove(intent);
+                if (intent.getType().equals(Intent.Type.interaction)){
+                    eprMayProvideInterationIntents.add(intent);
+                }
             } else {
                // TODO - this code also appears in the ComponentPolicyBuilder
                //        so should rationalize
@@ -820,7 +819,29 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             matchAudit.append("No match because there are unresolved intents " + eprIntents.toString() + " ");
             matchAudit.appendSeperator();
             return false;
-        }   
+        }  
+        
+        // TUSCANY-3959 - something that's not explicitly stated in the spec. mayProvides intents don't
+        //                don't lead to policy sets as the binding natively implements the intent. So 
+        //                we need to check that these intents match explicitly between reference and service
+        //                sides
+        if (eprMayProvideInterationIntents.size() > 0){
+            for (Intent eprIntent : eprMayProvideInterationIntents){
+                boolean match = false;
+                for (Intent epIntent : endpoint.getRequiredIntents()){
+                    if (epIntent.equals(eprIntent)){
+                        match = true;
+                        break;
+                    }
+                }
+                
+                if (!match){
+                    matchAudit.append("No match because the reference has a mayProvide intent that the service doesn't have " + eprIntent.getName());
+                    matchAudit.appendSeperator();
+                    return false;
+                }
+            }
+        }
         
         // if there are no policies on epr or ep side then 
         // they match
@@ -932,7 +953,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             	
                 if (constrainedTypes.size() > 0){               
                     boolean constraintFound = false;
-                    for (ExtensionType constrainedType : i.getConstrainedTypes()){
+                    for (ExtensionType constrainedType : constrainedTypes){
                         if (constrainedType.getType().equals(bindingType.getType()) ||
                             constrainedType.getType().equals(bindingType.getBaseType())){
                             constraintFound = true;
