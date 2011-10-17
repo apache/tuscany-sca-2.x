@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.definitions;
 
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.policy.BindingType;
 import org.apache.tuscany.sca.policy.ImplementationType;
@@ -69,6 +71,15 @@ public interface Definitions {
      */
     List<BindingType> getBindingTypes();
     
+    /**
+     * Returns the requested Binding Type or null
+     * if the requested Binding Type is not defined
+     * in the domain
+     * 
+     * @param  bindingTypeName the name of the Binding Type to return
+     * @return Binding Type or null if the Binding Type is not present
+     */
+    BindingType getBindingType(QName bindingTypeName);
     
     /**
      * Returns a list of domain wide Implementation Types
@@ -77,6 +88,16 @@ public interface Definitions {
      */
     List<ImplementationType> getImplementationTypes();
 
+    /**
+     * Returns the requested Implementation Type or null
+     * if the requested Implementation Type is not defined
+     * in the domain
+     * 
+     * @param implementationTypeName the name of the implementation type to return
+     * @return Implementation Type or null if the Implementation Type is not present
+     */
+    ImplementationType getImplementationType(QName implementationTypeName);
+    
     /**
      * Returns a list of domain wide binding definition objects
      * 

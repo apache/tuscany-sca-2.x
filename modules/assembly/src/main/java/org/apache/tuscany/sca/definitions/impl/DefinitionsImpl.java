@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.definitions.impl;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.policy.BindingType;
@@ -48,10 +50,32 @@ public class DefinitionsImpl implements Definitions {
     public List<BindingType> getBindingTypes() {
         return bindingTypes;
     }
+    
+    public BindingType getBindingType(QName bindingTypeName) {
+        
+        for(BindingType bindingType : bindingTypes){
+            if (bindingType.getType().equals(bindingTypeName)){
+                return bindingType;
+            }
+        }
+        
+        return null;
+    }    
 
     public List<ImplementationType> getImplementationTypes() {
         return implementationTypes;
     }
+    
+    public ImplementationType getImplementationType(QName implementationTypeName) {
+        
+        for(ImplementationType implementationType : implementationTypes){
+            if (implementationType.getType().equals(implementationTypeName)){
+                return implementationType;
+            }
+        }
+        
+        return null;
+    }     
 
     public List<Intent> getIntents() {
         return intents;
