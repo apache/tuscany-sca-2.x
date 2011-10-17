@@ -51,6 +51,11 @@ public class PolicyHelper {
             if (i.getName().equals(intentName)) {
                 return i;
             }
+            for (Intent qualifiedIntent : i.getQualifiedIntents()){
+                if (qualifiedIntent.getName().equals(intentName)) {
+                    return qualifiedIntent;
+                }
+            }
         }
         return null;
     }
