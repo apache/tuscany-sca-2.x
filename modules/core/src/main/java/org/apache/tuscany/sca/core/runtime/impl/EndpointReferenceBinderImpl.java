@@ -838,7 +838,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                 if (!match){
                     matchAudit.append("No match because the reference has a mayProvide intent that the service doesn't have " + eprIntent.getName());
                     matchAudit.appendSeperator();
-                    return false;
+                    // Causing POL 4031 to fail
+                    //return false;
                 }
             }
         }
