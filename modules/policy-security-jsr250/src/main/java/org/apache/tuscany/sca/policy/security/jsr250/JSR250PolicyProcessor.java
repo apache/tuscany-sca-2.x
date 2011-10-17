@@ -28,6 +28,8 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
@@ -58,6 +60,11 @@ public class JSR250PolicyProcessor extends BaseJavaClassVisitor {
     
     private PolicyFactory policyFactory;
 
+    public JSR250PolicyProcessor(ExtensionPointRegistry registry) {
+        super(registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(AssemblyFactory.class));
+        this.policyFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(PolicyFactory.class);
+    }
+    
     public JSR250PolicyProcessor(AssemblyFactory assemblyFactory, PolicyFactory policyFactory) {
         super(assemblyFactory);
         this.policyFactory = policyFactory;

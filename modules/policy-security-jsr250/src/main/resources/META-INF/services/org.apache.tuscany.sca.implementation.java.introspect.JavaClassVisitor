@@ -17,4 +17,4 @@
 # 
 # NOTE: The ranking attribute is important for the JavaClassVistors 
 # Some visitors need to be called after the others 
-org.apache.tuscany.sca.implementation.java.introspect.impl.JSR250PolicyProcessor;ranking=600
+org.apache.tuscany.sca.policy.security.jsr250.JSR250PolicyProcessor;ranking=600

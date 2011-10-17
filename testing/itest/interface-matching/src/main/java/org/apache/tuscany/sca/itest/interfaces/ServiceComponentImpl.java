@@ -18,10 +18,12 @@
  */
 package org.apache.tuscany.sca.itest.interfaces;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.oasisopen.sca.annotation.Callback;
-import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 
+@RolesAllowed({"Role1"})
 @Service(ServiceComponent.class)
 public class ServiceComponentImpl implements ServiceComponent {
 
@@ -30,6 +32,7 @@ public class ServiceComponentImpl implements ServiceComponent {
  
     private static ParameterObject po;
 
+    @RolesAllowed({"Role2", "Role3"})
     public String foo(String str) {
         return str;
     }
@@ -46,9 +49,7 @@ public class ServiceComponentImpl implements ServiceComponent {
         po = new ParameterObject("CallBack");
         callback.modifyParameter(po);
     }
-
-
-
+    
     public ParameterObject getPO() {
         return po;
     }
