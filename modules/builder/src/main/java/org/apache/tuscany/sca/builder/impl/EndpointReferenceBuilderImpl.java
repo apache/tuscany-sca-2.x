@@ -339,6 +339,7 @@ public class EndpointReferenceBuilderImpl {
                         endpoint = createEndpoint(false);
                         endpoint.setURI(uri);
                         endpoint.setBinding(binding);
+                        endpoint.setRemote(true);
                         endpointRef.setStatus(EndpointReference.Status.RESOLVED_BINDING);
                     }
                     
