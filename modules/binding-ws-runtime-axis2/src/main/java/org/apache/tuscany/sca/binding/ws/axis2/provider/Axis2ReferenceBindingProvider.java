@@ -142,7 +142,8 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
         } 
         
         // Validate that the WSDL is not using SOAP v1.2 if requires="SOAP.v1_1" has been specified
-        if ( isSOAP11Required ) {
+        if ( isSOAP11Required &&
+             wsBinding.getBinding() != null) {
         	Definition def = wsBinding.getGeneratedWSDLDocument();
         	Binding binding = def.getBinding(wsBinding.getBinding().getQName());
         	for ( Object ext : binding.getExtensibilityElements() ) {
@@ -153,7 +154,8 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
         }
         
         // Validate that the WSDL is not using SOAP v1.1 if requires="SOAP.v1_2" has been specified
-        if ( isSOAP12Required ) {
+        if ( isSOAP12Required &&
+             wsBinding.getBinding() != null) {
         	Definition def = wsBinding.getGeneratedWSDLDocument();
         	Binding binding = def.getBinding(wsBinding.getBinding().getQName());
         	for ( Object ext : binding.getExtensibilityElements() ) {
