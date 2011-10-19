@@ -103,6 +103,7 @@ public class WSDLModelResolver implements ModelResolver {
     
     // ---- SCA Policy WSDL Attachments    
     public static final QName Q_POLICY_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "requires");
+    public static final QName Q_POLICY_ELEMENT_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "requires");
     public static final QName Q_POLICY_END_CONVERSATION_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "endsConversation");
     // ---- SCA Callback WSDL Extension
     public static final QName Q_CALLBACK_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "callback" );
@@ -134,6 +135,7 @@ public class WSDLModelResolver implements ModelResolver {
         this.xsdFactory = modelFactories.getFactory(XSDFactory.class);
 
         wsdlExtensionRegistry = this.wsdl4jFactory.newPopulatedExtensionRegistry();
+        
         // REVIEW: [rfeng] Disable the schema extension for WSDL4J to avoid aggressive loading 
         ExtensionDeserializer deserializer = new UnknownExtensionDeserializer();
         ExtensionSerializer serializer = new UnknownExtensionSerializer();
@@ -141,11 +143,17 @@ public class WSDLModelResolver implements ModelResolver {
             wsdlExtensionRegistry.registerSerializer(Types.class, schema, serializer);
             wsdlExtensionRegistry.registerDeserializer(Types.class, schema, deserializer);
         }
+        
         // ---- Policy WSDL Extensions
         try {
             wsdlExtensionRegistry.registerExtensionAttributeType(PortType.class, Q_POLICY_ATTRIBUTE_EXTENSION, AttributeExtensible.LIST_OF_QNAMES_TYPE);
             wsdlExtensionRegistry.registerExtensionAttributeType(Operation.class, Q_POLICY_END_CONVERSATION_ATTRIBUTE_EXTENSION, AttributeExtensible.STRING_TYPE);
             wsdlExtensionRegistry.registerExtensionAttributeType(PortType.class, Q_CALLBACK_ATTRIBUTE_EXTENSION, AttributeExtensible.QNAME_TYPE);
+            
+            serializer = new PolicyExtensionHandler();
+            deserializer = new PolicyExtensionHandler();
+            wsdlExtensionRegistry.registerSerializer(PortType.class, Q_POLICY_ELEMENT_EXTENSION, serializer);
+            wsdlExtensionRegistry.registerDeserializer(PortType.class, Q_POLICY_ELEMENT_EXTENSION, deserializer);
         } catch (NoSuchMethodError e) {
             // That method does not exist on older WSDL4J levels
         }

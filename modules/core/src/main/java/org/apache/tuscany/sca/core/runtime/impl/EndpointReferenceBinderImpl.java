@@ -822,7 +822,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         }  
         
         // TUSCANY-3959 - something that's not explicitly stated in the spec. mayProvides intents don't
-        //                don't lead to policy sets as the binding natively implements the intent. So 
+        //                lead to policy sets as the binding natively implements the intent. So 
         //                we need to check that these intents match explicitly between reference and service
         //                sides
         if (eprMayProvideInterationIntents.size() > 0){
@@ -838,8 +838,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                 if (!match){
                     matchAudit.append("No match because the reference has a mayProvide intent that the service doesn't have " + eprIntent.getName());
                     matchAudit.appendSeperator();
-                    // Causing POL 4031 to fail
-                    //return false;
+                    return false;
                 }
             }
         }

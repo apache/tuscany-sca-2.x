@@ -25,11 +25,14 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.wsdl.PortType;
+import javax.wsdl.extensions.ExtensibilityElement;
+import javax.wsdl.extensions.UnknownExtensibilityElement;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.wsdl.RequiresExt;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
@@ -38,6 +41,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.xsd.XSDFactory;
+import org.w3c.dom.Element;
 
 /**
  * Introspector for creating WSDLInterface definitions from WSDL PortTypes.
@@ -108,6 +112,8 @@ public class WSDLInterfaceIntrospectorImpl {
     } // end method processCallbackAttribute
     
     private void processIntents(WSDLInterface wsdlInterface, PortType portType) {
+        
+        // process @requires attribute
         Object o;
         try {
             o =  portType.getExtensionAttribute(POLICY_REQUIRES);
@@ -128,7 +134,22 @@ public class WSDLInterfaceIntrospectorImpl {
 
                 wsdlInterface.getRequiredIntents().add(intent);
             }
+        }
+        
+        // process <sca:requires/> element
+        for(Object object : portType.getExtensibilityElements()){
+            ExtensibilityElement element = (ExtensibilityElement)object;
             
+            if (element.getElementType().equals(POLICY_REQUIRES)){
+                RequiresExt requires = ((RequiresExt)element);
+                
+                for (QName intentName : requires.getIntents()){
+                    Intent intent = policyFactory.createIntent();
+                    intent.setName(intentName);
+
+                    wsdlInterface.getRequiredIntents().add(intent);
+                }
+            }
         }
     }
     

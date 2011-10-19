@@ -32,6 +32,7 @@
   <modules>
     <module>matching</module>
     <module>wspolicy</module>
+    <module>operations</module>
 <!--
     <module>interceptors</module>
 -->

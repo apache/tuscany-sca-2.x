@@ -27,6 +27,12 @@ import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.policy.BindingType;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * A factory for the calculated WSDL document needed by Web Service bindings.
@@ -52,7 +58,46 @@ public class WebServiceBindingBuilder implements BindingBuilder<WebServiceBindin
             binding.setBindingInterfaceContract(null);
             binding.setGeneratedWSDLDocument(null);
         }
+        
         BindingWSDLGenerator.generateWSDL(component, contract, binding, extensionPoints, context.getMonitor());
+        
+        /*
+        * Set the default mayProvides intent provided by the binding. For example, 
+        * It mayProvides SOAP.v1_1 and SOAP.v1_2. If you don't specify any intents 
+        * it implements SOAP.v1_1 by default and hence the default intent
+        * is SOAP.v1_1. Binding.ws doesn't allwaysProvide SOAP.v1_1 though as if the 
+        * user specifies the SOAP.v1_2 the binding does SOAP.v1_2 instead of SOAP.v1_1
+        */
+        boolean addDefaultSOAPIntent = true;
+        
+        for(Intent intent : ((PolicySubject)binding).getRequiredIntents()){
+            if (intent.getName().getLocalPart().equals("SOAP.v1_1")){
+                addDefaultSOAPIntent = false;
+                break;
+            }
+            if (intent.getName().getLocalPart().equals("SOAP.v1_2")){
+                addDefaultSOAPIntent = false;
+                break;
+            }
+        }
+        
+        if (addDefaultSOAPIntent){
+            Definitions systemDefinitions = context.getDefinitions();
+            if (systemDefinitions != null){
+                BindingType bindingType = systemDefinitions.getBindingType(binding.getType());
+                Intent defaultIntent = null;
+                for (Intent intent : bindingType.getMayProvidedIntents()){
+                    if (intent.getName().getLocalPart().equals("SOAP.v1_1")){
+                        defaultIntent = intent;
+                    }
+                }
+                
+                if (defaultIntent != null){
+                    ((PolicySubject)binding).getRequiredIntents().add(0, defaultIntent);
+                }
+            }
+        }
+        
     }
 
     public QName getBindingType() {

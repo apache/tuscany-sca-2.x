@@ -211,7 +211,6 @@ public class InerfaceMissmatchTestCase {
      * 
      * @throws Exception
      */
-    @Ignore
     @Test
     public void testPolicyDistributedRemotable() throws Exception {
         
