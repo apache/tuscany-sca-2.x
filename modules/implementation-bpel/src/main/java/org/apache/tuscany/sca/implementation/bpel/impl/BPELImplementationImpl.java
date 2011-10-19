@@ -98,12 +98,20 @@ class BPELImplementationImpl extends ImplementationImpl implements BPELImplement
 
     @Override
     public List<Service> getServices() {
-        return componentType.getServices();
+        if (componentType != null){
+            return componentType.getServices();
+        } else {
+            return null;
+        }
     }
 
     @Override
     public List<Reference> getReferences() {
-        return componentType.getReferences();
+        if (componentType != null){
+            return componentType.getReferences();
+        } else {
+            return null;
+        }        
     }
 
     @Override

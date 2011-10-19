@@ -69,9 +69,37 @@ public abstract class BasePolicyProvider<T> implements PolicyProvider {
     	return findPolicies(applicablePolicySets);
     }
     
+    /*
+     * return policies for the service as a whole not including
+     * operation specific policies
+     */
     protected List<T> findPolicies() {
     	return findPolicies(subject.getPolicySets());
     }
+    
+    /*
+     * return policies for the service as a whole including
+     * operation specific policies
+     */
+    protected List<T> findPolicies(Operation operation) {
+        // collect together all the candidate policy sets
+        List<PolicySet> policySets = new ArrayList<PolicySet>();
+        // add endpoint or endpoint reference policy sets
+        policySets.addAll(subject.getPolicySets());
+        // add interface operation policy sets
+        policySets.addAll(operation.getPolicySets());
+        // add implementation operation policy sets
+        if (subject instanceof Endpoint){
+            for(Operation op :((Endpoint)subject).getComponent().getImplementation().getOperations()){
+                if (op.getName().equals(operation.getName())){
+                    policySets.addAll(op.getPolicySets());
+                    break;
+                }
+            }
+        }
+        
+        return findPolicies(policySets);
+    }    
     
     private List<T> findPolicies(List<PolicySet> policySets) {
         List<T> policies = new ArrayList<T>();

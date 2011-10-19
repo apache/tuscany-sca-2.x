@@ -41,37 +41,6 @@ public class SecurityIdentityImplementationPolicyProvider extends BasePolicyProv
         this.implementation = component.getImplementation();
     }
 
-    private List<SecurityIdentityPolicy> findPolicies(Operation op) {
-        List<SecurityIdentityPolicy> polices = new ArrayList<SecurityIdentityPolicy>();
-        /*
-        // FIXME: How do we get a list of effective policySets for a given operation?
-        if (implementation instanceof OperationsConfigurator) {
-            OperationsConfigurator operationsConfigurator = (OperationsConfigurator)implementation;
-            for (ConfiguredOperation cop : operationsConfigurator.getConfiguredOperations()) {
-                if (cop.getName().equals(op.getName())) {
-                    for (PolicySet ps : cop.getPolicySets()) {
-                        for (Object p : ps.getPolicies()) {
-                            if (SecurityIdentityPolicy.class.isInstance(p)) {
-                                polices.add((SecurityIdentityPolicy)p);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        */
-        
-        List<PolicySet> policySets = implementation.getPolicySets();
-        for (PolicySet ps : policySets) {
-            for (Object p : ps.getPolicies()) {
-                if (SecurityIdentityPolicy.class.isInstance(p)) {
-                    polices.add((SecurityIdentityPolicy)p);
-                }
-            }
-        }
-        return polices;
-    }
-
     public PhasedInterceptor createInterceptor(Operation operation) {
         List<SecurityIdentityPolicy> policies = findPolicies(operation);
         if (policies == null || policies.isEmpty()) {

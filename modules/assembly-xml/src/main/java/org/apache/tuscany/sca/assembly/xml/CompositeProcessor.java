@@ -103,6 +103,7 @@ import org.apache.tuscany.sca.contribution.resolver.ResolverExtension;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
@@ -1112,8 +1113,17 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     	implementation.getPolicySets().addAll(policySets);                    	
                     }
                     	
-                    implementation.getRequiredIntents().addAll(intents);              
-
+                    implementation.getRequiredIntents().addAll(intents);     
+                    
+                    // resolve any policy on implementation operations
+                    for (Operation op : implementation.getOperations()){
+                        policyProcessor.resolvePolicies(op, resolver, context);
+                    }
+                    
+                    // resolve any policy on interface operations
+                    resolveContractOperationPolicy(implementation.getServices(), resolver, context);
+                    resolveContractOperationPolicy(implementation.getReferences(), resolver, context);
+                    
                     component.setImplementation(implementation);
                 }
 

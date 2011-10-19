@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
@@ -351,6 +352,18 @@ public class BindingWSDLGenerator {
             wsdlFactory.createWSDLInterface(wsdlInterface, portType, wsdlDefinition, resolver, monitor);
         } catch (InvalidInterfaceException e) {
             throw new WSDLGenerationException(e);
+        }
+        
+        // copy operation intents and policy sets from Java to WSDL interface
+        // in case we need to refer to them in later processing
+        for(Operation javaOperation : javaInterface.getOperations()){
+            for(Operation wsdlOperation : wsdlInterface.getOperations()){
+                if (wsdlOperation.getName().equals(javaOperation.getName())){
+                    wsdlOperation.getRequiredIntents().addAll(javaOperation.getRequiredIntents());
+                    wsdlOperation.getPolicySets().addAll(javaOperation.getPolicySets());
+                    break;
+                }
+            }
         }
 
         return wsdlInterface;

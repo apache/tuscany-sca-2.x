@@ -40,7 +40,7 @@ public class JDKLoggingImplementationPolicyProvider extends BasePolicyProvider<J
      * @see org.apache.tuscany.sca.provider.PolicyProvider#createInterceptor(org.apache.tuscany.sca.interfacedef.Operation)
      */
     public PhasedInterceptor createInterceptor(Operation operation) {
-        List<JDKLoggingPolicy> policies = findPolicies();
+        List<JDKLoggingPolicy> policies = findPolicies(operation);
         return policies.isEmpty() ? null : new JDKLoggingPolicyInterceptor(subject, getContext(), operation,
                                                                            policies, Phase.IMPLEMENTATION_POLICY);
     }

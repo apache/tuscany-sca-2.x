@@ -81,6 +81,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -365,7 +366,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
             // Resolve the interface contract
             InterfaceContract interfaceContract = contract.getInterfaceContract();
             if (interfaceContract != null) {
-                extensionProcessor.resolve(interfaceContract, resolver, context);
+                extensionProcessor.resolve(interfaceContract, resolver, context); 
             }
 
             // Resolve bindings
@@ -381,6 +382,32 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
                 for (int i = 0, n = contract.getCallback().getBindings().size(); i < n; i++) {
                     Binding binding = contract.getCallback().getBindings().get(i);
                     extensionProcessor.resolve(binding, resolver, context);
+                }
+            }          
+        }
+    }
+    
+    /*
+     * Resolve policy that's been attached to interface operations
+     */
+    protected <C extends Contract> void resolveContractOperationPolicy(List<C> contracts, ModelResolver resolver, ProcessorContext context){
+        if (contracts != null){
+            for (Contract contract : contracts) {
+                InterfaceContract interfaceContract = contract.getInterfaceContract();
+                if (interfaceContract != null) {
+                    
+                    // Resolve any policy on the interface operations
+                    if (interfaceContract.getInterface() != null){
+                        for (Operation op : interfaceContract.getInterface().getOperations()){
+                            policyProcessor.resolvePolicies(op, resolver, context);
+                       }
+                    }
+                    
+                    if (interfaceContract.getCallbackInterface() != null){
+                        for (Operation op : interfaceContract.getCallbackInterface().getOperations()){
+                            policyProcessor.resolvePolicies(op, resolver, context);
+                       }
+                    }  
                 }
             }
         }

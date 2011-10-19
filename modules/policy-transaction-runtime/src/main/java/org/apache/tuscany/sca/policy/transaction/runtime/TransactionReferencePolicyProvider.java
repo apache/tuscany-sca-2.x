@@ -40,7 +40,7 @@ public class TransactionReferencePolicyProvider extends BasePolicyProvider<Trans
     }
 
     public PhasedInterceptor createInterceptor(Operation operation) {
-        List<TransactionPolicy> policies = findPolicies();
+        List<TransactionPolicy> policies = findPolicies(operation);
         return policies.isEmpty() ? null : new TransactionInterceptor(helper, true, policies.get(0), null, getPhase());
     }
 

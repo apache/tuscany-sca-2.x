@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -73,8 +75,9 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
         return urls.toArray(new URL[urls.size()]);
     }
 
-    public ClassLoaderModelResolver(final Contribution contribution, FactoryExtensionPoint modelFactories) throws IOException {
+    public ClassLoaderModelResolver(final Contribution contribution, FactoryExtensionPoint modelFactories) throws IOException {       
         super(getContributionURLs(contribution), parentClassLoader(contribution));
+        
         this.contribution = new WeakReference<Contribution>(contribution);
         // Index Java import resolvers by package name
         Map<String, List<ModelResolver>> resolverMap = new HashMap<String, List<ModelResolver>>();

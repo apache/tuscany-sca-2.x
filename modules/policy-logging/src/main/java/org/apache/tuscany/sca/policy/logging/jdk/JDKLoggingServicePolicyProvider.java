@@ -37,7 +37,7 @@ public class JDKLoggingServicePolicyProvider extends BasePolicyProvider<JDKLoggi
     }
 
     public PhasedInterceptor createInterceptor(Operation operation) {
-        List<JDKLoggingPolicy> policies = findPolicies();
+        List<JDKLoggingPolicy> policies = findPolicies(operation);
         return policies.isEmpty() ? null : new JDKLoggingPolicyInterceptor(subject, getContext(), operation, policies, Phase.SERVICE_POLICY);
     }
 
