@@ -180,7 +180,8 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         if (detail != null) {
             for (Iterator i = detail.getDetailEntries(); i.hasNext();) {
                 DetailEntry entry = (DetailEntry)i.next();
-                FaultException fe = new FaultException(e.getMessage(), entry.getFirstChild(), e);
+                //FaultException fe = new FaultException(e.getMessage(), entry.getFirstChild(), e);
+                FaultException fe = new FaultException(e.getMessage(), entry, e);
                 fe.setFaultName(entry.getElementQName());
                 msg.setFaultBody(fe);
             }
