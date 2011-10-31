@@ -236,7 +236,7 @@ public class CompositeComponentTypeBuilderImpl {
             ComponentService promotedComponentService = compositeService.getPromotedService();
 
             // promote interface contracts
-            calculatePromotedServiceInterfaceContract(compositeService, promotedComponentService, monitor);
+            calculatePromotedServiceInterfaceContract(compositeService, promotedComponentService, context);
 
             // promote bindings
             calculatePromotedBindings(compositeService, promotedComponentService);
@@ -276,7 +276,7 @@ public class CompositeComponentTypeBuilderImpl {
                 validateNonOverridable(componentType, compositeReference, promotedComponentReference, monitor);
 
                 // promote interface contracts
-                calculatePromotedReferenceInterfaceContract(compositeReference, promotedComponentReference, monitor);
+                calculatePromotedReferenceInterfaceContract(compositeReference, promotedComponentReference, context);
 
                 // promote bindings
                 // Don't need to promote reference bindings as any lower level binding will
@@ -425,7 +425,7 @@ public class CompositeComponentTypeBuilderImpl {
      * @param topContract the top contract 
      * @param bottomContract the bottom contract
      */
-    private void calculatePromotedServiceInterfaceContract(Service topContract, Service bottomContract, Monitor monitor) {
+    private void calculatePromotedServiceInterfaceContract(Service topContract, Service bottomContract, BuilderContext context) {
         // Use the interface contract from the bottom level contract if
         // none is specified on the top level contract
         InterfaceContract topInterfaceContract = topContract.getInterfaceContract();
@@ -438,13 +438,13 @@ public class CompositeComponentTypeBuilderImpl {
             boolean isCompatible = true;
             String incompatibilityReason = "";
             try{
-                isCompatible = checkSubsetCompatibility(topInterfaceContract, bottomInterfaceContract);
+                isCompatible = checkSubsetCompatibility(topInterfaceContract, bottomInterfaceContract, context);
             } catch (IncompatibleInterfaceContractException ex){
                 isCompatible = false;
                 incompatibilityReason = ex.getMessage();
             }
             if (!isCompatible) {
-                Monitor.error(monitor,
+                Monitor.error(context.getMonitor(),
                               this,
                               Messages.ASSEMBLY_VALIDATION,
                               "ServiceInterfaceNotSubSet",
@@ -481,7 +481,7 @@ public class CompositeComponentTypeBuilderImpl {
      * @param topContract the top contract 
      * @param bottomContract the bottom contract
      */    
-    private void calculatePromotedReferenceInterfaceContract(Reference topContract, Reference bottomContract, Monitor monitor) {
+    private void calculatePromotedReferenceInterfaceContract(Reference topContract, Reference bottomContract, BuilderContext context) {
         // Use the interface contract from the bottom level contract if
         // none is specified on the top level contract
         InterfaceContract topInterfaceContract = topContract.getInterfaceContract();
@@ -494,13 +494,13 @@ public class CompositeComponentTypeBuilderImpl {
             boolean isCompatible = true;
             String incompatibilityReason = "";
             try{
-                isCompatible = checkSubsetCompatibility(bottomInterfaceContract, topInterfaceContract);
+                isCompatible = checkSubsetCompatibility(bottomInterfaceContract, topInterfaceContract, context);
             } catch (IncompatibleInterfaceContractException ex){
                 isCompatible = false;
                 incompatibilityReason = ex.getMessage();
             }
             if (!isCompatible) {
-                Monitor.error(monitor,
+                Monitor.error(context.getMonitor(),
                               this,
                               Messages.ASSEMBLY_VALIDATION,
                               "ReferenceInterfaceNotSubSet",
@@ -670,18 +670,18 @@ public class CompositeComponentTypeBuilderImpl {
      * @param contractB
      * @return true if the interface contracts match
      */
-    private boolean checkSubsetCompatibility(InterfaceContract contractA, InterfaceContract contractB)
+    private boolean checkSubsetCompatibility(InterfaceContract contractA, InterfaceContract contractB, BuilderContext context)
         throws IncompatibleInterfaceContractException {
         
         if (contractA.getClass() != contractB.getClass()) {
            
             if (contractA instanceof JavaInterfaceContract){
-                contractBuilder.build(contractA, null);
+                contractBuilder.build(contractA, context);
                 contractA = ((JavaInterfaceContract)contractA).getNormalizedWSDLContract();
             } 
             
             if (contractB instanceof JavaInterfaceContract){
-                contractBuilder.build(contractB, null);
+                contractBuilder.build(contractB, context);
                 contractB = ((JavaInterfaceContract)contractB).getNormalizedWSDLContract();
             }            
         }   

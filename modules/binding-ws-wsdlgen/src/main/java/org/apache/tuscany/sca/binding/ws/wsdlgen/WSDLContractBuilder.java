@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.xsd.XSDFactory;
@@ -69,6 +70,11 @@ public class WSDLContractBuilder implements ContractBuilder {
     }   
     
     public boolean build(InterfaceContract interfaceContract, BuilderContext context){
+        Monitor monitor = null;
+        
+        if (context != null){
+            monitor = context.getMonitor();
+        }
 // Uncomment the printWSDL =  lines to see the WSDL that is generated
 // for interface matching purposes
 //        BindingWSDLGenerator.printWSDL = true;
@@ -81,7 +87,7 @@ public class WSDLContractBuilder implements ContractBuilder {
                                                              wsdlFactory, 
                                                              xsdFactory, 
                                                              documentBuilderFactory, 
-                                                             null);
+                                                             monitor);
         javaContract.setNormalizedWSDLContract(wsdlContract);
 //        BindingWSDLGenerator.printWSDL = false;
         return true;

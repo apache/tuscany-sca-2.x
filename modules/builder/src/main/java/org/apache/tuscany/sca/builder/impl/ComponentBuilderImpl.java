@@ -264,7 +264,7 @@ public class ComponentBuilderImpl {
             }
 
             // interface contracts
-            calculateServiceInterfaceContract(component, componentService, componentTypeService, monitor);
+            calculateServiceInterfaceContract(component, componentService, componentTypeService, context);
 
             // bindings
             calculateBindings(component, componentService, componentTypeService, context);
@@ -306,7 +306,7 @@ public class ComponentBuilderImpl {
             reconcileReferenceMultiplicity(component, componentReference, componentTypeReference, monitor);
 
             // interface contracts
-            calculateReferenceInterfaceContract(component, componentReference, componentTypeReference, monitor);
+            calculateReferenceInterfaceContract(component, componentReference, componentTypeReference, context);
 
             // bindings
             calculateBindings(componentReference, componentTypeReference);
@@ -1499,7 +1499,7 @@ public class ComponentBuilderImpl {
      * @param topContract the top contract 
      * @param bottomContract the bottom contract
      */
-    private void calculateServiceInterfaceContract(Component component, Service topContract, Service bottomContract, Monitor monitor) {
+    private void calculateServiceInterfaceContract(Component component, Service topContract, Service bottomContract, BuilderContext context) {
 
         // Use the interface contract from the bottom level contract if
         // none is specified on the top level contract
@@ -1514,13 +1514,14 @@ public class ComponentBuilderImpl {
             String incompatibilityReason = "";
             try{
                 isCompatible = checkSubsetCompatibility(topInterfaceContract, 
-                                                        bottomInterfaceContract);
+                                                        bottomInterfaceContract,
+                                                        context);
             } catch (IncompatibleInterfaceContractException ex){
                 isCompatible = false;
                 incompatibilityReason = ex.getMessage();
             }            
             if (!isCompatible) {
-                Monitor.error(monitor,
+                Monitor.error(context.getMonitor(),
                               this,
                               Messages.ASSEMBLY_VALIDATION,
                               "ServiceIncompatibleComponentInterface",
@@ -1558,7 +1559,7 @@ public class ComponentBuilderImpl {
      * @param topContract the top contract 
      * @param bottomContract the bottom contract
      */
-    private void calculateReferenceInterfaceContract(Component component, Reference topContract, Reference bottomContract, Monitor monitor) {
+    private void calculateReferenceInterfaceContract(Component component, Reference topContract, Reference bottomContract, BuilderContext context) {
 
         // Use the interface contract from the bottom level contract if
         // none is specified on the top level contract
@@ -1573,13 +1574,14 @@ public class ComponentBuilderImpl {
             String incompatibilityReason = "";
             try{
                 isCompatible = checkSubsetCompatibility(bottomInterfaceContract, 
-                                                        topInterfaceContract);
+                                                        topInterfaceContract, 
+                                                        context);
             } catch (IncompatibleInterfaceContractException ex){
                 isCompatible = false;
                 incompatibilityReason = ex.getMessage();
             }            
             if (!isCompatible) {
-                Monitor.error(monitor,
+                Monitor.error(context.getMonitor(),
                               this,
                               Messages.ASSEMBLY_VALIDATION,
                               "ReferenceIncompatibleComponentInterface",
@@ -1690,18 +1692,18 @@ public class ComponentBuilderImpl {
      * @param contractB
      * @return true if the interface contracts match
      */
-    private boolean checkSubsetCompatibility(InterfaceContract contractA, InterfaceContract contractB)
+    private boolean checkSubsetCompatibility(InterfaceContract contractA, InterfaceContract contractB, BuilderContext context)
         throws IncompatibleInterfaceContractException {
         
         if (contractA.getClass() != contractB.getClass()) {
                       
             if (contractA instanceof JavaInterfaceContract){
-                contractBuilder.build(contractA, null);
+                contractBuilder.build(contractA, context);
                 contractA = ((JavaInterfaceContract)contractA).getNormalizedWSDLContract();
             } 
             
             if (contractB instanceof JavaInterfaceContract){
-                contractBuilder.build(contractB, null);
+                contractBuilder.build(contractB, context);
                 contractB = ((JavaInterfaceContract)contractB).getNormalizedWSDLContract();
             }            
         }   
