@@ -155,7 +155,7 @@ public class PolicyProcessorTestCase extends TestCase {
         registry.start();
         serviceProcessor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(registry));
         policyProcessor = new PolicyProcessor(registry);
-        jsr250Processor = new JSR250PolicyProcessor(new DefaultAssemblyFactory(), new DefaultPolicyFactory());
+        jsr250Processor = new JSR250PolicyProcessor(registry);
         visitor = new PolicyJavaInterfaceVisitor(registry);
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         type = javaImplementationFactory.createJavaImplementation();

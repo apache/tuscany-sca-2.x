@@ -26,6 +26,7 @@
     <component name="HelloWorldClient">
         <implementation.java class="org.apache.tuscany.sca.policy.operations.helloworld.HelloWorldClient"/>
         <reference name="helloWorldWS" target="HelloWorldService"/>
+        <reference name="helloWorldWS1" target="HelloWorldService1"/>
     </component>
     
     <component name="HelloWorldService">
@@ -34,5 +35,12 @@
 	        <binding.ws/>
 	    </service>		
     </component>
+    
+    <component name="HelloWorldService1">
+		<implementation.java class="org.apache.tuscany.sca.policy.operations.helloworld.HelloWorldService1"/>
+	    <service name="HelloWorld">
+	        <binding.ws/>
+	    </service>		
+    </component>    
     
 </composite>

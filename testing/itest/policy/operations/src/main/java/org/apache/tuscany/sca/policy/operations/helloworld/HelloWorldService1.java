@@ -19,21 +19,15 @@
 
 package org.apache.tuscany.sca.policy.operations.helloworld;
 
-import org.oasisopen.sca.annotation.Reference;
+import javax.annotation.security.PermitAll;
 
-public class HelloWorldClient implements HelloWorld {
+@PermitAll
+public class HelloWorldService1 implements HelloWorld {
 
-    @Reference
-    public HelloWorld helloWorldWS;
-    
-    @Reference
-    public HelloWorld helloWorldWS1;    
-    
     public String getGreetings(String s) {
-        String response = helloWorldWS.getGreetings(s);
-        response += helloWorldWS1.getGreetings(s);
-        System.out.println("At client: " + response);
+        String response = "Hello " + s;
+        System.out.println("At service: " + response);
         return response;
-    }   
+    }
 
 }

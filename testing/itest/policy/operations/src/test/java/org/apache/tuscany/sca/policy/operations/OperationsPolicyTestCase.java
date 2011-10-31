@@ -19,21 +19,24 @@
 
 package org.apache.tuscany.sca.policy.operations;
 
+import javax.xml.namespace.QName;
+
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.apache.tuscany.sca.policy.operations.helloworld.HelloWorld;
 
 public class OperationsPolicyTestCase extends TestCase {
+    
+    private static final QName PERMIT_ALL = new QName(Constants.SCA11_TUSCANY_NS,"permitAll");
 
     private Node node;
     private HelloWorld helloWorld;
-
-    public void testCalculator() throws Exception {
-        assertEquals("Hello petra", helloWorld.getGreetings("petra"));
-    }
 
     @Override
     protected void setUp() throws Exception {
@@ -47,4 +50,16 @@ public class OperationsPolicyTestCase extends TestCase {
         node.stop();
     }
 
+    public void testCalculator() throws Exception {
+        assertEquals("Hello petraHello petra", helloWorld.getGreetings("petra"));
+        Composite domainComposite = ((NodeImpl)node).getDomainComposite();
+        
+        // Check that the operation level policy is present
+        assertEquals(PERMIT_ALL,
+                     domainComposite.getComponents().get(1).getImplementation().getOperations().get(0).getPolicySets().get(0).getName());
+        
+        // Check that the class level policy is present
+        assertEquals(PERMIT_ALL,
+                     domainComposite.getComponents().get(2).getImplementation().getPolicySets().get(0).getName());        
+    }
 }

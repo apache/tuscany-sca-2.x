@@ -25,9 +25,14 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.annotation.security.RunAs;
 import javax.xml.namespace.QName;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.common.xml.stax.reader.NamespaceContextImpl;
+import org.apache.tuscany.sca.common.xml.xpath.XPathHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
@@ -59,17 +64,31 @@ public class JSR250PolicyProcessor extends BaseJavaClassVisitor {
     private static final QName DENY_ALL = new QName(Constants.SCA11_TUSCANY_NS,"denyAll");
     
     private PolicyFactory policyFactory;
+    private XPathHelper xpathHelper;
+    private String appliesToString = "//sca:implementation.java";
+    private XPathExpression appliesToExpression = null;
 
-    public JSR250PolicyProcessor(ExtensionPointRegistry registry) {
+    public JSR250PolicyProcessor(ExtensionPointRegistry registry) throws IntrospectionException {
         super(registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(AssemblyFactory.class));
         this.policyFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(PolicyFactory.class);
+        
+        this.xpathHelper = XPathHelper.getInstance(registry);
+        NamespaceContextImpl nsContext = new NamespaceContextImpl(null);
+        nsContext.register("sca", "http://docs.oasis-open.org/ns/opencsa/sca/200912");
+        XPath path = xpathHelper.newXPath();
+        try {
+            appliesToExpression = xpathHelper.compile(path, nsContext, appliesToString);
+        } catch (XPathExpressionException e) {
+            throw new IntrospectionException(e);
+        }
     }
     
+/*    
     public JSR250PolicyProcessor(AssemblyFactory assemblyFactory, PolicyFactory policyFactory) {
         super(assemblyFactory);
         this.policyFactory = policyFactory;
     }
-    
+*/  
 
     @Override
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
@@ -84,14 +103,7 @@ public class JSR250PolicyProcessor extends BaseJavaClassVisitor {
 
             SecurityIdentityPolicy policy = new SecurityIdentityPolicy();
             policy.setRunAsRole(roleName);
-
-            PolicySet policySet = policyFactory.createPolicySet();
-            policySet.setName(RUN_AS);
-            PolicyExpression policyExpression = policyFactory.createPolicyExpression();
-            policyExpression.setName(SecurityIdentityPolicy.NAME);
-            policyExpression.setPolicy(policy);
-            policySet.getPolicies().add(policyExpression);
-            policySet.setUnresolved(false);
+            PolicySet policySet = createPolicySet(RUN_AS, SecurityIdentityPolicy.NAME, policy);
             type.getPolicySets().add(policySet);
         }
         
@@ -108,13 +120,7 @@ public class JSR250PolicyProcessor extends BaseJavaClassVisitor {
                 policy.getRoleNames().add(role);
             }
 
-            PolicySet policySet = policyFactory.createPolicySet();
-            policySet.setName(ALLOW);
-            PolicyExpression policyExpression = policyFactory.createPolicyExpression();
-            policyExpression.setName(AuthorizationPolicy.NAME);
-            policyExpression.setPolicy(policy);
-            policySet.getPolicies().add(policyExpression);
-            policySet.setUnresolved(false);
+            PolicySet policySet = createPolicySet(ALLOW, AuthorizationPolicy.NAME, policy);
             type.getPolicySets().add(policySet);
         }
         
@@ -122,14 +128,7 @@ public class JSR250PolicyProcessor extends BaseJavaClassVisitor {
         if(permitAll != null) {
             AuthorizationPolicy policy = new AuthorizationPolicy();
             policy.setAccessControl(AuthorizationPolicy.AcessControl.permitAll);
-            
-            PolicySet policySet = policyFactory.createPolicySet();
-            policySet.setName(PERMIT_ALL);
-            PolicyExpression policyExpression = policyFactory.createPolicyExpression();
-            policyExpression.setName(AuthorizationPolicy.NAME);
-            policyExpression.setPolicy(policy);
-            policySet.getPolicies().add(policyExpression);
-            policySet.setUnresolved(false);
+            PolicySet policySet = createPolicySet(PERMIT_ALL, AuthorizationPolicy.NAME, policy);
             type.getPolicySets().add(policySet);
         }
         
@@ -154,14 +153,7 @@ public class JSR250PolicyProcessor extends BaseJavaClassVisitor {
             Operation operation = getOperationModel(method, type);
             
             if (operation != null){
-                PolicySet policySet = policyFactory.createPolicySet();
-                policySet.setName(ALLOW);
-                PolicyExpression policyExpression = policyFactory.createPolicyExpression();
-                policyExpression.setName(AuthorizationPolicy.NAME);
-                policyExpression.setPolicy(policy);
-                policySet.getPolicies().add(policyExpression);
-                policySet.setUnresolved(false);
-                
+                PolicySet policySet = createPolicySet(ALLOW, AuthorizationPolicy.NAME, policy);
                 operation.getPolicySets().add(policySet);
             }
         }
@@ -175,14 +167,7 @@ public class JSR250PolicyProcessor extends BaseJavaClassVisitor {
             Operation operation = getOperationModel(method, type);
             
             if (operation != null){
-                PolicySet policySet = policyFactory.createPolicySet();
-                policySet.setName(PERMIT_ALL);
-                PolicyExpression policyExpression = policyFactory.createPolicyExpression();
-                policyExpression.setName(AuthorizationPolicy.NAME);
-                policyExpression.setPolicy(policy);
-                policySet.getPolicies().add(policyExpression);
-                policySet.setUnresolved(false);
-                
+                PolicySet policySet = createPolicySet(PERMIT_ALL, AuthorizationPolicy.NAME, policy);
                 operation.getPolicySets().add(policySet);
             }
         }
@@ -196,14 +181,7 @@ public class JSR250PolicyProcessor extends BaseJavaClassVisitor {
             Operation operation = getOperationModel(method, type);
             
             if (operation != null){
-                PolicySet policySet = policyFactory.createPolicySet();
-                policySet.setName(DENY_ALL);
-                PolicyExpression policyExpression = policyFactory.createPolicyExpression();
-                policyExpression.setName(AuthorizationPolicy.NAME);
-                policyExpression.setPolicy(policy);
-                policySet.getPolicies().add(policyExpression);
-                policySet.setUnresolved(false);
-                
+                PolicySet policySet = createPolicySet(DENY_ALL, AuthorizationPolicy.NAME, policy);
                 operation.getPolicySets().add(policySet);
             }
         }
@@ -218,5 +196,26 @@ public class JSR250PolicyProcessor extends BaseJavaClassVisitor {
         }
         
         return null;
+    }
+    
+    /**
+     * Here we generate policy sets on the fly so they have to be configured as though they 
+     * had been read and resolved from a defintions.xml file. I.e. they have to have appropriate
+     * appliesTo configuration and be marked as resolved. 
+     */
+    private PolicySet createPolicySet(QName policySetName, QName policyExpressionName, Object policy){
+        
+        PolicyExpression policyExpression = policyFactory.createPolicyExpression();
+        policyExpression.setName(policyExpressionName);
+        policyExpression.setPolicy(policy);
+        
+        PolicySet policySet = policyFactory.createPolicySet();
+        policySet.setName(policySetName);
+        policySet.setAppliesTo(appliesToString);
+        policySet.setAppliesToXPathExpression(appliesToExpression);
+        policySet.getPolicies().add(policyExpression);
+        policySet.setUnresolved(false);
+        
+        return policySet;
     }
 }

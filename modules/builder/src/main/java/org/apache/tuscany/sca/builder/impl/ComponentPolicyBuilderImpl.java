@@ -443,16 +443,24 @@ public class ComponentPolicyBuilderImpl {
         //                or external attachement
         // resolve policy set names that have been specified for the
         // policy subject against the real policy sets from the 
-        // definitions files
+        // definitions files. 
+        // Some policy plugins, e.g. JSR250, add resolved policy sets
+        // on the fly as they read details from annotations. So check 
+        // that policy sets are unresolved befor blowing them away with 
+        // a warning
         Set<PolicySet> policySets = new HashSet<PolicySet>();
         if (definitions != null) {
             for (PolicySet policySet : subject.getPolicySets()) {
-                int index = definitions.getPolicySets().indexOf(policySet);
-                if (index != -1) {
-                    policySets.add(definitions.getPolicySets().get(index));
+                if (policySet.isUnresolved()){
+                    int index = definitions.getPolicySets().indexOf(policySet);
+                    if (index != -1) {
+                        policySets.add(definitions.getPolicySets().get(index));
+                    } else {
+                        // PolicySet cannot be resolved
+                        warning(context.getMonitor(), "PolicySetNotFoundAtBuild", subject, policySet);
+                    }
                 } else {
-                    // PolicySet cannot be resolved
-                    warning(context.getMonitor(), "PolicySetNotFoundAtBuild", subject, policySet);
+                    policySets.add(policySet);
                 }
             }
         }
