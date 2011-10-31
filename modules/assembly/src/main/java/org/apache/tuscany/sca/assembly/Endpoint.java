@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @tuscany.spi.extension.asclient
  */
 public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
+    
     /**
      * Get the structural URI of the service binding
      * @return structural URI of the service/binding
@@ -155,5 +156,24 @@ public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
      * @return true if the service is asynchronous
      */
     boolean isAsyncInvocation();    
+    
+    /** 
+     * Get the spec version for this endpoint. This is intended to help 
+     * interop scenarios where having an OASIS endpoint talk to an 
+     * OSOA endpoint implies some restrictions. 
+     * 
+     * @return the spec version, namespace for either SCA-1.0 or SCA-1.1 
+     */
+    String getSpecVersion();
+    
+    /** 
+     * Set the spec version for this endpoint. This is intended to help 
+     * interop scenarios where having an OASIS endpoint talk to an 
+     * OSOA endpoint implies some restrictions. If unset it defaults
+     * to the namespace for SCA-1.1
+     * 
+     * @param specVersion the spec version, namspace for either SCA-1.0 or SCA-1.1
+     */    
+    void setSpecVersion(String specVersion);
     
 }

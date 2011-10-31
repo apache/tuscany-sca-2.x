@@ -365,4 +365,16 @@ public class TestRuntimeWire implements RuntimeEndpoint {
         // TODO Auto-generated method stub
         
     }
+    
+    @Override
+    public String getSpecVersion() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public void setSpecVersion(String specVersion) {
+        // TODO Auto-generated method stub
+        
+    }
 }

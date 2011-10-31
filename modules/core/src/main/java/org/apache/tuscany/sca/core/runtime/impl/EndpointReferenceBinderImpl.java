@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -647,6 +648,25 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
     private boolean haveMatchingPolicy(EndpointReference endpointReference, Endpoint endpoint, Audit matchAudit, BuilderContext builderContext){
         matchAudit.append("Match policy of " + endpointReference.toString() + " to " + endpoint.toString() + " ");
         
+        if (!endpoint.getSpecVersion().equals(Base.SCA11_NS)){
+            // the thing we need to check here is asyncInvocation as only OASIS supports that
+            if (endpointReference.isAsyncInvocation()){
+                // this definitely won't mactch anything but OASIS so fail
+                matchAudit.append("No match because the endpoint reference is configured for asyncInvocation " +
+                                  "and the target endpoint is not an OASIS endpoint, specVersion = " + 
+                                  endpoint.getSpecVersion());
+                matchAudit.appendSeperator();
+                return false;
+            } else {
+                // Assume it matches as we don't know how to do policy 
+                // matching with anything but OASIS endpoints
+                matchAudit.append("Match because the target endpoint is not an OASIS endpoint, specVersion = " + 
+                                  endpoint.getSpecVersion());
+                matchAudit.appendSeperator();
+                return true;
+            }
+        }
+            
         List<PolicySet> referencePolicySets = new ArrayList<PolicySet>();
         Binding binding = null;
         
@@ -1001,7 +1021,16 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             matchAudit.append("Match because there is no interface contract on the reference ");
             matchAudit.appendSeperator();
             return true;
-        }     
+        } 
+        
+        if (!endpoint.getSpecVersion().equals(Base.SCA11_NS)){
+            // Assume it matches as we don't know how to do policy 
+            // matching with anything but OASIS endpoint
+            matchAudit.append("Match because the target endpoint is not an OASIS endpoint, specVersion = " + 
+                              endpoint.getSpecVersion());
+            matchAudit.appendSeperator();
+            return true;
+        }        
         
 /*  For testing this code turns off remote interface matching completely   
         if (endpoint.isRemote()){

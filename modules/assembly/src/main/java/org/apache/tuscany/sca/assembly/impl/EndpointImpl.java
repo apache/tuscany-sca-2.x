@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.assembly.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -57,6 +58,7 @@ public class EndpointImpl implements Endpoint {
     protected List<PolicySet> policySets = new ArrayList<PolicySet>();
     protected List<Intent> requiredIntents = new ArrayList<Intent>();
     protected boolean remote = false;
+    protected String specVersion = Base.SCA11_NS; 
 
     protected EndpointImpl(ExtensionPointRegistry registry) {
         this.registry = registry;
@@ -304,6 +306,16 @@ public class EndpointImpl implements Endpoint {
     @Override
     public void setDeployedURI(String deployedURI) {
         this.deployedURI = deployedURI;
+    }
+    
+    @Override
+    public String getSpecVersion() {
+        return specVersion;
+    }
+    
+    @Override
+    public void setSpecVersion(String specVersion){
+        this.specVersion = specVersion;
     }
 
 }
