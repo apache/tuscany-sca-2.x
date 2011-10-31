@@ -25,9 +25,9 @@ package org.apache.tuscany.sca.implementation.java.util;
  */
 public class Bean1 extends SuperBean {
 
-    public static final int ALL_BEAN1_FIELDS = 6 + ALL_SUPER_FIELDS;
-    public static final int ALL_BEAN1_PUBLIC_PROTECTED_FIELDS = 5 + ALL_SUPER_PUBLIC_PROTECTED_FIELDS;
-    public static final int ALL_BEAN1_METHODS = 4 + ALL_SUPER_METHODS - 1;
+    public static final int ALL_BEAN1_FIELDS = 6; //TUSCANY-3924 + ALL_SUPER_FIELDS;
+    public static final int ALL_BEAN1_PUBLIC_PROTECTED_FIELDS = 5; //TUSCANY-3924 + ALL_SUPER_PUBLIC_PROTECTED_FIELDS;
+    public static final int ALL_BEAN1_METHODS = 4; //TUSCANY-3924 + ALL_SUPER_METHODS - 1;
     public String field3;
     protected String field2;
     private String field1;
