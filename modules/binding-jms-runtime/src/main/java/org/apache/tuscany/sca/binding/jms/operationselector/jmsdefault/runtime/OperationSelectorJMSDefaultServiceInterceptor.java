@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytesXML;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextXML;
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
@@ -117,7 +118,8 @@ public class OperationSelectorJMSDefaultServiceInterceptor extends InterceptorAs
                 }
             }
         } else if (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSDefault
-                || jmsBinding.getRequestWireFormat() instanceof WireFormatJMSTextXML) {
+                || jmsBinding.getRequestWireFormat() instanceof WireFormatJMSTextXML
+                || jmsBinding.getRequestWireFormat() instanceof WireFormatJMSBytesXML) {
 
             Node rootElement;
             String operationFromPayload;
