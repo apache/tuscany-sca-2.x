@@ -1421,11 +1421,10 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             writer.writeAttribute("jndiName", destinationName);            
         }
 
-        // Type not handled yet
-        // String destinationType = jmsBinding.getDestinationType();
-        // if ( destinationType != null && destinationType.length() > 0) {
-        //     writer.writeAttribute("type", destinationType);            
-        // }
+        String destinationType = jmsBinding.getDestinationType();
+        if ( destinationType != null && destinationType.length() > 0) {
+            writer.writeAttribute("type", destinationType);            
+        }
 
         String destinationCreate = jmsBinding.getDestinationCreate();
         if ( destinationCreate != null && destinationCreate.length() > 0 &&

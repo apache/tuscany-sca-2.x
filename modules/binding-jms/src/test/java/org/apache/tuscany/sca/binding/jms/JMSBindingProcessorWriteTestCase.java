@@ -404,7 +404,7 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
                        "<component name=\"HelloWorldComponent\">" + 
                            "<service name=\"HelloWorldService\">" +
                              "<binding.jms><operationProperties name=\"JKL\" /> " +
-                               "<destination jndiName=\"AAA\">" +
+                               "<destination jndiName=\"AAA\" type=\"queue\">" +
                                  "<property name=\"AAAProp\" type=\"string\"></property>" +
                                "</destination> " +
                                "<connectionFactory jndiName=\"ABC\" /> "+
