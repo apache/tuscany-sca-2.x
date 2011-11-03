@@ -215,5 +215,9 @@ public class JMSBindingReferenceBindingProvider implements EndpointReferenceAsyn
 	public boolean supportsNativeAsync() {
 		return true;
 	} // end method supportsNativeAsync   
+	
+	public JMSResourceFactory getJMSResourceFactory() {
+	    return jmsResourceFactory;
+	}
 
 } // end class 
