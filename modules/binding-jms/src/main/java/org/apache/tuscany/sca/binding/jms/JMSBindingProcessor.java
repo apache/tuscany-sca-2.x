@@ -1304,16 +1304,14 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             Integer jmsPriority = jmsBinding.getOperationJMSPriority(opName);
             Map<String, Object> operationProperties = jmsBinding.getOperationProperties(opName);
             
-            if (operationProperties != null){
-                if ((jmsType != null && jmsType.length() > 0) || 
-                    (jmsCorrelationId != null && jmsCorrelationId.length() > 0) || 
-                    jmsDeliveryMode != null || jmsTimeToLive != null || 
-                    jmsPriority != null) {
-                    
+            if ( (operationProperties != null && !operationProperties.isEmpty()) || (jmsType != null && jmsType.trim().length() > 0) ||
+                jmsDeliveryMode != null || jmsTimeToLive != null ||
+                jmsPriority != null) {            
+            
                     writer.writeStartElement(Constants.SCA11_NS, JMSBindingConstants.HEADERS);              
                     
-                    if (jmsType != null && jmsType.length() > 0) {
-                        writer.writeAttribute("type", jmsType);
+                    if (jmsType != null && jmsType.trim().length() > 0) {
+                        writer.writeAttribute("type", jmsType.trim());
                     }
     
                     if (jmsDeliveryMode != null) {
@@ -1336,7 +1334,6 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                     writer.writeEndElement();
                     // Strange bug. Without white space, headers end tag improperly read. 
                     // writer.writeCharacters( " " ); 
-                }
             }
 
             writer.writeEndElement();
