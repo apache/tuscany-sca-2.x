@@ -79,18 +79,41 @@ public class TransportServiceInterceptor extends InterceptorAsyncImpl {
         try {
             return invokeResponse(next.invoke(invokeRequest(msg)));
         } catch (Throwable e) {
+          try {
+            // Normally only runtime exceptions (whether thrown by the application or the runtime)
+            // reach this catch block.  Business exceptions are handled in the normal invokeResponse path.
             logger.log(Level.SEVERE, "Exception invoking service '" + service.getName(), e);
-            JMSBindingContext context = msg.getBindingContext();
-            javax.jms.Message replyJMSMsg = responseMessageProcessor.createFaultMessage(context.getJmsResponseSession(), 
-                                                                                        (Throwable)e);
-            msg.setBody(replyJMSMsg);
-            invokeResponse(msg);
+            
+            Operation operation = msg.getOperation();
+            if (operation != null && !operation.isNonBlocking()) {
+                JMSBindingContext context = msg.getBindingContext();
+                Session session = context.getJmsResponseSession();
+                javax.jms.Message replyJMSMsg = responseMessageProcessor.createFaultMessage(session, e);
+                msg.setBody(replyJMSMsg);
+                invokeResponse(msg);
+            }
+
+          } catch (Throwable e2) {}
+            // Rethrow a runtime exception so that the JMS resource adapter can rollback
+            // the message (if delivery is transacted) and increment the failed delivery count.
+            if (e instanceof Error) {
+                throw (Error)e;
+            }
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException)e;
+            }
             return msg;
         } finally {
             try {
-                ((JMSBindingContext)msg.getBindingContext()).closeJmsResponseSession();
-                if (jmsResourceFactory.isConnectionClosedAfterUse())
-                    jmsResourceFactory.closeResponseConnection(); 
+                try {
+                    ((JMSBindingContext)msg.getBindingContext()).closeJmsResponseSession();
+                } catch (Throwable e) {
+                }
+                // Use the resource factory in the binding context to close the response connection,
+                // to ensure we use same resource factory used to close response session.
+                JMSResourceFactory rf = ((JMSBindingContext)msg.getBindingContext()).getJmsResourceFactory();
+                if (rf.isConnectionClosedAfterUse())
+                    rf.closeResponseConnection();
             } catch (JMSException e) {
             }
         }
