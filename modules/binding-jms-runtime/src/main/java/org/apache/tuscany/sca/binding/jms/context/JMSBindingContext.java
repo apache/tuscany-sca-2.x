@@ -41,6 +41,7 @@ public class JMSBindingContext {
     private JMSResourceFactory jmsResourceFactory;
     private long timeToLive;
     private boolean useBytesForWFJMSDefaultResponse;
+    private long requestTimeout;
 
     public Message getJmsMsg() {
         return jmsMsg;
@@ -137,5 +138,9 @@ public class JMSBindingContext {
     public void setUseBytesForWFJMSDefaultResponse(
             boolean useBytesForWFJMSDefaultResponse) {
         this.useBytesForWFJMSDefaultResponse = useBytesForWFJMSDefaultResponse;
+    }
+
+    public void setRequestTimeout(long l) {
+        this.requestTimeout = l;
     }
 }
