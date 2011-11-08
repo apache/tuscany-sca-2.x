@@ -208,6 +208,31 @@ public class RRBJMSBindingInvoker extends InterceptorAsyncImpl {
 
             context.setRequestDestination(getRequestDestination(tuscanyMsg, session));
             context.setReplyToDestination(getReplyToDestination(session));
+            Long ttl = jmsBinding.getOperationJMSTimeToLive(operationName);
+            if (ttl != null) {
+                context.setTimeToLive(ttl);
+            }
+
+            // For twoway operations, determine a request timeout.
+            // The SCA specs do not address how to do this. We use the following approach.
+            // - If JMSTimeToLive is specified, use double that value.
+            // Doubling is basically arbitrary. JMSTimeToLive expresses request
+            // transmission and queue time. Doubling it allows request execution
+            // and response delivery to take up to the same amount of time.
+            // Note that explicitly coding a JMSTimeToLive of 0 results in
+            // a message that doesn't expire and an indefinite wait.
+            // - If JMSTimeToLive is not specified, get the default request
+            // timeout from the JMS resource factory and simply use that for the
+            // request timeout and JMSTimeToLive value.
+            if (!operation.isNonBlocking()) {
+                if (ttl != null) {
+                    context.setRequestTimeout(ttl * 2);
+                } else {
+                    long timeout = jmsResourceFactory.getDefaultRequestTimeout();
+                    context.setRequestTimeout(timeout);
+                    context.setTimeToLive(timeout);
+                }
+            }
             
             try {
                 tuscanyMsg = endpointReference.getBindingInvocationChain().getHeadInvoker().invoke(tuscanyMsg);
