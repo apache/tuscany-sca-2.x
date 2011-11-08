@@ -96,4 +96,6 @@ public interface JMSResourceFactory {
 
 	public abstract ActivationSpec lookupActivationSpec(
 			String activationSpecName);
+
+    public abstract long getDefaultRequestTimeout();
 }
