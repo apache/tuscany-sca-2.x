@@ -297,4 +297,9 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
 		throw new JMSBindingException("Incorrect resource type for ActivationSpec: " + o.getClass().getName());
 	}
 
+    @Override
+    public long getDefaultRequestTimeout() {
+        return 0;
+    }
+
 }
