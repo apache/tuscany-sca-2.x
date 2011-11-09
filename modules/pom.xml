@@ -43,6 +43,7 @@
         <module>binding-http-runtime</module>
         <module>binding-jms</module>
         <module>binding-jms-runtime</module>
+        <module>binding-jms-runtime-activemq</module>
         <module>binding-jsonp</module>
         <module>binding-jsonp-runtime</module>
         <module>binding-jsonrpc</module>        
