@@ -37,6 +37,16 @@ public interface RuntimeProperties {
      */
     public static final String RELEASE_ON_UNLOAD = "org.apache.tuscany.sca.releaseOnUnload";
     
+    /**
+     *  The name of the binding type to use be default for the remote SCA binding
+     */
+    public static final String SCA_BINDING_TYPE = "org.apache.tuscany.sca.scaBindingType";
+
+    /**
+     *  Use AXIOM OMElement instead of DOM as the XML object representation
+     */
+    public static final String USE_AXIOM = "org.apache.tuscany.sca.useAxiom";
+
     Properties getProperties();
     void setProperties(Properties properties);
 }
