@@ -29,11 +29,10 @@ import javax.jms.Session;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
-import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.binding.jms.provider.xml.XMLHelper;
+import org.apache.tuscany.sca.binding.jms.provider.xml.XMLHelperFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 /**
  * MessageProcessor for sending/receiving XML javax.jms.BytesMessage with the JMSBinding.
@@ -41,11 +40,11 @@ import org.xml.sax.SAXException;
 public class XMLBytesMessageProcessor extends AbstractMessageProcessor {
     private static final Logger logger = Logger.getLogger(XMLBytesMessageProcessor.class.getName());
 
-    private DOMHelper domHelper;
+    private XMLHelper xmlHelper;
 
     public XMLBytesMessageProcessor(JMSBinding jmsBinding, ExtensionPointRegistry registry) {
         super(jmsBinding);
-        this.domHelper = DOMHelper.getInstance(registry);
+        this.xmlHelper = XMLHelperFactory.createXMLHelper(registry);
     }
 
     @Override
@@ -63,7 +62,7 @@ public class XMLBytesMessageProcessor extends AbstractMessageProcessor {
             
             Object os;
             if (noOfBytes > 0) {
-                os = domHelper.load(new String(bytes));
+                os = xmlHelper.load(new String(bytes));
             } else {
                 os = null;
             }
@@ -71,8 +70,6 @@ public class XMLBytesMessageProcessor extends AbstractMessageProcessor {
         } catch (JMSException e) {
             throw new JMSBindingException(e);
         } catch (IOException e) {
-            throw new JMSBindingException(e);
-        } catch (SAXException e) {
             throw new JMSBindingException(e);
         }
     }
@@ -95,12 +92,10 @@ public class XMLBytesMessageProcessor extends AbstractMessageProcessor {
         try {
             BytesMessage message = session.createBytesMessage();
             
-            if (o instanceof Node) {
-                message.writeBytes(domHelper.saveAsString((Node)o).getBytes());
-            } else if ((o instanceof Object[]) && ((Object[])o)[0] instanceof Node) {
-                message.writeBytes(domHelper.saveAsString((Node)((Object[])o)[0]).getBytes());
+            if ((o instanceof Object[])) {
+                message.writeBytes(xmlHelper.saveAsString(((Object[])o)[0]).getBytes());
             } else if (o != null) {
-                throw new IllegalStateException("expecting Node payload: " + o);
+                message.writeBytes(xmlHelper.saveAsString(o).getBytes());
             }            
             
             return message;
@@ -121,7 +116,7 @@ public class XMLBytesMessageProcessor extends AbstractMessageProcessor {
             try {
 
                 BytesMessage message = session.createBytesMessage();
-                message.writeBytes(domHelper.saveAsString((Node)((FaultException)o).getFaultInfo()).getBytes());
+                message.writeBytes(xmlHelper.saveAsString(((FaultException)o).getFaultInfo()).getBytes());
                 message.setBooleanProperty(JMSBindingConstants.FAULT_PROPERTY, true);
                 return message;
 

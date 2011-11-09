@@ -22,18 +22,16 @@ package org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.runtime;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
+import org.apache.tuscany.sca.binding.jms.provider.xml.XMLHelper;
+import org.apache.tuscany.sca.binding.jms.provider.xml.XMLHelperFactory;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
-import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -42,9 +40,6 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  * @version $Rev$ $Date$
@@ -55,9 +50,9 @@ public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider
     private ComponentReference reference;
     private JMSBinding binding;
     private InterfaceContract interfaceContract;
-    private DOMHelper domHelper;
+    private XMLHelper xmlHelper;
     private HashMap<String, Boolean> inputWrapperMap;
-    private HashMap<String, Node> outputWrapperMap;
+    private HashMap<String, Object> outputWrapperMap;
 
     public WireFormatJMSDefaultReferenceProvider(ExtensionPointRegistry registry, RuntimeEndpointReference endpointReference) {
         super();
@@ -65,9 +60,9 @@ public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider
         this.endpointReference = endpointReference;
         this.binding = (JMSBinding) endpointReference.getBinding();
 
-        this.domHelper = DOMHelper.getInstance(registry);
+        this.xmlHelper = XMLHelperFactory.createXMLHelper(registry);
         this.inputWrapperMap = new HashMap<String, Boolean>();
-        this.outputWrapperMap = new HashMap<String, Node>();
+        this.outputWrapperMap = new HashMap<String, Object>();
 
         // configure the reference based on this wire format
 
@@ -101,7 +96,7 @@ public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider
             WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
             BindingWSDLGenerator.generateWSDL(endpointReference.getComponent(), reference, wsBinding, registry, null);
             interfaceContract = wsBinding.getBindingInterfaceContract();
-            interfaceContract.getInterface().resetDataBinding(DOMDataBinding.NAME);
+            interfaceContract.getInterface().resetDataBinding(XMLHelperFactory.createXMLHelper(registry).getDataBindingName());
 
             List<Operation> wsdlOpList = interfaceContract.getInterface().getOperations();
 
@@ -140,11 +135,7 @@ public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider
                     // we only need to know what the wrapper is on the deserialization
                     // might need to change this when there input/output wrapper style is different
                     ElementInfo ei = op.getWrapper().getOutputWrapperElement();
-                    String namespace = ei.getQName().getNamespaceURI();
-                    String opName = ei.getQName().getLocalPart();
-                    Document document = domHelper.newDocument();
-                    Element wrapper = DOMHelper.createElement(document, new QName(namespace, opName));
-                    this.outputWrapperMap.put(name, wrapper);
+                    this.outputWrapperMap.put(name, xmlHelper.createWrapper(ei.getQName()));
                 } 
             }
         } else {

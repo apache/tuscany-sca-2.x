@@ -23,7 +23,6 @@ package org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.runtime;
 
 import javax.jms.JMSException;
 import javax.jms.Session;
-import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
@@ -32,15 +31,15 @@ import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.binding.jms.provider.xml.XMLHelper;
+import org.apache.tuscany.sca.binding.jms.provider.xml.XMLHelperFactory;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextXML;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
-import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -54,6 +53,7 @@ public class WireFormatJMSTextXMLReferenceInterceptor extends InterceptorAsyncIm
     private JMSBinding jmsBinding;
     private JMSMessageProcessor requestMessageProcessor;
     private JMSMessageProcessor responseMessageProcessor;
+    private XMLHelper<?> xmlhelper;
 
 
     public WireFormatJMSTextXMLReferenceInterceptor(ExtensionPointRegistry registry, JMSResourceFactory jmsResourceFactory, RuntimeEndpointReference endpointReference) {
@@ -63,6 +63,7 @@ public class WireFormatJMSTextXMLReferenceInterceptor extends InterceptorAsyncIm
         this.jmsResourceFactory = jmsResourceFactory;
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(registry, jmsBinding);
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(registry, jmsBinding);
+        this.xmlhelper = XMLHelperFactory.createXMLHelper(registry);
     }
 
     public Message invoke(Message msg) {
@@ -105,8 +106,7 @@ public class WireFormatJMSTextXMLReferenceInterceptor extends InterceptorAsyncIm
                 try {
                     if (jmsMsg.getBooleanProperty(JMSBindingConstants.FAULT_PROPERTY)) {
                         FaultException e = new FaultException("remote exception", response);
-                        Node node = ((Node)response).getFirstChild();
-                        e.setFaultName(new QName(node.getNamespaceURI(), node.getLocalName()));
+                        xmlhelper.setFaultName(e, response);
                         msg.setFaultBody(e);
                     }
                 } catch (JMSException e) {

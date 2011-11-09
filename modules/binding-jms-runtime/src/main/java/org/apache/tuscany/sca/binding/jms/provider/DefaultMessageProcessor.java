@@ -26,18 +26,14 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
-import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.binding.jms.provider.xml.XMLHelper;
+import org.apache.tuscany.sca.binding.jms.provider.xml.XMLHelperFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 /**
  * MessageProcessor for sending/receiving XML over javax.jms.TextMessage or javax.jms.BytesMessage 
@@ -50,11 +46,11 @@ import org.xml.sax.SAXException;
 public class DefaultMessageProcessor extends AbstractMessageProcessor {
     private static final Logger logger = Logger.getLogger(DefaultMessageProcessor.class.getName());
 
-    private DOMHelper domHelper;
+    private XMLHelper xmlHelper;
 
     public DefaultMessageProcessor(JMSBinding jmsBinding, ExtensionPointRegistry registry) {
         super(jmsBinding);
-        this.domHelper = DOMHelper.getInstance(registry);
+        this.xmlHelper = XMLHelperFactory.createXMLHelper(registry);
     }
     
     // inherited methods that don't do anything useful
@@ -79,31 +75,20 @@ public class DefaultMessageProcessor extends AbstractMessageProcessor {
     
     // handle text messages
     
-    public Object extractPayloadFromJMSTextMessage(Message msg, Node wrapper) {
+    public Object extractPayloadFromJMSTextMessage(Message msg, Object wrapper) {
         if (msg instanceof TextMessage) {
             try {
                 String xml = ((TextMessage) msg).getText();
 
                 Object os;
                 if (xml != null && xml.length() > 0) {
-                    os = domHelper.load(xml);
+                    os = xmlHelper.load(xml);
                 } else {
                     os = null;
                 }
                 
                 if (wrapper != null){
-                    //don't modify the original wrapper since it will be reused
-                    //clone the wrapper
-                    Node node = ((Node)os);
-                    if (node == null) {
-                        node = domHelper.newDocument();
-                    }
-                    Element newWrapper = DOMHelper.createElement((Document)node, new QName(wrapper.getNamespaceURI(), wrapper.getLocalName()));
-                    if (os != null){
-                        Node child = node.getFirstChild();
-                        newWrapper.appendChild(child);
-                    } 
-                    return newWrapper;
+                    return xmlHelper.wrap(wrapper, os);
                 }
                 
                 return os;
@@ -111,8 +96,6 @@ public class DefaultMessageProcessor extends AbstractMessageProcessor {
             } catch (JMSException e) {
                 throw new JMSBindingException(e);
             } catch (IOException e) {
-                throw new JMSBindingException(e);
-            } catch (SAXException e) {
                 throw new JMSBindingException(e);
             }
         } else {
@@ -127,31 +110,28 @@ public class DefaultMessageProcessor extends AbstractMessageProcessor {
 
             TextMessage message = session.createTextMessage();
 
-            if (o instanceof Node) {
-                
+            if ((o instanceof Object[])) {
                 if (unwrap){
-                    Node firstElement = ((Node)o).getFirstChild();
-                    if (firstElement == null ) {
-                        message.setText("");
-                    } else {
-                        message.setText(domHelper.saveAsString(firstElement));
-                    }
-                }else {
-                    message.setText(domHelper.saveAsString((Node)o));
-                }
-            } else if ((o instanceof Object[]) && ((Object[]) o)[0] instanceof Node) {
-                if (unwrap){
-                    Node firstElement = ((Node)((Object[]) o)[0]).getFirstChild();
+                    Object firstElement = xmlHelper.getFirstChild(((Object[])o)[0]);
                     if (firstElement == null ) {
                         message.setText(null);
                     } else {
-                        message.setText(domHelper.saveAsString(firstElement));
+                        message.setText(xmlHelper.saveAsString(firstElement));
                     }
                 }else {
-                    message.setText(domHelper.saveAsString((Node)((Object[])o)[0]));
+                    message.setText(xmlHelper.saveAsString(((Object[])o)[0]));
                 }
             } else if (o != null) {
-                throw new IllegalStateException("expecting Node payload: " + o);
+                if (unwrap){
+                    Object firstElement = xmlHelper.getFirstChild(o);
+                    if (firstElement == null ) {
+                        message.setText("");
+                    } else {
+                        message.setText(xmlHelper.saveAsString(firstElement));
+                    }
+                }else {
+                    message.setText(xmlHelper.saveAsString(o));
+                }
             }
 
             return message;
@@ -171,7 +151,7 @@ public class DefaultMessageProcessor extends AbstractMessageProcessor {
             try {
 
                 TextMessage message = session.createTextMessage();
-                message.setText(domHelper.saveAsString((Node)((FaultException)o).getFaultInfo()));
+                message.setText(xmlHelper.saveAsString(((FaultException)o).getFaultInfo()));
                 message.setBooleanProperty(JMSBindingConstants.FAULT_PROPERTY, true);
                 return message;
 
@@ -186,7 +166,7 @@ public class DefaultMessageProcessor extends AbstractMessageProcessor {
 
     // handle bytes messages
     
-    public Object extractPayloadFromJMSBytesMessage(Message msg, Node wrapper) {
+    public Object extractPayloadFromJMSBytesMessage(Message msg, Object wrapper) {
         
         if (msg instanceof BytesMessage) {        
             try {
@@ -198,24 +178,13 @@ public class DefaultMessageProcessor extends AbstractMessageProcessor {
                 ((BytesMessage)msg).reset();
 
                 if ((bytes != null) && (bytes.length > 0)) {
-                    os = domHelper.load(new String(bytes));
+                    os = xmlHelper.load(new String(bytes));
                 } else {
                     os = null;
                 }
                 
                 if (wrapper != null){
-                    //don't modify the original wrapper since it will be reused
-                    //clone the wrapper
-                    Node node = ((Node)os);
-                    if (node == null) {
-                        node = domHelper.newDocument();
-                    }
-                    Element newWrapper = DOMHelper.createElement((Document)node, new QName(wrapper.getNamespaceURI(), wrapper.getLocalName()));
-                    if (os != null){
-                        Node child = node.getFirstChild();
-                        newWrapper.appendChild(child);
-                    } 
-                    return newWrapper;
+                    return xmlHelper.wrap(wrapper, os);
                 }
                 
                 return os;
@@ -223,8 +192,6 @@ public class DefaultMessageProcessor extends AbstractMessageProcessor {
             } catch (JMSException e) {
                 throw new JMSBindingException(e);
             } catch (IOException e) {
-                throw new JMSBindingException(e);
-            } catch (SAXException e) {
                 throw new JMSBindingException(e);
             }
         } else {
@@ -238,35 +205,31 @@ public class DefaultMessageProcessor extends AbstractMessageProcessor {
         try {
 
             BytesMessage message = session.createBytesMessage();
-            
 
-            if (o instanceof Node) {
-                if (unwrap) {
-                    Node firstElement = ((Node)o).getFirstChild();
-                    if (firstElement == null ) {
-                        //do nothing, the message will just be set with a byte[0]
-                    } else {
-                        message.writeBytes(domHelper.saveAsString(firstElement).getBytes());
-                    }
-
-                } else {
-                    message.writeBytes(domHelper.saveAsString((Node)o).getBytes());                    
-                }
-
-            } else if ((o instanceof Object[]) && ((Object[]) o)[0] instanceof Node) {
+            if ((o instanceof Object[])) {
                 if (unwrap){
-                    Node firstElement = ((Node)((Object[]) o)[0]).getFirstChild();
+                    Object firstElement = xmlHelper.getFirstChild(((Object[])o)[0]);
                     if (firstElement == null ) {
                         //do nothing, the message will just be set with a byte[0]
                     } else {
-                        message.writeBytes(domHelper.saveAsString(firstElement).getBytes());
+                        message.writeBytes(xmlHelper.saveAsString(firstElement).getBytes());
                     }
 
                 }else {
-                    message.writeBytes(domHelper.saveAsString((Node)((Object[]) o)[0]).getBytes());
+                    message.writeBytes(xmlHelper.saveAsString(((Object[]) o)[0]).getBytes());
                 }
             } else if (o != null) {
-                throw new IllegalStateException("expecting Node payload: " + o);
+                if (unwrap) {
+                    Object firstElement = xmlHelper.getFirstChild(o);
+                    if (firstElement == null ) {
+                        //do nothing, the message will just be set with a byte[0]
+                    } else {
+                        message.writeBytes(xmlHelper.saveAsString(firstElement).getBytes());
+                    }
+
+                } else {
+                    message.writeBytes(xmlHelper.saveAsString(o).getBytes());                    
+                }
             }
 
             return message;
@@ -287,7 +250,7 @@ public class DefaultMessageProcessor extends AbstractMessageProcessor {
             try {
 
                 BytesMessage message = session.createBytesMessage();
-                String s = domHelper.saveAsString((Node)((FaultException)o).getFaultInfo());
+                String s = xmlHelper.saveAsString(((FaultException)o).getFaultInfo());
                 message.writeBytes(s.getBytes());
                 message.setBooleanProperty(JMSBindingConstants.FAULT_PROPERTY, true);
                 return message;

@@ -31,20 +31,18 @@ import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.binding.jms.provider.xml.XMLHelper;
+import org.apache.tuscany.sca.binding.jms.provider.xml.XMLHelperFactory;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytesXML;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextXML;
-import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
@@ -64,7 +62,7 @@ public class OperationSelectorJMSDefaultServiceInterceptor extends InterceptorAs
     private JMSMessageProcessor responseMessageProcessor;
     private RuntimeComponentService service;
     private List<Operation> serviceOperations;
-    private DOMHelper domHelper;
+    private XMLHelper xmlHelper;
 
     public OperationSelectorJMSDefaultServiceInterceptor(ExtensionPointRegistry registry, JMSResourceFactory jmsResourceFactory, RuntimeEndpoint endpoint) {
         super();
@@ -75,7 +73,7 @@ public class OperationSelectorJMSDefaultServiceInterceptor extends InterceptorAs
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(registry, jmsBinding);
         this.service = (RuntimeComponentService)endpoint.getService();
         this.serviceOperations = service.getInterfaceContract().getInterface().getOperations();
-        this.domHelper = DOMHelper.getInstance(registry);
+        this.xmlHelper = XMLHelperFactory.createXMLHelper(registry);
     }
     
     public Message invoke(Message msg) {
@@ -118,10 +116,9 @@ public class OperationSelectorJMSDefaultServiceInterceptor extends InterceptorAs
                 }
             }
         } else if (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSDefault
-                || jmsBinding.getRequestWireFormat() instanceof WireFormatJMSTextXML
-                || jmsBinding.getRequestWireFormat() instanceof WireFormatJMSBytesXML) {
+            || jmsBinding.getRequestWireFormat() instanceof WireFormatJMSTextXML
+            || jmsBinding.getRequestWireFormat() instanceof WireFormatJMSBytesXML) {
 
-            Node rootElement;
             String operationFromPayload;
 
             try {
@@ -129,10 +126,9 @@ public class OperationSelectorJMSDefaultServiceInterceptor extends InterceptorAs
                     String xmlPayload = ((TextMessage) jmsMsg).getText();
 
                     if (xmlPayload != null) {
-                        rootElement = domHelper.load(xmlPayload);
-                        Node firstChild = rootElement.getFirstChild();
-                        if (firstChild != null) {
-                            operationFromPayload = firstChild.getLocalName();
+                        Object rootElement = xmlHelper.load(xmlPayload);
+                        operationFromPayload = xmlHelper.getOperationName(rootElement);
+                        if (operationFromPayload != null) {
                             for (Operation op : serviceOperations) {
                                 if (op.getName().equals(operationFromPayload)) {
                                     operation = op;
@@ -148,10 +144,9 @@ public class OperationSelectorJMSDefaultServiceInterceptor extends InterceptorAs
                     ((BytesMessage) jmsMsg).reset();
 
                     if (bytes != null) {
-                        rootElement = domHelper.load(new String(bytes));
-                        Node firstChild = rootElement.getFirstChild();
-                        if (firstChild != null) {
-                            operationFromPayload = firstChild.getLocalName();
+                        Object rootElement = xmlHelper.load(new String(bytes));
+                        operationFromPayload = xmlHelper.getOperationName(rootElement);
+                        if (operationFromPayload != null) {
                             for (Operation op : serviceOperations) {
                                 if (op.getName().equals(operationFromPayload)) {
                                     operation = op;
@@ -163,8 +158,6 @@ public class OperationSelectorJMSDefaultServiceInterceptor extends InterceptorAs
                 }
 
             } catch (IOException e) {
-                //let's ignore this in case the client doesn't want to use a wrapped xml message
-            } catch (SAXException e) {
                 //let's ignore this in case the client doesn't want to use a wrapped xml message
             } catch (JMSException e) {
                 throw new JMSBindingException(e);

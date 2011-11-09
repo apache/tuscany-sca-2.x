@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.runtime;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
+import org.apache.tuscany.sca.binding.jms.provider.xml.XMLHelperFactory;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextXML;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
@@ -71,7 +72,7 @@ public class WireFormatJMSTextXMLReferenceProvider implements WireFormatProvider
         WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
         BindingWSDLGenerator.generateWSDL(endpointReference.getComponent(), endpointReference.getReference(), wsBinding, registry, null);
         interfaceContract = wsBinding.getBindingInterfaceContract();
-        interfaceContract.getInterface().resetDataBinding(DOMDataBinding.NAME); 
+        interfaceContract.getInterface().resetDataBinding(XMLHelperFactory.createXMLHelper(registry).getDataBindingName());
     }
     
     protected boolean isOnMessage() {

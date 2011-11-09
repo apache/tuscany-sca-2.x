@@ -29,12 +29,10 @@ import javax.jms.TextMessage;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
-import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.binding.jms.provider.xml.XMLHelper;
+import org.apache.tuscany.sca.binding.jms.provider.xml.XMLHelperFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 /**
  * MessageProcessor for sending/receiving XML javax.jms.TextMessage with the JMSBinding.
@@ -44,11 +42,11 @@ import org.xml.sax.SAXException;
 public class XMLTextMessageProcessor extends AbstractMessageProcessor {
     private static final Logger logger = Logger.getLogger(XMLTextMessageProcessor.class.getName());
 
-    private DOMHelper domHelper;
+    private XMLHelper xmlHelper;
 
     public XMLTextMessageProcessor(JMSBinding jmsBinding, ExtensionPointRegistry registry) {
         super(jmsBinding);
-        this.domHelper = DOMHelper.getInstance(registry);
+        this.xmlHelper = XMLHelperFactory.createXMLHelper(registry);
     }
 
     @Override
@@ -58,7 +56,7 @@ public class XMLTextMessageProcessor extends AbstractMessageProcessor {
             String xml = ((TextMessage)msg).getText();
             Object os;
             if (xml != null) {
-                os = domHelper.load(xml);
+                os = xmlHelper.load(xml);
             } else {
                 os = null;
             }
@@ -67,8 +65,6 @@ public class XMLTextMessageProcessor extends AbstractMessageProcessor {
         } catch (IOException e) {
             throw new JMSBindingException(e);
         } catch (JMSException e) {
-            throw new JMSBindingException(e);
-        } catch (SAXException e) {
             throw new JMSBindingException(e);
         }
     }
@@ -92,12 +88,10 @@ public class XMLTextMessageProcessor extends AbstractMessageProcessor {
 
             TextMessage message = session.createTextMessage();
 
-            if (o instanceof Element) {
-                message.setText(domHelper.saveAsString((Node)o));
-            } else if ((o instanceof Object[]) && ((Object[])o)[0] instanceof Node) {
-                message.setText(domHelper.saveAsString((Node)((Object[])o)[0]));
-            } else if (o != null) {
-                throw new IllegalStateException("expecting Node payload: " + o);
+            if (o instanceof Object[]) {
+                message.setText(xmlHelper.saveAsString(((Object[])o)[0]));
+            } else {
+                message.setText(xmlHelper.saveAsString(o));
             }
 
             return message;
@@ -117,7 +111,7 @@ public class XMLTextMessageProcessor extends AbstractMessageProcessor {
             try {
 
                 TextMessage message = session.createTextMessage();
-                message.setText(domHelper.saveAsString((Node)((FaultException)o).getFaultInfo()));
+                message.setText(xmlHelper.saveAsString(((FaultException)o).getFaultInfo()));
                 message.setBooleanProperty(JMSBindingConstants.FAULT_PROPERTY, true);
                 return message;
 

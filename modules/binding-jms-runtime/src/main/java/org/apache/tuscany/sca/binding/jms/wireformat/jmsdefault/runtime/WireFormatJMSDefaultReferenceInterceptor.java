@@ -23,7 +23,6 @@ import java.util.HashMap;
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.Session;
-import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
@@ -31,17 +30,17 @@ import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.provider.DefaultMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.binding.jms.provider.xml.XMLHelper;
+import org.apache.tuscany.sca.binding.jms.provider.xml.XMLHelperFactory;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
-import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
-import org.w3c.dom.Node;
 
 /**
  * 
@@ -56,10 +55,11 @@ public class WireFormatJMSDefaultReferenceInterceptor extends InterceptorAsyncIm
     private DefaultMessageProcessor requestMessageProcessor;
     private DefaultMessageProcessor responseMessageProcessor;
     private HashMap<String, Boolean> inputWrapperMap;
-    private HashMap<String, Node> outputWrapperMap;
+    private HashMap<String, Object> outputWrapperMap;
+    private XMLHelper xmlhelper;
 
     public WireFormatJMSDefaultReferenceInterceptor(ExtensionPointRegistry registry, JMSResourceFactory jmsResourceFactory, RuntimeEndpointReference endpointReference, HashMap<String, Boolean> inputWrapperMap,
-            HashMap<String, Node> outputWrapperMap) {
+            HashMap<String, Object> outputWrapperMap) {
         super();
         this.jmsBinding = (JMSBinding) endpointReference.getBinding();
         this.endpointReference = endpointReference;
@@ -70,6 +70,7 @@ public class WireFormatJMSDefaultReferenceInterceptor extends InterceptorAsyncIm
         this.responseMessageProcessor = new DefaultMessageProcessor(jmsBinding, registry);
         this.inputWrapperMap = inputWrapperMap;
         this.outputWrapperMap = outputWrapperMap;
+        this.xmlhelper = XMLHelperFactory.createXMLHelper(registry);
     }
 
     public Message invoke(Message msg) {
@@ -127,7 +128,7 @@ public class WireFormatJMSDefaultReferenceInterceptor extends InterceptorAsyncIm
                 msg.setBody(jmsMsg);
             } else {
 
-                Node wrapper = null;
+                Object wrapper = null;
                 // if we have a fault no need to wrap the response
                 try {
                     if (!jmsMsg.getBooleanProperty(JMSBindingConstants.FAULT_PROPERTY)) {
@@ -150,8 +151,7 @@ public class WireFormatJMSDefaultReferenceInterceptor extends InterceptorAsyncIm
                     try {
                         if (jmsMsg.getBooleanProperty(JMSBindingConstants.FAULT_PROPERTY)) {
                             FaultException e = new FaultException("remote exception", response);
-                            Node om = ((Node)response).getFirstChild();
-                            e.setFaultName(new QName(om.getNamespaceURI(), om.getLocalName()));
+                            xmlhelper.setFaultName(e, response);
                             msg.setFaultBody(e);
                         }
                     } catch (JMSException e) {

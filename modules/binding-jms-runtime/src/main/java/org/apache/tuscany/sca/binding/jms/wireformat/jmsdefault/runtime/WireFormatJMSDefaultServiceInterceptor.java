@@ -36,11 +36,8 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
-import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
-import org.w3c.dom.Node;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName {http://tuscany.apache.org/xmlns/sca/1.1/impl/java}LoggingPolicy
@@ -53,10 +50,10 @@ public class WireFormatJMSDefaultServiceInterceptor extends InterceptorAsyncImpl
     private JMSBinding jmsBinding;
     private DefaultMessageProcessor requestMessageProcessor;
     private DefaultMessageProcessor responseMessageProcessor;
-    private HashMap<String, Node> inputWrapperMap;
+    private HashMap<String, Object> inputWrapperMap;
     private HashMap<String, Boolean> outputWrapperMap;
 
-    public WireFormatJMSDefaultServiceInterceptor(ExtensionPointRegistry registry, JMSResourceFactory jmsResourceFactory, RuntimeEndpoint endpoint, HashMap<String, Node> inputWrapperMap,
+    public WireFormatJMSDefaultServiceInterceptor(ExtensionPointRegistry registry, JMSResourceFactory jmsResourceFactory, RuntimeEndpoint endpoint, HashMap<String, Object> inputWrapperMap,
             HashMap<String, Boolean> outputWrapperMap) {
         super();
         this.jmsBinding = (JMSBinding) endpoint.getBinding();
@@ -115,7 +112,7 @@ public class WireFormatJMSDefaultServiceInterceptor extends InterceptorAsyncImpl
         } else {
 
             // If there is only one arg we must add a wrapper if the operation is wrapper style
-            Node wrapper = this.inputWrapperMap.get(msg.getOperation().getName());
+            Object wrapper = this.inputWrapperMap.get(msg.getOperation().getName());
 
             Object requestPayload;
             if (jmsMsg instanceof BytesMessage) {
