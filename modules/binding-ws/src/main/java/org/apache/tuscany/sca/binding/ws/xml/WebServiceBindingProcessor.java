@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.binding.ws.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.apache.tuscany.sca.binding.ws.xml.WebServiceConstants.SCA11_NS;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -36,11 +35,16 @@ import javax.wsdl.Service;
 import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap12.SOAP12Address;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Callback;
+import org.apache.tuscany.sca.assembly.Extensible;
+import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
@@ -50,8 +54,11 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -77,9 +84,12 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
     private WSDLFactory wsdlFactory;
     private WebServiceBindingFactory wsFactory;
     private PolicyFactory policyFactory;
+    private AssemblyFactory assemblyFactory;
     private PolicySubjectProcessor policyProcessor;
     //private PolicyFactory intentAttachPointTypeFactory;
     private StAXHelper staxHelper;
+    private StAXAttributeProcessor<Object> extensionAttributeProcessor;
+    private ProcessorContext processorContext;
     
     
     public WebServiceBindingProcessor(ExtensionPointRegistry extensionPoints) {
@@ -88,8 +98,14 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.wsFactory = modelFactories.getFactory(WebServiceBindingFactory.class);
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
+        this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);        
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
         staxHelper = StAXHelper.getInstance(extensionPoints);
+        XMLInputFactory inputFactory = extensionPoints.getExtensionPoint(XMLInputFactory.class);
+        XMLOutputFactory outputFactory = extensionPoints.getExtensionPoint(XMLOutputFactory.class);
+        StAXAttributeProcessorExtensionPoint attributeExtensionPoint = extensionPoints.getExtensionPoint(StAXAttributeProcessorExtensionPoint.class);
+        this.extensionAttributeProcessor = new ExtensibleStAXAttributeProcessor(attributeExtensionPoint ,inputFactory, outputFactory);
+        this.processorContext = new ProcessorContext(extensionPoints);
     }
     
     /**
@@ -252,6 +268,26 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
             }
         }
 
+        //add binding extensions
+        QName elementName = reader.getName();
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            QName attributeName = reader.getAttributeName(i);
+            if(attributeName.getNamespaceURI() != null && attributeName.getNamespaceURI().length() > 0) {
+                if(!elementName.getNamespaceURI().equals(attributeName.getNamespaceURI()) ) {
+                    Object attributeValue = extensionAttributeProcessor.read(attributeName, reader, processorContext);
+                    Extension attributeExtension;
+                    if (attributeValue instanceof Extension) {
+                        attributeExtension = (Extension)attributeValue;
+                    } else {
+                        attributeExtension = assemblyFactory.createExtension();
+                        attributeExtension.setQName(attributeName);
+                        attributeExtension.setValue(attributeValue);
+                        attributeExtension.setAttribute(true);
+                    }
+                    ((Extensible)wsBinding).getAttributeExtensions().add(attributeExtension);
+                }
+            }
+        }
         // Skip to end element
         while (reader.hasNext()) {
             int event = reader.next();
@@ -360,6 +396,12 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
             writer.writeAttribute(WSDLI_NS, WSDL_LOCATION, wsdliLocation.toString());
         }
 
+        // Write extended attributes
+        for(Extension extension : ((Extensible)wsBinding).getAttributeExtensions()) {
+            if(extension.isAttribute()) {
+                extensionAttributeProcessor.write(extension, writer, processorContext);
+            }
+        }
         if (wsBinding.getEndPointReference() != null) {
             EndPointReferenceHelper.writeEndPointReference(wsBinding.getEndPointReference(), writer, staxHelper);
         }
