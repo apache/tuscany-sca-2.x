@@ -85,7 +85,7 @@ public class TransportServiceInterceptor extends InterceptorAsyncImpl {
             logger.log(Level.SEVERE, "Exception invoking service '" + service.getName(), e);
             
             Operation operation = msg.getOperation();
-            if (operation != null && !operation.isNonBlocking()) {
+            if (operation == null || !operation.isNonBlocking()) {
                 JMSBindingContext context = msg.getBindingContext();
                 Session session = context.getJmsResponseSession();
                 javax.jms.Message replyJMSMsg = responseMessageProcessor.createFaultMessage(session, e);
