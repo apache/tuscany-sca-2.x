@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.binding.jsonp;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.binding.http.HTTPDefaultOperationSelector;
-import org.apache.tuscany.sca.binding.http.HTTPDefaultWireFormat;
 import org.apache.tuscany.sca.binding.http.impl.HTTPBindingImpl;
+import org.apache.tuscany.sca.binding.http.operationselector.HTTPRPCOperationSelector;
+import org.apache.tuscany.sca.binding.http.wireformat.HTTPJSONWireFormat;
 
 /**
  * JSONP Binding model
@@ -36,9 +36,9 @@ public class JSONPBinding extends HTTPBindingImpl {
         super();
 
         // configure the HTTP binding for JSONP (which for the moment is the default wireFormat)
-        setOperationSelector(new HTTPDefaultOperationSelector());
-        setRequestWireFormat(new HTTPDefaultWireFormat());
-        setResponseWireFormat(new HTTPDefaultWireFormat());
+        setOperationSelector(new HTTPRPCOperationSelector());
+        setRequestWireFormat(new HTTPJSONWireFormat());
+        setResponseWireFormat(new HTTPJSONWireFormat());
     }
 
     @Override

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http.format;
+package org.apache.tuscany.sca.binding.http.operationselector.provider;
 
 import java.util.List;
 
@@ -43,12 +43,12 @@ import org.oasisopen.sca.ServiceRuntimeException;
  *       a single "onMessage" method to get all requests, so perhaps this could
  *       also support impls with method: service(HttpServletRequest, HttpServletResponse)
  */
-public class HTTPDefaultServiceOperationSelectorInterceptor implements Interceptor {
+public class HTTPRPCServiceOperationSelectorInterceptor implements Interceptor {
 
     private Invoker next;
     private List<Operation> operations;
     
-    public HTTPDefaultServiceOperationSelectorInterceptor(RuntimeEndpoint endpoint) {
+    public HTTPRPCServiceOperationSelectorInterceptor(RuntimeEndpoint endpoint) {
         Interface serviceInterface = endpoint.getService().getInterfaceContract().getInterface();
         this.operations = serviceInterface.getOperations();
     }

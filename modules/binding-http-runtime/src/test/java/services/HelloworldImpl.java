@@ -16,14 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package services;
 
-package org.apache.tuscany.sca.binding.http;
+public class HelloworldImpl implements Helloworld {
 
-public class SomeException extends Exception {
-    private static final long serialVersionUID = 1L;
-
-    public SomeException(String msg) {
-        super(msg);
-    }
+	@Override
+	public String sayHello(String name) {
+		return "Hello " + name;
+	}
 
 }

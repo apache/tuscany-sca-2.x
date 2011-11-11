@@ -16,18 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.http;
+package org.apache.tuscany.sca.binding.http.wireformat;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.OperationSelector;
+import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 
-public class HTTPDefaultOperationSelector implements OperationSelector {
-    public static final QName OPERATION_SELECTOR_HTTP_DEFAULT_QNAME = new QName(Constants.SCA11_NS, "operationSelector.httpDefault");
+/**
+ * JSON wire format for http binding
+ *
+ * @version $Rev$ $Date$
+ */
+public class HTTPJSONWireFormat implements WireFormat {
+    public static final QName HTTP_WIRE_FORMAT_JSON_QNAME = new QName(Constants.SCA11_TUSCANY_NS, "wireFormat.json");
     
     public QName getSchemaName() {
-        return OPERATION_SELECTOR_HTTP_DEFAULT_QNAME;
+        return HTTP_WIRE_FORMAT_JSON_QNAME;
     }
 
     public boolean isUnresolved() {

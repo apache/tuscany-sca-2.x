@@ -15,4 +15,5 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-org.apache.tuscany.sca.binding.http.format.HTTPDefaultOperationSelectorProviderFactory;model=org.apache.tuscany.sca.binding.http.HTTPDefaultOperationSelector
+org.apache.tuscany.sca.binding.http.operationselector.provider.HTTPDefaultOperationSelectorProviderFactory;model=org.apache.tuscany.sca.binding.http.operationselector.HTTPDefaultOperationSelector
+org.apache.tuscany.sca.binding.http.operationselector.provider.HTTPRPCOperationSelectorProviderFactory;model=org.apache.tuscany.sca.binding.http.operationselector.HTTPRPCOperationSelector

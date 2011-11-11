@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.binding.http.format;
+package org.apache.tuscany.sca.binding.http.wireformat.provider;
 
 import java.io.BufferedReader;
 import java.io.IOException;

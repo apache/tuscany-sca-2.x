@@ -23,17 +23,21 @@
 	name="ComplexStuff">
 
     <component name="ComplexComponent">
-        <implementation.java class="org.apache.tuscany.sca.binding.http.ComplexStuffImpl"/>
+        <implementation.java class="services.ComplexStuffImpl"/>
         <service name="ComplexStuff">
-    		<tuscany:binding.http />
+    		<tuscany:binding.http>
+    			<tuscany:wireFormat.json />
+    			<tuscany:operationSelector.rpc />
+    		</tuscany:binding.http>
     	</service>
     </component>
 
     <component name="ComplexXmlComponent">
-        <implementation.java class="org.apache.tuscany.sca.binding.http.ComplexStuffImpl"/>
+        <implementation.java class="services.ComplexStuffImpl"/>
         <service name="ComplexStuff">
     		<tuscany:binding.http>
-        		<tuscany:wireFormat.httpXml />
+        		<tuscany:wireFormat.xml />
+    		    <tuscany:operationSelector.rpc />        		
     		</tuscany:binding.http>
     	</service>
     </component>

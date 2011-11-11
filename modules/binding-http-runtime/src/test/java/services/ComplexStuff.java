@@ -16,24 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.http;
 
-import javax.xml.namespace.QName;
+package services;
 
-import org.apache.tuscany.sca.assembly.WireFormat;
-import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.oasisopen.sca.annotation.Remotable;
 
-public class HTTPXMLWireFormat implements WireFormat {
-    public static final QName WIRE_FORMAT_HTTP_XML_QNAME = new QName(Constants.SCA11_TUSCANY_NS, "wireFormat.httpXml");
-    
-    public QName getSchemaName() {
-        return WIRE_FORMAT_HTTP_XML_QNAME;
-    }
-
-    public boolean isUnresolved() {
-        return false;
-    }
-
-    public void setUnresolved(boolean unresolved) {
-    }
+@Remotable
+public interface ComplexStuff {
+    BeanA echoBeanA(BeanA bean);
+    String multiParams(int x, String s, Boolean b);
+    String noArgs();
+    void voidReturn();
+    String checkedException() throws SomeException;
+    String runtimeException();
 }

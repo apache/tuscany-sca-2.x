@@ -16,45 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package services;
 
-package org.apache.tuscany.sca.binding.http;
+import org.oasisopen.sca.annotation.Remotable;
 
-public class BeanA {
-
-    protected Boolean b;
-    protected String s;
-    protected int x;
-    protected Integer y;
-    
-    public Boolean getB() {
-        return b;
-    }
-    
-    public void setB(Boolean b) {
-        this.b = b;
-    }
-    
-    public String getS() {
-        return s;
-    }
-    
-    public void setS(String s) {
-        this.s = s;
-    }
-    
-    public int getX() {
-        return x;
-    }
-    
-    public void setX(int x) {
-        this.x = x;
-    }
-    
-    public Integer getY() {
-        return y;
-    }
-
-    public void setY(Integer y) {
-        this.y = y;
-    }
+@Remotable
+public interface Helloworld {
+	String sayHello(String name);
 }

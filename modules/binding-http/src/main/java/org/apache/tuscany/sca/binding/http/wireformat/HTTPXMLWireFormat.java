@@ -16,38 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.binding.http.wireformat;
 
-package org.apache.tuscany.sca.binding.http;
+import javax.xml.namespace.QName;
 
-public class ComplexStuffImpl implements ComplexStuff {
+import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 
-    @Override
-    public BeanA echoBeanA(BeanA bean) {
-        return bean;
+
+/**
+ * XML Wire format for HTTP binding
+ * 
+ * @version $Rev$ $Date$
+*/
+public class HTTPXMLWireFormat implements WireFormat {
+    public static final QName WIRE_FORMAT_HTTP_XML_QNAME = new QName(Constants.SCA11_TUSCANY_NS, "wireFormat.httpXml");
+    
+    public QName getSchemaName() {
+        return WIRE_FORMAT_HTTP_XML_QNAME;
     }
 
-    @Override
-    public String multiParams(int x, String s, Boolean b) {
-        return x + s + b;
+    public boolean isUnresolved() {
+        return false;
     }
 
-    @Override
-    public String noArgs() {
-        return "noArgs";
+    public void setUnresolved(boolean unresolved) {
     }
-
-    @Override
-    public void voidReturn() {
-    }
-
-    @Override
-    public String checkedException() throws SomeException {
-        throw new SomeException("some msg");
-    }
-
-    @Override
-    public String runtimeException() {
-        throw new RuntimeException("bang");
-    }
-
 }

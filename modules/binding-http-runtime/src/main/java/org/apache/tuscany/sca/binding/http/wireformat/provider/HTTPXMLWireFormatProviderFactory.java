@@ -17,10 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http.format;
+package org.apache.tuscany.sca.binding.http.wireformat.provider;
 
-import org.apache.tuscany.sca.binding.http.HTTPDefaultWireFormat;
+import org.apache.tuscany.sca.binding.http.wireformat.HTTPXMLWireFormat;
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
@@ -29,14 +31,17 @@ import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
-public class HTTPDefaultWireFormatProviderFactory implements WireFormatProviderFactory<HTTPDefaultWireFormat> {
+public class HTTPXMLWireFormatProviderFactory implements WireFormatProviderFactory<HTTPXMLWireFormat> {
 
-    public HTTPDefaultWireFormatProviderFactory(ExtensionPointRegistry extensionPoints) {
+    private DOMHelper domHelper;
+    
+    public HTTPXMLWireFormatProviderFactory(ExtensionPointRegistry extensionPoints) {
+        this.domHelper = DOMHelper.getInstance(extensionPoints);
     }
 
     @Override
-    public Class<HTTPDefaultWireFormat> getModelType() {
-        return null;
+    public Class<HTTPXMLWireFormat> getModelType() {
+        return HTTPXMLWireFormat.class;
     }
 
     @Override
@@ -49,15 +54,12 @@ public class HTTPDefaultWireFormatProviderFactory implements WireFormatProviderF
         return new WireFormatProvider() {
             @Override
             public InterfaceContract configureWireFormatInterfaceContract(InterfaceContract interfaceContract) {
-                // TODO: Ideally this wants to set the databinding on a per request basis from the 
-                // http content type and accept headers and so support things like json or xml etc,
-                // for now to get started just use json 
-                interfaceContract.getInterface().resetDataBinding("JSON");
+                interfaceContract.getInterface().resetDataBinding(DOMDataBinding.NAME);
                 return interfaceContract;
             }
             @Override
             public Interceptor createInterceptor() {
-                return new HTTPDefaultWireFormatServiceInterceptor(endpoint);
+                return new HTTPXMLWireFormatServiceInterceptor(endpoint, domHelper);
             }
             @Override
             public String getPhase() {

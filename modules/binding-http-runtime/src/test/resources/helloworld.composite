@@ -23,17 +23,21 @@
 	name="helloworld">
 
     <component name="HelloworldComponent">
-        <implementation.java class="org.apache.tuscany.sca.binding.http.HelloworldImpl"/>
+        <implementation.java class="services.HelloworldImpl"/>
         <service name="Helloworld">
-    		<tuscany:binding.http />
+    		<tuscany:binding.http>
+    			<tuscany:wireFormat.json />    		
+        		<tuscany:operationSelector.rpc />
+    		</tuscany:binding.http>
     	</service>
     </component>
 
     <component name="HelloworldXmlComponent">
-        <implementation.java class="org.apache.tuscany.sca.binding.http.HelloworldImpl"/>
+        <implementation.java class="services.HelloworldImpl"/>
         <service name="Helloworld">
     		<tuscany:binding.http>
-        		<tuscany:wireFormat.httpXml />
+        		<tuscany:wireFormat.xml />
+    		    <tuscany:operationSelector.rpc />        		
     		</tuscany:binding.http>
     	</service>
     </component>

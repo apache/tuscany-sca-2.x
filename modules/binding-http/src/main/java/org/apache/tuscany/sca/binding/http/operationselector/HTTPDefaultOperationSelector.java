@@ -16,11 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.http;
+package org.apache.tuscany.sca.binding.http.operationselector;
 
-import org.oasisopen.sca.annotation.Remotable;
+import javax.xml.namespace.QName;
 
-@Remotable
-public interface Helloworld {
-	String sayHello(String name);
+import org.apache.tuscany.sca.assembly.OperationSelector;
+import org.apache.tuscany.sca.assembly.xml.Constants;
+
+
+/**
+ * HTTP binding default operation selector.
+ * 
+ * @version $Rev$ $Date$
+*/
+public class HTTPDefaultOperationSelector implements OperationSelector {
+    public static final QName HTTP_OPERATION_SELECTOR_DEFAULT_QNAME = new QName(Constants.SCA11_NS, "operationSelector.default");
+    
+    public QName getSchemaName() {
+        return HTTP_OPERATION_SELECTOR_DEFAULT_QNAME;
+    }
+
+    public boolean isUnresolved() {
+        return false;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+    }
 }

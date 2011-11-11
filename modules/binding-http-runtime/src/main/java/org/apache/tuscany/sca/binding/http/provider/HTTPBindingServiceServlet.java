@@ -32,8 +32,8 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 public class HTTPBindingServiceServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = 6496710199406616194L;
+    
     protected transient MessageFactory messageFactory;
     protected transient RuntimeEndpoint wire;
     
@@ -49,6 +49,12 @@ public class HTTPBindingServiceServlet extends HttpServlet {
         bindingContext.setHttpResponse(response);
         Message msg = messageFactory.createMessage();
         msg.setBindingContext(bindingContext);
-        wire.invoke(msg);
+        Message responseMessage = wire.invoke(msg);
+        // return response to client
+        if (responseMessage.isFault()) {
+            // Turn a fault into an exception
+            Throwable e = (Throwable)responseMessage.getBody();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+        } 
     }    
 }

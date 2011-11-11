@@ -16,13 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.http;
+package org.apache.tuscany.sca.binding.http.wireformat;
 
-public class HelloworldImpl implements Helloworld {
+import javax.xml.namespace.QName;
 
-	@Override
-	public String sayHello(String name) {
-		return "Hello " + name;
-	}
+import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 
+/**
+ * Default wire format for http binding
+ *
+ * @version $Rev$ $Date$
+ */
+public class HTTPDefaultWireFormat implements WireFormat {
+    public static final QName HTTP_WIRE_FORMAT_DEFAULT_QNAME = new QName(Constants.SCA11_TUSCANY_NS, "wireFormat.default");
+    
+    public QName getSchemaName() {
+        return HTTP_WIRE_FORMAT_DEFAULT_QNAME;
+    }
+
+    public boolean isUnresolved() {
+        return false;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+    }
 }

@@ -17,16 +17,44 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http;
+package services;
 
-import org.oasisopen.sca.annotation.Remotable;
+public class BeanA {
 
-@Remotable
-public interface ComplexStuff {
-    BeanA echoBeanA(BeanA bean);
-    String multiParams(int x, String s, Boolean b);
-    String noArgs();
-    void voidReturn();
-    String checkedException() throws SomeException;
-    String runtimeException();
+    protected Boolean b;
+    protected String s;
+    protected int x;
+    protected Integer y;
+    
+    public Boolean getB() {
+        return b;
+    }
+    
+    public void setB(Boolean b) {
+        this.b = b;
+    }
+    
+    public String getS() {
+        return s;
+    }
+    
+    public void setS(String s) {
+        this.s = s;
+    }
+    
+    public int getX() {
+        return x;
+    }
+    
+    public void setX(int x) {
+        this.x = x;
+    }
+    
+    public Integer getY() {
+        return y;
+    }
+
+    public void setY(Integer y) {
+        this.y = y;
+    }
 }

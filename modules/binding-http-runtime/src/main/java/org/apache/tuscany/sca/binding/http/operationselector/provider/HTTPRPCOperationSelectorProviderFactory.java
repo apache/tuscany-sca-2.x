@@ -17,9 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http.format;
+package org.apache.tuscany.sca.binding.http.operationselector.provider;
 
-import org.apache.tuscany.sca.binding.http.HTTPDefaultOperationSelector;
+import org.apache.tuscany.sca.binding.http.operationselector.HTTPDefaultOperationSelector;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
@@ -28,14 +28,14 @@ import org.apache.tuscany.sca.provider.OperationSelectorProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
-public class HTTPDefaultOperationSelectorProviderFactory implements OperationSelectorProviderFactory<HTTPDefaultOperationSelector>{
+public class HTTPRPCOperationSelectorProviderFactory implements OperationSelectorProviderFactory<HTTPDefaultOperationSelector>{
 
-    public HTTPDefaultOperationSelectorProviderFactory(ExtensionPointRegistry extensionPoints) {
+    public HTTPRPCOperationSelectorProviderFactory(ExtensionPointRegistry extensionPoints) {
     }
     
     @Override
     public Class<HTTPDefaultOperationSelector> getModelType() {
-        return null;
+        return HTTPDefaultOperationSelector.class;
     }
 
     @Override

@@ -15,5 +15,6 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-org.apache.tuscany.sca.binding.http.format.HTTPDefaultWireFormatProviderFactory;model=org.apache.tuscany.sca.binding.http.HTTPDefaultWireFormat
-org.apache.tuscany.sca.binding.http.format.HTTPXMLWireFormatProviderFactory;model=org.apache.tuscany.sca.binding.http.HTTPXMLWireFormat
+org.apache.tuscany.sca.binding.http.wireformat.provider.HTTPDefaultWireFormatProviderFactory;model=org.apache.tuscany.sca.binding.http.wireformat.HTTPDefaultWireFormat
+org.apache.tuscany.sca.binding.http.wireformat.provider.HTTPJSONWireFormatProviderFactory;model=org.apache.tuscany.sca.binding.http.wireformat.HTTPJSONWireFormat
+org.apache.tuscany.sca.binding.http.wireformat.provider.HTTPXMLWireFormatProviderFactory;model=org.apache.tuscany.sca.binding.http.wireformat.HTTPXMLWireFormat

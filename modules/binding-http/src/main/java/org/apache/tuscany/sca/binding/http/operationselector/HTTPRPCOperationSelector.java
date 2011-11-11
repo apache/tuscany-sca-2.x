@@ -16,24 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.http;
+package org.apache.tuscany.sca.binding.http.operationselector;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 
 /**
- * Implementation for policies that could be injected as parameter
- * into the axis2config.
- *
- * @version $Rev: 813442 $ $Date: 2009-09-10 14:56:17 +0100 (Thu, 10 Sep 2009) $
- */
-public class HTTPDefaultWireFormat implements WireFormat {
-    public static final QName WIRE_FORMAT_HTTP_DEFAULT_QNAME = new QName(Constants.SCA11_TUSCANY_NS, "wireFormat.httpDefault");
+ * HTTP binding RPC style operation selector.
+ * 
+ * @version $Rev$ $Date$
+*/
+public class HTTPRPCOperationSelector implements OperationSelector {
+    public static final QName HTTP_OPERATION_SELECTOR_RPC_QNAME = new QName(Constants.SCA11_NS, "operationSelector.rpc");
     
     public QName getSchemaName() {
-        return WIRE_FORMAT_HTTP_DEFAULT_QNAME;
+        return HTTP_OPERATION_SELECTOR_RPC_QNAME;
     }
 
     public boolean isUnresolved() {

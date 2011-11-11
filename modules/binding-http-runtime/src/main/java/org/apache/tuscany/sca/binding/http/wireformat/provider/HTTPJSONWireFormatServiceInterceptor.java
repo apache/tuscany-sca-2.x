@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http.format;
+package org.apache.tuscany.sca.binding.http.wireformat.provider;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -58,12 +58,12 @@ import org.oasisopen.sca.ServiceRuntimeException;
  *    (the databinding should already have put it in the correct format)
  * 
  */
-public class HTTPDefaultWireFormatServiceInterceptor implements Interceptor {
+public class HTTPJSONWireFormatServiceInterceptor implements Interceptor {
 
     private Invoker next;
     private String jsonpCallbackName = "callback";
     
-    public HTTPDefaultWireFormatServiceInterceptor(RuntimeEndpoint endpoint) {
+    public HTTPJSONWireFormatServiceInterceptor(RuntimeEndpoint endpoint) {
     }
 
     @Override
