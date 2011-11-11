@@ -31,6 +31,16 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
+/**
+ * HTTP Binding service servlet, that listens to HTTP 
+ * requests and dispatch to the invocation chain.
+ * 
+ * The proper invocation chains and/or wireformat interceptors
+ * will properly handle selecting the right operation and
+ * handling data
+ *
+ * @version $Rev$ $Date$
+ */
 public class HTTPBindingServiceServlet extends HttpServlet {
     private static final long serialVersionUID = 6496710199406616194L;
     

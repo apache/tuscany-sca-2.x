@@ -28,6 +28,10 @@ import org.apache.tuscany.sca.provider.OperationSelectorProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
+/**
+ * 
+ * @version $Rev$ $Date$
+*/
 public class HTTPRPCOperationSelectorProviderFactory implements OperationSelectorProviderFactory<HTTPDefaultOperationSelector>{
 
     public HTTPRPCOperationSelectorProviderFactory(ExtensionPointRegistry extensionPoints) {

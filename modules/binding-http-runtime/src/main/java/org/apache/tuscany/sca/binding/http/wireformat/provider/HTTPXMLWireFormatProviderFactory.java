@@ -31,6 +31,10 @@ import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class HTTPXMLWireFormatProviderFactory implements WireFormatProviderFactory<HTTPXMLWireFormat> {
 
     private DOMHelper domHelper;

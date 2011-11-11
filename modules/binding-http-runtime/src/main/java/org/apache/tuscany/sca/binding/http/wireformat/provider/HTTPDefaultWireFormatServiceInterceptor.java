@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.http.wireformat.provider;
 
-import org.apache.tuscany.sca.binding.http.HTTPBinding;
 import org.apache.tuscany.sca.common.http.HTTPContext;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -28,27 +27,15 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * Handles the default wire format for the http binding
- * 
- * 1- determine the request and response format (xml, json, etc) from the 
- *    binding config or content type header and accept headers
- *    - TODO: need a way to configure the databinding framework based on that format
- * 2- get the request contents from the HttpServletRequest
- *    - for a post its just the request body
- *    - for a get need to convert the query string into a body based on the format (xml, json, etc)
- * 3- send the request on down the wire
- * 4- set the response contents in the HttpServletResponse 
- *    (the databinding should already have put it in the correct format)
+ * by passing the HTTP request and response down to the
+ * actual component implementation that is a servlet.
  * 
  */
 public class HTTPDefaultWireFormatServiceInterceptor implements Interceptor {
-    
-    private RuntimeEndpoint endpoint;
-    private HTTPBinding binding;
     private Invoker next;
     
     public HTTPDefaultWireFormatServiceInterceptor(RuntimeEndpoint endpoint) {
-        this.endpoint = endpoint;
-        this.binding = (HTTPBinding) endpoint.getBinding();
+
     }
 
     @Override

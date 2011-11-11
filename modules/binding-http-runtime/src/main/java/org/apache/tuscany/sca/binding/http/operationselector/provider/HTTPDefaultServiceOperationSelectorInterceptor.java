@@ -33,15 +33,12 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
- * Sets the operation based on the request path.
+ * HTTP Binding Default operation selector, which would map 
+ * http method (GET, PUT, POST, DELETE) to operations matching
+ * those name. It also supports plain servlet using 'service' 
+ * to provide the component functionality.
  * 
- * From a url: http://localhost:8080/HelloworldComponent/Helloworld/sayHello?name=Petra
- * where the component is HelloworldComponent and the service is Helloworld
- * the path will be "/sayHello" so the operation is "sayHello".
- * 
- * TODO: we could also do something similar to how the JMS binding supports
- *       a single "onMessage" method to get all requests, so perhaps this could
- *       also support impls with method: service(HttpServletRequest, HttpServletResponse)
+ * @version $Rev$ $Date$
  */
 public class HTTPDefaultServiceOperationSelectorInterceptor implements Interceptor {
 
