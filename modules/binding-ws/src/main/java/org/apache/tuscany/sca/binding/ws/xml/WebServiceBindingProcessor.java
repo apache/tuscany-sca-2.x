@@ -272,7 +272,7 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
         QName elementName = reader.getName();
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             QName attributeName = reader.getAttributeName(i);
-            if(attributeName.getNamespaceURI() != null && attributeName.getNamespaceURI().length() > 0) {
+            if(attributeName.getNamespaceURI() != null && attributeName.getNamespaceURI().length() > 0 && !(attributeName.getNamespaceURI().equals(WSDLI_NS))) {                
                 if(!elementName.getNamespaceURI().equals(attributeName.getNamespaceURI()) ) {
                     Object attributeValue = extensionAttributeProcessor.read(attributeName, reader, processorContext);
                     Extension attributeExtension;
