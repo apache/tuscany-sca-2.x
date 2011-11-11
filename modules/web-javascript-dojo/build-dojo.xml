@@ -51,7 +51,7 @@
                 <exclude name="dojo-${dojo.version}/dojo/tests/**"/>
                 <include name="dojo-${dojo.version}/dijit/**"/>
                 <include name="dojo-${dojo.version}/dojox/**"/>
-                <exclude name="dojo-${dojo.version}/util/**"/>
+                <include name="dojo-${dojo.version}/util/**"/>
             </patternset>
         </unzip>
         <move file="${basedir}/target/dojo-unpack-temp/dojo-${dojo.version}"
