@@ -12,9 +12,8 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.assembly.xml;version="2.0.0",
  org.apache.tuscany.sca.binding.http;version="2.0.0",
- org.apache.tuscany.sca.binding.http.impl;version="2.0.0",
- org.apache.tuscany.sca.binding.http.operationselector,
- org.apache.tuscany.sca.binding.http.wireformat,
+ org.apache.tuscany.sca.binding.http.operationselector;version="2.0.0",
+ org.apache.tuscany.sca.binding.http.wireformat;version="2.0.0",
  org.apache.tuscany.sca.binding.jsonp;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.jsonp
 Bundle-DocURL: http://www.apache.org/
