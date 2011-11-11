@@ -23,14 +23,11 @@ import javax.servlet.Servlet;
 
 import org.apache.tuscany.sca.binding.http.HTTPBinding;
 import org.apache.tuscany.sca.binding.http.operationselector.HTTPDefaultOperationSelector;
-import org.apache.tuscany.sca.binding.http.operationselector.HTTPRPCOperationSelector;
 import org.apache.tuscany.sca.binding.http.wireformat.HTTPDefaultWireFormat;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
-import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.EndpointProvider;
@@ -57,8 +54,6 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
     private ServletHost servletHost;
     private String servletMapping;
     private InterfaceContract interfaceContract;
-
-    private HTTPBindingListenerServlet bindingListenerServlet;
    
     public HTTPServiceBindingProvider(RuntimeEndpoint endpoint,
                                       ExtensionPointRegistry extensionPoints,
@@ -133,28 +128,7 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
             throw new IllegalStateException("Binding operation selector and/or wire formats not properly setup.");
         }
         
-        InvocationChain bindingChain = endpoint.getBindingInvocationChain();
-        
-        Servlet servlet = null;
-        Invoker bindingInvoker = bindingChain.getHeadInvoker();
-        bindingListenerServlet = new HTTPBindingListenerServlet(binding, messageFactory);
-        for (InvocationChain invocationChain : endpoint.getInvocationChains()) {
-            
-            Operation operation = invocationChain.getTargetOperation();
-            Invoker serviceInvoker = invocationChain.getHeadInvoker();
-            String operationName = operation.getName();
-
-            /*
-            if (operationName.equals("service")) {
-                servlet = new HTTPBindingListenerServlet(binding, messageFactory);
-                break;
-            } else {
-            */
-                servlet = new HTTPBindingServiceServlet(endpoint, messageFactory);
-            /*
-            }
-            */
-        }
+        Servlet servlet = new HTTPBindingServiceServlet(endpoint, messageFactory);
         
         // Create our HTTP service listener Servlet and register it with the
         // Servlet host
