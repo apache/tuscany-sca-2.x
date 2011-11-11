@@ -48,7 +48,7 @@ public class HTTPRPCOperationSelectorProviderFactory implements OperationSelecto
         return new OperationSelectorProvider(){
             @Override
             public Interceptor createInterceptor() {
-                return new HTTPDefaultServiceOperationSelectorInterceptor(endpoint);
+                return new HTTPRPCServiceOperationSelectorInterceptor(endpoint);
             }
 
             @Override
