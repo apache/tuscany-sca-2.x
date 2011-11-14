@@ -386,7 +386,7 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     }   
 
     // TUSCANY-3120
-    // Checking we don't write out values unless the use has specified them on input
+    // Checking we don't write out values unless the user has specified them on input
     public void testDefault() throws Exception {
         XMLStreamReader reader =
             inputFactory.createXMLStreamReader(new StringReader(DEFAULT));
@@ -397,7 +397,10 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
         
-        System.out.println(bos.toString());
+        String outputString = bos.toString();
+        System.out.println(outputString);
+        /* replace with slightly different test so any ordering differences in written
+         * XML don't fail the test
         assertEquals(bos.toString(),
                      "<?xml version=\'1.0\' encoding=\'UTF-8\'?>" +
                      "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">" +
@@ -413,6 +416,24 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
                            "</service>" +
                          "</component>" +
                        "</composite>");
+        */
+        assertEquals(true, outputString.contains("binding.jms"));
+        assertEquals(true, outputString.contains("operationProperties"));
+        assertEquals(true, outputString.contains("destination"));
+        assertEquals(true, outputString.contains("jndiName"));
+        assertEquals(true, outputString.contains("type"));
+        assertEquals(true, outputString.contains("property"));
+        assertEquals(true, outputString.contains("connectionFactory"));
+        assertEquals(true, outputString.contains("resourceAdapter"));
+        
+        assertEquals(false, outputString.contains("headers"));
+        assertEquals(false, outputString.contains("response"));
+        assertEquals(false, outputString.contains("activationSpec"));
+        assertEquals(false, outputString.contains("messageSelection"));
+        assertEquals(false, outputString.contains("initialContextFactory"));
+        assertEquals(false, outputString.contains("correlationScheme"));
+        assertEquals(false, outputString.contains("wireFormat"));
+        assertEquals(false, outputString.contains("operationSelector"));
     }  
 
     public void testOperationPropertiesName() throws Exception {

@@ -177,26 +177,30 @@ public class PolicyProcessorTestCase extends TestCase {
     }     
     
     public void testSingleInterfaceWithRolesAllowedAtMethodLevel() throws Exception {
-        runProcessors(Service4.class, Service4.class.getMethods()[1], type);
-        Operation op = getOperationModel(Service4.class.getMethods()[1], type);
+        Method aMethod = Service4.class.getDeclaredMethod("method2");
+        runProcessors(Service4.class, aMethod, type);
+        Operation op = getOperationModel(aMethod, type);
         Assert.assertEquals(1, op.getPolicySets().size());
     } 
     
     public void testSingleInterfaceWithPermitAllAtMethodLevel() throws Exception {
-        runProcessors(Service4.class, Service4.class.getMethods()[2], type);
-        Operation op = getOperationModel(Service4.class.getMethods()[2], type);
+        Method aMethod = Service4.class.getDeclaredMethod("method3");
+        runProcessors(Service4.class, aMethod, type);
+        Operation op = getOperationModel(aMethod, type);
         Assert.assertEquals(1, op.getPolicySets().size());
     }     
 
     public void testSingleInterfaceWithDenyAllAtMethodLevel() throws Exception {
-        runProcessors(Service4.class, Service4.class.getMethods()[3], type);
-        Operation op = getOperationModel(Service4.class.getMethods()[3], type);
+        Method aMethod = Service4.class.getDeclaredMethod("method4");
+        runProcessors(Service4.class, aMethod, type);
+        Operation op = getOperationModel(aMethod, type);
         Assert.assertEquals(1, op.getPolicySets().size());
     }  
     
     public void testSingleInterfaceWithNothingAtMethodLevel() throws Exception {
-        runProcessors(Service4.class, Service4.class.getMethods()[0], type);
-        Operation op = getOperationModel(Service4.class.getMethods()[0], type);
+        Method aMethod = Service4.class.getDeclaredMethod("method1");
+        runProcessors(Service4.class, aMethod, type);
+        Operation op = getOperationModel(aMethod, type);
         Assert.assertEquals(0, op.getPolicySets().size());
     }      
     
@@ -210,13 +214,11 @@ public class PolicyProcessorTestCase extends TestCase {
     }
     
     private Operation getOperationModel(Method method, JavaImplementation type){
-        
         for(Operation op : type.getOperations()){
             if (((JavaOperation)op).getJavaMethod().equals(method)){
                 return op;
             } 
         }
-        
         return null;
     }
 }
