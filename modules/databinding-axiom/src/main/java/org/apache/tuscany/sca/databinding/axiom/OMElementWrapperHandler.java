@@ -231,6 +231,14 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
     private List<Object> getInvalidChildren(List<List<OMElement>> groupedElementList, List<ElementInfo> childElements) {
         List<Object> retVal = new ArrayList<Object>();
         
+        // if this is an operation without arguments then it seems that
+        // the groupedElementList can have a list with an empty list in it while
+        // the child elements list is empty. This leads to an IndexOutOfBounds when 
+        // trying to de-reference childElements. So check for this now
+        if (childElements.size() == 0){
+            return retVal;
+        }
+        
         // Since not all the ElementInfo(s) will be represented, (if some elements don't appear as children
         // of the wrapper payload, we need to loop through the schema 
         for (int index=0; index < groupedElementList.size(); index++) {          
