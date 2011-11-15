@@ -30,6 +30,8 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
+import org.apache.tuscany.sca.assembly.Extensible;
+import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.WireFormat;
@@ -45,7 +47,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  */
 
 //public class JMSBinding implements BindingRRB, PolicySubject, OperationsConfigurator, DefinitionElement {
-public class JMSBinding implements Binding, PolicySubject, OperationsConfigurator {
+public class JMSBinding implements Binding, PolicySubject, OperationsConfigurator, Extensible {
     QName TYPE = new QName(SCA11_NS, "binding.jms");
 
     @Override
@@ -58,6 +60,8 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
     private String name = null;
     private boolean unresolved = false;
     private List<Object> extensions = new ArrayList<Object>();
+
+    private List<Extension> attributeExtensions = new ArrayList<Extension>();
     
     // properties required by PolicySetAttachPoint
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
@@ -163,7 +167,7 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
 	private final Boolean defaultDeliveryMode = true;
 	private final Long defaultJMSTimeToLive =Long.valueOf(0);
 	private boolean isDestinationSpecified = false;	
-    
+
     public JMSBinding() {
         super();
     }
@@ -1090,5 +1094,10 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
 	public void setURIJMSSelector(String selector) {
 		this.uriJmsSelector = selector;		
 	}
+
+    @Override
+    public List<Extension> getAttributeExtensions() {
+        return attributeExtensions;
+    }
 	
 }

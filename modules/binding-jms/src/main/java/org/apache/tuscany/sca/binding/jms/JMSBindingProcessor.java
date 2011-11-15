@@ -31,12 +31,17 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
+import org.apache.tuscany.sca.assembly.Extensible;
+import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.WireFormat;
@@ -53,9 +58,13 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -138,16 +147,24 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<JMSBinding> {
     private PolicyFactory policyFactory;
     private PolicySubjectProcessor policyProcessor;
+    private AssemblyFactory assemblyFactory;
     private ConfiguredOperationProcessor configuredOperationProcessor;
     protected StAXArtifactProcessor<Object> extensionProcessor;
+    private StAXAttributeProcessor<Object> extensionAttributeProcessor;
+    private ProcessorContext processorContext;
 
-    public JMSBindingProcessor(FactoryExtensionPoint modelFactories, StAXArtifactProcessor<Object> extensionProcessor) {
+    public JMSBindingProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor) {
+        this.extensionProcessor = extensionProcessor;
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);        
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
-
-        this.configuredOperationProcessor = 
-            new ConfiguredOperationProcessor(modelFactories);
-        this.extensionProcessor = extensionProcessor;
+        this.configuredOperationProcessor = new ConfiguredOperationProcessor(modelFactories);
+        XMLInputFactory inputFactory = extensionPoints.getExtensionPoint(XMLInputFactory.class);
+        XMLOutputFactory outputFactory = extensionPoints.getExtensionPoint(XMLOutputFactory.class);
+        StAXAttributeProcessorExtensionPoint attributeExtensionPoint = extensionPoints.getExtensionPoint(StAXAttributeProcessorExtensionPoint.class);
+        this.extensionAttributeProcessor = new ExtensibleStAXAttributeProcessor(attributeExtensionPoint ,inputFactory, outputFactory);
+        this.processorContext = new ProcessorContext(extensionPoints);
     }
     
     /**
@@ -270,6 +287,27 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             jmsBinding.setOperationPropertiesName(getQNameValue(reader, operationPropertiesName));
         }
 
+        //add binding extensions
+        QName elementQName = reader.getName();
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            QName attributeName = reader.getAttributeName(i);
+            if(attributeName.getNamespaceURI() != null && attributeName.getNamespaceURI().length() > 0) {                
+                if(!elementQName.getNamespaceURI().equals(attributeName.getNamespaceURI()) ) {
+                    Object attributeValue = extensionAttributeProcessor.read(attributeName, reader, processorContext);
+                    Extension attributeExtension;
+                    if (attributeValue instanceof Extension) {
+                        attributeExtension = (Extension)attributeValue;
+                    } else {
+                        attributeExtension = assemblyFactory.createExtension();
+                        attributeExtension.setQName(attributeName);
+                        attributeExtension.setValue(attributeValue);
+                        attributeExtension.setAttribute(true);
+                    }
+                    ((Extensible)jmsBinding).getAttributeExtensions().add(attributeExtension);
+                }
+            }
+        }
+        
         // Read sub-elements of binding.jms
         boolean endFound = false;
         while (!endFound) {
@@ -1097,6 +1135,13 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             writer.writeAttribute("jndiURL", jmsBinding.getJndiURL());            
         }
         
+        // Write extended attributes
+        for(Extension extension : ((Extensible)jmsBinding).getAttributeExtensions()) {
+            if(extension.isAttribute()) {
+                extensionAttributeProcessor.write(extension, writer, processorContext);
+            }
+        }
+
         if ( jmsBinding.containsHeaders() ) {
            writeHeaders( jmsBinding, writer);
         }
