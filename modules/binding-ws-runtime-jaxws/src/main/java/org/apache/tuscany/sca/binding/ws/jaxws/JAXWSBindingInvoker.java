@@ -75,6 +75,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
     private final static String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
 
     public static final String WSA_FINAL_NAMESPACE = "http://www.w3.org/2005/08/addressing";
+    public static final QName QNAME_WSA_ADDRESS = new QName(WSA_FINAL_NAMESPACE, "Address", "wsa");
     public static final QName QNAME_WSA_FROM = new QName(WSA_FINAL_NAMESPACE, "From", "wsa");
     public static final QName QNAME_WSA_TO = new QName(WSA_FINAL_NAMESPACE, "To", "wsa");
     public static final QName QNAME_WSA_ACTION = new QName(WSA_FINAL_NAMESPACE, "Action", "wsa");
@@ -180,7 +181,6 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         if (detail != null) {
             for (Iterator i = detail.getDetailEntries(); i.hasNext();) {
                 DetailEntry entry = (DetailEntry)i.next();
-                //FaultException fe = new FaultException(e.getMessage(), entry.getFirstChild(), e);
                 FaultException fe = new FaultException(e.getMessage(), entry, e);
                 fe.setFaultName(entry.getElementQName());
                 msg.setFaultBody(fe);
@@ -254,7 +254,8 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
             //
             // addWSAFromHeader(sh, fromEPR);
             SOAPHeaderElement fromH = sh.addHeaderElement(QNAME_WSA_FROM);
-            fromH.setTextContent(callbackEndpoint.getBinding().getURI());
+            SOAPElement fromAddress = fromH.addChildElement(QNAME_WSA_ADDRESS);            
+            fromAddress.setTextContent(callbackEndpoint.getBinding().getURI());
 
             addWSAActionHeader(sh, action);
 
@@ -334,7 +335,8 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         // wsaToOM.setText( address );
         // sh.addChild(wsaToOM);
         SOAPHeaderElement toH = sh.addHeaderElement(QNAME_WSA_TO);
-        toH.setTextContent(address);
+        SOAPElement toAddress = toH.addChildElement(QNAME_WSA_ADDRESS);
+        toAddress.setTextContent(address);
 
         // Deal with Reference Parameters, if present - copy to the header
         // without the wsa:ReferenceParameters wrapper
