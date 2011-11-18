@@ -101,7 +101,10 @@ public class JAXWSAsyncInterfaceProcessor implements JavaInterfaceVisitor {
         }
 
         //a return type of Response<R> where R is the return type of M
-        DataType<?> operationOutputType = operation.getOutputType().getLogical().get(0);
+        DataType<?> operationOutputType = null;
+        if (operation.getOutputType()!= null && operation.getOutputType().getLogical() != null && operation.getOutputType().getLogical().size() > 0) {
+            operationOutputType = operation.getOutputType().getLogical().get(0);
+        }
         DataType<?> asyncOperationOutputType = asyncOperation.getOutputType().getLogical().get(0);
 
         if (operationOutputType != null && asyncOperationOutputType != null) {
@@ -173,7 +176,6 @@ public class JAXWSAsyncInterfaceProcessor implements JavaInterfaceVisitor {
         Class<?> asyncLastParameterTypeClass = asyncOperationInputType.get(size).getPhysical();
         if (asyncLastParameterTypeClass == AsyncHandler.class) {
             //now check the actual type of the AsyncHandler<R> with R
-            Class<?> returnType = operation.getOutputType().getLogical().get(0).getPhysical();
             Class<?> asyncActualLastParameterTypeClass = Object.class;
             if (genericParamType instanceof ParameterizedType) {
                 ParameterizedType asyncLastParameterType = (ParameterizedType)genericParamType;
@@ -188,12 +190,17 @@ public class JAXWSAsyncInterfaceProcessor implements JavaInterfaceVisitor {
                 }
             }
 
-            if (returnType == asyncActualLastParameterTypeClass || returnType.isPrimitive()
-                && primitiveAssignable(returnType, asyncActualLastParameterTypeClass)) {
-                return true;
-            } else {
-                return false;
+            Class<?> returnType = null;
+            if (operation.getOutputType() != null && operation.getOutputType().getLogical() != null && operation.getOutputType().getLogical().size() > 0) {
+                returnType = operation.getOutputType().getLogical().get(0).getPhysical();
             }
+            if (returnType != null) {
+                if (returnType == asyncActualLastParameterTypeClass || returnType.isPrimitive()
+                    && primitiveAssignable(returnType, asyncActualLastParameterTypeClass)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         return true;
