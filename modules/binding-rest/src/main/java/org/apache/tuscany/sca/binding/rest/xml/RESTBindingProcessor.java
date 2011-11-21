@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
 import org.apache.tuscany.sca.binding.rest.RESTBindingFactory;
 import org.apache.tuscany.sca.common.http.HTTPHeader;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -57,6 +58,7 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
     private static final String NAME = "name";
     private static final String VALUE = "value";
     private static final String URI = "uri";
+    private static final String READ_TIMEOUT = "readTimeout";
 
     private RESTBindingFactory httpBindingFactory;
     private StAXArtifactProcessor<Object> extensionProcessor;
@@ -81,7 +83,7 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
         RESTBinding restBinding = httpBindingFactory.createRESTBinding();
 
         /**
-         *    <tuscany:binding.rest uri="http://localhost:8085/Customer">
+         *    <tuscany:binding.rest uri="http://localhost:8085/Customer" readTimeout="60000">
          *          <tuscany:wireFormat.xml />
          *          <tuscany:operationSelector.jaxrs />
          *          <tuscany:http-headers>
@@ -112,6 +114,11 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
                         String uri = getURIString(reader, URI);
                         if (uri != null) {
                             restBinding.setURI(uri);
+                        }
+                        
+                        String readTimeout = getReadTimeoutString(reader, READ_TIMEOUT);
+                        if (readTimeout != null) {
+                            restBinding.setReadTimeout(Integer.valueOf(readTimeout));
                         }
                         break;
 
@@ -187,6 +194,10 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
         }
 
         return restBinding;
+    }
+
+    private String getReadTimeoutString(XMLStreamReader reader, String readTimeout) {
+        return StAXHelper.getAttributeAsString(reader, readTimeout);
     }
 
     public void write(RESTBinding restBinding, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {

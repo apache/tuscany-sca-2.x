@@ -42,6 +42,8 @@ class RESTBindingImpl implements RESTBinding {
 
     private List<HTTPHeader> httpHeaders = new ArrayList<HTTPHeader>();
 
+    private int readTimeout = 60000;
+
     private WireFormat requestWireFormat;
     private WireFormat responseWireFormat;
     private OperationSelector operationSelector;
@@ -111,5 +113,13 @@ class RESTBindingImpl implements RESTBinding {
 
     public boolean isCORS() {
         return true;
+    }
+
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
     }
 }

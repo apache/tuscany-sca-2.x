@@ -36,5 +36,8 @@ public interface RESTBinding extends Binding {
     
     public List<HTTPHeader> getHttpHeaders();
 
+    public int getReadTimeout();
+    public void setReadTimeout(int timeout);
+    
     public boolean isCORS();
 }

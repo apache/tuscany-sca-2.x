@@ -48,7 +48,7 @@ public class RESTBindingProcessorTestCase {
             + " <component name=\"CustomerService\">"
             + "   <implementation.java class=\"services.customer.CustomerServiceImpl\"/>"
             + "      <service name=\"CustomerService\">"
-            + "         <tuscany:binding.rest uri=\"http://localhost:8085/Customer\">"
+            + "         <tuscany:binding.rest uri=\"http://localhost:8085/Customer\" readTimeout=\"30000\">"
             + "            <tuscany:wireFormat.xml />"
             + "            <tuscany:operationSelector.jaxrs />"
             + "            <tuscany:http-headers>"
@@ -86,6 +86,7 @@ public class RESTBindingProcessorTestCase {
         RESTBinding binding = (RESTBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         Assert.assertNotNull(binding);
+        Assert.assertEquals(30000, binding.getReadTimeout());
         Assert.assertEquals(2, binding.getHttpHeaders().size());
         Assert.assertEquals("Cache-Control", binding.getHttpHeaders().get(0).getName());
         Assert.assertEquals("no-cache", binding.getHttpHeaders().get(0).getValue());
