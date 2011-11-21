@@ -37,6 +37,7 @@
                     <!-- any namespace="##targetNamespace" processContents="lax" minOccurs="0"
                          maxOccurs="unbounded"/ -->
                 </sequence>
+                <attribute name="readTimeout" type="int" default="60000"/>
                 <!-- anyAttribute namespace="##any" processContents="lax"/-->
             </extension>
         </complexContent>
