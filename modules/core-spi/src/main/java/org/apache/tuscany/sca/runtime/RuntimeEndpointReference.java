@@ -23,6 +23,8 @@ import java.io.Serializable;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 
 /**
@@ -92,5 +94,10 @@ public interface RuntimeEndpointReference extends EndpointReference, Invocable, 
      */
     RuntimeEndpointReference getDelegateEndpointReference();
     void setDelegateEndpointReference(RuntimeEndpointReference delegateEndpointReference);
+
+    /**
+     * Get the async response invoker for an asynchronous invocation
+     */
+    InvokerAsyncResponse getAsyncResponseInvoker(Operation op);
 
 }
