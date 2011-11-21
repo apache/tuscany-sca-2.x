@@ -127,6 +127,8 @@ public class RESTBindingInvoker implements Invoker {
             }
 
         });
+        
+        config.readTimeout(binding.getReadTimeout());
         RestClient client = new RestClient(config);
         
         // Default to GET for RPC
