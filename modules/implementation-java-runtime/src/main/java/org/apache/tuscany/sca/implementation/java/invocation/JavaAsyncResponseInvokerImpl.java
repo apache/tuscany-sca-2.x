@@ -100,6 +100,15 @@ public class JavaAsyncResponseInvokerImpl implements JDKAsyncResponseInvoker {
 		// Add the ID/response handler mapping into the table
 		if( id != null && responseHandler != null ) asyncMessageMap.put(id, responseHandler);
 	} // end method registerAsyncResponse
+
+	/**
+	 * Returns the registered async response for a given ID
+	 * @param id - the ID
+	 * @return responseHandler - the response handler object
+	 */
+	public Object getAsyncResponse( String id ) {
+	    return asyncMessageMap.get(id);
+	}
 	
 	/**
 	 * Extracts the RELATES_TO header from the message
