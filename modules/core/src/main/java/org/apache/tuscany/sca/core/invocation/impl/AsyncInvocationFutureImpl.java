@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.core.invocation.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -32,6 +33,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.xml.ws.AsyncHandler;
 import javax.xml.ws.Response;
 
+import org.apache.tuscany.sca.core.invocation.AsyncContext;
 import org.apache.tuscany.sca.core.invocation.AsyncFaultWrapper;
 import org.apache.tuscany.sca.core.invocation.AsyncResponseHandler;
 
@@ -46,7 +48,7 @@ import org.apache.tuscany.sca.core.invocation.AsyncResponseHandler;
  *
  * @param <V> - this is the type of the response message from the invoked service.
  */
-public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, AsyncResponseHandler<V> {
+public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, AsyncContext, AsyncResponseHandler<V> {
 	
 	// Lock for handling the completion of this Future
 	private final Lock lock = new ReentrantLock();
@@ -60,6 +62,8 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 	
 	private Class businessInterface = null;
 	private AsyncHandler callback;
+
+    private Map<String, Object> attributes = new HashMap<String, Object>();
 
 	protected AsyncInvocationFutureImpl() {
 		super();
@@ -260,5 +264,22 @@ public class AsyncInvocationFutureImpl<V> implements Future<V>, Response<V>, Asy
 		this.callback = callback;
 	}
 
+    /**
+     * Look up an attribute value by name.
+     * @param name The name of the attribute
+     * @return The value of the attribute
+     */
+    public Object getAttribute(String name) {
+        return attributes.get(name);
+    }
+
+    /**
+     * Set the value of an attribute.  Allows extensions to associate other data with an async response.
+     * @param name The name of the attribute 
+     * @param value
+     */
+    public void setAttribute(String name, Object value) {
+        attributes.put(name, value);
+    }
 
 } // end class AsyncInvocationFutureImpl

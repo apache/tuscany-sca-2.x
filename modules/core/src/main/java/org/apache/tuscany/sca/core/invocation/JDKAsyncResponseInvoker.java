@@ -30,4 +30,11 @@ public interface JDKAsyncResponseInvoker extends InvokerAsyncResponse {
 	 */
 	public void registerAsyncResponse( String id, Object responseHandler );
 
+	/**
+	 * Returns the registered async response for a given ID
+	 * @param id - the ID
+	 * @return responseHandler - the response handler object
+	 */
+	public Object getAsyncResponse( String id );
+
 } // end interface JDKAsyncResponseInvoker

@@ -806,4 +806,18 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
     public void setDelegateEndpointReference(RuntimeEndpointReference delegateEndpointReference) {
         this.delegateEndpointReference = delegateEndpointReference;
     }
+
+    /**
+     * Gets the async response invoker for an asynchronous invocation.
+     */
+    public InvokerAsyncResponse getAsyncResponseInvoker(Operation op) {
+        InvocationChain chain = getInvocationChain(op);
+        Invoker headInvoker = chain.getHeadInvoker();
+        if( headInvoker instanceof InterceptorAsync ) {
+            InvokerAsyncResponse responseInvoker = ((InterceptorAsync)headInvoker).getPrevious();
+        	return responseInvoker;
+        }
+        return null;
+    }
+
 }
