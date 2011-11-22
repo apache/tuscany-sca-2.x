@@ -1024,7 +1024,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         } 
         
         if (!endpoint.getSpecVersion().equals(Base.SCA11_NS)){
-            // Assume it matches as we don't know how to do policy 
+            // Assume it matches as we don't know how to do interface 
             // matching with anything but OASIS endpoint
             matchAudit.append("Match because the target endpoint is not an OASIS endpoint, specVersion = " + 
                               endpoint.getSpecVersion());
