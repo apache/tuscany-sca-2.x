@@ -53,7 +53,7 @@ public class FaultBeanGenerator extends BaseBeanGenerator {
         for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
             if (pd.getReadMethod() != null) {
                 String name = pd.getReadMethod().getName();
-                if ("getClass".equals(name) || "getStackTrace".equals(name)
+                if ("getClass".equals(name) || "getStackTrace".equals(name) || "getSuppressed".equals(name)
                     || "getCause".equals(name)
                     || "getLocalizedMessage".equals(name)) {
                     continue;
