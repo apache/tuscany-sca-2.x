@@ -347,6 +347,9 @@ public class EquinoxHost {
         if (version.startsWith("1.6")) {
             profile = "JavaSE-1.6.profile";
         }
+        if (version.startsWith("1.7")) {
+            profile = "JavaSE-1.7.profile";
+        }
         Properties props = new Properties();
         InputStream is = getClass().getResourceAsStream(profile);
         if (is != null) {
