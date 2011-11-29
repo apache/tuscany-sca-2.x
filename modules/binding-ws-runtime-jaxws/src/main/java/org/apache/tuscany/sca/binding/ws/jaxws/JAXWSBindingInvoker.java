@@ -377,8 +377,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         // wsaToOM.setText( address );
         // sh.addChild(wsaToOM);
         SOAPHeaderElement toH = sh.addHeaderElement(QNAME_WSA_TO);
-        SOAPElement toAddress = toH.addChildElement(QNAME_WSA_ADDRESS);
-        toAddress.setTextContent(address);
+        toH.setTextContent(address);
 
         // Deal with Reference Parameters, if present - copy to the header
         // without the wsa:ReferenceParameters wrapper
