@@ -151,16 +151,17 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
     public Message invoke(Message msg) {
         try {
             SOAPMessage resp = invokeTarget(msg);
-            SOAPBody body = resp.getSOAPBody();
-            if (body != null) {
-                SOAPFault fault = body.getFault();
-                if (fault != null) {
-                    // setFault(msg, fault);
-                } else {
-                    // The 1st child element
-                    msg.setBody(body.getChildElements().next());
+            if (resp != null) {
+                SOAPBody body = resp.getSOAPBody();
+                if (body != null) {
+                    SOAPFault fault = body.getFault();
+                    if (fault != null) {
+                        // setFault(msg, fault);
+                    } else {
+                        // The 1st child element
+                        msg.setBody(body.getChildElements().next());
+                    }
                 }
-
             }
         } catch (SOAPFaultException e) {
             setFault(msg, e);
