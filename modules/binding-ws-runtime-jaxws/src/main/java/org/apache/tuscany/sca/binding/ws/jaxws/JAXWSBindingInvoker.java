@@ -56,6 +56,7 @@ import javax.xml.ws.soap.SOAPFaultException;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
@@ -419,7 +420,6 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
 
     } // end method addWSAActionHeader
 
-    private static String WS_MESSAGE_ID = "WS_MESSAGE_ID";
     protected static String SCA_CALLBACK_REL = "http://docs.oasis-open.org/opencsa/sca-bindings/ws/callback";
 
     /**
@@ -432,7 +432,8 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
      * @throws SOAPException
      */
     private void addWSARelatesTo(SOAPHeader sh, Message msg) throws SOAPException {
-        String idValue = (String)msg.getHeaders().get(WS_MESSAGE_ID);
+        
+        String idValue = (String)msg.getHeaders().get(Constants.MESSAGE_ID);
         if (idValue != null) {
             SOAPHeaderElement relatesToH = sh.addHeaderElement(QNAME_WSA_RELATESTO);
             relatesToH.addAttribute(new QName(null, "RelationshipType"), SCA_CALLBACK_REL);

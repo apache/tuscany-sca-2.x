@@ -45,6 +45,7 @@ import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
+import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -63,6 +64,7 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
     public static final String WSA_FINAL_NAMESPACE = "http://www.w3.org/2005/08/addressing";
     public static final QName QNAME_WSA_ADDRESS = new QName(WSA_FINAL_NAMESPACE, "Address");
     public static final QName QNAME_WSA_FROM = new QName(WSA_FINAL_NAMESPACE, "From");
+    public static final QName QNAME_WSA_RELATESTO = new QName(WSA_FINAL_NAMESPACE, "RelatesTo");
     public static final QName QNAME_WSA_REPLYTO = new QName(WSA_FINAL_NAMESPACE, "ReplyTo");
     public static final QName QNAME_WSA_REFERENCE_PARAMETERS = new QName(WSA_FINAL_NAMESPACE, "ReferenceParameters");
     public static final QName QNAME_WSA_MESSAGEID = new QName(WSA_FINAL_NAMESPACE, "MessageID");
@@ -72,12 +74,12 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
     private WebServiceBinding wsBinding;
     private javax.xml.soap.MessageFactory soapMessageFactory;
     private SOAPFactory soapFactory;
-    
+
     @Resource
     private WebServiceContext context;
     private RuntimeAssemblyFactory assemblyFactory;
     private WebServiceBindingFactory webServiceBindingFactory;  
-    
+
     public JAXWSBindingProvider(){
         // to keep Axis2 JAXWS implementation happy
     }
@@ -107,7 +109,7 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
         // Set to use the DOM data binding
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         contract.getInterface().resetDataBinding(Node.class.getName());
-        
+
         // Can we safely assume there is only one port because you configure
         // a binding in the following ways: 
         // 1/ default             - one port generated = host domain : host port / structural path 
@@ -124,7 +126,7 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
         // specific processing by adding a root if it's not already present
         if (!wsBinding.getURI().startsWith("http://")) {
             String serviceURI = null;
-            
+
             // look in the port for the location URL
             List wsdlPortExtensions = wsBinding.getPort().getExtensibilityElements();
             for (final Object extension : wsdlPortExtensions) {
@@ -132,12 +134,12 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
                     serviceURI = ((SOAPAddress) extension).getLocationURI();
                 }
             }     
-            
+
             if (serviceURI == null || 
                 !serviceURI.startsWith("http://")){
                 serviceURI = "http://localhost:" + defaultPort + wsBinding.getURI();
             }
-            
+
             wsBinding.setURI(serviceURI);
         }
         System.out.println("Binding.ws JAXWS provider - Service URI: " + wsBinding.getURI());
@@ -171,27 +173,28 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
             Object[] body = new Object[]{root};
             requestMsg.setBody(body);
             requestMsg.setOperation(operation);
-            
+
             SOAPHeader header = request.getSOAPHeader();
             String callbackAddress = null;
             if (header != null) {
                 callbackAddress = handleCallbackAddress( header, requestMsg );
                 // Retrieve other callback-related headers
                 handleMessageIDHeader( header, requestMsg );
+                handleRelatesToHeader( header, requestMsg );
             } // end if
 
             // Create a from EPR to hold the details of the callback endpoint
             EndpointReference from = null;
             if (callbackAddress != null ) {
-                    // Check for special (& not allowed!) WS_Addressing values
-                    checkCallbackAddress( callbackAddress, request );
-                    //
+                // Check for special (& not allowed!) WS_Addressing values
+                checkCallbackAddress( callbackAddress, request );
+                //
                 from = assemblyFactory.createEndpointReference();
                 Endpoint fromEndpoint = assemblyFactory.createEndpoint();
                 from.setTargetEndpoint(fromEndpoint);
                 from.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
                 requestMsg.setFrom(from);
-                Endpoint callbackEndpoint = assemblyFactory.createEndpoint();
+                RuntimeEndpoint callbackEndpoint = (RuntimeEndpoint)assemblyFactory.createEndpoint();
                 //
                 WebServiceBinding cbBinding = webServiceBindingFactory.createWebServiceBinding();
                 cbBinding.setURI(callbackAddress);
@@ -203,11 +206,11 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
             }
 
             Message responseMsg = endpoint.invoke(operation, requestMsg);
-            
+
             SOAPMessage response = soapMessageFactory.createMessage();
             if (responseMsg.isFault()) {
-//                ServiceRuntimeException e = responseMsg.getBody();
-//                throw e;
+                //                ServiceRuntimeException e = responseMsg.getBody();
+                //                throw e;
 
                 FaultException fe = responseMsg.getBody();
                 SOAPFault fault = response.getSOAPBody().addFault(new QName(response.getSOAPBody().getNamespaceURI(), "Server"), fe.getMessage());
@@ -230,14 +233,14 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
     private static String WS_REF_PARMS = "WS_REFERENCE_PARAMETERS";
     private String handleCallbackAddress( SOAPHeader header, Message msg ) {
         String callbackAddress = null;
-        
+
         Iterator<SOAPElement> it = header.getChildElements(QNAME_WSA_FROM);
         SOAPElement from = it.hasNext() ? it.next() : null;
         if( from == null ) {
             Iterator<SOAPElement> it2 = header.getChildElements(QNAME_WSA_REPLYTO);
             from = it2.hasNext() ? it2.next() : null;
         }
-        
+
         if (from != null) {
             Iterator<SOAPElement> it2 = header.getChildElements(QNAME_WSA_ADDRESS);
             SOAPElement callbackAddrElement = it2.hasNext() ? it2.next() : null;
@@ -245,17 +248,16 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
                 if (endpoint.getService().getInterfaceContract().getCallbackInterface() != null) {
                     callbackAddress = callbackAddrElement.getTextContent();
                 }
-//                OMElement refParms = from.getFirstChildWithName(QNAME_WSA_REFERENCE_PARAMETERS);
+                //                OMElement refParms = from.getFirstChildWithName(QNAME_WSA_REFERENCE_PARAMETERS);
                 Iterator<SOAPElement> it3 = header.getChildElements(QNAME_WSA_REFERENCE_PARAMETERS);
                 SOAPElement refParms = it3.hasNext() ? it3.next() : null;
                 if( refParms != null ) msg.getHeaders().put(WS_REF_PARMS, refParms);
             }
         } // end if
-        
+
         return callbackAddress;
     } // end method handleCallbackAddress
-    
-    private static String WS_MESSAGE_ID = "WS_MESSAGE_ID";
+
     /**
      * Handle a SOAP wsa:MessageID header - place the contents into the Tuscany message for use by any callback
      * @param header - the SOAP Headers
@@ -266,11 +268,26 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
         Iterator<SOAPElement> it = header.getChildElements(QNAME_WSA_MESSAGEID);
         SOAPElement messageID = it.hasNext() ? it.next() : null;
         if (messageID != null) {
-                String idValue = messageID.getTextContent();
-                // Store the value of the message ID element into the message under "WS_MESSAGE_ID"...
-                msg.getHeaders().put(WS_MESSAGE_ID, idValue);
+            String idValue = messageID.getTextContent();
+            msg.getHeaders().put(Constants.MESSAGE_ID, idValue);
         } // end if
     } // end method handleMessageID
+
+    /**
+     * Handle a SOAP wsa:RelatesTo header - place the contents into the Tuscany message for use by any callback
+     * @param header - the SOAP Headers
+     * @param msg - the Tuscany Message
+     */
+    private void handleRelatesToHeader( SOAPHeader header, Message msg ) {
+        if( header == null ) return;
+        Iterator<SOAPElement> it = header.getChildElements(QNAME_WSA_RELATESTO);
+        SOAPElement relatesTo = it.hasNext() ? it.next() : null;        
+        if (relatesTo != null) {
+            String relatesToVal = relatesTo.getTextContent();
+            msg.getHeaders().put(Constants.RELATES_TO, relatesToVal);
+        } // end if
+    } // end method handleRelatesToHeader
+
     // Special WS_Addressing values
     private static String WS_ADDR_ANONYMOUS = "http://www.w3.org/2005/08/addressing/anonymous";
     private static String WS_ADDR_NONE          = "http://www.w3.org/2005/08/addressing/none";
@@ -285,28 +302,28 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
     private void checkCallbackAddress( String callbackAddress, SOAPMessage request) {
         // If the address is anonymous or none, throw a SOAP fault...
         if( WS_ADDR_ANONYMOUS.equals(callbackAddress) || WS_ADDR_NONE.equals(callbackAddress) ) {
-                triggerOnlyNonAnonymousAddressSupportedFault(request, "wsa:From");
+            triggerOnlyNonAnonymousAddressSupportedFault(request, "wsa:From");
         }
     } // end method checkCallbackAddress
     //      wsa:OnlyAnonymousAddressSupported
 
     //      wsa:OnlyNonAnonymousAddressSupported
     public void triggerOnlyNonAnonymousAddressSupportedFault(SOAPMessage request, String incorrectHeaderName){
-// TODO        
-//        String namespace = (String)messageContext.getProperty(AddressingConstants.WS_ADDRESSING_VERSION);
-//        if (Submission.WSA_NAMESPACE.equals(namespace)) {
-//            triggerAddressingFault(messageContext, Final.FAULT_HEADER_PROB_HEADER_QNAME,
-//                                   AddressingConstants.WSA_DEFAULT_PREFIX + ":" +
-//                                           incorrectHeaderName, Submission.FAULT_INVALID_HEADER,
-//                                                                null, AddressingMessages.getMessage(
-//                    "spec.submission.FAULT_INVALID_HEADER_REASON"));
-//        } else {
-//            triggerAddressingFault(messageContext, Final.FAULT_HEADER_PROB_HEADER_QNAME,
-//                                   AddressingConstants.WSA_DEFAULT_PREFIX + ":" +
-//                                           incorrectHeaderName, Final.FAULT_INVALID_HEADER,
-//                                                                Final.FAULT_ONLY_NON_ANONYMOUS_ADDRESS_SUPPORTED,
-//                                                                AddressingMessages.getMessage(
-//                                                                        "spec.final.FAULT_INVALID_HEADER_REASON"));
-//        }
+        // TODO        
+        //        String namespace = (String)messageContext.getProperty(AddressingConstants.WS_ADDRESSING_VERSION);
+        //        if (Submission.WSA_NAMESPACE.equals(namespace)) {
+        //            triggerAddressingFault(messageContext, Final.FAULT_HEADER_PROB_HEADER_QNAME,
+        //                                   AddressingConstants.WSA_DEFAULT_PREFIX + ":" +
+        //                                           incorrectHeaderName, Submission.FAULT_INVALID_HEADER,
+        //                                                                null, AddressingMessages.getMessage(
+        //                    "spec.submission.FAULT_INVALID_HEADER_REASON"));
+        //        } else {
+        //            triggerAddressingFault(messageContext, Final.FAULT_HEADER_PROB_HEADER_QNAME,
+        //                                   AddressingConstants.WSA_DEFAULT_PREFIX + ":" +
+        //                                           incorrectHeaderName, Final.FAULT_INVALID_HEADER,
+        //                                                                Final.FAULT_ONLY_NON_ANONYMOUS_ADDRESS_SUPPORTED,
+        //                                                                AddressingMessages.getMessage(
+        //                                                                        "spec.final.FAULT_INVALID_HEADER_REASON"));
+        //        }
     }
 }
