@@ -43,8 +43,11 @@ public abstract class ParserPool<V> {
         while (true) {
             for (Map.Entry<V, Boolean> e : objects.entrySet()) {
                 if (Boolean.FALSE.equals(e.getValue())) {
-                    e.setValue(Boolean.TRUE); // in use
-                    return e.getKey();
+                    // setValue fails on some Harmony based JDKs, see https://issues.apache.org/jira/browse/HARMONY-6419
+                    //e.setValue(Boolean.TRUE); // in use
+                    V key = e.getKey();
+                    objects.put(key, Boolean.TRUE); // in use
+                    return key;
                 }
             }
             if (objects.size() < maxSize) {
