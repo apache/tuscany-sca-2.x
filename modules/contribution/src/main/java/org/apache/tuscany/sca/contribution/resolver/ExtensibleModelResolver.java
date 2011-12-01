@@ -20,6 +20,9 @@
 package org.apache.tuscany.sca.contribution.resolver;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -94,12 +97,18 @@ public class ExtensibleModelResolver implements ModelResolver {
                     return resolverInstance;
                 }
                 try {
-                    Constructor<? extends ModelResolver> constructor =
+                    final Constructor<? extends ModelResolver> constructor =
                         resolverClass
                             .getConstructor(new Class[] {Contribution.class, FactoryExtensionPoint.class});
                     if (constructor != null) {
 
-                        resolverInstance = constructor.newInstance(contribution, modelFactories);
+                        resolverInstance = AccessController.doPrivileged(new PrivilegedExceptionAction<ModelResolver>() {
+                            public ModelResolver run() throws Exception {
+                                ModelResolver resolverInstance = constructor.newInstance(contribution, modelFactories);
+                                return resolverInstance;
+                            }
+                        });
+                        
                         resolversByImplementationClass.put(resolverClass, resolverInstance);
                         resolversByModelType.put(c, resolverInstance);
                         return resolverInstance;
