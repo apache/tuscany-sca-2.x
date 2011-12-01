@@ -99,6 +99,9 @@ public class NodeImpl implements Node {
         extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(ActiveNodes.class).getActiveNodes().add(this);
 
         domainRegistry.addContributionListener(new ContributionListener() {
+            public void contributionInstalled(String uri) {
+                // Do nothing
+            }
             public void contributionUpdated(String uri) {
                 unloadContribution(uri);
             }

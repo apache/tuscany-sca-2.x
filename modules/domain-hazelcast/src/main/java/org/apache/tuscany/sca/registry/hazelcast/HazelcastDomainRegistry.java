@@ -143,6 +143,9 @@ public class HazelcastDomainRegistry extends BaseDomainRegistry implements Domai
             contributionDescriptions = hazelcastInstance.getMap(domainURI + "/ContributionDescriptions");
             ((IMap<String, ContributionDescription>)contributionDescriptions).addEntryListener(new EntryListener<String, ContributionDescription>() {
                 public void entryAdded(EntryEvent<String, ContributionDescription> event) {
+                    for (ContributionListener listener : contributionlisteners) {
+                        listener.contributionInstalled(event.getKey());
+                    }
                 }
                 public void entryRemoved(EntryEvent<String, ContributionDescription> event) {
                     for (ContributionListener listener : contributionlisteners) {

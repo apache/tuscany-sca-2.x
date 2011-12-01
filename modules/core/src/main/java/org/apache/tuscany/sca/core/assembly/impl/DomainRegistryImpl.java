@@ -204,6 +204,9 @@ public class DomainRegistryImpl extends BaseDomainRegistry implements DomainRegi
 
     public void installContribution(ContributionDescription cd) {
         contributionDescriptions.put(cd.getURI(), cd);
+        for (ContributionListener listener : contributionlisteners) {
+            listener.contributionInstalled(cd.getURI());
+        }
     }
 
     public void uninstallContribution(String uri) {

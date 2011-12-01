@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.runtime;
 import java.util.EventListener;
 
 public interface ContributionListener extends EventListener {
+    
+    void contributionInstalled(String uri);
 
     void contributionRemoved(String uri);
 
