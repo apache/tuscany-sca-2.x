@@ -175,7 +175,7 @@ public class RemoteServiceInvocationHandler implements InvocationHandler {
         Component component = endpoint.getComponent();
         ComponentService service = endpoint.getService();
         ComponentReference componentReference = assemblyFactory.createComponentReference();
-        componentReference.setName("sca.client." + service.getName());
+        componentReference.setName("$sca.client$." + service.getName());
 
         componentReference.setCallback(service.getCallback());
         componentReference.getTargets().add(service);
