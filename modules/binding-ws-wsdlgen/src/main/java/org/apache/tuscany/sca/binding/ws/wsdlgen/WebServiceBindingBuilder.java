@@ -98,59 +98,7 @@ public class WebServiceBindingBuilder implements BindingBuilder<WebServiceBindin
             }
             
             defaultIntents.add(defaultIntent);
-        }
-        
-        // if the binding may provide SOAP.v1_1 then use this is as the default if no
-        // other intents are specified
-/*        
-        if (intent != null){
-            List<DefaultIntent> defaultIntents = ((DefaultingPolicySubject)binding).getDefaultIntents();
-            DefaultIntent defaultIntent = policyFactory.createDefaultIntent();
-            
-            // Add the default intent
-            defaultIntent.setDefaultIntent(intent);
-            
-            // Add the names of all of the intents that must not be present in 
-            // order for the default intent to come into force
-            defaultIntent.getMutuallyExclusiveIntents().add(new QName(Base.SCA11_NS, "SOAP.v1_1"));
-            defaultIntent.getMutuallyExclusiveIntents().add(new QName(Base.SCA11_NS, "SOAP.v1_2"));
-            defaultIntent.getMutuallyExclusiveIntents().add(new QName(Base.SCA11_NS, "SOAP"));
-            
-            defaultIntents.add(defaultIntent);
-        }
-*/
-        
-/*        
-        boolean addDefaultSOAPIntent = true;
-        
-        for(Intent intent : ((PolicySubject)binding).getRequiredIntents()){
-            if (intent.getName().getLocalPart().equals("SOAP.v1_1")){
-                addDefaultSOAPIntent = false;
-                break;
-            }
-            if (intent.getName().getLocalPart().equals("SOAP.v1_2")){
-                addDefaultSOAPIntent = false;
-                break;
-            }
-        }
-        
-        if (addDefaultSOAPIntent){
-            Definitions systemDefinitions = context.getDefinitions();
-            if (systemDefinitions != null){
-                BindingType bindingType = systemDefinitions.getBindingType(binding.getType());
-                Intent defaultIntent = null;
-                for (Intent intent : bindingType.getMayProvidedIntents()){
-                    if (intent.getName().getLocalPart().equals("SOAP.v1_1")){
-                        defaultIntent = intent;
-                    }
-                }
-                
-                if (defaultIntent != null){
-                    ((PolicySubject)binding).getRequiredIntents().add(0, defaultIntent);
-                }
-            }
-        }
-*/        
+        }      
         
     }
 
