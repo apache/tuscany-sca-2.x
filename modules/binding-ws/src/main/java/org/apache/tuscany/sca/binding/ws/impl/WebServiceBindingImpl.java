@@ -45,6 +45,8 @@ import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.policy.DefaultIntent;
+import org.apache.tuscany.sca.policy.DefaultingPolicySubject;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -56,12 +58,13 @@ import org.w3c.dom.Element;
  *
  * @version $Rev$ $Date$
  */
-class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensible {
+class WebServiceBindingImpl implements WebServiceBinding, DefaultingPolicySubject, Extensible {
     private String name;
     private String uri;
     private boolean unresolved;
     private List<Object> extensions = new ArrayList<Object>();
     private List<Extension> attributeExtensions = new ArrayList<Extension>();
+    private List<DefaultIntent> defaultIntents = new ArrayList<DefaultIntent>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private ExtensionType extensionType;
@@ -453,5 +456,10 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
 
     public Map<String, String> getWsdliLocations() {
         return wsdliLocations;
+    }
+    
+    @Override
+    public List<DefaultIntent> getDefaultIntents() {
+        return defaultIntents;
     }
 }

@@ -69,4 +69,10 @@ public interface PolicyFactory {
      * @return
      */
     ExternalAttachment createExternalAttachment();
+    
+    /**
+     * Create a new DefaultIntent
+     * @return
+     */
+    DefaultIntent createDefaultIntent();
 }

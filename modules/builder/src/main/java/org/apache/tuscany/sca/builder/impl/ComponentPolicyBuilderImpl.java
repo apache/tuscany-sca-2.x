@@ -45,6 +45,8 @@ import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.policy.DefaultIntent;
+import org.apache.tuscany.sca.policy.DefaultingPolicySubject;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
@@ -382,8 +384,8 @@ public class ComponentPolicyBuilderImpl {
         return null;
     }
 
-    // Replace qualifiable intents with their default qualifier. This can't be done until
-    // after inheritance. 
+    // Replace qualifiable intents with their default qualifier. 
+    // This can't be done until after inheritance. 
     protected void expandDefaultIntents(PolicySubject subject, BuilderContext context) {
       
         Set<Intent> copy = new HashSet<Intent>(subject.getRequiredIntents());
@@ -392,8 +394,9 @@ public class ComponentPolicyBuilderImpl {
                 subject.getRequiredIntents().remove(i);
                 subject.getRequiredIntents().add(i.getDefaultQualifiedIntent());
             }
-        }       
+        }
     }
+    
     protected void resolveAndNormalize(PolicySubject subject, BuilderContext context) {
         Definitions definitions = context.getDefinitions();
         Set<Intent> intents = new HashSet<Intent>();
@@ -585,6 +588,58 @@ public class ComponentPolicyBuilderImpl {
         } else {
             return false;
         }
+    }
+    
+    // Add in default intents. This looks at the default intent map for
+    // the policy subject and. If none of the mutually exclusive intents are 
+    // already present adds in the default intent. 
+    protected void addDefaultIntents(PolicySubject subject, Object defaultSubjectObject, BuilderContext context){
+        if (!(defaultSubjectObject instanceof DefaultingPolicySubject)){
+            return;
+        }
+        
+        DefaultingPolicySubject defaultSubject = (DefaultingPolicySubject)defaultSubjectObject;
+        List<DefaultIntent> defaultIntents = defaultSubject.getDefaultIntents();
+        
+        for(DefaultIntent defaultIntent : defaultIntents){
+            // check default intent against the intents already in the subject
+            boolean addDefaultIntent = true;
+            
+            // first check the intents which, if present prevent the default being applied
+            for (Intent mutualExclusion : defaultIntent.getMutuallyExclusiveIntents()){
+                if (subject.getRequiredIntents().contains(mutualExclusion)){
+                    addDefaultIntent = false;
+                    break;
+                }
+            }
+            
+            // then check that the default intent itself is not mutually exclusive
+            for (Intent userDefinedIntent : subject.getRequiredIntents()){
+                if (!checkMutualExclusionNoError(defaultIntent.getIntent(), userDefinedIntent, context)){
+                    addDefaultIntent = false;
+                    break;
+                }
+            }
+            
+            if (addDefaultIntent == true){
+                subject.getRequiredIntents().add(defaultIntent.getIntent());
+            }
+        }  
+    }
+    
+    /**
+     * Same as checkMutualExclusion but doesn't throw and error on failure
+     */
+    protected boolean checkMutualExclusionNoError(Intent i1, Intent i2, BuilderContext context){
+        if ((i1 != i2) && 
+            (i1.getExcludedIntents().contains(i2) || 
+             i2.getExcludedIntents().contains(i1) ||
+             checkQualifiedMutualExclusion(i1.getExcludedIntents(), i2) ||
+             checkQualifiedMutualExclusion(i2.getExcludedIntents(), i1))) {
+            return true;
+        }
+        
+        return false;
     }
 
 }

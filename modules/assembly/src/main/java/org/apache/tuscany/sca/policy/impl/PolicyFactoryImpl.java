@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.policy.impl;
 
 import org.apache.tuscany.sca.policy.BindingType;
+import org.apache.tuscany.sca.policy.DefaultIntent;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
@@ -73,4 +74,7 @@ public abstract class PolicyFactoryImpl implements PolicyFactory {
     	return new ExternalAttachmentImpl();
     }
 
+    public DefaultIntent createDefaultIntent() {
+        return new DefaultIntentImpl();
+    }
 }

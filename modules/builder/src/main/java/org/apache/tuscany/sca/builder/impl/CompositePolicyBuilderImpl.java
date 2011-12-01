@@ -120,6 +120,9 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                                 	// of the structural hierarchy (Policy spec 4.10)
                                     inherit(ep, null, false, componentService.getInterfaceContract().getInterface());
                                 }
+                                
+                                // add in default binding mayProvides intents
+                                addDefaultIntents(ep, ep.getBinding(), context);
 
                                 // Replace profile intents with their required intents
                                 // Replace unqualified intents if there is a qualified intent in the list
@@ -175,6 +178,9 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                                 	// of the structural hierarchy (Policy spec 4.10)
                                     inherit(epr, null, true, componentReference.getInterfaceContract().getInterface());
                                 }  
+                                
+                                // add in default binding mayProvides intents
+                                addDefaultIntents(epr, epr.getBinding(), context);
 
                                 // Replace profile intents with their required intents
                                 // Replace unqualified intents if there is a qualified intent in the list
