@@ -554,9 +554,17 @@ public class ComponentPolicyBuilderImpl {
             		} else {
             			// The ExtensionType on the subject only has the binding name. The one in the system
             			// definitions will have the mayProvide/alwaysProvides values
-            			for ( ExtensionType et : context.getDefinitions().getBindingTypes() ) {
-            				if ( type.getType().equals(et.getType()) ) {
-            					type = et;
+            			if (type.getType().getLocalPart().startsWith("implementation")) {
+            			    for ( ExtensionType et : context.getDefinitions().getImplementationTypes() ) {
+            				    if ( type.getType().equals(et.getType()) ) {
+            					    type = et;
+            				    }
+            				}
+            			} else {
+            			    for ( ExtensionType et : context.getDefinitions().getBindingTypes() ) {
+            				    if ( type.getType().equals(et.getType()) ) {
+            					    type = et;
+            				    }
             				}
             			}
             		
