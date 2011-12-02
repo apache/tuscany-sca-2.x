@@ -31,6 +31,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -157,7 +158,12 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                         helper.save(reader, writer);
                         composite.setContent(sw.toString());
                     } else {
-                        node.getExtensions().add(processor.read(reader, context));
+                        Object ext = processor.read(reader, context);
+                        if (ext instanceof Endpoint) {
+                            node.getEndpointDescriptions().add((Endpoint)ext);
+                        } else {
+                            node.getExtensions().add(ext);
+                        }
                     }
                     break;
 
@@ -237,6 +243,11 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                        new XAttr("baseURIs", baseURIs));
             writeEnd(writer);
         }
+        
+        // FIXME: The composite processor assumes that composite is root element
+//        for (Endpoint o : node.getEndpointDescriptions()) {
+//            processor.write(o, writer, context);
+//        }
         
         for(Object o: node.getExtensions()) {
             processor.write(o, writer, context);

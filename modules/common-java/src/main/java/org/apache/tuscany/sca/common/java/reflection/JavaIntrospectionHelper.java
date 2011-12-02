@@ -504,16 +504,18 @@ public final class JavaIntrospectionHelper {
      * Returns the set of interfaces implemented by the given class and its
      * ancestors or a blank set if none
      */
-    public Set<Class<?>> getAllInterfaces(Class<?> clazz) {
-        Set<Class<?>> implemented = new HashSet<Class<?>>();
+    public List<Class<?>> getAllInterfaces(Class<?> clazz) {
+        List<Class<?>> implemented = new ArrayList<Class<?>>();
         getAllInterfaces(clazz, implemented);
         return implemented;
     }
 
-    private static void getAllInterfaces(Class<?> clazz, Set<Class<?>> implemented) {
+    private static void getAllInterfaces(Class<?> clazz, List<Class<?>> implemented) {
         Class<?>[] interfaces = clazz.getInterfaces();
         for (Class<?> interfaze : interfaces) {
-            implemented.add(interfaze);
+            if (!implemented.contains(interfaze)) {
+                implemented.add(interfaze);
+            }
         }
         Class<?> superClass = clazz.getSuperclass();
         // Object has no superclass so check for null

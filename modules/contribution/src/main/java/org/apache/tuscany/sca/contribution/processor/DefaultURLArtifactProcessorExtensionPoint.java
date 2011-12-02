@@ -45,7 +45,6 @@ import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 public class DefaultURLArtifactProcessorExtensionPoint extends
     DefaultArtifactProcessorExtensionPoint<URLArtifactProcessor<?>> implements URLArtifactProcessorExtensionPoint {
 
-    private ExtensionPointRegistry registry;
     private StAXArtifactProcessor<?> staxProcessor;
     private boolean loaded;
 
@@ -53,7 +52,7 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
      * Constructs a new extension point.
      */
     public DefaultURLArtifactProcessorExtensionPoint(ExtensionPointRegistry extensionPoints) {
-        this.registry = extensionPoints;
+        super(extensionPoints);
         FactoryExtensionPoint modelFactories = this.registry.getExtensionPoint(FactoryExtensionPoint.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);

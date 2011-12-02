@@ -19,7 +19,11 @@
 package org.apache.tuscany.sca.contribution.processor;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.tuscany.sca.common.java.reflection.JavaIntrospectionHelper;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
  * The default implementation of an artifact processor extension point.
@@ -30,10 +34,15 @@ abstract class DefaultArtifactProcessorExtensionPoint<P extends ArtifactProcesso
     protected final Map<Object, P> processorsByArtifactType = new HashMap<Object, P>();
     protected final Map<Class<?>, P> processorsByModelType = new HashMap<Class<?>, P>();
 
+    protected ExtensionPointRegistry registry;
+    private JavaIntrospectionHelper introspectionHelper;
+
     /**
      * Constructs a new loader registry.
      */
-    DefaultArtifactProcessorExtensionPoint() {
+    DefaultArtifactProcessorExtensionPoint(ExtensionPointRegistry registry) {
+        this.registry = registry;
+        this.introspectionHelper = JavaIntrospectionHelper.getInstance(registry);
     }
 
     /**
@@ -53,14 +62,18 @@ abstract class DefaultArtifactProcessorExtensionPoint<P extends ArtifactProcesso
      * @return The processor associated with the given model type
      */
     public <T> P getProcessor(Class<T> modelType) {
-        Class<?>[] classes = modelType.getInterfaces();
+        P processor = processorsByModelType.get(modelType);
+        if (processor != null) {
+            return processor;
+        }
+        List<Class<?>> classes = introspectionHelper.getAllInterfaces(modelType);
         for (Class<?> c : classes) {
-            P processor = processorsByModelType.get(c);
+            processor = processorsByModelType.get(c);
             if (processor != null) {
                 return processor;
             }
         }
-        return processorsByModelType.get(modelType);
+        return null;
     }
 
 }

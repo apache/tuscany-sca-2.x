@@ -49,7 +49,6 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 public class DefaultStAXAttributeProcessorExtensionPoint extends
     DefaultArtifactProcessorExtensionPoint<StAXAttributeProcessor<?>> implements StAXAttributeProcessorExtensionPoint {
 
-    private ExtensionPointRegistry registry;
     private FactoryExtensionPoint modelFactories;
     private StAXAttributeProcessor<Object> extensibleStAXAttributeProcessor;
     private boolean loaded;
@@ -59,7 +58,7 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
      * Constructs a new extension point.
      */
     public DefaultStAXAttributeProcessorExtensionPoint(ExtensionPointRegistry extensionPoints) {
-        this.registry = extensionPoints;
+        super(extensionPoints);
         this.modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);

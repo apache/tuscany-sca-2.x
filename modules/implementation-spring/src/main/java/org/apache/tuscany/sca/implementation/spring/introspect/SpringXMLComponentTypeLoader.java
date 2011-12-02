@@ -630,7 +630,7 @@ public class SpringXMLComponentTypeLoader {
         }
 
         Class<?> beanClass = resolveClass(resolver, bean.getClassName(), context);
-        Set<Class<?>> ifaces = javaIntrospectionHelper.getAllInterfaces(beanClass);
+        List<Class<?>> ifaces = javaIntrospectionHelper.getAllInterfaces(beanClass);
         for (Class<?> interfaze : ifaces) {
             if (interfaze.isAnnotationPresent(Remotable.class)) {
                 return interfaze;

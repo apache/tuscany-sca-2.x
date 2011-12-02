@@ -28,6 +28,8 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
+
 /**
  * The configuration for a Node which represents the deployment of an SCA composite application
  * @tuscany.spi.extension.asclient
@@ -104,6 +106,12 @@ public interface NodeConfiguration {
     NodeConfiguration addBinding(BindingConfiguration binding);
     NodeConfiguration addBinding(QName bindingType, String...baseURIs);
     NodeConfiguration addBinding(QName bindingType, URI...baseURIs);
+    
+    /**
+     * Get a list of endpoint descriptions for external services.
+     * @return
+     */
+    List<Endpoint> getEndpointDescriptions();
     
     List<Object> getExtensions();
 

@@ -30,6 +30,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.node.configuration.BindingConfiguration;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
@@ -44,6 +45,7 @@ public class NodeConfigurationImpl implements NodeConfiguration {
     private List<ContributionConfiguration> contributions = new ArrayList<ContributionConfiguration>();
     private List<BindingConfiguration> bindings = new ArrayList<BindingConfiguration>();
     private List<Object> extensions = new ArrayList<Object>();
+    private List<Endpoint> endpoints = new ArrayList<Endpoint>();
     
     private transient Map<String, Object> attributes = new HashMap<String, Object>();
 
@@ -192,6 +194,11 @@ public class NodeConfigurationImpl implements NodeConfiguration {
     public NodeConfiguration setAttribute(String name, Object value) {
         attributes.put(name, value);
         return this;
+    }
+
+    @Override
+    public List<Endpoint> getEndpointDescriptions() {
+        return endpoints;
     }
 
 }

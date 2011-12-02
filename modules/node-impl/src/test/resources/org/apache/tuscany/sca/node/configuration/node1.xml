@@ -55,4 +55,13 @@
     </contribution>
     <option name="debug" value="true"/>
     <option name="validation">true</option>
+    <endpoint>
+        <sca:composite name="endpoint">
+            <sca:component name="Component1"> <!-- first component -->
+                <sca:service name="Service1">
+                    <tuscany:binding.rest uri="http://localhost:8080/services/myResource" />
+                </sca:service>
+            </sca:component>
+        </sca:composite>
+    </endpoint>
 </node>

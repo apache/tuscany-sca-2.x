@@ -136,7 +136,12 @@ public class NodeImpl implements Node, NodeExtension {
             // Pass down the context attributes
             compositeContext.getAttributes().putAll(configuration.getAttributes());
             
-
+            // Add endpoint descriptions from the node configuration if the domain registry is local
+            if (!domainRegistry.isDistributed()) {
+                for (Endpoint e : configuration.getEndpointDescriptions()) {
+                    domainRegistry.addEndpoint(e);
+                }
+            }
             // Activate the composite
             compositeActivator.activate(compositeContext, domainComposite);
 
@@ -234,6 +239,14 @@ public class NodeImpl implements Node, NodeExtension {
                 compositeActivator.deactivate(domainComposite);
 
             } // end if
+            
+            // Remove the external endpoint descriptions from node.xml
+            DomainRegistry domainRegistry = compositeContext.getEndpointRegistry();
+            if (!domainRegistry.isDistributed()) {
+                for (Endpoint e : configuration.getEndpointDescriptions()) {
+                    domainRegistry.removeEndpoint(e);
+                }
+            }
 
             nodeFactory.removeNode(configuration);
 /*

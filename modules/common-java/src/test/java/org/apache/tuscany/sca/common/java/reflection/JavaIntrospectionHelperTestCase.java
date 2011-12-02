@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.common.java.reflection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -56,7 +57,7 @@ public class JavaIntrospectionHelperTestCase {
 
     @Test
     public void testGetAllInterfaces() {
-        Set<Class<?>> interfaces = helper.getAllInterfaces(SubTestImpl.class);
+        List<Class<?>> interfaces = helper.getAllInterfaces(SubTestImpl.class);
         System.out.println(interfaces);
     }
 

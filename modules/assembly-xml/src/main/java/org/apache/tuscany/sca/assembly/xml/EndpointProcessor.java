@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -82,12 +79,16 @@ public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArti
         if (reader.getEventType() == XMLStreamConstants.START_DOCUMENT) {
             reader.nextTag();
         }
+        if (reader.getEventType() == XMLStreamConstants.START_ELEMENT && ENDPOINT_QNAME.equals(reader.getName())) {
+            // Skip the "endpoint" element wrapper
+            reader.nextTag();
+        }
         Object model = extensionProcessor.read(reader, context);
         if (model instanceof Composite) {
             Composite composite = (Composite)model;
             Component component = composite.getComponents().get(0);
             ComponentService service = component.getServices().get(0);
-            Binding binding = service.getBindings().get(0);
+            Binding binding = service.getBindings().isEmpty() ? null : service.getBindings().get(0);
             endpoint.setComponent(component);
             endpoint.setService(service);
             endpoint.setBinding(binding);
