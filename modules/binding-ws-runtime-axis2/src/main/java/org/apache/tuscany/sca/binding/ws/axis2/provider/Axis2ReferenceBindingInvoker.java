@@ -35,6 +35,7 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.OMNode;
 import org.apache.axiom.soap.SOAPBody;
 import org.apache.axiom.soap.SOAPEnvelope;
@@ -378,10 +379,13 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
         // Deal with Reference Parameters, if present - copy to the header without the wsa:ReferenceParameters wrapper
         OMElement refParms = (OMElement) msg.getHeaders().get(WS_REF_PARMS);
         if( refParms != null ) {
-        	Iterator<?> children = refParms.getChildren();
+        	Iterator<OMElement> children = refParms.getChildElements();
         	while( children.hasNext() ) {
-        		OMNode node = (OMNode) children.next();
-        		sh.addChild(node);
+        	        OMElement child = children.next();
+        		OMNamespace wsaNamespace = sh.getOMFactory().createOMNamespace(AddressingConstants.Final.WSA_NAMESPACE, "wsa");
+        		OMAttribute isRefParm = sh.getOMFactory().createOMAttribute(AddressingConstants.Final.WSA_IS_REFERENCE_PARAMETER_ATTRIBUTE, wsaNamespace, "true");
+        		child.addAttribute(isRefParm);
+        		sh.addChild(child);    
         	}
         } // end if 
         
