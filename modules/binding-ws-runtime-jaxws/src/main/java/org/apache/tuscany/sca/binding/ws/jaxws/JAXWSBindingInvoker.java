@@ -310,6 +310,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
 
         if (isInvocationForCallback(msg)) {
             addWSAToHeader(sh, toAddress, msg);
+            addWSARefParms(sh, msg);
             addWSAActionHeader(sh, action);
             addWSARelatesTo(sh, msg);
         } // end if
@@ -379,28 +380,16 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         // sh.addChild(wsaToOM);
         SOAPHeaderElement toH = sh.addHeaderElement(QNAME_WSA_TO);
         toH.setTextContent(address);
+    } // end method addWSAToHeader
 
-        // Deal with Reference Parameters, if present - copy to the header
-        // without the wsa:ReferenceParameters wrapper
-        // OMElement refParms = (OMElement) msg.getHeaders().get(WS_REF_PARMS);
-        // Iterator ces = sh.getChildElements(new QName(WSA_FINAL_NAMESPACE,
-        // WS_REF_PARMS));
-        Iterator<SOAPElement> ces = sh.getChildElements();
-        while (ces.hasNext()) {
-            SOAPElement se = ces.next();
-            if (WS_REF_PARMS.equals(se.getElementQName().getLocalPart())) {
-                // if( refParms != null ) {
-                Iterator<SOAPElement> children = se.getChildElements();
-                while (children.hasNext()) {
-                    SOAPElement node = (SOAPElement)children.next();
-                    toH.addChildElement(node);
-                }
-                // } // end if
-            }
-        }
+    protected void addWSARefParms(SOAPHeader sh, Message msg) throws SOAPException {  
 
-    } // end method addWSAActionHeader
+        // Not implemented and so will not pass compliance test BWS_5006.
 
+
+    } // end method addWSARefParms
+    
+    
     private void addWSAActionHeader(SOAPHeader sh, String action) throws SOAPException {
         // Create wsa:Action header which is required by ws-addressing spec
 
