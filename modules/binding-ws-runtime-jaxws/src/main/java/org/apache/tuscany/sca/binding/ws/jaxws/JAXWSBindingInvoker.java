@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.binding.ws.jaxws;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -65,7 +66,9 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Uses JAXWS Dispatch to invoke a remote web service
@@ -184,8 +187,22 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
                     if (fault != null) {
                         // setFault(msg, fault);
                     } else {
-                        // The 1st child element
-                        msg.setBody(body.getChildElements().next());
+                        // WS-I uses single-element payload
+                        Element payload =(Element)body.getChildElements().next();
+                        if (wsBinding.isRpcLiteral()) {
+                            Element unwrappedPayload = null; 
+                            NodeList children = payload.getChildNodes();                                                                
+                            for (int i = 0; i < children.getLength(); i++) {
+                                Node nextChild = children.item(i);
+                                if (nextChild instanceof Element) {
+                                    unwrappedPayload = (Element)nextChild;
+                                    break;
+                                }
+                            }
+                            msg.setBody(unwrappedPayload);
+                        } else {                            
+                            msg.setBody(payload);
+                        }
                     }
                 }
             }
@@ -247,11 +264,49 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
 
         javax.xml.soap.SOAPBody body = envelope.getBody();
         Object[] args = (Object[])msg.getBody();
-        // In the unit test the owner doc is null
-        // so explicitly adopt the node instead
-        // body.addDocument(((Node)args[0]).getOwnerDocument());
-        Node msgNode = body.getOwnerDocument().importNode((Node)args[0], true);
-        body.appendChild(msgNode);
+        
+        if (wsBinding.isRpcLiteral()) {
+            
+            String wrapperNamespace = null;
+            
+            // the rpc style creates a wrapper with a namespace where the namespace is
+            // defined on the wsdl binding operation. If no binding is provided by the 
+            // user then default to the namespace of the WSDL itself. 
+            if (wsBinding.getBinding() != null){
+                Iterator iter = wsBinding.getBinding().getBindingOperations().iterator();
+                loopend:
+                while(iter.hasNext()){
+                    BindingOperation bOp = (BindingOperation)iter.next();
+                    if (bOp.getName().equals(msg.getOperation().getName())){
+                        for (Object ext : bOp.getBindingInput().getExtensibilityElements()){
+                            if (ext instanceof javax.wsdl.extensions.soap.SOAPBody){
+                                wrapperNamespace = ((javax.wsdl.extensions.soap.SOAPBody)ext).getNamespaceURI();
+                                break loopend;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if (wrapperNamespace == null){
+                wrapperNamespace =  wsBinding.getUserSpecifiedWSDLDefinition().getNamespace();
+            }
+            
+            Element rpcOperationWrapper = body.getOwnerDocument().createElementNS(wrapperNamespace, msg.getOperation().getName());            
+            for (Object arg : args) {
+                Node next = (Node)arg;
+                Node nextImported = body.getOwnerDocument().importNode(next, true);
+                rpcOperationWrapper.appendChild(nextImported);    
+            }            
+            body.appendChild(rpcOperationWrapper);
+        } else {
+            // In the unit test the owner doc is null
+            // so explicitly adopt the node instead
+            // body.addDocument(((Node)args[0]).getOwnerDocument());
+            Node msgNode = body.getOwnerDocument().importNode((Node)args[0], true);
+            body.appendChild(msgNode);
+        }        
+
         soapMessage.saveChanges();
         
         Dispatch<SOAPMessage> invocationDispatch = null;
