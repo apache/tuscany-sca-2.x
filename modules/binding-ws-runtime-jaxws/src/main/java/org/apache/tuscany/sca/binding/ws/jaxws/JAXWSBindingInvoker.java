@@ -299,7 +299,11 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
                 rpcOperationWrapper.appendChild(nextImported);    
             }            
             body.appendChild(rpcOperationWrapper);
-        } else {
+        }  else if (wsBinding.isRpcEncoded()) {
+            throw new ServiceRuntimeException("rpc/encoded WSDL style not supported for endpoint reference " + endpointReference);
+        } else if (wsBinding.isDocEncoded()){
+            throw new ServiceRuntimeException("doc/encoded WSDL style not supported for endpoint reference " + endpointReference);
+        }  else {
             // In the unit test the owner doc is null
             // so explicitly adopt the node instead
             // body.addDocument(((Node)args[0]).getOwnerDocument());
