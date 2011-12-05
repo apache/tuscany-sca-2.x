@@ -162,6 +162,13 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         return false;
     }
 
+    private static boolean isAnnotated(AnnotatedElement element) {
+        for (Annotation a : element.getAnnotations()) {
+            return true;
+        }
+        return false;
+    }
+    
     private static boolean isSCAAnnotation(Annotation a) {
         return a.annotationType().getName().startsWith("org.oasisopen.sca.annotation.");
     }
@@ -261,8 +268,10 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
                 }
             } else {
                 if (!type.getPropertyMembers().containsKey(name)) {
-                    type.getProperties().add(createProperty(name, paramType, genericType));
-                    type.getPropertyMembers().put(name, new JavaElementImpl(field));
+                    if (!isAnnotated(field)) { // if the field has an annotation then its not a property
+                        type.getProperties().add(createProperty(name, paramType, genericType));
+                        type.getPropertyMembers().put(name, new JavaElementImpl(field));
+                    }
                 }
             }
         }
