@@ -25,9 +25,20 @@ import org.oasisopen.sca.annotation.Service;
 public class TargetClientImpl implements Target {
 
     @Reference
-    protected Target targetService;
+    protected Target targetService1;
+    
+    @Reference(required=false)
+    protected Target targetService2;
 
     public String hello(String arg) {
-        return "Target: Hello " + targetService.hello(arg) + "!";
+        String returnString = "Target: Hello " + targetService1.hello(arg + "1");
+        
+        if(targetService2 != null){
+            returnString += " " + targetService2.hello(arg + "2");
+        }
+        
+        returnString +=  "!";
+        
+        return returnString;
     }
 }

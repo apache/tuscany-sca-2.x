@@ -128,4 +128,12 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
         }
 
     }
+    
+    // TUSCANY-3988
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        RuntimeComponentImpl clone = (RuntimeComponentImpl)super.clone();
+        clone.policyProviders = new ArrayList<PolicyProvider>();
+        return clone;
+    } 
 }

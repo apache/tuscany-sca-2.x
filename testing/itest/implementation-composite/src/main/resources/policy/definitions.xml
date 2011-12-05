@@ -21,19 +21,18 @@
              targetNamespace="http://policy"
              xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
              xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
-             xmlns:ip="http://policy" >
+             xmlns:policy="http://policy"
+             xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" >
+    
+    <policySet name="JDKLoggingPolicy" 
+               provides="tuscany:logging" 
+               appliesTo="//sca:binding.ws"
+               attachTo="//sca:reference | //sca:service">
+        <tuscany:jdkLogger name="test.logger">
+            <tuscany:logLevel>FINE</tuscany:logLevel>
+            <tuscany:resourceBundle>LoggingMessages.properties</tuscany:resourceBundle>
+        </tuscany:jdkLogger>
 
-    <!-- Policy Intents -->
-    <sca:intent name="TestIntent_1" constrains="sca:binding.ws">
-        <description>Test Intent One</description>
-    </sca:intent>
-
-    <!--  Policy Sets -->
-    <sca:policySet name="TestPolicySet_1_binding" 
-                   provides="ip:TestIntent_1" 
-                   appliesTo="sca:binding.ws"
-                   xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
-        <wsp:Policy />
-    </sca:policySet>
+    </policySet>    
 
 </definitions>

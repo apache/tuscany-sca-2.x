@@ -30,7 +30,6 @@
 		<implementation.java class="policy.TargetServiceImpl"/> 
         <service name="Target">
             <interface.java interface="policy.Target"/>
-            <binding.ws uri="http://localhost:8085/TargetServiceComponent"/>
         </service>		
     </component>
 

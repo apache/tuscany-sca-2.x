@@ -20,20 +20,29 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
     targetNamespace="http://policy"
     xmlns:policy="http://policy"
-    name="PolicyOuterComposite"
-    requires="policy:TestIntent_1">
+    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
+    name="PolicyOuterComposite">
     
     <component name="TargetClientComponent">
         <implementation.java class="policy.TargetClientImpl"/>
-        <reference name="targetService" target="OuterTargetServiceComponent"/>
+        <reference name="targetService1" target="OuterTargetService1Component"/>
+        <reference name="targetService2" target="OuterTargetService2Component"/>
     </component>
     
-    <component name="OuterTargetServiceComponent">
+    <component name="OuterTargetService1Component">
         <implementation.composite name="policy:PolicyInnerComposite"/>
-        <service name="TargetService">
+        <service name="TargetService" requires="tuscany:logging">
             <interface.java interface="policy.Target"/>
-            <binding.ws uri="http://localhost:8085/OuterTargetServiceComponent"/>
+            <binding.ws uri="http://localhost:8085/OuterTargetService1Component"/>
         </service>
     </component>
+    
+    <component name="OuterTargetService2Component">
+        <implementation.composite name="policy:PolicyInnerComposite"/>
+        <service name="TargetService"  requires="tuscany:logging">
+            <interface.java interface="policy.Target"/>
+            <binding.ws uri="http://localhost:8085/OuterTargetService2Component"/>
+        </service>
+    </component>    
 
 </composite>

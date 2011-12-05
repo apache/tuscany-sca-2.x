@@ -24,7 +24,7 @@
     
     <component name="OuterClientComponent">
         <implementation.java class="policy.TargetClientImpl"/>
-        <reference name="targetService" target="OuterServiceComponent"/>
+        <reference name="targetService1" target="OuterServiceComponent"/>
     </component>
     
     <component name="OuterServiceComponent">

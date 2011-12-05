@@ -57,6 +57,6 @@ public class BindingOverrideTestCase{
 
     @Test
     public void test() throws Exception {
-        Assert.assertEquals("Target: Hello Target: Hello Fred!!", targetClient.hello("Fred"));
+        Assert.assertEquals("Target: Hello Target: Hello Fred1!!", targetClient.hello("Fred"));
     }
 }

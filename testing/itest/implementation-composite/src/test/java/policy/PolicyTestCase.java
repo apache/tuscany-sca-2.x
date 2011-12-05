@@ -29,12 +29,13 @@ import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySubject;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore("Doesn't work after porting")
 public class PolicyTestCase{
 
     private Node node;
@@ -62,7 +63,7 @@ public class PolicyTestCase{
     public void test() throws Exception {
     	//Check that the binding policy sets do flow down to the component but not down to the
     	//component inside implementation.composite
-    	Component outerComponent = ((NodeImpl)node).getDomainComposite().getComponent("OuterTargetServiceComponent");
+    	Component outerComponent = ((NodeImpl)node).getDomainComposite().getComponent("OuterTargetService1Component");
     	
     	// The outer component service bindings should have policy sets attached
     	Assert.assertEquals(1, outerComponent.getServices().get(0).getPolicySets().size());
@@ -70,10 +71,14 @@ public class PolicyTestCase{
     	Component component = ((CompositeImpl)outerComponent.getImplementation()).getComponents().get(0);
     	
     	// The original inner component service binding should not have policy sets attached
-    	Assert.assertEquals(0, ((PolicySet)component.getServices().get(0).getBindings().get(0)).getReferencedPolicySets().size());
+    	Assert.assertEquals(0, ((PolicySubject)component.getServices().get(0).getBindings().get(0)).getPolicySets().size());
         
         // The promoted inner component service binding should have policy sets attached
-    	Assert.assertEquals(1, ((PolicySet)component.getServices().get(1).getBindings().get(0)).getReferencedPolicySets().size());
+    	Assert.assertEquals(1, outerComponent.getServices().get(0).getEndpoints().get(0).getPolicySets().size());
+    	
+    	// TUSCANY-3988
+        // The inner component should have a single set of policy providers
+        Assert.assertEquals(3, ((RuntimeComponent)component).getPolicyProviders().size());
     	
         String result = targetClient.hello("Fred");
 
