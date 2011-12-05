@@ -18,11 +18,16 @@
  */
 package org.apache.tuscany.sca.itest.ctcalc;
 
+import commonj.sdo.helper.HelperContext;
+
 public class UnannotatedCTCalcComponentImpl extends BaseCTCalcComponentImpl {
     
     private String aPropertyPrivate;
     protected String aPropertyProtected;
     public String aPropertyPublic;
+
+    @DefaultHelperContext 
+    protected HelperContext hc;
     
     public String test(){
         return "Unannotated";
