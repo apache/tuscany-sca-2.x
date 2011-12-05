@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.itest.ctcalc;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Iterator;
-
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
@@ -30,7 +28,6 @@ import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

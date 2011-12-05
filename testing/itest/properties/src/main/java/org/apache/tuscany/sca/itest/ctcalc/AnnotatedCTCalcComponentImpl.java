@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.itest.ctcalc;
 
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Service;
 
 @Service(CTCalcComponent.class)
