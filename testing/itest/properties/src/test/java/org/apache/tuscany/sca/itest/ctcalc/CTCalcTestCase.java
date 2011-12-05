@@ -76,11 +76,10 @@ public class CTCalcTestCase {
         node.stop();
     }
 
-    @Ignore("TODO - TUSCANY-3965")
     @Test
     public void testAnnotatedExtension() {
         assertEquals("Annotated", annotatedComponent.test());
-        assertEquals(0, ((NodeImpl)node).getDomainComposite().getComponents().get(0).getProperties().size());
+        assertEquals(2, ((NodeImpl)node).getDomainComposite().getComponents().get(0).getProperties().size());
         System.out.println(((NodeImpl)node).getDomainComposite().getComponents().get(0).getProperties());
     }
 
