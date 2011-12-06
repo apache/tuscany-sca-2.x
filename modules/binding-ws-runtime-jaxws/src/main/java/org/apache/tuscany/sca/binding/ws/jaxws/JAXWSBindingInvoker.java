@@ -118,11 +118,11 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         if (endpointReference.getReference().isForCallback()) {
             this.dynamicDispatchForCallback = true;
         } else {
-            this.staticDispatch = createStaticDispatch(wsBinding);
+            this.staticDispatch = createStaticDispatch();
         }
     }
     
-    protected Dispatch<SOAPMessage> createDynamicDispatch(WebServiceBinding wsBinding) {
+    protected Dispatch<SOAPMessage> createDynamicDispatch() {
         QName serviceName = wsBinding.getService().getQName();
         QName portName = new QName(serviceName.getNamespaceURI(), wsBinding.getPort().getName());
         Service service = Service.create(serviceName);
@@ -131,7 +131,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         return service.createDispatch(portName, SOAPMessage.class, Service.Mode.MESSAGE);
     }
 
-    protected Dispatch<SOAPMessage> createStaticDispatch(WebServiceBinding wsBinding) {
+    protected Dispatch<SOAPMessage> createStaticDispatch() {
         URL wsdlLocation = null;
         try {
             if (wsBinding.getGeneratedWSDLDocument() != null && wsBinding.getGeneratedWSDLDocument().getDocumentBaseURI() != null) {
@@ -150,17 +150,17 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         }
 
         if (wsdlLocation != null) {
-            return createDispatchFromWSDL(wsBinding, wsdlLocation);
+            return createDispatchFromWSDL(wsdlLocation);
         } else {
-            return createDispatchFromURI(wsBinding, wsBinding.getURI());                       
+            return createDispatchFromURI(wsBinding.getURI());                       
         }        
     }
     
-    protected Dispatch<SOAPMessage> createDynamicDispatch(WebServiceBinding wsBinding, String uri) {
-        return createDispatchFromURI(wsBinding, uri);
+    protected Dispatch<SOAPMessage> createDynamicDispatch(String uri) {
+        return createDispatchFromURI(uri);
     }
     
-    private Dispatch<SOAPMessage> createDispatchFromWSDL(WebServiceBinding wsBinding, URL wsdlLocation) {
+    private Dispatch<SOAPMessage> createDispatchFromWSDL(URL wsdlLocation) {
         QName serviceName = wsBinding.getServiceName();
         QName portName = new QName(serviceName.getNamespaceURI(), wsBinding.getPortName());
         Service service = Service.create(wsdlLocation, serviceName);
@@ -168,7 +168,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         return service.createDispatch(portName, SOAPMessage.class, Service.Mode.MESSAGE);
     }
     
-    protected Dispatch<SOAPMessage> createDispatchFromURI(WebServiceBinding wsBinding, String uri) {
+    protected Dispatch<SOAPMessage> createDispatchFromURI(String uri) {
         QName serviceName = wsBinding.getService().getQName();
         QName portName = new QName(serviceName.getNamespaceURI(), wsBinding.getPort().getName());
         Service service = Service.create(serviceName);
@@ -320,7 +320,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
             Endpoint ep = msg.getTo();
             if (ep != null && ep.getBinding() != null) {
                 String address = ep.getBinding().getURI();
-                invocationDispatch = createDynamicDispatch(wsBinding, address);
+                invocationDispatch = createDynamicDispatch(address);
             } else {
                 throw new ServiceRuntimeException("[BWS20025] Unable to determine destination endpoint for endpoint reference " + endpointReference);
             }
@@ -382,7 +382,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         // if target endpoint was not specified when this invoker was created,
         // use dynamically specified target endpoint passed in with the message
 
-        String to = getPortLocation(wsBinding);
+        String to = getPortLocation();
         if (to == null) {
             Endpoint ep = msg.getTo();
             if (ep != null && ep.getBinding() != null) {
@@ -398,10 +398,10 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         return address;
     } // end method getToAddress
 
-    protected String getPortLocation(WebServiceBinding binding) {
+    protected String getPortLocation() {
         String ep = null;
-        if (binding.getPort() != null) {
-            List<?> wsdlPortExtensions = binding.getPort().getExtensibilityElements();
+        if (wsBinding.getPort() != null) {
+            List<?> wsdlPortExtensions = wsBinding.getPort().getExtensibilityElements();
             for (final Object extension : wsdlPortExtensions) {
                 if (extension instanceof SOAPAddress) {
                     ep = ((SOAPAddress)extension).getLocationURI();
@@ -415,7 +415,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
             }
         }
         if (ep == null || ep.equals("")) {
-            ep = binding.getURI();
+            ep = wsBinding.getURI();
         }
         return ep;
     }
