@@ -102,7 +102,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
     protected Dispatch<SOAPMessage> staticDispatch;
     private MessageFactory messageFactory;
     private Operation operation;
-    private WebServiceBinding wsBinding;
+    protected WebServiceBinding wsBinding;
     private RuntimeEndpointReference endpointReference;
 
     public JAXWSBindingInvoker(Operation operation,
