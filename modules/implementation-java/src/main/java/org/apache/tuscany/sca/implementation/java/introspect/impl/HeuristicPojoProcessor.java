@@ -91,6 +91,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     @Override
     public <T> void visitEnd(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         List<org.apache.tuscany.sca.assembly.Service> services = type.getServices();
+        
         if (services.isEmpty()) {
             // heuristically determine the service
             /**
@@ -116,20 +117,17 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
                 addService(type, clazz);
             }
         }
-        if (!(type.getReferenceMembers().isEmpty() && type.getPropertyMembers().isEmpty())) {
-            // references and properties have been explicitly defined
-            //            if (type.getServices().isEmpty()) {
-            //                calculateServiceInterface(clazz, type, methods);
-            //                if (type.getServices().isEmpty()) {
-            //                    throw new ServiceTypeNotFoundException(clazz.getName());
-            //                }
-            //            }
-            evaluateConstructor(type, clazz);
-            return;
-        }
-        Set<Method> methods = getAllUniquePublicProtectedMethods(clazz, false);
-
-        calcPropRefs(methods, services, type, clazz);
+        
+        // TUSCANY-3965 - The OSASIS JCI spec (section 8) now provides an explicit algorithm
+        // for property and reference introspection. It's only performed if no @Service, @Reference
+        // or @Property annotation is present
+        if (clazz.getAnnotation(org.oasisopen.sca.annotation.Service.class) == null &&
+            type.getReferenceMembers().isEmpty() && 
+            type.getPropertyMembers().isEmpty()){
+            Set<Method> methods = getAllUniquePublicProtectedMethods(clazz, false);
+            calcPropRefs(methods, services, type, clazz);
+        }        
+        
         evaluateConstructor(type, clazz);
     }
 
