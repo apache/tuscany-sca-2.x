@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import javax.wsdl.Binding;
 import javax.wsdl.BindingOperation;
@@ -81,6 +82,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
     public static final String WSA_FINAL_NAMESPACE = "http://www.w3.org/2005/08/addressing";
     public static final QName QNAME_WSA_ADDRESS = new QName(WSA_FINAL_NAMESPACE, "Address", "wsa");
     public static final QName QNAME_WSA_FROM = new QName(WSA_FINAL_NAMESPACE, "From", "wsa");
+    public static final QName QNAME_WSA_MESSAGEID = new QName(WSA_FINAL_NAMESPACE, "MessageID", "wsa");
     public static final QName QNAME_WSA_TO = new QName(WSA_FINAL_NAMESPACE, "To", "wsa");
     public static final QName QNAME_WSA_ACTION = new QName(WSA_FINAL_NAMESPACE, "Action", "wsa");
     public static final QName QNAME_WSA_RELATESTO = new QName(WSA_FINAL_NAMESPACE, "RelatesTo", "wsa");
@@ -361,7 +363,16 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
 
             addWSAActionHeader(sh, action);
 
-            // requestMC.setFrom(fromEPR);
+            // We need a wsa:MessageId for request-response operation per WS-Addressing core specification, (and Axis2 will choke if addressing module is enabled.)
+            if (!operation.isNonBlocking()) {
+                String messageId = (String)msg.getHeaders().get(Constants.MESSAGE_ID);
+                if (messageId == null) {
+                    messageId = UUID.randomUUID().toString();
+                }
+                SOAPHeaderElement msgIdHeader = sh.addHeaderElement(QNAME_WSA_MESSAGEID);
+                msgIdHeader.setTextContent(messageId);
+            }
+            
         } // end if
 
         String toAddress = getToAddress(msg);
