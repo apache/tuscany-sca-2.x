@@ -363,12 +363,10 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
 
             addWSAActionHeader(sh, action);
 
-            // We need a wsa:MessageId for request-response operation per WS-Addressing core specification, (and Axis2 will choke if addressing module is enabled.)
+            // We need a wsa:MessageId for request-response operation per WS-Addressing core specification, 
+            // (and Axis2 will choke if addressing module is enabled.)
             if (!operation.isNonBlocking()) {
-                String messageId = (String)msg.getHeaders().get(Constants.MESSAGE_ID);
-                if (messageId == null) {
-                    messageId = UUID.randomUUID().toString();
-                }
+                String messageId = UUID.randomUUID().toString();
                 SOAPHeaderElement msgIdHeader = sh.addHeaderElement(QNAME_WSA_MESSAGEID);
                 msgIdHeader.setTextContent(messageId);
             }
