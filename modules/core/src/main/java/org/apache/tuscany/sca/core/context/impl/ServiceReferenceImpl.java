@@ -47,6 +47,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointReferenceImpl;
 import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
@@ -421,4 +422,9 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
         return xmlReader;
     }
     */
+    
+    public void setBindingURI(String uri) {
+        ((RuntimeEndpointReferenceImpl)endpointReference).setBindingURI(uri);
+    }
+    
 }

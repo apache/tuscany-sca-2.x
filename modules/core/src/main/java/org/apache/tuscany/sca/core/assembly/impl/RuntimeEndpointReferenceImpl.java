@@ -71,6 +71,7 @@ import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
 import org.apache.tuscany.sca.provider.ImplementationAsyncProvider;
@@ -127,6 +128,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
     private boolean started;
     
     private RuntimeEndpointReference delegateEndpointReference;
+    private boolean bindingURIaltered;
     
     /**
      * No-arg constructor for Java serilization
@@ -352,6 +354,9 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         chains = chainList;
         wireProcessor.process(this);
         
+        // reset the binding uri altered flag 
+        bindingURIaltered = false;
+        
         if (isAsyncInvocation()){
             // Fix up all of the operation chain response paths to point back to the implementation provided
             // async response handler
@@ -546,7 +551,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
 
     public boolean isOutOfDate() {
         resolve();
-        return eprBinder.isOutOfDate(domainRegistry, this);
+        return bindingURIaltered || eprBinder.isOutOfDate(domainRegistry, this);
     }
 
     public synchronized ReferenceBindingProvider getBindingProvider() {
@@ -818,6 +823,16 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         	return responseInvoker;
         }
         return null;
+    }
+    
+    public void setBindingURI(String uri) {
+        binding.setURI(uri);
+        bindingURIaltered = true;
+        BindingBuilder builder = builders.getBindingBuilder(binding.getType());
+        if (builder != null) {
+            BuilderContext builderContext = new BuilderContext(null, null, null);
+            builder.build(component, reference, binding, builderContext, true);
+        }
     }
 
 }
