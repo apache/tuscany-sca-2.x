@@ -350,6 +350,12 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         // add WS-Addressing header for the invocation of a bidirectional
         // service
         // FIXME: is there any way to use the Axis2 addressing support for this?
+        //
+        // IIUC, this 'if (callbackEndpoint != null)' will be true if:
+        //   1)  This is a bidirectional interface   
+        //      AND
+        //   2)  We are invoking in the forward direction of the bidirectional interface.
+        //
         if (callbackEndpoint != null) {
             // // Load the actual callback endpoint URI into an Axis EPR ready
             // to form the content of the wsa:From header
@@ -376,6 +382,11 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         String toAddress = getToAddress(msg);
         // requestMC.setTo( new EndpointReference(toAddress) );
 
+        // IIUC, this 'if (callbackEndpoint != null)' will be true if:
+        //   1)  This is a bidirectional interface   
+        //      AND
+        //   2)  We are invoking in the callback direction of the bidirectional interface.
+        //
         if (isInvocationForCallback(msg)) {
             addWSAToHeader(sh, toAddress, msg);
             addWSARefParms(sh, msg);
@@ -490,7 +501,11 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
      */
     private void addWSARelatesTo(SOAPHeader sh, Message msg) throws SOAPException {
         
-        String idValue = (String)msg.getHeaders().get(Constants.MESSAGE_ID);
+        //
+        // Note that the 'core' (loosely speaking) part of the invocation chain 
+        // will have already copied the forward message msgId to the RELATES_TO header.
+        //
+        String idValue = (String)msg.getHeaders().get(Constants.RELATES_TO);
         if (idValue != null) {
             SOAPHeaderElement relatesToH = sh.addHeaderElement(QNAME_WSA_RELATESTO);
             relatesToH.addAttribute(new QName(null, "RelationshipType"), SCA_CALLBACK_REL);
