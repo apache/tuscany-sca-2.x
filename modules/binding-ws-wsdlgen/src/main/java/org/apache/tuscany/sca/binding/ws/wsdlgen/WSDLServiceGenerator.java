@@ -411,7 +411,10 @@ public class WSDLServiceGenerator {
                              Port.class, WSDLDefinitionGenerator.SOAP_ADDRESS);
                 } catch (WSDLException e) {
                 }
-                String uri = computeActualURI(wsBinding, port);
+                // By this stage the URI should have been copied from the WSDL port and
+                // should have run through the binding URI builder. 
+                //String uri = computeActualURI(wsBinding, port);
+                String uri = wsBinding.getURI();
                 ((SOAPAddress)newExt).setLocationURI(uri);
                 newPort.addExtensibilityElement(newExt);
             } else if (extension instanceof SOAP12Address) {
@@ -421,7 +424,10 @@ public class WSDLServiceGenerator {
                              Port.class, WSDLDefinitionGenerator.SOAP12_ADDRESS);
                 } catch (WSDLException e) {
                 }
-                String uri = computeActualURI(wsBinding, port);
+                // By this stage the URI should have been copied from the WSDL port and
+                // should have run through the binding URI builder. 
+                //String uri = computeActualURI(wsBinding, port);
+                String uri = wsBinding.getURI();
                 ((SOAP12Address)newExt).setLocationURI(uri);
                 newPort.addExtensibilityElement(newExt);
             } else {

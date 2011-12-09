@@ -316,7 +316,11 @@ public class BindingURIBuilderImpl implements CompositeBuilder {
                 }
             } else {
                 if (bindingURI != null) {
-                    uriString = basedURI(baseURI, componentURI.resolve(bindingURI)).toString();
+                    if (bindingURI.toString().startsWith("/")) {
+                        uriString = basedURI(baseURI, componentURI.resolve(bindingURI)).toString();
+                    } else {
+                        uriString = basedURI(baseURI, componentURI.resolve(name + "/" + bindingURI)).toString();
+                    }
                 } else {
                     uriString = basedURI(baseURI, componentURI.resolve(name)).toString();
                 }

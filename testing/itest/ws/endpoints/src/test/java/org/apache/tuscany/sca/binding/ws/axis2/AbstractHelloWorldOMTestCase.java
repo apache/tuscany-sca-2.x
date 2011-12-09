@@ -26,20 +26,24 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMText;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.HelloWorldOM;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 public abstract class AbstractHelloWorldOMTestCase extends TestCase {
 
-    private Node node;
-    private HelloWorldOM helloWorld;
+    protected Node node;
+    protected HelloWorldOM helloWorld;
 
     @Override
     protected void setUp() throws Exception {
         String contribution = "target/classes";
         node = NodeFactory.newInstance().createNode(getCompositeName(), new Contribution("test", contribution));
+        // force ws binding on node to use a default of 8085 if an absolute port is not specified
+        ((NodeImpl)node).getConfiguration().addBinding(WebServiceBinding.TYPE, "http://localhost:8085/");
         node.start();
         helloWorld = node.getService(HelloWorldOM.class, "HelloWorldComponent");
     }
