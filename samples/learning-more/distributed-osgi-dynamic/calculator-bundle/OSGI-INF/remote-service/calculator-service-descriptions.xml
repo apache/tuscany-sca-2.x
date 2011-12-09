@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+-->
+<!-- A consumer-side service description file for RFC 119 -->
+<endpoint-descriptions xmlns="http://www.osgi.org/xmlns/rsa/v1.0.0" 
+    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
+    <!-- Describe a remote OSGi service  -->
+    <endpoint-description>
+        <property name="objectClass" value="calculator.dosgi.operations.AddService" />
+        <property name="remote.configs.supported" value="org.osgi.sca"/>
+        <property name="service.imported.configs" value="org.osgi.sca"/>
+        <property name="sca.reference" value="addService"/>
+<!-- ##############################################################################################################-->
+<!-- Property org.osgi.sca.bindings can be removed when running with -Dorg.osgi.sca.domain.registry=tribes:default -->         
+        <property name="org.osgi.sca.bindings">
+            <list>
+                <value>{http://sample}Add</value>
+            </list>
+        </property>
+<!-- ##############################################################################################################-->
+    </endpoint-description>
+    <endpoint-description>
+        <property name="objectClass" value="calculator.dosgi.operations.SubtractService" />
+        <property name="service.imported.configs" value="org.osgi.sca"/>
+        <property name="remote.configs.supported" value="org.osgi.sca"/>
+        <property name="sca.reference" value="subtractService"/>
+<!-- ##############################################################################################################-->
+<!-- Property org.osgi.sca.bindings can be removed when running with -Dorg.osgi.sca.domain.registry=tribes:default -->         
+        <property name="org.osgi.sca.bindings">
+            <list>
+                <value>{http://sample}Subtract</value>
+            </list>
+        </property>
+<!-- ##############################################################################################################-->
+    </endpoint-description>
+    <endpoint-description>
+        <property name="objectClass" value="calculator.dosgi.operations.MultiplyService" />
+        <property name="service.imported.configs" value="org.osgi.sca"/>
+        <property name="remote.configs.supported" value="org.osgi.sca"/>
+        <property name="sca.reference" value="multiplyService"/>
+<!-- ##############################################################################################################-->
+<!-- Property org.osgi.sca.bindings can be removed when running with -Dorg.osgi.sca.domain.registry=tribes:default -->         
+        <property name="org.osgi.sca.bindings" value="{http://sample}Multiply"/>
+<!-- ##############################################################################################################-->
+    </endpoint-description>
+    <endpoint-description>
+        <property name="objectClass" value="calculator.dosgi.operations.DivideService" />
+        <property name="service.imported.configs" value="org.osgi.sca"/>
+        <property name="remote.configs.supported" value="org.osgi.sca"/>
+        <property name="sca.reference" value="divideService"/>
+<!-- ##############################################################################################################-->
+<!-- Property org.osgi.sca.bindings can be removed when running with -Dorg.osgi.sca.domain.registry=tribes:default -->         
+        <property name="org.osgi.sca.bindings" value="{http://sample}Divide"/>
+<!-- ##############################################################################################################-->
+    </endpoint-description>
+</endpoint-descriptions>
