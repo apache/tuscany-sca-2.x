@@ -33,7 +33,7 @@ public interface RuntimeProperties {
     public static final String QUIET_LOGGING = "org.apache.tuscany.sca.quietLogging";
 
     /**
-     *  When true attempt to release the ClassLoader used by a COntribution when its unloaded
+     *  When true attempt to release the ClassLoader used by a Contribution when its unloaded
      */
     public static final String RELEASE_ON_UNLOAD = "org.apache.tuscany.sca.releaseOnUnload";
     
