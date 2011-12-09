@@ -24,8 +24,14 @@ package org.apache.tuscany.sca.core.invocation;
  *
  */
 public interface Constants {
-    String MESSAGE_ID 				= "MESSAGE_ID";
-    String RELATES_TO 				= "RELATES_TO";
-    String ASYNC_RESPONSE_INVOKER 	= "ASYNC_RESPONSE_INVOKER";
-    String ASYNC_CALLBACK 			= "ASYNC_CALLBACK";
+    public static final String MESSAGE_ID 				= "MESSAGE_ID";
+    public static final String RELATES_TO 				= "RELATES_TO";
+    public static final String ASYNC_RESPONSE_INVOKER 	= "ASYNC_RESPONSE_INVOKER";
+    public static final String ASYNC_CALLBACK 			= "ASYNC_CALLBACK";
+    
+    /**
+     *  If you've set the TCCL in your binding impl according to OASIS rules you can prevent
+     *  the implementation provider from repeating the process by including this header
+     */
+    public static final String SUPPRESS_TCCL_SWAP       = "SUPPRESS_TCCL_SWAP";
 }

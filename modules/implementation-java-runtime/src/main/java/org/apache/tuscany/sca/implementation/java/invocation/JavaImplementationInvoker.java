@@ -31,6 +31,7 @@ import javax.xml.ws.Holder;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
+import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
@@ -104,7 +105,13 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
                     return tccl;
                  }
             });
-        ClassLoader contributionClassloader = null;
+        
+        // TUSCANY-3946 - If the TCCL has not already been set to the contribution classloader earlier
+        // in the wire processing then
+        // set it so that the thread context classloader of the thread used to invoke an operation 
+        // of a Java POJO component implementation is the class loader of the contribution 
+        // used to load the POJO implementation class.
+        boolean swapTCCL = (msg.getHeaders().get(Constants.SUPPRESS_TCCL_SWAP) == null);
         
         try {
             // The following call might create a new conversation, as a result, the msg.getConversationID() might 
@@ -132,18 +139,7 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
                 }
             }
             
-            // TUSCANY-3946 - If the TCCL has not already been set to the contribution classloader then
-            // set it  so that the thread context classloader of the thread used to invoke an operation 
-            // of a Java POJO component implementation is the class loader of the contribution 
-            // used to load the POJO implementation class.
-            contributionClassloader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-                public ClassLoader run() {
-                    ClassLoader contributionClassloader = instance.getClass().getClassLoader();
-                    return contributionClassloader;
-                 }
-            });
-            
-            if (tccl != contributionClassloader){
+            if (swapTCCL){
                 AccessController.doPrivileged(new PrivilegedAction() {
                     public Object run() {
                         Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
@@ -271,7 +267,7 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
         } finally {
             // reset the tccl if it was replaced above
             // with the contribution classloader
-            if (tccl != contributionClassloader){
+            if (swapTCCL){
                 AccessController.doPrivileged(new PrivilegedAction() {
                     public Object run() {
                         Thread.currentThread().setContextClassLoader(tccl);
