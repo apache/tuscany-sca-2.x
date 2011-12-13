@@ -22,13 +22,12 @@ package org.apache.tuscany.sca.runtime;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.ServiceReference;
 
 /**
  * @version $Rev$ $Date$
  */
-public interface RuntimeComponentContext extends ComponentContext {
+public interface RuntimeComponentContext extends TuscanyComponentContext {
 
     /**
      * Get the CallableReference for a given component reference
