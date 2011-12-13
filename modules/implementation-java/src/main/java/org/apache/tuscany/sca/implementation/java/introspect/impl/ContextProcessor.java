@@ -60,7 +60,7 @@ public class ContextProcessor extends BaseJavaClassVisitor {
         }
         Class<?> paramType = method.getParameterTypes()[0];
         String name = JavaIntrospectionHelper.toPropertyName(method.getName());
-        if (ComponentContext.class.equals(paramType) || RequestContext.class.equals(paramType)) {
+        if (ComponentContext.class.isAssignableFrom(paramType) || RequestContext.class.equals(paramType)) {
             JavaElementImpl element = new JavaElementImpl(method, 0);
             element.setName(name);
             element.setClassifer(org.apache.tuscany.sca.implementation.java.introspect.impl.Resource.class);
@@ -77,7 +77,7 @@ public class ContextProcessor extends BaseJavaClassVisitor {
             return;
         }
         Class<?> paramType = field.getType();
-        if (ComponentContext.class.equals(paramType) || RequestContext.class.equals(paramType)) {
+        if (ComponentContext.class.isAssignableFrom(paramType) || RequestContext.class.equals(paramType)) {
             JavaElementImpl element = new JavaElementImpl(field);
             element.setClassifer(Resource.class);
             JavaResourceImpl resource = new JavaResourceImpl(element);
