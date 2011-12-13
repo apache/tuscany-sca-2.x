@@ -19,9 +19,9 @@
 
 package org.apache.tuscany.sca.itest;
 
-import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
+import org.apache.tuscany.sca.runtime.TuscanyComponentContext;
+import org.apache.tuscany.sca.runtime.TuscanyServiceReference;
 import org.oasisopen.sca.ComponentContext;
-import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.Context;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -32,14 +32,21 @@ public class HelloworldClient implements Helloworld {
     
     @Context
     public ComponentContext componentContext;
+    
+    @Context
+    public TuscanyComponentContext tuscanyComponentContext;
 
     @Override
     public String sayHello(String name) {
 
-        ServiceReference<Helloworld> sr = componentContext.getServiceReference(Helloworld.class, "helloworldService");
+//        ServiceReference<Helloworld> sr = componentContext.getServiceReference(Helloworld.class, "helloworldService");
+//        ((ServiceReferenceImpl)sr).setBindingURI("http://localhost:8080/HelloworldService/Helloworld");
 
-        ((ServiceReferenceImpl)sr).setBindingURI("http://localhost:8080/HelloworldService/Helloworld");
+        TuscanyServiceReference<Helloworld> tsr = tuscanyComponentContext.getServiceReference(Helloworld.class, "helloworldService");
+//        TuscanyServiceReference<Helloworld> tsr = (TuscanyServiceReference<Helloworld>)componentContext.getServiceReference(Helloworld.class, "helloworldService");
+        tsr.setBindingURI("http://localhost:8080/HelloworldService/Helloworld");
 
-        return "client: " + sr.getService().sayHello(name);
+        
+        return "client: " + tsr.getService().sayHello(name);
     }
 }
