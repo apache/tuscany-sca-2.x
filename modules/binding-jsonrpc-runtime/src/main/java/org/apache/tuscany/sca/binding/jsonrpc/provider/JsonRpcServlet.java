@@ -188,7 +188,7 @@ public class JsonRpcServlet extends HttpServlet {
 
         requestMessage.getHeaders().put("RequestMessage", request);
 
-        if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
+        if (jsonOperation.getInputWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
             requestMessage.setBody(new Object[] {JacksonHelper.toString(request.getJsonNode())});
         } else {
             requestMessage.setBody(params);
@@ -210,7 +210,7 @@ public class JsonRpcServlet extends HttpServlet {
         }
 
         if (!responseMessage.isFault()) {
-            if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
+            if (jsonOperation.getOutputWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
                 result = responseMessage.getBody();
                 return new JsonRpc20Response((ObjectNode)JacksonHelper.MAPPER.readTree(result.toString()));
             } else {
@@ -262,7 +262,7 @@ public class JsonRpcServlet extends HttpServlet {
         requestMessage.setOperation(jsonOperation);
 
         requestMessage.getHeaders().put("RequestMessage", request);
-        if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
+        if (jsonOperation.getInputWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
             requestMessage.setBody(new Object[] {JacksonHelper.toString(request.getJsonNode())});
         } else {
             requestMessage.setBody(params);
@@ -283,7 +283,7 @@ public class JsonRpcServlet extends HttpServlet {
         }
 
         if (!responseMessage.isFault()) {
-            if (jsonOperation.getWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
+            if (jsonOperation.getOutputWrapper().getDataBinding().equals(JSONDataBinding.NAME)) {
                 result = responseMessage.getBody();
                 return new JsonRpc10Response((ObjectNode)JacksonHelper.MAPPER.readTree(result.toString()));
             } else {

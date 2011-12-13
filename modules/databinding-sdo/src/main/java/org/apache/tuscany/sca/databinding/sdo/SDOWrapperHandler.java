@@ -51,11 +51,11 @@ import commonj.sdo.helper.XSDHelper;
 public class SDOWrapperHandler implements WrapperHandler<Object> {
 
     public Object create(Operation operation, boolean input) {
-        WrapperInfo wrapperInfo = operation.getWrapper();
-        
+        WrapperInfo inputWrapperInfo = operation.getInputWrapper();
+        WrapperInfo outputWrapperInfo = operation.getOutputWrapper();
 
-        ElementInfo element = input ? wrapperInfo.getInputWrapperElement() : 
-            wrapperInfo.getOutputWrapperElement();
+        ElementInfo element = input ? inputWrapperInfo.getWrapperElement() : 
+            outputWrapperInfo.getWrapperElement();
         
         HelperContext helperContext = SDOContextHelper.getHelperContext(operation);
         Type sdoType = getSDOType(helperContext, element);
@@ -67,11 +67,11 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
     }
 
     public void setChildren(Object wrapper, Object[] childObjects, Operation operation, boolean input) {
-        WrapperInfo wrapperInfo = operation.getWrapper();
-       
+        WrapperInfo inputWrapperInfo = operation.getInputWrapper();
+        WrapperInfo outputWrapperInfo = operation.getOutputWrapper();
         
-        List<ElementInfo> childElements = input? wrapperInfo.getInputChildElements():
-            wrapperInfo.getOutputChildElements();
+        List<ElementInfo> childElements = input? inputWrapperInfo.getChildElements():
+            outputWrapperInfo.getChildElements();
 
         for (int i = 0; i < childElements.size(); i++) {
             setChild(wrapper, i, childElements.get(i), childObjects[i]);
@@ -129,11 +129,11 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
      * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(Operation, boolean)
      */
     public DataType getWrapperType(Operation operation, boolean input) {
-        WrapperInfo wrapperInfo = operation.getWrapper();
-       
+        WrapperInfo inputWrapperInfo = operation.getInputWrapper();
+        WrapperInfo outputWrapperInfo = operation.getOutputWrapper();
 
-        ElementInfo element = input ? wrapperInfo.getInputWrapperElement() : 
-            wrapperInfo.getOutputWrapperElement();
+        ElementInfo element = input ? inputWrapperInfo.getWrapperElement() : 
+            outputWrapperInfo.getWrapperElement();
         
         HelperContext helperContext = SDOContextHelper.getHelperContext(operation);
         Type sdoType = getSDOType(helperContext, element);
@@ -174,11 +174,11 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
      * @see org.apache.tuscany.sca.databinding.WrapperHandler#isInstance(java.lang.Object, Operation, boolean)
      */
     public boolean isInstance(Object wrapper, Operation operation, boolean input) {
-        WrapperInfo wrapperInfo = operation.getWrapper();
-        
+        WrapperInfo inputWrapperInfo = operation.getInputWrapper();
+        WrapperInfo outputWrapperInfo = operation.getOutputWrapper();
 
-        ElementInfo element = input ? wrapperInfo.getInputWrapperElement() : 
-            wrapperInfo.getOutputWrapperElement();
+        ElementInfo element = input ? inputWrapperInfo.getWrapperElement() : 
+            outputWrapperInfo.getWrapperElement();
         
         //        List<ElementInfo> childElements =
         //            input ? wrapperInfo.getInputChildElements() : wrapperInfo.getOutputChildElements();

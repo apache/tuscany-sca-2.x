@@ -402,7 +402,7 @@ class WebServiceBindingImpl implements WebServiceBinding, DefaultingPolicySubjec
 
     protected void setIsMessageWrapped() {
         if (getBindingInterfaceContract() != null) {
-            isMessageWrapped = getBindingInterfaceContract().getInterface().getOperations().get(0).isWrapperStyle();
+            isMessageWrapped = getBindingInterfaceContract().getInterface().getOperations().get(0).isInputWrapperStyle();
         }
     }
 

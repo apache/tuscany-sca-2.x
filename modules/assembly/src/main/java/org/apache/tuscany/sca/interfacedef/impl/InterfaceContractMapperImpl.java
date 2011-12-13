@@ -245,36 +245,29 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 
         boolean passByValue = (source.getInterface().isRemotable()) && byValue;
 
-        //        if (source.getInterface().isRemotable()) {
-        //            return true;
-        //        }
-
         // FIXME: We need to deal with wrapped<-->unwrapped conversion
 
-        // Check output type
         List<DataType> sourceOutputType = source.getOutputType().getLogical();
         List<DataType> targetOutputType = target.getOutputType().getLogical();
 
-        boolean checkSourceWrapper = true;
         List<DataType> sourceInputType = source.getInputType().getLogical();
-        if (source.isWrapperStyle() && source.getWrapper() != null) {
-            sourceInputType = source.getWrapper().getUnwrappedInputType().getLogical();
-            sourceOutputType = source.getWrapper().getUnwrappedOutputType().getLogical();
-            checkSourceWrapper = false;
-        }
-        boolean checkTargetWrapper = true;
         List<DataType> targetInputType = target.getInputType().getLogical();
-        if (target.isWrapperStyle() && target.getWrapper() != null) {
-            targetInputType = target.getWrapper().getUnwrappedInputType().getLogical();
-            targetOutputType = target.getWrapper().getUnwrappedOutputType().getLogical();
-            checkTargetWrapper = false;
+        
+        if (source.isInputWrapperStyle() && source.getInputWrapper() != null) {
+            sourceInputType = source.getInputWrapper().getUnwrappedType().getLogical();
+        }
+        
+        if (source.isOutputWrapperStyle() && source.getOutputWrapper() != null) {
+            sourceOutputType = source.getOutputWrapper().getUnwrappedType().getLogical();
         }
 
-        /* TODO - Why are we assuming compatibility if one side is wrapped and the other is not?
-        if (checkSourceWrapper != checkTargetWrapper) {
-            return true;
+        if (target.isInputWrapperStyle() && target.getInputWrapper() != null) {
+            targetInputType = target.getInputWrapper().getUnwrappedType().getLogical();
         }
-         */
+        
+        if (target.isOutputWrapperStyle() && target.getOutputWrapper() != null) {        
+            targetOutputType = target.getOutputWrapper().getUnwrappedType().getLogical();
+        }
 
         if ( sourceOutputType.size() != targetOutputType.size()) {
             if (audit != null){
@@ -293,7 +286,6 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
                 return false;
             }
         }
-
 
         if (sourceInputType.size() != targetInputType.size()) {
             if (audit != null){
@@ -348,7 +340,9 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 
     @Override
     public boolean isCompatibleWithoutUnwrapByValue(Operation source, Operation target, Compatibility compatibilityType) {
-        if (!source.isWrapperStyle() == target.isWrapperStyle()) {
+        if (!source.isInputWrapperStyle() == target.isInputWrapperStyle()) {
+            return false; 
+        } else if (!source.isOutputWrapperStyle() == target.isOutputWrapperStyle()) {
             return false; 
         } else {
             return isCompatible(source, target, compatibilityType, true);

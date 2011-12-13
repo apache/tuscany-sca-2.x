@@ -82,7 +82,7 @@ public class JsonRpcInvoker implements Invoker, DataExchangeSemantics {
             post = new HttpPost(uri);
             HttpEntity entity = null;
             Object[] args = msg.getBody();
-            final String db = msg.getOperation().getWrapper().getDataBinding();
+            final String db = msg.getOperation().getInputWrapper().getDataBinding();
 
             if (!db.equals(JSONDataBinding.NAME)) {
                 Object[] params = new Object[0];

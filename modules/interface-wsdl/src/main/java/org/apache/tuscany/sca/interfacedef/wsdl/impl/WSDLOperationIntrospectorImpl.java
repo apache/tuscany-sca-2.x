@@ -219,10 +219,12 @@ public class WSDLOperationIntrospectorImpl {
             }
             operationModel.setOutputType(getOutputType());
 
-            operationModel.setWrapperStyle(isWrapperStyle());
+            operationModel.setInputWrapperStyle(isWrapperStyle());
+            operationModel.setOutputWrapperStyle(isWrapperStyle());
+            
             if (isWrapperStyle()) {
-                WrapperInfo wrapperInfo = getWrapper().getWrapperInfo();
-                operationModel.setWrapper(wrapperInfo);
+                operationModel.setInputWrapper(getWrapper().getInputWrapperInfo());
+                operationModel.setOutputWrapper(getWrapper().getOutputWrapperInfo());                
             }
         }
         return operationModel;
@@ -347,11 +349,8 @@ public class WSDLOperationIntrospectorImpl {
 
         private List<XmlSchemaElement> outputElements;
 
-        //        private DataType<List<DataType<XMLType>>> unwrappedInputType;
-        //
-        //        private DataType<XMLType> unwrappedOutputType;
-
-        private transient WrapperInfo wrapperInfo;
+        private transient WrapperInfo inputWrapperInfo;
+        private transient WrapperInfo outputWrapperInfo;
 
         private List<XmlSchemaElement> getChildElements(XmlSchemaElement element) throws InvalidWSDLException {
             if (element == null) {
@@ -519,61 +518,34 @@ public class WSDLOperationIntrospectorImpl {
             return outputWrapperElement;
         }
 
-        /*
-        public DataType<List<DataType<XMLType>>> getUnwrappedInputType() throws InvalidWSDLException {
-            if (unwrappedInputType == null) {
-                List<DataType<XMLType>> childTypes = new ArrayList<DataType<XMLType>>();
-                for (XmlSchemaElement element : getInputChildElements()) {
-                    DataType<XMLType> type =
-                        new DataType<XMLType>(dataBinding, Object.class, new XMLType(getElementInfo(element)));
-                    // type.setMetadata(ElementInfo.class.getName(), getElementInfo(element));
-                    childTypes.add(type);
-                }
-                unwrappedInputType =
-                    new DataType<List<DataType<XMLType>>>("idl:unwrapped.input", Object[].class, childTypes);
-            }
-            return unwrappedInputType;
-        }
-
-        public DataType<XMLType> getUnwrappedOutputType() throws InvalidServiceContractException {
-            if (unwrappedOutputType == null) {
-                List<XmlSchemaElement> elements = getOutputChildElements();
-                if (elements != null && elements.size() > 0) {
-                    if (elements.size() > 1) {
-                        // We don't support output with multiple parts
-                        throw new NotSupportedWSDLException("Multi-part output is not supported");
-                    }
-                    XmlSchemaElement element = elements.get(0);
-                    unwrappedOutputType =
-                        new DataType<XMLType>(dataBinding, Object.class, new XMLType(getElementInfo(element)));
-                    // unwrappedOutputType.setMetadata(ElementInfo.class.getName(), getElementInfo(element));
-                }
-            }
-            return unwrappedOutputType;
-        }
-        */
-
-        public WrapperInfo getWrapperInfo() throws InvalidWSDLException {
-            if (wrapperInfo == null) {
+        public WrapperInfo getInputWrapperInfo() throws InvalidWSDLException {
+            if (inputWrapperInfo == null) {
                 ElementInfo in = getElementInfo(getInputWrapperElement());
-                ElementInfo out = getElementInfo(getOutputWrapperElement());
                 List<ElementInfo> inChildren = new ArrayList<ElementInfo>();
                 if (in != null) {
                     for (XmlSchemaElement e : getInputChildElements()) {
                         inChildren.add(getElementInfo(e));
                     }
                 }
+                inputWrapperInfo = new WrapperInfo(dataBinding, in, inChildren);
+            }
+            return inputWrapperInfo;
+        }
+    
+        public WrapperInfo getOutputWrapperInfo() throws InvalidWSDLException {
+            if (outputWrapperInfo == null) {
+                ElementInfo out = getElementInfo(getOutputWrapperElement());
                 List<ElementInfo> outChildren = new ArrayList<ElementInfo>();
                 if (out != null) {
                     for (XmlSchemaElement e : getOutputChildElements()) {
                         outChildren.add(getElementInfo(e));
                     }
                 }
-                wrapperInfo = new WrapperInfo(dataBinding, in, out, inChildren, outChildren);
+                outputWrapperInfo = new WrapperInfo(dataBinding, out, outChildren);
             }
-            return wrapperInfo;
+            return outputWrapperInfo;
         }
-    }
+    }    
 
     private static ElementInfo getElementInfo(XmlSchemaElement element) {
         if (element == null) {

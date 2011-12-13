@@ -76,8 +76,8 @@ public class SDOWrapperHandlerTestCase extends TestCase {
         xsdHelper.define(getClass().getResourceAsStream("/wrapper.xsd"), null);
         ElementInfo element = new ElementInfo(new QName("http://www.example.com/wrapper", "op"), null);
         Operation op = new OperationImpl();
-        WrapperInfo wrapperInfo = new WrapperInfo(SDODataBinding.NAME, element, null, null, null);
-        op.setWrapper(wrapperInfo);
+        WrapperInfo wrapperInfo = new WrapperInfo(SDODataBinding.NAME, element, null);
+        op.setInputWrapper(wrapperInfo);
         DataObject wrapper = (DataObject) handler.create(op, true);
         assertNotNull(wrapper);
     }

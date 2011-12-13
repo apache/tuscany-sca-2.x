@@ -51,8 +51,10 @@ public class OperationImpl implements Operation {
     private Interface interfaze;
     private List<ParameterMode> parameterModes = new ArrayList<ParameterMode>();
     private boolean nonBlocking;
-    private boolean wrapperStyle;
-    private WrapperInfo wrapper;
+    private boolean inputWrapperStyle;
+    private boolean outputWrapperStyle;
+    private WrapperInfo inputWrapper;
+    private WrapperInfo outputWrapper;
     private boolean dynamic;
     private boolean notSubjectToWrapping;
 
@@ -167,38 +169,75 @@ public class OperationImpl implements Operation {
     /**
      * @return the wrapperInfo
      */
-    public WrapperInfo getWrapper() {
-        return wrapper;
+    public WrapperInfo getInputWrapper() {
+        return inputWrapper;
     }
 
     /**
      * @param wrapperInfo the wrapperInfo to set
      */
-    public void setWrapper(WrapperInfo wrapperInfo) {
-        this.wrapper = wrapperInfo;
+    public void setInputWrapper(WrapperInfo wrapperInfo) {
+        this.inputWrapper = wrapperInfo;
     }
+    
+    /**
+     * @return the wrapperInfo
+     */
+    public WrapperInfo getOutputWrapper() {
+        return outputWrapper;
+    }
+
+    /**
+     * @param wrapperInfo the wrapperInfo to set
+     */
+    public void setOutputWrapper(WrapperInfo wrapperInfo) {
+        this.outputWrapper = wrapperInfo;
+    }    
 
     /**
      * @return the wrapperStyle
      */
-    public boolean isWrapperStyle() {
-        return wrapperStyle;
+    public boolean isInputWrapperStyle() {
+        return inputWrapperStyle;
     }
 
     /**
      * @param wrapperStyle the wrapperStyle to set
      */
-    public void setWrapperStyle(boolean wrapperStyle) {
-        this.wrapperStyle = wrapperStyle;
+    public void setInputWrapperStyle(boolean wrapperStyle) {
+        this.inputWrapperStyle = wrapperStyle;
+    }
+    
+    /**
+     * @return the wrapperStyle
+     */
+    public boolean isOutputWrapperStyle() {
+        return outputWrapperStyle;
     }
 
+    /**
+     * @param wrapperStyle the wrapperStyle to set
+     */
+    public void setOutputWrapperStyle(boolean wrapperStyle) {
+        this.outputWrapperStyle = wrapperStyle;
+    }    
+
     public String getDataBinding() {
-        return wrapper != null ? wrapper.getDataBinding() : null;
+        if (inputWrapper != null){
+            return inputWrapper.getDataBinding();
+        }
+        if (outputWrapper != null){
+            return outputWrapper.getDataBinding();
+        }
+        return null;
     }
 
     public void setDataBinding(String dataBinding) {
-        if (wrapper != null) {
-            wrapper.setDataBinding(dataBinding);
+        if (inputWrapper != null) {
+            inputWrapper.setDataBinding(dataBinding);
+        }
+        if (outputWrapper != null) {
+            outputWrapper.setDataBinding(dataBinding);
         }
     }
 
@@ -258,8 +297,12 @@ public class OperationImpl implements Operation {
         copy.attributes.putAll(attributes);
 
         // [rfeng] We need to clone the wrapper as it holds the databinding information
-        if (wrapper != null) {
-            copy.wrapper = (WrapperInfo)wrapper.clone();
+        if (inputWrapper != null) {
+            copy.inputWrapper = (WrapperInfo)inputWrapper.clone();
+        }
+        
+        if (outputWrapper != null) {
+            copy.outputWrapper = (WrapperInfo)outputWrapper.clone();
         }
 
         return copy;

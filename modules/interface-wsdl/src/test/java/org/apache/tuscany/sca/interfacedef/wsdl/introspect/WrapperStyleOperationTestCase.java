@@ -52,9 +52,9 @@ public class WrapperStyleOperationTestCase extends AbstractWSDLTestCase {
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         WSDLInterface wi = wsdlFactory.createWSDLInterface(portType, definition, resolver, context.getMonitor());
         WSDLOperation op = (WSDLOperation) wi.getOperations().get(0);
-        Assert.assertTrue(op.isWrapperStyle());
-        Assert.assertEquals(1, op.getWrapper().getInputChildElements().size());
-        Assert.assertEquals(1, op.getWrapper().getOutputChildElements().size());
+        Assert.assertTrue(op.isInputWrapperStyle());
+        Assert.assertEquals(1, op.getInputWrapper().getChildElements().size());
+        Assert.assertEquals(1, op.getOutputWrapper().getChildElements().size());
     }
 
     @Test
@@ -67,11 +67,11 @@ public class WrapperStyleOperationTestCase extends AbstractWSDLTestCase {
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         WSDLInterface wi = wsdlFactory.createWSDLInterface(portType, definition, resolver, context.getMonitor());
         WSDLOperation op = (WSDLOperation) wi.getOperations().get(0);
-        Assert.assertTrue(op.isWrapperStyle());
+        Assert.assertTrue(op.isInputWrapperStyle());
         op = (WSDLOperation) wi.getOperations().get(1);
-        Assert.assertFalse(op.isWrapperStyle());
+        Assert.assertFalse(op.isInputWrapperStyle());
         op = (WSDLOperation) wi.getOperations().get(2);
-        Assert.assertFalse(op.isWrapperStyle());
+        Assert.assertFalse(op.isInputWrapperStyle());
     }
 
 
@@ -86,7 +86,7 @@ public class WrapperStyleOperationTestCase extends AbstractWSDLTestCase {
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         WSDLInterface wi = wsdlFactory.createWSDLInterface(portType, definition, resolver, context.getMonitor());
         WSDLOperation op = (WSDLOperation) wi.getOperations().get(0);
-        Assert.assertFalse(op.isWrapperStyle());
+        Assert.assertFalse(op.isInputWrapperStyle());
     }
 
 }

@@ -58,10 +58,10 @@ public class JAXBWrapperHandlerTestCase {
     public void testCreate() {
         ElementInfo element = new ElementInfo(ELEMENT, null);
         Operation op = new OperationImpl();
-        WrapperInfo wrapperInfo = new WrapperInfo(JAXBDataBinding.NAME, element, null, null, null);
-        wrapperInfo.setInputWrapperType(new DataTypeImpl<XMLType>(JAXBDataBinding.NAME, StockQuoteOffer.class,
-                                                                  XMLType.UNKNOWN));
-        op.setWrapper(wrapperInfo);
+        WrapperInfo wrapperInfo = new WrapperInfo(JAXBDataBinding.NAME, element, null);
+        wrapperInfo.setWrapperType(new DataTypeImpl<XMLType>(JAXBDataBinding.NAME, StockQuoteOffer.class,
+                                                             XMLType.UNKNOWN));
+        op.setInputWrapper(wrapperInfo);
         Object offer = handler.create(op, true);
         Assert.assertTrue(offer instanceof StockQuoteOffer);
     }
@@ -79,9 +79,9 @@ public class JAXBWrapperHandlerTestCase {
         wrapper.setInput("IBM");
         List<ElementInfo> elements = new ArrayList<ElementInfo>();
         elements.add(new ElementInfo(INPUT, null));
-        WrapperInfo wrapperInfo = new WrapperInfo(JAXBDataBinding.NAME, null, null, elements, null);
+        WrapperInfo wrapperInfo = new WrapperInfo(JAXBDataBinding.NAME, null, elements);
         Operation op = new OperationImpl();
-        op.setWrapper(wrapperInfo);
+        op.setInputWrapper(wrapperInfo);
         List children = handler.getChildren(wrapper, op, true);
         assertNotNull(children);
         assertEquals(1, children.size());

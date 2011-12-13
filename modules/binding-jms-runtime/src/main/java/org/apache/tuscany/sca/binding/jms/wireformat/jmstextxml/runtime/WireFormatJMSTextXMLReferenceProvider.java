@@ -64,7 +64,7 @@ public class WireFormatJMSTextXMLReferenceProvider implements WireFormatProvider
         }
 
         // create a local interface contract that is configured specifically to 
-        // deal with the data format that this wire format is expecting to sent to 
+        // deal with the data format that this wire format is expecting to send to 
         // and receive from the databinding interceptor. The request/response parts of 
         // this interface contract will be copied into the binding interface contract
         // as required

@@ -57,16 +57,22 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
     }
 
     public OMElement create(Operation operation, boolean input) {
-        WrapperInfo wrapperInfo = operation.getWrapper();
-        ElementInfo element = input ? wrapperInfo.getInputWrapperElement() : wrapperInfo.getOutputWrapperElement();
+        WrapperInfo inputWrapperInfo = operation.getInputWrapper();
+        WrapperInfo outputWrapperInfo = operation.getOutputWrapper();
+        
+        ElementInfo element = input ? inputWrapperInfo.getWrapperElement() : outputWrapperInfo.getWrapperElement();
         // Class<?> wrapperClass = input ? wrapperInfo.getInputWrapperClass() : wrapperInfo.getOutputWrapperClass();
         OMElement wrapper = AxiomHelper.createOMElement(factory, element.getQName());
         return wrapper;
     }
 
     public void setChildren(OMElement wrapper, Object[] childObjects, Operation operation, boolean input) {
+        WrapperInfo inputWrapperInfo = operation.getInputWrapper();
+        WrapperInfo outputWrapperInfo = operation.getOutputWrapper();
+        
         List<ElementInfo> childElements =
-            input ? operation.getWrapper().getInputChildElements() : operation.getWrapper().getOutputChildElements();
+            input ? inputWrapperInfo.getChildElements() : outputWrapperInfo.getChildElements();
+            
         for (int i = 0; i < childElements.size(); i++) {
             setChild(wrapper, i, childElements.get(i), childObjects[i]);
         }
@@ -108,8 +114,11 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
     }
 
     public List getChildren(OMElement wrapper, Operation operation, boolean input) {
-        List<ElementInfo> childElements = input? operation.getWrapper().getInputChildElements():
-            operation.getWrapper().getOutputChildElements();
+        WrapperInfo inputWrapperInfo = operation.getInputWrapper();
+        WrapperInfo outputWrapperInfo = operation.getOutputWrapper();
+        
+        List<ElementInfo> childElements = input? inputWrapperInfo.getChildElements():
+            outputWrapperInfo.getChildElements();
 
         // Used in both the schema-valid and schema-invalid paths
         List<List<OMElement>> groupedElements = getElements(wrapper);    
@@ -264,16 +273,22 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
      * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(Operation, boolean)
      */
     public DataType getWrapperType(Operation operation, boolean input) {
-        WrapperInfo wrapper = operation.getWrapper();
-        ElementInfo element = input ? wrapper.getInputWrapperElement() : wrapper.getOutputWrapperElement();
+        WrapperInfo inputWrapperInfo = operation.getInputWrapper();
+        WrapperInfo outputWrapperInfo = operation.getOutputWrapper();
+        
+        ElementInfo element = input ? inputWrapperInfo.getWrapperElement() : outputWrapperInfo.getWrapperElement();
+        
         DataType<XMLType> wrapperType =
             new DataTypeImpl<XMLType>(AxiomDataBinding.NAME, OMElement.class, new XMLType(element));
         return wrapperType;
     }
 
     public boolean isInstance(Object wrapperObj, Operation operation, boolean input) {
-        WrapperInfo wrapperInfo = operation.getWrapper();
-        ElementInfo element = input ? wrapperInfo.getInputWrapperElement() : wrapperInfo.getOutputWrapperElement();
+        WrapperInfo inputWrapperInfo = operation.getInputWrapper();
+        WrapperInfo outputWrapperInfo = operation.getOutputWrapper();
+        
+        ElementInfo element = input ? inputWrapperInfo.getWrapperElement() : outputWrapperInfo.getWrapperElement();
+        
         //        List<ElementInfo> childElements =
         //            input ? wrapperInfo.getInputChildElements() : wrapperInfo.getOutputChildElements();
         OMElement wrapper = (OMElement)wrapperObj;

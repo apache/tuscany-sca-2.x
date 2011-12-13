@@ -230,11 +230,11 @@ public class Interface2WSDLGenerator {
     private Map<XMLTypeHelper, List<DataType>> getDataTypes(Interface intf, boolean useWrapper, Map<String, XMLTypeHelper> helpers) {
         Map<XMLTypeHelper, List<DataType>> dataTypes = new HashMap<XMLTypeHelper, List<DataType>>();
         for (Operation op : intf.getOperations()) {
-            WrapperInfo wrapper = op.getWrapper();
+            WrapperInfo inputWrapper = op.getInputWrapper();
             DataType dt1 = null;
-            boolean useInputWrapper = useWrapper & wrapper != null;
+            boolean useInputWrapper = useWrapper & inputWrapper != null;
             if (useInputWrapper) {
-                dt1 = wrapper.getInputWrapperType();
+                dt1 = inputWrapper.getWrapperType();
                 useInputWrapper &= inputTypesCompatible(dt1, op.getInputType(), helpers);
             }
             if (useInputWrapper) {
@@ -245,10 +245,11 @@ public class Interface2WSDLGenerator {
                 }
             }
             
+            WrapperInfo outputWrapper = op.getOutputWrapper();
             DataType dt2 = null;
-            boolean useOutputWrapper = useWrapper & wrapper != null;
+            boolean useOutputWrapper = useWrapper & outputWrapper != null;
             if (useOutputWrapper) {
-                dt2 = wrapper.getOutputWrapperType();
+                dt2 = outputWrapper.getWrapperType();
                 useOutputWrapper &= outputTypeCompatible(dt2, op.getOutputType(), helpers);
             }
             if (useOutputWrapper) {
@@ -334,7 +335,7 @@ public class Interface2WSDLGenerator {
             javax.wsdl.Operation operation = generateOperation(definition, op, helpers, wrappers);
             portType.addOperation(operation);
             String action = ((JavaOperation)op).getAction();
-            if ((action == null || "".equals(action)) && !op.isWrapperStyle() && op.getWrapper() == null) {
+            if ((action == null || "".equals(action)) && !op.isInputWrapperStyle() && op.getInputWrapper() == null) {
                 // Bare style
                 action = "urn:" + op.getName();
             }
@@ -631,7 +632,7 @@ public class Interface2WSDLGenerator {
 
         List<ElementInfo> elements = null;
         // FIXME: By default, java interface is mapped to doc-lit-wrapper style WSDL
-        if (op.getWrapper() != null) {
+        if (op.getInputWrapper() != null) {
             // Generate doc-lit-wrapper style
             inputMsg.addPart(generateWrapperPart(definition, op, helpers, wrappers, true));
         } else {
@@ -658,7 +659,7 @@ public class Interface2WSDLGenerator {
             outputMsg.setUndefined(false);
             definition.addMessage(outputMsg);
 
-            if (op.getWrapper() != null) {
+            if (op.getOutputWrapper() != null) {
                 outputMsg.addPart(generateWrapperPart(definition, op, helpers, wrappers, false));
             } else {
                 
@@ -741,12 +742,15 @@ public class Interface2WSDLGenerator {
         Part part = definition.createPart();
         String partName = input ? operation.getName() : (operation.getName() + "Response");
         part.setName(partName);
-        WrapperInfo opWrapper = operation.getWrapper();
-        if (opWrapper != null) {
+        
+        WrapperInfo inputWrapper = operation.getInputWrapper();
+        WrapperInfo outputWrapper = operation.getOutputWrapper();
+        
+        if ((inputWrapper != null) && (outputWrapper != null)) {
             ElementInfo elementInfo =
-                input ? opWrapper.getInputWrapperElement() : opWrapper.getOutputWrapperElement();
+                input ? inputWrapper.getWrapperElement() : outputWrapper.getWrapperElement();
             List<ElementInfo> elements =
-                input ? opWrapper.getInputChildElements() : opWrapper.getOutputChildElements();
+                input ? inputWrapper.getChildElements() : outputWrapper.getChildElements();
             QName wrapperName = elementInfo.getQName();
             part.setElementName(wrapperName);
             addNamespace(definition, wrapperName);

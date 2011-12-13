@@ -55,10 +55,14 @@ public class OperationDataBindingHelper {
             return false;
         }
 
-        if (source.isWrapperStyle() != target.isWrapperStyle()) {
+        if (source.isInputWrapperStyle() != target.isInputWrapperStyle()) {
             return true;
         }
 
+        if (source.isOutputWrapperStyle() != target.isOutputWrapperStyle()) {
+            return true;
+        }
+        
         // Check output type
         List<DataType> sourceOutputType = source.getOutputType().getLogical();
         List<DataType> targetOutputType = target.getOutputType().getLogical();

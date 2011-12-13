@@ -214,8 +214,8 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         Class<?>[] params = method.getParameterTypes();
 
         DataType<List<DataType>> inputType = null;
-        if (operation.isWrapperStyle()) {
-            inputType = operation.getWrapper().getUnwrappedInputType();
+        if (operation.isInputWrapperStyle()) {
+            inputType = operation.getInputWrapper().getUnwrappedType();
         } else {
             inputType = operation.getInputType();
         }

@@ -379,8 +379,8 @@ public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
                     if (type instanceof ParameterizedType) {
                         // Check if the parameterized type of Response<T> is a doc-lit-wrapper class
                         Class<?> wrapperClass = (Class<?>)((ParameterizedType)type).getActualTypeArguments()[0];
-                        WrapperInfo wrapperInfo = chain.getSourceOperation().getWrapper();
-                        if (wrapperInfo != null && wrapperInfo.getOutputWrapperClass() == wrapperClass) {
+                        WrapperInfo wrapperInfo = chain.getSourceOperation().getOutputWrapper();
+                        if (wrapperInfo != null && wrapperInfo.getWrapperClass() == wrapperClass) {
                             Object wrapper = wrapperClass.newInstance();
                             // Find the 1st matching property
                             for (PropertyDescriptor p : Introspector.getBeanInfo(wrapperClass).getPropertyDescriptors()) {

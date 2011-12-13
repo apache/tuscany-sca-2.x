@@ -93,9 +93,9 @@ public class OMElementWrapperHandlerTestCase {
         elements.get(1).setOmissible(true);
         elements.get(1).setNillable(false);
 
-        WrapperInfo wrapperInfo = new WrapperInfo(AxiomDataBinding.NAME, null, null, elements, null);
+        WrapperInfo wrapperInfo = new WrapperInfo(AxiomDataBinding.NAME, null, elements);
         this.op = new OperationImpl();
-        op.setWrapper(wrapperInfo);   
+        op.setInputWrapper(wrapperInfo);   
     }
 
     @Test

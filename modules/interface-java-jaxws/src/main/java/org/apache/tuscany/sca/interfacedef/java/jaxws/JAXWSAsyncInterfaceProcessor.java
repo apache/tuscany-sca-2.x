@@ -118,9 +118,9 @@ public class JAXWSAsyncInterfaceProcessor implements JavaInterfaceVisitor {
                     asyncActualReturnTypeClass = (Class<?>)asyncReturnType.getActualTypeArguments()[0];
                 }
 
-                if (operation.getWrapper() != null) {
+                if (operation.getOutputWrapper() != null) {
                     // The return type could be the wrapper type per JAX-WS spec 
-                    Class<?> wrapperClass = operation.getWrapper().getOutputWrapperClass();
+                    Class<?> wrapperClass = operation.getOutputWrapper().getWrapperClass();
                     if (wrapperClass == asyncActualReturnTypeClass) {
                         return true;
                     }
@@ -182,9 +182,9 @@ public class JAXWSAsyncInterfaceProcessor implements JavaInterfaceVisitor {
                 asyncActualLastParameterTypeClass = (Class<?>)asyncLastParameterType.getActualTypeArguments()[0];
             }
 
-            if (operation.getWrapper() != null) {
+            if (operation.getOutputWrapper() != null) {
                 // The return type could be the wrapper type per JAX-WS spec 
-                Class<?> wrapperClass = operation.getWrapper().getOutputWrapperClass();
+                Class<?> wrapperClass = operation.getOutputWrapper().getWrapperClass();
                 if (wrapperClass == asyncActualLastParameterTypeClass) {
                     return true;
                 }

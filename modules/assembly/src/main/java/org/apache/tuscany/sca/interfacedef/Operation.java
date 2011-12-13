@@ -130,23 +130,43 @@ public interface Operation extends Cloneable, PolicySubject {
     /**
      * @return the wrapperInfo
      */
-    WrapperInfo getWrapper();
+    WrapperInfo getInputWrapper();
 
     /**
      * @param wrapperInfo the wrapperInfo to set
      */
-    void setWrapper(WrapperInfo wrapperInfo);
+    void setInputWrapper(WrapperInfo wrapperInfo);
+    
+    /**
+     * @return the wrapperInfo
+     */
+    WrapperInfo getOutputWrapper();
+
+    /**
+     * @param wrapperInfo the wrapperInfo to set
+     */
+    void setOutputWrapper(WrapperInfo wrapperInfo);    
 
     /**
      * @return the wrapperStyle
      */
-    boolean isWrapperStyle();
+    boolean isInputWrapperStyle();
 
     /**
      * @param wrapperStyle the wrapperStyle to set
      */
-    void setWrapperStyle(boolean wrapperStyle);
+    void setInputWrapperStyle(boolean wrapperStyle);
 
+    /**
+     * @return the wrapperStyle
+     */
+    boolean isOutputWrapperStyle();
+
+    /**
+     * @param wrapperStyle the wrapperStyle to set
+     */
+    void setOutputWrapperStyle(boolean wrapperStyle);
+    
     /**
      * @deprecated This should be the WrapperInfo.getDataBinding()
      * Get the databinding for the operation

@@ -142,7 +142,8 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 if(bare) {
                     // For BARE parameter style, the data won't be unwrapped
                     // The wrapper should be null
-                    operation.setWrapperStyle(false);
+                    operation.setInputWrapperStyle(false);
+                    operation.setOutputWrapperStyle(false);
                 }
                 documentStyle = methodSOAPBinding.style() == Style.DOCUMENT;
             }
@@ -338,14 +339,14 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 }                                  
                     
                 String db = inputWrapperDT != null ? inputWrapperDT.getDataBinding() : JAXB_DATABINDING;
-                WrapperInfo wrapperInfo =
-                    new WrapperInfo(db, new ElementInfo(inputWrapper, null), new ElementInfo(outputWrapper, null),
-                                    inputElements, outputElements);
+                WrapperInfo inputWrapperInfo = new WrapperInfo(db, new ElementInfo(inputWrapper, null), inputElements);
+                WrapperInfo outputWrapperInfo = new WrapperInfo(db, new ElementInfo(outputWrapper, null), outputElements);                  
 
-                wrapperInfo.setInputWrapperType(inputWrapperDT);
-                wrapperInfo.setOutputWrapperType(outputWrapperDT);
+                inputWrapperInfo.setWrapperType(inputWrapperDT);
+                outputWrapperInfo.setWrapperType(outputWrapperDT);
 
-                operation.setWrapper(wrapperInfo);
+                operation.setInputWrapper(inputWrapperInfo);
+                operation.setOutputWrapper(outputWrapperInfo);
             }
             
             // In both bare and wrapped cases, remove OUT-only parameters from input DataType.

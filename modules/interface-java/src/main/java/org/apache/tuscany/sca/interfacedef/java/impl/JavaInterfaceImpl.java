@@ -210,8 +210,10 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
         	
             syncOperation.setName(opName);
             syncOperation.setAsyncServer(true);
-            syncOperation.setWrapper(operation.getWrapper());
-            syncOperation.setWrapperStyle(operation.isWrapperStyle());
+            syncOperation.setInputWrapper(operation.getInputWrapper());
+            syncOperation.setOutputWrapper(operation.getOutputWrapper());
+            syncOperation.setInputWrapperStyle(operation.isInputWrapperStyle());
+            syncOperation.setOutputWrapperStyle(operation.isOutputWrapperStyle());
             syncOperation.setHasArrayWrappedOutput(operation.hasArrayWrappedOutput());
             syncOperation.setNotSubjectToWrapping(operation.isNotSubjectToWrapping());
 //            syncOperation.setInputType(inputType);

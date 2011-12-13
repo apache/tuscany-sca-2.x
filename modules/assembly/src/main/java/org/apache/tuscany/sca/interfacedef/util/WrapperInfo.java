@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
  * A WSDL operation qualifies for wrapper style mapping only if the following
  * criteria are met:
  * <ul>
- * <li>(i) The operation�s input and output messages (if present) each contain
+ * <li>(i) The operations input and output messages (if present) each contain
  * only a single part
  * <li>(ii) The input message part refers to a global element declaration whose
  * localname is equal to the operation name
@@ -49,83 +49,123 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
  * @tuscany.spi.extension.asclient
  */
 public class WrapperInfo implements Cloneable {
-    private ElementInfo inputWrapperElement;
-
-    private ElementInfo outputWrapperElement;
-
-    private List<ElementInfo> inputChildElements;
-
-    private List<ElementInfo> outputChildElements;
-
-    // The data type of the unwrapped input child elements 
-    private DataType<List<DataType>> unwrappedInputType;
-
-    // The data type of the unwrapped output child elements
-    private DataType<List<DataType>> unwrappedOutputType;
-
-    // The data for the input/output wrappers
+    
+    // The databinding for the wrapper
     private String dataBinding;
-
-    // The data type for the input (request) wrapper bean
-    private DataType<XMLType> inputWrapperType;
-    // The data type for the output (response) wrapper bean
-    private DataType<XMLType> outputWrapperType;
+    
+    // The XML element representation of the wrapper
+    private ElementInfo wrapperElement;
+    
+    // The XML child elements of the wrapper
+    private List<ElementInfo> childElements;
+    
+    // The data type for the wrapper bean
+    private DataType<XMLType> wrapperType;
+    
+    // The data types of the unwrapped child elements 
+    private DataType<List<DataType>> unwrappedType;
 
     public WrapperInfo(String dataBinding,
-                       ElementInfo inputWrapperElement,
-                       ElementInfo outputWrapperElement,
-                       List<ElementInfo> inputElements,
-                       List<ElementInfo> outputElements) {
+                       ElementInfo wrapperElement,
+                       List<ElementInfo> childElements) {
         super();
         this.dataBinding = dataBinding;
-        this.inputWrapperElement = inputWrapperElement;
-        this.outputWrapperElement = outputWrapperElement;
-        this.inputChildElements = inputElements;
-        this.outputChildElements = outputElements;
+        this.wrapperElement = wrapperElement;
+        this.childElements = childElements;
     }
 
     /**
-     * @return the inputElements
+     * Get the list of XML child elements that this 
+     * wrapper wraps
+     * 
+     * @return the childElements
      */
-    public List<ElementInfo> getInputChildElements() {
-        return inputChildElements;
+    public List<ElementInfo> getChildElements() {
+        return childElements;
     }
 
     /**
-     * @return the inputWrapperElement
+     * Get the XML element that represents this wrapper 
+     * 
+     * @return the wrapperElement
      */
-    public ElementInfo getInputWrapperElement() {
-        return inputWrapperElement;
+    public ElementInfo getWrapperElement() {
+        return wrapperElement;
+    }
+    
+    /**
+     * Get the databinding that this wrapper will
+     * be subject to
+     * 
+     * @return dataBinding
+     */
+    public String getDataBinding() {
+        return dataBinding;
     }
 
     /**
-     * @return the outputElements
+     * Set the databinding that this wrapper will
+     * be subject to
+     * 
+     * @param dataBinding
      */
-    public List<ElementInfo> getOutputChildElements() {
-        return outputChildElements;
+    public void setDataBinding(String dataBinding) {
+        this.dataBinding = dataBinding;
+    }    
+   
+    /**
+     * Get the Tuscany data type for the wrapper
+     * 
+     * @return Tuscany data type for the wrapper
+     */
+    public DataType<XMLType> getWrapperType() {
+        return wrapperType;
     }
 
     /**
-     * @return the outputWrapperElement
+     * Set the Tuscany data type for the wrapper
+     * 
+     * @param wrapperType Tuscany data type for the wrapper
      */
-    public ElementInfo getOutputWrapperElement() {
-        return outputWrapperElement;
-    }
-
+    public void setWrapperType(DataType<XMLType> wrapperType) {
+        this.wrapperType = wrapperType;
+    }   
+    
     /**
-     * @return the unwrappedInputType
+     * Return the Java class for the wrapper
+     * 
+     * @return Java class for the wrapper
      */
-    public DataType<List<DataType>> getUnwrappedInputType() {
-        if (unwrappedInputType == null) {
+    public Class<?> getWrapperClass() {
+        return wrapperType == null ? null : wrapperType.getPhysical();
+    }    
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        WrapperInfo copy = (WrapperInfo) super.clone();
+        if (wrapperType != null) {
+            copy.wrapperType = (DataType<XMLType>)wrapperType.clone();
+        }
+        return copy;
+
+    }
+ 
+    /**
+     * Creates and caches the data types for the child elements 
+     * 
+     * @return The list of child element data types
+     */
+    public DataType<List<DataType>> getUnwrappedType() {
+        if (unwrappedType == null) {
             List<DataType> childTypes = new ArrayList<DataType>();
-            for (ElementInfo element : getInputChildElements()) {
+            for (ElementInfo element : getChildElements()) {
                 DataType type = getDataType(element);
                 childTypes.add(type);
             }
-            unwrappedInputType = new DataTypeImpl<List<DataType>>("idl:unwrapped.input", Object[].class, childTypes);
+            unwrappedType = new DataTypeImpl<List<DataType>>("idl:unwrapped", Object[].class, childTypes);
         }
-        return unwrappedInputType;
-    }
+        return unwrappedType;
+    }  
 
     private DataType getDataType(ElementInfo element) {
         DataType type = null;
@@ -138,84 +178,4 @@ public class WrapperInfo implements Cloneable {
         return type;
     }
 
-    /**
-     * @return the unwrappedOutputType
-     */
-    public DataType<List<DataType>> getUnwrappedOutputType() {
-        if (unwrappedOutputType == null) {
-            List<DataType> childTypes = new ArrayList<DataType>();
-            for (ElementInfo element : getOutputChildElements()) {
-                DataType type = getDataType(element);
-                childTypes.add(type);
-            }
-            unwrappedOutputType = new DataTypeImpl<List<DataType>>("idl:unwrapped.input", Object[].class, childTypes);
-        }
-        return unwrappedOutputType;    }
-
-    public Class<?> getInputWrapperClass() {
-        return inputWrapperType == null ? null : inputWrapperType.getPhysical();
-    }
-
-    public Class<?> getOutputWrapperClass() {
-        return outputWrapperType == null ? null : outputWrapperType.getPhysical();
-    }
-
-    public String getDataBinding() {
-        return dataBinding;
-    }
-
-    public void setDataBinding(String dataBinding) {
-        this.dataBinding = dataBinding;
-    }
-
-    public DataType<XMLType> getInputWrapperType() {
-        return inputWrapperType;
-    }
-
-    public void setInputWrapperType(DataType<XMLType> inputWrapperType) {
-        this.inputWrapperType = inputWrapperType;
-    }
-
-    public DataType<XMLType> getOutputWrapperType() {
-        return outputWrapperType;
-    }
-
-    public void setOutputWrapperType(DataType<XMLType> outputWrapperType) {
-        this.outputWrapperType = outputWrapperType;
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        WrapperInfo copy = (WrapperInfo) super.clone();
-        if (inputWrapperType != null) {
-            copy.inputWrapperType = (DataType<XMLType>)inputWrapperType.clone();
-        }
-        if (outputWrapperType != null) {
-            copy.outputWrapperType = (DataType<XMLType>)outputWrapperType.clone();
-        }
-        if (unwrappedInputType != null) {
-            List<DataType> clonedLogicalTypes = new ArrayList<DataType>();
-            for (DataType t : unwrappedInputType.getLogical()) {
-                DataType type = (DataType) t.clone();
-                clonedLogicalTypes.add(type);
-            }
-            DataType<List<DataType>> clonedUnwrappedInputType =
-                new DataTypeImpl<List<DataType>>(unwrappedInputType.getPhysical(), clonedLogicalTypes);
-            clonedUnwrappedInputType.setDataBinding(unwrappedInputType.getDataBinding());
-            copy.unwrappedInputType = clonedUnwrappedInputType;
-        }
-        if (unwrappedOutputType != null) {
-            List<DataType> clonedLogicalTypes = new ArrayList<DataType>();
-            for (DataType t : unwrappedOutputType.getLogical()) {
-                DataType type = (DataType) t.clone();
-                clonedLogicalTypes.add(type);
-            }
-            DataType<List<DataType>> clonedUnwrappedOutputType =
-                new DataTypeImpl<List<DataType>>(unwrappedOutputType.getPhysical(), clonedLogicalTypes);
-            clonedUnwrappedOutputType.setDataBinding(unwrappedOutputType.getDataBinding());
-            copy.unwrappedOutputType = clonedUnwrappedOutputType;
-        }
-        return copy;
-
-    }
 }

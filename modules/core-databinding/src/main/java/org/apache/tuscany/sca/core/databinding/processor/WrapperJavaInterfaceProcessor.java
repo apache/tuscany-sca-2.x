@@ -55,12 +55,13 @@ public class WrapperJavaInterfaceProcessor implements JavaInterfaceVisitor {
             return;
         }
         for (Operation operation : javaInterface.getOperations()) {
-            WrapperInfo wrapper = operation.getWrapper();
-            if (wrapper == null) {
+            WrapperInfo inputWrapperInfo = operation.getInputWrapper();
+            WrapperInfo outputWrapperInfo = operation.getOutputWrapper();
+            if (inputWrapperInfo == null || outputWrapperInfo == null) {
                 continue;
             }
             // JIRA: TUSCANY-842
-            String db = wrapper.getDataBinding();
+            String db = inputWrapperInfo.getDataBinding();
             if (db == null || JAXB_DATABINDING.equals(db)) {
                 db = assignOperationDataBinding(operation);
             }
@@ -69,13 +70,13 @@ public class WrapperJavaInterfaceProcessor implements JavaInterfaceVisitor {
             org.apache.tuscany.sca.databinding.DataBinding dbObj = dataBindingRegistry.getDataBinding(db);
             WrapperHandler handler = dbObj == null ? null : dbObj.getWrapperHandler();
             if (handler != null) {
-                wrapper.setInputWrapperType(handler.getWrapperType(operation, true));
-                wrapper.setOutputWrapperType(handler.getWrapperType(operation, false));
+                inputWrapperInfo.setWrapperType(handler.getWrapperType(operation, true));
+                outputWrapperInfo.setWrapperType(handler.getWrapperType(operation, false));
             }
             if (dbObj != null && handler == null) {
                 // To avoid JAXB wrapper bean generation
-                wrapper.setInputWrapperType(null);
-                wrapper.setOutputWrapperType(null);
+                inputWrapperInfo.setWrapperType(null);
+                outputWrapperInfo.setWrapperType(null);
             }
         }
     }
@@ -117,10 +118,10 @@ public class WrapperJavaInterfaceProcessor implements JavaInterfaceVisitor {
 
         if (dbs.size() == 1) {
             String db = dbs.iterator().next();
-            operation.getWrapper().setDataBinding(db);
+            operation.getInputWrapper().setDataBinding(db);
             return db;
         } else {
-            return operation.getWrapper().getDataBinding();
+            return operation.getInputWrapper().getDataBinding();
         }
     }
 }

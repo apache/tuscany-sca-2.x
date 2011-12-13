@@ -121,7 +121,7 @@ public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider
                 // like the separate code paths imply.  Not sure how many @OneWay tests we have, this might 
                 // not be an issue.  
 
-                if (matchingWsdlOp.isWrapperStyle()) {
+                if (matchingWsdlOp.isInputWrapperStyle()) {
                     if (op.getInputType().getLogical().size() == 1) {
                         this.inputWrapperMap.put(name, true);
                     } else {
@@ -131,10 +131,10 @@ public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider
                     this.inputWrapperMap.put(name, false);
                 }
 
-                if (matchingWsdlOp.isWrapperStyle()) {
+                if (matchingWsdlOp.isOutputWrapperStyle()) {
                     // we only need to know what the wrapper is on the deserialization
                     // might need to change this when there input/output wrapper style is different
-                    ElementInfo ei = op.getWrapper().getOutputWrapperElement();
+                    ElementInfo ei = op.getOutputWrapper().getWrapperElement();
                     this.outputWrapperMap.put(name, xmlHelper.createWrapper(ei.getQName()));
                 } 
             }

@@ -161,10 +161,10 @@ public class InterfaceImpl implements Interface {
 
                     }
                 }
-                if (op.isWrapperStyle()) {
-                    WrapperInfo wrapper = op.getWrapper();
+                if (op.isInputWrapperStyle()) {
+                    WrapperInfo wrapper = op.getInputWrapper();
                     if (wrapper != null) {
-                        DataType<List<DataType>> unwrappedInputType = wrapper.getUnwrappedInputType();
+                        DataType<List<DataType>> unwrappedInputType = wrapper.getUnwrappedType();
                         if (unwrappedInputType != null) {
                             for (DataType d : unwrappedInputType.getLogical()) {
                                 if (d.getDataBinding() == null) {
@@ -172,12 +172,21 @@ public class InterfaceImpl implements Interface {
                                 }
                             }
                         }
-                        DataType unwrappedOutputType = wrapper.getUnwrappedOutputType();
-                        if (unwrappedOutputType != null && unwrappedOutputType.getDataBinding() == null) {
-                            unwrappedOutputType.setDataBinding(dataBinding);
-                        }
                     }
                 }
+                if (op.isOutputWrapperStyle()) {
+                    WrapperInfo wrapper = op.getOutputWrapper();
+                    if (wrapper != null) {
+                        DataType<List<DataType>> unwrappedOutputType = wrapper.getUnwrappedType();
+                        if (unwrappedOutputType != null){
+                            for (DataType d : unwrappedOutputType.getLogical()) {
+                                if (d.getDataBinding() == null) {
+                                    d.setDataBinding(dataBinding);
+                                }
+                            }
+                        }
+                    }
+                }                
             }
         }
     }
@@ -188,7 +197,7 @@ public class InterfaceImpl implements Interface {
         } else {
             dataType.setDataBinding(dataBinding);
         }
-    }
+    }    
 
     public void resetDataBinding(String dataBinding) {
         for (Operation op : getOperations()) {
@@ -213,29 +222,34 @@ public class InterfaceImpl implements Interface {
                     setDataBinding((DataType) d.getLogical(), dataBinding);
                 }
             }
-            if (op.isWrapperStyle()) {
-                WrapperInfo wrapper = op.getWrapper();
-                if (wrapper != null) {
-                    DataType<List<DataType>> unwrappedInputType = wrapper.getUnwrappedInputType();
+            if (op.isInputWrapperStyle()) {
+                WrapperInfo inputWrapper = op.getInputWrapper();
+                if (inputWrapper != null) {
+                    DataType<List<DataType>> unwrappedInputType = inputWrapper.getUnwrappedType();
                     if (unwrappedInputType != null) {
                         for (DataType d : unwrappedInputType.getLogical()) {
                             setDataBinding(d, dataBinding);
                         }
                     }
-                    DataType<List<DataType>> unwrappedOutputType = wrapper.getUnwrappedOutputType();
+                }
+            }
+            if (op.isOutputWrapperStyle()) {
+                WrapperInfo outputWrapper = op.getOutputWrapper();
+                if (outputWrapper != null) {
+                    DataType<List<DataType>> unwrappedOutputType = outputWrapper.getUnwrappedType();
                     if (unwrappedOutputType != null) {
                         for (DataType d : unwrappedOutputType.getLogical()) {
                             setDataBinding(d, dataBinding);
                         }
                     }
                 }
-            }
+            }            
         }
     }
 
     public void resetInterfaceInputTypes(Interface newInterface){
         for (int i = 0; i < getOperations().size(); i++) {
-            // only remote interfaces only have a data type model defined
+            // only remote interfaces have a data type model defined
             // and in this case operations cannot be overloaded so match
             // operations by name
             Operation oldOperation = getOperations().get(i);
@@ -255,16 +269,16 @@ public class InterfaceImpl implements Interface {
             oldOperation.setInputType(newOperation.getInputType());
 
             // set wrapper
-            if (newOperation.isWrapperStyle()) {
-                oldOperation.setWrapperStyle(true);
-                oldOperation.setWrapper(newOperation.getWrapper());
+            if (newOperation.isInputWrapperStyle()) {
+                oldOperation.setInputWrapperStyle(true);
+                oldOperation.setInputWrapper(newOperation.getInputWrapper());
             }
         }
     }
 
     public void resetInterfaceOutputTypes(Interface newInterface){
         for (int i = 0; i < getOperations().size(); i++) {
-            // only remote interfaces only have a data type model defined
+            // only remote interfaces have a data type model defined
             // and in this case operations cannot be overloaded so match
             // operations by name
             Operation oldOperation = getOperations().get(i);
@@ -287,9 +301,9 @@ public class InterfaceImpl implements Interface {
             oldOperation.setFaultTypes(newOperation.getFaultTypes());
 
             // set wrapper
-            if (newOperation.isWrapperStyle()) {
-                oldOperation.setWrapperStyle(true);
-                oldOperation.setWrapper(newOperation.getWrapper());
+            if (newOperation.isOutputWrapperStyle()) {
+                oldOperation.setOutputWrapperStyle(true);
+                oldOperation.setOutputWrapper(newOperation.getOutputWrapper());
             }
         }
     }

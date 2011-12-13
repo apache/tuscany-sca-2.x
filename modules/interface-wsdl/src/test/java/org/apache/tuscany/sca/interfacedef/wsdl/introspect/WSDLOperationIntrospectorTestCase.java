@@ -71,15 +71,15 @@ public class WSDLOperationIntrospectorTestCase extends AbstractWSDLTestCase {
         DataType<XMLType> logical = outputType.getLogical().get(0);
         Assert.assertEquals(new QName("http://example.com/stockquote.xsd", "getLastTradePriceResponse"),
                             logical.getLogical().getElementName());
-        Assert.assertTrue(op.isWrapperStyle());
+        Assert.assertTrue(op.isInputWrapperStyle());
 
-        DataType<List<DataType>> unwrappedInputType = op.getWrapper().getUnwrappedInputType();
+        DataType<List<DataType>> unwrappedInputType = op.getInputWrapper().getUnwrappedType();
         List<DataType> childTypes = unwrappedInputType.getLogical();
         Assert.assertEquals(1, childTypes.size());
         DataType<XMLType> childType = childTypes.get(0);
         Assert.assertEquals(new QName(null, "tickerSymbol"), childType.getLogical().getElementName());
 
-        DataType<List<DataType>> unwrappedOutputType = op.getWrapper().getUnwrappedOutputType();
+        DataType<List<DataType>> unwrappedOutputType = op.getOutputWrapper().getUnwrappedType();
         childTypes = unwrappedOutputType.getLogical();
         Assert.assertEquals(1, childTypes.size());
         childType = childTypes.get(0);
@@ -97,11 +97,11 @@ public class WSDLOperationIntrospectorTestCase extends AbstractWSDLTestCase {
 
         WSDLInterface wi = wsdlFactory.createWSDLInterface(portType, definition, resolver, context.getMonitor());
         WSDLOperation op = (WSDLOperation) wi.getOperations().get(1);
-        Assert.assertFalse(op.isWrapperStyle());
+        Assert.assertFalse(op.isInputWrapperStyle());
         Assert.assertEquals(1, op.getInputType().getLogical().size());
 
         op = (WSDLOperation) wi.getOperations().get(2);
-        Assert.assertFalse(op.isWrapperStyle());
+        Assert.assertFalse(op.isInputWrapperStyle());
         Assert.assertEquals(2, op.getInputType().getLogical().size());
     }
 
@@ -118,7 +118,7 @@ public class WSDLOperationIntrospectorTestCase extends AbstractWSDLTestCase {
             WSDLInterface wi = wsdlFactory.createWSDLInterface(portType, definition, resolver, context.getMonitor());
             WSDLOperation op = (WSDLOperation) wi.getOperations().get(0);
 
-            op.isWrapperStyle();
+            op.isInputWrapperStyle();
             fail("InvalidWSDLException should have been thrown");
         } catch (InvalidInterfaceException e) {
             // Expected

@@ -150,7 +150,8 @@ public class InterfaceContractProcessor extends BaseAssemblyProcessor implements
                             operation.setName(getString(reader, "name"));
                             operation.setDynamic(getBoolean(reader, "isDynamic"));
                             operation.setNonBlocking(getBoolean(reader, "isNonBlocking"));
-                            operation.setWrapperStyle(getBoolean(reader, "isWrapperStyle"));
+                            operation.setInputWrapperStyle(getBoolean(reader, "isInputWrapperStyle"));
+                            operation.setOutputWrapperStyle(getBoolean(reader, "isOutputWrapperStyle"));
                             
                             inputs = new ArrayList<DataType>();
                             DataType inputType = new DataTypeImpl<List<DataType>>(null, null);
@@ -276,15 +277,18 @@ public class InterfaceContractProcessor extends BaseAssemblyProcessor implements
             writer.writeAttribute("name", operation.getName());
             writer.writeAttribute("isDynamic", String.valueOf(operation.isDynamic()));
             writer.writeAttribute("isNonBlocking", String.valueOf(operation.isNonBlocking()));
-            writer.writeAttribute("isWrapperStyle", String.valueOf(operation.isWrapperStyle()));
+            writer.writeAttribute("isInputWrapperStyle", String.valueOf(operation.isInputWrapperStyle()));
+            writer.writeAttribute("isOutputWrapperStyle", String.valueOf(operation.isOutputWrapperStyle()));
 
             List<DataType> outputTypes = operation.getOutputType().getLogical();
             List<DataType> inputTypes = operation.getInputType().getLogical();
             List<DataType> faultTypes = operation.getFaultTypes();
 
-            if (operation.isWrapperStyle() && operation.getWrapper() != null) {
-                inputTypes = operation.getWrapper().getUnwrappedInputType().getLogical();
-                outputTypes = operation.getWrapper().getUnwrappedOutputType().getLogical();
+            if (operation.isInputWrapperStyle() && operation.getInputWrapper() != null) {
+                inputTypes = operation.getInputWrapper().getUnwrappedType().getLogical();
+            }
+            if (operation.isOutputWrapperStyle() && operation.getOutputWrapper() != null) {
+                outputTypes = operation.getOutputWrapper().getUnwrappedType().getLogical();
             }
           
             writer.writeStartElement(Constants.SCA11_TUSCANY_NS, INPUT);
