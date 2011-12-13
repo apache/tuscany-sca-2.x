@@ -22,7 +22,8 @@ package org.apache.tuscany.sca.implementation.web.runtime;
 import java.util.Collection;
 
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.oasisopen.sca.ComponentContext;
+import org.apache.tuscany.sca.runtime.TuscanyComponentContext;
+import org.apache.tuscany.sca.runtime.TuscanyServiceReference;
 import org.oasisopen.sca.RequestContext;
 import org.oasisopen.sca.ServiceReference;
 
@@ -30,7 +31,7 @@ import org.oasisopen.sca.ServiceReference;
  * Proxy ComponentContext wrappering a RuntimeComponent as the
  * RuntimeComponent ComponentContext has not been created till later 
  */
-public class ComponentContextProxy implements ComponentContext {
+public class ComponentContextProxy implements TuscanyComponentContext {
 
     protected RuntimeComponent runtimeComponent;
     
@@ -38,7 +39,7 @@ public class ComponentContextProxy implements ComponentContext {
         this.runtimeComponent = runtimeComponent;
     }
     
-    protected ComponentContext getComponentContext() {
+    protected TuscanyComponentContext getComponentContext() {
         return runtimeComponent.getComponentContext();
     }
 
@@ -66,7 +67,7 @@ public class ComponentContextProxy implements ComponentContext {
         return getComponentContext().getService(businessInterface, referenceName);
     }
 
-    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) {
+    public <B> TuscanyServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) {
         return getComponentContext().getServiceReference(businessInterface, referenceName);
     }
 
