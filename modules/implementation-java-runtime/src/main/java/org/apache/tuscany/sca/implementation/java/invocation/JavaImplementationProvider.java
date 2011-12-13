@@ -96,7 +96,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider,
                 (ObjectFactory<?>)componentContextProvider.getInstanceFactoryProvider().getFactories().get(resource.getElement());
             if (objectFactory == null) {
                 Class<?> type = resource.getElement().getType();
-                if (ComponentContext.class.equals(type)) {
+                if (ComponentContext.class.isAssignableFrom(type)) {
                     objectFactory = new JavaComponentContextFactory(componentContextProvider);
                 } else if (RequestContext.class.equals(type)) {
                     objectFactory = new RequestContextObjectFactory(requestContextFactory, componentContextProvider.getComponent());
