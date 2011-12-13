@@ -22,12 +22,12 @@ package org.apache.tuscany.sca.core.context;
 import java.io.Externalizable;
 
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
-import org.oasisopen.sca.ServiceReference;
+import org.apache.tuscany.sca.runtime.TuscanyServiceReference;
 
 /**
  * Extended ServiceReference
  */
-public interface ServiceReferenceExt<B> extends ServiceReference<B>, Externalizable {
+public interface ServiceReferenceExt<B> extends TuscanyServiceReference<B>, Externalizable {
     
     /**
      * Return the EndpointReference that sits behind this service reference

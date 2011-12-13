@@ -53,6 +53,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
+import org.apache.tuscany.sca.runtime.TuscanyServiceReference;
 import org.oasisopen.sca.RequestContext;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -116,7 +117,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         return service;
     }
 
-    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName)
+    public <B> TuscanyServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName)
         throws IllegalArgumentException {
 
         for (ComponentReference ref : component.getReferences()) {
@@ -130,7 +131,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
                 if (ref.getEndpointReferences().size() < 1) {
                     return null;
                 }
-                ServiceReference<B> sr =
+                TuscanyServiceReference<B> sr =
                     getServiceReference(businessInterface, (RuntimeEndpointReference)getEndpointReference(ref));
                 if (sr == null) {
                     throw new IllegalArgumentException("Reference " + referenceName + " is null");
@@ -323,9 +324,9 @@ public class ComponentContextImpl implements RuntimeComponentContext {
      * @throws CloneNotSupportedException
      * @throws InvalidInterfaceException
      */
-    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface,
+    public <B> TuscanyServiceReference<B> getServiceReference(Class<B> businessInterface,
                                                        RuntimeEndpointReference endpointReference) {
-        ServiceReference<B> result = null;
+        TuscanyServiceReference<B> result = null;
 
         try {
             InterfaceContract interfaceContract = endpointReference.getComponentTypeReferenceInterfaceContract();
