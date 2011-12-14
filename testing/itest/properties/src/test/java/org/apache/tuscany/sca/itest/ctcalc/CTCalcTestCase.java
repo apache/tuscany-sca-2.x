@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -93,4 +94,12 @@ public class CTCalcTestCase {
         assertEquals(1, ((NodeImpl)node).getDomainComposite().getComponents().get(2).getProperties().size());
         System.out.println(((NodeImpl)node).getDomainComposite().getComponents().get(2).getProperties());
     }
+    
+    @Ignore("TUSCANY-3924 playing with whether we should take note of inherited annotations as per JSR-250")
+    @Test
+    public void testAnnotated2Extension() {
+        assertEquals("Annotated", annotatedComponent.test());
+        assertEquals(2, ((NodeImpl)node).getDomainComposite().getComponents().get(3).getProperties().size());
+        System.out.println(((NodeImpl)node).getDomainComposite().getComponents().get(3).getProperties());
+    }    
 }
