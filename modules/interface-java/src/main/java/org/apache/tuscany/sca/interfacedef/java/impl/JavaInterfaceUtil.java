@@ -19,7 +19,9 @@
 package org.apache.tuscany.sca.interfacedef.java.impl;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -166,12 +168,8 @@ public final class JavaInterfaceUtil {
         List<DataType> types = inputType.getLogical();
         Class<?>[] javaTypes = new Class<?>[types.size()];
         for (int i = 0; i < javaTypes.length; i++) {
-            Type physical = types.get(i).getPhysical();
-            if (physical instanceof Class<?>) {
-                javaTypes[i] = (Class<?>)physical;
-            } else {
-                throw new UnsupportedOperationException();
-            }
+            DataType<?> type = types.get(i);
+            javaTypes[i] = getClassOfDataType(type);
         }
         return javaTypes;
     }
@@ -240,5 +238,59 @@ public final class JavaInterfaceUtil {
         ns.append('/');
         return ns.toString();
     }
+
+    /**
+     * Get the Java Type that represent the DataType informed
+     * When dataType.getGenericType() is GenericArrayType or WildcardType the Physical type is used, 
+     * because the physical type have the correct information about this DataType.
+     * @param dataType DataType
+     * @return The Class<?> that represent the DataType
+     */
+    private static Class<?> getClassOfDataType(DataType<?> dataType){
+        Type generic = dataType.getGenericType();
+        boolean isGeneric = (generic != null 
+                        && generic != dataType.getPhysical()
+                        && (generic instanceof TypeVariable<?>
+                                || generic instanceof ParameterizedType));
+        Class<?> javaType = null;
+        if (isGeneric) {
+            javaType = getClassOfSimpleGeneric(generic);
+        }else {
+            Type physical = dataType.getPhysical();
+            javaType = getClassOfPhysical(physical);
+        }
+        if (javaType == null) {
+            throw new UnsupportedOperationException();
+        }
+        return javaType;
+    }
+    
+    /**
+     * Return Class<?> of Type Generic informed
+     * @param generic The Generic Type 
+     * @return  The Class<?> that represent the Generic
+     */
+    private static Class<?> getClassOfSimpleGeneric(Type generic){
+        Class<?> javaType = null;
+        if (generic instanceof TypeVariable<?>){
+            javaType = (Class<?>)Object.class;
+        } else if (generic instanceof ParameterizedType){
+            javaType = (Class<?>)((ParameterizedType)generic).getRawType();
+        }
+        return javaType;
+    }
+
+    /**
+     * Return Class<?> of Type Physical informed
+     * @param physical The Physical 
+     * @return  The Class<?> that represent the Physical
+     */
+    private static Class<?> getClassOfPhysical(Type physical){
+        Class<?> javaType = null; 
+        if (physical instanceof Class<?>) {
+            javaType = (Class<?>)physical;
+        }
+        return javaType;
+    }     
 
 }

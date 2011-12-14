@@ -202,9 +202,7 @@ public class JavaInterfaceIntrospectorImpl {
                                               String ns) throws InvalidInterfaceException {
 
         Set<Type> genericInterfaces = new HashSet<Type>();
-        for (Type t : clazz.getGenericInterfaces()) {
-            genericInterfaces.add(t);
-        }
+        collectGenericInterfaces(clazz, genericInterfaces);
         Map<String, Type> typeBindings = new HashMap<String, Type>();
         for (Type genericInterface : genericInterfaces) {
             if (genericInterface instanceof ParameterizedType) {
@@ -428,4 +426,14 @@ public class JavaInterfaceIntrospectorImpl {
         return null;
     }
 
+    private void collectGenericInterfaces(Class<?> clazz, Set<Type> genericInterfaces) {
+        for (Type t : clazz.getGenericInterfaces()) {
+            genericInterfaces.add(t);
+        }
+        Class<?>[] interfaces = clazz.getInterfaces();
+        for(Class<?> c : interfaces){
+            collectGenericInterfaces(c, genericInterfaces);
+        }
+    }
+    
 }
