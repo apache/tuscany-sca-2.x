@@ -20,7 +20,10 @@ package org.apache.tuscany.sca.binding.rmi.provider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.rmi.ConnectException;
 import java.rmi.Remote;
+import java.rmi.UnexpectedException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
@@ -38,7 +41,7 @@ public class RMIBindingInvoker implements Invoker {
     private RMIHost rmiHost;
     private String uri;
     private Method remoteMethod;
-    // private Remote proxy;
+    private Remote proxy;
 
     public RMIBindingInvoker(RMIHost rmiHost, String uri, Method remoteMethod) {
         this.rmiHost = rmiHost;
@@ -62,31 +65,73 @@ public class RMIBindingInvoker implements Invoker {
         return msg;
     }
 
-    public Object invokeTarget(final Object payload) throws InvocationTargetException, SecurityException,
-        NoSuchMethodException, IllegalArgumentException, IllegalAccessException {
-        Remote proxy = null;
-        final Class<?> remote = remoteMethod.getDeclaringClass();
-        final ClassLoader stubClassLoader = remote.getClassLoader();
-        // The generated remote interface is not available for the service lookup
-        final ClassLoader tccl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            public ClassLoader run() {
-                ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-                Thread.currentThread().setContextClassLoader(stubClassLoader);
-                return tccl;
-            }
-        });
+    public Object invokeTarget(final Object payload) throws InvocationTargetException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException {
+
+        if (proxy == null) {
+            initProxy();
+        }
+
+        Object invocationResult = null;
+        InvocationTargetException rethrow = null;
         try {
-            // The proxy cannot be cached as the remote services can be rebound
-            proxy = rmiHost.findService(uri);
+            invocationResult = doInvokeTarget(payload);
+        } catch (InvocationTargetException e) {
+            // rethrow this exception from finally block unless it can be
+            // handled
+            rethrow = e;
+            // try to diagnose the error condition: proxy may be out-of-date
+            // (cf. TUSCANY-3850)
+            Throwable cause = e.getCause();
+            if (cause instanceof UndeclaredThrowableException) {
+                cause = cause.getCause();
+                if (cause instanceof UnexpectedException) {
+                    cause = cause.getCause();
+                    if (cause instanceof ConnectException) {
+                        // retry invoke with a fresh proxy
+                        rethrow = null;
+                        proxy = rmiHost.findService(uri);
+                        invocationResult = doInvokeTarget(payload);
+                    }
+                }
+            }
         } finally {
-            AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            if (rethrow != null) {
+                throw rethrow;
+            }
+        }
+
+        return invocationResult;
+    }
+
+    private synchronized void initProxy() {
+        if (proxy == null) {
+            final Class<?> remote = remoteMethod.getDeclaringClass();
+            final ClassLoader stubClassLoader = remote.getClassLoader();
+            // The generated remote interface is not available for the service
+            // lookup
+            final ClassLoader tccl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
                 public ClassLoader run() {
-                    ClassLoader current = Thread.currentThread().getContextClassLoader();
-                    Thread.currentThread().setContextClassLoader(tccl);
-                    return current;
+                    ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                    Thread.currentThread().setContextClassLoader(stubClassLoader);
+                    return tccl;
                 }
             });
+            try {
+                // The proxy cannot be cached as the remote services can be rebound
+                proxy = rmiHost.findService(uri);
+            } finally {
+                AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                    public ClassLoader run() {
+                        ClassLoader current = Thread.currentThread().getContextClassLoader();
+                        Thread.currentThread().setContextClassLoader(tccl);
+                        return current;
+                    }
+                });
+            }
         }
+    }
+
+    private Object doInvokeTarget(final Object payload) throws InvocationTargetException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException {
 
         remoteMethod = proxy.getClass().getMethod(remoteMethod.getName(), remoteMethod.getParameterTypes());
 
@@ -96,5 +141,4 @@ public class RMIBindingInvoker implements Invoker {
             return remoteMethod.invoke(proxy, (Object[])payload);
         }
     }
-
 }
