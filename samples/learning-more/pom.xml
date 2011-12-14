@@ -42,6 +42,7 @@
                 <module>binding-comet</module>
                 <module>binding-websocket</module>
                 <module>contribution-osgi</module>
+                <module>distributed-osgi-static</module>
             </modules>
         </profile>
     </profiles>    
