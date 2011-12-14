@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ContributionRuntimeException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -263,8 +264,14 @@ public class WSDLInterfaceProcessor extends BaseStAXArtifactProcessor implements
                 wsdlDefinition.setUnresolved(true);
                 wsdlDefinition.setNamespace(wsdlInterface.getName().getNamespaceURI());
                 wsdlDefinition.setNameOfPortTypeToResolve(wsdlInterface.getName());
-                WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition, context);
-                if (!resolved.isUnresolved()) {
+                WSDLDefinition resolved = null;
+                try {
+                    resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition, context);
+                } catch (ContributionRuntimeException e) {
+                    ContributionResolveException ce = new ContributionResolveException(e.getCause());
+                    error(monitor, "ContributionResolveException", wsdlDefinition, ce);
+                }
+                if (resolved != null && !resolved.isUnresolved()) {
                     wsdlDefinition.setDefinition(resolved.getDefinition());
                     wsdlDefinition.setLocation(resolved.getLocation());
                     wsdlDefinition.setURI(resolved.getURI());

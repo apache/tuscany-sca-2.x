@@ -53,6 +53,7 @@ import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ContributionRuntimeException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
@@ -135,6 +136,20 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
             monitor.problem(problem);
         }        
     }
+    
+    /**
+     * Report an exception.
+     * 
+     * @param problem
+     * @param model
+     * @param exception
+     */
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
+        if (monitor != null) {
+            Problem problem = monitor.createProblem(this.getClass().getName(), "binding-wsxml-validation-messages", Severity.ERROR, model, message, ex);
+            monitor.problem(problem);
+        }        
+    }    
 
     public WebServiceBinding read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         Monitor monitor = context.getMonitor();
@@ -420,9 +435,16 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
         wsdlDefinition.setNameOfBindingToResolve(model.getBindingName());
         wsdlDefinition.setNameOfServiceToResolve(model.getServiceName());
         wsdlDefinition.getWsdliLocations().putAll(model.getWsdliLocations());
-        WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition, context);
+        //WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition, context);
+        WSDLDefinition resolved = null;
+        try {
+            resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition, context);
+        } catch (ContributionRuntimeException e) {
+            ContributionResolveException ce = new ContributionResolveException(e.getCause());
+            error(monitor, "ContributionResolveException", wsdlDefinition, ce);
+         } 
 
-        if (!resolved.isUnresolved()) {
+        if (resolved != null && !resolved.isUnresolved()) {
             wsdlDefinition.setDefinition(resolved.getDefinition());
             wsdlDefinition.setLocation(resolved.getLocation());
             wsdlDefinition.setURI(resolved.getURI());
@@ -475,14 +497,14 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                 WSDLInterface wsdlInterface = null;
                 try {
                     wsdlInterface = wsdlFactory.createWSDLInterface(portType, wsdlDefinition, resolver, context.getMonitor());
-                    // save the wsdlDefinition that was used to generated the interface
+                    // save the wsdlDefinition that was used to generate the interface
                     wsdlInterface.setWsdlDefinition(wsdlDefinition);
+                    interfaceContract.setInterface(wsdlInterface);
+                    interfaceContract.setCallbackInterface(wsdlInterface.getCallbackInterface());
+                    model.setBindingInterfaceContract(interfaceContract);
                 } catch (InvalidInterfaceException e) {
                 	warning(monitor, "InvalidInterfaceException", wsdlFactory, model.getName(), e.getMessage()); 
                 }
-                interfaceContract.setInterface(wsdlInterface);
-                interfaceContract.setCallbackInterface(wsdlInterface.getCallbackInterface());
-                model.setBindingInterfaceContract(interfaceContract);
             }
             
             validateWSDL(context, model);
