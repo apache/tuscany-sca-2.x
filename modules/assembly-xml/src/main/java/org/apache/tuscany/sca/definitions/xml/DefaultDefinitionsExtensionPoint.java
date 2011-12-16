@@ -80,18 +80,26 @@ public class DefaultDefinitionsExtensionPoint implements DefinitionsExtensionPoi
         // Get the definitions declarations
         Collection<ServiceDeclaration> definitionsDeclarations;
         try {
-            definitionsDeclarations = registry.getServiceDiscovery().getServiceDeclarations(DEFINITIONS_FILE);
+            // Get definitions declarations in ranking order.
+            definitionsDeclarations = registry.getServiceDiscovery().getServiceDeclarations(DEFINITIONS_FILE, true);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
 
         // Find each definitions
+        Set<String> definitionResources = new HashSet<String>();
         for (ServiceDeclaration definitionsDeclaration : definitionsDeclarations) {
-            URL url = definitionsDeclaration.getResource(definitionsDeclaration.getClassName());
-            if (url == null) {
-                throw new IllegalArgumentException(definitionsDeclaration.getClassName() + " cannot be found");
+            // Only process the first instance of a given resource name.
+            // This allows definitions files to be overridden by an embedder. 
+            String resourceName = definitionsDeclaration.getClassName();
+            if (!definitionResources.contains(resourceName)) {
+                definitionResources.add(resourceName);
+                URL url = definitionsDeclaration.getResource(resourceName);
+                if (url == null) {
+                    throw new IllegalArgumentException(definitionsDeclaration.getClassName() + " cannot be found");
+                }
+                documents.add(url);
             }
-            documents.add(url);
         }
 
         documentsLoaded = true;
