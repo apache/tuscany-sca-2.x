@@ -616,16 +616,6 @@ public final class JavaIntrospectionHelper {
         return Class.forName(buf.toString(), false, componentType.getClassLoader());
     }
 
-    public static Set<Method> getMethods(Class<?> clazz) {
-        Set<Method> methods = new HashSet<Method>();
-        Method[] declaredMethods = clazz.getDeclaredMethods();
-        for (final Method declaredMethod : declaredMethods) {
-            methods.add(declaredMethod);
-        } // end for
-
-        return methods;
-    } // end method getMethods
-
     public static Set<Field> getPrivateFields(Class<?> clazz) {
         Set<Field> fields = new HashSet<Field>();
         Field[] declaredFields = clazz.getDeclaredFields();

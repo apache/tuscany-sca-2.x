@@ -28,6 +28,8 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -147,33 +149,39 @@ public class JavaInterfaceIntrospectorImpl {
 
         // Check if any methods have disallowed annotations
         // Check if any private methods have illegal annotations that should be raised as errors
-        Set<Method> methods = JavaIntrospectionHelper.getMethods(clazz);
-        for (Method method : methods) {
-            checkMethodAnnotations(method, javaInterface);
-        } // end for 
+        checkMethodAnnotations(clazz, javaInterface);
     } // end method introspectInterface
 
-    private void checkMethodAnnotations(Method method, JavaInterface javaInterface) throws InvalidAnnotationException {
-        for ( Annotation a : method.getAnnotations() ) {
-            if( a instanceof Remotable ) {
-                // [JCA90053] @Remotable annotation cannot be on a method that is not a setter method
-                if( !JavaIntrospectionHelper.isSetter(method) ) {
-                    throw new InvalidAnnotationException("[JCA90053] @Remotable annotation present on an interface method" +
-                                                         " which is not a Setter method: " + javaInterface.getName() + "/" + method.getName(), Remotable.class);
-                } // end if
-            } // end if		
-        } // end for
+    private void checkMethodAnnotations(Class clazz, JavaInterface javaInterface) throws InvalidAnnotationException {
 
-        // Parameter annotations
-        for (Annotation[] parmAnnotations : method.getParameterAnnotations()) {
-            for (Annotation annotation : parmAnnotations) {
-                if (annotation instanceof Remotable ) {
-                    throw new InvalidAnnotationException("[JCA90053] @Remotable annotation present on an interface method" +
-                                                         " parameter: " + javaInterface.getName() + "/" + method.getName(), Remotable.class);
-                } // end if
-            } // end for		
-        } // end for
-        method.getParameterAnnotations();
+        final Class _clazz = clazz;
+        Method[] declaredMethods = (Method[])AccessController.doPrivileged(new PrivilegedAction<Method[]>() {
+            public Method[] run() {
+                return _clazz.getDeclaredMethods();
+            }
+        });
+
+        for (final Method method : declaredMethods) {
+            for ( Annotation a : method.getAnnotations() ) {
+                if( a instanceof Remotable ) {
+                    // [JCA90053] @Remotable annotation cannot be on a method that is not a setter method
+                    if( !JavaIntrospectionHelper.isSetter(method) ) {
+                        throw new InvalidAnnotationException("[JCA90053] @Remotable annotation present on an interface method" +
+                                                             " which is not a Setter method: " + javaInterface.getName() + "/" + method.getName(), Remotable.class);
+                    } // end if
+                } // end if		
+            } // end for
+            
+            // Parameter annotations
+            for (Annotation[] parmAnnotations : method.getParameterAnnotations()) {
+                for (Annotation annotation : parmAnnotations) {
+                    if (annotation instanceof Remotable ) {
+                        throw new InvalidAnnotationException("[JCA90053] @Remotable annotation present on an interface method" +
+                                                             " parameter: " + javaInterface.getName() + "/" + method.getName(), Remotable.class);
+                    } // end if
+                } // end for		
+            } // end for
+        }
     } // end method checkMethodAnnotations
 
     private Class<?>[] getActualTypes(Type[] types, Class<?>[] rawTypes, Map<String, Type> typeBindings, boolean ignoreAsyncHolder) {
