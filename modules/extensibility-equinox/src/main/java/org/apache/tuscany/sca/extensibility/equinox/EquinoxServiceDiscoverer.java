@@ -172,7 +172,12 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         public URL getResource(final String name) {
             return AccessController.doPrivileged(new PrivilegedAction<URL>() {
                 public URL run() {
-                    return bundle.getResource(name);
+                    // Search bundle first using getEntry()
+                    URL url = bundle.getEntry(name);
+                    // If not found in bundle, try getResource() which looks at imports
+                    if (url == null)
+                        url = bundle.getResource(name);
+                    return url;
                 }
             });
         }
