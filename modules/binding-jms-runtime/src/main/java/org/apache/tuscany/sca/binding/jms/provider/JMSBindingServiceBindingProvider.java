@@ -98,16 +98,7 @@ public class JMSBindingServiceBindingProvider implements EndpointAsyncProvider, 
             throw new JMSBindingException("[BJM30023] response/activationSpec element MUST NOT be present when the binding is being used for an SCA service");
         }
         
-        // Set the default destination when using a connection factory.
-        // If an activation spec is being used, do not set the destination
-        // because the activation spec provides the destination.
-        if (jmsBinding.getDestinationName() == null &&
-            (jmsBinding.getActivationSpecName() == null || jmsBinding.getActivationSpecName().equals(""))) {
-//          if (!service.isCallback()) { // TODO: 2.x migration, is this check needed?
-                // use the SCA service name as the default destination name
-                jmsBinding.setDestinationName(service.getName());
-//            }
-        }
+        initBindingName();
         
         // Get Message factory
         modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
@@ -143,6 +134,19 @@ public class JMSBindingServiceBindingProvider implements EndpointAsyncProvider, 
             responseWireFormatProvider.configureWireFormatInterfaceContract(interfaceContract);
         } catch (CloneNotSupportedException ex){
             interfaceContract = service.getInterfaceContract();
+        }
+    }
+
+    protected void initBindingName() {
+        // Set the default destination when using a connection factory.
+        // If an activation spec is being used, do not set the destination
+        // because the activation spec provides the destination.
+        if (jmsBinding.getDestinationName() == null &&
+            (jmsBinding.getActivationSpecName() == null || jmsBinding.getActivationSpecName().equals(""))) {
+//          if (!service.isCallback()) { // TODO: 2.x migration, is this check needed?
+                // use the SCA service name as the default destination name
+                jmsBinding.setDestinationName(service.getName());
+//            }
         }
     }
 
