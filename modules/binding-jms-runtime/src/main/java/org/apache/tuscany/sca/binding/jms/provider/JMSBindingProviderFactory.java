@@ -37,9 +37,9 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
  */
 public class JMSBindingProviderFactory implements BindingProviderFactory<JMSBinding> {
 
-    private ExtensionPointRegistry extensionPoints;
-    private JMSResourceFactoryExtensionPoint jmsRFEP;
-    private JMSServiceListenerFactory serviceListenerFactory;
+    protected ExtensionPointRegistry extensionPoints;
+    protected JMSResourceFactoryExtensionPoint jmsRFEP;
+    protected JMSServiceListenerFactory serviceListenerFactory;
 
     public JMSBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
