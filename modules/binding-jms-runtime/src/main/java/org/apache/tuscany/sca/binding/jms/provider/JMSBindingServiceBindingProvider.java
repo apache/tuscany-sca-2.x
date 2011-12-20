@@ -58,31 +58,31 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 public class JMSBindingServiceBindingProvider implements EndpointAsyncProvider, JMSServiceListenerDetails {
     private static final Logger logger = Logger.getLogger(JMSBindingServiceBindingProvider.class.getName());
 
-    private ExtensionPointRegistry registry;
-    private RuntimeEndpoint endpoint;
-    private RuntimeComponentService service;
-    private Binding targetBinding;
-    private JMSBinding jmsBinding;
-    private JMSResourceFactory jmsResourceFactory;
-    private JMSServiceListenerFactory serviceListenerFactory;
-    private JMSServiceListener serviceListener;
+    protected ExtensionPointRegistry registry;
+    protected RuntimeEndpoint endpoint;
+    protected RuntimeComponentService service;
+    protected Binding targetBinding;
+    protected JMSBinding jmsBinding;
+    protected JMSResourceFactory jmsResourceFactory;
+    protected JMSServiceListenerFactory serviceListenerFactory;
+    protected JMSServiceListener serviceListener;
 
-    private RuntimeComponent component;
-    private InterfaceContract interfaceContract;
+    protected RuntimeComponent component;
+    protected InterfaceContract interfaceContract;
     
-    private ProviderFactoryExtensionPoint providerFactories;
-    private FactoryExtensionPoint modelFactories;
+    protected ProviderFactoryExtensionPoint providerFactories;
+    protected FactoryExtensionPoint modelFactories;
     
-    private MessageFactory messageFactory;
+    protected MessageFactory messageFactory;
     
-    private OperationSelectorProviderFactory operationSelectorProviderFactory;
-    private OperationSelectorProvider operationSelectorProvider;
+    protected OperationSelectorProviderFactory operationSelectorProviderFactory;
+    protected OperationSelectorProvider operationSelectorProvider;
     
-    private WireFormatProviderFactory requestWireFormatProviderFactory;
-    private WireFormatProvider requestWireFormatProvider;
+    protected WireFormatProviderFactory requestWireFormatProviderFactory;
+    protected WireFormatProvider requestWireFormatProvider;
     
-    private WireFormatProviderFactory responseWireFormatProviderFactory;
-    private WireFormatProvider responseWireFormatProvider;
+    protected WireFormatProviderFactory responseWireFormatProviderFactory;
+    protected WireFormatProvider responseWireFormatProvider;
 
     public JMSBindingServiceBindingProvider(ExtensionPointRegistry registry, RuntimeEndpoint endpoint, JMSServiceListenerFactory serviceListenerFactory, ExtensionPointRegistry extensionPoints, JMSResourceFactory jmsResourceFactory) {
         this.endpoint = endpoint;
