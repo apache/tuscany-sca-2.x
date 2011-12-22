@@ -55,22 +55,22 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  */
 public class JMSBindingReferenceBindingProvider implements EndpointReferenceAsyncProvider {
 
-    private RuntimeEndpointReference endpointReference;
-    private RuntimeComponentReference reference;
-    private JMSBinding jmsBinding;
-    private JMSResourceFactory jmsResourceFactory;
-    private InterfaceContract interfaceContract; 
-    private ExtensionPointRegistry extensions;
+    protected RuntimeEndpointReference endpointReference;
+    protected RuntimeComponentReference reference;
+    protected JMSBinding jmsBinding;
+    protected JMSResourceFactory jmsResourceFactory;
+    protected InterfaceContract interfaceContract; 
+    protected ExtensionPointRegistry extensions;
     
-    private ProviderFactoryExtensionPoint providerFactories;
+    protected ProviderFactoryExtensionPoint providerFactories;
        
-    private WireFormatProviderFactory requestWireFormatProviderFactory;
-    private WireFormatProvider requestWireFormatProvider;
+    protected WireFormatProviderFactory requestWireFormatProviderFactory;
+    protected WireFormatProvider requestWireFormatProvider;
     
-    private WireFormatProviderFactory responseWireFormatProviderFactory;
-    private WireFormatProvider responseWireFormatProvider;
+    protected WireFormatProviderFactory responseWireFormatProviderFactory;
+    protected WireFormatProvider responseWireFormatProvider;
     
-    private AsyncResponseJMSServiceListener responseQueue = null;
+    protected AsyncResponseJMSServiceListener responseQueue = null;
 
     public JMSBindingReferenceBindingProvider(RuntimeEndpointReference endpointReference,  ExtensionPointRegistry extensions, JMSResourceFactory jmsResourceFactory) {
         this.endpointReference = endpointReference;
