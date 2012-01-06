@@ -53,6 +53,7 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.axis2.context.WSAxis2BindingContext;
@@ -90,7 +91,7 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
     public static final QName QNAME_WSA_MESSAGEID =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_MESSAGE_ID, AddressingConstants.WSA_DEFAULT_PREFIX);
     
-    public static final QName QNAME_CALLACK_EP_URI = new QName(org.apache.tuscany.sca.assembly.xml.Constants.SCA11_TUSCANY_NS, "CALLBACK_EP_URI");
+    //public static final QName QNAME_CALLACK_EP_URI = new QName(org.apache.tuscany.sca.assembly.xml.Constants.SCA11_TUSCANY_NS, "CALLBACK_EP_URI");
 
     private RuntimeEndpointReference endpointReference;
     private ServiceClient serviceClient;
@@ -244,12 +245,19 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
         // Add WS-Addressing header for the invocation of a bidirectional service
         if (callbackEndpoint != null) {
             // Load the actual callback endpoint URI into an Axis EPR ready to form the content of the wsa:From header
-            EndpointReference fromEPR = new EndpointReference(callbackEndpoint.getBinding().getURI());
+            // In Tuscany the ws binding is used as a remote delegate for the sca binding
+            // so we have to take care to pass the sca uri in the delegate case. 
+            EndpointReference fromEPR = null;
+            if (callbackEndpoint.getBinding().getType().equals(SCABinding.TYPE)){
+                fromEPR = new EndpointReference(callbackEndpoint.getURI());
+            } else {
+                fromEPR = new EndpointReference(callbackEndpoint.getBinding().getURI());
+            }
             
             // pass the callback structure URI as a reference parameter
             // this allows callback endpoints to be looked up via the registry when
             // the ws binding is being used as a delegate from the sca binding
-            fromEPR.addReferenceParameter(QNAME_CALLACK_EP_URI, callbackEndpoint.getURI());
+            //fromEPR.addReferenceParameter(QNAME_CALLACK_EP_URI, callbackEndpoint.getURI());
            
             addWSAFromHeader( sh, fromEPR );
             addWSAActionHeader( sh );

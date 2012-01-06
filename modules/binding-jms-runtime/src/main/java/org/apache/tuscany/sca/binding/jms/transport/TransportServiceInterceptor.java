@@ -127,7 +127,7 @@ public class TransportServiceInterceptor extends InterceptorAsyncImpl {
             from.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
             msg.setFrom(from);
             Endpoint callbackEndpoint = assemblyFactory.createEndpoint();
-//            callbackEndpoint.setURI(callbackAddress); // TODO: is this needed? Seems to work without it
+            // binding is set into the callback endpoint in the CallbackDesitnationInterceptor           
             callbackEndpoint.setUnresolved(true);
             from.setCallbackEndpoint(callbackEndpoint);
 

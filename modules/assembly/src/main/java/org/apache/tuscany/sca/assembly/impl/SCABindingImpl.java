@@ -46,7 +46,9 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject {
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private ExtensionType extensionType;
-    private WireFormat wireFormat ;
+    private WireFormat wireFormat;
+    private String delegateBindingType;
+    private String delegateBindingURI;
 
     /**
      * Constructs a new SCA binding.
@@ -147,5 +149,21 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject {
     }
     
     public void setOperationSelector(OperationSelector operationSelector) {
-    }    
+    } 
+    
+    public String getDelegateBindingType() {
+        return delegateBindingType;
+    }
+    
+    public void setDelegateBindingType(String delegateBindingType) {
+        this.delegateBindingType = delegateBindingType;
+    }
+    
+    public String getDelegateBindingURI() {
+        return delegateBindingURI;
+    }
+    
+    public void setDelegateBindingURI(String delegateBindingURI) {
+        this.delegateBindingURI = delegateBindingURI;
+    }
 }

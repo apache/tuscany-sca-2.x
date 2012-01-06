@@ -222,7 +222,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                     endpointReference.getStatus() == EndpointReference.Status.RESOLVED_BINDING ) {
             // The endpoint reference is already resolved to either
             // a service endpoint local to this composite or it has
-            // a remote binding
+            // a remote binding. Just make sure the binding is built
+            build(endpointReference);
             
             // still need to check that the callback endpoint is set correctly
             if (hasCallback(endpointReference) && 

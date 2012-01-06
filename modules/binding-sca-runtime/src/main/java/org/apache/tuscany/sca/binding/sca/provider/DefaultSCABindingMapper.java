@@ -29,9 +29,11 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
@@ -61,6 +63,10 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
     protected QName defaultMappedBinding;
     protected QName defaultLocalBinding;
     protected boolean alwaysDistributed;
+    
+    // Test to look at supporting concurrent binding.sca delegations
+    protected QName [] activeDelegations = {new QName(Base.SCA11_TUSCANY_NS, "binding.local"),
+                                            new QName(Base.SCA11_NS, "binding.ws")};
 
     public DefaultSCABindingMapper(ExtensionPointRegistry registry, Map<String, String> attributes) {
         this.registry = registry;
@@ -196,7 +202,14 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
         try {
             Binding binding = createDelegatingBinding(newBindingType);
             binding.setName(scaBinding.getName());
-            binding.setURI(scaBinding.getURI());
+            if (((SCABinding)scaBinding).getDelegateBindingURI() != null){
+                // if this is an SCA binding that's been resolved via the registry then 
+                // the URI of the target service is delegate specific and is stored
+                // in this new slot in the binding model 
+                binding.setURI(((SCABinding)scaBinding).getDelegateBindingURI());
+            } else {
+                binding.setURI(scaBinding.getURI());
+            }
             binding.setOperationSelector(scaBinding.getOperationSelector());
             binding.setRequestWireFormat(scaBinding.getRequestWireFormat());
             binding.setResponseWireFormat(scaBinding.getResponseWireFormat());
@@ -284,6 +297,10 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
         }
         
         return defaultLocalBinding;
+    }
+    
+    public QName[] getActiveDelegations(){
+        return activeDelegations;
     }
 
 }

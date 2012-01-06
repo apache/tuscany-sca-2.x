@@ -159,4 +159,28 @@ public class TestSCABindingImpl implements SCABinding, PolicySubject {
     
     public void setOperationSelector(OperationSelector operationSelector) {
     }
+    
+    @Override
+    public String getDelegateBindingType() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public void setDelegateBindingType(String delegateBindingType) {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public String getDelegateBindingURI() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public void setDelegateBindingURI(String delegateBindingURI) {
+        // TODO Auto-generated method stub
+        
+    }
 }

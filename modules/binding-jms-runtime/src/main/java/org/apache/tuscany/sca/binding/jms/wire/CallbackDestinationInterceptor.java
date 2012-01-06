@@ -106,16 +106,13 @@ public class CallbackDestinationInterceptor extends InterceptorAsyncImpl {
                             throw new RuntimeException(e);
                         }
                         callbackBinding.setDestinationName(callbackdestName);
-                        msg.getHeaders().put("CALLBACK_BINDING", callbackBinding);
+                        // the "from" EPR model is created in the TransportServiceInterceptor
+                        // not sure which this destination calculation is not performed
+                        // there as well
+                        msg.getFrom().getCallbackEndpoint().setBinding(callbackBinding);
+//                        msg.getHeaders().put("CALLBACK_BINDING", callbackBinding);
                     }
                 }
-//            	List<EndpointReference> refs = endpoint.getCallbackEndpointReferences();
-//            	for (EndpointReference ref : refs ) {
-//            		if  (ref.getBinding() instanceof JMSBinding ) {
-//            			JMSBinding callbackBinding = (JMSBinding) ref.getBinding();
-//            			callbackBinding.setDestinationName(callbackdestName);
-//            		} // end if
-//            	} // end for
             } // end if  
 
 // Callback ID not used at present            

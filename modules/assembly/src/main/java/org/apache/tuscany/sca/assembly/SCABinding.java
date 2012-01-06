@@ -27,4 +27,36 @@ import javax.xml.namespace.QName;
  */
 public interface SCABinding extends Binding {
     QName TYPE = new QName(SCA11_NS, "binding.sca");
+    
+    /**
+     * Retrieve the type of the binding that this binding.sca
+     * delegates to
+     * 
+     * @return delegate binding type
+     */
+    String getDelegateBindingType();
+    
+    /**
+     * Set the type of the binding that this binding.sca
+     * delegates to
+     * 
+     * @param delegateBindingType
+     */
+    void setDelegateBindingType(String delegateBindingType);
+    
+    /**
+     * Get the URI for the binding that this binding.sca 
+     * delegates to
+     * 
+     * @return delegate binding URI
+     */
+    String getDelegateBindingURI();
+    
+    /**
+     * Set the URI for the binding that this binding.sca 
+     * delegates to
+     * 
+     * @param delegateBindingURI
+     */
+    void setDelegateBindingURI(String delegateBindingURI);
 }

@@ -51,6 +51,8 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 public class SCABindingProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<SCABinding> {
     private static final String NAME = "name";
     private static final String URI = "uri";
+    private static final String DELEGATE_BINDING_TYPE = "delegateBindingType";
+    private static final String DELEGATE_BINDING_URI = "delegateBindingURI";
 
     private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     private static final String BINDING_SCA = "binding.sca";
@@ -100,6 +102,18 @@ public class SCABindingProcessor extends BaseStAXArtifactProcessor implements St
         if (uri != null) {
             scaBinding.setURI(uri);
         }
+        
+        // Read delegate binding type
+        String delegateBindingType = getString(reader, DELEGATE_BINDING_TYPE);
+        if (delegateBindingType != null) {
+            scaBinding.setDelegateBindingType(delegateBindingType);
+        }
+        
+        // Read delegate binding URI
+        String delegateBindingURI = getURIString(reader, DELEGATE_BINDING_URI);
+        if (delegateBindingURI != null) {
+            scaBinding.setDelegateBindingURI(delegateBindingURI);
+        }
 
         // Read any sub-elements
         boolean endFound = false;
@@ -144,6 +158,16 @@ public class SCABindingProcessor extends BaseStAXArtifactProcessor implements St
         if (scaBinding.getURI() != null) {
             writer.writeAttribute(URI, scaBinding.getURI());
         }
+        
+        // Write delegate binding type
+        if (scaBinding.getDelegateBindingType() != null) {
+            writer.writeAttribute(DELEGATE_BINDING_TYPE, scaBinding.getDelegateBindingType());
+        }
+        
+        // Write delegate binding URI
+        if (scaBinding.getDelegateBindingURI() != null) {
+            writer.writeAttribute(DELEGATE_BINDING_URI, scaBinding.getDelegateBindingURI());
+        }        
         
         // write wireFormat
         extensionProcessor.write(scaBinding.getRequestWireFormat(), writer, context);

@@ -134,58 +134,27 @@ public class CallbackServiceReferenceImpl<B> extends ServiceReferenceImpl<B> {
                 // TUSCANY-3932
                 // If it's the default binding then we're going to look the callback endpoint
                 // up in the registry. Most remote protocols, which may be used as delegates 
-                // or binding.sca will deal in absolution callback address and send the 
-                // callback enbdpoint strutural URL separately. In this case flip the binding
-                // back to the structure URL. 
-                // TODO - all this creation of endpoints by the binding to represent callbacks
-                //        is confusing. Code here will change if we tidy it up. 
+                // for binding.sca, will expect to deal with absolute URLs so flip the 
+                // callback endpoint back to force the lookup to happen
                 if (epr.getBinding().getType().equals(SCABinding.TYPE)){
-                    // assume that we're going to look up the callback endpoint in the
-                    // registry
-                    Message msgContext = ThreadMessageContext.getMessageContext();
-                    if (msgContext != null){
-                        String callbackEPURI = (String)msgContext.getHeaders().get("CALLBACK_EP_URI");
-                        if (callbackEPURI != null){
-                            resolvedEndpoint.setURI(callbackEPURI);
-                        }
-                    }
-                }
-
-                // This is used by the JMS binding to enable setting the JMS callback destination from the
-                // request, see CallbackDestinationInterceptor in the JMS binding module. It gets the JMS
-                // compliance tests passing again but doesn't seem like the perfect fix, when the changes
-                // mentioned below for TUSCANY-3932 happen it should fix this properly.
-                Message msgContext = ThreadMessageContext.getMessageContext();
-                if (msgContext != null){
-                    Binding b = (Binding)msgContext.getHeaders().get("CALLBACK_BINDING");
-                    if (b != null) {
-                        endpointReference.setBinding(b);
-                    }
-                }
-                
-                /*                
-                // TUSCANY-3932
-                // If the resolved endpoint has a binding with a absolute URI then assume
-                // that URL has been passed in in the forward message and really treat it
-                // as a resolved endpoint.
-                Binding callbackBinding = resolvedEndpoint.getBinding();
-                if ( callbackBinding != null){
-                    URI callbackBindingURI = null;
-                    try {
-                        callbackBindingURI = new URI(callbackBinding.getURI());
-                    } catch (Exception ex){
-                        // ignore it, we test for null next
-                    }
-                    if (callbackBindingURI != null &&
-                        callbackBindingURI.isAbsolute()){
+                    epr.setStatus(EndpointReference.Status.WIRED_TARGET_NOT_FOUND);
+                } else {
+                    // just copy the callback binding from the callback endpoint to the
+                    // callback EPR as the EPR is effectively already resolved
+                    epr.setStatus(EndpointReference.Status.RESOLVED_BINDING);
+                    Binding callbackBinding = resolvedEndpoint.getBinding();
+                    if ( callbackBinding != null){
                         epr.setBinding(callbackBinding);
-                        // TODO - What else?
-                        build(epr);
-                        epr.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
-                        epr.setUnresolved(false);
+                        // make sure that the chains are recreated for
+                        // this new binding
+                        epr.setBindingProvider(null);
+                        epr.rebuild();
+                    } else {
+                        // do nothing and rely on whatever the user has configured 
+                        // in the SCDL
                     }
                 }
-*/
+            
                 return epr;
             } catch (CloneNotSupportedException e) {
                 // will not happen

@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.sca.provider;
 
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.provider.EndpointAsyncProvider;
@@ -94,7 +95,8 @@ public class DelegatingSCAServiceBindingProvider implements EndpointAsyncProvide
         } else {
             provider.start();
             // Set the resolved binding URI back to the binding.sca
-            endpoint.getBinding().setURI(delegateEndpoint.getBinding().getURI());
+            ((SCABinding)endpoint.getBinding()).setDelegateBindingType(delegateEndpoint.getBinding().getType().toString());
+            ((SCABinding)endpoint.getBinding()).setDelegateBindingURI(delegateEndpoint.getBinding().getURI());
             endpoint.setDeployedURI(delegateEndpoint.getDeployedURI());
             started = true;
         }
