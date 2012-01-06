@@ -65,6 +65,7 @@ import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceReference;
 
@@ -303,15 +304,15 @@ public class JavaComponentContextProvider {
         //cleanUpPolicyHandlers();
     }
 
-    Invoker createInvoker(Operation operation, InterfaceContract interfaceContract) throws NoSuchMethodException {
+    Invoker createInvoker(Operation operation, RuntimeComponentService service) throws NoSuchMethodException {
         Class<?> implClass = instanceFactoryProvider.getImplementationClass();
 
         Method method = JavaInterfaceUtil.findMethod(implClass, operation);
         if (operation instanceof JavaOperation &&
             ((JavaOperation) operation).isAsyncServer() ) {
-        	return new JavaAsyncImplementationInvoker(operation, method, component, interfaceContract);
+        	return new JavaAsyncImplementationInvoker(operation, method, component, service);
         } else {
-        	return new JavaImplementationInvoker(operation, method, component, interfaceContract);
+        	return new JavaImplementationInvoker(operation, method, component, service);
         } // end if
     } // end 
 

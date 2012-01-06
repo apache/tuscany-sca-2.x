@@ -32,8 +32,8 @@ import org.apache.tuscany.sca.core.scope.ScopedImplementationProvider;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaResourceImpl;
+import org.apache.tuscany.sca.implementation.java.ResourceHost;
 import org.apache.tuscany.sca.implementation.java.injection.RequestContextObjectFactory;
-import org.apache.tuscany.sca.implementation.java.injection.ResourceHost;
 import org.apache.tuscany.sca.implementation.java.injection.ResourceObjectFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -105,7 +105,8 @@ public class JavaImplementationProvider implements ScopedImplementationProvider,
                 } else {
                     boolean optional = resource.isOptional();
                     String mappedName = resource.getMappedName();
-                    objectFactory = createResourceObjectFactory(type, mappedName, optional, null);
+                    ResourceHost resourceHost = resource.getResourceHost();
+                    objectFactory = createResourceObjectFactory(type, mappedName, optional, resourceHost);
                 }
             }
             componentContextProvider.addResourceFactory(name, objectFactory);
@@ -121,7 +122,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider,
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
         try {
-            return componentContextProvider.createInvoker(operation, service.getInterfaceContract());
+            return componentContextProvider.createInvoker(operation, service);
         } catch (NoSuchMethodException e) {
             // It's possible that the instance being invoked is a user-specified
             // callback object that isn't an instance of the component implementation
@@ -135,12 +136,12 @@ public class JavaImplementationProvider implements ScopedImplementationProvider,
             if (iface instanceof JavaInterface) {
                 try {
                     Method method = JavaInterfaceUtil.findMethod(((JavaInterface)iface).getJavaClass(), operation);
-                    return new JavaImplementationInvoker(operation, method, componentContextProvider.getComponent(), service.getInterfaceContract());
+                    return new JavaImplementationInvoker(operation, method, componentContextProvider.getComponent(), service);
                 } catch (NoSuchMethodException e1) {
                     throw new IllegalArgumentException(e1);
                 }
             } else {
-                return new JavaImplementationInvoker(operation, componentContextProvider.getComponent(), service.getInterfaceContract());
+                return new JavaImplementationInvoker(operation, componentContextProvider.getComponent(), service);
             }
         }
     }

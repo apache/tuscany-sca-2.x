@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<definitions targetNamespace="http://ws.binding.sca.tuscany.apache.org/" 
+             name="HelloWorldImplCallbackService" 
+             xmlns="http://schemas.xmlsoap.org/wsdl/" 
+             xmlns:tns="http://ws.binding.sca.tuscany.apache.org/" 
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://ws.binding.sca.tuscany.apache.org/" 
+                  schemaLocation="HelloWorldImplCallbackService_schema1.xsd"/>
+    </xsd:schema>
+  </types>
+  
+  <message name="getGreetingsCallback">
+    <part name="parameters" element="tns:getGreetingsCallback"/>
+  </message>
+  <message name="getGreetingsCallbackResponse">
+    <part name="parameters" element="tns:getGreetingsCallbackResponse"/>
+  </message>
+  <message name="getGreetingsComplexCallback">
+    <part name="parameters" element="tns:getGreetingsComplexCallback"/>
+  </message>
+  <message name="getGreetingsComplexCallbackResponse">
+    <part name="parameters" element="tns:getGreetingsComplexCallbackResponse"/>
+  </message>
+  
+  <portType name="HelloWorldCallbackImpl">
+    <operation name="getGreetingsCallback">
+      <input message="tns:getGreetingsCallback"/>
+      <output message="tns:getGreetingsCallbackResponse"/>
+    </operation>
+    <operation name="getGreetingsComplexCallback">
+      <input message="tns:getGreetingsComplexCallback"/>
+      <output message="tns:getGreetingsComplexCallbackResponse"/>
+    </operation>     
+  </portType>
+  
+  <binding name="HelloWorldCallbackImplPortBinding" type="tns:HelloWorldCallbackImpl">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <operation name="getGreetingsCallback">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="getGreetingsComplexCallback">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>  
+  </binding>
+  
+  <service name="HelloWorldImplCallbackService">
+    <port name="HelloWorldCallbackImplPort" binding="tns:HelloWorldCallbackImplPortBinding">
+      <soap:address location="http://localhost:8085/HelloWorldService/HelloWorld"/>
+    </port>
+  </service>
+</definitions>
+
+
+

@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.implementation.java.invocation;
 
-
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
@@ -30,6 +28,7 @@ import java.util.List;
 import javax.xml.ws.Holder;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.core.scope.Scope;
@@ -49,6 +48,7 @@ import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -61,26 +61,29 @@ import org.oasisopen.sca.ServiceRuntimeException;
 public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics {
     protected Operation operation;
     protected Method method;
+    protected RuntimeComponentService service;
     protected boolean allowsPBR;
 
     @SuppressWarnings("unchecked")
     protected final ScopeContainer scopeContainer;
 	private final InterfaceContract interfaze;
 
-    public JavaImplementationInvoker(Operation operation, Method method, RuntimeComponent component, InterfaceContract intf) {
+    public JavaImplementationInvoker(Operation operation, Method method, RuntimeComponent component, RuntimeComponentService service) {
         assert method != null : "Operation method cannot be null";
         this.method = method;
         this.operation = operation;
         this.scopeContainer = ((ScopedRuntimeComponent)component).getScopeContainer();
         this.allowsPBR = ((JavaImplementation)component.getImplementation()).isAllowsPassByReference(method);
-        this.interfaze = intf;
+        this.service = service;
+        this.interfaze = service.getInterfaceContract();
     }
 
-    public JavaImplementationInvoker(Operation operation, RuntimeComponent component, InterfaceContract intf) {
+    public JavaImplementationInvoker(Operation operation, RuntimeComponent component, RuntimeComponentService service) {
         // used if the method can't be computed statically in advance 
         this.operation = operation;
         this.scopeContainer = ((ScopedRuntimeComponent)component).getScopeContainer();
-        this.interfaze = intf;
+        this.service = service;
+        this.interfaze = service.getInterfaceContract();
     }
 
     @SuppressWarnings("unchecked")
@@ -121,7 +124,10 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
             // If there is a callback interface and the implementation is stateless, we need to
             // inject callbacks at invocation time. For Composite scope, this has already been done. 
             if (( interfaze.getCallbackInterface() != null )  && (scopeContainer.getScope().equals(Scope.STATELESS))){
-            	injectCallbacks(wrapper, (JavaInterface)interfaze.getCallbackInterface());
+                // TUSCANY-4000 - injectCallbacks needs the Java callback interface so get it 
+                //                from the component type just in case the user has specified a
+                //                WSDL interface and hence interfaze is WSDL
+            	injectCallbacks(wrapper, (JavaInterface)service.getService().getInterfaceContract().getCallbackInterface());
             }
             
             final Object instance = wrapper.getInstance();

@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.implementation.java;
 
-
-
 /**
  * A resource dependency declared by a Java component implementation
  * 
@@ -29,9 +27,15 @@ public class JavaResourceImpl {
     private JavaElementImpl element;
     private String mappedName;
     private boolean optional;
+    private ResourceHost resourceHost;
 
     public JavaResourceImpl(JavaElementImpl element) {
         this.element = element;
+    }
+    
+    public JavaResourceImpl(JavaElementImpl element, ResourceHost resourceHost) {
+        this.element = element;
+        this.resourceHost = resourceHost;
     }
 
     /**
@@ -82,5 +86,10 @@ public class JavaResourceImpl {
         return element;
     }
 
-
+    /**
+     * @return the resourceHost
+     */
+    public ResourceHost getResourceHost() {
+        return resourceHost;
+    }
 }

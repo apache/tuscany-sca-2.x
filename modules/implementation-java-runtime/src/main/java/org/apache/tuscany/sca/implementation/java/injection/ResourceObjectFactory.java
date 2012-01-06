@@ -21,6 +21,9 @@ package org.apache.tuscany.sca.implementation.java.injection;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 
+import org.apache.tuscany.sca.implementation.java.ResourceHost;
+import org.apache.tuscany.sca.implementation.java.ResourceResolutionException;
+
 /**
  * Resolves a runtime resource to be injected on a field or method of a Java component type marked with {@link
  * javax.annotation.Resource}. If the mapped name of the resource is an absolute URI such as
