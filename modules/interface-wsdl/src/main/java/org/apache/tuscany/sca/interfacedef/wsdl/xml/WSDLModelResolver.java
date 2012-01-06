@@ -511,7 +511,9 @@ public class WSDLModelResolver implements ModelResolver {
             // set the correct WSDLDefinition import relationships.
             for (Map.Entry<String, List<javax.wsdl.Import>> entry :
                     ((Map<String, List<javax.wsdl.Import>>)definition.getImports()).entrySet()) {
-                if (!entry.getKey().equals(definition.getTargetNamespace())) { 
+                if (!entry.getKey().equals(definition.getTargetNamespace())) {
+                    // TUSCANY-4004 - This looks a bit dodgy as the wsdlDefinition object will be the same
+                    //                for multiple imports. 
                     WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
                     wsdlDefinition.setUnresolved(true);
                     wsdlDefinition.setNamespace(entry.getKey());
