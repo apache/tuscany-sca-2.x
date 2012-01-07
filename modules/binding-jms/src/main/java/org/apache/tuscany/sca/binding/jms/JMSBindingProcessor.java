@@ -452,6 +452,21 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         if (model.getOperationPropertiesName() != null) {
             model.setOperationPropertiesBinding(getConnectionBinding(model, "operationProperties", model.getOperationPropertiesName(), resolver, context));
         }
+        
+        WireFormat requestWireFormat = model.getRequestWireFormat(); 
+        if (requestWireFormat != null) {
+            extensionProcessor.resolve(requestWireFormat, resolver, context);
+        }    
+
+        WireFormat responseWireFormat = model.getResponseWireFormat(); 
+        if (responseWireFormat != null) {
+            extensionProcessor.resolve(responseWireFormat, resolver, context);
+        }    
+        
+        OperationSelector operationSelector = model.getOperationSelector(); 
+        if (operationSelector != null) {
+            extensionProcessor.resolve(operationSelector, resolver, context);
+        }      
     }
 
     private JMSBinding getConnectionBinding(JMSBinding model, String attrName, QName bindingName, ModelResolver resolver, ProcessorContext context) {
