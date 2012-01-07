@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.binding.jms.context;
 
+import java.util.Hashtable;
+
 import javax.jms.Destination;
 import javax.jms.Message;
 import javax.jms.Session;
@@ -42,6 +44,7 @@ public class JMSBindingContext {
     private long timeToLive;
     private boolean useBytesForWFJMSDefaultResponse;
     private long requestTimeout;
+    private Hashtable properties = new Hashtable<String,Object>();
 
     public Message getJmsMsg() {
         return jmsMsg;
@@ -142,5 +145,17 @@ public class JMSBindingContext {
 
     public void setRequestTimeout(long l) {
         this.requestTimeout = l;
+    }
+    
+    public void setProperty(String key, Object value){
+    	properties.put(key, value);
+    }
+    
+    public Object getProperty(String key){
+    	return properties.get(key);
+    }
+    
+    public void removeProperty(String key){
+    	properties.remove(key);
     }
 }
