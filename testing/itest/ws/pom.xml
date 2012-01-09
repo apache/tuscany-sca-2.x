@@ -55,6 +55,7 @@
     <module>contribution-callback-wsdl-iface</module>
     <module>contribution-doc-lit</module>
     <module>contribution-doc-lit-wrapped</module>
+    <module>contribution-doc-lit-wrapped-dom</module>
     <module>contribution-rpc-lit</module>
     <module>contribution-reference-target</module>
     <module>external-client</module>

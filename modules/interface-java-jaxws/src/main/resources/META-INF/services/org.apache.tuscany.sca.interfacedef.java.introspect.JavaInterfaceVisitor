@@ -18,6 +18,6 @@
 # first one, set remotable flag 
 org.apache.tuscany.sca.interfacedef.java.jaxws.WebServiceInterfaceProcessor;ranking=400
 # second one, introspect the JAXWS annotations
-org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;ranking=100
+org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;ranking=300
 # third one, introspect JAXWS async methods
 org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSAsyncInterfaceProcessor;ranking=50

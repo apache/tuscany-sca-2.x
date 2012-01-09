@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
@@ -60,24 +61,41 @@ public class WrapperJavaInterfaceProcessor implements JavaInterfaceVisitor {
             if (inputWrapperInfo == null || outputWrapperInfo == null) {
                 continue;
             }
-            // JIRA: TUSCANY-842
+            // TUSCANY-824
+            // TUSCANY-3804 - modify the existing code to set up the input wrapper
             String db = inputWrapperInfo.getDataBinding();
             if (db == null || JAXB_DATABINDING.equals(db)) {
-                db = assignOperationDataBinding(operation);
+                db = assignInputDataBinding(operation);
             }
 
             // Introspect the wrapper data type
-            org.apache.tuscany.sca.databinding.DataBinding dbObj = dataBindingRegistry.getDataBinding(db);
+            DataBinding dbObj = dataBindingRegistry.getDataBinding(db);
             WrapperHandler handler = dbObj == null ? null : dbObj.getWrapperHandler();
             if (handler != null) {
                 inputWrapperInfo.setWrapperType(handler.getWrapperType(operation, true));
-                outputWrapperInfo.setWrapperType(handler.getWrapperType(operation, false));
             }
             if (dbObj != null && handler == null) {
                 // To avoid JAXB wrapper bean generation
                 inputWrapperInfo.setWrapperType(null);
-                outputWrapperInfo.setWrapperType(null);
             }
+            
+            // TUSCANY-3804 - handle output wrapper separately
+            db = outputWrapperInfo.getDataBinding();
+            if (db == null || JAXB_DATABINDING.equals(db)) {
+                db = assignOutputDataBinding(operation);
+            }
+            
+            // Introspect the wrapper data type
+            dbObj = dataBindingRegistry.getDataBinding(db);
+            handler = dbObj == null ? null : dbObj.getWrapperHandler();
+            if (handler != null) {
+                outputWrapperInfo.setWrapperType(handler.getWrapperType(operation, false));
+            }
+            
+            if (dbObj != null && handler == null) {
+                // To avoid JAXB wrapper bean generation
+                 outputWrapperInfo.setWrapperType(null);
+             }            
         }
     }
 
@@ -88,18 +106,12 @@ public class WrapperJavaInterfaceProcessor implements JavaInterfaceVisitor {
      *  
      *  The method logic assumes the JavaBeans DataBinding is the default 
      */
-    private String assignOperationDataBinding(Operation operation) {
+    private String assignInputDataBinding(Operation operation) {
 
         Set<String> dbs = new HashSet<String>();
-
-        // Can't use DataType<?> since operation.getInputType() returns: DataType<List<DataType>> 
         List<DataType> opDataTypes = new LinkedList<DataType>();
 
-        opDataTypes.addAll(operation.getInputType().getLogical());
-        opDataTypes.addAll(operation.getOutputType().getLogical());
-        for (DataType<DataType> ft : operation.getFaultTypes()) {
-            opDataTypes.add(ft.getLogical());
-        }
+        opDataTypes.addAll(operation.getInputType().getLogical());       
 
         for (DataType<?> d : opDataTypes) {
             if (d != null) {
@@ -124,4 +136,41 @@ public class WrapperJavaInterfaceProcessor implements JavaInterfaceVisitor {
             return operation.getInputWrapper().getDataBinding();
         }
     }
+    
+    // TUSCANY-3804: handle output wrapper separately
+    //               change here is different to that in 3804 
+    //               to deal with logical data type + faults
+    private String assignOutputDataBinding(Operation operation) {       
+        Set<String> dbs = new HashSet<String>();
+        List<DataType> opDataTypes = new LinkedList<DataType>();
+
+        opDataTypes.addAll(operation.getOutputType().getLogical());
+        
+        for (DataType<DataType> ft : operation.getFaultTypes()) {
+            opDataTypes.add(ft.getLogical());
+        }
+
+        for (DataType<?> d : opDataTypes) {
+            if (d != null) {
+                String dataBinding = d.getDataBinding();
+                if ("java:array".equals(dataBinding)) {
+                    dataBinding = ((DataType)d.getLogical()).getDataBinding();
+                }
+                if (dataBinding != null) {
+                    dbs.add(dataBinding);
+                }
+            }
+        }
+
+        dbs.remove(JavaBeansDataBinding.NAME);
+        dbs.remove(SimpleJavaDataBinding.NAME);
+
+        if (dbs.size() == 1) {
+            String db = dbs.iterator().next();
+            operation.getOutputWrapper().setDataBinding(db);
+            return db;
+        } else {
+            return operation.getOutputWrapper().getDataBinding();
+        }        
+    }    
 }
