@@ -444,7 +444,7 @@ public class WSDLModelResolver implements ModelResolver {
             	if (unresolved.getNamespace().equals(resolved.getDefinition().getTargetNamespace())) {
             		resolved.setNamespace(resolved.getDefinition().getTargetNamespace());
             		resolved.setUnresolved(false);
-            		resolved.setURI(resolved.getLocation());
+            		resolved.setURI(unresolved.getURI());
             		return modelClass.cast(resolved);
             	}
             } catch (ContributionReadException e) {
@@ -524,6 +524,12 @@ public class WSDLModelResolver implements ModelResolver {
                     	
                     	try {
                     		wsdlDefinition.setLocation(new URI(imp.getDefinition().getDocumentBaseURI()));
+                    		// TUSCANY-4004 - set the URI of the imported definition to be based on the
+                    		//                location that the user typed in the import. This will
+                    		//                usually be a contribution relative URI so it's consistent
+                    		//                with the URI of the top level WSDL which is set from the 
+                    		//                relative location of the artifact that represents the WSDL
+                    		wsdlDefinition.setURI(new URI(imp.getLocationURI()));
                     		resolved = resolveImports(WSDLDefinition.class, wsdlDefinition, context);
                     		if (!resolved.isUnresolved()) {
                     			if (resolved.getImportedDefinitions().isEmpty()) {
