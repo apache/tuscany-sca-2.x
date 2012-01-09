@@ -42,14 +42,12 @@ public class JSONRPCReferenceTestCase {
         try {
             String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCReferenceTestCase.class);
             nodeServer =
-                NodeFactory.newInstance().createNode("JSONRPCBinding.composite",
-                                                     new Contribution("testServer", contribution));
+                NodeFactory.newInstance().createNode("JSONRPCBinding.composite", new Contribution("testServer", contribution));
             nodeServer.start();
 
             contribution = ContributionLocationHelper.getContributionLocation(JSONRPCReferenceTestCase.class);
             node =
-                NodeFactory.newInstance().createNode("JSONRPCReference.composite",
-                                                     new Contribution("testClient", contribution));
+                NodeFactory.newInstance().createNode("JSONRPCReference.composite", new Contribution("testClient", contribution));
             node.start();
 
         } catch (Exception e) {
