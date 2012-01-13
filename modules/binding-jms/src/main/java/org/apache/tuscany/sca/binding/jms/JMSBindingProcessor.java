@@ -401,6 +401,12 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             error(monitor, "MustStartWithSchema", jmsBinding, uri);
             return;
         }
+        
+        jmsBinding.setDestinationCreate(JMSBindingConstants.CREATE_NEVER);
+        jmsBinding.setResponseDestinationCreate(JMSBindingConstants.CREATE_NEVER);
+        jmsBinding.setConnectionFactoryCreate(JMSBindingConstants.CREATE_NEVER);
+        jmsBinding.setResponseConnectionFactoryCreate(JMSBindingConstants.CREATE_NEVER);
+        
         int i = uri.indexOf('?');            
         if (i >= 0) {
         	StringTokenizer st = new StringTokenizer(uri.substring(i+1),"&");
