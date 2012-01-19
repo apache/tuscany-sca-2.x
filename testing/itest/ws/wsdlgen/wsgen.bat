@@ -1,0 +1,1 @@
+c:\simon\apps\jdk-60-ibm\bin\wsgen.exe -cp target/classes;"C:\Users\slaws\.m2\repository\org\apache\tuscany\sca\tuscany-sca-api\2.0-SNAPSHOT\tuscany-sca-api-2.0-SNAPSHOT.jar" -d target/wsgenout -wsdl -verbose helloworld.HelloWorldImpl

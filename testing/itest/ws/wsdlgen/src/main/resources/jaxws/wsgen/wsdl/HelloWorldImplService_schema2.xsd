@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" targetNamespace="http://test" xmlns:ns1="http://helloworld/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:import namespace="http://helloworld/" schemaLocation="HelloWorldImplService_schema4.xsd"/>
+
+  <xs:complexType name="aBean">
+    <xs:sequence>
+      <xs:element name="field1" type="xs:string" minOccurs="0"/>
+      <xs:element name="field2" type="xs:string" minOccurs="0"/>
+      <xs:element name="field3" type="ns1:bBean" minOccurs="0"/>
+      <xs:element name="field4" type="ns1:dBean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+

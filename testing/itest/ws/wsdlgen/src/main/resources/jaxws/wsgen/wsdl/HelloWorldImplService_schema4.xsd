@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" targetNamespace="http://helloworld/" xmlns:ns2="http://wahooo/" xmlns:ns1="http://test" xmlns:ns3="http://other.jtest/" xmlns:tns="http://helloworld/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:import namespace="http://test" schemaLocation="HelloWorldImplService_schema2.xsd"/>
+
+  <xs:import namespace="http://wahooo/" schemaLocation="HelloWorldImplService_schema1.xsd"/>
+
+  <xs:import namespace="http://other.jtest/" schemaLocation="HelloWorldImplService_schema3.xsd"/>
+
+  <xs:element name="AnotherHelloWorldException" type="tns:AnotherHelloWorldException"/>
+
+  <xs:element name="HelloWorldException" type="tns:HelloWorldException"/>
+
+  <xs:element name="getGreetings" type="tns:getGreetings"/>
+
+  <xs:element name="getGreetingsABeanMultiple" type="tns:getGreetingsABeanMultiple"/>
+
+  <xs:element name="getGreetingsABeanMultipleResponse" type="tns:getGreetingsABeanMultipleResponse"/>
+
+  <xs:element name="getGreetingsAnotherException" type="tns:getGreetingsAnotherException"/>
+
+  <xs:element name="getGreetingsAnotherExceptionResponse" type="tns:getGreetingsAnotherExceptionResponse"/>
+
+  <xs:element name="getGreetingsBBean" type="tns:getGreetingsBBean"/>
+
+  <xs:element name="getGreetingsBBeanResponse" type="tns:getGreetingsBBeanResponse"/>
+
+  <xs:element name="getGreetingsBean" type="tns:getGreetingsBean"/>
+
+  <xs:element name="getGreetingsBeanArray" type="tns:getGreetingsBeanArray"/>
+
+  <xs:element name="getGreetingsBeanArrayResponse" type="tns:getGreetingsBeanArrayResponse"/>
+
+  <xs:element name="getGreetingsBeanResponse" type="tns:getGreetingsBeanResponse"/>
+
+  <xs:element name="getGreetingsByteArray" type="tns:getGreetingsByteArray"/>
+
+  <xs:element name="getGreetingsByteArrayResponse" type="tns:getGreetingsByteArrayResponse"/>
+
+  <xs:element name="getGreetingsCBean" type="tns:getGreetingsCBean"/>
+
+  <xs:element name="getGreetingsCBeanResponse" type="tns:getGreetingsCBeanResponse"/>
+
+  <xs:element name="getGreetingsDBean" type="tns:getGreetingsDBean"/>
+
+  <xs:element name="getGreetingsDBeanResponse" type="tns:getGreetingsDBeanResponse"/>
+
+  <xs:element name="getGreetingsException" type="tns:getGreetingsException"/>
+
+  <xs:element name="getGreetingsExceptionResponse" type="tns:getGreetingsExceptionResponse"/>
+
+  <xs:element name="getGreetingsResponse" type="tns:getGreetingsResponse"/>
+
+  <xs:complexType name="getGreetingsException">
+    <xs:sequence>
+      <xs:element name="arg0" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsExceptionResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="HelloWorldException">
+    <xs:sequence>
+      <xs:element name="message" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsBeanArray">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:aBean" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="bBean">
+    <xs:sequence>
+      <xs:element name="field1" type="xs:string" minOccurs="0"/>
+      <xs:element name="field2" type="xs:string" minOccurs="0"/>
+      <xs:element name="field3" type="ns2:fBean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="dBean">
+    <xs:sequence>
+      <xs:element name="field1" type="xs:string" minOccurs="0"/>
+      <xs:element name="field2" type="xs:string" minOccurs="0"/>
+      <xs:element name="field3" type="tns:bBean" minOccurs="0"/>
+      <xs:element name="field4" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="field1" type="xs:string" minOccurs="0"/>
+            <xs:element name="field2" type="xs:string" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="field5" type="ns3:eBean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsBeanArrayResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsByteArray">
+    <xs:sequence>
+      <xs:element name="arg0" type="xs:base64Binary" nillable="true" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsByteArrayResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:base64Binary" nillable="true" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsBBean">
+    <xs:sequence>
+      <xs:element name="arg0" type="tns:bBean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsBBeanResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsCBean">
+    <xs:sequence>
+      <xs:element name="arg0" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="field1" type="xs:string" minOccurs="0"/>
+            <xs:element name="field2" type="xs:string" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsCBeanResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsAnotherException">
+    <xs:sequence>
+      <xs:element name="arg0" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsAnotherExceptionResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AnotherHelloWorldException">
+    <xs:sequence>
+      <xs:element name="message" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsABeanMultiple">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:aBean" minOccurs="0"/>
+      <xs:element name="arg1" type="ns1:aBean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsABeanMultipleResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:aBean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsBean">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:aBean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsBeanResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsDBean">
+    <xs:sequence>
+      <xs:element name="arg0" type="tns:dBean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsDBeanResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetings">
+    <xs:sequence>
+      <xs:element name="arg0" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+
