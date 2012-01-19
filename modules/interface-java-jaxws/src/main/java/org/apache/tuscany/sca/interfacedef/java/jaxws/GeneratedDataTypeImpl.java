@@ -29,6 +29,8 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
 import org.apache.tuscany.sca.databinding.jaxb.XMLAdapterExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
@@ -48,16 +50,21 @@ public class GeneratedDataTypeImpl implements DataType<XMLType> {
     private String wrapperName;
     private boolean request;
     private GeneratedClassLoader classLoader;
+    private Operation operation;
 
     private Class<? extends Throwable> exceptionClass;
 
-    public GeneratedDataTypeImpl(XMLAdapterExtensionPoint xmlAdapters, Class<? extends Throwable> exceptionClass, GeneratedClassLoader cl) {
+    public GeneratedDataTypeImpl(XMLAdapterExtensionPoint xmlAdapters, 
+                                 Class<? extends Throwable> exceptionClass, 
+                                 GeneratedClassLoader cl, 
+                                 Operation operation) {
         super();
         this.exceptionClass = exceptionClass;
         this.classLoader = cl;
-        QName name = FaultBeanGenerator.getElementName(exceptionClass);
+        QName name = FaultBeanGenerator.getElementName(exceptionClass, operation);
         this.logical = new XMLType(name, name);
         this.xmlAdapters = xmlAdapters;
+        this.operation = operation;
     }
 
     public GeneratedDataTypeImpl(XMLAdapterExtensionPoint xmlAdapters,
@@ -103,7 +110,7 @@ public class GeneratedDataTypeImpl implements DataType<XMLType> {
             } else if (exceptionClass != null) {
                 FaultBeanGenerator faultBeanGenerator = new FaultBeanGenerator();
                 faultBeanGenerator.setXmlAdapters(xmlAdapters);
-                physical = faultBeanGenerator.generate(exceptionClass, classLoader);
+                physical = faultBeanGenerator.generate(exceptionClass, classLoader, operation);
             }
         }
         return physical;

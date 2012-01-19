@@ -34,6 +34,8 @@ import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebFault;
 
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.objectweb.asm.ClassWriter;
 
@@ -72,9 +74,7 @@ public class FaultBeanGenerator extends BaseBeanGenerator {
         return props.toArray(new BeanProperty[0]);
     }
 
-    public byte[] generate(Class<? extends Throwable> exceptionClass) {
-        String className = getFaultBeanName(exceptionClass);
-        
+    public byte[] generate(Class<? extends Throwable> exceptionClass, Operation operation) {
     	// The reflection code here allows for toleration of older versions of ASM.      
     	ClassWriter cw;
     	try {   		
@@ -91,35 +91,52 @@ public class FaultBeanGenerator extends BaseBeanGenerator {
     		
     	}  
 
-    		
-       
+        // TUSCANY-3283 - all generated classes (including exception) should go in the namespace
+        //                of the interface not the namespace of the originating exception. 
+        //                consequently we need to create a matching package name for the schema
+        QName element = getElementName(exceptionClass, operation);
+        String name = element.getLocalPart();
+        String namespace = element.getNamespaceURI();
+        
+        String className = getFaultBeanName(exceptionClass, operation);
         String classDescriptor = className.replace('.', '/');
         String classSignature = "L" + classDescriptor + ";";
-        QName element = getElementName(exceptionClass);
-        String namespace = element.getNamespaceURI();
-        String name = element.getLocalPart();
+
         return defineClass(cw, classDescriptor, classSignature, namespace, name, getProperties(exceptionClass));
     }
 
-    public Class<?> generate(Class<? extends Throwable> exceptionClass, GeneratedClassLoader cl) {
+    public Class<?> generate(Class<? extends Throwable> exceptionClass, GeneratedClassLoader cl, Operation operation) {
         synchronized (exceptionClass) {
-            Class<?> faultBeanClass = generatedClasses.get(exceptionClass);
+            QName element = getElementName(exceptionClass, operation);
+            Class<?> faultBeanClass = generatedClasses.get(element);
             if (faultBeanClass == null) {
-                String className = getFaultBeanName(exceptionClass);
+                
+                // TUSCANY-3283 - all generated classes (including exception) should go in the namespace
+                //                of the interface not the namespace of the originating exception. 
+                //                consequently we need to create a matching package name for the schema
+                String name = element.getLocalPart();
+                String namespace = element.getNamespaceURI();
+                
+                String className = getFaultBeanName(exceptionClass, operation);
                 String classDescriptor = className.replace('.', '/');
                 String classSignature = "L" + classDescriptor + ";";
-                QName element = getElementName(exceptionClass);
-                String namespace = element.getNamespaceURI();
-                String name = element.getLocalPart();
-                faultBeanClass =
-                    generate(classDescriptor, classSignature, namespace, name, getProperties(exceptionClass), cl);
-                generatedClasses.put(exceptionClass, faultBeanClass);
+
+                faultBeanClass = generate(classDescriptor, classSignature, namespace, name, getProperties(exceptionClass), cl);
+                generatedClasses.put(element, faultBeanClass);
             }
             return faultBeanClass;
         }
     }
 
-    private static String getFaultBeanName(Class<?> exceptionClass) {
+    private static String getFaultBeanName(Class<?> exceptionClass, Operation operation) {
+        // TUSCANY-3283 - all generated classes (including exception) should go in the namespace
+        //                of the interface not the namespace of the originating exception. 
+        //                consequently we need to create a matching package name for the schema
+        String interfacePkg = null;
+        if (operation != null && operation.getInterface() instanceof JavaInterface){
+            interfacePkg = ((JavaInterface)operation.getInterface()).getJavaClass().getPackage().getName();
+        }
+        
         String faultBeanName = null;
         WebFault webFault = exceptionClass.getAnnotation(WebFault.class);
         if (webFault != null) {
@@ -131,7 +148,12 @@ public class FaultBeanGenerator extends BaseBeanGenerator {
 
         String name = exceptionClass.getName();
         int index = name.lastIndexOf('.');
-        String pkg = name.substring(0, index);
+        String pkg = null;
+        if (interfacePkg != null){
+            pkg = interfacePkg;
+        } else {
+            pkg = name.substring(0, index);
+        }
         String clsName = name.substring(index + 1);
 
         // FIXME: [rfeng] This is a workaround to avoid "Prohibited package name: java.lang.jaxws"
@@ -142,9 +164,17 @@ public class FaultBeanGenerator extends BaseBeanGenerator {
         return faultBeanName;
     }
 
-    public static QName getElementName(Class<? extends Throwable> exceptionClass) {
+    public static QName getElementName(Class<? extends Throwable> exceptionClass, Operation operation) {
         WebFault webFault = exceptionClass.getAnnotation(WebFault.class);
+        
+        // TUSCANY-3283 - all generated classes (including exception) should go in the namespace
+        //                of the interface not the namespace of the originating exception. 
+        //                consequently we need to create a matching package name for the schema
         String namespace = null;
+        if (operation != null && operation.getInterface() instanceof JavaInterface){
+            namespace = ((JavaInterface)operation.getInterface()).getQName().getNamespaceURI();
+        }
+        
         String name = null;
         if (webFault != null) {
             namespace = webFault.targetNamespace();
@@ -162,6 +192,6 @@ public class FaultBeanGenerator extends BaseBeanGenerator {
     public static Class<?> generateFaultBeanClass(Class<? extends Throwable> exceptionClass) {
         FaultBeanGenerator generator = new FaultBeanGenerator();
         GeneratedClassLoader cl = new GeneratedClassLoader(exceptionClass.getClassLoader());
-        return generator.generate(exceptionClass, cl);
+        return generator.generate(exceptionClass, cl, null);
     }
 }

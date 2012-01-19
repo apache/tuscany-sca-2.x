@@ -185,6 +185,14 @@ public interface WSDLDefinition extends Base {
      * Gets the wsdli:location attribute namespace mappings
      * @return a Map with key being namespace and value the location
      */
-    Map<String, String> getWsdliLocations();    
+    Map<String, String> getWsdliLocations();  
+    
+    /**
+     * Find the schema definition for the provided namespace
+     * 
+     * @param namespace
+     * @return the schema definition relating to the provided namespace or null if not found
+     */
+    XSDefinition getSchema(String namespace);
 
 }

@@ -74,6 +74,7 @@ public class BindingWSDLGeneratorTestCase extends TestCase {
         new JAXWSJavaInterfaceProcessor(registry).visitInterface(iface2);
         new DataBindingJavaInterfaceProcessor(registry).visitInterface(iface2);
         javaIC2.setInterface(iface2);
+        BindingWSDLGenerator.printWSDL = true;
         WSDLInterfaceContract wsdlIC2 = BindingWSDLGenerator.createWSDLInterfaceContract(javaIC2, false, new XSDModelResolver(null, null), dataBindings, wsdlFactory, xsdFactory, documentBuilderFactory, null);
         assertNotNull(wsdlIC2);
     }

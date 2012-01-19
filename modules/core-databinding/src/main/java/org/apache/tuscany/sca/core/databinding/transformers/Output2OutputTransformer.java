@@ -138,6 +138,18 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
         for (int i = 0; i < list1.size(); i++) {
             String n1 = list1.get(i).getQName().getLocalPart();
             String n2 = list2.get(i).getQName().getLocalPart();
+            
+            // TUSCANY-3283 - strip off any leading "_" characters for this comparison.
+            //                Now we generate wrappers with JAXB it names the response
+            //                wrapper's child as "_return"
+            if (n1.startsWith("_")){
+                n1 = n1.substring(1);
+            }
+            
+            if (n2.startsWith("_")){
+                n2 = n2.substring(1);
+            }
+            
             if (!n1.equals(n2)) {
                 return false;
             }

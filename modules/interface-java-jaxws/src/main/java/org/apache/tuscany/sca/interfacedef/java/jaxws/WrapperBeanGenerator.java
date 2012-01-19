@@ -205,7 +205,9 @@ public class WrapperBeanGenerator extends BaseBeanGenerator {
                     Type genericReturnType = asyncMethod? returnType : m.getGenericReturnType();
                     BeanProperty prop = new BeanProperty(propNS, propName, returnType, genericReturnType, true);
                     prop.getJaxbAnnotaions().addAll(jaxb);
-                    properties.add(prop);
+                    // TUSCANY-3283 - As per JAXWS spec () the "return" value should come first in the 
+                    //                list when there are holders. 
+                    properties.add(0, prop);
                 }
                 wrapperClass =
                     generate(wrapperClassDescriptor, wrapperClassSignature, wrapperNamespace, wrapperName, properties

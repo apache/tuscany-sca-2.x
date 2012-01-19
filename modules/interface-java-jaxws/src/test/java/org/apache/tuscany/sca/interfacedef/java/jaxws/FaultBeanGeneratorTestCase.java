@@ -40,7 +40,7 @@ public class FaultBeanGeneratorTestCase {
 
     @Test
     public void testGenerate() throws IOException {
-        byte[] content = new FaultBeanGenerator().generate(MyException.class);
+        byte[] content = new FaultBeanGenerator().generate(MyException.class, null);
         ClassReader cr = new ClassReader(content);
         PrintWriter pw = new PrintWriter(System.out);
         CheckClassAdapter.verify(cr, false, pw);

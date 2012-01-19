@@ -290,7 +290,7 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
 
     @SuppressWarnings("unchecked")
     public boolean introspectFaultDataType(DataType<DataType> exceptionType, final Operation operation, final boolean generatingFaultBean) {
-        QName faultName = null;
+        
         boolean result = false;
 
         final Class<?> cls = exceptionType.getPhysical();
@@ -298,6 +298,7 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
             return true;
         }
         DataType faultType = (DataType)exceptionType.getLogical();
+        QName faultName = ((XMLType)faultType.getLogical()).getElementName();
         Class<?> faultBean = null;
         final WebFault fault = cls.getAnnotation(WebFault.class);
         if (fault != null) {
@@ -346,7 +347,7 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
                                 operation == null ? t.getClassLoader() : ((JavaInterface)operation.getInterface())
                                     .getJavaClass().getClassLoader();
                             GeneratedClassLoader cl = new GeneratedClassLoader(parent);
-                            GeneratedDataTypeImpl dt = new GeneratedDataTypeImpl(xmlAdapterExtensionPoint, t, cl);
+                            GeneratedDataTypeImpl dt = new GeneratedDataTypeImpl(xmlAdapterExtensionPoint, t, cl, operation);
                             return dt;
                         } else {
                             return new DataTypeImpl<XMLType>(cls, new XMLType(qname, qname));

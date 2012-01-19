@@ -48,6 +48,7 @@ import org.objectweb.asm.Opcodes;
 
 public abstract class BaseBeanGenerator implements Opcodes {
     private static final Map<String, String> COLLECTION_CLASSES = new HashMap<String, String>();
+    
     static {
         COLLECTION_CLASSES.put("Ljava/util/Collection;", "java/util/ArrayList");
         COLLECTION_CLASSES.put("Ljava/util/List;", "java/util/ArrayList");
@@ -55,7 +56,11 @@ public abstract class BaseBeanGenerator implements Opcodes {
         COLLECTION_CLASSES.put("Ljava/util/Queue;", "java/util/LinkedList");
     }
     private final static Class[] KNOWN_JAXB_ANNOTATIONS =
-        {XmlAttachmentRef.class, XmlMimeType.class, XmlJavaTypeAdapter.class, XmlList.class};
+        {XmlAttachmentRef.class, 
+         XmlMimeType.class, 
+         XmlJavaTypeAdapter.class, 
+         XmlList.class};
+    
     private static final Map<String, String> JAVA_KEYWORDS = new HashMap<String, String>();
 
     static {
@@ -140,7 +145,7 @@ public abstract class BaseBeanGenerator implements Opcodes {
         // Annotate the class
         annotateClass(cw, name, namespace, propOrder);
 
-        // Decalre the default constructor
+        // Declare the default constructor
         declareConstructor(cw, classSignature);
         if (properties != null) {
             for (BeanProperty p : properties) {
@@ -228,8 +233,11 @@ public abstract class BaseBeanGenerator implements Opcodes {
             av0 = fv.visitAnnotation("Ljavax/xml/bind/annotation/XmlElement;", true);
             av0.visit("name", propName);
             av0.visit("namespace", "");
+            // TUSCANY-3283 - force not nillable if it isn't
             if (isNillable) {
                 av0.visit("nillable", Boolean.TRUE);
+            } else {
+                av0.visit("nillable", Boolean.FALSE);
             }
             // FIXME:
             // av0.visit("required", Boolean.FALSE);

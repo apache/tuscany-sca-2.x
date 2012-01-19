@@ -361,4 +361,13 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     public Map<String, String> getWsdliLocations() {
         return wsdliLocations ;
     }
+    
+    public XSDefinition getSchema(String namespace){
+        for (XSDefinition xsDef : schemas){
+            if (xsDef.getNamespace().equals(namespace)){
+                return xsDef;
+            }
+        }
+        return null;
+    }
 }
