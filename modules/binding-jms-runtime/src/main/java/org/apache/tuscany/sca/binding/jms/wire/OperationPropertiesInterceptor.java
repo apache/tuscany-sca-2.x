@@ -57,11 +57,14 @@ public class OperationPropertiesInterceptor extends InterceptorAsyncImpl {
     public Message invokeRequest(Message msg) {           
         //  TODO - could probably optimize this better 
         String operationName = msg.getOperation().getName();
-        String operationNameOverride = jmsBinding.getNativeOperationName(operationName);
-        for (Operation op : serviceOperations) {
-            if (op.getName().equals(operationNameOverride)) {
-                msg.setOperation(op);
-                break;
+        String operationNameOverride = jmsBinding.getOpNameFromNativeOperationName(operationName);
+        
+        if (operationNameOverride != null) {
+            for (Operation op : serviceOperations) {
+                if (op.getName().equals(operationNameOverride)) {
+                    msg.setOperation(op);
+                    break;
+                }
             }
         }
         return msg;
