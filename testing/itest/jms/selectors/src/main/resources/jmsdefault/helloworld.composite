@@ -47,7 +47,7 @@
         <service name="HelloWorldService">
             <binding.jms>
                 <destination jndiName="HelloWorldService1"/>
-                <operationProperties name="getGreetingsThree" selectedOperation="getGreetingsFour">
+                <operationProperties name="getGreetingsFour" selectedOperation="getGreetingsThree">
                   <headers>
                      <property name="blaNotUsed">getGreetingsThree</property>
                   </headers>
