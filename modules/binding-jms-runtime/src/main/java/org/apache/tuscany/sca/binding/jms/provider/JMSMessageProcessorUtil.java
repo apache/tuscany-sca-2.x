@@ -24,6 +24,7 @@ import java.lang.reflect.Constructor;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 
 /**
  * Utility methods to load JMS message processors.
@@ -74,32 +75,19 @@ public class JMSMessageProcessorUtil {
 //    }
 //
     private static Object instantiate(ClassLoader cl, String className, JMSBinding binding, ExtensionPointRegistry registry) {
-        Object instance;
-        if (cl == null) {
-            cl = binding.getClass().getClassLoader();
-        }
-
         try {
-            Class<?> clazz;
-
-            try {
-                clazz = cl.loadClass(className);
-            } catch (ClassNotFoundException e) {
-            	// MJE 07/12/2010 - for OSGi the default message processor belongs to the same bundle as
-            	// this JMSMessageProcessorUtil itself and so the "correct" classloader to use is the classloader
-            	// for THIS class, and not the binding class (which is a different bundle)
-                // clazz = binding.getClass().getClassLoader().loadClass(className);
-                clazz = JMSMessageProcessorUtil.class.getClassLoader().loadClass(className);
+            for (ServiceDeclaration sd : registry.getServiceDiscovery().getServiceDeclarations(JMSMessageProcessor.class)) {
+                if (className.equals(sd.getClassName())) {
+                    Class<?> clazz = sd.loadClass();
+                    Constructor<?> constructor = clazz.getDeclaredConstructor(new Class[] {JMSBinding.class, ExtensionPointRegistry.class});
+                    return constructor.newInstance(binding, registry);
+                }
+                
             }
-
-            Constructor<?> constructor = clazz.getDeclaredConstructor(new Class[] {JMSBinding.class, ExtensionPointRegistry.class});
-            instance = constructor.newInstance(binding, registry);
-
+            throw new JMSBindingException("Class not found: " + className);
         } catch (Throwable e) {
             throw new JMSBindingException("Exception instantiating OperationAndDataBinding class", e);
         }
-
-        return instance;
     }
 
     public static JMSMessageProcessor getRequestMessageProcessor(ExtensionPointRegistry registry, JMSBinding binding) {
