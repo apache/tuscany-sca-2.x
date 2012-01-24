@@ -78,7 +78,7 @@ public class AXIOMXMLHelper implements XMLHelper<OMElement> {
     @Override
     public OMElement createWrapper(QName qname) {
         // The OMElement2JAXB transformer wants the opName to be capitalized
-        String opName = Character.toUpperCase(qname.getLocalPart().charAt(0)) + qname.getLocalPart().length() > 1 ? qname.getLocalPart().substring(1) : "";
+        String opName = Character.toUpperCase(qname.getLocalPart().charAt(0)) + (qname.getLocalPart().length() > 1 ? qname.getLocalPart().substring(1) : "");
         OMElement om = factory.createOMElement(qname);
         OMNamespace defaultNS = om.declareDefaultNamespace(qname.getNamespaceURI());
         return factory.createOMElement(opName, defaultNS);
