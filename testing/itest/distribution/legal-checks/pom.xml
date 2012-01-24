@@ -67,6 +67,7 @@
                               <exclude>**/*.odg</exclude>
                               <exclude>**/*.html</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT/features/configuration/config.ini</exclude>
+                              <exclude>../../../../maven/archetypes/policy/src/test/resources/projects/basic/goal.txt</exclude>
                            </excludes>
                         </configuration>
                     </plugin>
