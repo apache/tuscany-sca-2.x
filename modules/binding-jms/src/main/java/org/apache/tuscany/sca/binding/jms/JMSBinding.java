@@ -131,6 +131,7 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
     private Map<String, Object> properties = new HashMap<String, Object>();
     private Map<String, Map<String, Object>> operationProperties = new HashMap<String, Map<String,Object>>();
     private Map<String, String> nativeOperationNames = new HashMap<String, String>();
+    private Map<String, String> nativeOperationNamesToOpName = new HashMap<String, String>();
     private Map<String, String> operationJMSTypes = new HashMap<String, String>();
     private Map<String, String> operationJMSCorrelationIds = new HashMap<String, String>();
     private Map<String, Boolean> operationJMSDeliveryModes = new HashMap<String, Boolean>();
@@ -666,6 +667,14 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
     
     public Map<String, String> getNativeOperationNames() {
         return nativeOperationNames;
+    }
+    
+    public void setNativeOperationNameToOpName(String nativeOpName, String opName) {
+        this.nativeOperationNamesToOpName.put(nativeOpName, opName);
+    }
+    
+    public String getOpNameFromNativeOperationName(String nativeOpName) {
+            return nativeOperationNamesToOpName.get(nativeOpName);
     }
 
     public String getOperationJMSType(String opName) {

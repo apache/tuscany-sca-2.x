@@ -846,6 +846,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         String nativeOpName = reader.getAttributeValue(null, "selectedOperation"); // optional
         if (nativeOpName != null && nativeOpName.length() > 0) {
             jmsBinding.setNativeOperationName(opName, nativeOpName);
+            jmsBinding.setNativeOperationNameToOpName(nativeOpName, opName);
         }
 
         Map<String, BindingProperty> props = new HashMap<String, BindingProperty>();
