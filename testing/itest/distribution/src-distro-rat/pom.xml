@@ -74,6 +74,7 @@
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/maven/archetypes/implementation/src/test/resources/projects/basic/goal.txt</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-python-runtime/src/main/resources/django/__init__.py</exclude>
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/implementation-python-runtime/src/main/resources/django/utils/__init__.py</exclude>
+                              <exclude>tuscany-sca-2.0-SNAPSHOT-src/maven/archetypes/policy/src/test/resources/projects/basic/goal.txt</exclude>
 
                               <!-- these ones we need to implement RAT license processors to handle the non-AL headers, just exclude for now -->
                               <exclude>tuscany-sca-2.0-SNAPSHOT-src/modules/assembly-xsd/**/*.*</exclude>
