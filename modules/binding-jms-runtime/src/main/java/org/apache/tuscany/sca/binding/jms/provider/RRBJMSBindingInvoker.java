@@ -266,19 +266,22 @@ public class RRBJMSBindingInvoker extends InterceptorAsyncImpl {
     }
     
     protected Destination getRequestDestination(org.apache.tuscany.sca.invocation.Message tuscanyMsg, Session session) throws JMSBindingException, NamingException, JMSException {
-        Destination requestDestination;
-//      if (!reference.isCallback()) { // TODO: 2.x migration, is this check needed?
-//            String toURI = tuscanyMsg.getTo().getURI();
-//            if (toURI != null && toURI.startsWith("jms:")) {
-//                // the msg to uri contains the callback destination name 
-//                // this is an jms physical name not a jndi name so need to use session.createQueue
-//                requestDestination = session.createQueue(toURI.substring(4));
-//            } else {
-//                requestDestination = lookupDestination();
-//            }
-//        } else {
+        Destination requestDestination = null;
+
+        if (endpointReference.getReference().isForCallback()) {
+            
+            // Check if the CallbackDestinationInterceptor set a callback destination from the request msg
+            if (tuscanyMsg.getFrom().getTargetEndpoint() != null) {
+                if (tuscanyMsg.getFrom().getTargetEndpoint().getBinding() != null) {
+                    this.jmsBinding = (JMSBinding)tuscanyMsg.getFrom().getTargetEndpoint().getBinding();
+                    requestDestination = lookupDestination();
+                }
+            }
+        }
+        
+        if (requestDestination == null) {
             requestDestination = bindingRequestDest;
-//        }
+        }
 
         return requestDestination;
     }    
