@@ -113,13 +113,28 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
         for (int i = 0; i < list1.size(); i++) {
             String n1 = list1.get(i).getQName().getLocalPart();
             String n2 = list2.get(i).getQName().getLocalPart();
-            if (!n1.equals(n2)) {
+            // TUSCANY-3298: In the following situation:
+            //  1. The child is a java.util.Map type
+            //  2. The child's name is a Java keyword (e.g., return)
+            //  3. Tuscany is using a generated JAXB wrapper class for WSDL generation
+            // the Java to WSDL generation process results in the WSDL element name
+            // having a leading underscore added to the actual element name.  This is
+            // because of a known JAXB issue that prevents the @XmlElement annotation
+            // being used on a java.util.Map type property field in the wrapper bean
+            // (see https://jaxb.dev.java.net/issues/show_bug.cgi?id=268).
+            // To prevent the compatibility match from failing in this situation,
+            // we strip any leading underscore before doing the comparison.
+            if (!stripLeadingUnderscore(n1).equals(stripLeadingUnderscore(n2))) {
                 return false;
             }
         }
         return true;
     }
 
+    private static String stripLeadingUnderscore(String name) {
+        return name.startsWith("_") ? name.substring(1) : name;
+    }
+    
     @SuppressWarnings("unchecked")
     public Object[] transform(Object[] source, TransformationContext context) {
         // Check if the source operation is wrapped

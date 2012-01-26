@@ -19,8 +19,10 @@
 
 package org.apache.tuscany.sca.databinding.sdo;
 
+import java.lang.reflect.ParameterizedType;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
@@ -62,7 +64,7 @@ public class SDODataBinding extends BaseDataBinding {
 
     @Override
     public boolean introspect(DataType dataType, final Operation operation) {
-        final Class javaType = dataType.getPhysical();
+        Class javaType = dataType.getPhysical();
         // Allow privileged access to read system properties. Requires PropertyPermission
         // java.specification.version read in security policy.
         final HelperContext context = AccessController.doPrivileged(new PrivilegedAction<HelperContext>() {
@@ -74,11 +76,33 @@ public class SDODataBinding extends BaseDataBinding {
         final Type type = context.getTypeHelper().getType(javaType);
         if (type == null) {
             // FIXME: Need a better to test dynamic SDO
+            // TUSCANY-3298: get underlying element type for collections
+            boolean isMany = false;
+            if (Collection.class.isAssignableFrom(javaType)) {
+                java.lang.reflect.Type genericType = dataType.getGenericType();
+                if (genericType instanceof ParameterizedType) {
+                    java.lang.reflect.Type actualType = ((ParameterizedType)genericType).getActualTypeArguments()[0];
+                    if (actualType instanceof Class) {
+                        javaType = (Class)actualType;
+                        isMany = true;
+                    }
+                }
+            }            
             if (DataObject.class.isAssignableFrom(javaType)) {
                 // Dynamic SDO
                 dataType.setDataBinding(getName());
-                if (dataType.getLogical() == null) {
-                    dataType.setLogical(XMLType.UNKNOWN);
+                // TUSCANY-3298: use XMLType many value to indicate a collection
+                Object logical = dataType.getLogical();
+                if (logical == null) {
+                    if (!isMany) {
+                        dataType.setLogical(XMLType.UNKNOWN);
+                    } else {
+                        XMLType xmlType = new XMLType(null, null);
+                        xmlType.setMany(true);
+                        dataType.setLogical(xmlType);
+                    }
+                } else if (logical instanceof XMLType && isMany) {
+                    ((XMLType)logical).setMany(true);
                 }
                 return true;
             }

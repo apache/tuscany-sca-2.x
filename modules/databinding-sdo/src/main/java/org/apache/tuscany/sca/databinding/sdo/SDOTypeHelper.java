@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
+import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -91,8 +92,8 @@ public class SDOTypeHelper implements XMLTypeHelper {
                 xmlType = ((XMLType)logical).getTypeName();
             }
             if (xmlType == null) {
-                xmlType =
-                    new QName(JavaXMLMapper.getNamespace(javaType), Introspector.decapitalize(javaType.getSimpleName()));
+                // TUSCANY-3298: dynamic SDO or collection of dynamic SDO
+                return new TypeInfo(SimpleTypeMapperImpl.XSD_ANYTYPE, true, null);
             }
             return new TypeInfo(xmlType, false, null);
         }

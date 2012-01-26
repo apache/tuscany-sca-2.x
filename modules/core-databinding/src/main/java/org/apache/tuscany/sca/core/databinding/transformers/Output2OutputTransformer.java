@@ -139,22 +139,26 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
             String n1 = list1.get(i).getQName().getLocalPart();
             String n2 = list2.get(i).getQName().getLocalPart();
             
-            // TUSCANY-3283 - strip off any leading "_" characters for this comparison.
-            //                Now we generate wrappers with JAXB it names the response
-            //                wrapper's child as "_return"
-            if (n1.startsWith("_")){
-                n1 = n1.substring(1);
-            }
-            
-            if (n2.startsWith("_")){
-                n2 = n2.substring(1);
-            }
-            
-            if (!n1.equals(n2)) {
+            // TUSCANY-3298: In the following situation:
+            //  1. The child is a java.util.Map type
+            //  2. The child's name is a Java keyword (e.g., return)
+            //  3. Tuscany is using a generated JAXB wrapper class for WSDL generation
+            // the Java to WSDL generation process results in the WSDL element name
+            // having a leading underscore added to the actual element name.  This is
+            // because of a known JAXB issue that prevents the @XmlElement annotation
+            // being used on a java.util.Map type property field in the wrapper bean
+            // (see https://jaxb.dev.java.net/issues/show_bug.cgi?id=268).
+            // To prevent the compatibility match from failing in this situation,
+            // we strip any leading underscore before doing the comparison.
+            if (!stripLeadingUnderscore(n1).equals(stripLeadingUnderscore(n2))) {
                 return false;
             }
         }
         return true;
+    }
+    
+    private static String stripLeadingUnderscore(String name) {
+        return name.startsWith("_") ? name.substring(1) : name;
     }
 
     @SuppressWarnings("unchecked")

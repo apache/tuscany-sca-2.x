@@ -86,6 +86,13 @@ public class WSDLGenTestCase{
         abean.setField3(bbean);
             
         assertEquals("Hello Hello 3 4 1 2", helloWorldClient.getGreetingsDBean(abean));
+        
+        try {
+            helloWorldClient.getGreetingsException("Fred");
+            fail("exception not returned");
+        } catch(Exception ex) {
+            
+        }  
     }
     
     @Test

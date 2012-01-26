@@ -27,7 +27,7 @@
         <implementation.java class="helloworld.HelloWorldClientImpl" />
         <service name="HelloWorldService">
             <binding.sca/>
-        </service>
+        </service>      
         <reference name="hwService">
             <binding.ws uri="http://localhost:8085/HelloWorldServiceComponent"/>
         </reference>
@@ -45,13 +45,11 @@
          gen'd WSDL by setting the service interface to the RI WSDL. Tuscany should
          generate a WSDL for the component and compare the two for compatibility
     --> 
-<!--
     <component name="HelloWorldServiceCompatibilityComponent">
         <implementation.java class="helloworld.HelloWorldImpl" />
 	    <service name="HelloWorldService">
 	        <interface.wsdl interface="http://helloworld/#wsdl.interface(HelloWorldImpl)"/>
-            <binding.ws uri="http://localhost:8085/HelloWorldServiceComponent"/>
+            <binding.ws uri="http://localhost:8085/HelloWorldServiceCompatibilityComponent"/>
         </service>
     </component>
- -->
 </composite>

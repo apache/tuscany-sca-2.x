@@ -37,7 +37,7 @@ public class GetDataServiceWithoutExceptionImpl implements GetDataServiceWithout
     public DataObject getMessageSDO(String paramString) {
         return null;
     }
-
+    
     public List<DataObject> getMessageListSDOList(String paramString) {
         return null;
     }

@@ -31,7 +31,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @version $Rev: 814373 $ $Date: 2009-09-13 19:06:29 +0100 (Sun, 13 Sep 2009) $
  */
-@Ignore("In the process of porting from 1.x")
+//@Ignore("In the process of porting from 1.x")
 public class DataTypesTestCase extends BaseFramework {
 
     @Test

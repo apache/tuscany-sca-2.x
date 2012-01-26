@@ -85,6 +85,8 @@ import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.ws.commons.schema.XmlSchemaComplexContent;
+import org.apache.ws.commons.schema.XmlSchemaComplexContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaException;
@@ -197,10 +199,11 @@ public class Interface2WSDLGenerator {
         if (db == null) {
             return null;
         }
-        if ("java:array".equals(db)) {
-            DataType dt = (DataType)type.getLogical();
-            db = dt.getDataBinding();
-        }
+        // TUSCANY-3800
+        while ("java:array".equals(db)) {
+            type = (DataType)type.getLogical();
+            db = type.getDataBinding();
+         }        
         return helpers.get(db);
     }
     
@@ -373,7 +376,7 @@ public class Interface2WSDLGenerator {
         // call each helper in turn to populate the wsdl.types element
         XmlSchemaCollection schemaCollection = new XmlSchemaCollection();
 
-        // TUSCANY-3283 - "true" here means also generate the include the wrapper types for xsd generation using JAXB
+        // TUSCANY-3283 - "true" here means also generate the wrapper types using JAXB
         Map<XMLTypeHelper, List<DataType>> dataTypes = getDataTypes(interfaze, true, helpers);
         for (Map.Entry<XMLTypeHelper, List<DataType>> en: dataTypes.entrySet()) {
             XMLTypeHelper helper = en.getKey();
@@ -387,7 +390,9 @@ public class Interface2WSDLGenerator {
             mergeNoNamespaceSchema(namespaceURI, xsDefinitions);
             
             for (XSDefinition xsDef: xsDefinitions) {
-                addSchemaExtension(xsDef, schemaCollection, wsdlDefinition, definition);
+                //addSchemaExtension(xsDef, schemaCollection, wsdlDefinition, definition);
+                loadXSD(schemaCollection, xsDef);
+                wsdlDefinition.getXmlSchemas().add(xsDef);
             }
         }
         
@@ -397,10 +402,17 @@ public class Interface2WSDLGenerator {
                 wrappers.remove(wrapperName);
             }
         }
+        
+        // below we might generate wrapper schema into a DOM. If the schema are in a namespace
+        // that is already been loaded then we need to throw away the schema collection and reload
+        // it because you can't load a DOM into a schema collection if the schema for the namespace
+        // has already been loaded
+        boolean reloadSchema = false;
 
         // generate schema elements for wrappers that aren't defined in the schemas
         // TUSCANY-3283 - as we're generating wrappers with JAXB it won't 
-        //                go through here for all wrappers???
+        //                go through here for all wrappers. It will just have to do there ones
+        //                where there is no JAXB mapping for the child types, e.g. SDO DataObject
         if (wrappers.size() > 0) {
             int i = 0;
             int index = 0;
@@ -415,24 +427,25 @@ public class Interface2WSDLGenerator {
                     schemaDoc = xsDef.getDocument();
                     schema = schemaDoc.getDocumentElement();
                 } else {
-                    // TUSCANY-3283 - if we have to generate a new check to see if the 
+                    // TUSCANY-3283 - if we have to generate a new schema check to see if the 
                     //                WSDL doc already has a schema in this namespace                       
-//                    xsDef = wsdlDefinition.getSchema(targetNS);
-//                    if (xsDef != null) {
-//                        schemaDoc = xsDef.getDocument();
-//                        schema = schemaDoc.getDocumentElement();
-//                        wrapperXSDs.put(targetNS, xsDef);
-//                        Map<String, String> prefixMap = prefixMaps.get(schema);
-//                        if (prefixMap == null){
-//                            prefixMap = new HashMap<String, String>();
-//                            prefixMaps.put(schema, prefixMap);
-//                            String [] prefixes = xsDef.getSchema().getNamespaceContext().getDeclaredPrefixes();
-//                            for (int j = 0; j < prefixes.length; j++){
-//                                prefixMap.put(xsDef.getSchema().getNamespaceContext().getNamespaceURI(prefixes[j]),
-//                                              prefixes[j]);
-//                            }
-//                        } 
-//                    } else {                    
+                    xsDef = wsdlDefinition.getSchema(targetNS);
+                    if (xsDef != null) {
+                        schemaDoc = xsDef.getDocument();
+                        schema = schemaDoc.getDocumentElement();
+                        //wrapperXSDs.put(targetNS, xsDef);
+                        Map<String, String> prefixMap = prefixMaps.get(schema);
+                        if (prefixMap == null){
+                            prefixMap = new HashMap<String, String>();
+                            prefixMaps.put(schema, prefixMap);
+                            String [] prefixes = xsDef.getSchema().getNamespaceContext().getDeclaredPrefixes();
+                            for (int j = 0; j < prefixes.length; j++){
+                                prefixMap.put(xsDef.getSchema().getNamespaceContext().getNamespaceURI(prefixes[j]),
+                                             prefixes[j]);
+                            }
+                        } 
+                        reloadSchema = true;
+                    } else {                    
                         schemaDoc = createDocument();
                         schema = schemaDoc.createElementNS(SCHEMA_NS, "xs:schema");
                         // The elementFormDefault should be set to unqualified, see TUSCANY-2388
@@ -441,8 +454,9 @@ public class Interface2WSDLGenerator {
                         schema.setAttribute("targetNamespace", targetNS);
                         schema.setAttributeNS(XMLNS_NS, "xmlns:xs", SCHEMA_NS);
                         schemaDoc.appendChild(schema);
-                        Schema schemaExt = createSchemaExt(definition);
-                        schemaExt.setElement(schema);
+                        // TUSCANY-3283 - the extension is created at the bottom
+                        //Schema schemaExt = createSchemaExt(definition);
+                        //schemaExt.setElement(schema);
                         prefixMaps.put(schema, new HashMap<String, String>());
                         xsDef = xsdFactory.createXSDefinition();
                         xsDef.setUnresolved(true);
@@ -452,7 +466,8 @@ public class Interface2WSDLGenerator {
                         xsDef.setLocation(URI.create("xsd_" + index + ".xsd"));
                         index++;
                         wrapperXSDs.put(targetNS, xsDef);
-//                    }
+                        wsdlDefinition.getXmlSchemas().add(xsDef);
+                    }
                 }
                 Element wrapper = schemaDoc.createElementNS(SCHEMA_NS, "xs:element");
                 schema.appendChild(wrapper);
@@ -523,12 +538,18 @@ public class Interface2WSDLGenerator {
                     }
                 }
             }
- 
-            // resolve XSDefinitions containing generated wrappers
-            for (XSDefinition xsDef: wrapperXSDs.values()) {
-                loadXSD(schemaCollection, xsDef);
-                wsdlDefinition.getXmlSchemas().add(xsDef);
+        }
+        
+        if (reloadSchema){
+            schemaCollection = new XmlSchemaCollection();
+            for (XSDefinition xsDef: wsdlDefinition.getXmlSchemas()){
+                xsDef.setSchema(null);
+                xsDef.setSchemaCollection(null);
             }
+        }
+        
+        for (XSDefinition xsDef: wsdlDefinition.getXmlSchemas()){
+            addSchemaExtension(xsDef, schemaCollection, wsdlDefinition, definition);
         }
 
         return definition;
@@ -618,6 +639,7 @@ public class Interface2WSDLGenerator {
         // copy all the FROM items to the TO schema
         XmlSchemaObjectCollection fromItems = fromSchema.getItems();
         XmlSchemaObjectCollection toItems = toSchema.getItems();
+        List<XmlSchemaObject> movedItems = new ArrayList<XmlSchemaObject>();
        
         Iterator<XmlSchemaObject> iter = fromItems.getIterator();
         while(iter.hasNext()){
@@ -628,16 +650,20 @@ public class Interface2WSDLGenerator {
                 // do nothing
             } else {
                 toItems.add(obj);
-                // correct any references to the item just moved
-                fixUpMovedTypeReferences(fromNamespace, toNamespace, obj, resultSchema);
+                movedItems.add(obj);
             }
+        }
+        
+        // check that all types in the TO namespace are now referred to correctly across the schema
+        for(XmlSchemaObject obj : movedItems){
+            fixUpMovedTypeReferences(fromNamespace, toNamespace, obj, resultSchema);
         }
         
         return resultSchema;
     }
     
     // TUSCANY-3283 - fix up any references to types moved to the default namespace schema
-    public void fixUpMovedTypeReferences(String fromNamespace, String toNamespace, XmlSchemaObject fixUpObj, List<org.apache.ws.commons.schema.XmlSchema> relatedSchema){
+    public void fixUpMovedTypeReferences(String fromNamespace, String toNamespace, XmlSchemaObject fixUpObj, List<XmlSchema> relatedSchema){
         
         if (!(fixUpObj instanceof XmlSchemaComplexType)){
             return;
@@ -648,11 +674,7 @@ public class Interface2WSDLGenerator {
             for (int i = 0; i < schema.getItems().getCount(); i++){
                 XmlSchemaObject obj = schema.getItems().getItem(i);
                 
-                // if this is not the TO schema then fix up all references
-                // to items moved to the TO schema
-                if(!schema.getTargetNamespace().equals(toNamespace)){
-                    processXMLSchemaObject(toNamespace, obj, fixUpObj);
-                }
+                processXMLSchemaObject(toNamespace, obj, fixUpObj);
                 
                 // remove FROM imports
                 if (obj instanceof XmlSchemaImport &&
@@ -671,6 +693,9 @@ public class Interface2WSDLGenerator {
     public void processXMLSchemaObject(String toNamespace, XmlSchemaObject obj,  XmlSchemaObject fixUpObj){
         if (obj instanceof XmlSchemaComplexType){
             processXMLSchemaObject(toNamespace, ((XmlSchemaComplexType)obj).getParticle(), fixUpObj);
+            processXMLSchemaObject(toNamespace, ((XmlSchemaComplexType)obj).getContentModel(), fixUpObj);
+        } else if (obj instanceof XmlSchemaComplexContent){
+            processXMLSchemaObject(toNamespace, ((XmlSchemaComplexContent)obj).getContent(), fixUpObj);            
         } else if (obj instanceof XmlSchemaElement){
             XmlSchemaElement element = (XmlSchemaElement)obj;
             if(element.getSchemaType() == fixUpObj){
@@ -685,6 +710,11 @@ public class Interface2WSDLGenerator {
             while(iter.hasNext()){
                 processXMLSchemaObject(toNamespace, iter.next(), fixUpObj);
             }
+        } else if (obj instanceof XmlSchemaComplexContentExtension){
+            XmlSchemaComplexContentExtension extension = (XmlSchemaComplexContentExtension)obj;
+            QName name = extension.getBaseTypeName();
+            QName newName = new QName(toNamespace, name.getLocalPart());
+            extension.setBaseTypeName(newName);
         }
         // TODO - what other structure items will be generated by JAXB?
     }    
@@ -765,7 +795,7 @@ public class Interface2WSDLGenerator {
                 }
             }
             loadXSD(schemaCollection, xsDef);
-            wsdlDefinition.getXmlSchemas().add(xsDef);
+            //wsdlDefinition.getXmlSchemas().add(xsDef);
             Element schema = document.getDocumentElement();
             Schema schemaExt = createSchemaExt(definition);
             schemaExt.setDocumentBaseURI(document.getDocumentURI());
@@ -1062,6 +1092,12 @@ public class Interface2WSDLGenerator {
             element.setMany(javaType.isArray());
         }
 
+        // TUSCANY-3298: Check the "many" flag set by databinding introspection
+        Object logical = dataType.getLogical();
+        if (logical instanceof XMLType && ((XMLType)logical).isMany()) {
+            element.setMany(true);
+        }
+        
         element.setNillable(!javaType.isPrimitive());
         return element;
     }

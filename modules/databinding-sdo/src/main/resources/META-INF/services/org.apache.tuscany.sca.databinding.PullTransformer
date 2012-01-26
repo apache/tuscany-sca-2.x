@@ -17,11 +17,11 @@
 
 # Implementation classes for the transformers
 org.apache.tuscany.sca.databinding.sdo.DataObject2String;source=commonj.sdo.DataObject,target=java.lang.String,weight=510
-org.apache.tuscany.sca.databinding.sdo.DataObject2XMLStreamReader;source=commonj.sdo.DataObject,target=javax.xml.stream.XMLStreamReader,weight=490
-org.apache.tuscany.sca.databinding.sdo.XMLDocument2String;source=commonj.sdo.helper.XMLDocument,target=java.lang.String,weight=510
+#org.apache.tuscany.sca.databinding.sdo.DataObject2XMLStreamReader;source=commonj.sdo.DataObject,target=javax.xml.stream.XMLStreamReader,weight=490
+#org.apache.tuscany.sca.databinding.sdo.XMLDocument2String;source=commonj.sdo.helper.XMLDocument,target=java.lang.String,weight=510
 org.apache.tuscany.sca.databinding.sdo.String2DataObject;source=java.lang.String,target=commonj.sdo.DataObject,weight=500
-org.apache.tuscany.sca.databinding.sdo.XMLDocument2XMLStreamReader;source=commonj.sdo.helper.XMLDocument,target=javax.xml.stream.XMLStreamReader,weight=490
-org.apache.tuscany.sca.databinding.sdo.XMLStreamReader2DataObject;source=javax.xml.stream.XMLStreamReader,target=commonj.sdo.DataObject,weight=490
-org.apache.tuscany.sca.databinding.sdo.XMLStreamReader2XMLDocument;source=javax.xml.stream.XMLStreamReader,target=commonj.sdo.helper.XMLDocument,weight=490
-org.apache.tuscany.sca.databinding.sdo.DataObject2Node;source=commonj.sdo.DataObject,target=org.w3c.dom.Node,weight=500
-org.apache.tuscany.sca.databinding.sdo.Node2DataObject;source=org.w3c.dom.Node,target=commonj.sdo.DataObject,weight=500
+#org.apache.tuscany.sca.databinding.sdo.XMLDocument2XMLStreamReader;source=commonj.sdo.helper.XMLDocument,target=javax.xml.stream.XMLStreamReader,weight=490
+#org.apache.tuscany.sca.databinding.sdo.XMLStreamReader2DataObject;source=javax.xml.stream.XMLStreamReader,target=commonj.sdo.DataObject,weight=490
+#org.apache.tuscany.sca.databinding.sdo.XMLStreamReader2XMLDocument;source=javax.xml.stream.XMLStreamReader,target=commonj.sdo.helper.XMLDocument,weight=490
+#org.apache.tuscany.sca.databinding.sdo.DataObject2Node;source=commonj.sdo.DataObject,target=org.w3c.dom.Node,weight=500
+#org.apache.tuscany.sca.databinding.sdo.Node2DataObject;source=org.w3c.dom.Node,target=commonj.sdo.DataObject,weight=500

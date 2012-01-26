@@ -208,5 +208,53 @@ public class InerfaceMatchTestCase {
         
         node1.stop();
         node2.stop();
+    }
+    
+    /**
+     * Remotable client and service interfaces where the interfaces match.
+     * Components running in the separate composite/JVM, i.e. there is a remote registry
+     * and with binding.ws explicitly configured at the service
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testWSDistributedRemotable() throws Exception {
+        
+        
+        String [] contributions = {"./target/classes"};
+        Node node1 = NodeFactory.newInstance().createNode(URI.create("uri:default"), 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/match/distributed/MatchWSDistributedClient.composite", 
+                                                                     contributions);
+        node1.start();
+
+        Node node2 = NodeFactory.newInstance().createNode(URI.create("uri:default"), 
+                                                                     "org/apache/tuscany/sca/itest/interfaces/match/distributed/MatchWSDistributedService.composite", 
+                                                                     contributions);
+        
+        // force default binding on node2 to use a different port from node 1(which will default to 8080)
+        ((NodeImpl)node2).getConfiguration().addBinding(WebServiceBinding.TYPE, "http://localhost:8081/");
+        ((NodeImpl)node2).getConfiguration().addBinding(SCABinding.TYPE, "http://localhost:8081/");
+        node2.start();
+        
+        ClientComponent local = node1.getService(ClientComponent.class, "DistributedClientComponent");
+        ParameterObject po = new ParameterObject();
+        
+        try {
+            String response = local.foo1(po);
+            Assert.assertEquals("AComponent", response);
+        } catch (ServiceRuntimeException ex){
+            Assert.fail("Unexpected exception with foo " + ex.toString());
+        }
+        
+        try {
+            local.callback("Callback");
+            String response = local.getCallbackValue();
+            Assert.assertEquals("Callback", response);
+        } catch (ServiceRuntimeException ex){
+            Assert.fail("Unexpected exception with callback" + ex.toString());
+        }        
+        
+        node1.stop();
+        node2.stop();
     }    
 }
