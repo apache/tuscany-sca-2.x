@@ -52,7 +52,7 @@ public class HelloWorld2Impl implements HelloWorld {
     public String getGreetingsException(String s) throws ServiceRuntimeException {
         System.out.println("Entering SCA HelloWorld2.getGreetingsException: " + s);
         String response = helloWorldExternal.getGreetings(s);
-        System.out.println("Leaving SCA HelloWorld2.getGreetings: " + response);
+        System.out.println("Leaving SCA HelloWorld2.getGreetingsException: " + response);
         throw new ServiceRuntimeException(response);
     }    
 
