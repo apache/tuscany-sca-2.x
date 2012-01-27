@@ -322,7 +322,8 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
     				}
     			}
     			     		
-    			
+/*  TUSCANY-4006 - This is allowed; transactedOneWay applies only to the one-way methods when an interface also has two-way operations
+ */			
        			for ( ComponentReference reference : component.getReferences()) {
     				for ( EndpointReference epr : reference.getEndpointReferences() ) {
     					for ( Intent eprIntent : epr.getRequiredIntents() ) {
@@ -349,10 +350,11 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
     									
     							}
     						}
-    					}
-    					
-    				}
+    					}    					
+    				}   				
     			}
+/*
+*/    			
     		}   
     	}
     }
