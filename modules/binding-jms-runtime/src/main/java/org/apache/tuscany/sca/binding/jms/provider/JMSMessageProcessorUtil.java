@@ -20,6 +20,10 @@
 package org.apache.tuscany.sca.binding.jms.provider;
 
 import java.lang.reflect.Constructor;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
+import java.security.PrivilegedActionException;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
@@ -41,10 +45,14 @@ public class JMSMessageProcessorUtil {
      * @param className the string based class name to load and instantiate
      * @return the new object
      */
-    private static Object instantiate(ClassLoader cl, String className, JMSBinding binding) {
+    private static Object instantiate(ClassLoader cl, final String className, final JMSBinding binding) {
         Object instance;
         if (cl == null) {
-            cl = binding.getClass().getClassLoader();
+            cl = cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                public ClassLoader run() {
+                    return binding.getClass().getClassLoader();
+                }
+            });	
         }
 
         try {
@@ -53,7 +61,16 @@ public class JMSMessageProcessorUtil {
             try {
                 clazz = cl.loadClass(className);
             } catch (ClassNotFoundException e) {
-                clazz = binding.getClass().getClassLoader().loadClass(className);
+                try{
+                    clazz = AccessController.doPrivileged(new PrivilegedExceptionAction<Class>() {
+                        public Class run() throws ClassNotFoundException{
+                            return binding.getClass().getClassLoader().loadClass(className);
+                        }
+                    });	
+                } catch (PrivilegedActionException ex) {
+				   throw (ClassNotFoundException) ex.getException(); 
+                }		
+				
             }
 
             Constructor<?> constructor = clazz.getDeclaredConstructor(new Class[] {JMSBinding.class});
@@ -78,8 +95,17 @@ public class JMSMessageProcessorUtil {
         try {
             for (ServiceDeclaration sd : registry.getServiceDiscovery().getServiceDeclarations(JMSMessageProcessor.class)) {
                 if (className.equals(sd.getClassName())) {
-                    Class<?> clazz = sd.loadClass();
-                    Constructor<?> constructor = clazz.getDeclaredConstructor(new Class[] {JMSBinding.class, ExtensionPointRegistry.class});
+                    final Class<?> clazz = sd.loadClass();
+                    Constructor<?> constructor;
+                    try {
+                        constructor = AccessController.doPrivileged(new PrivilegedExceptionAction<Constructor<?>>() {
+                            public Constructor<?> run() throws NoSuchMethodException{
+                                return clazz.getDeclaredConstructor(new Class[] {JMSBinding.class, ExtensionPointRegistry.class});
+                            }
+                        });	
+                    } catch (PrivilegedActionException ex) {
+                        throw (NoSuchMethodException) ex.getException();
+                    }
                     return constructor.newInstance(binding, registry);
                 }
                 
