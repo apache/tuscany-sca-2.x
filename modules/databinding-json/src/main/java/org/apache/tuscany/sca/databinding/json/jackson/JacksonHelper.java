@@ -39,9 +39,10 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.MappingJsonFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.deser.CustomDeserializerFactory;
+import org.codehaus.jackson.map.deser.BeanDeserializerFactory;
 import org.codehaus.jackson.map.deser.StdDeserializerProvider;
 import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
+import org.codehaus.jackson.map.module.SimpleDeserializers;
 import org.codehaus.jackson.map.ser.CustomSerializerFactory;
 import org.codehaus.jackson.map.util.StdDateFormat;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
@@ -72,7 +73,7 @@ public class JacksonHelper {
                 XmlJavaTypeAdapters adapters = pkg.getAnnotation(XmlJavaTypeAdapters.class);
                 if (adapters != null) {
                     CustomSerializerFactory serializerFactory = new CustomSerializerFactory();
-                    CustomDeserializerFactory deserializerFactory = new CustomDeserializerFactory();
+                    BeanDeserializerFactory deserializerFactory = new BeanDeserializerFactory(null);
                     for (XmlJavaTypeAdapter a : adapters.value()) {
                         XmlAdapter xmlAdapter = null;
                         try {
@@ -81,9 +82,11 @@ public class JacksonHelper {
                             // Ignore
                         }
                         if (xmlAdapter != null) {
-                            XmlAdapterJsonDeserializer deserializer = new XmlAdapterJsonDeserializer(xmlAdapter, null);
-                            XmlAdapterJsonSerializer serializer = new XmlAdapterJsonSerializer(xmlAdapter, null);
-                            deserializerFactory.addSpecificMapping(a.type(), deserializer);
+                            XmlAdapterJsonDeserializer deserializer = new XmlAdapterJsonDeserializer(xmlAdapter);
+                            XmlAdapterJsonSerializer serializer = new XmlAdapterJsonSerializer(xmlAdapter);
+                            SimpleDeserializers deserializers = new SimpleDeserializers();
+                            deserializers.addDeserializer(a.type(), deserializer);
+                            deserializerFactory.withAdditionalDeserializers(deserializers);
                             serializerFactory.addGenericMapping(a.type(), serializer);
                             StdDeserializerProvider deserializerProvider =
                                 new StdDeserializerProvider(deserializerFactory);
@@ -104,12 +107,12 @@ public class JacksonHelper {
         AnnotationIntrospector primary = new JaxbAnnotationIntrospector();
         AnnotationIntrospector secondary = new JacksonAnnotationIntrospector();
         AnnotationIntrospector pair = new AnnotationIntrospector.Pair(primary, secondary);
-        mapper.getDeserializationConfig().setAnnotationIntrospector(pair);
-        mapper.getDeserializationConfig().set(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, Boolean.FALSE);
-        mapper.getDeserializationConfig().setDateFormat(StdDateFormat.getBlueprintISO8601Format());
-        mapper.getSerializationConfig().setAnnotationIntrospector(pair);
-        mapper.getSerializationConfig().setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
-        mapper.getSerializationConfig().setDateFormat(StdDateFormat.getBlueprintISO8601Format());
+        mapper.setDeserializationConfig(mapper.getDeserializationConfig().withAnnotationIntrospector(pair)
+            .without(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .withDateFormat(StdDateFormat.getBlueprintISO8601Format()));
+        mapper.setSerializationConfig(mapper.getSerializationConfig().withAnnotationIntrospector(pair)
+            .withSerializationInclusion(JsonSerialize.Inclusion.NON_NULL)
+            .withDateFormat(StdDateFormat.getBlueprintISO8601Format()));
         return mapper;
     }
 
@@ -214,7 +217,7 @@ public class JacksonHelper {
             throw new IOException(e);
         }
     }
-    
+
     public static String write(JSONObject json) throws IOException {
         try {
             return MAPPER.writeValueAsString(json);

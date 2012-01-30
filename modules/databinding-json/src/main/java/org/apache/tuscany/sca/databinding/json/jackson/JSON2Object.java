@@ -27,14 +27,13 @@ import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 
 /**
  * @version $Rev$ $Date$
  */
 public class JSON2Object implements PullTransformer<Object, Object> {
-    private ObjectMapper mapper;
+    // private ObjectMapper mapper;
 
     public JSON2Object() {
         super();
@@ -48,7 +47,7 @@ public class JSON2Object implements PullTransformer<Object, Object> {
         try {
             Class<?> cls = context.getTargetDataType().getPhysical();
             ObjectMapper mapper = JacksonHelper.createObjectMapper(cls);
-            JavaType javaType = TypeFactory.type(context.getTargetDataType().getGenericType());
+            JavaType javaType = mapper.constructType(context.getTargetDataType().getGenericType());
             if (source instanceof String) {
             	String sourceString = (String) source;
             	if(sourceString.isEmpty()) {
@@ -57,7 +56,7 @@ public class JSON2Object implements PullTransformer<Object, Object> {
             		return mapper.readValue((String)source, javaType);
             	}
             } else if (source instanceof JsonNode) {
-                return mapper.treeToValue((JsonNode)source, context.getTargetDataType().getPhysical());
+                return mapper.readValue((JsonNode)source, javaType);
             } else if (source instanceof JsonParser) {
                 return mapper.readValue((JsonParser)source, javaType);
             } else {
