@@ -46,4 +46,12 @@
         </service>           
     </component>
 
+    <component name="MultipleBindingsSingleServiceComponent">
+        <implementation.java class="itest.RemotableHelloworldImpl"/>
+        <service name="RemoteHelloworldService">
+           <binding.ws name="ws" />
+           <binding.sca />
+           <tuscany:binding.rmi name="rmi" />
+        </service>           
+    </component>
 </composite>

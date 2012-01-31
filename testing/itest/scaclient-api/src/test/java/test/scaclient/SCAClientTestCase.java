@@ -143,6 +143,16 @@ public class SCAClientTestCase extends TestCase {
         assertEquals("Hello petra", service.sayHelloRemote("petra"));
     }
 
+    @Test
+    public void testMultipleBindingsSingleService() throws Exception {
+        node = NodeFactory.getInstance().createNode(URI.create("myFooDomain"), new String[] {"target/classes"});
+        node.start();
+
+        SCAClientFactory clientFactory = SCAClientFactory.newInstance(URI.create("myFooDomain"));
+        RemoteHelloworldService service = clientFactory.getService(RemoteHelloworldService.class, "MultipleBindingsSingleServiceComponent");
+        assertEquals("Remote hi petra", service.sayHelloRemote("petra"));
+    }
+    
     //    @Test @Ignore
 //    public void testHTTPURI() throws Exception {
 //        node = NodeFactory.getInstance().createNode(URI.create("http://defaultDomain"), new String[] {"target/classes"});
