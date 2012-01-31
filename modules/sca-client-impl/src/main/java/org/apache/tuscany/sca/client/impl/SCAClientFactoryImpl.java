@@ -24,7 +24,6 @@ import java.lang.reflect.Proxy;
 import java.net.URI;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -89,11 +88,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         
         // The service is a component in a local runtime
         if (!remoteClient) {
-            List<Endpoint> endpoints = domainRegistry.findEndpoint(serviceURI);
-            if (endpoints.size() < 1) {
-                throw new NoSuchServiceException(serviceURI);
-            }
-            Endpoint ep = endpoints.get(0);
+            Endpoint ep = RuntimeUtils.findEndpoint(domainRegistry, serviceURI);
             if (((RuntimeComponent)ep.getComponent()).getComponentContext() != null) {
                 return ((RuntimeComponent)ep.getComponent()).getServiceReference(serviceInterface, serviceName).getService();
             }

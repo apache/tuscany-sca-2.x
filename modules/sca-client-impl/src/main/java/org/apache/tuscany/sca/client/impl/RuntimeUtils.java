@@ -19,8 +19,11 @@
 
 package org.apache.tuscany.sca.client.impl;
 
+import java.util.List;
 import java.util.Properties;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -33,6 +36,7 @@ import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.NoSuchDomainException;
+import org.oasisopen.sca.NoSuchServiceException;
 
 public class RuntimeUtils {
 
@@ -81,5 +85,22 @@ public class RuntimeUtils {
         } catch (Exception e) {
             throw new NoSuchDomainException(domainURI, e);
         }
+    }
+    
+    public static Endpoint findEndpoint(DomainRegistry domainRegistry, String serviceName) throws NoSuchServiceException {
+        List<Endpoint> eps = domainRegistry.findEndpoint(serviceName);
+        if (eps == null || eps.size() < 1) {
+            throw new NoSuchServiceException(serviceName);
+        }
+        
+        // If there is an Endpoint using the SCA binding use that
+        for (Endpoint ep : eps) {
+            if (SCABinding.TYPE.equals(ep.getBinding().getType())) {
+                return ep;
+            }
+        }
+        
+        // Otherwise just choose the first one
+        return eps.get(0);
     }
 }

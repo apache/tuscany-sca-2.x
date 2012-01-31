@@ -25,7 +25,6 @@ import java.lang.reflect.Proxy;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
@@ -46,8 +45,8 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.ContributionDescription;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
@@ -133,11 +132,7 @@ public class RemoteServiceInvocationHandler implements InvocationHandler {
 
             CompositeContext compositeContext = new CompositeContext(extensionsRegistry, domainRegistry, null, domainURI, null, null);
 
-            List<Endpoint> eps = domainRegistry.findEndpoint(serviceName);
-            if (eps == null || eps.size() < 1) {
-                throw new NoSuchServiceException(serviceName);
-            }
-            Endpoint endpoint = eps.get(0); // TODO: what should be done with multiple endpoints?
+            Endpoint endpoint = RuntimeUtils.findEndpoint(domainRegistry, serviceName);
              
             if (serviceInterface == null) {
                 try {
