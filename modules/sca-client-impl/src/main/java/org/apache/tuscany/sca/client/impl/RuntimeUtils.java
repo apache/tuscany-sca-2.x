@@ -19,24 +19,20 @@
 
 package org.apache.tuscany.sca.client.impl;
 
-import java.util.List;
 import java.util.Properties;
 
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
-import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.NoSuchDomainException;
-import org.oasisopen.sca.NoSuchServiceException;
 
 public class RuntimeUtils {
 
@@ -87,20 +83,11 @@ public class RuntimeUtils {
         }
     }
     
-    public static Endpoint findEndpoint(DomainRegistry domainRegistry, String serviceName) throws NoSuchServiceException {
-        List<Endpoint> eps = domainRegistry.findEndpoint(serviceName);
-        if (eps == null || eps.size() < 1) {
-            throw new NoSuchServiceException(serviceName);
+    public static EndpointFinder getEndpointFinder(ExtensionPointRegistry registry) {
+        EndpointFinder endpointFinder = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(EndpointFinder.class);
+        if (endpointFinder == null) {
+            endpointFinder = new DefaultEndpointFinder();
         }
-        
-        // If there is an Endpoint using the SCA binding use that
-        for (Endpoint ep : eps) {
-            if (SCABinding.TYPE.equals(ep.getBinding().getType())) {
-                return ep;
-            }
-        }
-        
-        // Otherwise just choose the first one
-        return eps.get(0);
+        return endpointFinder;
     }
 }

@@ -28,6 +28,7 @@ import java.security.PrivilegedAction;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistryLocator;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -41,6 +42,8 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
     protected ExtensionPointRegistry extensionPointRegistry;
     protected DomainRegistry domainRegistry;
     protected boolean remoteClient;
+    protected boolean onlySCABinding;
+    private EndpointFinder endpointFinder;
     
     public static URI default_domainURI = URI.create("default");
     
@@ -55,8 +58,10 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
     public SCAClientFactoryImpl(URI domainURI) throws NoSuchDomainException {
         super(domainURI == null ? default_domainURI : domainURI);
         findLocalRuntime();
-    }   
-    
+
+        endpointFinder = RuntimeUtils.getEndpointFinder(extensionPointRegistry);
+    }
+
     protected void findLocalRuntime() throws NoSuchDomainException {
         String domainURI = getDomainURI().toString();
         for (ExtensionPointRegistry xpr : ExtensionPointRegistryLocator.getExtensionPointRegistries()) {
@@ -88,7 +93,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         
         // The service is a component in a local runtime
         if (!remoteClient) {
-            Endpoint ep = RuntimeUtils.findEndpoint(domainRegistry, serviceURI);
+            Endpoint ep = endpointFinder.findEndpoint(domainRegistry, serviceURI);
             if (((RuntimeComponent)ep.getComponent()).getComponentContext() != null) {
                 return ((RuntimeComponent)ep.getComponent()).getServiceReference(serviceInterface, serviceName).getService();
             }
@@ -121,4 +126,5 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
 
         return (T)Proxy.newProxyInstance(cl, new Class[]{serviceInterface}, handler);
     }    
+
 }

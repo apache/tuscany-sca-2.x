@@ -132,7 +132,8 @@ public class RemoteServiceInvocationHandler implements InvocationHandler {
 
             CompositeContext compositeContext = new CompositeContext(extensionsRegistry, domainRegistry, null, domainURI, null, null);
 
-            Endpoint endpoint = RuntimeUtils.findEndpoint(domainRegistry, serviceName);
+            EndpointFinder endpointFinder = RuntimeUtils.getEndpointFinder(extensionsRegistry);
+            Endpoint endpoint = endpointFinder.findEndpoint(domainRegistry, serviceName);
              
             if (serviceInterface == null) {
                 try {
