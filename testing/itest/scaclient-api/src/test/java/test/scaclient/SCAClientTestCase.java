@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
+import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.client.SCAClientFactory;
 
 /**
@@ -71,15 +72,29 @@ public class SCAClientTestCase extends TestCase {
         assertEquals("Hello petra", service.sayHello("petra"));
     }
 
-//    @Test
-//    public void testWithoutServiceName() throws Exception {
-//        node = NodeFactory.getInstance().createNode(URI.create("myFooDomain"), new String[] {"target/classes"});
-//        node.start();
-//
-//        SCAClientFactory clientFactory = SCAClientFactory.newInstance(URI.create("myFooDomain"));
-//        HelloworldService service = clientFactory.getService(HelloworldService.class, "HelloworldComponent");
-//        assertEquals("Hello petra", service.sayHello("petra"));
-//    }
+    @Test
+    public void testWithoutServiceName() throws Exception {
+        node = NodeFactory.getInstance().createNode(URI.create("myFooDomain"), new String[] {"target/classes"});
+        node.start();
+
+        SCAClientFactory clientFactory = SCAClientFactory.newInstance(URI.create("myFooDomain"));
+        try {
+            clientFactory.getService(HelloworldService.class, "HelloworldComponent");
+            fail("expecting ServiceRuntimeException");
+        } catch (ServiceRuntimeException e) {
+            assertTrue(e.getMessage().contains("More than one service is declared on component"));
+        }
+    }
+
+    @Test
+    public void testWithoutServiceNameSingleService() throws Exception {
+        node = NodeFactory.getInstance().createNode(URI.create("myFooDomain"), new String[] {"target/classes"});
+        node.start();
+
+        SCAClientFactory clientFactory = SCAClientFactory.newInstance(URI.create("myFooDomain"));
+        HelloworldService service = clientFactory.getService(HelloworldService.class, "SingleServiceComponent");
+        assertEquals("Hello petra", service.sayHello("petra"));
+    }
 
     @Test
     public void testWithBadServiceName() throws Exception {
@@ -108,6 +123,26 @@ public class SCAClientTestCase extends TestCase {
         }
     }
     
+    @Test
+    public void testOnlyWSBinding() throws Exception {
+        node = NodeFactory.getInstance().createNode(URI.create("myFooDomain"), new String[] {"target/classes"});
+        node.start();
+
+        SCAClientFactory clientFactory = SCAClientFactory.newInstance(URI.create("myFooDomain"));
+        RemoteHelloworldService service = clientFactory.getService(RemoteHelloworldService.class, "OnlyWSBindingComponent/RemoteHelloworldService");
+        assertEquals("Hello petra", service.sayHelloRemote("petra"));
+    }
+
+    @Test
+    public void testMultipleBindings() throws Exception {
+        node = NodeFactory.getInstance().createNode(URI.create("myFooDomain"), new String[] {"target/classes"});
+        node.start();
+
+        SCAClientFactory clientFactory = SCAClientFactory.newInstance(URI.create("myFooDomain"));
+        RemoteHelloworldService service = clientFactory.getService(RemoteHelloworldService.class, "MultipleBindingsComponent/RemoteHelloworldService");
+        assertEquals("Hello petra", service.sayHelloRemote("petra"));
+    }
+
     //    @Test @Ignore
 //    public void testHTTPURI() throws Exception {
 //        node = NodeFactory.getInstance().createNode(URI.create("http://defaultDomain"), new String[] {"target/classes"});

@@ -26,4 +26,24 @@
         <implementation.java class="itest.HelloworldServiceImpl"/>
     </component>
 
+    <component name="SingleServiceComponent">
+        <implementation.java class="itest.SingleServiceImpl"/>
+    </component>
+
+    <component name="OnlyWSBindingComponent">
+        <implementation.java class="itest.HelloworldServiceImpl"/>
+        <service name="RemoteHelloworldService">
+           <binding.ws />
+        </service>           
+    </component>
+
+    <component name="MultipleBindingsComponent">
+        <implementation.java class="itest.HelloworldServiceImpl"/>
+        <service name="RemoteHelloworldService">
+           <binding.ws name="ws" />
+           <binding.sca />
+           <tuscany:binding.rmi name="rmi" />
+        </service>           
+    </component>
+
 </composite>
