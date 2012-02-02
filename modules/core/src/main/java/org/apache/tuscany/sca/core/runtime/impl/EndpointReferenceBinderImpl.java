@@ -244,7 +244,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             selectForwardEndpoint(endpointReference,
                                   endpointReference.getTargetEndpoint().getService().getEndpoints(),
                                   matchAudit,
-                                  builderContext);
+                                  builderContext,
+                                  runtime);
 
             if (hasCallback(endpointReference)){
                 selectCallbackEndpoint(endpointReference,
@@ -265,7 +266,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                 selectForwardEndpoint(endpointReference,
                         endpoints,
                         matchAudit,
-                        builderContext);
+                        builderContext, 
+                        runtime);
 
                 // If the reference was matched try to match the callback
                 if (endpointReference.getStatus().equals(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED) &&
@@ -402,7 +404,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param endpointReference
      * @param endpoints
      */
-    private void selectForwardEndpoint(EndpointReference endpointReference, List<Endpoint> endpoints, Audit matchAudit, BuilderContext builderContext) {    
+    private void selectForwardEndpoint(EndpointReference endpointReference, List<Endpoint> endpoints, Audit matchAudit, BuilderContext builderContext, boolean runtime) {    
              
         Endpoint matchedEndpoint = null;
         
@@ -415,6 +417,48 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             }
         } else {
             // find the first endpoint that matches this endpoint reference
+            
+            // TUSCANY-4005 - raise an error if a reference target that only specifies the
+            //                component name matches more than one component service
+            if (endpointReference.getTargetEndpoint().getService() == null &&
+                endpointReference.getTargetEndpoint().getBinding() == null &&
+                endpoints.size() > 1   ) {
+                
+                String serviceName = null;
+                for (Endpoint endpoint : endpoints){
+                    // ignore service names called "default" as these indicate dynamic services
+                    // created for the likes of implementation.python
+                    if (serviceName == null &&
+                        !endpoint.getService().getName().equals("default")){
+                        serviceName = endpoint.getService().getName();
+                    }
+                    
+                    if (serviceName != null &&
+                        !endpoint.getService().getName().equals("default") &&
+                        !endpoint.getService().getName().equals(serviceName)){
+                        if (runtime){
+                            Monitor.error(monitor, 
+                                          this, 
+                                          "endpoint-validation-messages", 
+                                          "TooManyTargetServices", 
+                                          endpointReference.toString(),
+                                          endpointReference.getTargetEndpoint().toString(),
+                                          matchAudit);
+                            throw new ServiceRuntimeException("Unable to bind " + 
+                                                              monitor.getLastProblem().toString());
+                        } else {
+                            Monitor.warning(monitor, 
+                                            this, 
+                                            "endpoint-validation-messages", 
+                                            "TooManyTargetServices", 
+                                            endpointReference.toString(),
+                                            endpointReference.getTargetEndpoint().toString());
+                            return;
+                        }
+                    }
+                }
+            }
+           
             boolean findTargetSCABinding = false;
             
             // TUSCANY-3941 check for the case where the user has provided a 

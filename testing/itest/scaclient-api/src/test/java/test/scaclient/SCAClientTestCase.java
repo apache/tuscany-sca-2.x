@@ -95,6 +95,34 @@ public class SCAClientTestCase extends TestCase {
         HelloworldService service = clientFactory.getService(HelloworldService.class, "SingleServiceComponent");
         assertEquals("Hello petra", service.sayHello("petra"));
     }
+    
+    @Test
+    public void testWithoutServiceNameMultipleService() throws Exception {
+        node = NodeFactory.getInstance().createNode(URI.create("myFooDomain"), new String[] {"target/classes"});
+        node.start();
+
+        SCAClientFactory clientFactory = SCAClientFactory.newInstance(URI.create("myFooDomain"));
+        
+        // test multiple service error reported at the SCAClient wire
+        try {
+            HelloworldService service = clientFactory.getService(HelloworldService.class, "MultipleServiceComponent");
+            assertEquals("Hello petra", service.sayHello("petra"));
+            fail();
+        } catch (ServiceRuntimeException e) {
+            // expected
+        }   
+        
+        // test multiple service error reported at the wire associated with a reference of
+        // the component the SCAClient is talking to
+        HelloworldService service = clientFactory.getService(HelloworldService.class, "MultipleServiceClientComponent");
+        
+        try {
+            assertEquals("Hello Hello again petra", service.sayHello("petra"));
+            fail();
+        } catch (ServiceRuntimeException e) {
+            // expected
+        }  
+    }    
 
     @Test
     public void testWithBadServiceName() throws Exception {

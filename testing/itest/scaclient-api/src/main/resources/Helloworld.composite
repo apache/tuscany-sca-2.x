@@ -29,6 +29,15 @@
     <component name="SingleServiceComponent">
         <implementation.java class="itest.SingleServiceImpl"/>
     </component>
+    
+    <component name="MultipleServiceClientComponent">
+        <implementation.java class="itest.MultipleServiceClientImpl"/>
+        <reference name="helloWorld" target="MultipleServiceComponent"/>
+    </component>
+    
+    <component name="MultipleServiceComponent">
+        <implementation.java class="itest.MultipleServiceImpl"/>
+    </component>
 
     <component name="OnlyWSBindingComponent">
         <implementation.java class="itest.HelloworldServiceImpl"/>
