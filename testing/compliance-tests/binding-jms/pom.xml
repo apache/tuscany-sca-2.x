@@ -85,9 +85,7 @@
          <configuration>
            <argLine>-Xms256m -Xmx1024m</argLine>
            <excludes>
-              <exclude>**/BJM_6015_2_TestCase.java</exclude>
-              <exclude>**/BJM_6015_3_TestCase.java</exclude>
-              <exclude>**/BJM_6017_1_TestCase.java</exclude>
+              <exclude>**/BJM_6017_1_TestCase.java</exclude> <!-- 6017_1 does work but fails intermitently in a full build which i haven't been able to reproduce or track down -->
            </excludes>
          </configuration>
       </plugin>
