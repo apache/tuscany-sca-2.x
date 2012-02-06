@@ -134,7 +134,7 @@ public abstract class AbstractMessageProcessor implements JMSMessageProcessor {
 
                 final StringWriter sw = new StringWriter();
                 final PrintWriter pw = new PrintWriter(sw);
-                pw.print("Message = " + o.getMessage());
+                pw.print("Message = " + o.getClass().getName() + ": " + o.getMessage());
                 StackTraceElement[] stackElements = o.getStackTrace();
                 for (int i = 0; i < stackElements.length; i++) {
                         pw.print("\t>> \t at ");
