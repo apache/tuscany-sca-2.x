@@ -98,7 +98,7 @@ public class ExceptionsTestCase {
             service.throwUnChecked();
             fail();
         } catch (Exception e) {
-            assertTrue(e.getCause().getMessage().startsWith("Message = bla"));
+            assertTrue(e.getCause().getMessage().startsWith("Message = java.lang.RuntimeException: bla"));
         }
     }
 
