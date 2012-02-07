@@ -353,7 +353,8 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                                 }
 
                             } else {
-                                error(monitor, "UnexpectedElement", reader, extension.toString());
+                            	String t = (extension instanceof Extension) ? ((Extension)extension).getQName().toString() : extension.toString();
+                                error(monitor, "UnexpectedElement", reader, t);
                             }
                         }
                     }
@@ -370,8 +371,9 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                     if (x.equals(JMSBindingConstants.BINDING_JMS_QNAME)) {
                         endFound = true;
                     } else {
-                    	error(monitor, "UnexpectedElement: expected " + JMSBindingConstants.BINDING_JMS_QNAME + ", found " + x.toString(), 
-                    	      reader, x.toString());
+                    	String t = (x instanceof Extension) ? ((Extension)x).getQName().toString() : x.toString();
+                    	error(monitor, "UnexpectedElement: expected " + JMSBindingConstants.BINDING_JMS_QNAME + ", found " + t, 
+                    	      reader, t);
                     }
             }
         }
@@ -697,7 +699,8 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                                     error(context.getMonitor(), "ResponseWireformatAlreadyDefined", reader, extension.toString());
                                 }
                             } else {
-                                error(context.getMonitor(), "UnexpectedElement", reader, extension.toString());
+                            	String t = (extension instanceof Extension) ? ((Extension)extension).getQName().toString() : extension.toString();
+                                error(context.getMonitor(), "UnexpectedElement", reader, t);
                             }
                         }
                         reader.next();
