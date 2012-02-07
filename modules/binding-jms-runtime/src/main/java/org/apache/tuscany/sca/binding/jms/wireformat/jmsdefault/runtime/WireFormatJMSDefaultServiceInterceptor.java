@@ -166,14 +166,6 @@ public class WireFormatJMSDefaultServiceInterceptor extends InterceptorAsyncImpl
         }
 
        
-        try {
-        	responseJMSMsg.setStringProperty(JMSBindingConstants.DEFAULT_OPERATION_PROP_NAME, msg.getOperation().getName());
-        } catch (JMSException e) {
-        	// Not sure what to do at this point.. it doesn't make sense to create a fault message.
-        	// Throwing a runtime exception for now.  
-        	throw new JMSBindingException(e);        	
-        }
-        
         msg.setBody(responseJMSMsg);
 
         return msg;
