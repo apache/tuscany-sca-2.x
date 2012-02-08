@@ -1000,6 +1000,8 @@ public class StandardTypesDatabindingTestCase {
                 // The instance returned by service method invoked over binding.ws seems to have a gregorianCutover
                 // different from the instance passed.  Adjust the gregorianCutover as per the input instance.
                 ((GregorianCalendar)actual).setGregorianChange(((GregorianCalendar)ca[i]).getGregorianChange());
+                ((GregorianCalendar)actual).setMinimalDaysInFirstWeek(((GregorianCalendar)ca[i]).getMinimalDaysInFirstWeek());
+                ((GregorianCalendar)actual).setFirstDayOfWeek(((GregorianCalendar)ca[i]).getFirstDayOfWeek());
             }
             Assert.assertEquals(ca[i], actual);
         }
@@ -1021,6 +1023,8 @@ public class StandardTypesDatabindingTestCase {
                 // The instance returned by service method invoked over binding.ws seems to have a gregorianCutover
                 // different from the instance passed.  Adjust the gregorianCutover as per the input instance.
                 ((GregorianCalendar)actual[i]).setGregorianChange(((GregorianCalendar)ca[i]).getGregorianChange());
+                ((GregorianCalendar)actual[i]).setMinimalDaysInFirstWeek(((GregorianCalendar)ca[i]).getMinimalDaysInFirstWeek());
+                ((GregorianCalendar)actual[i]).setFirstDayOfWeek(((GregorianCalendar)ca[i]).getFirstDayOfWeek());
             }
             Assert.assertEquals(ca[i], actual[i]);
         }
