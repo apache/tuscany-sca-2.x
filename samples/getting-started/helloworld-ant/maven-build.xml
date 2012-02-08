@@ -24,7 +24,7 @@
   <property file="${user.home}/.m2/maven.properties"/>
   <property file="maven-build.properties"/>
 
-  <property name="maven.build.finalName" value="helloworld-ant-2.0-SNAPSHOT"/>
+  <property name="maven.build.finalName" value="helloworld-ant-2.0-Beta4"/>
   <property name="maven.build.dir" value="target"/>
   <property name="maven.build.outputDir" value="${maven.build.dir}/classes"/>
   <property name="maven.build.srcDir.0" value="src/main/java"/>
@@ -45,12 +45,12 @@
   <!-- ====================================================================== -->
 
   <path id="build.classpath">
-    <pathelement location="${maven.repo.local}/org/apache/tuscany/sca/tuscany-sca-api/2.0-SNAPSHOT/tuscany-sca-api-2.0-SNAPSHOT.jar"/>
+    <pathelement location="${maven.repo.local}/org/apache/tuscany/sca/tuscany-sca-api/2.0-Beta4/tuscany-sca-api-2.0-Beta4.jar"/>
   </path>
   <path id="build.test.classpath">
-    <pathelement location="${maven.repo.local}/org/apache/tuscany/sca/tuscany-sca-api/2.0-SNAPSHOT/tuscany-sca-api-2.0-SNAPSHOT.jar"/>
+    <pathelement location="${maven.repo.local}/org/apache/tuscany/sca/tuscany-sca-api/2.0-Beta4/tuscany-sca-api-2.0-Beta4.jar"/>
     <pathelement location="${maven.repo.local}/junit/junit/4.8.1/junit-4.8.1.jar"/>
-    <pathelement location="${maven.repo.local}/org/apache/tuscany/sca/tuscany-base-runtime/2.0-SNAPSHOT/tuscany-base-runtime-2.0-SNAPSHOT.jar"/>
+    <pathelement location="${maven.repo.local}/org/apache/tuscany/sca/tuscany-base-runtime/2.0-Beta4/tuscany-base-runtime-2.0-Beta4.jar"/>
     <pathelement location="${maven.repo.local}/org/apache/ws/commons/schema/XmlSchema/1.4.3/XmlSchema-1.4.3.jar"/>
     <pathelement location="${maven.repo.local}/wsdl4j/wsdl4j/1.6.2/wsdl4j-1.6.2.jar"/>
     <pathelement location="${maven.repo.local}/cglib/cglib/2.2/cglib-2.2.jar"/>
@@ -270,17 +270,17 @@
           description="Download all dependencies" 
           unless="maven.mode.offline">
     <mkdir dir="${maven.repo.local}"/>
-    <mkdir dir="${maven.repo.local}/org/apache/tuscany/sca/tuscany-sca-api/2.0-SNAPSHOT"/>
-    <get src="http://svn.apache.org/repos/asf/tuscany/maven/org/apache/tuscany/sca/tuscany-sca-api/2.0-SNAPSHOT/tuscany-sca-api-2.0-SNAPSHOT.jar" 
-         dest="${maven.repo.local}/org/apache/tuscany/sca/tuscany-sca-api/2.0-SNAPSHOT/tuscany-sca-api-2.0-SNAPSHOT.jar" 
+    <mkdir dir="${maven.repo.local}/org/apache/tuscany/sca/tuscany-sca-api/2.0-Beta4"/>
+    <get src="http://svn.apache.org/repos/asf/tuscany/maven/org/apache/tuscany/sca/tuscany-sca-api/2.0-Beta4/tuscany-sca-api-2.0-Beta4.jar" 
+         dest="${maven.repo.local}/org/apache/tuscany/sca/tuscany-sca-api/2.0-Beta4/tuscany-sca-api-2.0-Beta4.jar" 
          usetimestamp="false" 
          ignoreerrors="true"/>
-    <get src="http://repository.apache.org/snapshots/org/apache/tuscany/sca/tuscany-sca-api/2.0-SNAPSHOT/tuscany-sca-api-2.0-SNAPSHOT.jar" 
-         dest="${maven.repo.local}/org/apache/tuscany/sca/tuscany-sca-api/2.0-SNAPSHOT/tuscany-sca-api-2.0-SNAPSHOT.jar" 
+    <get src="http://repository.apache.org/snapshots/org/apache/tuscany/sca/tuscany-sca-api/2.0-Beta4/tuscany-sca-api-2.0-Beta4.jar" 
+         dest="${maven.repo.local}/org/apache/tuscany/sca/tuscany-sca-api/2.0-Beta4/tuscany-sca-api-2.0-Beta4.jar" 
          usetimestamp="false" 
          ignoreerrors="true"/>
-    <get src="http://repo1.maven.org/maven2/org/apache/tuscany/sca/tuscany-sca-api/2.0-SNAPSHOT/tuscany-sca-api-2.0-SNAPSHOT.jar" 
-         dest="${maven.repo.local}/org/apache/tuscany/sca/tuscany-sca-api/2.0-SNAPSHOT/tuscany-sca-api-2.0-SNAPSHOT.jar" 
+    <get src="http://repo1.maven.org/maven2/org/apache/tuscany/sca/tuscany-sca-api/2.0-Beta4/tuscany-sca-api-2.0-Beta4.jar" 
+         dest="${maven.repo.local}/org/apache/tuscany/sca/tuscany-sca-api/2.0-Beta4/tuscany-sca-api-2.0-Beta4.jar" 
          usetimestamp="false" 
          ignoreerrors="true"/>
     <mkdir dir="${maven.repo.local}/junit/junit/4.8.1"/>
@@ -296,17 +296,17 @@
          dest="${maven.repo.local}/junit/junit/4.8.1/junit-4.8.1.jar" 
          usetimestamp="false" 
          ignoreerrors="true"/>
-    <mkdir dir="${maven.repo.local}/org/apache/tuscany/sca/tuscany-base-runtime/2.0-SNAPSHOT"/>
-    <get src="http://svn.apache.org/repos/asf/tuscany/maven/org/apache/tuscany/sca/tuscany-base-runtime/2.0-SNAPSHOT/tuscany-base-runtime-2.0-SNAPSHOT.jar" 
-         dest="${maven.repo.local}/org/apache/tuscany/sca/tuscany-base-runtime/2.0-SNAPSHOT/tuscany-base-runtime-2.0-SNAPSHOT.jar" 
+    <mkdir dir="${maven.repo.local}/org/apache/tuscany/sca/tuscany-base-runtime/2.0-Beta4"/>
+    <get src="http://svn.apache.org/repos/asf/tuscany/maven/org/apache/tuscany/sca/tuscany-base-runtime/2.0-Beta4/tuscany-base-runtime-2.0-Beta4.jar" 
+         dest="${maven.repo.local}/org/apache/tuscany/sca/tuscany-base-runtime/2.0-Beta4/tuscany-base-runtime-2.0-Beta4.jar" 
          usetimestamp="false" 
          ignoreerrors="true"/>
-    <get src="http://repository.apache.org/snapshots/org/apache/tuscany/sca/tuscany-base-runtime/2.0-SNAPSHOT/tuscany-base-runtime-2.0-SNAPSHOT.jar" 
-         dest="${maven.repo.local}/org/apache/tuscany/sca/tuscany-base-runtime/2.0-SNAPSHOT/tuscany-base-runtime-2.0-SNAPSHOT.jar" 
+    <get src="http://repository.apache.org/snapshots/org/apache/tuscany/sca/tuscany-base-runtime/2.0-Beta4/tuscany-base-runtime-2.0-Beta4.jar" 
+         dest="${maven.repo.local}/org/apache/tuscany/sca/tuscany-base-runtime/2.0-Beta4/tuscany-base-runtime-2.0-Beta4.jar" 
          usetimestamp="false" 
          ignoreerrors="true"/>
-    <get src="http://repo1.maven.org/maven2/org/apache/tuscany/sca/tuscany-base-runtime/2.0-SNAPSHOT/tuscany-base-runtime-2.0-SNAPSHOT.jar" 
-         dest="${maven.repo.local}/org/apache/tuscany/sca/tuscany-base-runtime/2.0-SNAPSHOT/tuscany-base-runtime-2.0-SNAPSHOT.jar" 
+    <get src="http://repo1.maven.org/maven2/org/apache/tuscany/sca/tuscany-base-runtime/2.0-Beta4/tuscany-base-runtime-2.0-Beta4.jar" 
+         dest="${maven.repo.local}/org/apache/tuscany/sca/tuscany-base-runtime/2.0-Beta4/tuscany-base-runtime-2.0-Beta4.jar" 
          usetimestamp="false" 
          ignoreerrors="true"/>
     <mkdir dir="${maven.repo.local}/org/apache/ws/commons/schema/XmlSchema/1.4.3"/>
