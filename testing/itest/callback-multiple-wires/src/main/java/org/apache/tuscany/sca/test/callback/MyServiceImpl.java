@@ -26,7 +26,7 @@ import org.oasisopen.sca.annotation.Service;
 /**
  * This class implements MyService and uses a callback.
  * 
- * In this scenario, we exlore using the RequestContext to retrieve the callBack reference
+ * In this scenario, we explore using the RequestContext to retrieve the callBack reference
  * as @Callback injection is not performed for composite-scoped implementations (see JavaCAA Section 7.2.5)
  * 
  * Changing the service implementation to be @Scope("STATELESS") would make plain @Callback injection work
