@@ -20,10 +20,13 @@
 package org.apache.tuscany.sca.binding.ws;
 
 import javax.jws.WebService;
+import javax.security.auth.Subject;
 
 import org.apache.tuscany.sca.binding.ws.jaxws.external.service.iface.Foo;
 import org.apache.tuscany.sca.binding.ws.jaxws.external.service.iface.HelloWorldService;
+import org.oasisopen.sca.RequestContext;
 import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.annotation.Context;
 import org.oasisopen.sca.annotation.Reference;
 
 @WebService
@@ -35,25 +38,36 @@ public class HelloWorldImpl implements HelloWorld, HelloWorldCallback {
     @Reference
     public HelloWorldCallbackService helloWorldCallbackService;
     
+    @Context
+    protected RequestContext requestContext;
+    
     // HelloWorld operations
     
     public String getGreetings(String s) {
         System.out.println("Entering SCA HelloWorld.getGreetings: " + s);
-        String response = helloWorldCallbackService.getGreetings(s);
+        String response = null;
+        for (int i = 0; i < 5 ; i++){
+            System.out.println("In SCA HelloWorld.getGreetings: calling helloWorldCallbackService.getGreetings(s) interation " + i);
+            response = helloWorldCallbackService.getGreetings(s);
+        }
         System.out.println("Leaving SCA HelloWorld.getGreetings: " + response);
         return response;
     }
     
     public String getGreetingsException(String s) throws ServiceRuntimeException {
         System.out.println("Entering SCA HelloWorld.getGreetingsException: " + s);
-        String response = helloWorldCallbackService.getGreetings(s);
+        String response = helloWorldCallbackService.getGreetings(s);          
         System.out.println("Leaving SCA HelloWorld.getGreetings: " + response);
         throw new ServiceRuntimeException(response);
     }    
 
     public Foo getGreetingsComplex(Foo foo){
         System.out.println("Entering SCA HelloWorld.getGreetingsComplex: " + foo.getBars().get(0).getS());
-        Foo response = helloWorldCallbackService.getGreetingsComplex(foo);
+        Foo response = null;
+        for (int i = 0; i < 5 ; i++){
+            System.out.println("In SCA HelloWorld.getGreetingsComplex: calling helloWorldCallbackService.getGreetingsComplex(foo) interation " + i);
+            response = helloWorldCallbackService.getGreetingsComplex(foo);
+        }
         System.out.println("Leaving SCA HelloWorld.getGreetingsComplex: " + foo.getBars().get(0).getS());
         return response;
     } 
@@ -63,6 +77,12 @@ public class HelloWorldImpl implements HelloWorld, HelloWorldCallback {
     public String getGreetingsCallback(String s) {
         System.out.println("Entering SCA HelloWorld.getGreetingsCallback: " + s);
         String response = helloWorldExternal.getGreetings(s);
+        
+        Subject subject = requestContext.getSecuritySubject();
+        if (subject == null){
+            response = "No Security Subject";
+        }
+        
         System.out.println("Leaving SCA HelloWorld.getGreetingsCallback: " + response);
         return response;
     }

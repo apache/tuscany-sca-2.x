@@ -126,11 +126,6 @@ public class TransportServiceInterceptor extends InterceptorAsyncImpl {
             from.setTargetEndpoint(fromEndpoint);
             from.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
             msg.setFrom(from);
-            Endpoint callbackEndpoint = assemblyFactory.createEndpoint();
-            // binding is set into the callback endpoint in the CallbackDesitnationInterceptor           
-            callbackEndpoint.setUnresolved(true);
-            from.setCallbackEndpoint(callbackEndpoint);
-
             return msg;
 
     } // end method invokeRequest

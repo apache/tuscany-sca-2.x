@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
@@ -35,6 +36,9 @@ import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -180,6 +184,11 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
 
     public void setURI(String uri) {
         this.uri = uri;
+        if (uri != null){
+            parseURI(uri);
+        } else {
+            setDestinationName(null);
+        }     
     }
 
     public String getName() {
@@ -1107,6 +1116,53 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
     @Override
     public List<Extension> getAttributeExtensions() {
         return attributeExtensions;
+    }
+    
+    public void parseURI(String uri) {
+        JMSBinding jmsBinding = this; 
+        if (uri == null ||
+            !(uri.startsWith("jms:jndi:") || uri.startsWith("jms:queue:") || uri.startsWith("jms:topic:"))) {
+            return;
+        }      
+        
+        int i = uri.indexOf('?');            
+        if (i >= 0) {
+            StringTokenizer st = new StringTokenizer(uri.substring(i+1),"&");
+            while (st.hasMoreTokens()) {
+                String s = st.nextToken();
+                if (s.startsWith("jndiConnectionFactoryName=")) {
+                    jmsBinding.setConnectionFactoryName(s.substring(26));
+                    } else if (s.startsWith("deliveryMode=")) {
+                        jmsBinding.setURIJMSDeliveryMode("persistent".equals(s.substring(13)));
+                    } else if (s.startsWith("priority=")) {
+                        jmsBinding.setURIJMSPriority(Integer.parseInt(s.substring(9)));
+                    } else if (s.startsWith("timeToLive=")) {
+                        jmsBinding.setURIJMSTimeToLive(Long.parseLong(s.substring(11)));
+                    } else if (s.startsWith("selector='")) {
+                        String selector = s.substring(10);
+                        if (selector.startsWith("\"") || selector.startsWith("'")) {
+                            selector = selector.substring(1, selector.length());
+                        }
+                        if (selector.endsWith("\"") || selector.endsWith("'")) {
+                            selector = selector.substring(0, selector.length() - 1);
+                        }
+                        jmsBinding.setURIJMSSelector(selector);
+                    } else if (s.startsWith("type")) {
+                        String type = s.substring(5);
+                        jmsBinding.setJMSURIType(type);                     
+                    } else {
+                        return;
+                    }
+                }
+            int j=uri.indexOf(':', 4);
+            jmsBinding.setDestinationName(uri.substring(j+1, i));
+            jmsBinding.setDestinationType(uri.substring(4, j));
+        } else {
+           int j=uri.indexOf(':', 4);
+           jmsBinding.setDestinationName(uri.substring(j+1));
+           jmsBinding.setDestinationType(uri.substring(4, j));
+        }
+        jmsBinding.setJMSURI(uri);
     }
 	
 }

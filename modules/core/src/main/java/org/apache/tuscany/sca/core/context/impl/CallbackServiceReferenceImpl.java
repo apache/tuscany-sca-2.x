@@ -18,8 +18,9 @@
  */
 package org.apache.tuscany.sca.core.context.impl;
 
-import java.net.URI;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Endpoint;
@@ -29,28 +30,86 @@ import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.context.ThreadMessageContext;
+import org.apache.tuscany.sca.core.invocation.CallbackHandler;
 import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
+/**
+ * Represent the reference to the callback service. This class basically wraps a Tuscany EndpointReference. 
+ * The callback EPR is selected based on the are 3 basic scenarios we are trying to cater for
+ * 
+ * A/ <component name="MyComponent">
+ *        <service name="MyService>
+ *            blank OR <binding.sca/> 
+ *        </service>
+ *    </component>
+ *    
+ * B/ <component name="MyComponent">
+ *        <service name="MyService>
+ *            <binding.someremotebinding/> 
+ *        </service>
+ *    </component>
+ *    
+ * C/ <component name="MyComponent">
+ *        <service name="MyService>
+ *            some binding
+ *            <callback>
+ *                <binding.someremotebinding/> 
+ *            </callback>
+ *        </service>
+ *    </component>    
+ *    
+ *  A - the callback binding will default to binding.sca and the expectation is that 
+ *      the callback endpoint will be established by looking it up in the registry
+ *      hence the forward call must contain the SCA target name referring to the 
+ *      callback service
+ *      
+ *  B - the callback binding defaults to be the forward binding taking all of its
+ *      configuration. The callback target URI is taken from the forward message and 
+ *      put into the callback binding URI
+ *      
+ *  C - the callback binding is as specified by the user. If the user has not specified
+ *      a binding URI then the URI from the forward message will be placed in the 
+ *      callback binding URI. This may or may not lead to happiness depending on whether
+ *      the forward and callback bindings are compatible
+ *      
+ *  The callback proxy, and this class, is instantiated whenever a new callback proxy is 
+ *  required as follows:
+ *  
+ *    If the service component implementation is STATELESS then each incoming message  
+ *    creates a new service instance and hence a new set of callback proxies
+ *    
+ *    If the service component implementation is COMPOSITE then only a single instance
+ *    of the component implementation will exist and the callback proxy will be retrieved
+ *    via the RequestContext. 
+ *   
+ *  Following the Tuscany runtime model for normal references we don't cache callback 
+ *  proxies across component implementation instances. Hence there will be one
+ *  instance of this class for each callback proxy, however created, and the class
+ *  will refer to a single callback service. To put it another way, messages from 
+ *  multiple clients (presenting different callback services) will be called back to
+ *  via different callback proxies and hence a single instance of this class will 
+ *  not be required to handle more than one callback address.  
+ * 
+ */
 public class CallbackServiceReferenceImpl<B> extends ServiceReferenceImpl<B> {
+    private static final Logger logger = Logger.getLogger(CallbackServiceReferenceImpl.class.getName());
     private RuntimeEndpointReference callbackEPR;
     private List<? extends EndpointReference> callbackEPRs;
     private Endpoint resolvedEndpoint;
     // Holds the ID of the Message that caused the creation of this CallbackServiceReference
     private String msgID;
-
-    /** 
-     * Gets the message ID associated with this callback reference
-     * @return the message ID
-     */
-    public String getMsgID() {
-		return msgID;
-	}
+    
+    // Holds the URI of the target callback service from the Message that caused the 
+    // creation of this CallbackServiceReference
+    private CallbackHandler callbackHandler;
 
 	/*
      * Public constructor for Externalizable serialization/deserialization
+     * TODO - we need to serialize the msgID and callbackURI
      */
     public CallbackServiceReferenceImpl() {
         super();
@@ -60,8 +119,68 @@ public class CallbackServiceReferenceImpl<B> extends ServiceReferenceImpl<B> {
                                         List<? extends EndpointReference> callbackEPRs) {
         super(interfaze, null, getCompositeContext(callbackEPRs));
         this.callbackEPRs = callbackEPRs;
-        init();
+        
+        Message msgContext = ThreadMessageContext.getMessageContext();
+        
+        // Capture the Message ID from the message which caused the creation of this 
+        // CallBackServiceReference
+        this.msgID = (String) msgContext.getHeaders().get(Constants.MESSAGE_ID);
+        
+        // Capture the callback URI from the message which caused the creation of this 
+        // CallBackServiceReference. This code is more complex that needs be for the time being
+        // to cater for bindings that still use the approach of constructing a callback endpoint
+        // to model the callback URI. With these changes the binding can just set a CallbackHandler
+        // in the forward message to get the same effect. Some bindings don't do that hence
+        // the various checks
+        this.resolvedEndpoint = msgContext.getFrom().getCallbackEndpoint();
+        if (resolvedEndpoint != null && resolvedEndpoint.getBinding() != null){
+            if (resolvedEndpoint.getBinding().getType().equals(SCABinding.TYPE)){
+                this.callbackHandler = new CallbackHandler(resolvedEndpoint.getURI());
+            } else {
+                this.callbackHandler = new CallbackHandler(resolvedEndpoint.getBinding().getURI());
+            }
+        } else { 
+            this.callbackHandler = (CallbackHandler)msgContext.getHeaders().get(Constants.CALLBACK);
+            
+            if (callbackHandler == null){
+                this.callbackHandler = new CallbackHandler(null);
+            }
+        }
+        
+        if (callbackHandler.getCallbackTargetURI() != null){
+            logger.log(Level.FINE, "Selecting callback EPR using address from forward message: " + callbackHandler.getCallbackTargetURI());
+        } else {
+            logger.log(Level.FINE, "Selecting callback EPR using address but callback URI is null");
+        }
+        
+        // Work out which callback EPR to use
+        callbackEPR = selectCallbackEPR(msgContext);
+        if (callbackEPR == null) {
+            throw new ServiceRuntimeException("No callback binding found for " + msgContext.getTo().toString());
+        }
+        
+        // configure the callback EPR with the callback address
+        if (callbackHandler.getCallbackTargetURI() != null) {
+            callbackEPR = setCallbackAddress(callbackEPR);
+        }
+        
+        this.resolvedEndpoint = callbackEPR.getTargetEndpoint();
     }
+    
+    public CallbackHandler getCallbackHandler() {
+        return callbackHandler;
+    }
+    
+    /** 
+     * Gets the message ID associated with this callback reference. All calls through the proxy backed by 
+     * this CallbackServiceReference will use the same msgID
+     * 
+     * @return the message ID
+     */
+    public String getMsgID() {
+        return msgID;
+    }
+    
     
     private static CompositeContext getCompositeContext(List<? extends EndpointReference> callbackEPRs) {
         if(!callbackEPRs.isEmpty()) {
@@ -71,29 +190,13 @@ public class CallbackServiceReferenceImpl<B> extends ServiceReferenceImpl<B> {
         return null;
     }
 
-    public void init() {
-        Message msgContext = ThreadMessageContext.getMessageContext();
-        callbackEPR = selectCallbackEPR(msgContext);
-        if (callbackEPR == null) {
-            throw new ServiceRuntimeException("No callback binding found for " + msgContext.getTo().toString());
-        }
-        resolvedEndpoint = msgContext.getFrom().getCallbackEndpoint();
-        
-        // Capture the Message ID from the message which caused the creation of this CallBackServiceReference
-        this.msgID = (String) msgContext.getHeaders().get(Constants.MESSAGE_ID);
-    }
-
     @Override
     protected B createProxy() throws Exception {
         return proxyFactory.createCallbackProxy(this);
     }
 
     public RuntimeEndpointReference getCallbackEPR() {
-        if (resolvedEndpoint == null) {
-            return null;
-        } else {
-            return cloneAndBind(callbackEPR);
-        }
+        return callbackEPR;    
     }
 
     public Endpoint getResolvedEndpoint() {
@@ -101,6 +204,7 @@ public class CallbackServiceReferenceImpl<B> extends ServiceReferenceImpl<B> {
     }
 
     private RuntimeEndpointReference selectCallbackEPR(Message msgContext) {
+        
         // look for callback binding with same name as service binding
         Endpoint to = msgContext.getTo();
         if (to == null) {
@@ -124,56 +228,58 @@ public class CallbackServiceReferenceImpl<B> extends ServiceReferenceImpl<B> {
         return null;
     }
 
-    private RuntimeEndpointReference cloneAndBind(RuntimeEndpointReference endpointReference) {
-        if (resolvedEndpoint != null) {
-
-            try {
-                RuntimeEndpointReference epr = (RuntimeEndpointReference)endpointReference.clone();
-                epr.setTargetEndpoint(resolvedEndpoint);
-                
-                // TUSCANY-3932
-                // If it's the default binding then we're going to look the callback endpoint
-                // up in the registry. Most remote protocols, which may be used as delegates 
-                // for binding.sca, will expect to deal with absolute URLs so flip the 
-                // callback endpoint back to force the lookup to happen
-                if (epr.getBinding().getType().equals(SCABinding.TYPE)){
-                    epr.setStatus(EndpointReference.Status.WIRED_TARGET_NOT_FOUND);
-                } else {
-                    // just copy the callback binding from the callback endpoint to the
-                    // callback EPR as the EPR is effectively already resolved
-                    epr.setStatus(EndpointReference.Status.RESOLVED_BINDING);
-                    Binding callbackBinding = resolvedEndpoint.getBinding();
-                    if ( callbackBinding != null){
-                        epr.setBinding(callbackBinding);
-                        // make sure that the chains are recreated for
-                        // this new binding
-                        epr.setBindingProvider(null);
-                        epr.rebuild();
-                    } else {
-                        // do nothing and rely on whatever the user has configured 
-                        // in the SCDL
-                    }
-                }
+    private RuntimeEndpointReference setCallbackAddress(RuntimeEndpointReference endpointReference) {
+        try {
             
-                return epr;
-            } catch (CloneNotSupportedException e) {
-                // will not happen
-                throw new ServiceRuntimeException(e);
+            RuntimeEndpointReference epr = endpointReference;
+            
+            if (callbackHandler.getCloneCallbackWire()){
+                epr = (RuntimeEndpointReference)endpointReference.clone();
+            } 
+            
+            // TUSCANY-3932
+            // If it's the default binding then we're going to look the callback endpoint
+            // up in the registry. Most remote protocols, which may be used as delegates 
+            // for binding.sca, will expect to deal with absolute URLs so flip the 
+            // callback endpoint back to force the lookup to happen
+            if (epr.getBinding().getType().equals(SCABinding.TYPE)){
+                // A/ create a callback endpoint to allow the
+                //    callback lookup to take place
+                epr.setStatus(EndpointReference.Status.WIRED_TARGET_NOT_FOUND);
+               
+                // if an endpoint it provided in the forward message use it or
+                // if not create one
+                if (resolvedEndpoint == null ){
+                    RuntimeEndpoint callbackEndpoint = (RuntimeEndpoint)assemblyFactory.createEndpoint();
+                    callbackEndpoint.setURI(callbackHandler.getCallbackTargetURI());
+                    callbackEndpoint.setUnresolved(true);
+                    epr.setTargetEndpoint(callbackEndpoint);
+                } else {
+                    epr.setTargetEndpoint(resolvedEndpoint);
+                }
+            } else {
+                // B/ and C/ assume that the callback EPR is already resolved
+                //           and set the binding URI if one is provided with the
+                //           forward message. Some bindings may want to do other
+                //           things to determine the callback URI to the 
+                //           CallbackHandler will be sent in the callback message
+                //           header. This is particularly true if the clone isn't
+                //           called above because resetting the URI will not 
+                //           be thread safe.
+                epr.setStatus(EndpointReference.Status.RESOLVED_BINDING);
+                
+                if ( callbackHandler.getCallbackTargetURI() != null ){
+                    epr.getBinding().setURI(callbackHandler.getCallbackTargetURI());
+                } else {
+                    // do nothing and rely on whatever the user has configured 
+                    // in the SCDL
+                }
             }
-        } else {
-            return null;
+        
+            return epr;
+        } catch (CloneNotSupportedException e) {
+            // will not happen
+            throw new ServiceRuntimeException(e);
         }
-    }
-    
-    private void build(EndpointReference endpointReference) {
-        BindingBuilder builder = builders.getBindingBuilder(endpointReference.getBinding().getType());
-        if (builder != null) {
-            builder.build(endpointReference.getComponent(),
-                          endpointReference.getReference(),
-                          endpointReference.getBinding(),
-                          new BuilderContext(registry),
-                          false);
-        }
-    }    
-
+    } 
 }

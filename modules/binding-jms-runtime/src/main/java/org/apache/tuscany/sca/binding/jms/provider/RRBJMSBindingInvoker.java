@@ -29,6 +29,8 @@ import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
+import org.apache.tuscany.sca.core.invocation.CallbackHandler;
+import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
@@ -274,6 +276,13 @@ public class RRBJMSBindingInvoker extends InterceptorAsyncImpl {
             if (tuscanyMsg.getFrom().getTargetEndpoint() != null) {
                 if (tuscanyMsg.getFrom().getTargetEndpoint().getBinding() != null) {
                     this.jmsBinding = (JMSBinding)tuscanyMsg.getFrom().getTargetEndpoint().getBinding();
+                    
+/* TUSCANY-4011 - we could delay until this point until setting the callback destination                    
+                    CallbackHandler callbackHandler = (CallbackHandler)tuscanyMsg.getHeaders().get(Constants.CALLBACK);
+                    if (callbackHandler != null && callbackHandler.getCallbackTargetURI() != null){
+                        this.jmsBinding.setDestinationName(callbackHandler.getCallbackTargetURI());
+                    }
+*/                    
                     requestDestination = lookupDestination();
                 }
             }

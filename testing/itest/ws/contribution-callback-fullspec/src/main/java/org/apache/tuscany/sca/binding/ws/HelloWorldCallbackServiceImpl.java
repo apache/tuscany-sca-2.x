@@ -32,7 +32,11 @@ public class HelloWorldCallbackServiceImpl implements HelloWorldCallbackService 
     
     public String getGreetings(String s) {
         System.out.println("Entering SCA HelloWorldCallbackService.getGreetings: " + s);
-        String response = helloWorldCallback.getGreetingsCallback(s);
+        String response = null;
+        for (int i = 0; i < 5 ; i++){
+            System.out.println("In SCA HelloWorldCallbackService.getGreetings: calling helloWorldCallback.getGreetingsCallback(s) interation " + i);
+            response = helloWorldCallback.getGreetingsCallback(s);
+        }
         System.out.println("Leaving SCA HelloWorldCallbackService.getGreetings: " + response);
         return response;
     }
@@ -46,7 +50,11 @@ public class HelloWorldCallbackServiceImpl implements HelloWorldCallbackService 
 
     public Foo getGreetingsComplex(Foo foo){
         System.out.println("Entering SCA HelloWorldCallbackService.getGreetingsComplex: " + foo.getBars().get(0).getS());
-        Foo response = helloWorldCallback.getGreetingsComplexCallback(foo);
+        Foo response = null;
+        for (int i = 0; i < 5 ; i++){
+            System.out.println("In SCA HelloWorldCallbackService.getGreetingsComplex: calling helloWorldCallback.getGreetingsComplexCallback(s) interation " + i);
+            response = helloWorldCallback.getGreetingsComplexCallback(foo);
+        }
         System.out.println("Leaving SCA HelloWorldCallbackService.getGreetingsComplex: " + foo.getBars().get(0).getS());
         return response;
     } 

@@ -105,6 +105,9 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
                 msg.setTo(((RuntimeEndpointReference)source).getTargetEndpoint());
             }
         }
+        
+        msg.getHeaders().put(Constants.CALLBACK, ((CallbackServiceReferenceImpl)callableReference).getCallbackHandler());
+        
         Invoker headInvoker = chain.getHeadInvoker();
         
         Operation operation = null;

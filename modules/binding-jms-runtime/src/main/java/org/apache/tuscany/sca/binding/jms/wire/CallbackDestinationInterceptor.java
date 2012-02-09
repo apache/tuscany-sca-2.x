@@ -27,6 +27,8 @@ import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
+import org.apache.tuscany.sca.core.invocation.CallbackHandler;
+import org.apache.tuscany.sca.core.invocation.Constants;
 import org.apache.tuscany.sca.core.invocation.InterceptorAsyncImpl;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -81,15 +83,20 @@ public class CallbackDestinationInterceptor extends InterceptorAsyncImpl {
                 if (!callbackdestName.startsWith("jms:jndi:")) {
                     throw new JMSBindingException("message property " + JMSBindingConstants.CALLBACK_Q_PROPERTY + " does not start with 'jms:jndi:' found: " + callbackdestName);
                 } else {
-                    callbackdestName = callbackdestName.substring(9);
-                } // end if
+                    callbackdestName = "jms:queue:" + callbackdestName.substring(9);
+                } 
             } else {
             	// If there is no Callback destination name header present, but the service is a callback, use the JMS ReplyTo header
+                // as per the spec this will override anything specified by the user in SCDL
                 if (service.getInterfaceContract().getCallbackInterface() != null) {
                     if ( ( jmsMsg.getJMSReplyTo() != null ) && msg.getOperation().isNonBlocking() ) {
                     	Destination replyTo = jmsMsg.getJMSReplyTo();
                     	if (replyTo != null) {
-                    		callbackdestName = (replyTo instanceof Queue) ? ((Queue) replyTo).getQueueName() : ((Topic) replyTo).getTopicName();
+                    	    if (replyTo instanceof Queue){
+                    	        callbackdestName = "jms:queue:" + ((Queue) replyTo).getQueueName();
+                    	    } else {
+                    	        callbackdestName = "jms:topic:" + ((Topic) replyTo).getTopicName();
+                    	    }
                    	   	}
                     } // end if
                 } // end if
@@ -97,22 +104,7 @@ public class CallbackDestinationInterceptor extends InterceptorAsyncImpl {
                 
             // Place the Callback destination name into the Callback EPRs for the service endpoint
             if (callbackdestName != null) {
-                for (Binding b : service.getCallback().getBindings()) {
-                    if (b instanceof JMSBinding) {
-                        JMSBinding callbackBinding;
-                        try {
-                            callbackBinding = (JMSBinding)((JMSBinding)b).clone();
-                        } catch (CloneNotSupportedException e) {
-                            throw new RuntimeException(e);
-                        }
-                        callbackBinding.setDestinationName(callbackdestName);
-                        // the "from" EPR model is created in the TransportServiceInterceptor
-                        // not sure which this destination calculation is not performed
-                        // there as well
-                        msg.getFrom().getCallbackEndpoint().setBinding(callbackBinding);
-//                        msg.getHeaders().put("CALLBACK_BINDING", callbackBinding);
-                    }
-                }
+                msg.getHeaders().put(Constants.CALLBACK, new CallbackHandler(callbackdestName));             
             } // end if  
 
 // Callback ID not used at present            

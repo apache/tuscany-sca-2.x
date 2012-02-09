@@ -22,13 +22,22 @@ package org.apache.tuscany.sca.binding.ws.launcher.axis2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.jaxws.external.client.HelloWorldClientLauncher;
 import org.apache.tuscany.sca.binding.ws.jaxws.external.service.HelloWorldServiceLauncher;
 import org.apache.tuscany.sca.binding.ws.jaxws.sca.Bar;
 import org.apache.tuscany.sca.binding.ws.jaxws.sca.Foo;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.policy.PolicySubject;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -71,6 +80,7 @@ public class CallbackFullSpecTestCase {
     @Test
     public void testGetGreetings() throws Exception {
         assertEquals("Hello Fred", externalClient.getGreetings("Fred"));
+        assertEquals("Hello Fred", externalClient.getGreetings("Fred"));
     }
         
     @Test
@@ -100,6 +110,18 @@ public class CallbackFullSpecTestCase {
         assertEquals(8, f2.getBars().get(2).getY().intValue());
         assertTrue(f2.getBars().get(2).isB().booleanValue());
     }  
+    
+    @Test
+    public void testCallbackBindingConfig() throws Exception {
+        Component helloWorldCallbackServiceComponent = ((NodeImpl)node).getDomainComposite().getComponent("HelloWorldCallbackService");
+        Service helloWorldService = helloWorldCallbackServiceComponent.getService("HelloWorldCallbackService");
+        Reference callbackReference = ((RuntimeComponentService)helloWorldService).getCallbackReference();
+        for (EndpointReference epr : callbackReference.getEndpointReferences()){
+            Binding callbackBinding = epr.getBinding();
+            assertEquals(WebServiceBinding.TYPE, callbackBinding.getType());
+            assertEquals(1, ((PolicySubject)callbackBinding).getPolicySets().size());
+        }
+    }
     
     @After
     public void tearDown() throws Exception {

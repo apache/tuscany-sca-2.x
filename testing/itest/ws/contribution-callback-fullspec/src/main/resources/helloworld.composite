@@ -19,6 +19,7 @@
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
 		   xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+		   xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
 		   targetNamespace="http://www.tuscany.apache.org/itests/binding/ws/axis2"
            name="HelloWorld">
                
@@ -33,7 +34,7 @@
         <reference name="helloWorldCallbackService">
             <binding.ws uri="http://localhost:8084/HelloWorldCallbackService"/>
             <callback>
-                <binding.ws uri="http://localhost:8085/HelloWorldService/HelloWorldCallback"/>
+                <binding.ws uri="http://localhost:8085/HelloWorldService/HelloWorldCallback" policySets="tuscany:BasicAuthenticationPolicySet"/>
             </callback>
         </reference>
     </component>
@@ -43,7 +44,7 @@
         <service name="HelloWorldCallbackService">
             <binding.ws uri="http://localhost:8084/HelloWorldCallbackService"/>
             <callback>
-                <binding.ws/>
+                <binding.ws  policySets="tuscany:BasicAuthenticationPolicySet"/>
             </callback>            
         </service>   
     </component>    

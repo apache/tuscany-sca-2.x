@@ -28,6 +28,7 @@ public interface Constants {
     public static final String RELATES_TO 				= "RELATES_TO";
     public static final String ASYNC_RESPONSE_INVOKER 	= "ASYNC_RESPONSE_INVOKER";
     public static final String ASYNC_CALLBACK 			= "ASYNC_CALLBACK";
+    public static final String CALLBACK                 = "CALLBACK";
     
     /**
      *  If you've set the TCCL in your binding impl according to OASIS rules you can prevent
