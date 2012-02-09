@@ -23,8 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -75,7 +77,7 @@ import org.xml.sax.SAXException;
 /**
  * Default implementation of an XMLInputFactory that creates validating
  * XMLStreamReaders.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory implements LSResourceResolver {
@@ -96,14 +98,13 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         this.inputFactory = factoryExtensionPoint.getFactory(XMLInputFactory.class);
         this.documentBuilderFactory = factoryExtensionPoint.getFactory(DocumentBuilderFactory.class);
         this.schemas = registry.getExtensionPoint(ValidationSchemaExtensionPoint.class);
-        this.monitorFactory =
-            registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(MonitorFactory.class);
+        this.monitorFactory = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(MonitorFactory.class);
         this.helper = StAXHelper.getInstance(registry);
     }
 
     /**
      * Constructs a new XMLInputFactory.
-     *
+     * 
      * @param inputFactory
      * @param schemas
      */
@@ -113,11 +114,10 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         this.schemas = schemas;
         this.registry = new DefaultExtensionPointRegistry();
     }
-    
 
     /**
      * Report a exception.
-     *
+     * 
      * @param problems
      * @param message
      * @param model
@@ -129,7 +129,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
     private void warn(Monitor monitor, String message, Object model, Throwable ex) {
         Monitor.warning(monitor, this, "contribution-validation-messages", message, ex);
     }
-    
+
     public static final QName XSD = new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "schema");
 
     private Collection<? extends Source> aggregate(URL... urls) throws IOException, XMLStreamException {
@@ -171,6 +171,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
     /**
      * Initialize the registered schemas and create an aggregated schema for
      * validation.
+     * 
      * @param monitor TODO
      */
     private synchronized void initializeSchemas(Monitor monitor) {
@@ -183,19 +184,36 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         try {
             List<String> uris = schemas.getSchemas();
             int n = uris.size();
-            if (n ==0) {
+            if (n == 0) {
                 return;
             } else {
                 hasSchemas = true;
             }
-            
-            URL[] urls = new URL[uris.size()];
-            for (int i = 0; i < urls.length; i++) {
-                urls[i] = new URL(uris.get(i));
+
+            // For bundleresource: URL(s), this URL constructor
+            // can require org.osgi.framework.AdminPermission
+            final List<String> urisCopy = uris;
+
+            URL[] urls = null;
+            try {
+                urls = AccessController.doPrivileged(new PrivilegedExceptionAction<URL[]>() {
+                    public URL[] run() throws MalformedURLException {
+                        URL[] urlsTemp = new URL[urisCopy.size()];
+                        for (int i = 0; i < urlsTemp.length; i++) {
+                            urlsTemp[i] = new URL(urisCopy.get(i));
+                        }
+                        return urlsTemp;
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                warn(monitor, "PrivilegedActionException", schemas, (MalformedURLException)e.getException());
+                throw (MalformedURLException)e.getException();
             }
-            final Collection<? extends Source> sources = aggregate(urls);            
+
+            final Collection<? extends Source> sources = aggregate(urls);
 
             final SchemaFactory schemaFactory = newSchemaFactory();
+                  
             DOMImplementation impl = null;
             try {
                 impl = documentBuilderFactory.newDocumentBuilder().getDOMImplementation();
@@ -214,45 +232,54 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
                         return schemaFactory.newSchema(sources.toArray(new Source[sources.size()]));
                     }
                 });
+
             } catch (PrivilegedActionException e) {
-            	warn(monitor, "PrivilegedActionException", schemaFactory, (SAXException)e.getException());
-            	hasSchemas = false;
+                warn(monitor, "PrivilegedActionException", schemaFactory, (SAXException)e.getException());
+                hasSchemas = false;
                 throw (SAXException)e.getException();
             }
 
         } catch (SAXException e) {
-//            IllegalStateException ie = new IllegalStateException(e);
-//            error("IllegalStateException", schemas, ie);
-//            throw ie;
+            // IllegalStateException ie = new IllegalStateException(e);
+            // error("IllegalStateException", schemas, ie);
+            // throw ie;
         } catch (Throwable e) {
-            //FIXME Log this, some old JDKs don't support XMLSchema validation
+            // FIXME Log this, some old JDKs don't support XMLSchema validation
             warn(monitor, e.getMessage(), schemas, e);
             hasSchemas = false;
         }
     }
 
     /**
-     * For OSGi:
-     * Create a SchemaFactory in the context of service provider classloaders
+     * For OSGi: Create a SchemaFactory in the context of service provider
+     * classloaders
+     * 
      * @return
      */
     private SchemaFactory newSchemaFactory() {
-        ClassLoader cl =
-            ClassLoaderContext.setContextClassLoader(getClass().getClassLoader(),
-                                                     registry.getServiceDiscovery(),
-                                                     SchemaFactory.class,
-                                                     TransformerFactory.class,
-                                                     SAXParserFactory.class,
-                                                     DocumentBuilderFactory.class
-                                                     );
-        try {
-            // Create an aggregated validation schemas from all the XSDs
-            return SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        } finally {
-            if (cl != null) {
-                Thread.currentThread().setContextClassLoader(cl);
+    
+        SchemaFactory retVal = AccessController.doPrivileged(new PrivilegedAction<SchemaFactory>() {
+            public SchemaFactory run() {
+                ClassLoader cl = ClassLoaderContext.setContextClassLoader(getClass().getClassLoader(),
+                                                                              registry.getServiceDiscovery(),
+                                                                              SchemaFactory.class,
+                                                                              TransformerFactory.class,
+                                                                              SAXParserFactory.class,
+                                                                              DocumentBuilderFactory.class
+                    );
+             
+                try {
+                    // Create an aggregated validation schemas from all the XSDs
+                    return SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                } finally {
+                    if (cl != null) {
+                        Thread.currentThread().setContextClassLoader(cl);
+                    }
+                }
             }
-        }
+        });
+
+        return retVal;
     }
 
     @Override
@@ -305,8 +332,9 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         Monitor monitor = monitorFactory.getContextMonitor();
         initializeSchemas(monitor);
         if (hasSchemas) {
-            return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema, monitor);
-        }else {
+            return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema,
+                                                 monitor);
+        } else {
             return inputFactory.createXMLStreamReader(arg0, arg1);
         }
     }
@@ -349,7 +377,8 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         Monitor monitor = monitorFactory.getContextMonitor();
         initializeSchemas(monitor);
         if (hasSchemas) {
-            return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema, monitor);
+            return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema,
+                                                 monitor);
         } else {
             return inputFactory.createXMLStreamReader(arg0, arg1);
         }
@@ -360,7 +389,8 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         Monitor monitor = monitorFactory.getContextMonitor();
         initializeSchemas(monitor);
         if (hasSchemas) {
-            return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema, monitor);
+            return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema,
+                                                 monitor);
         } else {
             return inputFactory.createXMLStreamReader(arg0, arg1);
         }
@@ -413,9 +443,9 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
 
     public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
         String key = null;
-        if("http://www.w3.org/2001/XMLSchema".equals(type)) {
+        if ("http://www.w3.org/2001/XMLSchema".equals(type)) {
             key = namespaceURI;
-        } else if("http://www.w3.org/TR/REC-xml".equals(type)) {
+        } else if ("http://www.w3.org/TR/REC-xml".equals(type)) {
             key = publicId;
         }
         URL url = Constants.CACHED_XSDS.get(key);
@@ -423,7 +453,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
             systemId = url.toString();
         } else if (url != null && systemId == null) {
             systemId = url.toString();
-        } 
+        }
 
         LSInput input = ls.createLSInput();
         input.setBaseURI(baseURI);
