@@ -97,8 +97,8 @@ public class JAXRSOperationSelectorProcessorTestCase {
         staxProcessor.write(binding, bos, context);
 
         // used for debug comparison
-        // System.out.println(BINDING_WITH_OPERATION_SELECTOR);
-        // System.out.println(bos.toString());
+        System.out.println(BINDING_WITH_OPERATION_SELECTOR);
+        System.out.println(bos.toString());
 
         Assert.assertEquals(BINDING_WITH_OPERATION_SELECTOR, bos.toString());      
         

@@ -86,9 +86,12 @@ public class RESTBindingProcessorTestCase {
         RESTBinding binding = (RESTBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         Assert.assertNotNull(binding);
+        Assert.assertNotNull(binding.getRequestWireFormat());
+        Assert.assertNotNull(binding.getOperationSelector());
         Assert.assertEquals(30000, binding.getReadTimeout());
         Assert.assertEquals(2, binding.getHttpHeaders().size());
         Assert.assertEquals("Cache-Control", binding.getHttpHeaders().get(0).getName());
         Assert.assertEquals("no-cache", binding.getHttpHeaders().get(0).getValue());
+        
     }
 }

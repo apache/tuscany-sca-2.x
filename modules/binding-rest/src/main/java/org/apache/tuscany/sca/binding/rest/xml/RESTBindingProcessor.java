@@ -32,6 +32,14 @@ import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
 import org.apache.tuscany.sca.binding.rest.RESTBindingFactory;
+import org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.JAXRSOperationSelector;
+import org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.JAXRSOperationSelectorFactory;
+import org.apache.tuscany.sca.binding.rest.operationselector.rpc.RPCOperationSelector;
+import org.apache.tuscany.sca.binding.rest.operationselector.rpc.RPCOperationSelectorFactory;
+import org.apache.tuscany.sca.binding.rest.wireformat.json.JSONWireFormat;
+import org.apache.tuscany.sca.binding.rest.wireformat.json.JSONWireFormatFactory;
+import org.apache.tuscany.sca.binding.rest.wireformat.xml.XMLWireFormat;
+import org.apache.tuscany.sca.binding.rest.wireformat.xml.XMLWireFormatFactory;
 import org.apache.tuscany.sca.common.http.HTTPHeader;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
@@ -55,19 +63,35 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
     private static final QName HEADER_QNAME = new QName(Base.SCA11_TUSCANY_NS, "header");
     private static final QName RESPONSE_QNAME = new QName(Base.SCA11_TUSCANY_NS, "response");
 
+    private static final QName WIRE_FORMAT_JSON = new QName(Base.SCA11_TUSCANY_NS, "wireFormat.json");
+    private static final QName WIRE_FORMAT_XML = new QName(Base.SCA11_TUSCANY_NS, "wireFormat.xml");
+    
+    private static final QName OPERATION_SELCTOR_RPC = new QName(Base.SCA11_TUSCANY_NS, "operationSelector.rpc");
+    private static final QName OPERATION_SELCTOR_JAXRS = new QName(Base.SCA11_TUSCANY_NS, "operationSelector.jaxrs");
+    
     private static final String NAME = "name";
     private static final String VALUE = "value";
     private static final String URI = "uri";
     private static final String READ_TIMEOUT = "readTimeout";
 
-    private RESTBindingFactory httpBindingFactory;
+    private RESTBindingFactory restBindingFactory;
+    private JSONWireFormatFactory jsonWireFormatFactory;
+    private XMLWireFormatFactory xmlWireFormatFactory;
+    private JAXRSOperationSelectorFactory jaxrsOperationSelectorFactory;
+    private RPCOperationSelectorFactory rpcOperationSelectorFactory;
+    
     private StAXArtifactProcessor<Object> extensionProcessor;
 
     public RESTBindingProcessor(ExtensionPointRegistry extensionPoints,
                                 StAXArtifactProcessor<Object> extensionProcessor,
                                 StAXAttributeProcessor<Object> extensionAttributeProcessor) {
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-        this.httpBindingFactory = modelFactories.getFactory(RESTBindingFactory.class);
+        this.restBindingFactory = modelFactories.getFactory(RESTBindingFactory.class);
+        this.jsonWireFormatFactory = modelFactories.getFactory(JSONWireFormatFactory.class);
+        this.xmlWireFormatFactory = modelFactories.getFactory(XMLWireFormatFactory.class);
+        this.jaxrsOperationSelectorFactory = modelFactories.getFactory(JAXRSOperationSelectorFactory.class);
+        this.rpcOperationSelectorFactory = modelFactories.getFactory(RPCOperationSelectorFactory.class);
+        
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
     }
 
@@ -80,7 +104,7 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
     }
 
     public RESTBinding read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
-        RESTBinding restBinding = httpBindingFactory.createRESTBinding();
+        RESTBinding restBinding = restBindingFactory.createRESTBinding();
 
         /**
          *    <tuscany:binding.rest uri="http://localhost:8085/Customer" readTimeout="60000">
@@ -155,7 +179,8 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
                         }
 
                         // dispatch to read wire format for the response
-                        Object extension = extensionProcessor.read(reader, context);
+                        //Object extension = extensionProcessor.read(reader, context);
+                        Object extension = readWireFormatAndOperationSelectorExtensions(reader);
                         if (extension != null) {
                             if (extension instanceof WireFormat) {
                                 restBinding.setResponseWireFormat((WireFormat)extension);
@@ -164,7 +189,8 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
                         break;
                     } else {
                         // Read an extension element
-                        Object extension = extensionProcessor.read(reader, context);
+                        //Object extension = extensionProcessor.read(reader, context);
+                        Object extension = readWireFormatAndOperationSelectorExtensions(reader);
                         if (extension != null) {
                             if (extension instanceof WireFormat) {
                                 restBinding.setRequestWireFormat((WireFormat)extension);
@@ -196,9 +222,6 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
         return restBinding;
     }
 
-    private String getReadTimeoutString(XMLStreamReader reader, String readTimeout) {
-        return StAXHelper.getAttributeAsString(reader, readTimeout);
-    }
 
     public void write(RESTBinding restBinding, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
 
@@ -216,17 +239,19 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
 
         // Write operation selectors
         if ( restBinding.getOperationSelector() != null ) {
-            extensionProcessor.write(restBinding.getOperationSelector(), writer, context);
+            writeWireFormatAndOperationSelectorExtensions(writer, restBinding.getOperationSelector());
         }
 
         // Write wire formats
         if ( restBinding.getRequestWireFormat() != null ) {
-            extensionProcessor.write(restBinding.getRequestWireFormat(), writer, context);
+            writeWireFormatAndOperationSelectorExtensions(writer, restBinding.getRequestWireFormat());
         }
 
         if ( restBinding.getResponseWireFormat() != null && restBinding.getRequestWireFormat() != restBinding.getResponseWireFormat()) {
             writeStart(writer, RESPONSE_QNAME.getNamespaceURI(), RESPONSE_QNAME.getLocalPart());
-            extensionProcessor.write(restBinding.getResponseWireFormat(), writer, context);
+            if(restBinding.getResponseWireFormat() != null) {
+                writeWireFormatAndOperationSelectorExtensions(writer, restBinding.getResponseWireFormat());
+            }
             writeEnd(writer);
         }
 
@@ -240,4 +265,40 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
 
     }
 
+    private String getReadTimeoutString(XMLStreamReader reader, String readTimeout) {
+        return StAXHelper.getAttributeAsString(reader, readTimeout);
+    }
+    
+    private Object readWireFormatAndOperationSelectorExtensions(XMLStreamReader reader)  throws XMLStreamException {
+        QName elementName = reader.getName();
+        
+        if(WIRE_FORMAT_JSON.equals(elementName)) {
+            return this.jsonWireFormatFactory.createRESTWireFormatJSON();
+        } else if(WIRE_FORMAT_XML.equals(elementName)) {
+            return this.xmlWireFormatFactory.createRESTWireFormatXML();
+        } else if(OPERATION_SELCTOR_JAXRS.equals(elementName)) {
+            return this.jaxrsOperationSelectorFactory.createJAXRSOperationSelector();
+        } else if(OPERATION_SELCTOR_RPC.equals(elementName)) {
+            return this.rpcOperationSelectorFactory.createRPCOperationSelector();
+        }
+        
+        return null;
+    }
+    
+    private void writeWireFormatAndOperationSelectorExtensions(XMLStreamWriter writer, Object object) throws XMLStreamException {
+        
+        if(object instanceof JSONWireFormat) {
+            writeStart(writer, WIRE_FORMAT_JSON.getNamespaceURI(), WIRE_FORMAT_JSON.getLocalPart());
+            writeEnd(writer);
+        } else if (object instanceof XMLWireFormat) {
+            writeStart(writer, WIRE_FORMAT_XML.getNamespaceURI(), WIRE_FORMAT_XML.getLocalPart());
+            writeEnd(writer);
+        } else if (object instanceof JAXRSOperationSelector) {
+            writeStart(writer, OPERATION_SELCTOR_JAXRS.getNamespaceURI(), OPERATION_SELCTOR_JAXRS.getLocalPart());
+            writeEnd(writer);
+        } else if (object instanceof RPCOperationSelector) {
+            writeStart(writer, OPERATION_SELCTOR_RPC.getNamespaceURI(), OPERATION_SELCTOR_RPC.getLocalPart());
+            writeEnd(writer);
+        }        
+    }
 }
