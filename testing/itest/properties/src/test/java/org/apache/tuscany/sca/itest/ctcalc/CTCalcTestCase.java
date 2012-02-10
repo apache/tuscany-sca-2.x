@@ -84,7 +84,7 @@ public class CTCalcTestCase {
     @Test
     public void testUnannotatedExtension() {
         assertEquals("Unannotated", unannotatedComponent.test());
-        assertEquals(2, ((NodeImpl)node).getDomainComposite().getComponents().get(1).getProperties().size());
+        assertEquals(4, ((NodeImpl)node).getDomainComposite().getComponents().get(1).getProperties().size());
         System.out.println(((NodeImpl)node).getDomainComposite().getComponents().get(1).getProperties());
     }
 
@@ -95,7 +95,6 @@ public class CTCalcTestCase {
         System.out.println(((NodeImpl)node).getDomainComposite().getComponents().get(2).getProperties());
     }
     
-    @Ignore("TUSCANY-3924 playing with whether we should take note of inherited annotations as per JSR-250")
     @Test
     public void testAnnotated2Extension() {
         assertEquals("Annotated", annotatedComponent.test());

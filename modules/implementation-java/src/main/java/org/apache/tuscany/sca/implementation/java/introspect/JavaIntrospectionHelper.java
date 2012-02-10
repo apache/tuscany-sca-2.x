@@ -83,8 +83,7 @@ public final class JavaIntrospectionHelper {
         if (clazz == null || clazz.isArray() || Object.class.equals(clazz)) {
             return fields;
         }
-        // TUSCANY-3924 - don't consider inherited fields
-        //fields = getAllPublicAndProtectedFields(clazz.getSuperclass(), fields, validating);
+        fields = getAllPublicAndProtectedFields(clazz.getSuperclass(), fields, validating);
 
         Field[] declaredFields = null;
 
@@ -137,8 +136,7 @@ public final class JavaIntrospectionHelper {
             return fields;
         }
 
-        // TUSCANY-3924 - don't consider inherited fields
-        //fields = getInjectableFields(clazz.getSuperclass(), fields, validating);
+        fields = getInjectableFields(clazz.getSuperclass(), fields, validating);
 
         Field[] declaredFields = null;
 
@@ -237,8 +235,7 @@ public final class JavaIntrospectionHelper {
         }
         // evaluate class hierarchy - this is done last to track inherited
         // methods
-        // TUSCANY-3924 - don't consider inherited fields
-        //methods = getAllUniqueMethods(pClass.getSuperclass(), methods, validating);
+        methods = getAllUniqueMethods(pClass.getSuperclass(), methods, validating);
         return methods;
     }
 

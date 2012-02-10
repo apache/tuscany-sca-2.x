@@ -35,10 +35,8 @@
     
     <component name="Annotated2Component">
         <implementation.java class="org.apache.tuscany.sca.itest.ctcalc.Annotated2CTCalcComponentImpl" />
-        <property name="aPropertyAnnotated" value="xyz"/>
-<!-- TUSCANY-3924 playing with whether we should take note of inherited annotations as per JSR-250       
+        <property name="aPropertyAnnotated" value="xyz"/>    
         <property name="aPropertyPublic" value="abc"/>
- -->
     </component> 
 
 </composite>
