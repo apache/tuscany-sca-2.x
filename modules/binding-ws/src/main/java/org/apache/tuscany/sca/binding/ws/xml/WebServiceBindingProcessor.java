@@ -178,6 +178,7 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
         String uri = getURIString(reader, URI);
         if (uri != null) {
             wsBinding.setURI(uri);
+            wsBinding.setUserSpecifiedURI(uri);
             
             // BWS20001
             if (context.getParentModel() instanceof Reference){

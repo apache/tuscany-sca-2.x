@@ -86,6 +86,7 @@ class WebServiceBindingImpl implements WebServiceBinding, DefaultingPolicySubjec
     private boolean isLiteralEncoding;
     private boolean isMessageWrapped;
     private Map<String, String> wsdliLocations = new HashMap<String, String>();
+    private String userSpecifiedUri;
 
     protected WebServiceBindingImpl() {
     }
@@ -104,6 +105,10 @@ class WebServiceBindingImpl implements WebServiceBinding, DefaultingPolicySubjec
     public String getURI() {
         return uri;
     }
+    
+    public String getUserSpecifiedURI() {
+        return userSpecifiedUri;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -112,6 +117,10 @@ class WebServiceBindingImpl implements WebServiceBinding, DefaultingPolicySubjec
     public void setURI(String uri) {
         this.uri = uri;
     }
+    
+    public void setUserSpecifiedURI(String uri) {
+        this.userSpecifiedUri = uri;
+    }    
 
     public boolean isUnresolved() {
         return unresolved;

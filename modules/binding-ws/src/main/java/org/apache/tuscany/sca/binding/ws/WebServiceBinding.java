@@ -276,4 +276,18 @@ public interface WebServiceBinding extends Binding {
      * to use a JMS transport
      */
     boolean isJMSTransport();
+    
+    /**
+     * Returns the user specified binding name.
+     *
+     * @return the binding uri
+     */
+    String getUserSpecifiedURI();
+
+    /**
+     * Sets the user specified binding uri.
+     *
+     * @param name the binding uri
+     */
+    void setUserSpecifiedURI(String uri);
 }  
