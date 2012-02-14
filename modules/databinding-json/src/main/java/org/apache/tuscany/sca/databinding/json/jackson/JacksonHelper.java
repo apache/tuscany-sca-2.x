@@ -104,8 +104,9 @@ public class JacksonHelper {
             mapper = new ObjectMapper();
             mapper.registerModule(new JsonOrgModule());
         }
-        AnnotationIntrospector primary = new JaxbAnnotationIntrospector();
-        AnnotationIntrospector secondary = new JacksonAnnotationIntrospector();
+        // Let's honor the Jackson annotations first
+        AnnotationIntrospector primary = new JacksonAnnotationIntrospector();
+        AnnotationIntrospector secondary = new JaxbAnnotationIntrospector();
         AnnotationIntrospector pair = new AnnotationIntrospector.Pair(primary, secondary);
         mapper.setDeserializationConfig(mapper.getDeserializationConfig().withAnnotationIntrospector(pair)
             .without(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES)
