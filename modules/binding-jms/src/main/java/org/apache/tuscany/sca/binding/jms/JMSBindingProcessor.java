@@ -1560,7 +1560,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         writer.writeStartElement(Constants.SCA11_NS, "activationSpec");
 
         if ( asName != null && asName.length() > 0) {
-            writer.writeAttribute("name", asName);            
+            writer.writeAttribute("jndiName", asName);            
         }
 
         String destinationCreate = jmsBinding.getActivationSpecCreate();
