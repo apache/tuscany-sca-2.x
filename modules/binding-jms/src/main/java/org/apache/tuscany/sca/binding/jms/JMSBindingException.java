@@ -18,12 +18,14 @@
  */
 package org.apache.tuscany.sca.binding.jms;
 
+import org.oasisopen.sca.ServiceRuntimeException;
+
 /**
  * Base exception for the JMSBinding.
  *
  * @version $Rev$ $Date$
  */
-public class JMSBindingException extends RuntimeException {
+public class JMSBindingException extends ServiceRuntimeException {
     private static final long serialVersionUID = 1L;
 
     public JMSBindingException() {
