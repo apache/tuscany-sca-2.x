@@ -483,6 +483,7 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                         // if no URI specified set it from the WSDL port location
                         if (model.getURI() == null){
                             model.setURI(getPortAddress(port));
+                            model.setUserSpecifiedURI(model.getURI());
                         }
                     } else {
                         error(monitor, "WsdlPortTypeDoesNotMatch", wsdlDefinition, model.getPortName());
