@@ -67,4 +67,15 @@
 	    </service>
     </component> 
     
+    
+    <!-- Component used to implement SubGenericsService -->
+    <component name="SubGenericsServiceComponent">
+    	<implementation.java class="org.apache.tuscany.sca.itest.services.SubGenericsServiceImpl"/>
+    </component>
+    
+     <!-- A SubGenericsServiceClientImpl component that uses SCA binding to invoke SubGenericsService service -->
+    <component name="SubGenericsServiceClientSCAComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.services.SubGenericsServiceClientImpl" />
+        <reference name="subGenericsService" target="SubGenericsServiceComponent"/>
+    </component>
 </composite>
