@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ASCII"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
+             targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
+    		 xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
+    		 xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
+
+    <!--  We're not testing real repliability policy here. Just looking
+          at how the exactly once profile intent is handled. -->
+    <sca:policySet name="TestPolicySet1"
+                   attachTo="//sca:binding.ws"
+                   provides="sca:exactlyOnce"
+                   appliesTo="//sca:binding.ws">
+        <tuscany:testPolicy testString="exactlyonce"/>
+    </sca:policySet>
+    
+    <sca:policySet name="TestPolicySet2"
+                   attachTo="//sca:binding.ws"
+                   provides="sca:atLeastOnce"
+                   appliesTo="//sca:binding.ws">
+        <tuscany:testPolicy testString="atleastonce"/>
+    </sca:policySet>
+
+    <sca:policySet name="TestPolicySet3"
+                   attachTo="//sca:binding.ws"
+                   provides="sca:atMostOnce"
+                   appliesTo="//sca:binding.ws">
+        <tuscany:testPolicy testString="atmostonce"/>
+    </sca:policySet>
+    
+</definitions>
