@@ -348,18 +348,34 @@ public class NodeImpl implements Node {
             throw new IllegalStateException("composite already started: " + compositeURI);
         }
         DeployedComposite dc = stoppedComposites.remove(key);
-        if (dc != null) {
-            dc.start();
-            startedComposites.put(key, dc);
-        } else {
-            ContributionDescription cd = getInstalledContribution(contributionURI);
-            Contribution contribution = loadContribution(cd);
-            Composite composite = contribution.getArtifactModel(compositeURI);
-            List<Contribution> dependentContributions = calculateDependentContributions(cd);
-            dc = new DeployedComposite(composite, contribution, dependentContributions, deployer, compositeActivator, domainRegistry, extensionPointRegistry, endpointsIncludeDomainName);
-            dc.start();
-            startedComposites.put(key, dc);
-        }
+        try {
+            if (dc != null) {
+                dc.start();
+                startedComposites.put(key, dc);
+            } else {
+                ContributionDescription cd = getInstalledContribution(contributionURI);
+                Contribution contribution = loadContribution(cd);
+                Composite composite = contribution.getArtifactModel(compositeURI);
+                List<Contribution> dependentContributions = calculateDependentContributions(cd);
+                dc = new DeployedComposite(composite, contribution, dependentContributions, deployer, compositeActivator, domainRegistry, extensionPointRegistry, endpointsIncludeDomainName);
+                dc.start();
+                startedComposites.put(key, dc);
+            }
+        }catch(ActivationException e){ 
+            if(dc != null){
+                try {
+                    // try to stop the composite. This should have already happened
+                    // in the activator if the composite failed to start but we're
+                    // being sure
+                    dc.stop();
+                } catch (Exception ex) {
+                    // do nothing as we are going to throw the 
+                    // original exception
+                }
+                stoppedComposites.put(key, dc); 
+            }
+            throw e; 
+        } 
         if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "startComposite: " + key);
     }
 
@@ -395,18 +411,22 @@ public class NodeImpl implements Node {
     public void stopCompositeAndUninstallUnused(String contributionURI, String compositeURI) throws ActivationException {
         String key = contributionURI+"/"+compositeURI;
         DeployedComposite dc = startedComposites.remove(key);
-        if (dc == null) {
-            throw new IllegalArgumentException("No startd composite found: " + key);
+        if (dc != null) {
+            dc.stop();
+        } else {
+            // check in the stopped list in case it stopped on failure during start
+            dc = stoppedComposites.get(key);
         }
-        dc.stop();
 
-        loop: for (String curi : dc.getContributionURIs()) {
-            for (DeployedComposite started : startedComposites.values()) {
-                if (started.getContributionURIs().contains(curi)) {
-                    continue loop;
+        if (dc != null) {
+            loop: for (String curi : dc.getContributionURIs()) {
+                for (DeployedComposite started : startedComposites.values()) {
+                    if (started.getContributionURIs().contains(curi)) {
+                        continue loop;
+                    }
                 }
+                uninstallContribution(curi);
             }
-            uninstallContribution(curi);
         }
         if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "stopCompositeAndUninstallUnused: " + key);
     }

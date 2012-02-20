@@ -58,6 +58,7 @@
 <!--
     <module>three-nodes-three-vms-test</module>
 -->
+    <module>domain-node</module>
   </modules>
 
 </project>
