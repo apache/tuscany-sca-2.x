@@ -78,7 +78,7 @@ public class WebServiceBindingBuilder implements BindingBuilder<WebServiceBindin
         * user specifies the SOAP.v1_2 the binding does SOAP.v1_2 instead of SOAP.v1_1
         * 
         * This logic is here rather than in the binding model so that the behaviour
-        * of the implementation is not dictated by the hard coded condifuration of the
+        * of the implementation is not dictated by the hard coded configuration of the
         * model. This build runs before the policy builders where this information is used
         * TODO - can we get this code into the actual impl modules itself. Move this builder?
         */        
