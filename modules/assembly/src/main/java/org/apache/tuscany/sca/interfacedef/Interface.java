@@ -57,6 +57,15 @@ public interface Interface extends Cloneable, PolicySubject {
      * @return
      */
     boolean isRemotableSet();
+    
+    /**
+     * A flag that indicates if the remotable status has come
+     * from the <interface.? remotable=""/> attribute
+     * 
+     * @return
+     */
+    boolean isRemotableSetFromSCDL();
+    void setRemotableSetFromSCDL();
 
     /**
      * Returns the operations defined on this interface.

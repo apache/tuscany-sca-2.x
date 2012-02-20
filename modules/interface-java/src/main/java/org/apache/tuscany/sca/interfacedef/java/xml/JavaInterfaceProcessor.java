@@ -166,6 +166,7 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
         String remotable = reader.getAttributeValue(null, REMOTABLE);
         if (remotable != null) {
             javaInterfaceContract.getInterface().setRemotable(Boolean.parseBoolean(remotable));
+            javaInterfaceContract.getInterface().setRemotableSetFromSCDL();
         }
         
         // Read intents and policy sets
@@ -190,7 +191,7 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
             writer.writeAttribute(INTERFACE, javaInterface.getName());
         }
         
-        if(javaInterface != null && javaInterface.isRemotableSet()) {
+        if(javaInterface != null && javaInterface.isRemotableSetFromSCDL()) {
             writer.writeAttribute(REMOTABLE, String.valueOf(javaInterface.isRemotable()));
         }
         

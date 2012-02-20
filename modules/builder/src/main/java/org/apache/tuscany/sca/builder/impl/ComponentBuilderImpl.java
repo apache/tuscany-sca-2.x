@@ -1509,6 +1509,15 @@ public class ComponentBuilderImpl {
         if (topInterfaceContract == null) {
             topContract.setInterfaceContract(bottomInterfaceContract);
         } else if (bottomInterfaceContract != null) {
+            // apply remotable override if it has been specified in the SCDL for the
+            // higher level contract
+            if (topInterfaceContract.getInterface().isRemotableSetFromSCDL() == true){
+                if (bottomInterfaceContract.getInterface().isRemotable() == false &&   
+                    topInterfaceContract.getInterface().isRemotable() == true){
+                    bottomInterfaceContract.getInterface().setRemotable(true);
+                }
+            }
+            
             // Check that the top and bottom interface contracts are compatible
             boolean isCompatible = true;
             String incompatibilityReason = "";
@@ -1569,6 +1578,14 @@ public class ComponentBuilderImpl {
         if (topInterfaceContract == null) {
             topContract.setInterfaceContract(bottomInterfaceContract);
         } else if (bottomInterfaceContract != null) {
+            // apply remotable override if it has been specified in the SCDL for the
+            // higher level contract
+            if (topInterfaceContract.getInterface().isRemotableSetFromSCDL() == true){
+                if (bottomInterfaceContract.getInterface().isRemotable() == false &&   
+                    topInterfaceContract.getInterface().isRemotable() == true){
+                    bottomInterfaceContract.getInterface().setRemotable(true);
+                }
+            }
             // Check that the top and bottom interface contracts are compatible
             boolean isCompatible = true;
             String incompatibilityReason = "";

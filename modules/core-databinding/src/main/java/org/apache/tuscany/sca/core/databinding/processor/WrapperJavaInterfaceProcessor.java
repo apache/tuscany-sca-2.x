@@ -52,9 +52,11 @@ public class WrapperJavaInterfaceProcessor implements JavaInterfaceVisitor {
     }
 
     public void visitInterface(JavaInterface javaInterface) throws InvalidInterfaceException {
-        if (!javaInterface.isRemotable()) {
-            return;
-        }
+        // create regardless in case the user overrides the remotable flag
+        // in the SCDL
+        //if (!javaInterface.isRemotable()) {
+        //    return;
+        //}
         for (Operation operation : javaInterface.getOperations()) {
             WrapperInfo inputWrapperInfo = operation.getInputWrapper();
             WrapperInfo outputWrapperInfo = operation.getOutputWrapper();

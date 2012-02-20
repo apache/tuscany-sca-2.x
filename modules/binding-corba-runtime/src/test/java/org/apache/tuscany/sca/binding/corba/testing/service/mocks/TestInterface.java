@@ -60,6 +60,17 @@ public class TestInterface implements JavaInterface {
     public boolean isRemotable() {
         return false;
     }
+    
+    @Override
+    public void setRemotableSetFromSCDL() {
+        // TODO Auto-generated method stub
+    }
+    
+    @Override
+    public boolean isRemotableSetFromSCDL() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
     public void resetDataBinding(String dataBinding) {
 

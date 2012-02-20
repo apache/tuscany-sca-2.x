@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 public class InterfaceImpl implements Interface {
 
     private Boolean remotable;
+    private boolean remotableSetFromSCDL = false;
     private boolean conversational;
     private OperationList operations = new OperationList();
     private boolean unresolved;
@@ -64,6 +65,16 @@ public class InterfaceImpl implements Interface {
     
     public boolean isRemotableSet() {
         return remotable == null ? false : true;
+    }
+    
+    @Override
+    public boolean isRemotableSetFromSCDL() {
+        return remotableSetFromSCDL;
+    }
+    
+    @Override
+    public void setRemotableSetFromSCDL() {
+        remotableSetFromSCDL = true;
     }
 
     public List<Operation> getOperations() {

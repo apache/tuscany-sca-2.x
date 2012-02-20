@@ -47,9 +47,11 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
     }
 
     public void visitInterface(JavaInterface javaInterface) throws InvalidInterfaceException {
-        if (!javaInterface.isRemotable()) {
-            return;
-        }
+        // Set the data types regardless in case the
+        // user overrides the remotable status in the SCDL
+        //if (!javaInterface.isRemotable()) {
+        //    return;
+        //}
         List<Operation> operations = javaInterface.getOperations();
         processInterface(javaInterface, operations);
     }

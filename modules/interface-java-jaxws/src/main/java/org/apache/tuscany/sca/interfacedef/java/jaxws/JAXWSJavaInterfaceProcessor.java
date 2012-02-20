@@ -117,9 +117,11 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
         contract = JAXWSUtils.configureJavaInterface(contract, clazz);
         String tns = contract.getQName().getNamespaceURI();      
         
-        if (!contract.isRemotable()) {
-            return;
-        }
+        // run this regardless in case the user overrides 
+        // the remotable flag in the SCDL
+        //if (!contract.isRemotable()) {
+        //    return;
+        //}
 
         // SOAP binding (doc/lit/wrapped|bare or rpc/lit)
         SOAPBinding soapBinding = clazz.getAnnotation(SOAPBinding.class);
