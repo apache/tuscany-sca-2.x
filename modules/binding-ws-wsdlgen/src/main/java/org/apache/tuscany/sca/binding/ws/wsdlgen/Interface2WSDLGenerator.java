@@ -411,7 +411,7 @@ public class Interface2WSDLGenerator {
 
         // generate schema elements for wrappers that aren't defined in the schemas
         // TUSCANY-3283 - as we're generating wrappers with JAXB it won't 
-        //                go through here for all wrappers. It will just have to do there ones
+        //                go through here for all wrappers. It will just have to do the ones
         //                where there is no JAXB mapping for the child types, e.g. SDO DataObject
         if (wrappers.size() > 0) {
             int i = 0;
