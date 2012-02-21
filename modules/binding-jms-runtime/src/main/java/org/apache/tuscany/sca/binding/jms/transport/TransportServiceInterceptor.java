@@ -192,12 +192,9 @@ public class TransportServiceInterceptor extends InterceptorAsyncImpl {
             MessageProducer producer = session.createProducer(replyDest);
             
             // Set jms header attributes in producer, not message.
-            int deliveryMode = requestJMSMsg.getJMSDeliveryMode();
-            producer.setDeliveryMode(deliveryMode);
-            int deliveryPriority = requestJMSMsg.getJMSPriority();
-            producer.setPriority(deliveryPriority);
-            long timeToLive = requestJMSMsg.getJMSExpiration();
-            producer.setTimeToLive(timeToLive);
+            producer.setDeliveryMode(responseJMSMsg.getJMSDeliveryMode());
+            producer.setPriority(responseJMSMsg.getJMSPriority());
+            producer.setTimeToLive(responseJMSMsg.getJMSExpiration());
     
             producer.send((javax.jms.Message)msg.getBody());
     
