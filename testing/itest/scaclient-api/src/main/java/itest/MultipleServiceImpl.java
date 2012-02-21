@@ -31,7 +31,4 @@ public class MultipleServiceImpl implements HelloworldService, HelloworldService
         return "Hello " + name;
     }
 
-    public String sayHelloAgain(String name) {
-        return "Hello again " + name;
-    }
 }

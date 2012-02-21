@@ -416,16 +416,24 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                 matchedEndpoint = endpoints.get(0);
             }
         } else {
-            // find the first endpoint that matches this endpoint reference
+            // find the endpoints that match this endpoint reference
+            List<Endpoint> matchedEndpoints = new ArrayList<Endpoint>();
+            
+            for (Endpoint endpoint : endpoints){
+                if (haveMatchingPolicy(endpointReference, endpoint, matchAudit, builderContext) &&
+                    haveMatchingInterfaceContracts(endpointReference, endpoint, matchAudit)){
+                    matchedEndpoints.add(endpoint);
+                }
+            }
             
             // TUSCANY-4005 - raise an error if a reference target that only specifies the
             //                component name matches more than one component service
             if (endpointReference.getTargetEndpoint().getService() == null &&
                 endpointReference.getTargetEndpoint().getBinding() == null &&
-                endpoints.size() > 1   ) {
+                matchedEndpoints.size() > 1   ) {
                 
                 String serviceName = null;
-                for (Endpoint endpoint : endpoints){
+                for (Endpoint endpoint : matchedEndpoints){
                     // ignore service names called "default" as these indicate dynamic services
                     // created for the likes of implementation.python
                     if (serviceName == null &&
@@ -458,8 +466,6 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                     }
                 }
             }
-           
-            boolean findTargetSCABinding = false;
             
             // TUSCANY-3941 check for the case where the user has provided a 
             //              binding.sca at the reference and make sure we pick
@@ -467,16 +473,18 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             //              other bindings are provided
             if (endpointReference.getBinding() != null &&
                 endpointReference.getBinding() instanceof SCABinding ){
-                findTargetSCABinding = true;
-            }
-            
-            for (Endpoint endpoint : endpoints){
-                if (haveMatchingPolicy(endpointReference, endpoint, matchAudit, builderContext) &&
-                    haveMatchingInterfaceContracts(endpointReference, endpoint, matchAudit) &&
-                    (findTargetSCABinding == false ||
-                     (findTargetSCABinding == true && endpoint.getBinding() instanceof SCABinding))){
-                    matchedEndpoint = endpoint;
-                    break;
+                for (Endpoint endpoint : matchedEndpoints){
+                    if (endpoint.getBinding() instanceof SCABinding){
+                        matchedEndpoint = endpoint;
+                        break;
+                    }
+                }
+            } 
+
+            if (matchedEndpoint == null) {
+                // just take the first matched endpoint from the list
+                if (matchedEndpoints.size() > 0){
+                    matchedEndpoint = matchedEndpoints.get(0);
                 }
             }
         }

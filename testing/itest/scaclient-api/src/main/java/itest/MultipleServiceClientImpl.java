@@ -32,7 +32,7 @@ public class MultipleServiceClientImpl implements HelloworldService  {
     public HelloworldServiceAgain helloWorld;
 
     public String sayHello(String name) {
-        return "Hello " + helloWorld.sayHelloAgain(name);
+        return "Hello " + helloWorld.sayHello(name);
     }
 
 }

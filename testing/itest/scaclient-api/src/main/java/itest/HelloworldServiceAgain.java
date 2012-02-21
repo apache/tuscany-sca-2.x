@@ -20,6 +20,6 @@ package itest;
 
 public interface HelloworldServiceAgain {
 
-    String sayHelloAgain(String name);
+    String sayHello(String name);
 
 }
