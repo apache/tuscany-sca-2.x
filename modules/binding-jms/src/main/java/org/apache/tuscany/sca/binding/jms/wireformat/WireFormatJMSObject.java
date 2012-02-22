@@ -54,4 +54,9 @@ public class WireFormatJMSObject implements WireFormat {
     public boolean isWrappedSingleInput() {
         return wrappedSingleInput;
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        return this.getClass() == obj.getClass();
+    }
 }
