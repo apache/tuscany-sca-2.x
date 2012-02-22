@@ -73,6 +73,7 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
     private static final String VALUE = "value";
     private static final String URI = "uri";
     private static final String READ_TIMEOUT = "readTimeout";
+    private static final String CORS ="isCORS";
 
     private RESTBindingFactory restBindingFactory;
     private JSONWireFormatFactory jsonWireFormatFactory;
@@ -140,10 +141,16 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
                             restBinding.setURI(uri);
                         }
                         
-                        String readTimeout = getReadTimeoutString(reader, READ_TIMEOUT);
+                        String readTimeout = getString(reader, READ_TIMEOUT);
                         if (readTimeout != null) {
                             restBinding.setReadTimeout(Integer.valueOf(readTimeout));
                         }
+                        
+                        Boolean isCORS = getBoolean(reader, CORS);
+                        if(isCORS != null) {
+                            restBinding.setCORS(isCORS);
+                        }
+                        
                         break;
 
                     } else if (HEADERS_QNAME.equals(elementName)) {
@@ -265,10 +272,6 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
 
     }
 
-    private String getReadTimeoutString(XMLStreamReader reader, String readTimeout) {
-        return StAXHelper.getAttributeAsString(reader, readTimeout);
-    }
-    
     private Object readWireFormatAndOperationSelectorExtensions(XMLStreamReader reader)  throws XMLStreamException {
         QName elementName = reader.getName();
         

@@ -53,4 +53,11 @@ public interface RESTBinding extends Binding {
      * @return
      */
     public boolean isCORS();
+    
+    /**
+     * Enable/Disable CORS support for the REST binding
+     * @param isCors
+     * @return
+     */
+    public void setCORS(boolean isCors);
 }

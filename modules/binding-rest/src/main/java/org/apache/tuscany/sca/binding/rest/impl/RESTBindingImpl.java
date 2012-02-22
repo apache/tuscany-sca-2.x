@@ -40,9 +40,10 @@ class RESTBindingImpl implements RESTBinding {
     private String name;
     private String uri;
 
-    private List<HTTPHeader> httpHeaders = new ArrayList<HTTPHeader>();
-
     private int readTimeout = 60000;
+    private boolean isCORS = false;
+    
+    private List<HTTPHeader> httpHeaders = new ArrayList<HTTPHeader>();
 
     private WireFormat requestWireFormat;
     private WireFormat responseWireFormat;
@@ -68,6 +69,22 @@ class RESTBindingImpl implements RESTBinding {
         this.uri = uri;
     }
 
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+    
+    public boolean isCORS() {
+        return isCORS;
+    }
+
+    public void setCORS(boolean isCORS) {
+        this.isCORS = isCORS;
+    }
+    
     public List<HTTPHeader> getHttpHeaders() {
         return this.httpHeaders;
     }
@@ -109,17 +126,5 @@ class RESTBindingImpl implements RESTBinding {
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
-    }
-
-    public boolean isCORS() {
-        return true;
-    }
-
-    public int getReadTimeout() {
-        return readTimeout;
-    }
-
-    public void setReadTimeout(int readTimeout) {
-        this.readTimeout = readTimeout;
     }
 }
