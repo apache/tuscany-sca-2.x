@@ -36,8 +36,21 @@ public interface RESTBinding extends Binding {
     
     public List<HTTPHeader> getHttpHeaders();
 
+    /**
+     * Retrieve read timeout configuration for the REST binding
+     * @return
+     */
     public int getReadTimeout();
+    
+    /**
+     * Configure read timeout for the REST binding
+     * @param timeout
+     */
     public void setReadTimeout(int timeout);
     
+    /**
+     * Flag to enable CORS support on the REST binding
+     * @return
+     */
     public boolean isCORS();
 }
