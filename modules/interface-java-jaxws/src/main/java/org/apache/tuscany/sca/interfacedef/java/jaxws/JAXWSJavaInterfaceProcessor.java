@@ -175,33 +175,40 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
             // Handle BARE mapping
             if (bare) {
                 for (int i = 0; i < method.getParameterTypes().length; i++) {
+                    String ns = tns;
+                    // Default to <operationName> for doc-bare
+                    String name = (documentStyle ? operationName : "arg" + i);
                     WebParam param = getAnnotation(method, i, WebParam.class);
                     if (param != null) {
-                        String ns = getValue(param.targetNamespace(), tns);
-                        // Default to <operationName> for doc-bare
-                        String name = getValue(param.name(), documentStyle ? operationName : "arg" + i);
-                        QName element = new QName(ns, name);
-                        Object logical = operation.getInputType().getLogical().get(i).getLogical();
-                        if (logical instanceof XMLType) {
-                            ((XMLType)logical).setElementName(element);
-                        }
+                        if (!"".equals(param.targetNamespace()))
+                            ns = param.targetNamespace();
+                        if (!"".equals(param.name()))
+                            name = param.name();
                         operation.getParameterModes().set(i, getParameterMode(param.mode()));
                     }
-                    ParameterMode mode = operation.getParameterModes().get(i);
-                }
-        
-                WebResult result = method.getAnnotation(WebResult.class);
-                if (result != null) {
-                    String ns = getValue(result.targetNamespace(), tns);
-                    // Default to <operationName>Response for doc-bare
-                    String name = getValue(result.name(), documentStyle ? operationName + "Response" : "return");
                     QName element = new QName(ns, name);
-                    if (!operation.hasReturnTypeVoid()) {
-                        List<DataType> outputDataTypes = operation.getOutputType().getLogical();                    
-                        DataType returnDataType = outputDataTypes.get(0);
-                        if (returnDataType instanceof XMLType) {
-                            ((XMLType)returnDataType).setElementName(element);
-                        }
+                    Object logical = operation.getInputType().getLogical().get(i).getLogical();
+                    if (logical instanceof XMLType) {
+                        ((XMLType)logical).setElementName(element);
+                    }
+                }
+
+                if (!operation.hasReturnTypeVoid()) {
+                    String ns = tns;
+                    // Default to <operationName>Response for doc-bare
+                    String name = (documentStyle ? operationName + "Response" : "return");
+                    WebResult result = method.getAnnotation(WebResult.class);
+                    if (result != null) {
+                        if (!"".equals(result.targetNamespace()))
+                            ns = result.targetNamespace();
+                        if (!"".equals(result.name()))
+                            name = result.name();
+                    }
+                    QName element = new QName(ns, name);
+                    List<DataType> outputDataTypes = operation.getOutputType().getLogical();                    
+                    DataType returnDataType = outputDataTypes.get(0);
+                    if (returnDataType instanceof XMLType) {
+                        ((XMLType)returnDataType).setElementName(element);
                     }
                 }
                 // Rather than relying on null wrapper, we use a flag with a clearer meaning.

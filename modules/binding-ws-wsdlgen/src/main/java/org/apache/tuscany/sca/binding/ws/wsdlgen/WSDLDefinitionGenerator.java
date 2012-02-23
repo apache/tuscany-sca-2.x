@@ -161,8 +161,12 @@ public class WSDLDefinitionGenerator {
         try {
             for (Iterator oi = portType.getOperations().iterator(); oi.hasNext();) {
                 Operation operation = (Operation)oi.next();
+                // Removed improper defaulting of SOAP action.  createBindingOperations() is called
+                // when binding.ws does not supply a WSDL binding and the reference is using interface.wsdl.
+                // In this case there is no source for a user-supplied action.
+                // The correct default is "" (empty string).
                 BindingOperation bindingOperation =
-                    createBindingOperation(definition, operation, "urn:" + operation.getName());
+                    createBindingOperation(definition, operation, "");
                 binding.addBindingOperation(bindingOperation);
             }
         } catch (WSDLException e) {

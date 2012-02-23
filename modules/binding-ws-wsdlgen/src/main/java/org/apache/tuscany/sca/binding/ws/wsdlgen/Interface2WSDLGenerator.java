@@ -360,9 +360,10 @@ public class Interface2WSDLGenerator {
             javax.wsdl.Operation operation = generateOperation(definition, op, helpers, wrappers);
             portType.addOperation(operation);
             String action = ((JavaOperation)op).getAction();
-            if ((action == null || "".equals(action)) && !op.isInputWrapperStyle() && op.getInputWrapper() == null) {
-                // Bare style
-                action = "urn:" + op.getName();
+            // Removed improper defaulting of SOAP action when using doc/lit BARE.
+            // The correct default is "" (empty string).
+            if (action == null) {
+                action = "";
             }
             BindingOperation bindingOp = definitionGenerator.createBindingOperation(definition, operation, action);
             binding.addBindingOperation(bindingOp);

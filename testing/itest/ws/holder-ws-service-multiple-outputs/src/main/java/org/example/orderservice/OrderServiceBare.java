@@ -19,6 +19,7 @@
 
 package org.example.orderservice;
 
+import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
@@ -35,7 +36,8 @@ public interface OrderServiceBare {
     public void bareReviewOrderInOutHolder(
         @WebParam(mode = WebParam.Mode.INOUT)
         Holder<Order> myData);
-    
+
+    @WebMethod(action = "bareReviewOrderOutHolder")
     public void bareReviewOrderOutHolder(
         @WebParam(mode = WebParam.Mode.OUT)
         Holder<Order> myData);
