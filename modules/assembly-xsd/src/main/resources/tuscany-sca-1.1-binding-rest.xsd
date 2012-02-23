@@ -38,6 +38,7 @@
                          maxOccurs="unbounded"/ -->
                 </sequence>
                 <attribute name="readTimeout" type="int" default="60000"/>
+                <attribute name="isCORS" type="boolean" use="optional" default="false"/>
                 <!-- anyAttribute namespace="##any" processContents="lax"/-->
             </extension>
         </complexContent>
