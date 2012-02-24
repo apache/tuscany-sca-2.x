@@ -77,6 +77,8 @@ public class HeaderServiceInterceptor extends InterceptorAsyncImpl {
             
             Operation operation = tuscanyMsg.getOperation();
             String operationName = operation.getName();
+            
+            responseMessageProcessor.setOperationName(operationName, jmsMsg);
 
             for (String propName : jmsBinding.getPropertyNames()) {
                 Object value = jmsBinding.getProperty(propName);

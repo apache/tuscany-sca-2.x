@@ -175,6 +175,15 @@ public class HeaderReferenceInterceptor extends InterceptorAsyncImpl {
 		
 		javax.jms.Message responseMsg = msg.getBody();
 		try {
+			// Operation name...
+			String operationName = responseMsg.getStringProperty("scaOperationName");
+			for( Operation op : operations ) {
+				if( operationName.equals(op.getName())) {
+					msg.setOperation(op);
+					break;
+				} // end if
+			} // end for
+			
 			// Relates to header...
 			String relatesTo = responseMsg.getStringProperty("RELATES_TO");
 			if( relatesTo != null ) {
