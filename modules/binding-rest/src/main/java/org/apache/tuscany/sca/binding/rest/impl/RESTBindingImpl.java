@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
 import org.apache.tuscany.sca.common.http.HTTPHeader;
+import org.apache.tuscany.sca.common.http.cors.CORSConfiguration;
 
 
 /**
@@ -41,7 +42,9 @@ class RESTBindingImpl implements RESTBinding {
     private String uri;
 
     private int readTimeout = 60000;
+    
     private boolean isCORS = false;
+    private CORSConfiguration corsConfig;
     
     private List<HTTPHeader> httpHeaders = new ArrayList<HTTPHeader>();
 
@@ -85,6 +88,14 @@ class RESTBindingImpl implements RESTBinding {
         this.isCORS = isCORS;
     }
     
+    public CORSConfiguration getCORSConfiguration() {
+        return corsConfig;
+    }
+
+    public void setCORSConfiguration(CORSConfiguration corsConfig) {
+        this.corsConfig = corsConfig;
+    }
+
     public List<HTTPHeader> getHttpHeaders() {
         return this.httpHeaders;
     }

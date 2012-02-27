@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.binding.rest.wireformat.json.JSONWireFormatFactory
 import org.apache.tuscany.sca.binding.rest.wireformat.xml.XMLWireFormat;
 import org.apache.tuscany.sca.binding.rest.wireformat.xml.XMLWireFormatFactory;
 import org.apache.tuscany.sca.common.http.HTTPHeader;
-import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
+import org.apache.tuscany.sca.common.http.cors.CORSConfiguration;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -179,24 +179,28 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
                             switch (sub_event) {
                                 case START_ELEMENT:
                                     elementName = reader.getName();
+                                    
+                                    if(WIRE_FORMAT_JSON.equals(elementName) || WIRE_FORMAT_XML.equals(elementName)) {
+                                        // dispatch to read wire format for the response
+                                        Object extension = readWireFormatAndOperationSelectorExtensions(reader);
+                                        if (extension != null) {
+                                            if (extension instanceof WireFormat) {
+                                                restBinding.setResponseWireFormat((WireFormat)extension);
+                                            }
+                                        }                                        
+                                    }
+                                    
                                     break;
                                 default: reader.next();
                             }
                             break;
                         }
 
-                        // dispatch to read wire format for the response
-                        //Object extension = extensionProcessor.read(reader, context);
-                        Object extension = readWireFormatAndOperationSelectorExtensions(reader);
-                        if (extension != null) {
-                            if (extension instanceof WireFormat) {
-                                restBinding.setResponseWireFormat((WireFormat)extension);
-                            }
-                        }
                         break;
-                    } else {
-                        // Read an extension element
-                        //Object extension = extensionProcessor.read(reader, context);
+                    } else if(WIRE_FORMAT_JSON.equals(elementName) || WIRE_FORMAT_XML.equals(elementName)  ||
+                              OPERATION_SELCTOR_JAXRS.equals(elementName) || OPERATION_SELCTOR_RPC.equals(elementName)) {
+
+                        // Read wireFormat and/or operationSelector extension elements
                         Object extension = readWireFormatAndOperationSelectorExtensions(reader);
                         if (extension != null) {
                             if (extension instanceof WireFormat) {
@@ -204,6 +208,17 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
                                 restBinding.setResponseWireFormat((WireFormat)extension);
                             } else if(extension instanceof OperationSelector) {
                                 restBinding.setOperationSelector((OperationSelector)extension);
+                            }
+                        }
+                        break;
+
+                        
+                    } else {
+                        // Read an extension element
+                        Object extension = extensionProcessor.read(reader, context);
+                        if (extension != null) {
+                            if (extension instanceof CORSConfiguration) {
+                                restBinding.setCORSConfiguration((CORSConfiguration)extension);
                             }
                         }
                         break;

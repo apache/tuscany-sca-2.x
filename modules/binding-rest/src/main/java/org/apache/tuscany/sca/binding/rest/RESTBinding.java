@@ -25,13 +25,14 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.common.http.HTTPHeader;
+import org.apache.tuscany.sca.common.http.cors.CORS;
 
 /**
  * REST binding model.
  * 
  * @version $Rev$ $Date$
-*/
-public interface RESTBinding extends Binding {
+ */
+public interface RESTBinding extends Binding, CORS {
     QName TYPE = new QName(SCA11_TUSCANY_NS, "binding.rest");
     
     public List<HTTPHeader> getHttpHeaders();

@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -55,6 +56,12 @@ public class RESTBindingProcessorTestCase {
             + "               <tuscany:header name=\"Cache-Control\" value=\"no-cache\"/>"
             + "               <tuscany:header name=\"Expires\" value=\"-1\"/>"
             + "            </tuscany:http-headers>"
+            + "            <tuscany:corsConfiguration>"
+            + "               <tuscany:allowCredentials>true</tuscany:allowCredentials>"
+            + "               <tuscany:allowOrigins>"
+            + "                 <tuscany:origin>http://www.sfly.com</tuscany:origin>"
+            + "               </tuscany:allowOrigins>"
+            + "            </tuscany:corsConfiguration>"            
             + "            </tuscany:binding.rest>"
             + "      </service>"
             + " </component>"
