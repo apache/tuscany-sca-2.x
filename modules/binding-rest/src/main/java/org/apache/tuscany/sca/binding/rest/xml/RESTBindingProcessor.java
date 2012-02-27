@@ -171,7 +171,7 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
 
                     } else if (RESPONSE_QNAME.equals(elementName)) {
 
-                        // skip response
+                     // skip response
                         reader.next();
                         // and position to the next start_element event
                         while (reader.hasNext()) {
@@ -179,23 +179,20 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
                             switch (sub_event) {
                                 case START_ELEMENT:
                                     elementName = reader.getName();
-                                    
-                                    if(WIRE_FORMAT_JSON.equals(elementName) || WIRE_FORMAT_XML.equals(elementName)) {
-                                        // dispatch to read wire format for the response
-                                        Object extension = readWireFormatAndOperationSelectorExtensions(reader);
-                                        if (extension != null) {
-                                            if (extension instanceof WireFormat) {
-                                                restBinding.setResponseWireFormat((WireFormat)extension);
-                                            }
-                                        }                                        
-                                    }
-                                    
                                     break;
                                 default: reader.next();
                             }
                             break;
                         }
 
+                        // dispatch to read wire format for the response
+                        //Object extension = extensionProcessor.read(reader, context);
+                        Object extension = readWireFormatAndOperationSelectorExtensions(reader);
+                        if (extension != null) {
+                            if (extension instanceof WireFormat) {
+                                restBinding.setResponseWireFormat((WireFormat)extension);
+                            }
+                        }
                         break;
                     } else if(WIRE_FORMAT_JSON.equals(elementName) || WIRE_FORMAT_XML.equals(elementName)  ||
                               OPERATION_SELCTOR_JAXRS.equals(elementName) || OPERATION_SELCTOR_RPC.equals(elementName)) {
