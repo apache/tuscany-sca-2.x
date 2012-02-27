@@ -34,8 +34,8 @@ public class CORSHeaderProcessor {
             if (request.getMethod().equals("OPTIONS")) {
                 response.setHeader("Access-Control-Allow-Methods", "OPTIONS, HEAD, GET, POST, PUT, DELETE");
                 response.setHeader("Access-Control-Max-Age", "1728000");
-                return;
             }
+            return;
         }
         
         if(config.allowCredentials) {
