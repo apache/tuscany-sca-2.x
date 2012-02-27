@@ -116,6 +116,14 @@ class WebServiceBindingImpl implements WebServiceBinding, DefaultingPolicySubjec
 
     public void setURI(String uri) {
         this.uri = uri;
+        
+        // when the binding is cloned for callback puposes
+        // when the user has not configured a callback binding
+        // we want all the URIs to be null so that the builder
+        // will calculate the correct callback URI
+        if (uri == null){
+            setUserSpecifiedURI(null);
+        }
     }
     
     public void setUserSpecifiedURI(String uri) {
