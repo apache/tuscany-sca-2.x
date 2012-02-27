@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.test.exceptions;
 
+import org.oasisopen.sca.ServiceRuntimeException;
+
 public interface ExceptionHandler {
 
     void testing();
@@ -28,5 +30,10 @@ public interface ExceptionHandler {
     String getTheGood();
 
     UnChecked getTheUgly();
-
+    
+    ServiceRuntimeException getServiceRuntimeException();
+    
+    ServiceRuntimeException getBindingException();
+    
+    ServiceRuntimeException getUncheckedException();
 }

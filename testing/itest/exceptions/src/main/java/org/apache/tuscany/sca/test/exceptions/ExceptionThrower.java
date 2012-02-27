@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.test.exceptions;
 
+import org.oasisopen.sca.ServiceRuntimeException;
+
 /**
  * Local exception thrower
  * @version $Rev$ $Date$
@@ -27,11 +29,13 @@ public interface ExceptionThrower {
     Checked BAD = new Checked("theBad");
     UnChecked UGLY = new UnChecked("theUgly");
     String SO_THEY_SAY = "All is good that ends good.";
+    ServiceRuntimeException SERVICE_RUNTIME_EXCEPTION = new ServiceRuntimeException("A service runtime exception");
 
     String theGood() throws Checked;
 
     String theBad() throws Checked;
 
     String theUgly() throws Checked;
-
+    
+    String serviceRuntimeException();
 }

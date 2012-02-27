@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.test.exceptions.impl;
 
 import org.apache.tuscany.sca.test.exceptions.Checked;
 import org.apache.tuscany.sca.test.exceptions.ExceptionThrower;
+import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Service;
 
 /**
@@ -40,6 +41,10 @@ public class ExceptionThrowerImpl implements ExceptionThrower {
 
     public String theUgly() throws Checked {
         throw UGLY;
+    }
+    
+    public String serviceRuntimeException() {
+        throw SERVICE_RUNTIME_EXCEPTION;
     }
 
 }

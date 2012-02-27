@@ -36,6 +36,20 @@
   <component name="exceptionThrowerRemote">
     <implementation.java class="org.apache.tuscany.sca.test.exceptions.impl.ExceptionRemoteThrowerImpl" />
   </component>
+  
+  <component name="mainRemoteWS">
+    <implementation.java class="org.apache.tuscany.sca.test.exceptions.impl.RemoteWSExceptionHandlerImpl" />
+    <reference name="exceptionThrower" target="exceptionThrowerRemoteWS/ExceptionRemoteThrower" />
+    <reference name="exceptionThrowerDuff">
+      <binding.ws uri="http://localhost:9086/ADuffURL"/>
+    </reference>
+  </component>
 
+  <component name="exceptionThrowerRemoteWS">
+    <implementation.java class="org.apache.tuscany.sca.test.exceptions.impl.ExceptionRemoteThrowerImpl" />
+    <service name="ExceptionRemoteThrower">
+      <binding.ws/>
+    </service>
+  </component>
 
 </composite>

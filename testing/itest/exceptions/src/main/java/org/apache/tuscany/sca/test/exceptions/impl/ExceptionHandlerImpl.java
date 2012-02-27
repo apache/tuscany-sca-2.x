@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.test.exceptions.Checked;
 import org.apache.tuscany.sca.test.exceptions.ExceptionHandler;
 import org.apache.tuscany.sca.test.exceptions.ExceptionThrower;
 import org.apache.tuscany.sca.test.exceptions.UnChecked;
+import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Scope;
 
@@ -37,6 +38,8 @@ public class ExceptionHandlerImpl implements ExceptionHandler {
     private Checked theBad;
 
     private UnChecked theUgly;
+    
+    private ServiceRuntimeException serviceRuntimeException;
 
     public void testing() {
 
@@ -88,6 +91,29 @@ public class ExceptionHandlerImpl implements ExceptionHandler {
 
             System.out.println(ExceptionThrower.SO_THEY_SAY + " " + INIT);
         }
+        
+        result = INIT;
+        try {
+            result = exceptionThrower.serviceRuntimeException();
+            // incredible
+            assert false : "Expected 'ServiceRuntimeException' Exception";
+
+        } catch (ServiceRuntimeException e) {
+            
+            serviceRuntimeException = e;
+
+        } catch (UnChecked e) {
+            // This is not so good...
+            assert false : "Got wrong exception '" + e.getClass().getName();
+            assert result == INIT;
+
+        } catch (Throwable t) {
+            // This is not good.
+            assert false;
+            assert result == INIT;
+
+            System.out.println(ExceptionThrower.SO_THEY_SAY + " " + INIT);
+        }
 
     }
 
@@ -111,5 +137,16 @@ public class ExceptionHandlerImpl implements ExceptionHandler {
     public ExceptionThrower getExceptionThrower() {
         return exceptionThrower;
     }
+    
+    public ServiceRuntimeException getServiceRuntimeException() {
+        return serviceRuntimeException;
+    }
 
+    public ServiceRuntimeException getBindingException() {
+        return null;
+    }
+    
+    public ServiceRuntimeException getUncheckedException() {
+        return null;
+    }
 }

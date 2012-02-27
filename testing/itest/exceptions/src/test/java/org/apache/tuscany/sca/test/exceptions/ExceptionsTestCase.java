@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 public class ExceptionsTestCase {
 
@@ -49,6 +50,8 @@ public class ExceptionsTestCase {
         assertNotNull(exceptionHandler.getTheUgly());
         assertEquals(UnChecked.class, exceptionHandler.getTheUgly().getClass());
         assertSame(ExceptionThrower.UGLY, exceptionHandler.getTheUgly());
+        assertEquals(ServiceRuntimeException.class, exceptionHandler.getServiceRuntimeException().getClass());
+        assertEquals(ExceptionThrower.SERVICE_RUNTIME_EXCEPTION.getMessage(), exceptionHandler.getServiceRuntimeException().getMessage());
     }
 
     /**
@@ -64,10 +67,31 @@ public class ExceptionsTestCase {
         assertNotSame(ExceptionThrower.BAD, exceptionHandler.getTheBad());
         assertNotNull(exceptionHandler.getTheUgly());
         assertEquals(UnChecked.class, exceptionHandler.getTheUgly().getClass());
+        assertEquals(ServiceRuntimeException.class, exceptionHandler.getServiceRuntimeException().getClass());
+        assertEquals(ExceptionThrower.SERVICE_RUNTIME_EXCEPTION.getMessage(), exceptionHandler.getServiceRuntimeException().getMessage());
 
         // [rfeng] We're not in a position to copy non business exceptions
         // assertNotSame(ExceptionThrower.UGLY, exceptionHandler.getTheUgly());
 
+    }
+    
+    /**
+     * Test exception handling over a remote binding
+     */
+    @Test
+    public void testRemoteWS() {
+        ExceptionHandler exceptionHandler = node.getService(ExceptionHandler.class, "mainRemoteWS");
+        exceptionHandler.testing();
+        assertEquals(ExceptionThrower.SO_THEY_SAY, exceptionHandler.getTheGood());
+        assertNotNull(exceptionHandler.getTheBad());
+        assertEquals(Checked.class, exceptionHandler.getTheBad().getClass());
+        assertNotSame(ExceptionThrower.BAD, exceptionHandler.getTheBad());
+        assertNotNull(exceptionHandler.getUncheckedException());
+        assertEquals(ServiceRuntimeException.class, exceptionHandler.getUncheckedException().getClass());
+        assertEquals(ServiceRuntimeException.class, exceptionHandler.getServiceRuntimeException().getClass());
+        assertEquals("org.apache.tuscany.sca.interfacedef.util.FaultException: " + ExceptionThrower.SERVICE_RUNTIME_EXCEPTION.getMessage(), exceptionHandler.getServiceRuntimeException().getMessage());
+        assertEquals(ServiceRuntimeException.class, exceptionHandler.getBindingException().getClass());
+        assertEquals("org.apache.tuscany.sca.interfacedef.util.FaultException: " + ExceptionThrower.SERVICE_RUNTIME_EXCEPTION.getMessage(), exceptionHandler.getServiceRuntimeException().getMessage());
     }
 
     @BeforeClass
