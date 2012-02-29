@@ -73,14 +73,20 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
      */
     public Composite read(URL contributionURL, URI uri, URL url, ProcessorContext context) throws ContributionReadException {
     	if( uri == null || url == null ) {
-    		throw new ContributionReadException("Request to read composite with uri or url NULL");
+    		throw new ContributionReadException(context.getMonitor().getMessageString(CompositeDocumentProcessor.class.getName(),
+    		                                                                          Messages.RESOURCE_BUNDLE, 
+                                                                                      "NullURL"));
     	} // end if
         InputStream scdlStream = null;
         
         try {
             scdlStream = IOHelper.openStream(url);
         } catch (IOException e) {
-            ContributionReadException ce = new ContributionReadException("Exception reading " + uri, e);
+            ContributionReadException ce = new ContributionReadException(context.getMonitor().getMessageString(CompositeDocumentProcessor.class.getName(),
+                                                                                                               Messages.RESOURCE_BUNDLE, 
+                                                                                                               "ReadException") + 
+                                                                         " " + 
+                                                                         uri, e);
             error(context.getMonitor(), "ContributionReadException", url, ce);
             throw ce;
         } 
@@ -119,7 +125,11 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             return composite;
             
         } catch (XMLStreamException e) {
-        	ContributionReadException ce = new ContributionReadException("Exception reading " + uri, e);
+        	ContributionReadException ce = new ContributionReadException(context.getMonitor().getMessageString(CompositeDocumentProcessor.class.getName(),
+        	                                                                                                   Messages.RESOURCE_BUNDLE, 
+                                                                                                               "ReadException") + 
+                                                                         " " +
+                                                                         uri, e);
         	error(context.getMonitor(), "ContributionReadException", inputFactory, ce);
             throw ce;
         } finally {
@@ -169,7 +179,11 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
 	    	    extensionProcessor.resolve(composite, resolver, context);
     	} catch (Throwable e ) {
     		// Add information about which composite was being processed when the exception occurred
-    		String newMessage = "Processing composite " + composite.getName() + ": " + e.getMessage();
+    		String newMessage = context.getMonitor().getMessageString(CompositeDocumentProcessor.class.getName(),
+    		                                                          Messages.RESOURCE_BUNDLE, 
+                                                                      "ProcessingComposite") +
+                                " " +
+                                composite.getName() + ": " + e.getMessage();
     		throw new ContributionResolveException( newMessage, e );
     	} // end try
     }

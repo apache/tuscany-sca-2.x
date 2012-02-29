@@ -304,8 +304,13 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
         property.setXSDType(getQName(reader, TYPE));
         // MJE added 14/05/2009 - check for both @element and @type being present - disallowed by OASIS Assembly spec
         if( property.getXSDElement() != null && property.getXSDType() != null ) {
-        	ContributionReadException ce = new ContributionReadException("[ASM40010,ASM60040] Error: property has both @type and @element attribute values - " + 
-        			                                                     property.getName());
+            // TUSCANY-4020 - should get rid of the exception but that would mean getting OASIS to change the 
+            //                expected strings again
+            ContributionReadException ce = new ContributionReadException(context.getMonitor().getMessageString(BaseAssemblyProcessor.class.getName(),
+                                                                                                               Messages.RESOURCE_BUNDLE, 
+                                                                                                               "BothTypeAndElementAttributeFound") + 
+                                                                         " - " + 
+                                                                         property.getName());
         	error(context.getMonitor(), "ContributionReadException", property, ce);
         } // end if
 
@@ -512,7 +517,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
                     // A property <value/> subelement MUST NOT be used when the @value attribute is used 
                     // to specify the value for that property.
                     if (valueAttr != null) {
-                        error(context.getMonitor(), "ASM50033: value attribute exists for the property element", name, name);
+                        error(context.getMonitor(), "ValueAttributeForPropertyElement", element, nameAttr);
                     }
                     // Read <value>
                     if (VALUE_QNAME.equals(name)) {

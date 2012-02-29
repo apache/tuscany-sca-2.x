@@ -33,6 +33,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.ws.WebServiceClient;
 
+import org.apache.tuscany.sca.assembly.xml.Messages;
 import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -233,13 +234,18 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                     javaInterface.setContributionContainingClass(classReference.getContributionContainingClass());
                 
                 } catch (InvalidInterfaceException e) {
-                	ContributionResolveException ce = new ContributionResolveException("Resolving Java interface " + javaInterface.getName(), e);
-                	//error("ContributionResolveException", javaFactory, ce);
+                	ContributionResolveException ce = new ContributionResolveException(context.getMonitor().getMessageString(JavaInterfaceProcessor.class.getName(),
+                	                                                                                                         "interface-javaxml-validation-messages", 
+                                                                                                                             "ResolvingInterface") + 
+                                                                                       javaInterface.getName(), e);
                 	error(monitor, "InvalidInterfaceException", javaFactory, e);
                     return javaInterface;
-                	//throw ce;
                 } catch ( Exception e ) {
-                	throw new ContributionResolveException( "Resolving Java interface " + javaInterface.getName(), e );
+                	throw new ContributionResolveException(context.getMonitor().getMessageString(JavaInterfaceProcessor.class.getName(),
+                	                                                                             "interface-javaxml-validation-messages", 
+                                                                                                 "ResolvingInterface") +
+                                                           " " +
+                                                           javaInterface.getName(), e );
                 } // end try
 
                 // Cache the resolved interface
@@ -268,8 +274,11 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
 	        checkForbiddenAnnotations(monitor, javaInterfaceContract);
 	        
         } catch (Exception e) {
-            throw new ContributionResolveException("Resolving Java Interface " + javaInterfaceContract.getInterface()
-                .toString(), e);
+            throw new ContributionResolveException(context.getMonitor().getMessageString(JavaInterfaceProcessor.class.getName(),
+                                                                                         "interface-javaxml-validation-messages",
+                                                                                         "ResolvingInterface") + 
+                                                   " " +
+                                                   javaInterfaceContract.getInterface().toString(), e);
         } // end try
     }
     

@@ -375,4 +375,15 @@ public abstract class Monitor {
         
         return errorDetected;
     }
+    
+    /**
+     * Helper method to retrieve a localized message from a given bundle with a given 
+     * message ID string
+     * 
+     * @Param loggerName - the name of the logger to use
+     * @param messageBundleName - the name of the bundle to use
+     * @param messageID - the ID of the message to retrieve
+     * @return the message string
+     */
+    public abstract String getMessageString(String loggerName, String messageBundleName, String messageID);
 }

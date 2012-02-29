@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.xml.Messages;
 import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
@@ -312,7 +313,11 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                     if (END_POINT_REFERENCE.equals(reader.getName().getLocalPart())) {
                         if (wsdlElement != null && (wsdlElementIsBinding == null || !wsdlElementIsBinding)) {
                         	error(monitor, "MustUseWsdlBinding", reader, wsdlElement);
-                            throw new ContributionReadException(wsdlElement + " must use wsdl.binding when using wsa:EndpointReference");
+                            String message = context.getMonitor().getMessageString(WebServiceBindingProcessor.class.getName(),
+                                                                                   "binding-wsxml-validation-messages", 
+                                                                                   "MustUseWsdlBinding");
+                            message = message.replace("{0}", wsdlElement);
+                            throw new ContributionReadException(message);
                         }
                         
                         wsBinding.setEndPointReference(EndPointReferenceHelper.readEndPointReference(reader));

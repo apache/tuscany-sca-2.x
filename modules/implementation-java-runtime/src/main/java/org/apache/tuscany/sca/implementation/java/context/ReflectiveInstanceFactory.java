@@ -20,10 +20,12 @@ package org.apache.tuscany.sca.implementation.java.context;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
+import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter;
 import org.apache.tuscany.sca.implementation.java.injection.Injector;
 import org.apache.tuscany.sca.implementation.java.invocation.EventInvoker;
 
@@ -31,6 +33,9 @@ import org.apache.tuscany.sca.implementation.java.invocation.EventInvoker;
  * @version $Rev$ $Date$
  */
 public class ReflectiveInstanceFactory<T> implements InstanceFactory<T> {
+    private static final Logger logger = Logger.getLogger(ReflectiveInstanceFactory.class.getName(),
+                                                          "org.apache.tuscany.sca.implementation.java.runtime.implementation-java-runtime-validation-messages");
+
     private final Constructor<T> ctr;
     private final ObjectFactory<?>[] ctrArgs;
     private final Injector<T>[] injectors;
@@ -66,14 +71,19 @@ public class ReflectiveInstanceFactory<T> implements InstanceFactory<T> {
             }
         } catch (InstantiationException e) {
             String name = ctr.getDeclaringClass().getName();
-            throw new AssertionError("Class is not instantiable [" + name + "]");
+            String message = logger.getResourceBundle().getString("ClassNoInstantiable");
+            message = message.replace("{0}", name);
+            throw new AssertionError(message);
         } catch (IllegalAccessException e) {
             String name = ctr.getName();
-            throw new AssertionError("Constructor is not accessible [" + name + "]");
-        } catch (
-            InvocationTargetException e) {
+            String message = logger.getResourceBundle().getString("ConstructorNotAccessible");
+            message = message.replace("{0}", name);
+            throw new AssertionError(message);
+        } catch (InvocationTargetException e) {
             String name = ctr.getName();
-            throw new ObjectCreationException("Exception thrown by constructor: " + name, e);
+            String message = logger.getResourceBundle().getString("ConstructorException");
+            message = message.replace("{0}", name);
+            throw new ObjectCreationException(message, e);
         }
 
         if (injectors != null) {
@@ -86,7 +96,9 @@ public class ReflectiveInstanceFactory<T> implements InstanceFactory<T> {
                         if (destroyInvoker != null) {
                             destroyInvoker.invokeEvent(instance);
                         }
-                        throw new ObjectCreationException("Exception invoking injector - " + e.getMessage(), e);
+                        String message = logger.getResourceBundle().getString("InjectorException");
+                        message = message.replace("{0}", e.getMessage());
+                        throw new ObjectCreationException(message, e);
                     }
             }
         }

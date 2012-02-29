@@ -29,6 +29,7 @@ import java.text.Format;
 import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.logging.Logger;
 
 import javax.xml.XMLConstants;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -44,6 +45,8 @@ import javax.xml.namespace.QName;
  * @tuscany.spi.extension.asclient
  */
 public class XSDDataTypeConverter {
+    private static final Logger logger = Logger.getLogger(XSDDataTypeConverter.class.getName(),
+                                                          "org.apache.tuscany.sca.databinding.databinding-validation-messages");
 	/**
 	 * 
 	 * @tuscany.spi.extension.asclient
@@ -192,7 +195,7 @@ public class XSDDataTypeConverter {
                     obuf[wp] = (byte) (b2 << 6 & 0xc0 | b3 & 0x3f);
                     return 3;
                 default:
-                    throw new IllegalArgumentException("The character sequence is not base64 encoded.");
+                    throw new IllegalArgumentException(logger.getResourceBundle().getString("NotBase64Encoded"));
             }
         }
 
@@ -338,7 +341,7 @@ public class XSDDataTypeConverter {
          */
         public static byte[] decode(String pValue) {
             if ((pValue.length() % 2) != 0) {
-                throw new IllegalArgumentException("A HexBinary string must have even length.");
+                throw new IllegalArgumentException(logger.getResourceBundle().getString("HexBinaryUnevenLength"));
             }
             byte[] result = new byte[pValue.length() / 2];
             int j = 0;
@@ -354,7 +357,7 @@ public class XSDDataTypeConverter {
                 } else if (c >= 'a' && c <= 'f') {
                     b = (byte) ((c - 'a' + 10) << 4);
                 } else {
-                    throw new IllegalArgumentException("Invalid hex digit: " + c);
+                    throw new IllegalArgumentException(logger.getResourceBundle().getString("InvalidHexDigit") + " " + c);
                 }
                 if (d >= '0' && d <= '9') {
                     b += (byte) (d - '0');
@@ -363,7 +366,7 @@ public class XSDDataTypeConverter {
                 } else if (d >= 'a' && d <= 'f') {
                     b += (byte) (d - 'a' + 10);
                 } else {
-                    throw new IllegalArgumentException("Invalid hex digit: " + d);
+                    throw new IllegalArgumentException(logger.getResourceBundle().getString("InvalidHexDigit") + " " + d);
                 }
                 result[j++] = b;
             }
@@ -718,8 +721,10 @@ public class XSDDataTypeConverter {
         ParsePosition pos = new ParsePosition(0);
         Calendar cal = (Calendar) format.parseObject(value, pos);
         if (cal == null) {
-            throw new IllegalArgumentException("Failed to parse date " + value + " at:"
-                + value.substring(pos.getErrorIndex()));
+            String message = logger.getResourceBundle().getString("BadDate");
+            message = message.replace("{0}", value);
+            message = message.replace("{1}", value.substring(pos.getErrorIndex()));
+            throw new IllegalArgumentException(message);
         }
         return cal;
     }
@@ -729,8 +734,10 @@ public class XSDDataTypeConverter {
         ParsePosition pos = new ParsePosition(0);
         Calendar cal = (Calendar) format.parseObject(value, pos);
         if (cal == null) {
-            throw new IllegalArgumentException("Failed to parse dateTime " + value + " at:"
-                + value.substring(pos.getErrorIndex()));
+            String message = logger.getResourceBundle().getString("BadDateTime");
+            message = message.replace("{0}", value);
+            message = message.replace("{1}", value.substring(pos.getErrorIndex()));
+            throw new IllegalArgumentException(message);
         }
         return cal;
     }
@@ -799,18 +806,21 @@ public class XSDDataTypeConverter {
                     // Should not happen, indicates an error in the
                     // NamespaceContext
                     // implementation
-                    throw new IllegalArgumentException("The default prefix is not bound.");
+                    throw new IllegalArgumentException(logger.getResourceBundle().getString("DefaultPrefixNotBound"));
                 }
                 break;
             case 0:
-                throw new IllegalArgumentException("Default prefix must be indicated by not using a colon: "
-                    + value);
+                throw new IllegalArgumentException(logger.getResourceBundle().getString("NoColonForPrefix") +
+                                                   " " +
+                                                   value);
             default:
                 String prefix = value.substring(0, offset);
                 localName = value.substring(offset + 1);
                 uri = context.getNamespaceURI(prefix);
                 if (uri == null) {
-                    throw new IllegalArgumentException("The prefix " + prefix + " is not bound.");
+                    String message = logger.getResourceBundle().getString("PrefixNotBound");
+                    message = message.replace("{0}", prefix);
+                    throw new IllegalArgumentException(message);
                 }
         }
         return new QName(uri, localName);
@@ -829,8 +839,10 @@ public class XSDDataTypeConverter {
         ParsePosition pos = new ParsePosition(0);
         Calendar cal = (Calendar) format.parseObject(value, pos);
         if (cal == null) {
-            throw new IllegalArgumentException("Failed to parse time " + value + " at:"
-                + value.substring(pos.getErrorIndex()));
+            String message = logger.getResourceBundle().getString("BadTime");
+            message = message.replace("{0}", value);
+            message = message.replace("{1}", value.substring(pos.getErrorIndex()));
+            throw new IllegalArgumentException(message);
         }
         return cal;
     }
@@ -838,12 +850,15 @@ public class XSDDataTypeConverter {
     public long parseUnsignedInt(String value) {
         long l = Long.parseLong(value);
         if (l < 0) {
-            throw new IllegalArgumentException("Failed to parse UnsignedInt " + value
-                + ": result is negative");
+            String message = logger.getResourceBundle().getString("BadUnsignedIntNegative");
+            message = message.replace("{0}", value);
+            throw new IllegalArgumentException(message);
         }
         if (l > MAX_UNSIGNED_INT) {
-            throw new IllegalArgumentException("Failed to parse UnsignedInt " + value
-                + ": result exceeds maximum value " + MAX_UNSIGNED_INT);
+            String message = logger.getResourceBundle().getString("BadUnsignedIntMax");
+            message = message.replace("{0}", value);
+            message = message.replace("{1}", String.valueOf(MAX_UNSIGNED_INT));
+            throw new IllegalArgumentException(message);
         }
         return l;
     }
@@ -851,12 +866,15 @@ public class XSDDataTypeConverter {
     public int parseUnsignedShort(String value) {
         int i = Integer.parseInt(value);
         if (i < 0) {
-            throw new IllegalArgumentException("Failed to parse UnsignedShort " + value
-                + ": result is negative");
+            String message = logger.getResourceBundle().getString("BadUnsignedShortNegative");
+            message = message.replace("{0}", value);
+            throw new IllegalArgumentException(message);
         }
         if (i > MAX_UNSIGNED_SHORT) {
-            throw new IllegalArgumentException("Failed to parse UnsignedShort " + value
-                + ": result exceeds maximum value " + MAX_UNSIGNED_SHORT);
+            String message = logger.getResourceBundle().getString("BadUnsignedShortMax");
+            message = message.replace("{0}", value);
+            message = message.replace("{1}", String.valueOf(MAX_UNSIGNED_SHORT));
+            throw new IllegalArgumentException(message);
         }
         return i;
     }
@@ -920,8 +938,9 @@ public class XSDDataTypeConverter {
     public String printQName(QName value, NamespaceContext context) {
         String prefix = context.getPrefix(value.getNamespaceURI());
         if (prefix == null) {
-            throw new IllegalArgumentException("The namespace URI " + value.getNamespaceURI()
-                + " is not bound.");
+            String message = logger.getResourceBundle().getString("NamespaceNotBound");
+            message = message.replace("{0}", value.getNamespaceURI());
+            throw new IllegalArgumentException(message);
         } else if (XMLConstants.DEFAULT_NS_PREFIX.equals(prefix)) {
             return value.getLocalPart();
         } else {

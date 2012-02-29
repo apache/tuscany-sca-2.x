@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
+import org.apache.tuscany.sca.assembly.xml.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -211,8 +212,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                                   "endpoint-validation-messages",
                                   "NoComponentReferenceTarget",
                                   endpointReference.getReference().getName());
-                    throw new ServiceRuntimeException("Unable to bind " +
-                                                      monitor.getLastProblem().toString());
+                    //throw new ServiceRuntimeException("Unable to bind " +
+                    //                                  monitor.getLastProblem().toString());
                 }
             }
             
@@ -295,7 +296,10 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                                       "endpoint-validation-messages", 
                                       "NoEndpointsFound", 
                                       endpointReference.toString()); 
-                        throw new ServiceRuntimeException("Unable to bind " + 
+                        throw new ServiceRuntimeException(monitor.getMessageString(EndpointReferenceBinderImpl.class.getName(),
+                                                                                   "endpoint-validation-messages", 
+                                                                                   "UnableToBind") + 
+                                                          " " +
                                                           monitor.getLastProblem().toString());
                     }
                 }
@@ -318,7 +322,10 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                               "EndpointReferenceCantBeMatched", 
                               endpointReference.toString(),
                               matchAudit);
-                throw new ServiceRuntimeException("Unable to bind " + 
+                throw new ServiceRuntimeException(monitor.getMessageString(EndpointReferenceBinderImpl.class.getName(),
+                                                                           "endpoint-validation-messages", 
+                                                                           "UnableToBind") + 
+                                                  " " +
                                                   monitor.getLastProblem().toString());
             } else {
                 Monitor.warning(monitor, 

@@ -73,6 +73,4 @@ public interface PolicyConstants {
     QName POLICY_SET_REFERENCE_QNAME = new QName(SCA11_NS, POLICY_SET_REFERENCE);
     QName INTENT_QUALIFIER_QNAME = new QName(SCA11_NS, INTENT_QUALIFIER);
     QName EXTERNAL_ATTACHMENT_QNAME = new QName(SCA11_NS, EXTERNAL_ATTACHMENT);
-    String QUALIFIED_INTENT_CONSTRAINS_ERROR = " - Qualified Intents must not specify 'constrains' attribute";
-
 }

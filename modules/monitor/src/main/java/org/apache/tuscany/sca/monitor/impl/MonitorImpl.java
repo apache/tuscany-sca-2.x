@@ -141,4 +141,10 @@ public class MonitorImpl extends Monitor {
         problemCache.clear();
         artifactName = null;
     }
+    
+    @Override
+    public String getMessageString(String loggerName, String messageBundleName, String messageID){
+        Logger problemLogger = Logger.getLogger(loggerName, messageBundleName);
+        return problemLogger.getResourceBundle().getString(messageID);
+    }
 }

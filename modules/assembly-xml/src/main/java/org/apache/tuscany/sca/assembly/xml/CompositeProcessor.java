@@ -1040,15 +1040,19 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                         if ((composite.isLocal() && resolved.isLocal()) || (!composite.isLocal() && !resolved.isLocal())) {
                             composite.getIncludes().set(i, resolved);
                         } else {
-                            ContributionResolveException ce =
-                                new ContributionResolveException("[ASM60041] Error: Composite " + composite.getName()
-                                    + " can only include another composite with the identical @local attribute value");
+                            String message = context.getMonitor().getMessageString(CompositeProcessor.class.getName(),
+                                                                                   Messages.RESOURCE_BUNDLE, 
+                                                                                   "LocalAttibuteMissmatch");
+                            message = message.replace("{0}", composite.getName().toString());
+                            ContributionResolveException ce = new ContributionResolveException(message);
                             error(monitor, "ContributionResolveException", include, ce);
                         }
                     } else {
-                        ContributionResolveException ce =
-                            new ContributionResolveException("[ASM60042] Error: Composite " + include.getName()
-                                + " is not a valid composite within the domain");
+                        String message = context.getMonitor().getMessageString(CompositeProcessor.class.getName(),
+                                                                               Messages.RESOURCE_BUNDLE, 
+                                                                               "CompositeNotFound");
+                        message = message.replace("{0}", include.getName().toString());
+                        ContributionResolveException ce = new ContributionResolveException(message);
                         error(monitor, "ContributionResolveException", include, ce);
                     }
                 }
