@@ -269,10 +269,14 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
                         if (packageName.equals(artifact.getURI().replace("/", ".")))
                             available = true;
                     }
-                    if (!available)
-                        throw new ContributionResolveException("[JCI100007] A Java package " + packageName
-                            + " that is specified on an export "
-                            + "element MUST be contained within the contribution containing the export element.");
+                    if (!available) {
+                        String message = context.getMonitor().getMessageString(ContributionContentProcessor.class.getName(),
+                                                                               "contribution-xml-validation-messages", 
+                                                                               "ExportedPackageNotFound");
+                        message = message.replace("{0}", packageName);
+
+                        throw new ContributionResolveException(message);
+                    }
                 }
             }
 

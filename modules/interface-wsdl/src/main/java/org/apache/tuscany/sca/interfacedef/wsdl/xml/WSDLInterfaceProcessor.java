@@ -22,10 +22,8 @@ package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
 import java.net.URI;
-import java.util.List;
 
 import javax.wsdl.PortType;
-import javax.wsdl.WSDLElement;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -291,8 +289,12 @@ public class WSDLInterfaceProcessor extends BaseStAXArtifactProcessor implements
                             resolver.addModel(newWSDLInterface, context);
                             wsdlInterface = newWSDLInterface;
                         } catch (InvalidInterfaceException e) {
-                        	ContributionResolveException ce = new ContributionResolveException("Invalid interface when resolving " + 
-                        			                                                            portType.toString(), e);
+                            String message = context.getMonitor().getMessageString(WSDLInterfaceProcessor.class.getName(),
+                                                                                   "interface-wsdlxml-validation-messages", 
+                                                                                   "InvalidInterface");
+                            message = message.replace("{0}",  portType.toString());
+
+                        	ContributionResolveException ce = new ContributionResolveException(message, e);
                         	error(monitor, "ContributionResolveException", wsdlFactory, ce);
                             //throw ce;
                         } // end try                      
@@ -302,8 +304,12 @@ public class WSDLInterfaceProcessor extends BaseStAXArtifactProcessor implements
                     } // end if
                 } else {
                 	// If we get here, the WSDLDefinition is unresolved...
-                	ContributionResolveException ce = new ContributionResolveException("WSDLDefinition unresolved " + 
-                			wsdlInterface.getName() );
+                    String message = context.getMonitor().getMessageString(WSDLInterfaceProcessor.class.getName(),
+                                                                           "interface-wsdlxml-validation-messages", 
+                                                                           "WSDLDefinitionUnresolved");
+                    message = message.replace("{0}",  wsdlInterface.getName().toString());
+
+                	ContributionResolveException ce = new ContributionResolveException(message);
                     error(monitor, "ContributionResolveException", wsdlFactory, ce);
                 } // end if
             } // end if
@@ -343,8 +349,11 @@ public class WSDLInterfaceProcessor extends BaseStAXArtifactProcessor implements
                             wsdlInterface.setWsdlDefinition(wsdlDefinition);
                             resolver.addModel(wsdlInterface, context);
                         } catch (InvalidInterfaceException e) {
-                        	ContributionResolveException ce = new ContributionResolveException("Invalid interface when resolving " + 
-                        			                                                            portType.toString(), e);
+                            String message = context.getMonitor().getMessageString(WSDLInterfaceProcessor.class.getName(),
+                                                                                   "interface-wsdlxml-validation-messages", 
+                                                                                   "InvalidInterface");
+                            message = message.replace("{0}",  portType.toString());
+                        	ContributionResolveException ce = new ContributionResolveException(message, e);
                         	Monitor.error(monitor, WSDLInterfaceProcessor.class.getName(), 
                         			"interface-wsdlxml-validation-messages", "ContributionResolveException", 
                         			wsdlFactory.getClass().getName(), ce.getMessage());
@@ -358,8 +367,11 @@ public class WSDLInterfaceProcessor extends BaseStAXArtifactProcessor implements
                     } // end if
                 } else {
                 	// If we get here, the WSDLDefinition is unresolved...
-                	ContributionResolveException ce = new ContributionResolveException("WSDLDefinition unresolved " + 
-                			wsdlInterface.getName() );
+                    String message = context.getMonitor().getMessageString(WSDLInterfaceProcessor.class.getName(),
+                                                                           "interface-wsdlxml-validation-messages", 
+                                                                           "WSDLDefinitionUnresolved");
+                    message = message.replace("{0}",  wsdlInterface.getName().toString());
+                	ContributionResolveException ce = new ContributionResolveException(message);
                     Monitor.error(monitor, WSDLInterfaceProcessor.class.getName(), 
                 			"interface-wsdlxml-validation-messages", "ContributionResolveException", 
                 			wsdlFactory.getClass().getName(), ce.getMessage());
@@ -456,8 +468,11 @@ public class WSDLInterfaceProcessor extends BaseStAXArtifactProcessor implements
                 newWSDLInterface.getPolicySets().addAll(wsdlInterface.getPolicySets());
                 wsdlInterface = newWSDLInterface;
             } catch (InvalidInterfaceException e) {
-                ContributionResolveException ce = new ContributionResolveException("Invalid interface when resolving " + 
-                                                                                    portType.toString(), e);
+                String message = context.getMonitor().getMessageString(WSDLInterfaceProcessor.class.getName(),
+                                        "interface-wsdlxml-validation-messages", 
+                                        "InvalidInterface");
+                message = message.replace("{0}",  portType.toString());
+                ContributionResolveException ce = new ContributionResolveException(message, e);
                 error(monitor, "ContributionResolveException", wsdlFactory, ce);
             }    
             

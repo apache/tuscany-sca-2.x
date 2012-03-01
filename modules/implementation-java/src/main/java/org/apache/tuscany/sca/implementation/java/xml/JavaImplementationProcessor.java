@@ -61,11 +61,9 @@ import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHe
 import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.Interface;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -216,9 +214,14 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
 	            javaImplementation.getServices().add(assemblyFactory.createService());
 	        }
         } catch (Throwable e) {
-            throw new ContributionResolveException("Resolving Java implementation: " + javaImplementation.getName()
-                + ", "
-                + e.getMessage(), e);
+            
+            String message = context.getMonitor().getMessageString(JavaImplementationProcessor.class.getName(),
+                                                                   "impl-javaxml-validation-messages", 
+                                                                   "ResolvingJavaImplementation");
+            message = message.replace("{0}", javaImplementation.getName());
+            message = message.replace("{1}", e.getMessage());
+
+            throw new ContributionResolveException(message, e);
         } // end try
     } // end method
 
