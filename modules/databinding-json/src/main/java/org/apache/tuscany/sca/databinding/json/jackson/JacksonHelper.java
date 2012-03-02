@@ -100,6 +100,9 @@ public class JacksonHelper {
                 }
             }
         }
+        if ( cls != null && mapper == null ) {
+            return MAPPER;
+        }
         if (mapper == null) {
             mapper = new ObjectMapper();
             mapper.registerModule(new JsonOrgModule());
