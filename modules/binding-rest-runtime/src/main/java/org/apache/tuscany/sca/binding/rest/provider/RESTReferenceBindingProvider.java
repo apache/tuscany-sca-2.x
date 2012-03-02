@@ -19,8 +19,10 @@
 
 package org.apache.tuscany.sca.binding.rest.provider;
 
+import org.apache.http.client.HttpClient;
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.host.http.client.HttpClientFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -33,18 +35,22 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 public class RESTReferenceBindingProvider implements EndpointReferenceProvider {
     private ExtensionPointRegistry registry;
     private RuntimeEndpointReference endpointReference;
+    
+    private HttpClientFactory httpClientFactory;
+    private HttpClient httpClient;
 
     public RESTReferenceBindingProvider(ExtensionPointRegistry registry, RuntimeEndpointReference endpointReference) {
         super();
         this.registry = registry;
         this.endpointReference = endpointReference;
+        this.httpClientFactory = HttpClientFactory.getInstance(registry);
     }
 
     public void configure() {
     }
 
     public Invoker createInvoker(Operation operation) {
-        return new RESTBindingInvoker(registry, (RESTBinding)endpointReference.getBinding(), operation);
+        return new RESTBindingInvoker(registry, (RESTBinding)endpointReference.getBinding(), operation, httpClient);
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -56,9 +62,14 @@ public class RESTReferenceBindingProvider implements EndpointReferenceProvider {
     }
 
     public void start() {
+        // Create an HTTP client
+        httpClient = httpClientFactory.createHttpClient();
     }
 
     public void stop() {
+        if (httpClient != null) {
+            httpClient.getConnectionManager().shutdown();
+        }
     }
 
 }

@@ -52,6 +52,7 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
+import org.apache.http.client.HttpClient;
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
 import org.apache.tuscany.sca.binding.rest.wireformat.json.JSONWireFormat;
@@ -63,6 +64,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.wink.client.ApacheHttpClientConfig;
 import org.apache.wink.client.ClientConfig;
 import org.apache.wink.client.Resource;
 import org.apache.wink.client.RestClient;
@@ -79,12 +81,12 @@ public class RESTBindingInvoker implements Invoker {
     private String httpMethod;
     private Class<?> responseType;
 
-    public RESTBindingInvoker(ExtensionPointRegistry registry, RESTBinding binding, Operation operation) {
+    public RESTBindingInvoker(ExtensionPointRegistry registry, RESTBinding binding, Operation operation, HttpClient httpClient) {
         super();
         this.registry = registry;
         this.binding = binding;
         this.operation = operation;
-        this.restClient = createRestClient();
+        this.restClient = createRestClient(httpClient);
     }
 
     private static Map<Class<?>, String> mapping = new HashMap<Class<?>, String>();
@@ -106,8 +108,8 @@ public class RESTBindingInvoker implements Invoker {
         return null;
     }
 
-    private RestClient createRestClient() {
-        ClientConfig config = new ClientConfig();
+    private RestClient createRestClient(HttpClient httpClient) {
+        ClientConfig config = new ApacheHttpClientConfig(httpClient);
 
         // configureBasicAuth(config, userName, password);
 
