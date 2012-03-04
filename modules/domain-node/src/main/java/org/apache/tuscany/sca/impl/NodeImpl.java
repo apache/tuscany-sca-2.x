@@ -38,6 +38,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.xml.Utils;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
@@ -51,8 +52,11 @@ import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
 import org.apache.tuscany.sca.deployment.Deployer;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
@@ -73,6 +77,8 @@ public class NodeImpl implements Node {
     private CompositeActivator compositeActivator;
     private DomainRegistry domainRegistry;
     private ExtensionPointRegistry extensionPointRegistry;
+    private UtilityExtensionPoint utilityExtensionPoint;
+    private FactoryExtensionPoint factoryExtensionPoint;
     private TuscanyRuntime tuscanyRuntime;
     
     private Map<String, Contribution> loadedContributions = new ConcurrentHashMap<String, Contribution>();
@@ -95,8 +101,11 @@ public class NodeImpl implements Node {
         this.domainRegistry = domainRegistry;
         this.extensionPointRegistry = extensionPointRegistry;
         this.tuscanyRuntime = tuscanyRuntime;
-
-        extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(ActiveNodes.class).getActiveNodes().add(this);
+        
+        utilityExtensionPoint = extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class);
+        factoryExtensionPoint = extensionPointRegistry.getExtensionPoint(FactoryExtensionPoint.class);
+        
+        utilityExtensionPoint.getUtility(ActiveNodes.class).getActiveNodes().add(this);
 
         domainRegistry.addContributionListener(new ContributionListener() {
             public void contributionInstalled(String uri) {
@@ -226,6 +235,21 @@ public class NodeImpl implements Node {
     }
     
     public void uninstallContribution(String contributionURI) {
+        // give the runtime the chance to release only artifacts
+        // held by this contribution (and its classloader)
+        Contribution contribution = loadedContributions.get(contributionURI);
+        if (contribution != null) {
+            ClassLoader contributionClassloader = contribution.getClassLoader();  
+            
+            // These are very specific at the moment as there is no 
+            // common lifecycle interface at this level
+            JAXBContextHelper jaxbContextHelper = utilityExtensionPoint.getUtility(JAXBContextHelper.class);
+            jaxbContextHelper.removeJAXBContextForContribution(contributionClassloader);
+            
+            JavaInterfaceFactory javaInterfaceFactory = factoryExtensionPoint.getFactory(JavaInterfaceFactory.class);
+            javaInterfaceFactory.removeInterfacesForContribution(contributionClassloader);
+        }
+        
         domainRegistry.uninstallContribution(contributionURI);
         
         // remove any stopped composite that used the contribution
@@ -236,6 +260,7 @@ public class NodeImpl implements Node {
                 i.remove();
             }
         }
+        
         if (logger.isLoggable(quietLogging? Level.FINE : Level.INFO)) logger.log(quietLogging? Level.FINE : Level.INFO, "uninstallContribution: " + contributionURI);
     }
     

@@ -21,8 +21,10 @@ package org.apache.tuscany.sca.interfacedef.java.impl;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -31,6 +33,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * A factory for the Java model.
@@ -111,5 +114,49 @@ public abstract class JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
         op.setJavaMethod(method);
         op.setName(method.getName());
         return op;
+    }
+    
+    /**
+     * Removes all the cached information relating to a contribution. The 
+     * contribution is identified by the contribution classloader passed in 
+     * as a parameter. This is used when a contribution is removed from 
+     * the runtime. 
+     * 
+     * @param contributionClassloader
+     */
+    public void removeInterfacesForContribution(ClassLoader contributionClassloader){
+        removeInterfacesFromCache(contributionClassloader, normalCache);
+        removeInterfacesFromCache(contributionClassloader, forceRemotableCache);
+    }
+    
+    private void removeInterfacesFromCache(ClassLoader contributionClassloader, Map<Class<?>, JavaInterface> cache){
+        try {
+            synchronized(cache) {
+                Set<Class<?>> clsSet = cache.keySet();
+                Iterator<Class<?>> i = clsSet.iterator();
+                while (i.hasNext()) {
+                    Class<?> cls = i.next();
+                    if (cls.getClassLoader() == contributionClassloader) {
+                        i.remove();
+                    }
+                }
+            }
+        } catch(Exception e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+    
+    /**
+     * For testing so we can check that the cache is being cleared
+     */
+    public Map<Class<?>, JavaInterface> getNormalCache(){
+        return normalCache;
+    }
+    
+    /**
+     * For testing so we can check that the cache is being cleared
+     */
+    public Map<Class<?>, JavaInterface> getForceRemotableCache(){
+        return forceRemotableCache;
     }
 }

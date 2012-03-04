@@ -66,7 +66,7 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  *
  * @version $Rev$ $Date$
  */
-// FIXME: [rfeng] We probably should turn this into a pluggable system service
+
 public final class JAXBContextHelper {
     private final JAXBContextCache cache;
     private final static SimpleTypeMapper SIMPLE_TYPE_MAPPER = new SimpleTypeMapperImpl();
@@ -587,4 +587,14 @@ public final class JAXBContextHelper {
         return name.substring(0, decap).toLowerCase() + name.substring(decap);
     }
 
+    public void removeJAXBContextForContribution(ClassLoader contributionClassloader){
+        cache.removeJAXBContextForContribution(contributionClassloader);
+    }
+    
+    /**
+     * Just for testing that the cache is being removed on stop
+     */
+    public JAXBContextCache getJAXBContextCache(){
+        return cache;
+    }
 }

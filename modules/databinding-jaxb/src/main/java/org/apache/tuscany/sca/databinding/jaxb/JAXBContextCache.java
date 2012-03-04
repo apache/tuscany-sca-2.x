@@ -59,6 +59,7 @@ import javax.xml.transform.Source;
 import org.apache.tuscany.sca.common.java.collection.LRUCache;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * @version $Rev$ $Date$
@@ -403,6 +404,12 @@ public class JAXBContextCache {
                 }
             }
         }
+        public void removeCtx(K key){
+            Map<K,List<V>> map = softMap.get();
+            if (map !=null && key !=null){
+                map.remove(key);
+            }
+        }
     }
 
     /**
@@ -566,5 +573,61 @@ public class JAXBContextCache {
         }
     }
 
-}
+    public void removeJAXBContextFromPools(JAXBContext ctx){
+        if (mpool != null && ctx != null){
+            mpool.removeCtx(ctx);
+        }
+        if (upool != null && ctx !=null){
+            upool.removeCtx(ctx);
+        }
+    }
+    
+    /**
+     * Removes all the cached information relating to a contribution. The 
+     * contribution is identified by the contribution classloader passed in 
+     * as a parameter. This is used when a contribution is removed from 
+     * the runtime. 
+     * 
+     * @param contributionClassloader
+     */
+    public void removeJAXBContextForContribution(ClassLoader contributionClassloader){
+        if (cache != null){
+            try {
+                synchronized(cache) {
+                    Set<Object> objSet = cache.keySet();
+                    List<Object> toRemove = new ArrayList<Object>();
+                    Iterator<Object> i = objSet.iterator();
+                    while(i.hasNext()) {
+                        Object obj = i.next();
+                        if (obj instanceof Set){
+                            Set<Class> innerSet = (Set<Class>)obj;
+                            Iterator<Class> j = innerSet.iterator();
+                            loop:
+                            while(j.hasNext()) {
+                                Class cls = j.next();
+                                ClassLoader cl = cls.getClassLoader();
+                                while (cl != null){
+                                    if (cl == contributionClassloader){
+                                        toRemove.add(obj);
+                                        break loop;
+                                    }
+                                    // take account of generated classes
+                                    cl = cl.getParent();
+                                }
+                            }
+                        } 
+                    }
+                    for (Object obj : toRemove){
+                        JAXBContext ctx = cache.get(obj);
+                        removeJAXBContextFromPools(ctx);
+                        cache.remove(obj);
+                    }
+                }
+            } catch(Exception e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
+    }
 
+
+}

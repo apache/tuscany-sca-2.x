@@ -96,4 +96,13 @@ public interface JavaInterfaceFactory {
      * @return
      */
     List<JavaInterfaceVisitor> getInterfaceVisitors();
+    
+    /**
+     * Remove the interfaces that have been registered for 
+     * the contribution identified by the contribution class
+     * loader provided
+     * 
+     * @param contributionClassloader
+     */
+    void removeInterfacesForContribution(ClassLoader contributionClassloader);
 }

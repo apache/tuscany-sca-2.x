@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.implementation.java;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -36,8 +37,8 @@ import java.lang.reflect.Type;
 public class JavaElementImpl {
     private AnnotatedElement anchor;
     private ElementType elementType;
-    private Class<?> type;
-    private Type genericType;
+    private WeakReference<Class<?>> type;
+    private WeakReference<Type> genericType;
     private int index = -1;
     private String name;
     private Class<? extends Annotation> classifer;
@@ -45,24 +46,24 @@ public class JavaElementImpl {
     public JavaElementImpl(Class<?> cls) {
         this.anchor = cls;
         this.elementType = ElementType.TYPE;
-        this.type = cls;
-        this.genericType = cls;
+        this.type = new WeakReference<Class<?>>(cls);
+        this.genericType = new WeakReference<Type>(cls);
         this.name = cls.getName();
     }
 
     public JavaElementImpl(Field field) {
         this.anchor = field;
         this.elementType = ElementType.FIELD;
-        this.type = field.getType();
-        this.genericType = field.getGenericType();
+        this.type = new WeakReference<Class<?>>(field.getType());
+        this.genericType = new WeakReference<Type>(field.getGenericType());
         this.name = field.getName();
     }
 
     public JavaElementImpl(Constructor<?> constructor, int index) {
         this.anchor = constructor;
         this.elementType = ElementType.PARAMETER;
-        this.type = constructor.getParameterTypes()[index];
-        this.genericType = constructor.getGenericParameterTypes()[index];
+        this.type = new WeakReference<Class<?>>(constructor.getParameterTypes()[index]);
+        this.genericType = new WeakReference<Type>(constructor.getGenericParameterTypes()[index]);
         this.index = index;
         this.name = "";
     }
@@ -70,8 +71,8 @@ public class JavaElementImpl {
     public JavaElementImpl(Method method, int index) {
         this.anchor = method;
         this.elementType = ElementType.PARAMETER;
-        this.type = method.getParameterTypes()[index];
-        this.genericType = method.getGenericParameterTypes()[index];
+        this.type = new WeakReference<Class<?>>(method.getParameterTypes()[index]);
+        this.genericType = new WeakReference<Type>(method.getGenericParameterTypes()[index]);
         this.index = index;
         this.name = "";
     }
@@ -86,7 +87,7 @@ public class JavaElementImpl {
      */
     public JavaElementImpl(String name, Class<?> type, Class<? extends Annotation> classifer) {
         super();
-        this.type = type;
+        this.type = new WeakReference<Class<?>>(type);
         this.name = name;
         this.classifer = classifer;
     }
@@ -109,7 +110,7 @@ public class JavaElementImpl {
      * @return the genericType
      */
     public Type getGenericType() {
-        return genericType;
+        return genericType.get();
     }
 
     /**
@@ -123,7 +124,7 @@ public class JavaElementImpl {
      * @return the type
      */
     public Class<?> getType() {
-        return type;
+        return type.get();
     }
 
     /**

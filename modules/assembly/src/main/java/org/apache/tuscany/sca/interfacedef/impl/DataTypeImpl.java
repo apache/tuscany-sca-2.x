@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.interfacedef.impl;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,8 +45,8 @@ import org.apache.tuscany.sca.interfacedef.DataType;
  */
 public class DataTypeImpl<L> implements DataType<L> {
     private String dataBinding;
-    private Class<?> physical;
-    private Type genericType;
+    private WeakReference<Class<?>> physical;
+    private WeakReference<Type> genericType;
     private L logical;
     private Map<Class<?>, Object> metaDataMap;
 
@@ -78,8 +79,8 @@ public class DataTypeImpl<L> implements DataType<L> {
     public DataTypeImpl(String dataBinding, Class<?> physical, Type genericType, L logical) {
         super();
         this.dataBinding = dataBinding;
-        this.physical = physical;
-        this.genericType = genericType;
+        this.physical = new WeakReference<Class<?>>(physical);
+        this.genericType = new WeakReference<Type>(genericType);
         this.logical = logical;
     }
 
@@ -89,14 +90,14 @@ public class DataTypeImpl<L> implements DataType<L> {
      * @return the physical type used by the runtime
      */
     public Class<?> getPhysical() {
-        return physical;
+        return physical.get();
     }
 
     /**
      * @param physical the physical to set
      */
     public void setPhysical(Class<?> physical) {
-        this.physical = physical;
+        this.physical = new WeakReference<Class<?>>(physical);
     }
 
     /**
@@ -104,7 +105,7 @@ public class DataTypeImpl<L> implements DataType<L> {
      * @return The java generic type
      */
     public Type getGenericType() {
-        return genericType;
+        return genericType.get();
     }
 
     /**
@@ -112,7 +113,7 @@ public class DataTypeImpl<L> implements DataType<L> {
      * @param genericType
      */
     public void setGenericType(Type genericType) {
-        this.genericType = genericType;
+        this.genericType = new WeakReference<Type>(genericType);
     }
 
     /**
@@ -156,8 +157,8 @@ public class DataTypeImpl<L> implements DataType<L> {
     	StringBuilder b = new StringBuilder( 256 );
     	b.append( "DataType[" );
     	b.append( "dataBinding=" + ((dataBinding==null) ? "null" : dataBinding) );
-    	b.append( ", genericType=" + ((genericType==null) ? "null" : genericType) ); 
-    	b.append( ", physical=" + ((physical==null) ? "null" : physical) ); 
+    	b.append( ", genericType=" + ((genericType==null || genericType.get() == null) ? "null" : genericType) ); 
+    	b.append( ", physical=" + ((physical==null || physical.get() == null) ? "null" : physical) ); 
     	b.append( ", logical=" + ((logical==null) ? "null" : logical) );
     	b.append( ", metaData size=" + ((metaDataMap==null) ? "0" : metaDataMap.size()) );
     	b.append( "]" );
@@ -190,9 +191,9 @@ public class DataTypeImpl<L> implements DataType<L> {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((dataBinding == null) ? 0 : dataBinding.hashCode());
-        result = prime * result + ((genericType == null) ? 0 : genericType.hashCode());
+        result = prime * result + ((genericType == null || genericType.get() == null) ? 0 : genericType.hashCode());
         result = prime * result + ((logical == null) ? 0 : logical.hashCode());
-        result = prime * result + ((physical == null) ? 0 : physical.hashCode());
+        result = prime * result + ((physical == null || physical.get() == null) ? 0 : physical.hashCode());
         return result;
     }
 
@@ -210,20 +211,20 @@ public class DataTypeImpl<L> implements DataType<L> {
                 return false;
         } else if (!dataBinding.equals(other.dataBinding))
             return false;
-        if (genericType == null) {
-            if (other.genericType != null)
+        if (genericType == null || genericType.get() == null) {
+            if (other.genericType != null && other.genericType.get() != null)
                 return false;
-        } else if (!genericType.equals(other.genericType))
+        } else if (!genericType.get().equals(other.genericType.get()))
             return false;
         if (logical == null) {
             if (other.logical != null)
                 return false;
         } else if (!logical.equals(other.logical))
             return false;
-        if (physical == null) {
-            if (other.physical != null)
+        if (physical == null || physical.get() == null) {
+            if (other.physical != null && other.physical.get() != null)
                 return false;
-        } else if (!physical.equals(other.physical))
+        } else if (!physical.get().equals(other.physical.get()))
             return false;
         return true;
     }

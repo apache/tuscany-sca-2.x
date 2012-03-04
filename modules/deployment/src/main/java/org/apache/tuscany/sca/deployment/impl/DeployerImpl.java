@@ -226,7 +226,7 @@ public class DeployerImpl implements Deployer {
                     // Add the (empty) matchingExports List and report a warning
                     import_.setModelResolver(new DefaultImportModelResolver(matchingExports));
                     
-                    // push context here as the "stack" in this case is a list of nexted contributions
+                    // push context here as the "stack" in this case is a list of nested contributions
                     // through which imports have been chased which may not make much sense to the 
                     // user so just report the contribution in error
                     monitor.pushContext("Contribution: " + contribution.getURI());
