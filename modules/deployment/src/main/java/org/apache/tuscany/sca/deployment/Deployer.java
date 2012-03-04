@@ -218,7 +218,7 @@ public interface Deployer extends LifeCycleListener {
      * @throws ContributionResolveException
      * @throws CompositeBuilderException
      */
-    void resolve(Contribution c, List<Contribution> dependentContributions, Monitor monitor) throws ContributionResolveException, CompositeBuilderException;
+    void resolve(List<Contribution> contributionList, Contribution systemContribution, Monitor monitor) throws ContributionResolveException, CompositeBuilderException;
 
     public  Contribution cloneSystemContribution(Monitor monitor);
 

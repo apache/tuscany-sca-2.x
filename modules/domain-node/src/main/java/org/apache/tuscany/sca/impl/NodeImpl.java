@@ -344,7 +344,10 @@ public class NodeImpl implements Node {
 
         Monitor monitor = deployer.createMonitor();
         try {
-            deployer.resolve(contribution, calculateDependentContributions(cd), monitor);
+        	ArrayList<Contribution> cs = new ArrayList<Contribution>();
+        	cs.add(contribution);
+        	cs.addAll(calculateDependentContributions(cd));
+            deployer.resolve(cs, null, monitor);
         } catch (Exception e) {
             loadedContributions.remove(cd.getURI());
             throw new RuntimeException(e);

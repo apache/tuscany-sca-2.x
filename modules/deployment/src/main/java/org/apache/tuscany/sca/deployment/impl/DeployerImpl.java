@@ -610,12 +610,12 @@ public class DeployerImpl implements Deployer {
         return domainComposite;
     }
     
-    public void resolve(Contribution c, List<Contribution> dependentContributions, Monitor monitor) throws ContributionResolveException, CompositeBuilderException {
+    public void resolve(List<Contribution> contributionList, Contribution systemContribution, Monitor monitor) throws ContributionResolveException, CompositeBuilderException {
         init();
-        List<Contribution> contributionList = new ArrayList<Contribution>();
-        contributionList.add(c);
 
-        Contribution systemContribution = cloneSystemContribution(monitor);
+        if (systemContribution == null) {
+            systemContribution = cloneSystemContribution(monitor);
+        }
         Definitions systemDefinitions = systemContribution.getArtifacts().get(0).getModel();
         // Build an aggregated SCA definitions model. Must be done before we try and
         // resolve any contributions or composites as they may depend on the full
@@ -635,6 +635,7 @@ public class DeployerImpl implements Deployer {
                         continue;
                     }
                     Object model = artifact.getModel();
+                    // FIXME: Should we check the artifact URI is META-INF/definitions.xml?
                     if (model instanceof Definitions) {
                         try {
                             monitor.pushContext("Definitions: " + artifact.getLocation());
@@ -671,7 +672,7 @@ public class DeployerImpl implements Deployer {
         Set<Contribution> resolved = new HashSet<Contribution>();
         
         for (Contribution contribution : contributionList) {
-            buildDependencies(contribution, dependentContributions, monitor);
+            buildDependencies(contribution, contributionList, monitor);
 
             // Resolve contributions
             for (Contribution dependency : contribution.getDependencies()) {
