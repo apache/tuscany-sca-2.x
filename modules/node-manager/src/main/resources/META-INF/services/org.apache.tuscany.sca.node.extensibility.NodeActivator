@@ -16,3 +16,4 @@
 # under the License.
 # Implementation class for the ModuleActivator
 org.apache.tuscany.sca.node.manager.impl.DomainCompositeResourceImpl;ranking=100
+org.apache.tuscany.sca.node.manager.impl.DomainAssetManagerResourceImpl;ranking=101
