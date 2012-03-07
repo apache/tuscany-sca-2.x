@@ -22,25 +22,25 @@
 	<parent>
 		<groupId>org.apache.tuscany.sca.samples</groupId>
 		<artifactId>tuscany-samples-binding-websocket</artifactId>
-		<version>2.0-SNAPSHOT</version>
+		<version>2.0-Beta4</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>sample-binding-websocket-weather-webapp</artifactId>
 	<packaging>war</packaging>
-	<version>2.0-SNAPSHOT</version>
+	<version>2.0-Beta4</version>
 	<name>Apache Tuscany SCA Sample binding.websocket Weather Monitor Webapp</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>
 			<artifactId>tuscany-binding-websocket</artifactId>
-			<version>2.0-SNAPSHOT</version>
+			<version>2.0-Beta4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>
 			<artifactId>tuscany-base-runtime-pom</artifactId>
-			<version>2.0-SNAPSHOT</version>
+			<version>2.0-Beta4</version>
 			<type>pom</type>
 			<scope>compile</scope>
 		</dependency>
