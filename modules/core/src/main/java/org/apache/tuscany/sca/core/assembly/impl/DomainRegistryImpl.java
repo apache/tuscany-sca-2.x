@@ -210,10 +210,10 @@ public class DomainRegistryImpl extends BaseDomainRegistry implements DomainRegi
     }
 
     public void uninstallContribution(String uri) {
-        contributionDescriptions.remove(uri);
         for (ContributionListener listener : contributionlisteners) {
             listener.contributionRemoved(uri);
         }
+        contributionDescriptions.remove(uri);        
     }
 
     public List<String> getInstalledContributionURIs() {
