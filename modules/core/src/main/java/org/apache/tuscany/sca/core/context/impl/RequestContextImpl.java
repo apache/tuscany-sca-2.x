@@ -65,20 +65,22 @@ public class RequestContextImpl implements RequestContext {
     public String getServiceName() {
         Message msgContext = ThreadMessageContext.getMessageContext();
         
-        if (msgContext != null){
+        if (msgContext != null &&
+            msgContext.getTo() != null){
             return msgContext.getTo().getService().getName();
         } else {
-            // message in thread context could be null if the user has 
-            // spun up a new thread inside their component implementation 
+            // message in thread context could be null (or the default message where to == null) 
+            // if the user has spun up a new thread inside their component implementation 
             return null;
         }
     }
 
     public <B> ServiceReference<B> getServiceReference() {
         Message msgContext = ThreadMessageContext.getMessageContext();
-        if (msgContext == null){
-            // message in thread context could be null if the user has 
-            // spun up a new thread inside their component implementation 
+        if (msgContext == null || 
+            msgContext.getTo() == null){
+            // message in thread context could be null (or the default message where to == null)
+            // if the user has spun up a new thread inside their component implementation 
             return null;
         }
         // FIXME: [rfeng] Is this the service reference matching the caller side?
@@ -101,9 +103,10 @@ public class RequestContextImpl implements RequestContext {
     @SuppressWarnings("unchecked")
     public <CB> ServiceReference<CB> getCallbackReference() {
         Message msgContext = ThreadMessageContext.getMessageContext();
-        if (msgContext == null){
-            // message in thread context could be null if the user has 
-            // spun up a new thread inside their component implementation 
+        if (msgContext == null || 
+            msgContext.getTo() == null){
+            // message in thread context could be null (or the default message where to == null)
+            // if the user has spun up a new thread inside their component implementation 
             return null;
         }
         

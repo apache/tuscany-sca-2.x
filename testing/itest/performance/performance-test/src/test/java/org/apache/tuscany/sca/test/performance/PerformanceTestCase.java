@@ -56,7 +56,7 @@ import com.sun.management.HotSpotDiagnosticMXBean;
  */
 public class PerformanceTestCase {
     
-    public boolean writeHeapDump = false;
+    public boolean writeHeapDump = true;
 
     private static BufferedWriter resultsFile = null;
     
@@ -81,7 +81,7 @@ public class PerformanceTestCase {
 
     @Test
     public void testInstallUninstall() {
-        dumpHeapStart();
+        dumpHeapStart("testInstallUninstall");
         
         printRuntimeStats("createRuntime");
         
@@ -92,6 +92,8 @@ public class PerformanceTestCase {
         createNode();
         
         callInstallUninstallRepeatedly(10);
+
+        dumpHeapEnd("testInstallUninstall_postUninstall");
         
         checkCacheStatus();
         
@@ -113,13 +115,13 @@ public class PerformanceTestCase {
         
         printRuntimeStats("End");
         
-        dumpHeapEnd();
+        dumpHeapEnd("testInstallUninstall_postStop");
     }
     
 
     @Test
     public void testCall() {
-        dumpHeapStart();
+        dumpHeapStart("TestCall");
         
         printRuntimeStats("createRuntime");
         
@@ -148,6 +150,7 @@ public class PerformanceTestCase {
         //printRuntimeStats("uninstallContribution");
         
         //uninstallContribution();
+        dumpHeapEnd("TestCall_postUninstall");
         
         printRuntimeStats("stopNode");
         
@@ -167,7 +170,7 @@ public class PerformanceTestCase {
         
         printRuntimeStats("End");
         
-        dumpHeapEnd();
+        dumpHeapEnd("TestCall_postStop");
     }
     
     public void checkCacheStatus(){
@@ -208,15 +211,15 @@ public class PerformanceTestCase {
     
     // ============================================================
     
-    public void dumpHeapStart(){
+    public void dumpHeapStart(String name){
         if (writeHeapDump){
-            dumpHeap("heap_start.bin");
+            dumpHeap("heap_start_" + name + ".bin");
         }
     }
     
-    public void dumpHeapEnd(){
+    public void dumpHeapEnd(String name){
         if (writeHeapDump){
-            dumpHeap("heap_stop.bin");
+            dumpHeap("heap_stop_" + name + ".bin");
             
             System.out.println("You can watch a JVM run using \n" +
                                " jconsole \n" + 

@@ -18,6 +18,12 @@
  */
 package org.apache.tuscany.sca.context;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 
 /**
@@ -26,8 +32,49 @@ import org.apache.tuscany.sca.invocation.Message;
  * @version $Rev$ $Date$
  */
 public final class ThreadMessageContext {
+    
+        // TUSCANY-3770: Used as a marker for detecting when thread context information can be removed
+        private static final Message msg = new Message() {
+        private Map<String, Object> headers = new HashMap<String, Object>();
+        public void setTo(Endpoint to) {}
+        public void setOperation(Operation op) {}
+        public void setMessageID(Object messageId) {}
+        public void setFrom(EndpointReference from) {}
+        public <T> void setFaultBody(T fault) {}
+        public <T> void setBody(T body) {}
+        public <T> void setBindingContext(T bindingContext) {}
+        public boolean isFault() {
+            return false;
+        }
+        public Endpoint getTo() {
+            return null;
+        }
+        public Operation getOperation() {
+            return null;
+        }
+        public Object getMessageID() {
+            return null;
+        }
+        public Map<String, Object> getHeaders() {
+            return headers;
+        }
+        public EndpointReference getFrom() {
+            return null;
+        }
+        public <T> T getBody() {
+            return null;
+        }
+        public <T> T getBindingContext() {
+            return null;
+        }
+    };
 
-    private static final ThreadLocal<Message> CONTEXT = new ThreadLocal<Message>();
+    private static final ThreadLocal<Message> CONTEXT = new ThreadLocal<Message>(){
+        @Override
+        protected synchronized Message initialValue() {
+            return msg;
+        }
+    };
     
     private static final ThreadLocal<Message> PREVIOUS_CONTEXT = new ThreadLocal<Message>();
 
@@ -53,6 +100,12 @@ public final class ThreadMessageContext {
         Message old = CONTEXT.get();
         CONTEXT.set(context);
         PREVIOUS_CONTEXT.set(old);
+        
+        // TUSCANY-3770: Remove thread context information when the request invocation has completed
+        if (context == msg) {
+            removeMessageContext();
+            removePreviousMessageContext();
+        }
         return old;
     }
 
@@ -70,14 +123,16 @@ public final class ThreadMessageContext {
     }
 
     /**
-     * Removes and state from the current thread to ensure that
+     * Removes any state from the current thread to ensure that
      * any associated classloaders can be GCd
      */
+    // TUSCANY-3770: The thread context information is removed implicitly above    
     public static void removeMessageContext() {
         CONTEXT.remove();
     }
 
+    //for performance concerns - set to null rather than call remove
     public static void removePreviousMessageContext() {
-        PREVIOUS_CONTEXT.remove();
+        PREVIOUS_CONTEXT.set(null);
     }
 }
