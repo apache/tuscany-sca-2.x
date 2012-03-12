@@ -82,19 +82,12 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
 
     @Override
     public <T> T getService(Class<T> serviceInterface, String serviceURI) throws NoSuchServiceException{
-        
-        String serviceName = null;
-        if (serviceURI.contains("/")) {
-            int i = serviceURI.indexOf("/");
-            if (i < serviceURI.length() - 1) {
-                serviceName = serviceURI.substring(i + 1);
-            }
-        }
-        
+                
         // The service is a component in a local runtime
         if (!remoteClient) {
             Endpoint ep = endpointFinder.findEndpoint(domainRegistry, serviceURI);
             if (((RuntimeComponent)ep.getComponent()).getComponentContext() != null) {
+                String serviceName = ep.getService().getName() + '/' + ep.getBinding().getName();
                 return ((RuntimeComponent)ep.getComponent()).getServiceReference(serviceInterface, serviceName).getService();
             }
         }

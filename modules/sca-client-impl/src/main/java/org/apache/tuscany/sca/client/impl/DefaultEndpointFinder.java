@@ -21,10 +21,12 @@ package org.apache.tuscany.sca.client.impl;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.oasisopen.sca.NoSuchServiceException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 public class DefaultEndpointFinder implements EndpointFinder {
 
@@ -36,7 +38,18 @@ public class DefaultEndpointFinder implements EndpointFinder {
         if (eps == null || eps.size() < 1) {
             throw new NoSuchServiceException(serviceName);
         }
-        
+
+        // If lookup is by component name only and there are multiple matches, verify all matches
+        // are from the same service.  Otherwise it is ambiguous which service the client wants.
+        if (serviceName.indexOf('/') == -1 && eps.size() > 1) {
+            ComponentService firstService = eps.get(0).getService();
+            for (int i=1; i<eps.size(); i++) {
+                if (firstService != eps.get(i).getService())
+                    throw new ServiceRuntimeException("More than one service is declared on component " + serviceName
+                    + ". Service name is required to get the service.");
+            }
+        }
+
         // If there is an Endpoint using the SCA binding use that
         for (Endpoint ep : eps) {
             if (SCABinding.TYPE.equals(ep.getBinding().getType())) {
@@ -47,8 +60,9 @@ public class DefaultEndpointFinder implements EndpointFinder {
         if (onlySCABinding) {
             throw new NoSuchServiceException(serviceName + " not found using binding.sca");
         }
-        
-        // Otherwise just choose the first one
+
+        // There either is a single matching endpoint, or there are multiple endpoints (bindings)
+        // under a single service. Just choose the first one
         return eps.get(0);
     }
 }
