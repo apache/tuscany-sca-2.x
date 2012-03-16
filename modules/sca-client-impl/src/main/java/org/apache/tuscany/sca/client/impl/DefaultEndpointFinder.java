@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.client.impl;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -37,6 +38,16 @@ public class DefaultEndpointFinder implements EndpointFinder {
         List<Endpoint> eps = domainRegistry.findEndpoint(serviceName);
         if (eps == null || eps.size() < 1) {
             throw new NoSuchServiceException(serviceName);
+        }
+        
+        // remove any callback services from the array as we aren't 
+        // expecting SCA clients to connect to callback service
+        Iterator<Endpoint> iterator = eps.iterator();
+        while (iterator.hasNext()){
+            Endpoint ep = iterator.next();
+            if (ep.getService().isForCallback()){
+                iterator.remove();
+            }
         }
 
         // If lookup is by component name only and there are multiple matches, verify all matches
