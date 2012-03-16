@@ -20,6 +20,7 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
            xmlns:foo="http://foo" 
            targetNamespace="http://foo"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
   name="PerformanceTest">
   
   <component name="HelloWorldClientComponent">
@@ -28,7 +29,7 @@
   </component>
 
   <component name="HelloWorldServiceComponent">
-    <implementation.java class="org.apache.tuscany.sca.test.performance.impl.HelloworldServiceImpl" />
+    <implementation.java class="org.apache.tuscany.sca.test.performance.impl.HelloworldServiceImpl"/>
     <service name="Helloworld">
         <binding.ws/>
     </service>

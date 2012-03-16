@@ -20,11 +20,15 @@ package org.apache.tuscany.sca.test.performance.impl;
 
 import org.apache.tuscany.sca.test.performance.BeanA;
 import org.apache.tuscany.sca.test.performance.Helloworld;
+import org.oasisopen.sca.annotation.Requires;
 
+@Requires("{http://tuscany.apache.org/xmlns/sca/1.1}logging")
 public class HelloworldServiceImpl implements Helloworld {
 
     public String sayHello(String name, BeanA beanA) {
-        return "Hello " + name + " " + beanA.getField1();
+        String returnStrng =  "Hello " + name + " " + beanA.getField1();
+        System.out.println("At HelloworldServiceImpl - " + returnStrng);
+        return returnStrng;
     }
 
 }

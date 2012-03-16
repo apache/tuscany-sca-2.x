@@ -224,11 +224,11 @@ public class PerformanceTestCase {
             System.out.println("You can watch a JVM run using \n" +
                                " jconsole \n" + 
                                "You can manually dump the heap using \n" +
-                               " jmap -dump:file=heapdump.bin 345" +
+                               " jmap -dump:file=heap_stop_" + name + ".bin 345" +
                                "Where 345 is the process id from jconsole \n" +
                                "The program dumps the heap at the start and end. You can look at them using \n" +
                                " jhat -J-Xmx512m heap_start.bin\n" +
-                               " jhat -J-Xmx512m heap_stop.bin\n" +
+                               " jhat -J-Xmx512m heap_stop_" + name + ".bin\n" +
                                "Then point your browser at\n" +
                                " http://localhost:7000/");
         } else {
