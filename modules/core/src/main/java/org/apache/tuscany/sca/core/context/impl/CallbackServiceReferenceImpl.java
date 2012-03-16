@@ -133,8 +133,10 @@ public class CallbackServiceReferenceImpl<B> extends ServiceReferenceImpl<B> {
         // in the forward message to get the same effect. Some bindings don't do that hence
         // the various checks
         this.resolvedEndpoint = msgContext.getFrom().getCallbackEndpoint();
-        if (resolvedEndpoint != null && resolvedEndpoint.getBinding() != null){
-            if (resolvedEndpoint.getBinding().getType().equals(SCABinding.TYPE)){
+        if (resolvedEndpoint != null){
+            if (resolvedEndpoint.getBinding() == null){
+                this.callbackHandler = new CallbackHandler(resolvedEndpoint.getURI());
+            } else if (resolvedEndpoint.getBinding().getType().equals(SCABinding.TYPE)){
                 this.callbackHandler = new CallbackHandler(resolvedEndpoint.getURI());
             } else {
                 this.callbackHandler = new CallbackHandler(resolvedEndpoint.getBinding().getURI());
