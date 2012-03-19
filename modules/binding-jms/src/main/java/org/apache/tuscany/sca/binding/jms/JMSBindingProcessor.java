@@ -1145,16 +1145,6 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         //    }
         //}
 
-        if ((jmsBinding.getRequestWireFormat() != null) &&
-                !(jmsBinding.getRequestWireFormat() instanceof WireFormatJMSDefault)){
-                writeWireFormat(jmsBinding.getRequestWireFormat(), writer, context);
-        }
-            
-        if ((jmsBinding.getOperationSelector() != null) &&
-                !(jmsBinding.getOperationSelector() instanceof OperationSelectorJMSDefault)){
-                writeOperationSelector(jmsBinding.getOperationSelector(), writer, context);
-        }
-            
         String correlationScheme = jmsBinding.getCorrelationScheme();
         if ( correlationScheme != null ) {
             if ( !correlationScheme.equals(JMSBindingConstants.CORRELATE_MSG_ID) ) {
@@ -1177,6 +1167,16 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             }
         }
 
+        if ((jmsBinding.getRequestWireFormat() != null) &&
+                !(jmsBinding.getRequestWireFormat() instanceof WireFormatJMSDefault)){
+                writeWireFormat(jmsBinding.getRequestWireFormat(), writer, context);
+        }
+            
+        if ((jmsBinding.getOperationSelector() != null) &&
+                !(jmsBinding.getOperationSelector() instanceof OperationSelectorJMSDefault)){
+                writeOperationSelector(jmsBinding.getOperationSelector(), writer, context);
+        }
+            
         if ( jmsBinding.containsHeaders() ) {
            writeHeaders( jmsBinding, writer);
         }
