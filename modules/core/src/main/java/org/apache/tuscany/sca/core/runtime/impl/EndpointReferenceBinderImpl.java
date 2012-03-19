@@ -42,7 +42,6 @@ import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
-import org.apache.tuscany.sca.assembly.xml.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -501,7 +500,12 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         } else {
             endpointReference.setTargetEndpoint(matchedEndpoint);
             Binding binding = matchedEndpoint.getBinding();
-            endpointReference.setBinding(binding);
+            try {
+				endpointReference.setBinding((Binding) binding.clone());
+			} catch (CloneNotSupportedException e) {
+				// shouldn't happen
+				throw new RuntimeException(e);
+			}
             // TUSCANY-3873 - add policy from the service
             //                we don't care about intents at this stage
             endpointReference.getPolicySets().addAll(matchedEndpoint.getPolicySets());
