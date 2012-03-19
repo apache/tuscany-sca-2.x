@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Callable;
@@ -210,7 +211,15 @@ public class DomainRegistryImpl extends BaseDomainRegistry implements DomainRegi
     }
 
     public void uninstallContribution(String uri) {
-        for (ContributionListener listener : contributionlisteners) {
+        // TUSCANY-4025 - iterate through this list in reverse
+        //                in the expectation that a node listener
+        //                will appear in the list before and other
+        //                listener that appears in the list and which
+        //                relies on the node still have the contribution
+        //                information. 
+        ListIterator<ContributionListener> listenerIterator = contributionlisteners.listIterator(contributionlisteners.size());
+        while (listenerIterator.hasPrevious()) { 
+            ContributionListener listener = listenerIterator.previous(); 
             listener.contributionRemoved(uri);
         }
         contributionDescriptions.remove(uri);        
