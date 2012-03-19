@@ -1145,6 +1145,16 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         //    }
         //}
 
+        if ((jmsBinding.getRequestWireFormat() != null) &&
+                !(jmsBinding.getRequestWireFormat() instanceof WireFormatJMSDefault)){
+                writeWireFormat(jmsBinding.getRequestWireFormat(), writer, context);
+        }
+            
+        if ((jmsBinding.getOperationSelector() != null) &&
+                !(jmsBinding.getOperationSelector() instanceof OperationSelectorJMSDefault)){
+                writeOperationSelector(jmsBinding.getOperationSelector(), writer, context);
+        }
+            
         String correlationScheme = jmsBinding.getCorrelationScheme();
         if ( correlationScheme != null ) {
             if ( !correlationScheme.equals(JMSBindingConstants.CORRELATE_MSG_ID) ) {
@@ -1190,14 +1200,16 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
               responseASName != null ) {
             
            writer.writeStartElement(Constants.SCA11_NS, "response");
+
+           if ((jmsBinding.getResponseWireFormat() != null) &&
+                   !(jmsBinding.getResponseWireFormat() instanceof WireFormatJMSDefault)){
+                   writeWireFormat(jmsBinding.getResponseWireFormat(), writer, context);
+           }
+               
+          
            writeResponseDestinationProperties( jmsBinding, writer );       
            writeResponseConnectionFactoryProperties( jmsBinding, writer );        
            writeResponseActivationSpecProperties( jmsBinding, writer );
-           
-           if ((jmsBinding.getResponseWireFormat() != null) &&
-               !(jmsBinding.getResponseWireFormat() instanceof WireFormatJMSDefault)){
-               writeWireFormat(jmsBinding.getResponseWireFormat(), writer, context);
-           }
            
            writer.writeEndElement();
            // Strange bug. Without white space, headers end tag improperly read. 
@@ -1207,16 +1219,6 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         writeResourceAdapterProperties( jmsBinding, writer );
         
         writeConfiguredOperations( jmsBinding, writer, context );
-        
-        if ((jmsBinding.getRequestWireFormat() != null) &&
-            !(jmsBinding.getRequestWireFormat() instanceof WireFormatJMSDefault)){
-            writeWireFormat(jmsBinding.getRequestWireFormat(), writer, context);
-        }
-        
-        if ((jmsBinding.getOperationSelector() != null) &&
-            !(jmsBinding.getOperationSelector() instanceof OperationSelectorJMSDefault)){
-            writeOperationSelector(jmsBinding.getOperationSelector(), writer, context);
-        }
         
         writeEnd(writer);
     }
