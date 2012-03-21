@@ -338,6 +338,11 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
 
         }
         
+        // [rfeng] Setup the target endpoint if the reference uses an explicit binding
+        if (endpointReference.getTargetEndpoint().getBinding() == null) {
+            endpointReference.getTargetEndpoint().setBinding(endpointReference.getBinding());
+        }
+        
         // Now the endpoint reference is resolved check that the binding interfaces contract
         // and the reference contract are compatible
         try {
@@ -500,12 +505,16 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         } else {
             endpointReference.setTargetEndpoint(matchedEndpoint);
             Binding binding = matchedEndpoint.getBinding();
+            // Reverted the change, see https://issues.apache.org/jira/browse/TUSCANY-4029
+            /*
             try {
 				endpointReference.setBinding((Binding) binding.clone());
 			} catch (CloneNotSupportedException e) {
 				// shouldn't happen
 				throw new RuntimeException(e);
 			}
+	   */
+            endpointReference.setBinding(binding);
             // TUSCANY-3873 - add policy from the service
             //                we don't care about intents at this stage
             endpointReference.getPolicySets().addAll(matchedEndpoint.getPolicySets());
@@ -528,6 +537,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             endpointReference.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
             endpointReference.setUnresolved(false);
         }
+        
     }
 
     private void build(EndpointReference endpointReference) {
