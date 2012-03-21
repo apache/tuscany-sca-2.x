@@ -629,22 +629,24 @@ public class DeployerImpl implements Deployer {
         for (Contribution contribution : contributionList) {
             monitor.pushContext("Contribution: " + contribution.getURI());
             try {
-                // aggregate definitions
-                for (Artifact artifact : contribution.getArtifacts()) {
-                    if (!"META-INF/definitions.xml".equals(artifact.getURI())) {
-                        continue;
-                    }
-                    Object model = artifact.getModel();
-                    // FIXME: Should we check the artifact URI is META-INF/definitions.xml?
-                    if (model instanceof Definitions) {
-                        try {
-                            monitor.pushContext("Definitions: " + artifact.getLocation());
-                            DefinitionsUtil.aggregate((Definitions)model, systemDefinitions, monitor);
-                        } finally {
-                            monitor.popContext();
-                        }                            
-                    }
-                }
+// For now don't aggregate definitions in resolve as that causes duplicate definitions when build is run
+// as there is no way presently to remove aggregated definitions             	
+//                // aggregate definitions
+//                for (Artifact artifact : contribution.getArtifacts()) {
+//                    if (!"META-INF/definitions.xml".equals(artifact.getURI())) {
+//                        continue;
+//                    }
+//                    Object model = artifact.getModel();
+//                    // FIXME: Should we check the artifact URI is META-INF/definitions.xml?
+//                    if (model instanceof Definitions) {
+//                        try {
+//                            monitor.pushContext("Definitions: " + artifact.getLocation());
+//                            DefinitionsUtil.aggregate((Definitions)model, systemDefinitions, monitor);
+//                        } finally {
+//                            monitor.popContext();
+//                        }                            
+//                    }
+//                }
 
                 // create a default import and wire it up to the system contribution
                 // model resolver. This is the trick that makes the resolution processing
