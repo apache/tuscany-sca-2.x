@@ -76,6 +76,7 @@
     <module>format-jmstext</module>
     <module>format-jmstextxml</module>
     <module>format-jmstextxmlinjmsobjectout</module>
+    <module>format-wf-writing</module>
     <module>non-sca-client</module>
     <module>noreplyto</module>
     <module>nulls</module>
