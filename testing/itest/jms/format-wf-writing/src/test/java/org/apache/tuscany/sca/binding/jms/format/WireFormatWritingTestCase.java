@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.binding.jms.format;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
@@ -157,7 +158,23 @@ public class WireFormatWritingTestCase {
                 + " </component>"
                 + "</composite>";     
 
-
+    public static final String REQ1_WIRE_FORMAT =
+            "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
+            + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" targetNamespace=\"http://binding-jms\" xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.1\" name=\"binding-jms\">"
+                + " <component name=\"HelloWorldComponent\">"
+                + "   <implementation.java class=\"services.HelloWorld\"/>"
+                + "      <service name=\"HelloWorldService\">"
+                + "          <binding.jms >"
+                + "              <tuscany:wireFormat.jmsObject/> "
+                + "              <response>" 
+                + "                  <destination create=\"never\" jndiName=\"jms/Oasis_JMS_Response\" type=\"queue\"/> "            
+                + "                  <connectionFactory create=\"never\" jndiName=\"jms/Oasis_JMS_CF\"/> "            
+                + "              </response>"            
+                + "          </binding.jms>"
+                + "      </service>"
+                + " </component>"
+                + "</composite>";     
+    
     private ValidatingXMLInputFactory inputFactory;
     private ExtensibleStAXArtifactProcessor staxProcessor;
     private ProcessorContext context;
@@ -178,6 +195,12 @@ public class WireFormatWritingTestCase {
     public void tearDown() throws Exception {
     }
 
+    @Test
+    public void testRequest1WireFormat() throws Exception {
+    	String xml = doit(REQ1_WIRE_FORMAT);
+    	assertEquals(1, countWireFromats(xml, "<tuscany:wireFormat.jmsObject"));
+    	
+    }
     @Test
     public void testNoWireFormat() throws Exception {
     	doit(NO_WIRE_FORMAT);
@@ -209,7 +232,7 @@ public class WireFormatWritingTestCase {
     	}
     }
 
-    public void doit(String xml) throws Exception {
+    public String doit(String xml) throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(xml));
         ValidatingXMLInputFactory.setMonitor(reader, context.getMonitor());
         Composite composite = (Composite)staxProcessor.read(reader, context);
@@ -230,29 +253,10 @@ public class WireFormatWritingTestCase {
         context.getMonitor().analyzeProblems();
         assertNotNull(composite);
         reader.close();
+        return writtenXML;
     }
-    
-    
-    
-    private void verifyExtendedElementComposite(Composite composite) throws XMLStreamException {
 
-//		assertEquals("RecursiveExtendedElement", composite.getName().getLocalPart());
-//		assertEquals(1, composite.getExtensions().size());
-//		Extension ext1 = (Extension) composite.getExtensions().get(0);
-//		assertEquals("unknownElement", ext1.getQName().getLocalPart());
-//		assertEquals("http://docs.oasis-open.org/ns/opencsa/sca/200912", ext1.getQName().getNamespaceURI());
-//	
-//		XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader((String)ext1.getValue()));				
-//		reader.next();
-//		assertEquals("unknownElement", reader.getLocalName());
-//		reader.next();
-//		assertEquals("subUnknownElement1", reader.getLocalName());
-//		assertEquals(1, reader.getAttributeCount());
-//		assertEquals("attribute", reader.getAttributeLocalName(0));
-//		assertEquals("anyAttribute", reader.getAttributeValue(0));
-//
-//		reader.close();
-//					
-	}
-
+    public int countWireFromats(String xml, String wf){  
+        return xml.split("\\Q" + wf + "\\E", -1).length - 1;  
+    }  
 }
