@@ -255,14 +255,17 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                 // may be overwritten be real wire format later
                 jmsBinding.setRequestWireFormat(new WireFormatJMSTextXML());
                 jmsBinding.setResponseWireFormat(jmsBinding.getRequestWireFormat());
+                jmsBinding.setResponseWireFormatIsDefault(true);
             } else if ("TextMessage".equalsIgnoreCase(messageProcessorName)) {
                 // may be overwritten be real wire format later
                 jmsBinding.setRequestWireFormat(new WireFormatJMSText());
                 jmsBinding.setResponseWireFormat(jmsBinding.getRequestWireFormat());
+                jmsBinding.setResponseWireFormatIsDefault(true);
             } else if ("ObjectMessage".equalsIgnoreCase(messageProcessorName)) {
                 // may be overwritten be real wire format later
                 jmsBinding.setRequestWireFormat(new WireFormatJMSObject());
                 jmsBinding.setResponseWireFormat(jmsBinding.getRequestWireFormat());
+                jmsBinding.setResponseWireFormatIsDefault(true);
             } else {
                 jmsBinding.setRequestMessageProcessorName(messageProcessorName);
                 jmsBinding.setResponseMessageProcessorName(messageProcessorName);
@@ -270,6 +273,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                 // message processor
                 jmsBinding.setRequestWireFormat(new WireFormatJMSText());
                 jmsBinding.setResponseWireFormat(jmsBinding.getRequestWireFormat());
+                jmsBinding.setResponseWireFormatIsDefault(true);
             }
         }
 
@@ -391,6 +395,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         // if no response wire format specific then assume the same as the request
         if (jmsBinding.getResponseWireFormat() == null){
             jmsBinding.setResponseWireFormat(jmsBinding.getRequestWireFormat());
+            jmsBinding.setResponseWireFormatIsDefault(true);
          }
 
         validate( jmsBinding, monitor );
@@ -1201,12 +1206,12 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             
            writer.writeStartElement(Constants.SCA11_NS, "response");
 
-           if ((jmsBinding.getResponseWireFormat() != null) &&
+           if ((!jmsBinding.isResponseWireFormatDefault()) &&
+        		   (jmsBinding.getResponseWireFormat() != null) &&
                    !(jmsBinding.getResponseWireFormat() instanceof WireFormatJMSDefault)){
                    writeWireFormat(jmsBinding.getResponseWireFormat(), writer, context);
            }
-               
-          
+
            writeResponseDestinationProperties( jmsBinding, writer );       
            writeResponseConnectionFactoryProperties( jmsBinding, writer );        
            writeResponseActivationSpecProperties( jmsBinding, writer );

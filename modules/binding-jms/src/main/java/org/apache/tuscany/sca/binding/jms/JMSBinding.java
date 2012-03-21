@@ -154,6 +154,7 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
     
     private WireFormat requestWireFormat;
     private WireFormat responseWireFormat;
+    private boolean responseWireFormatIsDefault;
     private OperationSelector operationSelector;
     private ExtensionType extensionType;
     private String jmsURI;
@@ -227,6 +228,14 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
         this.responseWireFormat = wireFormat;
     }    
     
+    public boolean isResponseWireFormatDefault() {
+        return responseWireFormatIsDefault;
+    }
+    
+    public void setResponseWireFormatIsDefault(boolean b) {
+        this.responseWireFormatIsDefault = b;
+    }    
+
     public OperationSelector getOperationSelector() {
         return operationSelector;
     }
@@ -983,6 +992,7 @@ public class JMSBinding implements Binding, PolicySubject, OperationsConfigurato
         // wire format
         if ( this.getRequestWireFormat().getClass() != binding.getRequestWireFormat().getClass()) return false;
         if ( this.getResponseWireFormat().getClass() != binding.getResponseWireFormat().getClass()) return false;
+        if ( this.isResponseWireFormatDefault() != binding.isResponseWireFormatDefault()) return false;
         
         // operation selector
         if ( this.getOperationSelector().getClass() != binding.getOperationSelector().getClass()) return false;
