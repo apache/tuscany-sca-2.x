@@ -18,3 +18,4 @@ org.apache.tuscany.sca.databinding.json.jackson.JSON2OutputStream;source=JSON;ta
 org.apache.tuscany.sca.databinding.json.jackson.JSON2OutputStream;source=javax.xml.bind.JAXBElement;target=application/json#java.io.OutputStream,weight=50,public=true
 org.apache.tuscany.sca.databinding.json.jackson.JSON2OutputStream;source=java:complexType;target=application/json#java.io.OutputStream,weight=50,public=true
 org.apache.tuscany.sca.databinding.json.jackson.JSON2OutputStream;source=java:simpleType;target=application/json#java.io.OutputStream,weight=50,public=true
+org.apache.tuscany.sca.databinding.json.jackson.JSON2OutputStream;source=java.io.InputStream;target=application/json#java.io.OutputStream,weight=50,public=true
