@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.databinding.json.jackson;
 
+import java.io.InputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.tuscany.sca.databinding.PushTransformer;
@@ -48,7 +50,19 @@ public class JSON2OutputStream implements PushTransformer<Object, OutputStream> 
         if (source == null) {
             return;
         }
-        if (source instanceof JsonNode) {
+        if (source instanceof InputStream) {
+            try {
+                InputStream input = (InputStream) source;
+                byte[] buffer = new byte[4096];
+                int n = 0;
+                while (-1 != (n = input.read(buffer))) {
+                    sink.write(buffer, 0, n);
+                }
+                input.close();
+            } catch(IOException e) {
+                throw new TransformationException(e);
+            }
+        } else if (source instanceof JsonNode) {
             JacksonHelper.write((JsonNode)source, sink);
         } else if (source instanceof JsonParser) {
             JacksonHelper.write((JsonParser)source, sink);
