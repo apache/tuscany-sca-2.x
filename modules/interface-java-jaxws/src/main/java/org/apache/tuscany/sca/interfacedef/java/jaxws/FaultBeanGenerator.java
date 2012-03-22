@@ -23,6 +23,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -108,7 +109,11 @@ public class FaultBeanGenerator extends BaseBeanGenerator {
     public Class<?> generate(Class<? extends Throwable> exceptionClass, GeneratedClassLoader cl, Operation operation) {
         synchronized (exceptionClass) {
             QName element = getElementName(exceptionClass, operation);
-            Class<?> faultBeanClass = generatedClasses.get(element);
+            WeakReference<Class<?>> wr = generatedClasses.get(element);
+            Class<?> faultBeanClass = null;
+            if (wr != null){
+                faultBeanClass = wr.get();
+            }
             if (faultBeanClass == null) {
                 
                 // TUSCANY-3283 - all generated classes (including exception) should go in the namespace
@@ -122,7 +127,7 @@ public class FaultBeanGenerator extends BaseBeanGenerator {
                 String classSignature = "L" + classDescriptor + ";";
 
                 faultBeanClass = generate(classDescriptor, classSignature, namespace, name, getProperties(exceptionClass), cl);
-                generatedClasses.put(element, faultBeanClass);
+                generatedClasses.put(element, new WeakReference<Class<?>>(faultBeanClass));
             }
             return faultBeanClass;
         }

@@ -149,4 +149,7 @@ public class CglibProxyFactory implements ProxyFactory {
 
     }
 
+    public void removeProxiesForContribution(ClassLoader contributionClassloader){
+       // do nothing, no cache to clear 
+    }
 }

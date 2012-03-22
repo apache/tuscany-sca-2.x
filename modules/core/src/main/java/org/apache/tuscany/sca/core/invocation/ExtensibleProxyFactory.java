@@ -122,4 +122,7 @@ public class ExtensibleProxyFactory implements ProxyFactory {
         return interfaceFactory.isProxyClass(clazz) || (classFactory != null && classFactory.isProxyClass(clazz));
     }
 
+    public void removeProxiesForContribution(ClassLoader contributionClassloader){
+        // do nothing, no cache to clear 
+    }
 }

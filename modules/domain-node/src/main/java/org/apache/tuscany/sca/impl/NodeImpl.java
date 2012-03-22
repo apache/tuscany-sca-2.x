@@ -54,6 +54,8 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -90,6 +92,8 @@ public class NodeImpl implements Node {
     private boolean quietLogging;
 
     private boolean releaseOnUnload;
+    
+    private ContributionListener contributionListener;
 
     public NodeImpl(Deployer deployer,
                      CompositeActivator compositeActivator,
@@ -107,7 +111,7 @@ public class NodeImpl implements Node {
         
         utilityExtensionPoint.getUtility(ActiveNodes.class).getActiveNodes().add(this);
 
-        domainRegistry.addContributionListener(new ContributionListener() {
+        contributionListener = new ContributionListener() {
             public void contributionInstalled(String uri) {
                 // Do nothing
             }
@@ -126,7 +130,9 @@ public class NodeImpl implements Node {
                     }
                 }
             }
-        });
+        };
+        
+        this.domainRegistry.addContributionListener(contributionListener);
 
         endpointsIncludeDomainName = !TuscanyRuntime.DEFAUL_DOMAIN_NAME.equals(domainRegistry.getDomainName());
         
@@ -248,6 +254,10 @@ public class NodeImpl implements Node {
             
             JavaInterfaceFactory javaInterfaceFactory = factoryExtensionPoint.getFactory(JavaInterfaceFactory.class);
             javaInterfaceFactory.removeInterfacesForContribution(contributionClassloader);
+            
+            ProxyFactoryExtensionPoint proxyFactoryExtensionPoint = extensionPointRegistry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
+            ProxyFactory interfaceProxyFactory = proxyFactoryExtensionPoint.getInterfaceProxyFactory();
+            interfaceProxyFactory.removeProxiesForContribution(contributionClassloader);
         }
         
         domainRegistry.uninstallContribution(contributionURI);
@@ -587,6 +597,7 @@ public class NodeImpl implements Node {
         startedComposites.clear();
         stoppedComposites.clear();
         extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(ActiveNodes.class).getActiveNodes().remove(this);
+        domainRegistry.removeContributionListener(contributionListener);
         if (tuscanyRuntime != null) {
             tuscanyRuntime.stop();
         }

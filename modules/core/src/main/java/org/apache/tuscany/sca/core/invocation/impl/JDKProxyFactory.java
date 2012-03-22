@@ -24,11 +24,15 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Future;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.ws.AsyncHandler;
 import javax.xml.ws.Response;
 
@@ -212,5 +216,33 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
 
     public void stop() {
         cache.clear();
+    }
+    
+    public void removeProxiesForContribution(ClassLoader contributionClassloader){
+        try {
+            synchronized(cache) {                
+                Set<Class<?>> objSet = cache.keySet();
+                List<Class<?>> toRemove = new ArrayList<Class<?>>();
+                Iterator<Class<?>> i = objSet.iterator();
+                loop:
+                while(i.hasNext()) {
+                    Class<?> cls = i.next();
+                    ClassLoader cl = cls.getClassLoader();
+                    while (cl != null){
+                        if (cl == contributionClassloader){
+                            toRemove.add(cls);
+                            break loop;
+                        }
+                        // take account of generated classes
+                        cl = cl.getParent();
+                    }
+                }
+                for (Class<?> cls : toRemove){
+                    cache.remove(cls);
+                }
+            }
+        } catch(Exception e) {
+            throw new ServiceRuntimeException(e);
+        }
     }
 }

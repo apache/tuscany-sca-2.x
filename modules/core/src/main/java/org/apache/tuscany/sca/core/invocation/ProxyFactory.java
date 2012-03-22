@@ -84,5 +84,13 @@ public interface ProxyFactory {
      * @return true if the class is a generated proxy class by this factory 
      */
     boolean isProxyClass(Class<?> clazz);
+    
+    /**
+     * Allow cached proxies to be removed when a contribution is removed. The proxy 
+     * cache holds the application interface so will pin the contribution classloader
+     * 
+     * @param contributionClassloader the classloader of the contribution being removed
+     */
+    void removeProxiesForContribution(ClassLoader contributionClassloader);
 
 }

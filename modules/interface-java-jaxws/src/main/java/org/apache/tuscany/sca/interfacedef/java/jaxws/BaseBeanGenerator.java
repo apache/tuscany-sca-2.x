@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
 import java.lang.annotation.Annotation;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -119,8 +120,8 @@ public abstract class BaseBeanGenerator implements Opcodes {
         JAVA_KEYWORDS.put("enum", "_enum");
     }
 
-    protected static final Map<Object, Class<?>> generatedClasses =
-        Collections.synchronizedMap(new WeakHashMap<Object, Class<?>>());
+    protected static final Map<Object, WeakReference<Class<?>>> generatedClasses =
+        Collections.synchronizedMap(new WeakHashMap<Object, WeakReference<Class<?>>>());
 
     protected XMLAdapterExtensionPoint xmlAdapters;
 

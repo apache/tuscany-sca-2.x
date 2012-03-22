@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
 import java.lang.annotation.Annotation;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -64,7 +65,11 @@ public class WrapperBeanGenerator extends BaseBeanGenerator {
                                            GeneratedClassLoader cl) {
         synchronized (m.getDeclaringClass()) {
             MethodKey key = new MethodKey(m, true);
-            Class<?> wrapperClass = generatedClasses.get(key);
+            WeakReference<Class<?>> wr = generatedClasses.get(key);
+            Class<?> wrapperClass = null;
+            if (wr != null){
+                wrapperClass = wr.get();
+            }
             if (wrapperClass == null) {
                 String wrapperClassDescriptor = wrapperClassName.replace('.', '/');
                 String wrapperClassSignature = "L" + wrapperClassDescriptor + ";";
@@ -110,7 +115,7 @@ public class WrapperBeanGenerator extends BaseBeanGenerator {
                 wrapperClass =
                     generate(wrapperClassDescriptor, wrapperClassSignature, wrapperNamespace, wrapperName, properties
                         .toArray(new BeanProperty[properties.size()]), cl);
-                generatedClasses.put(key, wrapperClass);
+                generatedClasses.put(key, new WeakReference<Class<?>>(wrapperClass));
             }
             return wrapperClass;
 
@@ -134,7 +139,11 @@ public class WrapperBeanGenerator extends BaseBeanGenerator {
                                             GeneratedClassLoader cl) {
         synchronized (m.getDeclaringClass()) {
             MethodKey key = new MethodKey(m, false);
-            Class<?> wrapperClass = generatedClasses.get(key);
+            WeakReference<Class<?>> wr = generatedClasses.get(key);
+            Class<?> wrapperClass = null;
+            if (wr != null){
+                wrapperClass = wr.get();
+            }
             if (wrapperClass == null) {
                 String wrapperClassDescriptor = wrapperClassName.replace('.', '/');
                 String wrapperClassSignature = "L" + wrapperClassDescriptor + ";";
@@ -212,7 +221,7 @@ public class WrapperBeanGenerator extends BaseBeanGenerator {
                 wrapperClass =
                     generate(wrapperClassDescriptor, wrapperClassSignature, wrapperNamespace, wrapperName, properties
                         .toArray(new BeanProperty[properties.size()]), cl);
-                generatedClasses.put(key, wrapperClass);
+                generatedClasses.put(key, new WeakReference<Class<?>>(wrapperClass));
             }
             return wrapperClass;
 

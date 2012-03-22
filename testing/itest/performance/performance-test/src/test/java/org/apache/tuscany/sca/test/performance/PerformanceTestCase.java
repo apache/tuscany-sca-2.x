@@ -78,6 +78,33 @@ public class PerformanceTestCase {
         resultsFile.flush();
         resultsFile.close();
     }
+    
+    @Test
+    public void testNodeStartStop() {
+        dumpHeapStart("testInstallUninstall");
+        
+        printRuntimeStats("createRuntime");
+        
+        createRuntime();
+        
+        callNodeStartStopRepeatedly(100);
+        
+        waitForInput();
+        
+        dumpHeapEnd("testInstallUninstall_postNodeStop");
+        
+        printRuntimeStats("stopRuntime");
+        
+        stopRuntime();
+        
+        printRuntimeStats("destroyRuntime");
+        
+        destroyRuntime();
+        
+        printRuntimeStats("End");
+        
+        dumpHeapEnd("testInstallUninstall_postStop");
+    }
 
     @Test
     public void testInstallUninstall() {
@@ -91,7 +118,7 @@ public class PerformanceTestCase {
         
         createNode();
         
-        callInstallUninstallRepeatedly(10);
+        callInstallUninstallRepeatedly(100);
 
         dumpHeapEnd("testInstallUninstall_postUninstall");
         
@@ -186,6 +213,24 @@ public class PerformanceTestCase {
     }
     
     // ============================================================
+    
+    public void callNodeStartStopRepeatedly(int repeatCount) {
+        for (int i =0; i < repeatCount; i++){
+            printRuntimeStats("createNode");
+            
+            createNode();
+            
+            callInstallUninstallRepeatedly(1);
+            
+            printRuntimeStats("stopNode");
+            
+            stopNode();
+            
+            printRuntimeStats("destroyNode");
+            
+            destroyNode();
+        }
+    }
     
     public void callInstallUninstallRepeatedly(int repeatCount) {
         for (int i =0; i < repeatCount; i++){
