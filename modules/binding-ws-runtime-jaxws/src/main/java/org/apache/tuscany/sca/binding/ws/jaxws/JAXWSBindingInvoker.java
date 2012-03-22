@@ -128,7 +128,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         QName serviceName = wsBinding.getService().getQName();
         QName portName = new QName(serviceName.getNamespaceURI(), wsBinding.getPort().getName());
         Service service = Service.create(serviceName);
-        service.addPort(portName, SOAPBinding.SOAP11HTTP_BINDING, wsBinding.getURI());   
+        service.addPort(portName, SOAPBinding.SOAP11HTTP_BINDING, endpointReference.getDeployedURI());   
         
         return service.createDispatch(portName, SOAPMessage.class, Service.Mode.MESSAGE);
     }
@@ -154,7 +154,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         if (wsdlLocation != null) {
             return createDispatchFromWSDL(wsdlLocation);
         } else {
-            return createDispatchFromURI(wsBinding.getURI());                       
+            return createDispatchFromURI(endpointReference.getDeployedURI());                       
         }        
     }
     
@@ -321,7 +321,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         if (dynamicDispatchForCallback) {            
             Endpoint ep = msg.getTo();
             if (ep != null && ep.getBinding() != null) {
-                String address = ep.getBinding().getURI();
+                String address = ep.getDeployedURI();
                 invocationDispatch = createDynamicDispatch(address);
             } else {
                 throw new ServiceRuntimeException("[BWS20025] Unable to determine destination endpoint for endpoint reference " + endpointReference);
@@ -365,7 +365,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
             // addWSAFromHeader(sh, fromEPR);
             SOAPHeaderElement fromH = sh.addHeaderElement(QNAME_WSA_FROM);
             SOAPElement fromAddress = fromH.addChildElement(QNAME_WSA_ADDRESS);            
-            fromAddress.setTextContent(callbackEndpoint.getBinding().getURI());
+            fromAddress.setTextContent(callbackEndpoint.getDeployedURI());
 
             addWSAActionHeader(sh, action);
 
@@ -406,7 +406,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         if (to == null) {
             Endpoint ep = msg.getTo();
             if (ep != null && ep.getBinding() != null) {
-                address = ep.getBinding().getURI();
+                address = ep.getDeployedURI();
             } else {
                 throw new ServiceRuntimeException(
                                                   "[BWS20025] Unable to determine destination endpoint for endpoint reference " + endpointReference);
@@ -435,7 +435,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
             }
         }
         if (ep == null || ep.equals("")) {
-            ep = wsBinding.getURI();
+            ep = endpointReference.getDeployedURI();
         }
         return ep;
     }

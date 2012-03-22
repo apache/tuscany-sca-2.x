@@ -505,15 +505,12 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         } else {
             endpointReference.setTargetEndpoint(matchedEndpoint);
             Binding binding = matchedEndpoint.getBinding();
-            // Reverted the change, see https://issues.apache.org/jira/browse/TUSCANY-4029
-            /*
             try {
-				endpointReference.setBinding((Binding) binding.clone());
-			} catch (CloneNotSupportedException e) {
-				// shouldn't happen
-				throw new RuntimeException(e);
-			}
-	   */
+                endpointReference.setBinding((Binding)binding.clone());
+            } catch (CloneNotSupportedException e) {
+                // shouldn't happen
+                throw new RuntimeException(e);
+            }
             endpointReference.setBinding(binding);
             // TUSCANY-3873 - add policy from the service
             //                we don't care about intents at this stage

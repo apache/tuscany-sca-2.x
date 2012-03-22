@@ -123,6 +123,17 @@ public interface EndpointReference extends Base, PolicySubject, Cloneable, Seria
      * @param endpoint the target endpoint
      */
     void setTargetEndpoint(Endpoint targetEndpoint);
+    
+    /**
+     * Get the deployed URI of the corresponding service endpoint
+     * @return The deployed URI
+     */
+    String getDeployedURI();
+    /**
+     * Set the deployed URI
+     * @param deployedURI
+     */
+    void setDeployedURI(String deployedURI);
 
     /**
      * Returns the interface contract defining the interface

@@ -48,6 +48,7 @@ public class EndpointReferenceImpl implements EndpointReference {
     protected transient ContractBuilder contractBuilder;    
     protected boolean unresolved = true;
     protected String uri;
+    protected String deployedURI;
     protected Component component;
     protected ComponentReference reference;
     protected Binding binding;
@@ -229,6 +230,29 @@ public class EndpointReferenceImpl implements EndpointReference {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+    
+    @Override
+    public String getDeployedURI() {
+        String targetURI = deployedURI;
+        if (targetURI != null) {
+            return targetURI;
+        }
+        if (getTargetEndpoint() != null) {
+            targetURI = getTargetEndpoint().getDeployedURI();
+        }
+        if (targetURI != null) {
+            return targetURI;
+        }
+        if (binding != null) {
+            targetURI = binding.getURI();
+        }
+        return targetURI;
+    }
+    
+    @Override
+    public void setDeployedURI(String deployedURI) {
+        this.deployedURI = deployedURI;
     }
     
     /**

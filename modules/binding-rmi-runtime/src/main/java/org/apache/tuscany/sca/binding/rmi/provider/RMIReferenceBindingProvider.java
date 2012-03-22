@@ -40,11 +40,13 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 public class RMIReferenceBindingProvider implements ReferenceBindingProvider {
 
     private RuntimeComponentReference reference;
+    private EndpointReference endpointReference;
     private RMIBinding binding;
     private RMIHost rmiHost;
     
     public RMIReferenceBindingProvider(EndpointReference endpointReference,
                                        RMIHost rmiHost) {
+           this.endpointReference = endpointReference;
            this.reference = (RuntimeComponentReference)endpointReference.getReference();
            this.binding = (RMIBinding)endpointReference.getBinding();
            this.rmiHost = rmiHost;
@@ -63,7 +65,7 @@ public class RMIReferenceBindingProvider implements ReferenceBindingProvider {
             throw new IllegalArgumentException(e);
         }
 
-        return new RMIBindingInvoker(rmiHost, binding.getURI(), remoteMethod);
+        return new RMIBindingInvoker(rmiHost, endpointReference.getDeployedURI(), remoteMethod);
     }
 
     public void start() {

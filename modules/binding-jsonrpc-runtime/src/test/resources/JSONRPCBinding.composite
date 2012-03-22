@@ -36,4 +36,12 @@
         </service>
     </component>
     
+    <component name="EchoComponent1">
+        <implementation.java class="echo.EchoComponentImpl"/>
+        <service name="Echo">
+            <tuscany:binding.jsonrpc name="jsonrpc" uri="/services/EchoService"/>
+            <tuscany:binding.jsonrpc version="2.0" name="jsonrpc20" uri="/services/EchoService20"/>
+        </service>
+    </component>
+    
 </composite>

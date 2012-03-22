@@ -65,7 +65,7 @@ public class JSONPInvoker implements Invoker {
     }
 
     public Message doInvoke(Message msg) throws JsonGenerationException, JsonMappingException, IOException, EncoderException {
-        String uri = endpoint.getBinding().getURI() + "/" + operation.getName();
+        String uri = endpoint.getDeployedURI() + "/" + operation.getName();
         //String[] jsonArgs = objectsToJSON((Object[])msg.getBody());
         String[] jsonArgs = objectsToJSONStrings((Object[])msg.getBody());
 

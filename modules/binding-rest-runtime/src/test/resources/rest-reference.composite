@@ -19,29 +19,23 @@
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
 	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
-	targetNamespace="http://jsonrpc"
-	xmlns:jsonrpc="http://jsonrpc"
-	name="JSONRPCReference">
+	targetNamespace="http://rest"
+	xmlns:rest="http://rest"
+	name="RESTReference">
 
-    <component name="EchoComponentWithReference">
-        <implementation.java class="echo.EchoClientImpl" />
-        <reference name="echoReference">
-            <tuscany:binding.jsonrpc uri="http://localhost:8085/SCADomain/EchoService" />
+    <component name="EchoClientComponent">
+        <implementation.java class="services.echo.jaxrs.EchoClientImpl" />
+        <reference name="echoService" target="EchoComponent/Echo">
         </reference>
     </component>
 
-    <component name="EchoComponentWithReference20">
-        <implementation.java class="echo.EchoClientImpl" />
+    <component name="EchoComponent">
+        <implementation.java class="services.echo.jaxrs.EchoImpl" />
+        <service name="Echo">
+            <tuscany:binding.rest name="rest" uri="/EchoService/rest">
+            </tuscany:binding.rest>
+        </service>
 
-        <reference name="echoReference">
-            <tuscany:binding.jsonrpc version="2.0" uri="http://localhost:8085/SCADomain/EchoService20" />
-        </reference>
-    </component>
-    
-    <component name="EchoComponentWithReferenceTarget">
-        <implementation.java class="echo.EchoClientImpl" />
-        <reference name="echoReference" target="EchoComponent1/Echo/jsonrpc">
-        </reference>
     </component>
     
     

@@ -55,6 +55,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.http.client.HttpClient;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
 import org.apache.tuscany.sca.binding.rest.wireformat.json.JSONWireFormat;
@@ -77,15 +78,17 @@ import org.apache.wink.client.handlers.BasicAuthSecurityHandler;
  */
 public class RESTBindingInvoker implements Invoker {
     private ExtensionPointRegistry registry;
+    private EndpointReference endpointReference;
     private RESTBinding binding;
     private Operation operation;
     private RestClient restClient;
     private String httpMethod;
     private Class<?> responseType;
 
-    public RESTBindingInvoker(ExtensionPointRegistry registry, RESTBinding binding, Operation operation, HttpClient httpClient) {
+    public RESTBindingInvoker(ExtensionPointRegistry registry, EndpointReference endpointReference, RESTBinding binding, Operation operation, HttpClient httpClient) {
         super();
         this.registry = registry;
+        this.endpointReference = endpointReference;
         this.binding = binding;
         this.operation = operation;
         this.restClient = createRestClient(httpClient);
@@ -165,7 +168,7 @@ public class RESTBindingInvoker implements Invoker {
         Object entity = null;
         Object[] args = msg.getBody();
 
-        URI uri = URI.create(binding.getURI());
+        URI uri = URI.create(endpointReference.getDeployedURI());
         UriBuilder uriBuilder = UriBuilder.fromUri(uri);
 
         Method method = ((JavaOperation)operation).getJavaMethod();

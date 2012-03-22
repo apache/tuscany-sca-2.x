@@ -70,7 +70,7 @@ public class JsonRpcInvoker implements Invoker, DataExchangeSemantics {
     public JsonRpcInvoker(EndpointReference endpointReference, Operation operation, HttpClient httpClient) {
         this.endpointReference = endpointReference;
         this.operation = operation;
-        this.uri = endpointReference.getBinding().getURI();
+        this.uri = endpointReference.getDeployedURI();
         this.httpClient = httpClient;
     }
 
