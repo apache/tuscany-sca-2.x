@@ -539,40 +539,37 @@ public class ComponentPolicyBuilderImpl {
             }
             
             if (!intentMatched){              
-            	
-            	// Reference side intents can still be resolved by the service binding, so we can only issue a 
-            	// warning here. 
-            	if ( subject instanceof EndpointReference ) {
-            		 warning(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
-            	} else {
-            		// Need to check the ExtensionType to see if the intent is provided there. If not, throw an error
-            		ExtensionType type = subject.getExtensionType();
 
-            		
-            		if ( type == null ) {
-            			error(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
-            		} else {
-            			// The ExtensionType on the subject only has the binding name. The one in the system
-            			// definitions will have the mayProvide/alwaysProvides values
-            			if (type.getType().getLocalPart().startsWith("implementation")) {
-            			    for ( ExtensionType et : context.getDefinitions().getImplementationTypes() ) {
-            				    if ( type.getType().equals(et.getType()) ) {
-            					    type = et;
-            				    }
-            				}
-            			} else {
-            			    for ( ExtensionType et : context.getDefinitions().getBindingTypes() ) {
-            				    if ( type.getType().equals(et.getType()) ) {
-            					    type = et;
-            				    }
-            				}
-            			}
-            		
-            			if ( !type.getAlwaysProvidedIntents().contains(intent) && !type.getMayProvidedIntents().contains(intent)) {            			            	
-            				error(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
-            			}
-            		}
-            	}
+                // Need to check the ExtensionType to see if the intent is provided there. If not, throw an error
+                ExtensionType type = subject.getExtensionType();
+
+                if ( type != null ) {
+                    // The ExtensionType on the subject only has the binding name. The one in the system
+                    // definitions will have the mayProvide/alwaysProvides values
+                    if (type.getType().getLocalPart().startsWith("implementation")) {
+                        for ( ExtensionType et : context.getDefinitions().getImplementationTypes() ) {
+                            if ( type.getType().equals(et.getType()) ) {
+                                type = et;
+                            }
+                        }
+                    } else {
+                        for ( ExtensionType et : context.getDefinitions().getBindingTypes() ) {
+                            if ( type.getType().equals(et.getType()) ) {
+                                type = et;
+                            }
+                        }
+                    }
+                }
+
+                if ( type == null || !type.getAlwaysProvidedIntents().contains(intent) && !type.getMayProvidedIntents().contains(intent)) {
+                    // Reference side intents can still be resolved by the service binding, so we can only issue a 
+                    // warning here. 
+                    if ( subject instanceof EndpointReference ) {
+                        warning(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
+                    } else {
+                        error(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
+                    }
+                }
             }
         }
     }
