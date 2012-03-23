@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -150,7 +153,19 @@ public class XSDModelResolver implements ModelResolver {
             }
             XmlSchema schema = null;
             try {
-                schema = schemaCollection.read(definition.getDocument(), uri, null);
+                final XSDefinition finaldef = definition;
+                final String finaluri = uri;
+                try {
+                    schema = (XmlSchema) AccessController.doPrivileged(new PrivilegedExceptionAction<XmlSchema>() {
+                        public XmlSchema run() throws IOException {
+                            return schemaCollection.read(finaldef.getDocument(), finaluri, null);
+                        }
+                    });
+                } catch (PrivilegedActionException e) {
+                    throw (IOException) e.getException();
+                }
+            } catch (IOException e) {
+                throw new ContributionRuntimeException(e);
             } catch (RuntimeException e) {
                 // find original cause of the problem
                 Throwable cause = e;
@@ -179,14 +194,35 @@ public class XSDModelResolver implements ModelResolver {
             }
             if (schema == null) {
                 InputSource xsd = null;
+                final XSDefinition finaldef = definition;
                 try {
-                    xsd = XMLDocumentHelper.getInputSource(definition.getLocation().toURL());
+                    try {
+                        xsd = (InputSource) AccessController.doPrivileged(new PrivilegedExceptionAction<InputSource>() {
+                            public InputSource run() throws IOException {
+                                return XMLDocumentHelper.getInputSource(finaldef.getLocation().toURL());
+                            }
+                        });
+                    } catch (PrivilegedActionException e) {
+                        throw (IOException) e.getException();
+                    }
                 } catch (IOException e) {
                     throw new ContributionRuntimeException(e);
                 }
 
                 try {
-                    schema = schemaCollection.read(xsd, null);
+                    final InputSource finalxsd = xsd;
+                    try {
+                        schema = (XmlSchema) AccessController.doPrivileged(new PrivilegedExceptionAction<XmlSchema>() {
+                            public XmlSchema run() throws IOException {
+                                return schemaCollection.read(finalxsd, null);
+                            }
+                        });
+                    } catch (PrivilegedActionException e) {
+                        throw (IOException) e.getException();
+                    }
+
+                } catch (IOException e) {
+                    throw new ContributionRuntimeException(e);
                 } catch (RuntimeException e) {
                     // find original cause of the problem
                     Throwable cause = e;
@@ -343,7 +379,16 @@ public class XSDModelResolver implements ModelResolver {
                         resolved =
                             import_.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved, context);
                         if (!resolved.isUnresolved()) {
-                        	return XMLDocumentHelper.getInputSource(resolved.getLocation().toURL());
+                            final XSDefinition finalres = resolved;
+                            try {
+                                return (InputSource)AccessController.doPrivileged( new PrivilegedExceptionAction<InputSource>() {
+                                    public InputSource run() throws IOException {                                    
+                                        return XMLDocumentHelper.getInputSource(finalres.getLocation().toURL());
+                                    }
+                                });
+                            } catch (PrivilegedActionException e) {
+                                throw (IOException) e.getException();
+                            }
                         }
                     }
                 }
@@ -381,7 +426,17 @@ public class XSDModelResolver implements ModelResolver {
                         }
                     }
                 }
-                return XMLDocumentHelper.getInputSource(url);
+                try {
+                    final URL finalurl = url;
+                    return (InputSource)AccessController.doPrivileged( new PrivilegedExceptionAction<InputSource>() {
+                        public InputSource run() throws IOException {                                    
+                            return XMLDocumentHelper.getInputSource(finalurl);
+                        }
+                    });
+                } catch (PrivilegedActionException e) {
+                    throw (IOException) e.getException();
+                }
+                
             } catch (IOException e) {
             	// Invalid URI; return a default InputSource so that the
                 // XmlSchema code will produce a useful diagnostic
