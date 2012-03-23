@@ -119,7 +119,6 @@ public class InerfaceMatchTestCase {
      * @throws Exception
      */
     @Test
-    @Ignore("Can't get RMI binding working as a delegate for some reason")
     public void testDistributedRemotableNonJAXB() throws Exception {
         
         // Force the remote default binding to be rmi as I want something that doesn't depend on
@@ -145,21 +144,14 @@ public class InerfaceMatchTestCase {
         
         ClientComponent local = node1.getService(ClientComponent.class, "DistributedClientComponent");
         ParameterObject po = new ParameterObject();
+        po.field1 = "Test String";
         
         try {
             String response = local.foo1(po);
-            Assert.assertEquals("AComponent", response);
+            Assert.assertEquals("Test String", response);
         } catch (ServiceRuntimeException ex){
             Assert.fail("Unexpected exception with foo " + ex.toString());
-        }
-        
-        try {
-            local.callback("Callback");
-            String response = local.getCallbackValue();
-            Assert.assertEquals("Callback", response);
-        } catch (ServiceRuntimeException ex){
-            Assert.fail("Unexpected exception with callback" + ex.toString());
-        }        
+        }       
         
         node1.stop();
         node2.stop();

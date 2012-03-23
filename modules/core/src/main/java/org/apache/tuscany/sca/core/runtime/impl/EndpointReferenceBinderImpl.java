@@ -50,6 +50,8 @@ import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointReferenceImpl;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.impl.TuscanyInterfaceContractImpl;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.util.Audit;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
@@ -1123,10 +1125,20 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             return true;
         }
         
-        // If the contracts are not of the same type use normailized interfaces
-        if (endpointReferenceContract.getClass() != endpointContract.getClass() ||
+        // TUSCANY-4033
+        // Detect the case where the interfaces are both Java but the Endpoint is remote in which case
+        // we have to match the local Java interface with the remote Tuscany interface. But we can do this
+        // without running WSDLGen
+        if (endpointReferenceContract.getClass() == endpointContract.getClass() &&
+            endpointReferenceContract instanceof JavaInterfaceContract &&
+            endpointContract.getNormalizedWSDLContract() != null &&
+            endpointContract.getNormalizedWSDLContract() instanceof TuscanyInterfaceContractImpl){
+            // use the TuscanyInterfaceContractImpl to compare against the Java contract
+            endpointContract = endpointContract.getNormalizedWSDLContract();
+        } else if (endpointReferenceContract.getClass() != endpointContract.getClass() ||
             endpointReferenceContract.getNormalizedWSDLContract() != null ||
             endpointContract.getNormalizedWSDLContract() != null) {
+            // If the contracts are not of the same type use normailized interfaces
             endpointReferenceContract = ((RuntimeEndpointReference)endpointReference).getGeneratedWSDLContract(endpointReferenceContract);
             endpointContract = ((RuntimeEndpoint)endpoint).getGeneratedWSDLContract(endpointContract);
         }        
