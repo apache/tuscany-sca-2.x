@@ -63,6 +63,8 @@ public class XSDModelResolver implements ModelResolver {
     private Contribution contribution;
     private Map<String, List<XSDefinition>> map = new HashMap<String, List<XSDefinition>>();
     private XmlSchemaCollection schemaCollection;
+    
+    private static final byte[] schemaCollectionReadLock = new byte[0];
 
     public XSDModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
@@ -143,84 +145,34 @@ public class XSDModelResolver implements ModelResolver {
     }
 
     private void loadOnDemand(XSDefinition definition) throws IOException {
-        if (definition.getSchema() != null) {
-            return;
-        }
-        if (definition.getDocument() != null) {
-            String uri = null;
-            if (definition.getLocation() != null) {
-                uri = definition.getLocation().toString();
-            }
-            XmlSchema schema = null;
-            try {
-                final XSDefinition finaldef = definition;
-                final String finaluri = uri;
-                try {
-                    schema = (XmlSchema) AccessController.doPrivileged(new PrivilegedExceptionAction<XmlSchema>() {
-                        public XmlSchema run() throws IOException {
-                            return schemaCollection.read(finaldef.getDocument(), finaluri, null);
-                        }
-                    });
-                } catch (PrivilegedActionException e) {
-                    throw (IOException) e.getException();
-                }
-            } catch (IOException e) {
-                throw new ContributionRuntimeException(e);
-            } catch (RuntimeException e) {
-                // find original cause of the problem
-                Throwable cause = e;
-                while (cause.getCause() != null && cause != cause.getCause()) {
-                    cause = cause.getCause();
-                }
-                throw new ContributionRuntimeException(cause);
-            }
-            definition.setSchemaCollection(schemaCollection);
-            definition.setSchema(schema);
-            definition.setUnresolved(false);
-        } else if (definition.getLocation() != null) {
-            if (definition.getLocation().getFragment() != null) {
-                // It's an inline schema
+        
+        // It might be possible to use a per-XSDModelResolver-instance lock instead of the singleton lock,
+        // since for a deadlock to occur it would seem to require something along the lines of A imports B imports A. 
+        // Since I'm not sure precisely what the restriction against circular imports is, and since I don't think it's too bad
+        // to use the singleton lock (after all, loading is, in general, a one-time thing), I'll just use the singleton lock.
+        synchronized (schemaCollectionReadLock) {
+
+            if (definition.getSchema() != null) {
                 return;
             }
-            // Read an XSD document
-            XmlSchema schema = null;
-            for (XmlSchema d : schemaCollection.getXmlSchemas()) {
-                if (isSameNamespace(d.getTargetNamespace(), definition.getNamespace()))  {
-                    if (d.getSourceURI().equals(definition.getLocation().toString())) {
-                        schema = d;
-                        break;
-                    }
+            if (definition.getDocument() != null) {
+                String uri = null;
+                if (definition.getLocation() != null) {
+                    uri = definition.getLocation().toString();
                 }
-            }
-            if (schema == null) {
-                InputSource xsd = null;
-                final XSDefinition finaldef = definition;
+                XmlSchema schema = null;
                 try {
-                    try {
-                        xsd = (InputSource) AccessController.doPrivileged(new PrivilegedExceptionAction<InputSource>() {
-                            public InputSource run() throws IOException {
-                                return XMLDocumentHelper.getInputSource(finaldef.getLocation().toURL());
-                            }
-                        });
-                    } catch (PrivilegedActionException e) {
-                        throw (IOException) e.getException();
-                    }
-                } catch (IOException e) {
-                    throw new ContributionRuntimeException(e);
-                }
-
-                try {
-                    final InputSource finalxsd = xsd;
+                    final XSDefinition finaldef = definition;
+                    final String finaluri = uri;
                     try {
                         schema = (XmlSchema) AccessController.doPrivileged(new PrivilegedExceptionAction<XmlSchema>() {
                             public XmlSchema run() throws IOException {
-                                return schemaCollection.read(finalxsd, null);
+                                return schemaCollection.read(finaldef.getDocument(), finaluri, null);
                             }
                         });
                     } catch (PrivilegedActionException e) {
                         throw (IOException) e.getException();
                     }
-
                 } catch (IOException e) {
                     throw new ContributionRuntimeException(e);
                 } catch (RuntimeException e) {
@@ -231,9 +183,67 @@ public class XSDModelResolver implements ModelResolver {
                     }
                     throw new ContributionRuntimeException(cause);
                 }
+                definition.setSchemaCollection(schemaCollection);
+                definition.setSchema(schema);
+                definition.setUnresolved(false);
+            } else if (definition.getLocation() != null) {
+                if (definition.getLocation().getFragment() != null) {
+                    // It's an inline schema
+                    return;
+                }
+                // Read an XSD document
+                XmlSchema schema = null;
+                for (XmlSchema d : schemaCollection.getXmlSchemas()) {
+                    if (isSameNamespace(d.getTargetNamespace(), definition.getNamespace()))  {
+                        if (d.getSourceURI().equals(definition.getLocation().toString())) {
+                            schema = d;
+                            break;
+                        }
+                    }
+                }
+                if (schema == null) {
+                    InputSource xsd = null;
+                    final XSDefinition finaldef = definition;
+                    try {
+                        try {
+                            xsd = (InputSource) AccessController.doPrivileged(new PrivilegedExceptionAction<InputSource>() {
+                                public InputSource run() throws IOException {
+                                    return XMLDocumentHelper.getInputSource(finaldef.getLocation().toURL());
+                                }
+                            });
+                        } catch (PrivilegedActionException e) {
+                            throw (IOException) e.getException();
+                        }
+                    } catch (IOException e) {
+                        throw new ContributionRuntimeException(e);
+                    }
+    
+                    try {
+                        final InputSource finalxsd = xsd;
+                        try {
+                            schema = (XmlSchema) AccessController.doPrivileged(new PrivilegedExceptionAction<XmlSchema>() {
+                                public XmlSchema run() throws IOException {
+                                    return schemaCollection.read(finalxsd, null);
+                                }
+                            });
+                        } catch (PrivilegedActionException e) {
+                            throw (IOException) e.getException();
+                        }
+    
+                    } catch (IOException e) {
+                        throw new ContributionRuntimeException(e);
+                    } catch (RuntimeException e) {
+                        // find original cause of the problem
+                        Throwable cause = e;
+                        while (cause.getCause() != null && cause != cause.getCause()) {
+                            cause = cause.getCause();
+                        }
+                        throw new ContributionRuntimeException(cause);
+                    }
+                }
+                definition.setSchemaCollection(schemaCollection);
+                definition.setSchema(schema);
             }
-            definition.setSchemaCollection(schemaCollection);
-            definition.setSchema(schema);
         }
     }
 
