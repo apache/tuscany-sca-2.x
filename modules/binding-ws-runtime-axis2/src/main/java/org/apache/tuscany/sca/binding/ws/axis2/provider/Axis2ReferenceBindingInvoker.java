@@ -326,7 +326,10 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
         // use dynamically specified target endpoint passed in with the message
         if (options.getTo() == null) {
             Endpoint ep = msg.getTo();
-            if (ep != null && ep.getBinding() != null) {
+            if (ep != null && 
+                ep.getBinding() != null &&
+                ep.getBinding().getURI() != null &&
+                ep.getBinding().getURI().length() > 0) {
                 address = ep.getBinding().getURI();
             } else {
                 throw new ServiceRuntimeException("[BWS20025] Unable to determine destination endpoint for endpoint reference " + endpointReference);
