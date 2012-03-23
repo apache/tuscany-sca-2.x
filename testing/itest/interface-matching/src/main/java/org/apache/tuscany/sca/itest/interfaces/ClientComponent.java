@@ -20,10 +20,12 @@
 package org.apache.tuscany.sca.itest.interfaces;
 
 import org.oasisopen.sca.annotation.OneWay;
+import org.oasisopen.sca.annotation.Remotable;
 
 /*
  * itest for interface: local,method-overloading
  */
+@Remotable
 public interface ClientComponent {
     
     String foo(ParameterObject po);

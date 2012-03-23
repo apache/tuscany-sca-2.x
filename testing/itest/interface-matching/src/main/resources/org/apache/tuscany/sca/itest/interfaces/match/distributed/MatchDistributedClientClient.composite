@@ -19,16 +19,11 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
            xmlns:foo="http://foo" targetNamespace="http://foo"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           name="MatchDistributedClient" >
+           name="MatchDistributedClientClient" >
 
-    <component name="LocalClientClientComponent">
+    <component name="DistributedClientClientComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.interfaces.ClientClientComponentImpl" />
         <reference name="aClient" target="DistributedClientComponent" />
-    </component> 
-    
-    <component name="DistributedClientComponent">
-        <implementation.java class="org.apache.tuscany.sca.itest.interfaces.ClientComponentImpl" />
-        <reference name="aCallBackService" target="DistributedServiceComponent" />
-    </component> 
+    </component>  
     
 </composite>

@@ -49,6 +49,8 @@ import org.apache.tuscany.sca.policy.PolicySet;
 public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor<Endpoint> {
     private final static String ENDPOINT = "endpoint";
     private final static QName ENDPOINT_QNAME = new QName(Constants.SCA11_TUSCANY_NS, ENDPOINT);
+    private final static String CALLBACK_ENDPOINT = "callbackEndpoint";
+    private final static QName CALLBACK_ENDPOINT_QNAME = new QName(Constants.SCA11_TUSCANY_NS, CALLBACK_ENDPOINT);
 
     private ExtensionPointRegistry registry;
 
@@ -93,6 +95,12 @@ public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArti
             endpoint.setService(service);
             endpoint.setBinding(binding);
             
+            // We use the name of the composite to indicate if this is a callback endpoint
+            // saves passing other extension attributes
+            if (composite.getName().equals(CALLBACK_ENDPOINT_QNAME)){
+                service.setForCallback(true);
+            }
+            
             // retrieve the stash of intents and policy sets from the component
             endpoint.getRequiredIntents().addAll(component.getRequiredIntents());
             endpoint.getPolicySets().addAll(component.getPolicySets());
@@ -109,7 +117,14 @@ public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArti
     private Composite wrap(Endpoint endpoint) {
         try {
             Composite composite = assemblyFactory.createComposite();
-            composite.setName(ENDPOINT_QNAME);
+            // We use the name of the composite (which just wraps the single endpoint
+            // to indicate whether this endpoint represents a callback or not
+            if (endpoint.getService() != null &&
+                endpoint.getService().isForCallback()){
+                composite.setName(CALLBACK_ENDPOINT_QNAME);
+            } else {
+                composite.setName(ENDPOINT_QNAME);
+            }
             composite.setLocal(false);
             if (endpoint.getComponent() != null) {
                 Component component = (Component)endpoint.getComponent().clone();
