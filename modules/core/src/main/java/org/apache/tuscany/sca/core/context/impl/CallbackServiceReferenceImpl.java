@@ -132,7 +132,12 @@ public class CallbackServiceReferenceImpl<B> extends ServiceReferenceImpl<B> {
         // to model the callback URI. With these changes the binding can just set a CallbackHandler
         // in the forward message to get the same effect. Some bindings don't do that hence
         // the various checks
-        this.resolvedEndpoint = msgContext.getFrom().getCallbackEndpoint();
+        this.resolvedEndpoint = null;
+        
+        if (msgContext.getFrom() != null){
+            resolvedEndpoint = msgContext.getFrom().getCallbackEndpoint();
+        }
+        
         if (resolvedEndpoint != null){
             if (resolvedEndpoint.getBinding() == null){
                 this.callbackHandler = new CallbackHandler(resolvedEndpoint.getURI());
