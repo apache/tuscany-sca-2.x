@@ -176,7 +176,7 @@ public class DataTypesTestCase extends BaseFramework {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        BaseFramework.start("DataTypes");
+        BaseFramework.start("DataTypes", "DataTypes");
     }
 
     @AfterClass

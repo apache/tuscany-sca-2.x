@@ -71,7 +71,7 @@ public class DynamicSDOTestCase extends BaseFramework {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        BaseFramework.start("GetDataServiceWithoutException");
+        BaseFramework.start("DynamicSDO", "GetDataServiceWithoutException");
     }
 
     @AfterClass

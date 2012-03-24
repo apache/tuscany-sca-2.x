@@ -209,7 +209,7 @@ public class BaseFramework {
         return (Element)childNodes.item(0);
     }
 
-    private static void readWSDL(String serviceName) throws Exception {
+    private static void readWSDL(String componentName, String serviceName) throws Exception {
         WSDLReader wsdlReader = WSDLFactory.newInstance().newWSDLReader();
         wsdlReader.setFeature("javax.wsdl.verbose",false);
         wsdlReader.setFeature("javax.wsdl.importDocuments",true);
@@ -218,7 +218,7 @@ public class BaseFramework {
         assertNotNull(definition);
 
         // find portType
-        Service service = definition.getService(new QName("http://datatypes/", serviceName));
+        Service service = definition.getService(new QName("http://datatypes/", componentName+'_'+serviceName));
         Port port = service.getPort(serviceName + "SOAP11Port");
         Binding binding = port.getBinding();
         portType = binding.getPortType();
@@ -251,13 +251,13 @@ public class BaseFramework {
         }
     }
 
-    protected static void start(String serviceName) throws Exception {
+    protected static void start(String componentName, String serviceName) throws Exception {
         WSDLServiceGenerator.printWSDL = printWSDL;
         node = TuscanyRuntime.newInstance().createNode("default");
         node.installContribution("datatypescontrib", "target/classes", null, null);
         node.startComposite("datatypescontrib", "DataTypes.composite");
         printWSDL = false;  // print WSDL once only
-        readWSDL(serviceName);
+        readWSDL(componentName, serviceName);
     }
 
     protected static void stop() throws Exception {

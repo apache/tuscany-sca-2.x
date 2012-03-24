@@ -136,7 +136,7 @@ public class WSDLGenTestCase{
         // talk to the service using JAXWS with WSDL generated from this service used Tuscany's ?wsdl
         // the idea here is to demonstrate that the service is providing a JAXWS compliant 
         // WSDL
-        QName serviceName = new QName("http://helloworld/", "HelloWorldService");
+        QName serviceName = new QName("http://helloworld/", "HelloWorldServiceComponent_HelloWorldService");
         QName portName = new QName("http://helloworld/", "HelloWorldServiceSOAP11Port");
         URL wsdlLocation = new URL("http://localhost:8085/HelloWorldServiceComponent?wsdl");
         Service webService = Service.create( wsdlLocation, serviceName );
