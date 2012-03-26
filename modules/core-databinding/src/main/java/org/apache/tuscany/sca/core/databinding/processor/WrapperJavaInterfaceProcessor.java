@@ -102,8 +102,8 @@ public class WrapperJavaInterfaceProcessor implements JavaInterfaceVisitor {
     }
 
     /*
-     *  Assigns an operation DB if one of the input types, output type, fault types has a non-default DB.
-     *  However, if two of the input types, output type, fault types have two different non-default DBs 
+     *  Assigns an operation DB if one of the input types has a non-default DB.
+     *  However, if two of the input types, have two different non-default DBs 
      *  ( e.g. SDO and JAXB), then we do nothing to the operation DB.
      *  
      *  The method logic assumes the JavaBeans DataBinding is the default 
@@ -139,19 +139,16 @@ public class WrapperJavaInterfaceProcessor implements JavaInterfaceVisitor {
         }
     }
     
-    // TUSCANY-3804: handle output wrapper separately
-    //               change here is different to that in 3804 
-    //               to deal with logical data type + faults
+    // TUSCANY-3804: handle output wrapper separately.  Ignore faults
+    // in this calculation, as they're not part of the output wrapper, and
+    // we have our own introspection/framework to deal with fault databindings.
+    //        
     private String assignOutputDataBinding(Operation operation) {       
         Set<String> dbs = new HashSet<String>();
         List<DataType> opDataTypes = new LinkedList<DataType>();
 
         opDataTypes.addAll(operation.getOutputType().getLogical());
         
-        for (DataType<DataType> ft : operation.getFaultTypes()) {
-            opDataTypes.add(ft.getLogical());
-        }
-
         for (DataType<?> d : opDataTypes) {
             if (d != null) {
                 String dataBinding = d.getDataBinding();
