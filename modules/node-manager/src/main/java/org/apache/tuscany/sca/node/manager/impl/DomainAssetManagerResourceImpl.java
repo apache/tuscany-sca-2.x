@@ -52,12 +52,24 @@ import org.apache.tuscany.sca.node.manager.ManageableResource;
 import org.apache.tuscany.sca.node.manager.ManageableService;
 import org.apache.tuscany.sca.node.manager.Status;
 import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Scope;
 
-public class DomainAssetManagerResourceImpl implements NodeActivator, DomainAssetManagerResource {
+@Scope("COMPOSITE")
+public class DomainAssetManagerResourceImpl implements NodeActivator, DomainAssetManagerResource {    
     private static Map<String, NodeExtension> nodeMap = new ConcurrentHashMap<String,NodeExtension>();
     
     private HttpClientFactory httpClientFactory;
-
+    
+    @Property
+    private int warningTreshold;
+    
+    @Property
+    private int criticalTreshold;
+    
+    @Property
+    private int unavailableTreshold;
+    
     public void nodeStarted(Node node) {
         NodeExtension nodeExtension = (NodeExtension) node;
         nodeMap.put(nodeExtension.getDomainURI(), nodeExtension);     
@@ -70,6 +82,11 @@ public class DomainAssetManagerResourceImpl implements NodeActivator, DomainAsse
     
     @Init
     public void init() {
+        System.out.println("Initializing Domain Asset Manager");
+        System.out.println("  - Warning threshold : " + warningTreshold + " ms" );
+        System.out.println("  - Critical threshold : " + criticalTreshold + " ms");
+        System.out.println("  - Unavailable threshold : " + unavailableTreshold + " ms");
+        
         NodeExtension node = (NodeExtension) nodeMap.values().iterator().next();
         if(node != null) {
             ExtensionPointRegistry extensionPoints =  node.getExtensionPointRegistry();
@@ -103,9 +120,21 @@ public class DomainAssetManagerResourceImpl implements NodeActivator, DomainAsse
                             Timer t = new Timer();
                             status = testResource(status);
                             status.setExecution(t.elapsed(TimeUnit.MILLISECONDS));
-                            status.setStatus(Status.SUCCESS);
+                            
+                            if(status.getExecution() < warningTreshold) {
+                                status.setStatus(status.OK);
+                            }else if(status.getExecution() > warningTreshold) {
+                                status.setStatus(Status.WARNING);
+                            }else if(status.getExecution() > criticalTreshold) {
+                                status.setStatus(Status.CRITICAL);
+                            } else {
+                                status.setStatus(Status.UNAVAILABLE);
+                            }
+                            
+                            System.out.println(">>> Execution : " + status.getExecution() + " ms -- " + status.getStatus());
+                            
                         } catch (Exception e) {
-                            status.setStatus(Status.FAILURE);
+                            status.setStatus(Status.UNAVAILABLE);
                             status.setStatusMessage(e.getMessage());
                         }
                         
@@ -138,14 +167,22 @@ public class DomainAssetManagerResourceImpl implements NodeActivator, DomainAsse
                     status.setUri(service.getBindings().get(0).getURI());
                     
                     try {
-                        String serviceName = component.getName() +"/" + service.getName();
                         ManageableService serviceInstance = node.getService(ManageableService.class, component.getName());
                         Timer t = new Timer();
                         serviceInstance.isAlive();
                         status.setExecution(t.elapsed(TimeUnit.MILLISECONDS));
-                        status.setStatus(Status.SUCCESS);
+
+                        if(status.getExecution() < warningTreshold) {
+                            status.setStatus(status.OK);
+                        }else if(status.getExecution() > warningTreshold) {
+                            status.setStatus(Status.WARNING);
+                        }else if(status.getExecution() > criticalTreshold) {
+                            status.setStatus(Status.CRITICAL);
+                        } else {
+                            status.setStatus(Status.UNAVAILABLE);
+                        }
                     } catch (Exception e) {
-                        status.setStatus(Status.FAILURE);
+                        status.setStatus(Status.UNAVAILABLE);
                         status.setStatusMessage(e.getMessage());
                     }
                     

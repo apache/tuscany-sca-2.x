@@ -20,12 +20,14 @@
 package org.apache.tuscany.sca.node.manager;
 
 public class Status {
-    public static int SUCCESS = 0;
-    public static int FAILURE = 1;
+    public static String OK ="ok";
+    public static String WARNING = "warning";
+    public static String CRITICAL = "critical";
+    public static String UNAVAILABLE = "unavailable";
     
     private String name;
     private String uri;
-    private int  status;
+    private String status;
     private String statusMessage;
     private long   execution;
     
@@ -45,11 +47,11 @@ public class Status {
         this.uri = uri;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
