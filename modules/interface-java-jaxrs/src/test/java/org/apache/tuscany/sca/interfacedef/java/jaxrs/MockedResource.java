@@ -32,7 +32,7 @@ public class MockedResource implements Resource {
         return value;
     }
 
-    public void create(String value) {
+    public void create(long id, String value) {
         this.value = value;
     }
 

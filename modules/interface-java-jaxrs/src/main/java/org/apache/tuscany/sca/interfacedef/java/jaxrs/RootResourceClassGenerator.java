@@ -101,9 +101,15 @@ public class RootResourceClassGenerator implements Opcodes {
         mv.visitCode();
         mv.visitFieldInsn(GETSTATIC, className, DELEGATE_FIELD, getSignature(interfaceName));
         Class<?>[] paramTypes = method.getParameterTypes();
+        int index = 1;
         for (int i = 0; i < paramTypes.length; i++) {
             String signature = Type.getDescriptor(paramTypes[i]);
-            mv.visitVarInsn(CodeGenerationHelper.getLoadOPCode(signature), i + 1);
+            mv.visitVarInsn(CodeGenerationHelper.getLoadOPCode(signature), index);
+            if(paramTypes[i] == long.class || paramTypes[i] == double.class) {
+                index+=2; // Increase the index by 2 for the 64bit numbers
+            } else {
+                index++;
+            }
         }
         mv.visitMethodInsn(INVOKEINTERFACE, interfaceName, method.getName(), methodDescriptor);
 

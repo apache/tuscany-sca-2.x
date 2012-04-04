@@ -42,7 +42,7 @@ public interface Resource {
     void update(String value);
 
     @POST
-    void create(String value);
+    void create(long id, String value);
 
     @DELETE
     void delete();

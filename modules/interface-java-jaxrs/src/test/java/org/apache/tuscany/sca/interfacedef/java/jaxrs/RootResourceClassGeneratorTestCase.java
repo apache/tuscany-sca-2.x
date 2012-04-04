@@ -74,7 +74,7 @@ public class RootResourceClassGeneratorTestCase {
 
         Resource resourceProxy = (Resource)cls.newInstance();
         Assert.assertNull(resourceProxy.get());
-        resourceProxy.create("123");
+        resourceProxy.create(1l, "123");
         Assert.assertEquals("123", resourceProxy.get());
         resourceProxy.update("ABC");
         Assert.assertEquals("ABC", resourceProxy.get());

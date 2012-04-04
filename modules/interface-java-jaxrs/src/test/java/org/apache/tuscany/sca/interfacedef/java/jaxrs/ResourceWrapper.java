@@ -39,8 +39,8 @@ public class ResourceWrapper implements Resource {
         return delegate.get();
     }
 
-    public void create(String value) {
-        delegate.create(value);
+    public void create(long id, String value) {
+        delegate.create(id, value);
     }
 
     public void delete() {
