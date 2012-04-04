@@ -27,6 +27,7 @@ import javax.ws.rs.PathParam;
 import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
+@Path("")
 public interface DomainCompositeResource {
 
     @GET

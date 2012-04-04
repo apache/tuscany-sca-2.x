@@ -17,16 +17,17 @@
  * under the License.    
  */
 
-package services;
+package services.impl;
 
-import org.apache.tuscany.sca.node.manager.ManageableService;
+import javax.ws.rs.core.Response;
 
-public class MyServiceImpl implements ManageableService {
+import org.apache.tuscany.sca.node.manager.ManageableResource;
 
- 
+public class MyOtherResourceImpl implements ManageableResource {
+
     @Override
-    public void isAlive() {
-        System.out.println(">>> isAlive");
+    public Response ping() {
+        System.out.println(">>> ping");
+        return Response.ok("pong").build();
     }
-
 }

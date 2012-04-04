@@ -17,28 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node.manager;
+package services;
 
-import java.util.List;
-
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
 
 import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
-@Path("")
-public interface DomainAssetManagerResource {
-
+public interface MyResource {
     @GET
-    @Path("{domainURI}/resources/status")
-    List<Status> getResourceStatus(@PathParam("domainURI") @DefaultValue("default") String domainURI);
-    
-
-    @GET
-    @Path("{domainURI}/services/status")
-    List<Status> getServiceStatus(@PathParam("domainURI") @DefaultValue("default") String domainURI);
-
+    Response getSomething();
 }

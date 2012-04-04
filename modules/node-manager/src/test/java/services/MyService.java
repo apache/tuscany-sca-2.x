@@ -19,16 +19,10 @@
 
 package services;
 
-import javax.ws.rs.core.Response;
+import org.oasisopen.sca.annotation.Remotable;
 
-import org.apache.tuscany.sca.node.manager.ManageableResource;
-
-public class MyResourceImpl implements ManageableResource {
-
-    @Override
-    public Response ping() {
-        System.out.println(">>> ping");
-        return Response.ok("pong").build();
-    }
-
+@Remotable
+public interface MyService {
+    
+    void doSomething();
 }

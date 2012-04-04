@@ -33,21 +33,29 @@
 	</component>
 	
 	<component name="Resource">
-		<implementation.java class="services.MyResourceImpl"/>
-		<service name="ManageableResource">
+		<implementation.java class="services.impl.MyResourceImpl"/>
+		<service name="MyResource">
 			<tuscany:binding.rest uri="/services/resource" />
    		</service>
 	</component>
 
 	<component name="LongRunningResource">
-		<implementation.java class="services.MyLongRunningResourceImpl"/>
-		<service name="ManageableResource">
-			<tuscany:binding.rest uri="/services/another/resource" />
+		<implementation.java class="services.impl.MyLongRunningResourceImpl"/>
+		<service name="MyResource">
+			<tuscany:binding.rest uri="/services/long/resource" />
    		</service>
 	</component>
+
+	<component name="OtherResource">
+		<implementation.java class="services.impl.MyOtherResourceImpl"/>
+		<service name="ManageableResource">
+			<tuscany:binding.rest uri="/services/other/resource" />
+   		</service>
+	</component>
+
 	
 	<component name="Service">
-		<implementation.java class="services.MyServiceImpl"/>
+		<implementation.java class="services.impl.MyServiceImpl"/>
 		<service name="ManageableService">
 			<binding.sca />
    		</service>

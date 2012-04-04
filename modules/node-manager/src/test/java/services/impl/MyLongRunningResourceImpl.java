@@ -17,28 +17,32 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node.manager;
+package services.impl;
 
-import java.util.List;
+import javax.ws.rs.core.Response;
 
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import org.apache.tuscany.sca.node.manager.ManageableResource;
+import services.MyResource;
 
-import org.oasisopen.sca.annotation.Remotable;
+public class MyLongRunningResourceImpl implements MyResource, ManageableResource {
 
-@Remotable
-@Path("")
-public interface DomainAssetManagerResource {
-
-    @GET
-    @Path("{domainURI}/resources/status")
-    List<Status> getResourceStatus(@PathParam("domainURI") @DefaultValue("default") String domainURI);
+    @Override
+    public Response ping() {
+        System.out.println(">>> long running ping");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return Response.ok("pong").build();
+    }
     
 
-    @GET
-    @Path("{domainURI}/services/status")
-    List<Status> getServiceStatus(@PathParam("domainURI") @DefaultValue("default") String domainURI);
+    @Override
+    public Response getSomething() {
+        System.out.println(">>> getSomething");
+        return Response.ok("something").build();
+    }
+
 
 }

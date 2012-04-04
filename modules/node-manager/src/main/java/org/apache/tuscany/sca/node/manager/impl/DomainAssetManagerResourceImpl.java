@@ -109,7 +109,24 @@ public class DomainAssetManagerResourceImpl implements NodeActivator, DomainAsse
             for(Service service : component.getServices()) {
                 Interface interfaceContract = service.getInterfaceContract().getInterface();
                 if(ManageableResource.class.getName().equals(interfaceContract.toString())) {
+                    
+                    //the simple case, the resource is directly exposed with rest binding
                     Binding binding = service.getBinding(RESTBinding.class);
+                    if(binding == null) {
+                        //the resource is available via some other interface
+                        //(e.g. service implements resource, manageableResource interfaces)
+                        for(Service s : component.getServices()) {
+                            binding = s.getBinding(RESTBinding.class);
+                            if(binding != null) {
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if(binding == null) {
+                        //WARNING that the manageableResource is not exposed via rest binding
+                    }
+                    
                     if(binding != null) {
                         
                         Status status = new Status();
@@ -167,7 +184,8 @@ public class DomainAssetManagerResourceImpl implements NodeActivator, DomainAsse
                     status.setUri(service.getBindings().get(0).getURI());
                     
                     try {
-                        ManageableService serviceInstance = node.getService(ManageableService.class, component.getName());
+                        String serviceName = component.getName() + "/" + service.getName();
+                        ManageableService serviceInstance = node.getService(ManageableService.class, serviceName);
                         Timer t = new Timer();
                         serviceInstance.isAlive();
                         status.setExecution(t.elapsed(TimeUnit.MILLISECONDS));

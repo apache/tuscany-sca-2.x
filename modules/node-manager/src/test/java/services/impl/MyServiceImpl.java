@@ -17,28 +17,22 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node.manager;
+package services.impl;
 
-import java.util.List;
+import org.apache.tuscany.sca.node.manager.ManageableService;
 
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import services.MyService;
 
-import org.oasisopen.sca.annotation.Remotable;
+public class MyServiceImpl implements MyService, ManageableService {
 
-@Remotable
-@Path("")
-public interface DomainAssetManagerResource {
+ 
+    @Override
+    public void isAlive() {
+        System.out.println(">>> isAlive");
+    }
 
-    @GET
-    @Path("{domainURI}/resources/status")
-    List<Status> getResourceStatus(@PathParam("domainURI") @DefaultValue("default") String domainURI);
-    
-
-    @GET
-    @Path("{domainURI}/services/status")
-    List<Status> getServiceStatus(@PathParam("domainURI") @DefaultValue("default") String domainURI);
-
+    @Override
+    public void doSomething() {
+        System.out.println(">>> doSomething");
+    }
 }
