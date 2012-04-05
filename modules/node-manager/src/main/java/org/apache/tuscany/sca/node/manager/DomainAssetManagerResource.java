@@ -30,12 +30,7 @@ import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 @Path("")
-public interface DomainAssetManagerResource {
-
-    @GET
-    @Path("{domainURI}/resources/status")
-    List<Status> getResourceStatus(@PathParam("domainURI") @DefaultValue("default") String domainURI);
-    
+public interface DomainAssetManagerResource {    
 
     @GET
     @Path("{domainURI}/services/status")

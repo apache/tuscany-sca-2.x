@@ -19,15 +19,12 @@
 
 package services.impl;
 
-import javax.ws.rs.core.Response;
+import org.apache.tuscany.sca.node.manager.Manageable;
 
-import org.apache.tuscany.sca.node.manager.ManageableResource;
-
-public class MyOtherResourceImpl implements ManageableResource {
+public class MyOtherResourceImpl implements Manageable {
 
     @Override
-    public Response ping() {
-        System.out.println(">>> ping");
-        return Response.ok("pong").build();
+    public void isAlive() {
+        System.out.println(">>> isAlive");
     }
 }

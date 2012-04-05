@@ -21,22 +21,21 @@ package services.impl;
 
 import javax.ws.rs.core.Response;
 
-import org.apache.tuscany.sca.node.manager.ManageableResource;
-
 import services.MyResource;
+import org.apache.tuscany.sca.node.manager.Manageable;
 
-public class MyResourceImpl implements MyResource, ManageableResource {
-
-    @Override
-    public Response ping() {
-        System.out.println(">>> ping");
-        return Response.ok("pong").build();
-    }
+public class MyResourceImpl implements MyResource, Manageable {
     
     @Override
     public Response getSomething() {
         System.out.println(">>> getSomething");
         return Response.ok("something").build();
+    }
+
+
+    @Override
+    public void isAlive() {
+        System.out.println(">>> isAlive");
     }
 
 }

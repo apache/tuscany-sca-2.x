@@ -21,20 +21,20 @@ package services.impl;
 
 import javax.ws.rs.core.Response;
 
-import org.apache.tuscany.sca.node.manager.ManageableResource;
+import org.apache.tuscany.sca.node.manager.Manageable;
+
 import services.MyResource;
 
-public class MyLongRunningResourceImpl implements MyResource, ManageableResource {
+public class MyLongRunningResourceImpl implements MyResource, Manageable {
 
     @Override
-    public Response ping() {
+    public void isAlive() {
         System.out.println(">>> long running ping");
         try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return Response.ok("pong").build();
     }
     
 

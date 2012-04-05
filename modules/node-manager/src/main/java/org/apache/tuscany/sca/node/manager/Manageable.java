@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.node.manager;
 import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
-public interface ManageableService {
+public interface Manageable {
 
     /**
      * isAlive method that allow service to be managed

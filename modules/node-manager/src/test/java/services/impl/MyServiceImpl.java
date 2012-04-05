@@ -19,11 +19,10 @@
 
 package services.impl;
 
-import org.apache.tuscany.sca.node.manager.ManageableService;
-
 import services.MyService;
+import org.apache.tuscany.sca.node.manager.Manageable;
 
-public class MyServiceImpl implements MyService, ManageableService {
+public class MyServiceImpl implements MyService, Manageable {
 
  
     @Override

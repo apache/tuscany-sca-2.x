@@ -71,15 +71,4 @@ public class DomainAssetManagerResourceTestCase {
         Assert.assertEquals(200, response.getResponseCode());
         System.out.println(">>>" + response.getText());
     }
-    
-    @Test
-    public void testResourceManagement() throws Exception {
-        WebConversation wc = new WebConversation();
-        WebRequest request = new GetMethodWebRequest(SERVICE_URL + "default/resources/status");
-        request.setHeaderField("Accept","application/json");
-        WebResponse response = wc.getResource(request);
-
-        Assert.assertEquals(200, response.getResponseCode());
-        System.out.println(">>>" + response.getText());
-    }    
 }

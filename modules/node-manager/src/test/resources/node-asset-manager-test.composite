@@ -27,37 +27,25 @@
 		<service name="DomainAssetManagerResource">
 			<tuscany:binding.rest uri="/services/manager" />
    		</service>
-   		<property name="warningTreshold">1000</property>        <!-- 1s  -->
+   		<property name="warningTreshold">100</property>         <!-- 1s  -->
    		<property name="criticalTreshold">30000</property>      <!-- 30s -->
    		<property name="unavailableTreshold">60000</property>   <!-- 1m  -->
 	</component>
 	
 	<component name="Resource">
 		<implementation.java class="services.impl.MyResourceImpl"/>
-		<service name="MyResource">
-			<tuscany:binding.rest uri="/services/resource" />
-   		</service>
 	</component>
 
 	<component name="LongRunningResource">
 		<implementation.java class="services.impl.MyLongRunningResourceImpl"/>
-		<service name="MyResource">
-			<tuscany:binding.rest uri="/services/long/resource" />
-   		</service>
 	</component>
 
 	<component name="OtherResource">
 		<implementation.java class="services.impl.MyOtherResourceImpl"/>
-		<service name="ManageableResource">
-			<tuscany:binding.rest uri="/services/other/resource" />
-   		</service>
 	</component>
 
 	
 	<component name="Service">
 		<implementation.java class="services.impl.MyServiceImpl"/>
-		<service name="ManageableService">
-			<binding.sca />
-   		</service>
 	</component>	
 </composite>

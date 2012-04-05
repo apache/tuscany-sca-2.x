@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.node.manager.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,25 +30,15 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.binding.rest.RESTBinding;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.host.http.client.HttpClientFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.extensibility.NodeActivator;
 import org.apache.tuscany.sca.node.extensibility.NodeExtension;
 import org.apache.tuscany.sca.node.manager.DomainAssetManagerResource;
-import org.apache.tuscany.sca.node.manager.ManageableResource;
-import org.apache.tuscany.sca.node.manager.ManageableService;
+import org.apache.tuscany.sca.node.manager.Manageable;
 import org.apache.tuscany.sca.node.manager.Status;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
@@ -58,8 +47,6 @@ import org.oasisopen.sca.annotation.Scope;
 @Scope("COMPOSITE")
 public class DomainAssetManagerResourceImpl implements NodeActivator, DomainAssetManagerResource {    
     private static Map<String, NodeExtension> nodeMap = new ConcurrentHashMap<String,NodeExtension>();
-    
-    private HttpClientFactory httpClientFactory;
     
     @Property
     private int warningTreshold;
@@ -87,81 +74,6 @@ public class DomainAssetManagerResourceImpl implements NodeActivator, DomainAsse
         System.out.println("  - Critical threshold : " + criticalTreshold + " ms");
         System.out.println("  - Unavailable threshold : " + unavailableTreshold + " ms");
         
-        NodeExtension node = (NodeExtension) nodeMap.values().iterator().next();
-        if(node != null) {
-            ExtensionPointRegistry extensionPoints =  node.getExtensionPointRegistry();
-            FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-            this.httpClientFactory = HttpClientFactory.getInstance(extensionPoints);
-        }
-    }
-    
-    @Override
-    public List<Status> getResourceStatus(@PathParam("domainURI") @DefaultValue("default") String domainURI) {
-        if( ! nodeMap.containsKey(domainURI)) {
-            throw new WebApplicationException(404);
-        }
-        
-        NodeExtension node = nodeMap.get(domainURI);
-        Composite domainComposite = node.getDomainComposite();
-        
-        List<Status> statuses = new ArrayList<Status>();
-        for(Component component : domainComposite.getComponents()) {
-            for(Service service : component.getServices()) {
-                Interface interfaceContract = service.getInterfaceContract().getInterface();
-                if(ManageableResource.class.getName().equals(interfaceContract.toString())) {
-                    
-                    //the simple case, the resource is directly exposed with rest binding
-                    Binding binding = service.getBinding(RESTBinding.class);
-                    if(binding == null) {
-                        //the resource is available via some other interface
-                        //(e.g. service implements resource, manageableResource interfaces)
-                        for(Service s : component.getServices()) {
-                            binding = s.getBinding(RESTBinding.class);
-                            if(binding != null) {
-                                break;
-                            }
-                        }
-                    }
-                    
-                    if(binding == null) {
-                        //WARNING that the manageableResource is not exposed via rest binding
-                    }
-                    
-                    if(binding != null) {
-                        
-                        Status status = new Status();
-                        status.setName(component.getName());
-                        status.setUri(binding.getURI());
-                        
-                        try {
-                            Timer t = new Timer();
-                            status = testResource(status);
-                            status.setExecution(t.elapsed(TimeUnit.MILLISECONDS));
-                            
-                            if(status.getExecution() < warningTreshold) {
-                                status.setStatus(status.OK);
-                            }else if(status.getExecution() > warningTreshold) {
-                                status.setStatus(Status.WARNING);
-                            }else if(status.getExecution() > criticalTreshold) {
-                                status.setStatus(Status.CRITICAL);
-                            } else {
-                                status.setStatus(Status.UNAVAILABLE);
-                            }
-                            
-                            System.out.println(">>> Execution : " + status.getExecution() + " ms -- " + status.getStatus());
-                            
-                        } catch (Exception e) {
-                            status.setStatus(Status.UNAVAILABLE);
-                            status.setStatusMessage(e.getMessage());
-                        }
-                        
-                        statuses.add(status);
-                    }
-                }
-            }
-            
-        }
-        return statuses;
     }
 
     @Override
@@ -177,7 +89,7 @@ public class DomainAssetManagerResourceImpl implements NodeActivator, DomainAsse
         for(Component component : domainComposite.getComponents()) {
             for(Service service : component.getServices()) {
                 Interface interfaceContract = service.getInterfaceContract().getInterface();
-                if(ManageableService.class.getName().equals(interfaceContract.toString())) {
+                if(Manageable.class.getName().equals(interfaceContract.toString())) {
 
                     Status status = new Status();
                     status.setName(component.getName());
@@ -185,13 +97,13 @@ public class DomainAssetManagerResourceImpl implements NodeActivator, DomainAsse
                     
                     try {
                         String serviceName = component.getName() + "/" + service.getName();
-                        ManageableService serviceInstance = node.getService(ManageableService.class, serviceName);
+                        Manageable serviceInstance = node.getService(Manageable.class, serviceName);
                         Timer t = new Timer();
                         serviceInstance.isAlive();
                         status.setExecution(t.elapsed(TimeUnit.MILLISECONDS));
 
                         if(status.getExecution() < warningTreshold) {
-                            status.setStatus(status.OK);
+                            status.setStatus(Status.OK);
                         }else if(status.getExecution() > warningTreshold) {
                             status.setStatus(Status.WARNING);
                         }else if(status.getExecution() > criticalTreshold) {
@@ -211,28 +123,6 @@ public class DomainAssetManagerResourceImpl implements NodeActivator, DomainAsse
         
         return statuses;
     }
-    
-    
-    private Status testResource(Status status) throws IOException {
-        
-        // Create an HTTP client
-        HttpClient httpClient = httpClientFactory.createHttpClient();
-        
-        HttpGet request = new HttpGet(status.getUri() + "ping");
-        //request.addHeader("Accept","application/json");
-        HttpResponse response = httpClient.execute(request);
-        
-        if(response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-            throw new IOException("Error invoking service at '" + request.getURI() +"' => " + response.getStatusLine().getReasonPhrase());
-        }
-        
-        if (httpClient != null) {
-            httpClient.getConnectionManager().shutdown();
-        }
-        
-        return status;
-    }
-    
     
     class Timer {
         Date time;
