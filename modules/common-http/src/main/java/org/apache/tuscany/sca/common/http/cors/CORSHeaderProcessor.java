@@ -30,7 +30,7 @@ public class CORSHeaderProcessor {
         
         if(config == null) {
             response.setHeader("Access-Control-Allow-Origin", "*");
-            response.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
+            response.setHeader("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
             if (request.getMethod().equals("OPTIONS")) {
                 response.setHeader("Access-Control-Allow-Methods", "OPTIONS, HEAD, GET, POST, PUT, DELETE");
                 response.setHeader("Access-Control-Max-Age", "1728000");
@@ -61,11 +61,11 @@ public class CORSHeaderProcessor {
     }
 
     private static String getAllowHeaders(CORSConfiguration config) {
-        return getListValues(config.getAllowHeaders(), "X-Requested-With");
+        return getListValues(config.getAllowHeaders(), "X-Requested-With, Content-Type");
     }
     
     private static String getExposeHeaders(CORSConfiguration config) {
-        return getListValues(config.getExposeHeaders(), "X-Requested-With");
+        return getListValues(config.getExposeHeaders(), "X-Requested-With, Content-Type");
     }
     
     private static String getListValues(List<String> list, String defaultValue) {
