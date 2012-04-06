@@ -49,13 +49,13 @@ public class DomainAssetManagerResourceImpl implements NodeActivator, DomainAsse
     private static Map<String, NodeExtension> nodeMap = new ConcurrentHashMap<String,NodeExtension>();
     
     @Property
-    private int warningTreshold;
+    private int warningThreshold;
     
     @Property
-    private int criticalTreshold;
+    private int criticalThreshold;
     
     @Property
-    private int unavailableTreshold;
+    private int unavailableThreshold;
     
     public void nodeStarted(Node node) {
         NodeExtension nodeExtension = (NodeExtension) node;
@@ -70,9 +70,9 @@ public class DomainAssetManagerResourceImpl implements NodeActivator, DomainAsse
     @Init
     public void init() {
         System.out.println("Initializing Domain Asset Manager");
-        System.out.println("  - Warning threshold : " + warningTreshold + " ms" );
-        System.out.println("  - Critical threshold : " + criticalTreshold + " ms");
-        System.out.println("  - Unavailable threshold : " + unavailableTreshold + " ms");
+        System.out.println("  - Warning threshold : " + warningThreshold + " ms" );
+        System.out.println("  - Critical threshold : " + criticalThreshold + " ms");
+        System.out.println("  - Unavailable threshold : " + unavailableThreshold + " ms");
         
     }
 
@@ -102,11 +102,11 @@ public class DomainAssetManagerResourceImpl implements NodeActivator, DomainAsse
                         serviceInstance.isAlive();
                         status.setExecution(t.elapsed(TimeUnit.MILLISECONDS));
 
-                        if(status.getExecution() < warningTreshold) {
+                        if(status.getExecution() < warningThreshold) {
                             status.setStatus(Status.OK);
-                        }else if(status.getExecution() > warningTreshold) {
+                        }else if(status.getExecution() > warningThreshold) {
                             status.setStatus(Status.WARNING);
-                        }else if(status.getExecution() > criticalTreshold) {
+                        }else if(status.getExecution() > criticalThreshold) {
                             status.setStatus(Status.CRITICAL);
                         } else {
                             status.setStatus(Status.UNAVAILABLE);

@@ -27,9 +27,9 @@
 		<service name="DomainAssetManagerResource">
 			<tuscany:binding.rest uri="/services/manager" />
    		</service>
-   		<property name="warningTreshold">100</property>         <!-- 1s  -->
-   		<property name="criticalTreshold">30000</property>      <!-- 30s -->
-   		<property name="unavailableTreshold">60000</property>   <!-- 1m  -->
+   		<property name="warningThreshold">100</property>         <!-- 1s  -->
+   		<property name="criticalThreshold">30000</property>      <!-- 30s -->
+   		<property name="unavailableThreshold">60000</property>   <!-- 1m  -->
 	</component>
 	
 	<component name="Resource">
