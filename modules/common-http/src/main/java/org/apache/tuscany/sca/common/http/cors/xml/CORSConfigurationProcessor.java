@@ -116,9 +116,9 @@ public class CORSConfigurationProcessor extends BaseStAXArtifactProcessor implem
          *       <exposeHeaders>
          *          <header>X-custom-1</header>
          *          <header>X-custom-2</header>
-         *       </expose-headers>
+         *       </exposeHeaders>
          *
-         *    </cors-configuration>
+         *    </corsConfiguration>
          **/
         
         HeaderElementType headerType = null;
