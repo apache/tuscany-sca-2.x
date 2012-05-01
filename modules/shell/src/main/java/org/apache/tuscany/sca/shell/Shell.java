@@ -26,6 +26,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -76,11 +77,14 @@ public class Shell {
         
         boolean showHelp = false;
         String contribution = null;
+        String nodeXML = null;
         for (String s : args) {
             if ("-nojline".equals(s)) {
                 useJline = false;
             } else if ("-help".equals(s)) {
                 showHelp = true;
+            } else if (s.startsWith("-nodeXML:")) {
+            	nodeXML = s.substring("-nodeXML:".length());
             } else {
                 if (s.startsWith("uri:") || s.startsWith("properties:")) {
                     domainURI = s;
@@ -89,21 +93,40 @@ public class Shell {
                 }
             }
         }
-        Shell shell = new Shell(domainURI, useJline);
-        if (showHelp || contribution==null) {
-        	shell.help(null);
+        Shell shell;
+        if (nodeXML != null) {
+            shell = new Shell(new File(nodeXML), useJline);
+        } else {
+            shell = new Shell(domainURI, useJline);
+            if (showHelp || contribution==null) {
+            	shell.help(null);
+            }
+            if (contribution != null) {
+                System.out.println();
+                System.out.println("install " + contribution + " -start");
+                String curi = shell.getNode().installContribution(contribution);
+                shell.getNode().startDeployables(curi);
+            }
         }
-        if (contribution != null) {
-            System.out.println();
-            System.out.println("install " + contribution + " -start");
-            String curi = shell.getNode().installContribution(contribution);
-            shell.getNode().startDeployables(curi);
-        }
-        
         
         shell.run();
     }
 
+    public Shell(File nodeXML, boolean useJLine) throws ContributionReadException, MalformedURLException, ActivationException, ValidationException {
+        this.runtime = TuscanyRuntime.newInstance();
+        this.useJline = useJLine;
+        
+        try {
+            initCommands();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        
+        Node node = runtime.createNodeFromXML(nodeXML.toURI().toURL().toString());
+        currentDomain = node.getDomainName();
+        nodes.put(currentDomain, node);
+    }
+    
     public Shell(String domainURI, boolean useJLine) {
         this.runtime = TuscanyRuntime.newInstance();
         this.useJline = useJLine;
