@@ -454,7 +454,9 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
 
         started = true;
 
-        if (!getReference().getName().startsWith("$self$."))
+        Contract ref = getReference();
+        String refName = ref.getName();
+        if (!refName.startsWith("$self$.") && !refName.startsWith("$sca.client$.") && !ref.isForCallback())
             compositeContext.getEndpointRegistry().addEndpointReference(this);
 
         // InterfaceContract bindingContract = getBindingInterfaceContract();
