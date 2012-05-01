@@ -98,9 +98,9 @@ public class TuscanyRunMojo extends AbstractMojo {
     private String domainURI;
 
     /**
-     * @parameter expression="${nodeConfig}"
+     * @parameter expression="${nodeXML}"
      */
-    private String nodeConfig;
+    private String nodeXML;
 
     /**
      * @parameter expression="${contributions}" 
@@ -155,19 +155,27 @@ public class TuscanyRunMojo extends AbstractMojo {
     private void executeShell() throws MojoExecutionException {
         getLog().info("Starting Tuscany Shell...");
 
-        List<String> contributionList = new ArrayList<String>();
+        if (nodeXML != null && nodeXML.length() > 0) {
+            try {
+                Shell.main(new String[]{"-nodeXML:" + nodeXML});
+            } catch (Exception e) {
+                throw new MojoExecutionException("Exception in Shell", e);
+            }
+        } else {
+            List<String> contributionList = new ArrayList<String>();
 
-        addProjectContribution(contributionList);
+            addProjectContribution(contributionList);
 
-        addAdditionalContributions(contributionList);
+            addAdditionalContributions(contributionList);
 
-        contributionList.add(0, "-help");
-        contributionList.add(0, domainURI);
-        
-        try {
-            Shell.main(contributionList.toArray(new String[contributionList.size()]));
-        } catch (Exception e) {
-            throw new MojoExecutionException("Exception in Shell", e);
+            contributionList.add(0, "-help");
+            contributionList.add(0, domainURI);
+            
+            try {
+                Shell.main(contributionList.toArray(new String[contributionList.size()]));
+            } catch (Exception e) {
+                throw new MojoExecutionException("Exception in Shell", e);
+            }
         }
         
         getLog().info("Tuscany Shell stopped.");
