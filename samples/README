@@ -1,4 +1,6 @@
 Apache Tuscany Samples
 ======================
 
+Samples to demonstrate various features of Tuscany.
 
+Note that not all the samples may have been tested with every release. The getting-started samples should work but the others may not and are provided on an FYI YMMV basis.
