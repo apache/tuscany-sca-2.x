@@ -374,6 +374,7 @@ public class XSDModelResolver implements ModelResolver {
                 unresolved.setNamespace(targetNamespace);
                                 
                 for (Import import_ : this.contribution.getImports()) {
+                    URL resolvedURL;
                     if (import_ instanceof NamespaceImport) {
                         NamespaceImport namespaceImport = (NamespaceImport)import_;
                         if (namespaceImport.getNamespace().equals(targetNamespace)) {                        	
@@ -381,7 +382,8 @@ public class XSDModelResolver implements ModelResolver {
         	                resolved =
         	                    namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved, context);
         	                if (!resolved.isUnresolved()) {
-        	                	return XMLDocumentHelper.getInputSource(resolved.getLocation().toURL());
+                                resolvedURL = resolved.getLocation().toURL();
+                                return xmlDocumentHelperGetInputSource(resolvedURL);
         	                }
                         }
                     } else if (import_ instanceof DefaultImport) {
@@ -389,16 +391,8 @@ public class XSDModelResolver implements ModelResolver {
                         resolved =
                             import_.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved, context);
                         if (!resolved.isUnresolved()) {
-                            final XSDefinition finalres = resolved;
-                            try {
-                                return (InputSource)AccessController.doPrivileged( new PrivilegedExceptionAction<InputSource>() {
-                                    public InputSource run() throws IOException {                                    
-                                        return XMLDocumentHelper.getInputSource(finalres.getLocation().toURL());
-                                    }
-                                });
-                            } catch (PrivilegedActionException e) {
-                                throw (IOException) e.getException();
-                            }
+                            resolvedURL = resolved.getLocation().toURL();
+                            return xmlDocumentHelperGetInputSource(resolvedURL);
                         }
                     }
                 }
@@ -436,25 +430,44 @@ public class XSDModelResolver implements ModelResolver {
                         }
                     }
                 }
-                try {
-                    final URL finalurl = url;
-                    return (InputSource)AccessController.doPrivileged( new PrivilegedExceptionAction<InputSource>() {
-                        public InputSource run() throws IOException {                                    
-                            return XMLDocumentHelper.getInputSource(finalurl);
-                        }
-                    });
-                } catch (PrivilegedActionException e) {
-                    throw (IOException) e.getException();
-                }
+                return xmlDocumentHelperGetInputSource(url);
                 
             } catch (IOException e) {
-            	// Invalid URI; return a default InputSource so that the
-                // XmlSchema code will produce a useful diagnostic
-                return new InputSource(schemaLocation);
+                // If we are not able to resolve the imports using location, then 
+                // try resolving them using the namespace.
+                try {
+                    for (Artifact artifact : contribution.getArtifacts()) {
+                        if (artifact.getModel() instanceof XSDefinitionImpl) {
+                            String artifactNamespace = ((XSDefinitionImpl)artifact.getModel()).getNamespace();
+                            if (targetNamespace.equals(artifactNamespace)) {
+                                final URL artifactLocation = ((XSDefinitionImpl)artifact.getModel()).getLocation().toURL();
+                                return xmlDocumentHelperGetInputSource(artifactLocation);
+                            }
+                        }
+                    }
+                    // add another default return statement
+                    return new InputSource(schemaLocation);
+                } catch (IOException ioe) {
+                    // Invalid URI; return a default InputSource so that the
+                    // XmlSchema code will produce a useful diagnostic
+                    return new InputSource(schemaLocation);
+                }
             } catch (URISyntaxException e) {
             	// Invalid URI; return a default InputSource so that the
                 // XmlSchema code will produce a useful diagnostic
                 return new InputSource(schemaLocation);
+            }
+        }
+        
+        private InputSource xmlDocumentHelperGetInputSource(final URL url) throws IOException {
+            try {
+                return (InputSource)AccessController.doPrivileged( new PrivilegedExceptionAction<InputSource>() {
+                    public InputSource run() throws IOException {                                    
+                        return XMLDocumentHelper.getInputSource(url);
+                    }
+                });
+            } catch (PrivilegedActionException pae) {
+                throw (IOException) pae.getException();
             }
         }
     }
