@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.contribution.java.impl;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Import;
@@ -123,6 +125,8 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
 
         } catch (ClassNotFoundException e) {
             return unresolved;
+        } finally {
+            contributionContainingClass = null;
         }
     }
 
@@ -177,6 +181,13 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
         // Next, try to load the class from the current contribution
         Class<?> clazz = super.findClass(name);
         return clazz;
+    }
+    
+    public void clear() {
+    	contribution = null;
+    	contributionContainingClass = null;
+    	context = null;
+    	importResolvers = null;
     }
 
 }
