@@ -6,26 +6,13 @@ This sample extends the helloworld sample to show how to use ZIP format contribu
 The changes to the helloworld sample are:
 - update sample.HelloworldImpl class is updated to use the Apache Commons Lang 3.0 WordUtils utility 
 - the Maven build is updated to use the Assembly plugin to create a ZIP archive of the contrubution which includes the dependency jars
+- use a node.xml file to configure the contributions used by the Tuscany maven plugin
 
-Presently the Tuscany Shell does not work "as is" to run this sample with "mvn tuscany:run". Instead you need to do the following in the helloworld-withdeps directory:
+As with all the getting-started samples you can run this sample with:
 
-- build the ZIP contribution
-    
-   mvn clean install
+   mvn tuscany:run 
 
-- start the Tuscany Shell
-
-   mvn tuscany:shell
-
-- install the sample contribution
-
-  install target\helloworld-withdeps-2.0-SNAPSHOT.zip
-
-- start the SCA composite
-
-  start helloworld-withdeps META-INF/helloworld.composite
-
-And then as with the original helloworld sample you may test the service by using the Shell "invoke" command:
+And then as with the original helloworld sample you may explore the state of the domain with Shell commands and test the service by using the Shell "invoke" command:
 
    invoke HelloworldComponent sayHello yourName
 

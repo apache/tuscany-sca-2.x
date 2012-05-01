@@ -111,6 +111,9 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-maven-plugin</artifactId>
             <version>${tuscany.version}</version>
+            <configuration>
+                <nodeXML>node.xml</nodeXML>
+            </configuration>
          </plugin>
 
       </plugins>
