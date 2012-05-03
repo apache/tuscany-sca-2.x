@@ -24,11 +24,11 @@ import java.lang.reflect.Proxy;
 import java.net.URI;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Properties;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistryLocator;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -60,6 +60,10 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         findLocalRuntime();
 
         endpointFinder = RuntimeUtils.getEndpointFinder(extensionPointRegistry);
+    }
+
+    public SCAClientFactoryImpl(URI domainURI, Properties properties) throws NoSuchDomainException {
+    	this(domainURI);
     }
 
     protected void findLocalRuntime() throws NoSuchDomainException {
