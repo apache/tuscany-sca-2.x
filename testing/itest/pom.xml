@@ -35,6 +35,12 @@
             <version>4.8.1</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+           <groupId>org.codehaus.woodstox</groupId>
+           <artifactId>wstx-asl</artifactId>
+           <version>3.2.9</version>
+           <scope>test</scope>
+       </dependency>
     </dependencies>
 
   <modules>
