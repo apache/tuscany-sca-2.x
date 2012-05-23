@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.common.http.HTTPCacheContext;
 import org.apache.tuscany.sca.common.http.HTTPContentTypeMapper;
 import org.apache.tuscany.sca.common.http.HTTPContext;
 import org.apache.tuscany.sca.common.http.HTTPHeader;
+import org.apache.tuscany.sca.common.http.cors.CORSHeaderProcessor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -78,6 +79,9 @@ public class RESTBindingListenerServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (binding.isCORS()) {
+            CORSHeaderProcessor.processCORS(binding.getCORSConfiguration(), request, response);
+        }
         if( binding.getOperationSelector() != null || binding.getRequestWireFormat() != null) {
             HTTPContext bindingContext = new HTTPContext();
             bindingContext.setHttpRequest(request);

@@ -205,6 +205,7 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
                                 restBinding.setResponseWireFormat((WireFormat)extension);
                             } else if(extension instanceof OperationSelector) {
                                 restBinding.setOperationSelector((OperationSelector)extension);
+                                restBinding.setCORS(true);
                             }
                         }
                         break;
