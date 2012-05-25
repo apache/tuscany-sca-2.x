@@ -49,6 +49,12 @@ public class ValidateDependenciesTestCase {
         Assert.assertTrue(dependenciesDir.exists());
         
         File[] dependencyFiles = dependenciesDir.listFiles();
-        Assert.assertEquals(6, dependencyFiles.length);
+        String vend = System.getProperty("java.vendor");
+
+        if(vend.equals("IBM Corporation")) {
+           Assert.assertEquals(12, dependencyFiles.length);
+        } else {
+           Assert.assertEquals(8, dependencyFiles.length);
+        }
     }
 }
