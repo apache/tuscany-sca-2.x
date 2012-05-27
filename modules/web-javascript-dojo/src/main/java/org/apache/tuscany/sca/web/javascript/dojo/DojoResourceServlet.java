@@ -63,8 +63,6 @@ public class DojoResourceServlet extends HttpServlet {
                 path = path.substring(contextRoot.length());
                 path = "/dojo" + path;
             }
-            
-            System.out.println(">>>Path :" + path);
         } else if (path.startsWith(contextRoot)) {
             path = path.substring(contextRoot.length() + 1);
         } else if( path.startsWith("/")) {
