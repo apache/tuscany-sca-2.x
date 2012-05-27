@@ -27,19 +27,19 @@
     </parent>
     <artifactId>sample-store</artifactId>
     <name>Apache Tuscany SCA Sample Getting Started Online Store</name>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.tuscany.sca</groupId>
-			<artifactId>tuscany-base-runtime-pom</artifactId>
-			<version>2.0-SNAPSHOT</version>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-base-runtime-pom</artifactId>
+            <version>2.0-SNAPSHOT</version>
             <type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tuscany.sca</groupId>
-			<artifactId>tuscany-data-api</artifactId>
-			<version>2.0-SNAPSHOT</version>
-		</dependency>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-data-api</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-atom-runtime</artifactId>
@@ -94,27 +94,27 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
+    
     <build>
-       <finalName>${project.artifactId}</finalName>
-       <plugins>
-         <plugin>
-           <groupId>org.codehaus.mojo</groupId>
-           <artifactId>exec-maven-plugin</artifactId>
-           <version>1.1.1</version>
-           <executions>
-             <execution>
-               <goals>
-                 <goal>java</goal>
-               </goals>
-             </execution>
-           </executions>
-           <configuration>
-             <classpathScope>test</classpathScope>
-             <mainClass>store.StoreTestCase</mainClass>
-           </configuration>
-         </plugin>
-      </plugins>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.1.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <classpathScope>test</classpathScope>
+                    <mainClass>store.StoreTestCase</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
-
+    
 </project>
