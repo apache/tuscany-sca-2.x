@@ -56,7 +56,8 @@ class WidgetImplementationInvoker implements Invoker {
     public Message invoke(Message msg) {
         
         // Get the resource id from the request message
-        String id = (String)((Object[])msg.getBody())[0];
+    	
+        String id = msg.getBody() == null ? "" : (String)((Object[])msg.getBody())[0];
         try {
             
             if (id.length() == 0) {
