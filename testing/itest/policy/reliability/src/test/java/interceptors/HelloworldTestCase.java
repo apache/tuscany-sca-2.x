@@ -63,7 +63,10 @@ public class HelloworldTestCase extends TestCase {
         
         // check sequences of interceptors
         System.out.println(StatusImpl.statusString);
-        assertTrue(StatusImpl.statusString.contains("atmostonce exactlyonce atleastonce"));
+        assertTrue(StatusImpl.statusString.contains("atmostonce"));
+        assertTrue(StatusImpl.statusString.contains("exactlyonce"));
+        assertTrue(StatusImpl.statusString.contains("atleastonce"));
+
                 
         // check final intents on endpoint reference to see if the matching process
         // results on the right set
