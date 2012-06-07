@@ -101,11 +101,14 @@ public class JarsInLICENSETestCase {
         String licenseText = readLICENSE(licenseFile);
         for (String jar : jars) {
             if (!licenseText.contains(jar)) {
-                if (jar.startsWith("tuscany-")) {
-                    // ignore tuscany jars as they're not mentioned in the LICENSE file
-                } else {
-                    badJars.add(jar);
-                }
+                 if (jar.startsWith("tuscany-")) {
+                       // ignore tuscany jars as they're not mentioned in the LICENSE file
+
+                 } else if (System.getProperty("java.vendor").equals("IBM Corporation") && (jar.equals("bcel-5.2.jar") || jar.equals("jaka rta-regexp-1.4.jar") || jar.equals("xalan-2.7.0.jar") || jar.equals("xml-apis-1.0.b2.jar"))) {
+                       // ignore IBM JDK specific jars.
+                 } else {
+                      badJars.add(jar);
+                 } 
             }
         }
         return badJars;
