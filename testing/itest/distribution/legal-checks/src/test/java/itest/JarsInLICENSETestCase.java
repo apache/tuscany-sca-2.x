@@ -103,6 +103,8 @@ public class JarsInLICENSETestCase {
             if (!licenseText.contains(jar)) {
                 if (jar.startsWith("tuscany-") || jar.startsWith("sample-") || jar.startsWith("test-") || jar.startsWith("itest-")) {
                     // ignore tuscany jars as they're not mentioned in the LICENSE file
+                } else if (System.getProperty("java.vendor").equals("IBM Corporation") && (jar.equals("bcel-5.2.jar") || jar.equals("jakarta-regexp-1.4.jar"))) {
+                 // ignore IBM JDK specific jars.
                 } else {
                     badJars.add(jar);
                 }
