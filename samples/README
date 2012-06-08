@@ -1,6 +1,19 @@
 Apache Tuscany Samples
 ======================
 
-Samples to demonstrate various features of Tuscany.
 
-Note that not all the samples may have been tested with every release. The getting-started samples should work but the others may not and are provided on an FYI YMMV basis.
+Welcome to the Tuscany SCA samples. The following tutorial samples are included to demonstrate some of the features of Tuscany. It is reccomended that beginners follow these sequetially.
+
+In this folder you should see the following:
+    
+    running-tuscany/ - Instructions on how to run Tuscany in various different environments.
+    
+    getting-started/ - Introduction to SCA and the different features supported by Tuscany.
+    
+    applications/    - One example of an SCA web application running on Tuscany.
+
+    learning-more/   - Examples of advanced topics, such as bindings, OSGi applications, and more.
+    
+    
+Note that not all the samples may have been tested with every release. The "getting-started" and "applications" samples should work but the others may not and are provided on an FYI YMMV basis.
+
