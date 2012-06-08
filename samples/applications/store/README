@@ -11,18 +11,19 @@ or
 http://tuscany.apache.org/getting-started-with-tuscany-using-tuscany-eclipse-plugin.html
 
 
-Building And Running The Sample Using Ant
------------------------------------------
-With the binary distribution the sample can be built using Ant as follows:
+Building And Running The Sample Using Ant Or Maven
+--------------------------------------------------
+With the binary distribution the sample can be built using Ant or Maven as follows:
 
 cd store
-ant compile
+ant compile OR mvn clean install
 
 and then, to run:
 
-ant run
+ant run OR mvn exec:java
 
 Once the store application is running use your browser to visit the following
 URL:
 
 http://localhost:8080/store
+
