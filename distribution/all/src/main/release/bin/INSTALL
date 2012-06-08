@@ -1,7 +1,7 @@
 Installing the Apache Tuscany SCA binary distribution
 =====================================================
 
-Unzip Tuscany binary distribution archive and you get the following:
+Unzip Tuscany binary distribution archive to desired location and you get the following:
 
 tuscany-sca-<version>     
    CHANGES       - A note of the major changes in this release   
@@ -20,8 +20,6 @@ tuscany-sca-<version>
 
    /modules      - all of the individual Tuscany jars and their dependencies
 
-   /samples      - all the Tuscany samples, see the README in that directory
+   /samples      - all of the Tuscany samples
 
-
-
-
+For help with running tuscany, refer to /bin/README.  To get started with tuscany, please see /samples/README.
