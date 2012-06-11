@@ -39,7 +39,7 @@
             </activation>
             <modules>
                 <module>async-invocation</module>
-                <module>binding-comet</module>
+                <!-- removed as its broken presently module>binding-comet</module -->
                 <module>binding-websocket</module>
                 <module>contribution-osgi</module>
                 <module>distributed-osgi-static</module>
