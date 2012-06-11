@@ -36,7 +36,7 @@
         <module>binding-atom</module>
         <module>binding-atom-runtime</module>
         <module>binding-comet</module>
-        <module>binding-comet-runtime</module>
+        <!-- This is broken due to changes in the external Maven repos for its dependencies module>binding-comet-runtime</module -->
         <module>binding-ejb</module>
         <module>binding-ejb-runtime</module>
         <module>binding-http</module>
