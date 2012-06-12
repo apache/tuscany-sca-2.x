@@ -36,6 +36,11 @@
             <id>oasis.contributions</id>
             <url>http://svn.apache.org/repos/asf/tuscany/maven</url>
         </repository>
+        <repository>
+            <!-- This is so the ASF builds machine can find the top tuscany pom when running just the compliance tests -->
+            <id>apache.snapshots</id>
+            <url>http://repository.apache.org/snapshots</url>
+        </repository>
     </repositories>
 
     <profiles>
