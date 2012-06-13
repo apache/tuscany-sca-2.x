@@ -16,5 +16,4 @@
 # under the License. 
 
 # Implementation class for the policy extension
-org.apache.tuscany.sca.policy.logging.jdk.JDKLoggingPolicyProviderFactory;model=org.apache.tuscany.sca.policy.logging.jdk.JDKLoggingPolicy
-
+${package}.${policyName}.provider.${policyName}PolicyProviderFactory;model=${package}.${policyName}.${policyName}Policy

@@ -19,14 +19,11 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package ${package};
-
 
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
-import java.util.logging.Level;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -35,7 +32,10 @@ import javax.xml.stream.XMLStreamWriter;
 
 import junit.framework.TestCase;
 
-import ${groupId}.contribution.processor.ProcessorContext;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
+
+import ${package}.${policyName}.${policyName}Policy;
+import ${package}.${policyName}.${policyName}PolicyProcessor;
 
 /**
  * Test the reading of ws config params policy.
@@ -54,28 +54,21 @@ public class PolicyReadTestCase extends TestCase {
     }
 
     public void testPolicyReading() throws Exception { 
-        JDKLoggingPolicyProcessor processor = new JDKLoggingPolicyProcessor(null);
-        
-        URL url = getClass().getResource("mock_policies.xml");
-        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-        
-        InputStream urlStream = url.openStream();
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
-        
-        
-        JDKLoggingPolicy policy = processor.read(reader, context);
-        assertEquals(policy.getLoggerName(), "test.logger");
-        assertEquals(policy.getLogLevel(), Level.INFO );
-        assertEquals(policy.getResourceBundleName(), "Trace_Messages.properties");
+    	${policyName}PolicyProcessor processor = new ${policyName}PolicyProcessor(null);
+//      URL url = getClass().getResource("mock_policies.xml");
+//      XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+//      
+//      InputStream urlStream = url.openStream();
+//      XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
+//      
+//      
+//      ${policyName}Policy policy = processor.read(reader, context);
     }
     
     public void testPolicyWriting() throws Exception {
-        JDKLoggingPolicyProcessor processor = new JDKLoggingPolicyProcessor(null);
+    	${policyName}PolicyProcessor processor = new ${policyName}PolicyProcessor(null);
         
-        JDKLoggingPolicy policy = new JDKLoggingPolicy();
-        policy.setLoggerName("test.logger");
-        policy.setLogLevel(Level.INFO);
-        policy.setResourceBundleName("Trace_Messages.properties");
+    	${policyName}Policy policy = new ${policyName}Policy();
         
         XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
         StringWriter sw = new StringWriter();
@@ -88,9 +81,6 @@ public class PolicyReadTestCase extends TestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(sr);
         
         policy = processor.read(reader, context);
-        assertEquals(policy.getLoggerName(), "test.logger");
-        assertEquals(policy.getLogLevel(), Level.INFO );
-        assertEquals(policy.getResourceBundleName(), "Trace_Messages.properties");
         
     }
 

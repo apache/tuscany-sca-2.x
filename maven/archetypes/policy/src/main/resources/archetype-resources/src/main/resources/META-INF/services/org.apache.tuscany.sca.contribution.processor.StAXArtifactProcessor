@@ -16,5 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-${package}.${policyName}PolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#jdkLogger,model=${package}.${policyName}Policy
-
+${package}.${policyName}.${policyName}PolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#${policyName}Policy,model=${package}.${policyName}.${policyName}Policy

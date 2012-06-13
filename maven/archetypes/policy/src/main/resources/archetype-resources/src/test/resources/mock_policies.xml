@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="ASCII"?>
 <!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,27 +20,6 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project>
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-modules</artifactId>
-        <version>2.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-    <groupId>${groupId}</groupId>
-    <artifactId>${artifactId}</artifactId>
-    <name>Apache Tuscany SCA Extension Policy ${policyName}</name>
-    <version>${version}</version>
-    
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core-runtime-pom</artifactId>
-            <type>pom</type>
-            <scope>provided</scope>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
-    
-</project>
+<tuscany:${policyName} xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1" name="test.${policyName}">
+	
+</tuscany:${policyName}>
