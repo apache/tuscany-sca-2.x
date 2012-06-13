@@ -37,14 +37,15 @@
             </activation>
 
             <modules>
+                <module>binding</module>
                 <module>contribution-jar</module>
                 <module>contribution-zip</module>
                 <module>contribution-zip-discriptor</module>
+                <module>policy</module>
                 <module>quickstart</module>
                 <module>quickstart-jsf</module>
                 <module>quickstart-stripes</module>
                 <module>quickstart-bpel</module>
-                <module>binding</module>
             </modules>
         </profile>
     </profiles>    
