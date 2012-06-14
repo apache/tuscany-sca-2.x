@@ -56,21 +56,22 @@ import org.oasisopen.sca.NoSuchServiceException;
 public class DynamicTestCase {
 
     @Test
-    public void testInstalledContribution() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, MalformedURLException, ClassNotFoundException, IntrospectionException, IllegalArgumentException, InvocationTargetException, IllegalAccessException {
-    	
-    	// get the various factories that will be needed
+    public void testInstalledContribution() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, MalformedURLException, ClassNotFoundException, IntrospectionException, IllegalArgumentException, InvocationTargetException,
+        IllegalAccessException {
+
+        // get the various factories that will be needed
         TuscanyRuntime tuscanyRuntime = TuscanyRuntime.newInstance();
         ExtensionPointRegistry extensionPoints = tuscanyRuntime.getExtensionPointRegistry();
-		FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-		
-		// Create a contribution
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
+
+        // Create a contribution
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         Contribution contribution = contributionFactory.createContribution();
         contribution.setURI("testContribution");
         ModelResolverExtensionPoint modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
         contribution.setModelResolver(modelResolver);
-        contribution.setClassLoader(new URLClassLoader(new URL[]{new File("src/test/resources/sample-helloworld.jar").toURI().toURL()}));
+        contribution.setClassLoader(new URLClassLoader(new URL[] {new File("src/test/resources/sample-helloworld.jar").toURI().toURL()}));
 
         // Create a composite
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
@@ -84,32 +85,32 @@ public class DynamicTestCase {
         JavaImplementationFactory javaImplementationFactory = modelFactories.getFactory(JavaImplementationFactory.class);
         JavaImplementation javaImplementation = javaImplementationFactory.createJavaImplementation(contribution.getClassLoader().loadClass("sample.HelloworldImpl"));
         javaImplementation.setJavaClass(contribution.getClassLoader().loadClass("sample.HelloworldImpl"));
-		component.setImplementation(javaImplementation );
-		
-		// add the component to the composite
-		composite.getComponents().add(component);
+        component.setImplementation(javaImplementation);
 
-		// add the composite to the contribution
+        // add the component to the composite
+        composite.getComponents().add(component);
+
+        // add the composite to the contribution
         contribution.addComposite(composite);
 
         // Now run the composite with a Tuscany Node
         Node node = tuscanyRuntime.createNode();
         node.installContribution(contribution, null);
         node.startComposite(contribution.getURI(), composite.getURI());
-        
+
         // test that the service has started and can be invoked
         testService(node, contribution.getClassLoader());
-        
+
         node.stop();
         tuscanyRuntime.stop();
     }
 
-	private void testService(Node node, ClassLoader classLoader) throws ClassNotFoundException, NoSuchServiceException, NoSuchDomainException, IllegalArgumentException, InvocationTargetException, IllegalAccessException {
-		Class<?> interfaze = classLoader.loadClass("sample.Helloworld");
-		Object clientProxy = node.getService(interfaze, "testComponent/Helloworld");
-		Method m = interfaze.getMethods()[0]; // the helloworld interface just has a single method "sayHello"
-		Object response = m.invoke(clientProxy, new Object[]{"Ariana"});
+    private void testService(Node node, ClassLoader classLoader) throws ClassNotFoundException, NoSuchServiceException, NoSuchDomainException, IllegalArgumentException, InvocationTargetException, IllegalAccessException {
+        Class<?> interfaze = classLoader.loadClass("sample.Helloworld");
+        Object clientProxy = node.getService(interfaze, "testComponent/Helloworld");
+        Method m = interfaze.getMethods()[0]; // the helloworld interface just has a single method "sayHello"
+        Object response = m.invoke(clientProxy, new Object[] {"Ariana"});
         Assert.assertEquals("Hello Ariana", response);
-	}
+    }
 
 }
