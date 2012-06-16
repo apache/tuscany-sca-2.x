@@ -35,6 +35,7 @@
                     	minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="location" type="anyURI" use="required"/>
+                <attribute name="uri" type="anyURI" use="optional"/>
                 <anyAttribute namespace="##any" processContents="lax"/>
             </extension>
         </complexContent>
