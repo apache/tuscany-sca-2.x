@@ -155,10 +155,6 @@ public class RESTBindingListenerServlet extends HttpServlet {
 
         }
 
-        if (path == null || path.length() == 0 || path.equals("/")) {
-
-        }
-
         // Route message based on availability of cache info and cache methods
         if (( cacheContext != null ) && (cacheContext.isEnabled()) && (conditionalGetInvoker != null )) {
             if(id != null && id.length() > 0) {
