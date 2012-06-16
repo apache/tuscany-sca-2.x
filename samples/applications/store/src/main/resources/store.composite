@@ -23,13 +23,10 @@
 		name="store">
 		
     <component name="Store">
-        <tuscany:implementation.widget location="uiservices/store.html"/>
-        <service name="Widget">
-        	<tuscany:binding.rest uri="/store"/>
-        </service>
+        <tuscany:implementation.widget location="uiservices/store.html" widgetUri="/store"/>
 		<reference name="catalog" target="Catalog"/>
-		 <reference name="shoppingCart" target="ShoppingCart/Cart"/>
-		 <reference name="shoppingTotal" target="ShoppingCart/Total"/>
+	    <reference name="shoppingCart" target="ShoppingCart/Cart"/>
+		<reference name="shoppingTotal" target="ShoppingCart/Total"/>
     </component>
     
 	<component name="Catalog">
