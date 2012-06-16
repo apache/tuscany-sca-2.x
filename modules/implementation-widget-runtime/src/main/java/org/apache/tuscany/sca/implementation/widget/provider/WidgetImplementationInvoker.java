@@ -23,10 +23,16 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.tuscany.sca.common.http.HTTPContext;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -54,18 +60,33 @@ class WidgetImplementationInvoker implements Invoker {
     }
     
     public Message invoke(Message msg) {
+        HTTPContext bindingContext = (HTTPContext) msg.getBindingContext();
+        HttpServletRequest request = bindingContext.getHttpRequest();
+
+
+        // Get the request path
+        String pathInfo = request.getPathInfo();
+        String path = null;
         
+        if(pathInfo != null) {
+            try {
+                path = URLDecoder.decode(pathInfo, "UTF-8");
+            } catch (UnsupportedEncodingException uee) {
+                //ignore for now
+            }            
+        }
+
         // Get the resource id from the request message
-    	
-        String id = msg.getBody() == null ? "" : (String)((Object[])msg.getBody())[0];
+        String id = path == null ? "" : path.substring(1);
         try {
             
             if (id.length() == 0) {
 
                 // Return an input stream for the widget resource
                 URL url = new URL(widgetLocationURL);
-                InputStream is = url.openStream();
-                msg.setBody(is);
+                //InputStream is = url.openStream();
+                //msg.setBody(is);
+                writeResponse(bindingContext, url.openStream());
                 
             } else if (id.equals(widgetName)) {
                 
@@ -77,7 +98,8 @@ class WidgetImplementationInvoker implements Invoker {
                 
                 InputStream is = new ByteArrayInputStream(bos.toByteArray());
                 
-                msg.setBody(is);
+                //msg.setBody(is);
+                writeResponse(bindingContext, is);
                 
             } else {
 
@@ -85,7 +107,8 @@ class WidgetImplementationInvoker implements Invoker {
                 // widget folder
                 URL url = new URL(widgetFolderURL +'/' + id);
                 InputStream is = url.openStream();
-                msg.setBody(is);
+                //msg.setBody(is);
+                writeResponse(bindingContext, is);
             }
         } catch (MalformedURLException e) {
 
@@ -98,5 +121,24 @@ class WidgetImplementationInvoker implements Invoker {
             msg.setFaultBody(e);
         }
         return msg;
+    }
+    
+    /**
+     * Write the widget response to the http response outputstream
+     * @param bindingContext
+     * @param is
+     * @throws IOException 
+     */
+    private static void writeResponse(HTTPContext bindingContext, InputStream is) throws IOException {
+        OutputStream os = bindingContext.getHttpResponse().getOutputStream();
+        byte[] buffer = new byte[2048];
+        for (;;) {
+            int n = is.read(buffer);
+            if (n <= 0)
+                break;
+            os.write(buffer, 0, n);
+        }
+        os.flush();
+        os.close();        
     }
 }
