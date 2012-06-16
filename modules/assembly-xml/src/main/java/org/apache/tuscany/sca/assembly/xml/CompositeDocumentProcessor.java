@@ -24,9 +24,9 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.tuscany.sca.assembly.Composite;
@@ -40,7 +40,6 @@ import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.xml.sax.SAXException;
 
 /**
  * A composite processor.

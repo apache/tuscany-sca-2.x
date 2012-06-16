@@ -21,9 +21,8 @@ package org.apache.tuscany.sca.assembly.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.apache.tuscany.sca.assembly.xml.Constants.SCA11_TUSCANY_NS;
 
-import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 

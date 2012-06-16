@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.policy.xml;
 
-import static org.apache.tuscany.sca.policy.xml.PolicyConstants.SCA11_NS;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

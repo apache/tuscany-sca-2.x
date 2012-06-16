@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.policy.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.apache.tuscany.sca.policy.xml.PolicyConstants.SCA11_NS;
 
 import java.util.ArrayList;
 import java.util.Iterator;

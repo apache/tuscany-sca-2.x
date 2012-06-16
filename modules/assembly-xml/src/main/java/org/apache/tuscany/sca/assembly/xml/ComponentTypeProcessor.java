@@ -26,6 +26,7 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.CALLBACK_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.COMPONENT_TYPE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.COMPONENT_TYPE_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.ELEMENT;
+import static org.apache.tuscany.sca.assembly.xml.Constants.EXTENSION_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.IMPLEMENTATION;
 import static org.apache.tuscany.sca.assembly.xml.Constants.MANY;
 import static org.apache.tuscany.sca.assembly.xml.Constants.MUST_SUPPLY;
@@ -38,8 +39,6 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.REFERENCE_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.SERVICE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.SERVICE_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.TYPE;
-import static org.apache.tuscany.sca.assembly.xml.Constants.EXTENSION;
-import static org.apache.tuscany.sca.assembly.xml.Constants.EXTENSION_QNAME;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
