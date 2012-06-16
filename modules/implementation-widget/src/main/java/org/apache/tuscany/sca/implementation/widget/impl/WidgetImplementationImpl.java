@@ -45,6 +45,8 @@ public class WidgetImplementationImpl extends ImplementationImpl implements Widg
 
     private String location;
     private URL locationUrl;
+    
+    private String uri;
 
     /**
      * Constructs a new resource implementation.
@@ -96,6 +98,13 @@ public class WidgetImplementationImpl extends ImplementationImpl implements Widg
         this.locationUrl = url;
     }
 
+    public String getUri() {
+        return this.uri;
+    }
+    
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
     
     @Override
     public String toString() {

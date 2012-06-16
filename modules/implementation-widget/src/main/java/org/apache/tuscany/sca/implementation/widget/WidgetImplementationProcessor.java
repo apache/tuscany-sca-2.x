@@ -20,11 +20,8 @@ package org.apache.tuscany.sca.implementation.widget;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
@@ -80,17 +77,23 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
         // Read an <implementation.widget> element
 
         // Create and initialize the resource implementation model
-        WidgetImplementation implementation = null;
-
+        WidgetImplementation implementation = implementationFactory.createWidgetImplementation();
+        implementation.setUnresolved(true);
+        
         // Read the location attribute specifying the location of the resources
         String location = getURIString(reader, "location");
-        if (location != null) {
-            implementation = implementationFactory.createWidgetImplementation();
+        if (location != null && location.isEmpty() == false) {
             implementation.setLocation(location);
-            implementation.setUnresolved(true);
         } else {
             error(context.getMonitor(), "LocationAttributeMissing", reader);
             //throw new ContributionReadException(MSG_LOCATION_MISSING);
+        }
+        
+        String uri = getURIString(reader, "uri");
+        if(uri != null && uri.isEmpty() == false) {
+            implementation.setUri(uri);
+        } else {
+            warning(context.getMonitor(), "UocationAttributeMissing", reader);
         }
 
         // Skip to end element
@@ -168,10 +171,14 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
         // Write <implementation.widget>        
         writeStart(writer, WidgetImplementation.TYPE.getNamespaceURI(), WidgetImplementation.TYPE.getLocalPart());
 
-        if (implementation.getLocation() != null) {
+        if (implementation.getLocation() != null && implementation.getLocation().isEmpty() == false) {
             writer.writeAttribute("location", implementation.getLocation());
         }
 
+        if (implementation.getUri() != null && implementation.getUri().isEmpty() == false) {
+            writer.writeAttribute("uri", implementation.getUri());
+        }
+        
         writeEnd(writer);
     }
     
@@ -179,6 +186,18 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
      * Utility methods
      */
     
+    private void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "impl-widget-validation-messages",
+                                      Severity.WARNING,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
+            monitor.problem(problem);
+        }
+    }
     
     /**
      * Report a error.

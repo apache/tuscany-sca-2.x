@@ -56,4 +56,16 @@ public interface WidgetImplementation extends Implementation {
      * @param url the location
      */
     void setLocationURL(URL url);
+    
+    /**
+     * Get the widget URI
+     * @return the uri
+     */
+    String getUri();
+    
+    /**
+     * Set the widget URI, used to automatically add a binding to the widget
+     * @param uri the uri
+     */
+    void setUri(String uri);
 }
