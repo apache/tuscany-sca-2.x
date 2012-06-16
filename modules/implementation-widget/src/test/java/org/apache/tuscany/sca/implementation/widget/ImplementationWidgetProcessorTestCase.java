@@ -44,7 +44,7 @@ public class ImplementationWidgetProcessorTestCase {
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
         + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.1\" targetNamespace=\"http://binding-rest\" name=\"binding-rest\">"
             + " <component name=\"WidgetComponent\">"
-            + "   <tuscany:implementation.widget location=\"ui/widget.html\" uri=\"ui/widget\"/>"
+            + "   <tuscany:implementation.widget location=\"ui/widget.html\" widgetUri=\"ui/widget\"/>"
             + " </component>"
             + "</composite>";
 
@@ -77,8 +77,8 @@ public class ImplementationWidgetProcessorTestCase {
         Assert.assertNotNull(implementation);
         Assert.assertNotNull(implementation.getLocation());
         Assert.assertEquals("ui/widget.html", implementation.getLocation());
-        Assert.assertNotNull(implementation.getUri());
-        Assert.assertEquals("ui/widget", implementation.getUri());
+        Assert.assertNotNull(implementation.getWidgetUri());
+        Assert.assertEquals("ui/widget", implementation.getWidgetUri());
         
     }    
 }

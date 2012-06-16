@@ -23,15 +23,10 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.implementation.widget.Widget;
 import org.apache.tuscany.sca.implementation.widget.WidgetImplementation;
-import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 
@@ -41,12 +36,12 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  * @version $Rev$ $Date$
  */
 public class WidgetImplementationImpl extends ImplementationImpl implements WidgetImplementation {
-    private Service widgetService;
+    //private Service widgetService;
 
     private String location;
     private URL locationUrl;
     
-    private String uri;
+    private String widgetUri;
 
     /**
      * Constructs a new resource implementation.
@@ -59,6 +54,7 @@ public class WidgetImplementationImpl extends ImplementationImpl implements Widg
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
         
+        /*
         // Resource implementation always provide a single service exposing
         // the Resource interface, and have no references and properties
         widgetService = assemblyFactory.createService();
@@ -76,6 +72,7 @@ public class WidgetImplementationImpl extends ImplementationImpl implements Widg
         widgetService.setInterfaceContract(interfaceContract);
         
         this.getServices().add(widgetService);
+        */
     }
 
     public QName getType() {
@@ -98,17 +95,17 @@ public class WidgetImplementationImpl extends ImplementationImpl implements Widg
         this.locationUrl = url;
     }
 
-    public String getUri() {
-        return this.uri;
+    public String getWidgetUri() {
+        return this.widgetUri;
     }
     
-    public void setUri(String uri) {
-        this.uri = uri;
+    public void setWidgetUri(String widgetUri) {
+        this.widgetUri = widgetUri;
     }
     
     @Override
     public String toString() {
-        return "Widget : " + getLocation(); 
+        return "WidgetImplementationImpl [location=" + location + ", widgetUri=" + widgetUri + "]";
     }
 
     @Override

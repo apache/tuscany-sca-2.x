@@ -29,6 +29,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.binding.http.HTTPBinding;
+import org.apache.tuscany.sca.binding.http.HTTPBindingFactory;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
@@ -40,9 +44,14 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  *
@@ -52,13 +61,19 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<WidgetImplementation> {
     private ExtensionPointRegistry registry;
+    private AssemblyFactory assemblyFactory;
     private ContributionFactory contributionFactory;
+    private HTTPBindingFactory httpBindingFactory;
+    private JavaInterfaceFactory javaInterfaceFactory;
     private WidgetImplementationFactory implementationFactory;
 
     public WidgetImplementationProcessor(ExtensionPointRegistry registry) {
         this.registry = registry;
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        httpBindingFactory = modelFactories.getFactory(HTTPBindingFactory.class);
+        javaInterfaceFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
         implementationFactory = modelFactories.getFactory(WidgetImplementationFactory.class);
     }
  
@@ -89,9 +104,9 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
             //throw new ContributionReadException(MSG_LOCATION_MISSING);
         }
         
-        String uri = getURIString(reader, "uri");
-        if(uri != null && uri.isEmpty() == false) {
-            implementation.setUri(uri);
+        String widgetUri = getURIString(reader, "widgetUri");
+        if(widgetUri != null && widgetUri.isEmpty() == false) {
+            implementation.setWidgetUri(widgetUri);
         } else {
             warning(context.getMonitor(), "UocationAttributeMissing", reader);
         }
@@ -152,12 +167,15 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
             }
 
             //introspect implementation
-            WidgetImplementationIntrospector widgetIntrospector =
-                new WidgetImplementationIntrospector(registry, implementation);
+            WidgetImplementationIntrospector widgetIntrospector = new WidgetImplementationIntrospector(registry, implementation);
             widgetIntrospector.introspectImplementation();
 
             implementation.setUnresolved(false);
 
+            if(implementation.getWidgetUri() != null && implementation.getWidgetUri().isEmpty() == false) {
+                System.out.println(">>>Adding service to widget " + implementation);
+                addService(implementation);
+            }
 
 
             if (implementation.isUnresolved()) {
@@ -175,8 +193,8 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
             writer.writeAttribute("location", implementation.getLocation());
         }
 
-        if (implementation.getUri() != null && implementation.getUri().isEmpty() == false) {
-            writer.writeAttribute("uri", implementation.getUri());
+        if (implementation.getWidgetUri() != null && implementation.getWidgetUri().isEmpty() == false) {
+            writer.writeAttribute("widgetUri", implementation.getWidgetUri());
         }
         
         writeEnd(writer);
@@ -185,6 +203,33 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
     /**
      * Utility methods
      */
+    
+    private void addService(WidgetImplementation implementation) {
+        Service widgetService = null;
+        
+        // Resource implementation always provide a single service exposing
+        // the Resource interface, and have no references and properties
+        widgetService = assemblyFactory.createService();
+        widgetService.setName("Widget");
+        
+        // Create the Java interface contract for the Resource service
+        JavaInterface javaInterface;
+        try {
+            javaInterface = javaInterfaceFactory.createJavaInterface(Widget.class);
+        } catch (InvalidInterfaceException e) {
+            throw new IllegalArgumentException(e);
+        }
+        JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
+        interfaceContract.setInterface(javaInterface);
+        widgetService.setInterfaceContract(interfaceContract);
+
+        HTTPBinding binding = httpBindingFactory.createHTTPBinding();
+        binding.setURI(implementation.getWidgetUri());
+        widgetService.getBindings().add(binding);
+
+        implementation.getServices().add(widgetService);
+        
+    }
     
     private void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {

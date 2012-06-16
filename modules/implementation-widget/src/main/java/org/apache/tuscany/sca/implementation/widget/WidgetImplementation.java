@@ -61,11 +61,11 @@ public interface WidgetImplementation extends Implementation {
      * Get the widget URI
      * @return the uri
      */
-    String getUri();
+    String getWidgetUri();
     
     /**
      * Set the widget URI, used to automatically add a binding to the widget
      * @param uri the uri
      */
-    void setUri(String uri);
+    void setWidgetUri(String uri);
 }
