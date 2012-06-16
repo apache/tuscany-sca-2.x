@@ -172,7 +172,6 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
             implementation.setUnresolved(false);
 
             if(implementation.getWidgetUri() != null && implementation.getWidgetUri().isEmpty() == false) {
-                System.out.println(">>>Adding service to widget " + implementation);
                 addService(implementation);
             }
 
