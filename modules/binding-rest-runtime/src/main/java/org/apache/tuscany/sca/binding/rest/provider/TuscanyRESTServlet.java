@@ -94,6 +94,7 @@ public class TuscanyRESTServlet extends RestServlet {
         try {
             //store in thread local
             ThreadHTTPContext.setHTTPContext(bindingContext);
+            ThreadBindingContext.setBindingContext(binding);
             
             // handle special ?wadl request
             String query = request.getQueryString();
@@ -105,6 +106,7 @@ public class TuscanyRESTServlet extends RestServlet {
         } finally {
             //remove
             ThreadHTTPContext.removeHTTPContext();
+            ThreadBindingContext.removeBindingContext();
         }
     }
 
@@ -209,6 +211,10 @@ public class TuscanyRESTServlet extends RestServlet {
 
     /**
      * TuscanyResponseHandler
+     * 
+     * The response handler is shared, that's why we need to get the 
+     * binding from the thread context otherwise different components
+     * might get wrong binding configuration (e.g. headers)
      *
      * Required to support declarative HTTP Headers
      */
@@ -222,6 +228,8 @@ public class TuscanyRESTServlet extends RestServlet {
                 return;
             }
 
+            RESTBinding binding = ThreadBindingContext.getBindingContext(); 
+                
             //process declarative headers
             for(HTTPHeader header : binding.getHttpHeaders()) {
                 //treat special headers that need to be calculated

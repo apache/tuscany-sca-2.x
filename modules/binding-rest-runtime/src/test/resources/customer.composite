@@ -22,7 +22,24 @@
 		targetNamespace="http://customer"
 		name="customer">
 		
-	<component name="CustomerService">
+	<component name="DummyComponent">
+		<implementation.java class="services.customer.CustomerServiceImpl"/> 
+		<service name="CustomerService">
+			<tuscany:binding.rest uri="http://localhost:8085/Dummy">
+    		    <tuscany:wireFormat.xml />
+			    <tuscany:operationSelector.jaxrs />
+			    <tuscany:http-headers>
+			       <tuscany:header name="Cache-Control" value="no-cache"/>
+			       <tuscany:header name="Expires" value="-1"/>
+			       <tuscany:header name="X-Tuscany" value="dummy"/>
+			       <tuscany:header name="X-TuscanyComponent" value="DummyComponent"/> 
+			    </tuscany:http-headers>
+    		</tuscany:binding.rest>
+   		</service>
+	</component>
+		
+		
+	<component name="CustomerComponent">
 		<implementation.java class="services.customer.CustomerServiceImpl"/> 
 		<service name="CustomerService">
 			<tuscany:binding.rest uri="http://localhost:8085/Customer">
@@ -32,6 +49,7 @@
 			       <tuscany:header name="Cache-Control" value="no-cache"/>
 			       <tuscany:header name="Expires" value="-1"/>
 			       <tuscany:header name="X-Tuscany" value="tuscany"/> 
+			       <tuscany:header name="X-TuscanyComponent" value="CustomerComponent"/>
 			    </tuscany:http-headers>
     		</tuscany:binding.rest>
    		</service>
