@@ -97,7 +97,8 @@ public abstract class BaseDomainRegistry implements DomainRegistry, LifeCycleLis
     }
 
     public boolean isOutOfDate(EndpointReference endpointReference) {
-        return ! findEndpoint(endpointReference).contains(endpointReference.getTargetEndpoint());
+        // Only check if the domain registry is distributed
+        return isDistributed() && (! findEndpoint(endpointReference).contains(endpointReference.getTargetEndpoint()));
     }
     
     public List<Endpoint> findEndpoint(EndpointReference endpointReference) {
