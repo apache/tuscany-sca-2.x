@@ -146,6 +146,17 @@ public class WrapperInfo implements Cloneable {
         if (wrapperType != null) {
             copy.wrapperType = (DataType<XMLType>)wrapperType.clone();
         }
+        if (unwrappedType != null) {
+                List<DataType> clonedLogicalTypes = new ArrayList<DataType>();
+                for (DataType t : unwrappedType.getLogical()) {
+                          DataType type = (DataType) t.clone();
+                          clonedLogicalTypes.add(type);
+                }
+                DataType<List<DataType>> clonedUnwrappedType =
+                        new DataTypeImpl<List<DataType>>(unwrappedType.getPhysical(), clonedLogicalTypes);
+                clonedUnwrappedType.setDataBinding(unwrappedType.getDataBinding());
+                copy.unwrappedType = clonedUnwrappedType;
+        }
         return copy;
 
     }
