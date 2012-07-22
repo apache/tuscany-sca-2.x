@@ -292,7 +292,7 @@ public class PerformanceTestCase {
     
     public void installContribution() {
         try {
-            node.installContribution("performance", "../performance-contribution1/target/itest-performance-contribution1-2.0-SNAPSHOT.jar", null, null);
+            node.installContribution("performance", "../performance-contribution1/target/itest-performance-contribution1-2.5-SNAPSHOT.jar", null, null);
         } catch (Exception ex){
             ex.printStackTrace();
         }

@@ -22,7 +22,7 @@
        <parallel failonany="true">          
             
             <!-- start a node that will be part of the domain -->
-            <java classpath="../../../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT.dir/tuscany-sca-2.0-SNAPSHOT/features/tuscany-sca-manifest.jar:./target/classes"        
+            <java classpath="../../../../distribution/all/target/apache-tuscany-sca-all-2.5-SNAPSHOT.dir/tuscany-sca-2.5-SNAPSHOT/features/tuscany-sca-manifest.jar:./target/classes"        
                   classname="org.apache.tuscany.sca.impl.Tuscany"
                   fork="true"
                   failonerror="true">   
@@ -35,7 +35,7 @@
                 <!-- give the first node a chance to start --> 
                 <sleep seconds="5"/>   
                 <!-- start a second node that automatically tries to call a service in the first node -->            
-                <java classpath="../../../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT.dir/tuscany-sca-2.0-SNAPSHOT/features/tuscany-sca-manifest.jar:./target/classes"        
+                <java classpath="../../../../distribution/all/target/apache-tuscany-sca-all-2.5-SNAPSHOT.dir/tuscany-sca-2.5-SNAPSHOT/features/tuscany-sca-manifest.jar:./target/classes"        
                       classname="org.apache.tuscany.sca.impl.Tuscany"
                       fork="true"
                       failonerror="true">   

@@ -32,7 +32,7 @@ import org.junit.Test;
  * Current required jars are:
  *    asm-3.1.jar
  *    cglib-2.2.jar
- *    tuscany-base-2.0-SNAPSHOT.jar
+ *    tuscany-base-2.5-SNAPSHOT.jar
  *    wsdl4j-1.6.2.jar
  *    XmlSchema-1.4.3.jar  
  *

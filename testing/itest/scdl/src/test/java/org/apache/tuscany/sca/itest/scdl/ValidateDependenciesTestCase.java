@@ -35,7 +35,7 @@ import org.junit.Test;
  * asm-3.1.jar
  * cglib-2.2.jar
  * junit-4.8.1.jar
- * tuscany-base-runtime-2.0-SNAPSHOT.jar
+ * tuscany-base-runtime-2.5-SNAPSHOT.jar
  * wsdl4j-1.6.2.jar
  * XmlSchema-1.4.3.jar
  * 

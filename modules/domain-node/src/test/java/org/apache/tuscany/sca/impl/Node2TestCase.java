@@ -56,7 +56,7 @@ public class Node2TestCase {
     @Test
     public void remoteInstall() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException {
         Node node = TuscanyRuntime.newInstance().createNode("ImportTestCase");
-        node.installContribution("http://repository.apache.org/content/groups/snapshots/org/apache/tuscany/sca/samples/helloworld/2.0-SNAPSHOT/helloworld-2.0-SNAPSHOT.jar");
+        node.installContribution("http://repository.apache.org/content/groups/snapshots/org/apache/tuscany/sca/samples/helloworld/2.5-SNAPSHOT/helloworld-2.5-SNAPSHOT.jar");
 
         Assert.assertEquals(1, node.getInstalledContributionURIs().size());
         Assert.assertEquals("helloworld", node.getInstalledContributionURIs().get(0));
@@ -70,7 +70,7 @@ public class Node2TestCase {
         TuscanyRuntime runtime = TuscanyRuntime.newInstance();
         try {
         Node nodeA = runtime.createNode("uri:DistributedInstall");
-        nodeA.installContribution("http://repository.apache.org/content/groups/snapshots/org/apache/tuscany/sca/samples/helloworld/2.0-SNAPSHOT/helloworld-2.0-SNAPSHOT.jar");
+        nodeA.installContribution("http://repository.apache.org/content/groups/snapshots/org/apache/tuscany/sca/samples/helloworld/2.5-SNAPSHOT/helloworld-2.5-SNAPSHOT.jar");
         nodeA.installContribution("src/test/resources/export.jar");
 
         Assert.assertEquals(2, nodeA.getInstalledContributionURIs().size());

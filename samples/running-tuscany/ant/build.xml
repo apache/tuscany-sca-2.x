@@ -73,7 +73,7 @@
             <classpath>  
                 <pathelement location="target/${jar.name}"/>
                 <fileset dir="${tuscany.home}/lib">
-                   <include name="tuscany-base-runtime-aggregation-2.0-SNAPSHOT.jar" />
+                   <include name="tuscany-base-runtime-aggregation-2.5-SNAPSHOT.jar" />
                 </fileset>
             </classpath> 
             <arg value="../calculator-contribution.jar"/> 

@@ -22,25 +22,25 @@
 	<parent>
 		<groupId>org.apache.tuscany.sca.samples</groupId>
 		<artifactId>tuscany-samples-binding-websocket</artifactId>
-		<version>2.0-SNAPSHOT</version>
+		<version>2.5-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>sample-binding-websocket-pubsub-webapp</artifactId>
 	<packaging>war</packaging>
-	<version>2.0-SNAPSHOT</version>
+	<version>2.5-SNAPSHOT</version>
 	<name>Apache Tuscany SCA Sample binding.websocket PubSub Webapp</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>
 			<artifactId>tuscany-binding-websocket</artifactId>
-			<version>2.0-SNAPSHOT</version>
+			<version>2.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>
 			<artifactId>tuscany-base-runtime-pom</artifactId>
-			<version>2.0-SNAPSHOT</version>
+			<version>2.5-SNAPSHOT</version>
 			<type>pom</type>
 			<scope>compile</scope>
 		</dependency>
