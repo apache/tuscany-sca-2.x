@@ -64,9 +64,10 @@ public class HttpClientFactory implements LifeCycleListener {
         HttpConnectionParams.setConnectionTimeout(defaultParameters, 60000);
         HttpConnectionParams.setSoTimeout(defaultParameters, 60000);
 
+        // See https://issues.apache.org/jira/browse/HTTPCLIENT-1138
         SchemeRegistry supportedSchemes = new SchemeRegistry();
-        supportedSchemes.register(new Scheme(HttpHost.DEFAULT_SCHEME_NAME, PlainSocketFactory.getSocketFactory(), 80));
-        supportedSchemes.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+        supportedSchemes.register(new Scheme(HttpHost.DEFAULT_SCHEME_NAME, 80, PlainSocketFactory.getSocketFactory()));
+        supportedSchemes.register(new Scheme("https", 443, SSLSocketFactory.getSocketFactory()));
 
         ClientConnectionManager connectionManager =
             new ThreadSafeClientConnManager(defaultParameters, supportedSchemes);
