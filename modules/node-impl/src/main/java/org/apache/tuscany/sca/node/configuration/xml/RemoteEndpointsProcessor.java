@@ -47,8 +47,8 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * A StaX processor for remote endpoints
  */
 public class RemoteEndpointsProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor<RemoteEndpoints> {
-    private final static String ENDPOINT = "remoteEndpoints";
-    private final static QName ENDPOINT_QNAME = new QName(Constants.SCA11_TUSCANY_NS, ENDPOINT);
+    private final static String REMOTE_ENDPOINTS = "remoteEndpoints";
+    private final static QName REMOTE_ENDPOINTS_QNAME = new QName(Constants.SCA11_TUSCANY_NS, REMOTE_ENDPOINTS);
 
     private ExtensionPointRegistry registry;
 
@@ -71,7 +71,7 @@ public class RemoteEndpointsProcessor extends BaseAssemblyProcessor implements S
     }
 
     public QName getArtifactType() {
-        return ENDPOINT_QNAME;
+        return REMOTE_ENDPOINTS_QNAME;
     }
 
     public RemoteEndpoints read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException,
@@ -80,13 +80,14 @@ public class RemoteEndpointsProcessor extends BaseAssemblyProcessor implements S
         if (reader.getEventType() == XMLStreamConstants.START_DOCUMENT) {
             reader.nextTag();
         }
-        if (reader.getEventType() == XMLStreamConstants.START_ELEMENT && ENDPOINT_QNAME.equals(reader.getName())) {
+        if (reader.getEventType() == XMLStreamConstants.START_ELEMENT && REMOTE_ENDPOINTS_QNAME.equals(reader.getName())) {
             // Skip the "endpoint" element wrapper
             reader.nextTag();
         }
         Object model = extensionProcessor.read(reader, context);
         if (model instanceof Composite) {
             Composite composite = (Composite)model;
+            endpoints.setComposite(composite);
             for (Component component : composite.getComponents()) {
                 if (component.getURI() == null) {
                     // Default to the component name as the uri
@@ -113,7 +114,9 @@ public class RemoteEndpointsProcessor extends BaseAssemblyProcessor implements S
 
     public void write(RemoteEndpoints model, XMLStreamWriter writer, ProcessorContext context)
         throws ContributionWriteException, XMLStreamException {
-
+        writeStart(writer, REMOTE_ENDPOINTS_QNAME.getNamespaceURI(), REMOTE_ENDPOINTS_QNAME.getLocalPart());
+        extensionProcessor.write(model.getComposite(), writer, context);
+        writeEnd(writer);
     }
 
     public Class<RemoteEndpoints> getModelType() {

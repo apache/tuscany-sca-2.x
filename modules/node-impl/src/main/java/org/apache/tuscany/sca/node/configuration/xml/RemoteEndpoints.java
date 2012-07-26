@@ -20,10 +20,20 @@
 package org.apache.tuscany.sca.node.configuration.xml;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 
 public class RemoteEndpoints extends ArrayList<Endpoint> {
     private static final long serialVersionUID = -9045949145596529956L;
+
+    private Composite composite;
+
+    public Composite getComposite() {
+        return composite;
+    }
+
+    public void setComposite(Composite composite) {
+        this.composite = composite;
+    }
 }
