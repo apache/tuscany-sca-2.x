@@ -69,8 +69,7 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
     private NodeConfigurationFactory nodeConfigurationFactory;
     private StAXHelper helper;
 
-    public NodeConfigurationProcessor(ExtensionPointRegistry registry,
-                                      StAXArtifactProcessor processor) {
+    public NodeConfigurationProcessor(ExtensionPointRegistry registry, StAXArtifactProcessor processor) {
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.nodeConfigurationFactory = modelFactories.getFactory(NodeConfigurationFactory.class);
         this.processor = processor;
@@ -87,7 +86,8 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
         return NodeConfiguration.class;
     }
 
-    public NodeConfiguration read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
+    public NodeConfiguration read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException,
+        XMLStreamException {
 
         NodeConfiguration node = null;
         ContributionConfiguration contribution = null;
@@ -136,7 +136,7 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                         if (contribution != null) {
                             contribution.getDeploymentComposites().add(composite);
                         }
-                    } else if(BASE_URI.equals(name)) {
+                    } else if (BASE_URI.equals(name)) {
                         // We also support <baseURI> element
                         String baseURI = reader.getElementText();
                         if (baseURI != null && binding != null) {
@@ -159,7 +159,9 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                         composite.setContent(sw.toString());
                     } else {
                         Object ext = processor.read(reader, context);
-                        if (ext instanceof Endpoint) {
+                        if (ext instanceof RemoteEndpoints) {
+                            node.getEndpointDescriptions().addAll((RemoteEndpoints)ext);
+                        } else if (ext instanceof Endpoint) {
                             node.getEndpointDescriptions().add((Endpoint)ext);
                         } else {
                             node.getExtensions().add(ext);
@@ -189,11 +191,12 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
         return node;
     }
 
-    public void resolve(NodeConfiguration node, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+    public void resolve(NodeConfiguration node, ModelResolver resolver, ProcessorContext context)
+        throws ContributionResolveException {
     }
 
-    public void write(NodeConfiguration node, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
-        XMLStreamException {
+    public void write(NodeConfiguration node, XMLStreamWriter writer, ProcessorContext context)
+        throws ContributionWriteException, XMLStreamException {
 
         writeStart(writer,
                    NODE.getNamespaceURI(),
@@ -243,13 +246,13 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                        new XAttr("baseURIs", baseURIs));
             writeEnd(writer);
         }
-        
+
         // FIXME: The composite processor assumes that composite is root element
-//        for (Endpoint o : node.getEndpointDescriptions()) {
-//            processor.write(o, writer, context);
-//        }
-        
-        for(Object o: node.getExtensions()) {
+        //        for (Endpoint o : node.getEndpointDescriptions()) {
+        //            processor.write(o, writer, context);
+        //        }
+
+        for (Object o : node.getExtensions()) {
             processor.write(o, writer, context);
         }
 

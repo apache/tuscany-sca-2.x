@@ -59,9 +59,29 @@
         <sca:composite name="endpoint">
             <sca:component name="Component1"> <!-- first component -->
                 <sca:service name="Service1">
-                    <tuscany:binding.rest uri="http://localhost:8080/services/myResource" />
+                    <binding.ws uri="http://localhost:8080/services/myResource" />
                 </sca:service>
             </sca:component>
         </sca:composite>
     </endpoint>
+    <remoteEndpoints>
+        <sca:composite name="endpoint">
+            <sca:component name="Component2"> <!-- first component -->
+                <sca:service name="Service1">
+                    <sca:binding.ws name="ws" uri="http://localhost:8080/services/myResource1" />
+                </sca:service>
+                <sca:service name="Service2">
+                    <sca:binding.ws uri="http://localhost:8080/services/myResource2" />
+                </sca:service>
+            </sca:component>
+           <sca:component name="Component3"> <!-- first component -->
+                <sca:service name="Service1">
+                    <sca:binding.ws uri="http://localhost:8080/services/myResource1" />
+                </sca:service>
+                <sca:service name="Service2">
+                    <sca:binding.ws uri="http://localhost:8080/services/myResource2" />
+                </sca:service>
+            </sca:component>            
+        </sca:composite>
+    </remoteEndpoints>
 </node>

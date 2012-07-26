@@ -94,7 +94,7 @@ import org.w3c.dom.Node;
  * 
  * @version $Rev$ $Date$
  */
-abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
+public abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
 
     protected AssemblyFactory assemblyFactory;
     protected PolicyFactory policyFactory;
