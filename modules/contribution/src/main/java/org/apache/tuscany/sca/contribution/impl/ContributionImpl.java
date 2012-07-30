@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.contribution.impl;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -51,9 +52,11 @@ class ContributionImpl extends ExtensibleImpl implements Contribution {
     private List<Contribution> dependencies = new ArrayList<Contribution>();
     private ModelResolver modelResolver;
     private Set<String> types = new HashSet<String>();
+    private List<URL> extractedArchives = new ArrayList<URL>();
 
     // FIXME remove this dependency on Java ClassLoaders
     private ClassLoader classLoader;
+    private boolean useNestedArchives = true;
 
     ContributionImpl() {
     }
@@ -192,5 +195,20 @@ class ContributionImpl extends ExtensibleImpl implements Contribution {
         a.setModel(composite);
         a.setUnresolved(false);
         artifacts.add(a);
+    }
+
+    @Override
+    public List<URL> getExtractedArchives() {
+        return extractedArchives;
+    }
+
+    @Override
+    public boolean useNestedArchives() {
+        return useNestedArchives;
+    }
+
+    @Override
+    public void setUseNestedArcives(boolean b) {
+       this.useNestedArchives = b;
     }
 }

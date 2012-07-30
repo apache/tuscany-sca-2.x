@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.contribution;
 
+import java.net.URL;
 import java.util.List;
 import java.util.Set;
 
@@ -133,4 +134,9 @@ public interface Contribution extends Artifact, Extensible {
     void mergeMetaData(ContributionMetadata metaData);
 
     void addComposite(Composite composite);
+    
+    List<URL> getExtractedArchives();
+    
+    boolean useNestedArchives();
+    void setUseNestedArcives(boolean b);
 }

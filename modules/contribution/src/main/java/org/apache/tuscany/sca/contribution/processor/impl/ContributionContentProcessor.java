@@ -19,12 +19,19 @@
 package org.apache.tuscany.sca.contribution.processor.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Artifact;
@@ -154,7 +161,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
                         } catch (MalformedURLException e) {
                             //ignore
                         }
-
+                        
                         Object model =
                             artifactProcessor.read(contributionURL,
                                                    URI.create(artifact.getURI()),
@@ -185,6 +192,21 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
 
                 List<Artifact> contributionArtifacts = contribution.getArtifacts();
                 contributionArtifacts.addAll(artifacts);
+                
+                if (contribution.useNestedArchives() && !!!isWebApp(contribution)) {
+                    List<Artifact> nestedArchives = getNestedArchives(contribution);
+                    List<URL> nestedArchiveURLs;
+                    if (scanner instanceof DirectoryContributionScanner) {
+                        nestedArchiveURLs = getNestedArchiveURLs(nestedArchives, contribution.getLocation());
+                    } else {
+                        try {
+                            nestedArchiveURLs = extractNestedArchives(nestedArchives, contribution.getLocation());
+                        } catch (IOException e) {
+                            throw new ContributionReadException(e);
+                        }
+                    }
+                    processNestedArchives(nestedArchiveURLs, contribution, context, monitor);
+                }
 
                 // If no sca-contribution.xml file was provided then just consider
                 // all composites in the contribution as deployables
@@ -222,6 +244,126 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
         }
 
         return contribution;
+    }
+
+    private List<URL> getNestedArchiveURLs(List<Artifact> nestedArchives, String location) throws ContributionReadException {
+        List<URL> urls = new ArrayList<URL>();
+        for (Artifact a : nestedArchives) {
+            try {
+                urls.add(new URL(a.getLocation()));
+            } catch (MalformedURLException e) {
+                throw new ContributionReadException(e);
+            }
+        }
+        return urls;
+    }
+
+    private boolean isWebApp(Contribution contribution) {
+        for (Artifact a : contribution.getArtifacts()) {
+            if (a.getURI().equalsIgnoreCase("web-inf/web.xml")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void processNestedArchives(List<URL> nestedArchiveURLs, Contribution contribution, ProcessorContext context, Monitor monitor) throws ContributionReadException {
+        for (URL url : nestedArchiveURLs) {
+            Contribution tempC = contributionFactory.createContribution();
+            tempC.setURI("temp");
+            tempC.setLocation(url.toString());
+            JarContributionScanner scanner = new JarContributionScanner(contributionFactory);
+            List<Artifact> artifacts = scanner.scan(tempC);
+            for (Artifact artifact : artifacts) {
+                // Add the deployed artifact model to the contribution
+                contribution.getModelResolver().addModel(artifact, context);
+
+                monitor.pushContext("Artifact: " + artifact.getURI());
+
+                Artifact oldArtifact = context.setArtifact(artifact);
+                try {
+                    // Read each artifact
+                    URL artifactLocationURL = null;
+                    try {
+                        artifactLocationURL = new URL(artifact.getLocation());
+                    } catch (MalformedURLException e) {
+                        //ignore
+                    }
+                    
+                    Object model;
+                    try {
+                        model = artifactProcessor.read(new URL(contribution.getLocation()),  URI.create(artifact.getURI()), artifactLocationURL, context);
+                    } catch (MalformedURLException e) {
+                        throw new ContributionReadException(e);
+                    }
+                    if (model != null) {
+                        artifact.setModel(model);
+
+                        // Add the loaded model to the model resolver
+                        contribution.getModelResolver().addModel(model, context);
+
+                    }
+                } finally {
+                    monitor.popContext();
+                    context.setArtifact(oldArtifact);
+                }
+            }
+            contribution.getArtifacts().addAll(artifacts);
+            contribution.getExtractedArchives().add(url);
+        }
+    }
+
+    private List<Artifact> getNestedArchives(Contribution contribution) {
+        List<Artifact> nestedArchives = new ArrayList<Artifact>();
+        for (Artifact a : contribution.getArtifacts()) {
+            if (a.getURI().endsWith(".zip") || a.getURI().endsWith(".jar")) {
+                nestedArchives.add(a);
+            }
+        }
+        return nestedArchives;
+    }
+
+    private List<URL> extractNestedArchives(List<Artifact> nestedArchives, String contributionLocation) throws IOException {
+        if (nestedArchives.size() < 1) {
+            return Collections.emptyList();
+        }
+        List<URL> extractedArchiveURLs = new ArrayList<URL>();
+        FileOutputStream fileOutputStream = null;
+        ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(new File(URI.create(contributionLocation))));
+        try {
+            ZipEntry zipEntry = zipInputStream.getNextEntry();
+            while (zipEntry != null) {
+                for (Artifact artifact : nestedArchives) {
+                    if (artifact.getLocation().endsWith(zipEntry.getName())) {
+
+                        String tempName = ("tmp." + artifact.getURI().substring(0, artifact.getURI().length() - 3)).replace('/', '.');
+                        File tempFile = File.createTempFile(tempName, ".jar");
+                        tempFile.deleteOnExit();
+                        fileOutputStream = new FileOutputStream(tempFile);
+
+                        byte[] buf = new byte[4096];
+                        int n;
+                        while ((n = zipInputStream.read(buf, 0, buf.length)) > -1) {
+                            fileOutputStream.write(buf, 0, n);
+                        }
+
+                        fileOutputStream.close();
+                        zipInputStream.closeEntry();
+
+                        extractedArchiveURLs.add(tempFile.toURI().toURL());
+
+                    }
+                }
+                zipEntry = zipInputStream.getNextEntry();
+            }
+        } finally {
+            zipInputStream.close();
+            if (fileOutputStream != null) {
+                fileOutputStream.close();
+            }
+        }
+        
+        return extractedArchiveURLs;
     }
 
     /**
@@ -346,4 +488,46 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
         } // end for
     } // end method resolveImports
 
+    
+    /**
+     * URLClassLoader doesn't seem to work with URLs to jars within an archive so as a work around
+     * copy the jar to a temp file and use the url to that.
+     */
+    private static URL createTempJar(Artifact artifact, Contribution contribution) throws IOException {
+        FileOutputStream fileOutputStream = null;
+        ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(new File(URI.create(contribution.getLocation()))));
+        try {
+            ZipEntry zipEntry = zipInputStream.getNextEntry();
+            while (zipEntry != null) {
+                if (artifact.getLocation().endsWith(zipEntry.getName())) {
+
+                    String tempName = ("tmp." + artifact.getURI().substring(0, artifact.getURI().length() - 3)).replace('/', '.');
+                    File tempFile = File.createTempFile(tempName, ".jar");
+                    tempFile.deleteOnExit();
+                    fileOutputStream = new FileOutputStream(tempFile);
+
+                    byte[] buf = new byte[2048];
+                    int n;
+                    while ((n = zipInputStream.read(buf, 0, buf.length)) > -1) {
+                        fileOutputStream.write(buf, 0, n);
+                    }
+
+                    fileOutputStream.close();
+                    zipInputStream.closeEntry();
+
+                    return tempFile.toURI().toURL();
+
+                }
+                zipEntry = zipInputStream.getNextEntry();
+            }
+        } finally {
+            zipInputStream.close();
+            if (fileOutputStream != null) {
+                fileOutputStream.close();
+            }
+        }
+        
+        throw new IllegalStateException();
+    }
+    
 } // end class ContributionContentProcessor
