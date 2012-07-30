@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.deployment.impl;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -172,6 +173,24 @@ public class Contributions implements Contribution {
 
     @Override
     public void addComposite(Composite composite) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public List<URL> getExtractedArchives() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean useNestedArchives() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void setUseNestedArcives(boolean b) {
         // TODO Auto-generated method stub
         
     }
