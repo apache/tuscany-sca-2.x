@@ -1089,7 +1089,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         InterfaceContract endpointReferenceContract = endpointReference.getReference().getInterfaceContract();
         InterfaceContract endpointContract = endpoint.getComponentServiceInterfaceContract();
         
-        if (endpointReferenceContract == null){
+        if (endpointReferenceContract == null || endpointContract == null){
             matchAudit.append("Match because there is no interface contract on the reference ");
             matchAudit.appendSeperator();
             return true;

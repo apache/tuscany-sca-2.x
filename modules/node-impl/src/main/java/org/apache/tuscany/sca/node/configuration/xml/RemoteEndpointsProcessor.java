@@ -41,6 +41,8 @@ import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -96,8 +98,18 @@ public class RemoteEndpointsProcessor extends BaseAssemblyProcessor implements S
                 for (ComponentService service : component.getServices()) {
                     for (Binding binding : service.getBindings()) {
                         Endpoint endpoint = assemblyFactory.createEndpoint();
+                        endpoint.setRemote(true);
                         endpoint.setComponent(component);
                         endpoint.setService(service);
+                        /*
+                        if (service.getInterfaceContract() == null) {
+                            JavaInterfaceFactory interfaceFactory =
+                                modelFactories(registry).getFactory(JavaInterfaceFactory.class);
+                            JavaInterfaceContract contract = interfaceFactory.createJavaInterfaceContract();
+                            contract.setInterface(interfaceFactory.createJavaInterface());
+                            service.setInterfaceContract(contract);
+                        }
+                        */
                         endpoint.setBinding(binding);
 
                         // retrieve the stash of intents and policy sets from the component
