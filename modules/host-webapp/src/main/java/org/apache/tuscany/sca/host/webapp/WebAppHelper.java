@@ -330,8 +330,8 @@ public class WebAppHelper {
             }
         }
         configuration.setAttribute(ServletContext.class.getName(), servletContext);
-        if(configurator instanceof ServletConfigurator) {
-            configuration.setAttribute(Servlet.class.getName(), ((ServletConfigurator) configurator).servlet);
+        if (configurator instanceof ServletConfigurator) {
+            configuration.setAttribute(Servlet.class.getName(), ((ServletConfigurator)configurator).servlet);
         }
         return configuration;
     }
@@ -381,11 +381,20 @@ public class WebAppHelper {
         public void setAttribute(String name, Object value) {
             String prefix = "filter:" + config.getFilterName() + ":";
             getServletContext().setAttribute(prefix + name, value);
+            if (getServletContext().getAttribute(name) == null) {
+                // Set into the global name
+                getServletContext().setAttribute(name, value);
+            }
         }
 
         public <T> T getAttribute(String name) {
             String prefix = "filter:" + config.getFilterName() + ":";
-            return (T)getServletContext().getAttribute(prefix + name);
+            T value = (T)getServletContext().getAttribute(prefix + name);
+            if (value != null) {
+                return value;
+            }
+            // Not found in the local scope, trying the servlet context
+            return (T)getServletContext().getAttribute(name);
         }
 
         public String getName() {
