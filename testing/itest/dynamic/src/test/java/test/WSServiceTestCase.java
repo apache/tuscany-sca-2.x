@@ -46,6 +46,9 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.junit.Test;
 
 import sample.Helloworld;
@@ -98,19 +101,21 @@ public class WSServiceTestCase extends TestCase {
         javaImplementation.setJavaClass(HelloworldImpl.class);
         component.setImplementation(javaImplementation);
 
+        // create a WS service
         ComponentService cs = assemblyFactory.createComponentService();
         cs.setName("Helloworld");
         WebServiceBindingFactory webServiceBindingFactory = modelFactories.getFactory(WebServiceBindingFactory.class);
         WebServiceBinding wsBinding = webServiceBindingFactory.createWebServiceBinding();
-//        PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
-//        Intent intent = policyFactory.createIntent();
-//        intent.setName(new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "SOAP.v1_1"));
-//        DefaultIntent di = policyFactory.createDefaultIntent();
-//        di.setIntent(intent);
-//        ((DefaultingPolicySubject)b).getDefaultIntents().add(di);
         cs.getBindings().add(wsBinding);
         cs.setInterfaceContract(component.getImplementation().getService("Helloworld").getInterfaceContract());
 
+        // Not totally sure why this is necessary or why the type isn't set in WebServiceBinding by default? 
+        PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        ExtensionType type = policyFactory.createExtensionType();
+        type.setType(new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "binding.ws"));
+        ((PolicySubject)wsBinding).setExtensionType(type);
+
+        // Add the WS service to the component
         component.getServices().add(cs);
 
         // add the component to the composite
