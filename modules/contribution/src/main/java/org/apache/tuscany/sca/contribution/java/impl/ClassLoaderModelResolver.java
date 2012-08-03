@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.contribution.java.impl;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -30,8 +30,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
@@ -132,11 +132,39 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
 
     @Override
     public URL findResource(String name) {
-
-        //TODO delegate to the Java import resolvers
+        // TODO delegate to the Java import resolvers
+        // thats hard to do for arbitrary resources but for .wsdl or .xsd resources this 
+        // can try to honour any namespace imports...
+        // however the namespace of the .wsdl or.xsd file isn't know until its read
+        if (name.endsWith(".wsdl") || name.endsWith(".xsd")) {
+            for (Contribution c : contribution.get().getDependencies()) {
+                for (Artifact a : c.getArtifacts()) {
+                    if (a.getURI().equals(name)) {
+                        if (contributionImports(getNamespace(a), c)) {
+                            try {
+                                return new URL(a.getLocation());
+                            } catch (MalformedURLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         URL url = super.findResource(name);
         return url;
+    }
+
+    private boolean contributionImports(String namespace, Contribution c) {
+        // TODO: does this contribution import the namespace from contribution c 
+        return true;
+    }
+
+    private String getNamespace(Artifact a) {
+        // TODO: if the artifact model is a WSDLDefinition or XSDefinition then call getNamespace on that
+        // this module doesn't have dependencies on wsdl or xsd though so thats hard to do
+        return null;
     }
 
     @Override
