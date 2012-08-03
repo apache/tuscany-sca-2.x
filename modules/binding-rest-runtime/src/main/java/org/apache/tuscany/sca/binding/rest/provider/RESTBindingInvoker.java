@@ -223,7 +223,11 @@ public class RESTBindingInvoker implements Invoker {
                 isEntity = false;
                 cookieParams.put(cookieParam.value(), args[i]);
             }
-            isEntity = (getAnnotation(annotations, Context.class) == null);
+
+            if(getAnnotation(annotations, Context.class) != null) {
+                isEntity = false;
+            }
+ 
             if (isEntity) {
                 entity = args[i];
             }
