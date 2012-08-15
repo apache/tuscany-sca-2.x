@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.implementation.web.runtime;
 
 import java.util.Collection;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.TuscanyComponentContext;
 import org.apache.tuscany.sca.runtime.TuscanyServiceReference;
@@ -81,6 +82,11 @@ public class ComponentContextProxy implements TuscanyComponentContext {
 
     public String getURI() {
         return getComponentContext().getURI();
+    }
+
+    @Override
+    public ExtensionPointRegistry getExtensionPointRegistry() {
+        return getComponentContext().getExtensionPointRegistry();
     }
 
 }
