@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
@@ -64,6 +65,9 @@ public class DynamicTestCase {
         ExtensionPointRegistry extensionPoints = tuscanyRuntime.getExtensionPointRegistry();
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
 
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        utilities.getUtility(RuntimeProperties.class).getProperties().setProperty(RuntimeProperties.QUIET_LOGGING, "true");
+        
         // Create a contribution
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         Contribution contribution = contributionFactory.createContribution();
@@ -96,10 +100,16 @@ public class DynamicTestCase {
         // Now run the composite with a Tuscany Node
         Node node = tuscanyRuntime.createNode();
         node.installContribution(contribution, null);
-        node.startComposite(contribution.getURI(), composite.getURI());
+        
+        for (int i=0; i<2000; i++) {
+            node.startComposite(contribution.getURI(), composite.getURI());
 
-        // test that the service has started and can be invoked
-        testService(node, contribution.getClassLoader());
+            // test that the service has started and can be invoked
+            testService(node, contribution.getClassLoader());
+            
+            node.stopComposite(contribution.getURI(), composite.getURI());
+        }
+        
 
         node.stop();
         tuscanyRuntime.stop();
@@ -107,7 +117,8 @@ public class DynamicTestCase {
 
     private void testService(Node node, ClassLoader classLoader) throws ClassNotFoundException, NoSuchServiceException, NoSuchDomainException, IllegalArgumentException, InvocationTargetException, IllegalAccessException {
         Class<?> interfaze = classLoader.loadClass("sample.Helloworld");
-        Object clientProxy = node.getService(interfaze, "testComponent/Helloworld");
+        Object clientProxy = node.getService(null, "testComponent/Helloworld");
+//        Object clientProxy = SCAClientFactory.newInstance(null).getService(interfaze, "testComponent/Helloworld");
         Method m = interfaze.getMethods()[0]; // the helloworld interface just has a single method "sayHello"
         Object response = m.invoke(clientProxy, new Object[] {"Ariana"});
         Assert.assertEquals("Hello Ariana", response);

@@ -45,10 +45,12 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.runtime.ContributionDescription;
+import org.apache.tuscany.sca.runtime.DOMInvoker;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
+import org.apache.tuscany.sca.runtime.TuscanyServiceReference;
 import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Remotable;
@@ -82,6 +84,30 @@ public class ServiceHelper {
             return ((RuntimeComponent)ep.getComponent()).getServiceReference(interfaze, serviceName).getService();
         } else {
             return getRemoteProxy(interfaze, ep, domainRegistry, extensionPointRegistry, deployer);
+        }
+    }
+
+    public static DOMInvoker getDOMInvoker(String serviceURI, DomainRegistry domainRegistry, ExtensionPointRegistry extensionPointRegistry, Deployer deployer) throws NoSuchServiceException {
+
+        List<Endpoint> endpoints = domainRegistry.findEndpoint(serviceURI);
+        if (endpoints.size() < 1) {
+            throw new NoSuchServiceException(serviceURI);
+        }
+
+        String serviceName = null;
+        if (serviceURI.contains("/")) {
+            int i = serviceURI.indexOf("/");
+            if (i < serviceURI.length() - 1) {
+                serviceName = serviceURI.substring(i + 1);
+            }
+        }
+
+        Endpoint ep = endpoints.get(0);
+        if (((RuntimeComponent)ep.getComponent()).getComponentContext() != null) {
+            return ((TuscanyServiceReference<?>)((RuntimeComponent)ep.getComponent()).getServiceReference(null, serviceName)).getDOMInvoker();
+        } else {
+            throw new NoSuchServiceException(serviceURI);
+//            return getRemoteProxy(interfaze, ep, domainRegistry, extensionPointRegistry, deployer);
         }
     }
 

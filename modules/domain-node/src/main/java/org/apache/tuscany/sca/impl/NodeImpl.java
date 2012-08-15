@@ -61,6 +61,7 @@ import org.apache.tuscany.sca.runtime.ActiveNodes;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.runtime.ContributionListener;
+import org.apache.tuscany.sca.runtime.DOMInvoker;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -651,6 +652,11 @@ public class NodeImpl implements Node {
 
     public void setEndpointsIncludeDomainName(boolean b) {
         endpointsIncludeDomainName = b;
+    }
+
+    @Override
+    public DOMInvoker getDOMInvoker(String serviceURI) throws NoSuchServiceException {
+        return ServiceHelper.getDOMInvoker(serviceURI, domainRegistry, extensionPointRegistry, deployer);
     }
 
 }

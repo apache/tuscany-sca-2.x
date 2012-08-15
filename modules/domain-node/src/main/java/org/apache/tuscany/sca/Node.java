@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.ContributionDescription;
+import org.apache.tuscany.sca.runtime.DOMInvoker;
 import org.oasisopen.sca.NoSuchServiceException;
 
 /**
@@ -215,6 +216,8 @@ public interface Node {
      * Would also be convenient to get service proxys as from SCAClientFactory
      */
     <T> T getService(Class<T> interfaze, String serviceURI) throws NoSuchServiceException;    
+    
+    DOMInvoker getDOMInvoker(String serviceURI) throws NoSuchServiceException;
 
     /**
      * Get the URIs of any composites that have been started in the domain
