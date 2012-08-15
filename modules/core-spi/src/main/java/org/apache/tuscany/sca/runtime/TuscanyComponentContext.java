@@ -19,12 +19,13 @@
 
 package org.apache.tuscany.sca.runtime;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.oasisopen.sca.ComponentContext;
 
 public interface TuscanyComponentContext extends ComponentContext {
 
     @Override
-    <B> TuscanyServiceReference<B> getServiceReference(Class<B> businessInterface, 
-                                                String referenceName)
-            throws IllegalArgumentException;
+    <B> TuscanyServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) throws IllegalArgumentException;
+
+    ExtensionPointRegistry getExtensionPointRegistry();
 }
