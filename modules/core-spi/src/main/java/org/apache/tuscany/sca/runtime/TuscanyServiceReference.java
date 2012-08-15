@@ -24,5 +24,8 @@ import org.oasisopen.sca.ServiceReference;
 public interface TuscanyServiceReference<B> extends ServiceReference<B> {
 
     public void setBindingURI(String uri);
+    
+    public DOMInvoker getDOMInvoker();
 
+    public RuntimeEndpointReference getEndpointReference();
 }
