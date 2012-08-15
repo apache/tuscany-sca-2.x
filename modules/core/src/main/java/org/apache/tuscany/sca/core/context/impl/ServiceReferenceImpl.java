@@ -52,15 +52,21 @@ import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.invocation.impl.AsyncJDKInvocationHandler;
+import org.apache.tuscany.sca.core.invocation.impl.DOMInvokerImpl;
 import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.runtime.DOMInvoker;
 import org.apache.tuscany.sca.runtime.Invocable;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
+import org.w3c.dom.Node;
 
 /**
  * Default implementation of a ServiceReference.
@@ -92,6 +98,8 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
     protected XMLInputFactory xmlInputFactory;
     protected XMLOutputFactory xmlOutputFactory;
     protected BuilderExtensionPoint builders;
+
+    private MessageFactory messageFactory;
 
     /*
      * Public constructor for Externalizable serialization/deserialization
@@ -127,6 +135,8 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
         this.staxProcessor = staxProcessors.getProcessor(EndpointReference.class);
         this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
         this.proxyFactory = ExtensibleProxyFactory.getInstance(registry);
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.messageFactory = modelFactories.getFactory(MessageFactory.class);
     }
 
     public RuntimeEndpointReference getEndpointReference() {
@@ -426,5 +436,22 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
     public void setBindingURI(String uri) {
         ((RuntimeEndpointReferenceImpl)endpointReference).setBindingURI(uri);
     }
-    
+
+    public DOMInvoker getDOMInvoker() {
+        
+        RuntimeEndpointReference epr = getEndpointReference();
+        InterfaceContract ic;
+        try {
+           ic = (InterfaceContract)epr.getGeneratedWSDLContract(epr.getBindingInterfaceContract()).clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+        ic.getInterface().resetDataBinding(Node.class.getName());
+        
+        ((RuntimeEndpointReferenceImpl)epr).setreferenceInterfaceContract(ic);
+        epr.rebuild();
+        
+      AsyncJDKInvocationHandler handler = new AsyncJDKInvocationHandler(registry, messageFactory, this);
+      return new DOMInvokerImpl(handler);
+    }
 }

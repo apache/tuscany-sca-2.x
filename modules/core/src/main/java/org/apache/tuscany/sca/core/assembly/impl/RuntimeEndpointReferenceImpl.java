@@ -71,7 +71,6 @@ import org.apache.tuscany.sca.invocation.InvokerAsyncResponse;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
 import org.apache.tuscany.sca.provider.ImplementationAsyncProvider;
@@ -80,9 +79,9 @@ import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
-import org.apache.tuscany.sca.runtime.DomainRegistry;
 import org.apache.tuscany.sca.runtime.EndpointSerializer;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -836,5 +835,9 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
             builder.build(component, reference, binding, builderContext, true);
         }
     }
-
+    
+    public void setreferenceInterfaceContract(InterfaceContract ic) {
+        this.referenceInterfaceContract = ic;
+    }
+    
 }

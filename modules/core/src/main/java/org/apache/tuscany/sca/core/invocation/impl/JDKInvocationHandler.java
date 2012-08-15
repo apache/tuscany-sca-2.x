@@ -263,6 +263,28 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         return found;
     }
 
+    protected synchronized InvocationChain getInvocationChain(String opName, Invocable source) {
+        if (source instanceof RuntimeEndpoint) {
+            // [rfeng] Start with the binding invocation chain
+            return source.getBindingInvocationChain();
+        }
+
+        InvocationChain found = null;
+        for (InvocationChain chain : source.getInvocationChains()) {
+            Operation operation = chain.getSourceOperation();
+            if (operation.isDynamic()) {
+                operation.setName(opName);
+                found = chain;
+                break;
+            } else if (operation.getName().equals(opName)) {
+                found = chain;
+                break;
+            }
+        }
+
+        return found;
+    }
+
     protected void setEndpoint(Endpoint endpoint) {
         this.target = endpoint;
     }
@@ -431,6 +453,84 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     		return true;
     	}
     	return false;        
+    }
+    
+    protected Object invoke(String opName, Object args, Invocable source, String msgID) throws Throwable {
+        
+        if (source instanceof RuntimeEndpointReference) {
+            RuntimeEndpointReference epr = (RuntimeEndpointReference)source;
+            if (epr.isOutOfDate()) {
+                epr.rebuild();
+                chains.clear();
+            }
+        }
+        
+        InvocationChain chain = getInvocationChain(opName, source);
+        
+        if (chain == null) {
+            throw new IllegalArgumentException("No matching operation is found: " + opName);
+        }        
+
+        Message msg = messageFactory.createMessage();
+        if (source instanceof RuntimeEndpointReference) {
+            msg.setFrom((RuntimeEndpointReference)source);
+        }
+        if (target != null) {
+            msg.setTo(target);
+        } else {
+            if (source instanceof RuntimeEndpointReference) {
+                msg.setTo(((RuntimeEndpointReference)source).getTargetEndpoint());
+            }
+        }
+        Invoker headInvoker = chain.getHeadInvoker();
+        Operation operation = null;
+        if (source instanceof RuntimeEndpoint) {
+            // [rfeng] We cannot use the targetOperation from the binding
+            // invocation chain.
+            // For each method, we need to find the matching operation so that
+            // we can set the operation on to the message
+            for (InvocationChain c : source.getInvocationChains()) {
+                Operation op = c.getTargetOperation();
+                if (opName.equals(op.getName())) {
+                    operation = op;
+                    break;
+                }
+            }
+        } else {
+            operation = chain.getTargetOperation();
+        }
+        msg.setOperation(operation);
+        msg.setBody(args);
+
+        Message msgContext = ThreadMessageContext.getMessageContext();
+
+        // Deal with header information that needs to be copied from the message
+        // context to the new message...
+        transferMessageHeaders(msg, msgContext);
+
+        ThreadMessageContext.setMessageContext(msg);
+
+        // If there is a supplied message ID, place its value into the Message
+        // Header under "MESSAGE_ID"
+        if (msgID != null) {
+            msg.getHeaders().put("MESSAGE_ID", msgID);
+        } // end if
+
+        try {
+            // dispatch the source down the chain and get the response
+            Message resp = headInvoker.invoke(msg);
+            Object body = resp.getBody();
+            if (resp.isFault()) {
+                throw (Throwable)body;
+            }
+            return body;
+        } finally {
+            ThreadMessageContext.setMessageContext(msgContext);
+        }
+    }    
+    
+    public Invocable getSource() {
+        return source;
     }
         
 }
