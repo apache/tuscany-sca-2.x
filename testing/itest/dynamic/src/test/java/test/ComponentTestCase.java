@@ -48,10 +48,10 @@ import sample.HelloworldImpl;
  */
 public class ComponentTestCase extends TestCase {
 
-    private TuscanyRuntime tuscanyRuntime;
-    private ExtensionPointRegistry extensionPoints;
-    private FactoryExtensionPoint modelFactories;
-    private Node node;
+    TuscanyRuntime tuscanyRuntime;
+    ExtensionPointRegistry extensionPoints;
+    FactoryExtensionPoint modelFactories;
+    Node node;
 
     @Override
     protected void setUp() throws Exception {
