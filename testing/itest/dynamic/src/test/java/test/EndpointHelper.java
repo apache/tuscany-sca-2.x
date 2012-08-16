@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
 
 public class EndpointHelper {
 
+    // TODO: change this to be a method on Node that takes a configured Binding to add a new endpoint
     public static void addWSEndpoint(Node node, String endpointName, URL wsdlURL, QName portTypeQN, String targetURL) {
         ExtensionPointRegistry extensionPoints = ((NodeImpl)node).getExtensionPointRegistry();
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
