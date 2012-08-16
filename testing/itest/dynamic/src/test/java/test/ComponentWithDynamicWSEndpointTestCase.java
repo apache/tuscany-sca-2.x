@@ -43,8 +43,8 @@ import sample.Helloworld;
 import sample.HelloworldDynamicWSImpl;
 
 /**
- * Shows programatically creating a contribution, composite and component, starting the composite and
- * then test invoking the components service.  
+ * Just like ComponentTestCase but uses the HelloworldDynamicWSImpl class for the component impl
+ * and starts the WSServiceTestCase to run a remote WS endpoint that the test can use
  */
 public class ComponentWithDynamicWSEndpointTestCase extends TestCase {
 
