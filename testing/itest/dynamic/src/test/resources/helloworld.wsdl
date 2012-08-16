@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="HelloworldService" targetNamespace="http://sample/" xmlns="http://sample/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:SOAP11="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xs:schema targetNamespace="http://sample/" version="1.0" xmlns:tns="http://sample/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="sayHello" type="tns:sayHello"/>
+<xs:element name="sayHelloResponse" type="tns:sayHelloResponse"/>
+<xs:complexType name="sayHelloResponse"><xs:sequence><xs:element minOccurs="0" name="return" type="xs:string"/></xs:sequence></xs:complexType>
+<xs:complexType name="sayHello"><xs:sequence><xs:element minOccurs="0" name="arg0" type="xs:string"/></xs:sequence></xs:complexType>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="sayHelloResponse">
+    <wsdl:part name="sayHelloResponse" element="sayHelloResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="sayHello">
+    <wsdl:part name="sayHello" element="sayHello">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="Helloworld">
+    <wsdl:operation name="sayHello">
+      <wsdl:input message="sayHello">
+    </wsdl:input>
+      <wsdl:output message="sayHelloResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="HelloworldBinding" type="Helloworld">
+    <SOAP:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="sayHello">
+      <SOAP:operation soapAction=""/>
+      <wsdl:input>
+        <SOAP:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <SOAP:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="HelloworldComponent_Helloworld">
+    <wsdl:port name="HelloworldSOAP11Port" binding="HelloworldBinding">
+      <SOAP:address location="http://9.167.203.149:8080/HelloworldComponent/Helloworld"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
