@@ -89,4 +89,9 @@ public class ComponentContextProxy implements TuscanyComponentContext {
         return getComponentContext().getExtensionPointRegistry();
     }
 
+    @Override
+    public Object getNode() {
+        return getComponentContext().getNode();
+    }
+
 }
