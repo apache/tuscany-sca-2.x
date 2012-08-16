@@ -18,40 +18,40 @@
  */
 package org.apache.tuscany.sca.binding.rest;
 
-import java.util.Arrays;
-
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import services.echo.jaxrs.Echo;
 
 public class RESTReferenceTestCase {
     private static final String ECHO_COMPONENT_WITH_REFERENCE = "EchoClientComponent/Echo";
-    private static Node node;
+    private Node node;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         try {
             String contribution = ContributionLocationHelper.getContributionLocation(RESTReferenceTestCase.class);
             node =
                 NodeFactory.newInstance().createNode("rest-reference.composite",
                                                      new Contribution("testClient", contribution));
             node.start();
+            
+            Thread.sleep(1000);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         node.stop();
     }
 
