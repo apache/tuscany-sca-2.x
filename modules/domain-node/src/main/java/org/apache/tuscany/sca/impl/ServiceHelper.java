@@ -35,15 +35,19 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.invocation.impl.AsyncJDKInvocationHandler;
+import org.apache.tuscany.sca.core.invocation.impl.DOMInvokerImpl;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.ContributionDescription;
 import org.apache.tuscany.sca.runtime.DOMInvoker;
 import org.apache.tuscany.sca.runtime.DomainRegistry;
@@ -54,6 +58,7 @@ import org.apache.tuscany.sca.runtime.TuscanyServiceReference;
 import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Remotable;
+import org.w3c.dom.Node;
 
 /**
  * TODO: Merge this into sca-client RemoteServiceInvocationHandler
@@ -106,8 +111,8 @@ public class ServiceHelper {
         if (((RuntimeComponent)ep.getComponent()).getComponentContext() != null) {
             return ((TuscanyServiceReference<?>)((RuntimeComponent)ep.getComponent()).getServiceReference(null, serviceName)).getDOMInvoker();
         } else {
-            throw new NoSuchServiceException(serviceURI);
-//            return getRemoteProxy(interfaze, ep, domainRegistry, extensionPointRegistry, deployer);
+//            throw new NoSuchServiceException(serviceURI);
+            return getRemoteDOMInvoker(ep, domainRegistry, extensionPointRegistry, deployer);
         }
     }
 
@@ -143,6 +148,44 @@ public class ServiceHelper {
         }
 
         return proxyFactory.createProxy(serviceInterface, epr);
+    }
+
+    private static DOMInvoker getRemoteDOMInvoker(Endpoint endpoint, DomainRegistry domainRegistry, ExtensionPointRegistry extensionPointRegistry, Deployer deployer) throws NoSuchServiceException {
+        FactoryExtensionPoint factories = extensionPointRegistry.getExtensionPoint(FactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        JavaInterfaceFactory javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
+        ProxyFactory proxyFactory =
+            new ExtensibleProxyFactory(extensionPointRegistry.getExtensionPoint(ProxyFactoryExtensionPoint.class));
+
+        CompositeContext compositeContext =
+            new CompositeContext(extensionPointRegistry, domainRegistry, null, null, null,
+                                 deployer.getSystemDefinitions());
+
+        RuntimeEndpointReference epr;
+        try {
+            epr =
+                createEndpointReference(javaInterfaceFactory,
+                                        compositeContext,
+                                        assemblyFactory,
+                                        endpoint,
+                                        null);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
+        }
+
+        InterfaceContract ic;
+        try {
+           ic = (InterfaceContract)epr.getGeneratedWSDLContract(epr.getBindingInterfaceContract()).clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+        ic.getInterface().resetDataBinding(Node.class.getName());
+        
+        ((RuntimeEndpointReferenceImpl)epr).setreferenceInterfaceContract(ic);
+        epr.rebuild();
+        
+        AsyncJDKInvocationHandler handler = new AsyncJDKInvocationHandler(extensionPointRegistry, factories.getFactory(MessageFactory.class), null, epr);
+        return new DOMInvokerImpl(handler);
     }
 
     private static RuntimeEndpointReference createEndpointReference(JavaInterfaceFactory javaInterfaceFactory,
