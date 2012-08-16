@@ -555,4 +555,8 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         return getCompositeContext().getExtensionPointRegistry();
     }
 
+    public Object getNode() {
+        return getCompositeContext().getNode();
+    }
+
 }
