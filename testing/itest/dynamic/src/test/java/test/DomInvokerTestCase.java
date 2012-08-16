@@ -24,13 +24,9 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.DOMInvoker;
 import org.junit.Test;
 import org.xml.sax.SAXException;
-
-import sample.Helloworld;
 
 /**
  * Shows programatically creating a contribution, composite and component, starting the composite and
