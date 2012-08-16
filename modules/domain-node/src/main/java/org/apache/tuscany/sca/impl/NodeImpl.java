@@ -381,7 +381,7 @@ public class NodeImpl implements Node {
                 Contribution contribution = loadContribution(cd);
                 Composite composite = contribution.getArtifactModel(compositeURI);
                 List<Contribution> dependentContributions = calculateDependentContributions(cd);
-                dc = new DeployedComposite(composite, contribution, dependentContributions, deployer, compositeActivator, domainRegistry, extensionPointRegistry, endpointsIncludeDomainName);
+                dc = new DeployedComposite(composite, contribution, dependentContributions, deployer, compositeActivator, domainRegistry, extensionPointRegistry, endpointsIncludeDomainName, this);
                 dc.start();
                 startedComposites.put(key, dc);
             }

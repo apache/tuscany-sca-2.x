@@ -27,6 +27,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
@@ -59,6 +60,7 @@ public class DeployedComposite {
     private ExtensionPointRegistry extensionPointRegistry;
     private List<String> usedContributionURIs;
     private boolean endpointsIncludeDomainName;
+    private Node node;
 
     public DeployedComposite(Composite composite,
                              Contribution contribution,
@@ -67,7 +69,8 @@ public class DeployedComposite {
                              CompositeActivator compositeActivator,
                              DomainRegistry domainRegistry,
                              ExtensionPointRegistry extensionPointRegistry,
-                             boolean endpointsIncludeDomainName) throws ValidationException, ActivationException {
+                             boolean endpointsIncludeDomainName,
+                             Node node) throws ValidationException, ActivationException {
         this.composite = composite;
         this.contribution = contribution;
         this.dependedOnContributions = dependedOnContributions;
@@ -76,6 +79,7 @@ public class DeployedComposite {
         this.domainRegistry = domainRegistry;
         this.extensionPointRegistry = extensionPointRegistry;
         this.endpointsIncludeDomainName = endpointsIncludeDomainName;
+        this.node = node;
         
         try {
             build();
@@ -123,7 +127,8 @@ public class DeployedComposite {
                                                 builtComposite, 
                                                 null, // nothing appears to use the domain name in CompositeContext 
                                                 null, // don't need node uri
-                                                deployer.getSystemDefinitions());
+                                                deployer.getSystemDefinitions(), 
+                                                node);
         usedContributionURIs = new ArrayList<String>();
         usedContributionURIs.add(contribution.getURI());
         for (Contribution dc : dependedOnContributions) {
