@@ -146,8 +146,6 @@ public class DefaultLocalSCAReferenceBindingProvider implements EndpointReferenc
                         passByValue = false;
                     } else if (interfaceContractMapper.isCompatibleWithoutUnwrapByValue(operation, targetOp, Compatibility.SUBSET)) {
                         passByValue = true;
-                    } else {
-                        throw new IllegalStateException();
                     }
                     bindingTransformer = getBindingTransformer(operation, targetOp);
                 }
