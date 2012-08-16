@@ -28,4 +28,7 @@ public interface TuscanyComponentContext extends ComponentContext {
     <B> TuscanyServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) throws IllegalArgumentException;
 
     ExtensionPointRegistry getExtensionPointRegistry();
+ 
+    <T> T getNode();
+    
 }

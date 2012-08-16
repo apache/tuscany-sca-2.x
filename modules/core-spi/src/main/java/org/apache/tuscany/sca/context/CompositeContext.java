@@ -47,13 +47,15 @@ public class CompositeContext {
     protected Definitions systemDefinitions;
 
     protected Map<String, Object> attributes = new HashMap<String, Object>();
+    protected Object node;
 
     public CompositeContext(ExtensionPointRegistry registry,
                             DomainRegistry domainRegistry,
                             Composite domainComposite,
                             String domainURI,
                             String nodeURI,
-                            Definitions systemDefinitions) {
+                            Definitions systemDefinitions,
+                            Object node) {
         this.extensionPointRegistry = registry;
         this.domainRegistry = domainRegistry;
         ContextFactoryExtensionPoint contextFactories = registry.getExtensionPoint(ContextFactoryExtensionPoint.class);
@@ -62,10 +64,20 @@ public class CompositeContext {
         this.domainURI = domainURI;
         this.nodeURI = nodeURI;
         this.systemDefinitions = systemDefinitions;
+        this.node = node;
+    }
+
+    public CompositeContext(ExtensionPointRegistry registry,
+                            DomainRegistry domainRegistry,
+                            Composite domainComposite,
+                            String domainURI,
+                            String nodeURI,
+                            Definitions systemDefinitions) {
+        this(registry, domainRegistry, null, "default", "default", systemDefinitions, null);
     }
 
     public CompositeContext(ExtensionPointRegistry registry, DomainRegistry domainRegistry) {
-        this(registry, domainRegistry, null, "default", "default", null);
+        this(registry, domainRegistry, null, "default", "default", null, null);
     }
 
     /**
@@ -170,5 +182,9 @@ public class CompositeContext {
 
     public Map<String, Object> getAttributes() {
         return attributes;
+    }
+    
+    public <T> T getNode() {
+        return (T)node;
     }
 }
