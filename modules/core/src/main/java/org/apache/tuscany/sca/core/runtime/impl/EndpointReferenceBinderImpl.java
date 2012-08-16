@@ -854,6 +854,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         if (builderContext != null){
             systemDefinitions = builderContext.getDefinitions();
         } else {
+            if (((RuntimeEndpoint)endpoint).getCompositeContext() == null) {
+                return true;
+            }
             systemDefinitions = ((RuntimeEndpoint)endpoint).getCompositeContext().getSystemDefinitions();
         }
         
