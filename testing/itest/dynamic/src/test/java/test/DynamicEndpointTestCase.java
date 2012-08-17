@@ -18,7 +18,6 @@
  */
 package test;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.xml.namespace.QName;
@@ -28,8 +27,10 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.Node;
 import org.apache.tuscany.sca.TuscanyRuntime;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.DOMInvoker;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -64,7 +65,11 @@ public class DynamicEndpointTestCase extends TestCase {
     @Test
     public void testInvoke() throws Exception {
         
-        EndpointHelper.addWSEndpoint(node, "SomeEndpointName", new File("src/test/resources/helloworld.wsdl").toURI().toURL(), new QName("http://sample/", "Helloworld"), "http://localhost:8089/testComponent/Helloworld");
+        String curi = node.installContribution("src/test/resources/resources.zip");
+
+        Endpoint endpoint = EndpointHelper.createWSEndpoint("SomeEndpointName", new QName("http://sample/", "Helloworld"), "http://localhost:8080/testComponent/Helloworld", curi, node);
+
+        ((NodeImpl)node).getEndpointRegistry().addEndpoint(endpoint);
 
         DOMInvoker domInvoker = node.getDOMInvoker("SomeEndpointName");
 

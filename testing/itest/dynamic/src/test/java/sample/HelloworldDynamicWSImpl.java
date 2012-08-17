@@ -18,15 +18,20 @@
  */
 package sample;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.Node;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.impl.NodeImpl;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.DOMInvoker;
 import org.apache.tuscany.sca.runtime.TuscanyComponentContext;
+import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.annotation.Context;
 import org.oasisopen.sca.annotation.Init;
 import org.xml.sax.SAXException;
@@ -37,30 +42,41 @@ import test.EndpointHelper;
 public class HelloworldDynamicWSImpl implements Helloworld {
 
     @Context
-    TuscanyComponentContext context;
+    private TuscanyComponentContext context;
+
     private DOMHelper domHelper;
-    private DOMInvoker domInvoker;
+    private Node node;
 
     @Init
     public void init() {
-        try {
-
-            domHelper = DOMHelper.getInstance(context.getExtensionPointRegistry());
-            Node node = context.getNode();
-            EndpointHelper.addWSEndpoint(node, "SomeEndpointName", new File("src/test/resources/helloworld.wsdl").toURI().toURL(), new QName("http://sample/", "Helloworld"), "http://localhost:8089/testComponent/Helloworld");
-
-            domInvoker = node.getDOMInvoker("SomeEndpointName");
-        
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        domHelper = DOMHelper.getInstance(context.getExtensionPointRegistry());
+        node = context.getNode();
     }
     
     public String sayHello(String name) {
-        org.w3c.dom.Node arg = getRequestDOM(name);
-        org.w3c.dom.Node response = domInvoker.invoke("sayHello", arg);
-        return "Remote WS says: " + getResponseString(response);
+        try {
             
+            String curi = node.installContribution("src/test/resources/resources.zip");
+
+            Endpoint endpoint = EndpointHelper.createWSEndpoint("SomeEndpointName", new QName("http://sample/", "Helloworld"), "http://localhost:8080/testComponent/Helloworld", curi, node);
+
+            ((NodeImpl)node).getEndpointRegistry().addEndpoint(endpoint);
+
+            DOMInvoker domInvoker = node.getDOMInvoker("SomeEndpointName");
+            
+            org.w3c.dom.Node arg = getRequestDOM(name);
+            org.w3c.dom.Node response = domInvoker.invoke("sayHello", arg);
+            return "Remote WS says: " + getResponseString(response);
+            
+        } catch (ContributionReadException e) {
+            throw new RuntimeException(e);
+        } catch (ValidationException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchServiceException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidInterfaceException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String getResponseString(org.w3c.dom.Node responseDOM) {
