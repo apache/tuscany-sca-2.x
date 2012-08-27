@@ -65,6 +65,7 @@ public class EndpointHelper {
         newEndpoint.setComponent(component);
         ComponentService cs = assemblyFactory.createComponentService();
         cs.setName("baa");
+        cs.setInterfaceContract(wsdlIC);
         newEndpoint.setService(cs);
         newEndpoint.setBinding(wsBinding);
         newEndpoint.setURI(endpointName);
