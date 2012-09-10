@@ -42,11 +42,14 @@ import com.meterware.httpunit.WebResponse;
 public class CatalogServiceTestCase {
     private static final String SERVICE_URL = "http://localhost:8085/Catalog";
 
-    private static final String GET_RESPONSE = "{\"items\":[{\"price\":\"$1.55\",\"name\":\"Pear\"},{\"price\":\"$2.99\",\"name\":\"Apple\"},{\"price\":\"$3.55\",\"name\":\"Orange\"}]}";
+    private static final String GET_RESPONSE =
+        "{\"items\":[{\"price\":\"$1.55\",\"name\":\"Pear\"},{\"price\":\"$2.99\",\"name\":\"Apple\"},{\"price\":\"$3.55\",\"name\":\"Orange\"}]}";
     private static final String NEW_ITEM = "{\"price\":\"$4.35\",\"name\":\"Grape\"}\"";
-    private static final String GET_NEW_RESPONSE = "{\"items\":[{\"price\":\"$1.55\",\"name\":\"Pear\"},{\"price\":\"$2.99\",\"name\":\"Apple\"},{\"price\":\"$3.55\",\"name\":\"Orange\"},{\"price\":\"$4.35\",\"name\":\"Grape\"}]}";
+    private static final String GET_NEW_RESPONSE =
+        "{\"items\":[{\"price\":\"$1.55\",\"name\":\"Pear\"},{\"price\":\"$2.99\",\"name\":\"Apple\"},{\"price\":\"$3.55\",\"name\":\"Orange\"},{\"price\":\"$4.35\",\"name\":\"Grape\"}]}";
     private static final String UPDATED_ITEM = "{\"price\":\"$1.35\",\"name\":\"Grape\"}\"";
-    private static final String GET_UPDATED_RESPONSE = "{\"items\":[{\"price\":\"$1.55\",\"name\":\"Pear\"},{\"price\":\"$2.99\",\"name\":\"Apple\"},{\"price\":\"$3.55\",\"name\":\"Orange\"},{\"price\":\"$1.35\",\"name\":\"Grape\"}]}";
+    private static final String GET_UPDATED_RESPONSE =
+        "{\"items\":[{\"price\":\"$1.55\",\"name\":\"Pear\"},{\"price\":\"$2.99\",\"name\":\"Apple\"},{\"price\":\"$3.55\",\"name\":\"Orange\"},{\"price\":\"$1.35\",\"name\":\"Grape\"}]}";
 
     private static Node node;
 
@@ -64,7 +67,7 @@ public class CatalogServiceTestCase {
 
     @AfterClass
     public static void destroy() throws Exception {
-        if(node != null) {
+        if (node != null) {
             node.stop();
         }
     }
@@ -84,15 +87,29 @@ public class CatalogServiceTestCase {
 
         Assert.assertEquals(200, response.getResponseCode());
         Assert.assertNotNull(response.getText());
-        Assert.assertTrue(validateJsonResponse(GET_RESPONSE,response.getText()));
+        Assert.assertTrue(validateJsonResponse(GET_RESPONSE, response.getText()));
     }
 
+    @Test
+    public void testGetInvocationWithFilter() throws Exception {
+        WebConversation wc = new WebConversation();
+        WebRequest request = new GetMethodWebRequest(SERVICE_URL + "?excludedFields=price");
+        request.setHeaderField("Content-Type", "application/json");
+        WebResponse response = wc.getResource(request);
+
+        Assert.assertEquals(200, response.getResponseCode());
+        String json = response.getText();
+        Assert.assertNotNull(json);
+        Assert.assertFalse(json.contains("price"));
+    }
 
     @Test
     public void testPostInvocation() throws Exception {
         //Add new item to catalog
         WebConversation wc = new WebConversation();
-        WebRequest request   = new PostMethodWebRequest(SERVICE_URL, new ByteArrayInputStream(NEW_ITEM.getBytes("UTF-8")),"application/json");
+        WebRequest request =
+            new PostMethodWebRequest(SERVICE_URL, new ByteArrayInputStream(NEW_ITEM.getBytes("UTF-8")),
+                                     "application/json");
         request.setHeaderField("Content-Type", "application/json");
         WebResponse response = wc.getResource(request);
 
@@ -109,14 +126,16 @@ public class CatalogServiceTestCase {
 
         Assert.assertEquals(200, response.getResponseCode());
         Assert.assertNotNull(response.getText());
-        Assert.assertTrue(validateJsonResponse(GET_NEW_RESPONSE,response.getText()));
+        Assert.assertTrue(validateJsonResponse(GET_NEW_RESPONSE, response.getText()));
     }
 
     @Test
     public void testPutInvocation() throws Exception {
         //Add new item to catalog
         WebConversation wc = new WebConversation();
-        WebRequest request   = new PostMethodWebRequest(SERVICE_URL, new ByteArrayInputStream(UPDATED_ITEM.getBytes("UTF-8")),"application/json");
+        WebRequest request =
+            new PostMethodWebRequest(SERVICE_URL, new ByteArrayInputStream(UPDATED_ITEM.getBytes("UTF-8")),
+                                     "application/json");
         request.setHeaderField("Content-Type", "application/json");
         WebResponse response = wc.getResource(request);
 
@@ -133,15 +152,14 @@ public class CatalogServiceTestCase {
 
         Assert.assertEquals(200, response.getResponseCode());
         Assert.assertNotNull(response.getText());
-        Assert.assertTrue(validateJsonResponse(GET_UPDATED_RESPONSE,response.getText()));
+        Assert.assertTrue(validateJsonResponse(GET_UPDATED_RESPONSE, response.getText()));
     }
-
 
     private boolean validateJsonResponse(String expected, String actual) throws JSONException {
         JSONObject jsonExpected = new JSONObject(expected);
         JSONObject jsonActual = new JSONObject(actual);
 
-        if(jsonExpected.getJSONArray("items").length() != jsonActual.getJSONArray("items").length()) {
+        if (jsonExpected.getJSONArray("items").length() != jsonActual.getJSONArray("items").length()) {
             return false;
         }
 

@@ -24,6 +24,10 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -32,6 +36,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import org.apache.tuscany.sca.common.http.HTTPContext;
+import org.apache.tuscany.sca.common.http.ThreadHTTPContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -40,7 +46,7 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
  * The generic JAX-RS message body writer based on Tuscany's databindingframework
  */
 @Provider
-@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.WILDCARD}) 
+@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.WILDCARD})
 public class DataBindingJAXRSWriter<T> extends DataBindingJAXRSProvider implements MessageBodyWriter<T> {
 
     public DataBindingJAXRSWriter(ExtensionPointRegistry registry) {
@@ -73,8 +79,7 @@ public class DataBindingJAXRSWriter<T> extends DataBindingJAXRSProvider implemen
             dataBinding = OutputStream.class.getName();
         } else if ("application/x-protobuf".equals(mediaType.toString())) {
             dataBinding = mediaType.toString() + "#" + OutputStream.class.getName();
-        }
-        else {
+        } else {
             dataBinding = dataType.getDataBinding();
             write(entityStream, t, type);
             return;
@@ -85,7 +90,43 @@ public class DataBindingJAXRSWriter<T> extends DataBindingJAXRSProvider implemen
 
         introspectAnnotations(annotations, targetDataType);
 
-        mediator.mediate(t, entityStream, dataType, targetDataType, Collections.<String, Object> emptyMap());
+        Map<String, Object> metadata = getFields();
+        mediator.mediate(t, entityStream, dataType, targetDataType, metadata);
+    }
+
+    private Map<String, Object> getFields() {
+        Map<String, Object> metadata = Collections.<String, Object> emptyMap();
+        HTTPContext context = ThreadHTTPContext.getHTTPContext();
+        if (context != null) {
+            metadata = new HashMap<String, Object>();
+            String included = context.getHttpRequest().getParameter("includedFields");
+            String excluded = context.getHttpRequest().getParameter("excludedFields");
+            Set<String> includedFields = tokenize(included);
+            if (includedFields != null) {
+                metadata.put("includedFields", includedFields);
+            }
+            Set<String> excludedFields = tokenize(excluded);
+            if (excludedFields != null) {
+                metadata.put("excludedFields", excludedFields);
+            }
+
+        }
+        return metadata;
+    }
+
+    private Set<String> tokenize(String included) {
+        if (included == null) {
+            return null;
+        }
+        String[] fields = included.split("(,| )+");
+        Set<String> includedFields = new HashSet<String>();
+        for (String f : fields) {
+            String field = f.trim();
+            if (field.length() > 0) {
+                includedFields.add(field);
+            }
+        }
+        return includedFields;
     }
 
 }

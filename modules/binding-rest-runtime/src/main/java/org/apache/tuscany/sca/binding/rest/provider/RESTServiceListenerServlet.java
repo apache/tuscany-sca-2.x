@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.binding.rest.RESTBinding;
 import org.apache.tuscany.sca.common.http.HTTPCacheContext;
 import org.apache.tuscany.sca.common.http.HTTPContext;
 import org.apache.tuscany.sca.common.http.HTTPHeader;
+import org.apache.tuscany.sca.common.http.ThreadHTTPContext;
 import org.apache.tuscany.sca.common.http.cors.CORSHeaderProcessor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -48,19 +49,19 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
  * @version $Rev$ $Date$
  */
 public class RESTServiceListenerServlet extends HttpServlet implements Servlet {
-    
+
     private static final long serialVersionUID = -5543706958107836637L;
-    
+
     transient private RESTBinding binding;
     transient private ServletConfig config;
     transient private MessageFactory messageFactory;
     transient private Invoker serviceInvoker;
-    
+
     /**
      * Constructs a new HTTPServiceListenerServlet.
      */
     public RESTServiceListenerServlet(Binding binding, Invoker serviceInvoker, MessageFactory messageFactory) {
-        this.binding = (RESTBinding) binding;
+        this.binding = (RESTBinding)binding;
         this.serviceInvoker = serviceInvoker;
         this.messageFactory = messageFactory;
     }
@@ -78,7 +79,7 @@ public class RESTServiceListenerServlet extends HttpServlet implements Servlet {
     }
 
     public void destroy() {
-        
+
     }
 
     @Override
@@ -89,34 +90,40 @@ public class RESTServiceListenerServlet extends HttpServlet implements Servlet {
         HTTPContext bindingContext = new HTTPContext();
         bindingContext.setHttpRequest(request);
         bindingContext.setHttpResponse(response);
-        
-        // Dispatch the service interaction to the service invoker
-        Message requestMessage = messageFactory.createMessage();
-        requestMessage.setBindingContext(bindingContext);
-        requestMessage.setBody(new Object[]{request, response});
-        Message responseMessage = serviceInvoker.invoke(requestMessage);
-        if (responseMessage.isFault()) {            
-            // Turn a fault into an exception
-            //throw new ServletException((Throwable)responseMessage.getBody());
-            Throwable e = (Throwable)responseMessage.getBody();
-            ((HttpServletResponse)response).sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
-        } else {
-            //handles declarative headers configured on the composite
-            for(HTTPHeader header : binding.getHttpHeaders()) {
-                //treat special headers that need to be calculated
-                if(header.getName().equalsIgnoreCase("Expires")) {
-                    GregorianCalendar calendar = new GregorianCalendar();
-                    calendar.setTime(new Date());
 
-                    calendar.add(Calendar.HOUR, Integer.parseInt(header.getValue()));
+        ThreadHTTPContext.setHTTPContext(bindingContext);
+        try {
 
-                    response.setHeader("Expires", HTTPCacheContext.RFC822DateFormat.format( calendar.getTime() ));
-                } else {
-                    //default behaviour to pass the header value to HTTP response
-                    response.setHeader(header.getName(), header.getValue());
+            // Dispatch the service interaction to the service invoker
+            Message requestMessage = messageFactory.createMessage();
+            requestMessage.setBindingContext(bindingContext);
+            requestMessage.setBody(new Object[] {request, response});
+            Message responseMessage = serviceInvoker.invoke(requestMessage);
+            if (responseMessage.isFault()) {
+                // Turn a fault into an exception
+                //throw new ServletException((Throwable)responseMessage.getBody());
+                Throwable e = (Throwable)responseMessage.getBody();
+                ((HttpServletResponse)response).sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+            } else {
+                //handles declarative headers configured on the composite
+                for (HTTPHeader header : binding.getHttpHeaders()) {
+                    //treat special headers that need to be calculated
+                    if (header.getName().equalsIgnoreCase("Expires")) {
+                        GregorianCalendar calendar = new GregorianCalendar();
+                        calendar.setTime(new Date());
+
+                        calendar.add(Calendar.HOUR, Integer.parseInt(header.getValue()));
+
+                        response.setHeader("Expires", HTTPCacheContext.RFC822DateFormat.format(calendar.getTime()));
+                    } else {
+                        //default behaviour to pass the header value to HTTP response
+                        response.setHeader(header.getName(), header.getValue());
+                    }
+
                 }
-
             }
+        } finally {
+            ThreadHTTPContext.removeHTTPContext();
         }
     }
 }
