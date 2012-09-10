@@ -495,14 +495,15 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             } 
             
             // TUSCANY-4069 if no binding specified on reference then use service binding.sca if that exists 
-            if (endpointReference.getBinding() == null && endpointReference.getReference().getAutowire() == true){
-                for (Endpoint endpoint : matchedEndpoints){
-                    if (endpoint.getBinding() instanceof SCABinding){
+            if (endpointReference.getBinding() == null && Boolean.TRUE.equals(endpointReference.getReference()
+                .getAutowire())) {
+                for (Endpoint endpoint : matchedEndpoints) {
+                    if (endpoint.getBinding() instanceof SCABinding) {
                         matchedEndpoint = endpoint;
                         break;
                     }
                 }
-            } 
+            }
 
             if (matchedEndpoint == null) {
                 // just take the first matched endpoint from the list
