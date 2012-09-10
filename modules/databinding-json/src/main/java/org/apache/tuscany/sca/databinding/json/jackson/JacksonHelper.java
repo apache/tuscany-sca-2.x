@@ -24,11 +24,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.util.Set;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 
+import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -41,9 +43,13 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.deser.BeanDeserializerFactory;
 import org.codehaus.jackson.map.deser.StdDeserializerProvider;
+import org.codehaus.jackson.map.introspect.AnnotatedClass;
 import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
 import org.codehaus.jackson.map.module.SimpleDeserializers;
 import org.codehaus.jackson.map.ser.CustomSerializerFactory;
+import org.codehaus.jackson.map.ser.FilterProvider;
+import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
+import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
 import org.codehaus.jackson.map.util.StdDateFormat;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.codehaus.jackson.xc.XmlAdapterJsonDeserializer;
@@ -100,7 +106,7 @@ public class JacksonHelper {
                 }
             }
         }
-        if ( cls != null && mapper == null ) {
+        if (cls != null && mapper == null) {
             return MAPPER;
         }
         if (mapper == null) {
@@ -108,7 +114,15 @@ public class JacksonHelper {
             mapper.registerModule(new JsonOrgModule());
         }
         // Let's honor the Jackson annotations first
-        AnnotationIntrospector primary = new JacksonAnnotationIntrospector();
+        AnnotationIntrospector primary = new JacksonAnnotationIntrospector() {
+
+            @Override
+            public Object findFilterId(AnnotatedClass annotatedClass) {
+                Object filterId = super.findFilterId(annotatedClass);
+                return filterId == null ? "tuscanyFilter" : filterId;
+            }
+
+        };
         AnnotationIntrospector secondary = new JaxbAnnotationIntrospector();
         AnnotationIntrospector pair = new AnnotationIntrospector.Pair(primary, secondary);
         mapper.setDeserializationConfig(mapper.getDeserializationConfig().withAnnotationIntrospector(pair)
@@ -117,6 +131,7 @@ public class JacksonHelper {
         mapper.setSerializationConfig(mapper.getSerializationConfig().withAnnotationIntrospector(pair)
             .withSerializationInclusion(JsonSerialize.Inclusion.NON_NULL)
             .withDateFormat(StdDateFormat.getBlueprintISO8601Format()));
+
         return mapper;
     }
 
@@ -230,4 +245,20 @@ public class JacksonHelper {
         }
     }
 
+    private final static SimpleBeanPropertyFilter DEFAULT_FILTER = SimpleBeanPropertyFilter.serializeAllExcept();
+
+    public static FilterProvider configureFilterProvider(TransformationContext context) {
+        SimpleBeanPropertyFilter filter = DEFAULT_FILTER;
+        if (context != null) {
+            Set<String> included = (Set<String>)context.getMetadata().get("includedFields");
+            Set<String> excluded = (Set<String>)context.getMetadata().get("excludedFields");
+            if (included != null && !included.isEmpty()) {
+                filter = SimpleBeanPropertyFilter.filterOutAllExcept(included);
+            } else if (excluded != null && !excluded.isEmpty()) {
+                filter = SimpleBeanPropertyFilter.serializeAllExcept(excluded);
+            }
+        }
+        FilterProvider filters = new SimpleFilterProvider().addFilter("tuscanyFilter", filter);
+        return filters;
+    }
 }

@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.databinding.json.jackson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -249,6 +250,34 @@ public class Object2JSONTestCase {
         //            "{\"age\":30,\"books\":[],\"friends\":[\"John\",\"Mike\"],\"name\":\"Me\",\"vip\":true,\"you\":{\"id\":123,\"name\":null}}";
         //        Assert.assertEquals(json, result.toString());
         Assert.assertEquals(v, me);
+    }
+
+    @Test
+    public void testBean2JSONWithFilter() throws Exception {
+        MyBean me = new MyBean();
+        me.setAge(30);
+        me.setBooks(new ArrayList<String>());
+        me.setFriends(new String[] {"John", "Mike"});
+        me.setVip(true);
+        me.setName("Me");
+        me.setDate(new Date());
+        YourBean you = new YourBean();
+        you.setId(123);
+        you.setName(null);
+        me.setYou(you);
+        Object2JSON t1 = new Object2JSON();
+        TransformationContext context = new TransformationContextImpl();
+        context.getMetadata().put("includedFields", Collections.singleton("name"));
+        Object result = t1.transform(me, context);
+        System.out.println(result);
+        Assert.assertTrue(result.toString().contains("name"));
+        Assert.assertFalse(result.toString().contains("age"));
+        context = new TransformationContextImpl();
+        context.getMetadata().put("excludedFields", Collections.singleton("name"));
+        result = t1.transform(me, context);
+        System.out.println(result);
+        Assert.assertFalse(result.toString().contains("name"));
+        Assert.assertTrue(result.toString().contains("age"));
     }
 
     @Test

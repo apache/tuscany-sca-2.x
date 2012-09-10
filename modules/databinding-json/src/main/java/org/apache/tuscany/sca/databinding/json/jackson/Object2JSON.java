@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.databinding.json.JSONHelper;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ser.FilterProvider;
 
 /**
  * @version $Rev$ $Date$
@@ -57,7 +58,13 @@ public class Object2JSON implements PullTransformer<Object, Object> {
                 return source;
             }
             ObjectMapper mapper = JacksonHelper.createObjectMapper(targetType);
-            String value = mapper.writeValueAsString(source);
+            String value = null;
+            FilterProvider filterProvider = JacksonHelper.configureFilterProvider(context);
+            if (filterProvider != null) {
+                value = mapper.writer(filterProvider).writeValueAsString(source);
+            } else {
+                value = mapper.writeValueAsString(source);
+            }
             if (JsonNode.class.isAssignableFrom(targetType)) {
                 return JacksonHelper.createJsonParser(value).readValueAsTree();
             } else if (targetType == String.class || targetType == Object.class || targetType.isPrimitive()) {

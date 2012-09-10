@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.databinding.json.jackson;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.tuscany.sca.databinding.PushTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
@@ -30,6 +32,9 @@ import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ser.FilterProvider;
+import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
+import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -50,16 +55,17 @@ public class JSON2OutputStream implements PushTransformer<Object, OutputStream> 
         if (source == null) {
             return;
         }
+
         if (source instanceof InputStream) {
             try {
-                InputStream input = (InputStream) source;
+                InputStream input = (InputStream)source;
                 byte[] buffer = new byte[4096];
                 int n = 0;
                 while (-1 != (n = input.read(buffer))) {
                     sink.write(buffer, 0, n);
                 }
                 input.close();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 throw new TransformationException(e);
             }
         } else if (source instanceof JsonNode) {
@@ -79,7 +85,12 @@ public class JSON2OutputStream implements PushTransformer<Object, OutputStream> 
             } else {
                 ObjectMapper mapper = JacksonHelper.createObjectMapper(source.getClass());
                 try {
-                    mapper.writeValue(sink, source);
+                    FilterProvider filterProvider = JacksonHelper.configureFilterProvider(context);
+                    if (filterProvider != null) {
+                        mapper.writer(filterProvider).writeValue(sink, source);
+                    } else {
+                        mapper.writeValue(sink, source);
+                    }
                 } catch (Throwable e) {
                     throw new TransformationException(e);
                 }
