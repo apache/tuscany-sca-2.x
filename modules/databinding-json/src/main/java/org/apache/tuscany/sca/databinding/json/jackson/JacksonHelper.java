@@ -62,9 +62,10 @@ import com.fasterxml.jackson.module.jsonorg.JsonOrgModule;
  * 
  */
 public class JacksonHelper {
+    private final static SimpleBeanPropertyFilter DEFAULT_FILTER = SimpleBeanPropertyFilter.serializeAllExcept();
     public final static ObjectMapper MAPPER = createMapper();
     private final static JsonFactory FACTORY = new MappingJsonFactory(createMapper());
-
+    
     public static ObjectMapper createMapper() {
         return createObjectMapper(null);
     }
@@ -132,6 +133,7 @@ public class JacksonHelper {
             .withSerializationInclusion(JsonSerialize.Inclusion.NON_NULL)
             .withDateFormat(StdDateFormat.getBlueprintISO8601Format()));
 
+        mapper.setFilters(new SimpleFilterProvider().addFilter("tuscanyFilter", DEFAULT_FILTER));
         return mapper;
     }
 
@@ -244,8 +246,7 @@ public class JacksonHelper {
             throw new IOException(e);
         }
     }
-
-    private final static SimpleBeanPropertyFilter DEFAULT_FILTER = SimpleBeanPropertyFilter.serializeAllExcept();
+    
 
     public static FilterProvider configureFilterProvider(TransformationContext context) {
         SimpleBeanPropertyFilter filter = DEFAULT_FILTER;
@@ -260,5 +261,6 @@ public class JacksonHelper {
         }
         FilterProvider filters = new SimpleFilterProvider().addFilter("tuscanyFilter", filter);
         return filters;
-    }
+    }    
+
 }
