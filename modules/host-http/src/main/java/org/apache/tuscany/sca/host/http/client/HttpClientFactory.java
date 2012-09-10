@@ -30,6 +30,8 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.impl.conn.SchemeRegistryFactory;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -54,24 +56,26 @@ public class HttpClientFactory implements LifeCycleListener {
 
     public HttpClient createHttpClient() {
         HttpParams defaultParameters = new BasicHttpParams();
-        //defaultParameters.setIntParameter(HttpConnectionManagerParams.MAX_TOTAL_CONNECTIONS, 10);
 
-        ConnManagerParams.setMaxTotalConnections(defaultParameters, 1024);
-        ConnPerRoute connPerRoute = new ConnPerRouteBean(256);
-        ConnManagerParams.setMaxConnectionsPerRoute(defaultParameters, connPerRoute);
-
-        HttpProtocolParams.setContentCharset(defaultParameters, HTTP.UTF_8);
+        HttpProtocolParams.setContentCharset(defaultParameters, "UTF-8");
         HttpConnectionParams.setConnectionTimeout(defaultParameters, 60000);
         HttpConnectionParams.setSoTimeout(defaultParameters, 60000);
 
         // See https://issues.apache.org/jira/browse/HTTPCLIENT-1138
-        SchemeRegistry supportedSchemes = new SchemeRegistry();
+        SchemeRegistry supportedSchemes = SchemeRegistryFactory.createSystemDefault();
         supportedSchemes.register(new Scheme(HttpHost.DEFAULT_SCHEME_NAME, 80, PlainSocketFactory.getSocketFactory()));
-        supportedSchemes.register(new Scheme("https", 443, SSLSocketFactory.getSocketFactory()));
+        
+        // FIXME: By pass host name verification
+        SSLSocketFactory socketFactory = SSLSocketFactory.getSystemSocketFactory();
+        socketFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+        supportedSchemes.register(new Scheme("https", 443, socketFactory));
 
-        ClientConnectionManager connectionManager =
-            new ThreadSafeClientConnManager(defaultParameters, supportedSchemes);
+        PoolingClientConnectionManager connectionManager =
+            new PoolingClientConnectionManager(supportedSchemes);
 
+        connectionManager.setDefaultMaxPerRoute(256);
+        connectionManager.setMaxTotal(1024);
+        
         return new DefaultHttpClient(connectionManager, defaultParameters);
     }
 
