@@ -19,25 +19,17 @@
 
 package org.apache.tuscany.sca.host.http.client;
 
-import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.params.ConnManagerParams;
-import org.apache.http.conn.params.ConnPerRoute;
-import org.apache.http.conn.params.ConnPerRouteBean;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLInitializationException;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.impl.conn.SchemeRegistryFactory;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.HTTP;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -62,13 +54,17 @@ public class HttpClientFactory implements LifeCycleListener {
         HttpConnectionParams.setSoTimeout(defaultParameters, 60000);
 
         // See https://issues.apache.org/jira/browse/HTTPCLIENT-1138
-        SchemeRegistry supportedSchemes = SchemeRegistryFactory.createSystemDefault();
-        supportedSchemes.register(new Scheme(HttpHost.DEFAULT_SCHEME_NAME, 80, PlainSocketFactory.getSocketFactory()));
-        
+        SchemeRegistry supportedSchemes = null;
+        try {
+            supportedSchemes = SchemeRegistryFactory.createSystemDefault();
+        } catch (SSLInitializationException e) {
+            // Fall back to the default as some systems don't have all properties configured correctly, such as the keyStorePassword
+            supportedSchemes = SchemeRegistryFactory.createDefault();
+        }
+
         // FIXME: By pass host name verification
-        SSLSocketFactory socketFactory = SSLSocketFactory.getSystemSocketFactory();
+        SSLSocketFactory socketFactory = (SSLSocketFactory)supportedSchemes.getScheme("https").getSchemeSocketFactory();
         socketFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-        supportedSchemes.register(new Scheme("https", 443, socketFactory));
 
         PoolingClientConnectionManager connectionManager =
             new PoolingClientConnectionManager(supportedSchemes);
