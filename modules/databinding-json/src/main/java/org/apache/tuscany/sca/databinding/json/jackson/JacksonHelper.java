@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
@@ -40,12 +41,14 @@ import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.MappingJsonFactory;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializerProvider;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.deser.BeanDeserializerFactory;
 import org.codehaus.jackson.map.deser.StdDeserializerProvider;
 import org.codehaus.jackson.map.introspect.AnnotatedClass;
 import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
 import org.codehaus.jackson.map.module.SimpleDeserializers;
+import org.codehaus.jackson.map.ser.BeanPropertyWriter;
 import org.codehaus.jackson.map.ser.CustomSerializerFactory;
 import org.codehaus.jackson.map.ser.FilterProvider;
 import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
@@ -65,7 +68,7 @@ public class JacksonHelper {
     private final static SimpleBeanPropertyFilter DEFAULT_FILTER = SimpleBeanPropertyFilter.serializeAllExcept();
     public final static ObjectMapper MAPPER = createMapper();
     private final static JsonFactory FACTORY = new MappingJsonFactory(createMapper());
-    
+
     public static ObjectMapper createMapper() {
         return createObjectMapper(null);
     }
@@ -246,21 +249,55 @@ public class JacksonHelper {
             throw new IOException(e);
         }
     }
-    
 
     public static FilterProvider configureFilterProvider(TransformationContext context) {
         SimpleBeanPropertyFilter filter = DEFAULT_FILTER;
         if (context != null) {
             Set<String> included = (Set<String>)context.getMetadata().get("includedFields");
             Set<String> excluded = (Set<String>)context.getMetadata().get("excludedFields");
-            if (included != null && !included.isEmpty()) {
-                filter = SimpleBeanPropertyFilter.filterOutAllExcept(included);
-            } else if (excluded != null && !excluded.isEmpty()) {
-                filter = SimpleBeanPropertyFilter.serializeAllExcept(excluded);
-            }
+            Class<?> type = context.getSourceDataType() == null ? null : context.getSourceDataType().getPhysical();
+            filter = new TuscanyBeanPropertyFilter(type, included, excluded);
         }
         FilterProvider filters = new SimpleFilterProvider().addFilter("tuscanyFilter", filter);
         return filters;
-    }    
+    }
+
+    private static class TuscanyBeanPropertyFilter extends SimpleBeanPropertyFilter {
+        private Class<?> type;
+        private Set<String> includedFields;
+        private Set<String> excludedFields;
+
+        public TuscanyBeanPropertyFilter(Class<?> type, Set<String> includedFields, Set<String> excludedFields) {
+            if (includedFields == null) {
+                includedFields = Collections.emptySet();
+            }
+            if (excludedFields == null) {
+                excludedFields = Collections.emptySet();
+            }
+            this.includedFields = includedFields;
+            this.excludedFields = excludedFields;
+            this.type = type;
+        }
+
+        @Override
+        public void serializeAsField(Object bean,
+                                     JsonGenerator jgen,
+                                     SerializerProvider provider,
+                                     BeanPropertyWriter writer) throws Exception {
+            /*
+            // First check if the type matches and skip the filtering if the type is different
+            if (type != null && writer.getMember().getDeclaringClass() != type) {
+                writer.serializeAsField(bean, jgen, provider);
+                return;
+            }
+            */
+            if (includedFields.contains(writer.getName())) {
+                writer.serializeAsField(bean, jgen, provider);
+            } else if (includedFields.isEmpty() && !excludedFields.contains(writer.getName())) {
+                writer.serializeAsField(bean, jgen, provider);
+            }
+        }
+
+    }
 
 }
