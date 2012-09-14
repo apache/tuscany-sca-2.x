@@ -49,6 +49,10 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.WILDCARD})
 public class DataBindingJAXRSWriter<T> extends DataBindingJAXRSProvider implements MessageBodyWriter<T> {
 
+    public static final String FIELDS = "fields";
+    public static final String EXCLUDED_FIELDS = "excludedFields";
+    public static final String INCLUDED_FIELDS = "includedFields";
+
     public DataBindingJAXRSWriter(ExtensionPointRegistry registry) {
         super(registry);
     }
@@ -99,15 +103,28 @@ public class DataBindingJAXRSWriter<T> extends DataBindingJAXRSProvider implemen
         HTTPContext context = ThreadHTTPContext.getHTTPContext();
         if (context != null) {
             metadata = new HashMap<String, Object>();
-            String included = context.getHttpRequest().getParameter("includedFields");
-            String excluded = context.getHttpRequest().getParameter("excludedFields");
+            String included = context.getHttpRequest().getParameter(INCLUDED_FIELDS);
+            String excluded = context.getHttpRequest().getParameter(EXCLUDED_FIELDS);
             Set<String> includedFields = tokenize(included);
             if (includedFields != null) {
-                metadata.put("includedFields", includedFields);
+                metadata.put(INCLUDED_FIELDS, includedFields);
             }
             Set<String> excludedFields = tokenize(excluded);
             if (excludedFields != null) {
-                metadata.put("excludedFields", excludedFields);
+                metadata.put(EXCLUDED_FIELDS, excludedFields);
+            }
+
+            // The syntax is fields=f1,f2,-f3
+            String fields = (String)context.getHttpRequest().getParameter(FIELDS);
+            if (fields != null) {
+                Set<String> fieldSet = tokenize(fields);
+                for (String f : fieldSet) {
+                    if (f.startsWith("-")) {
+                        excludedFields.add(f.substring(1));
+                    } else {
+                        includedFields.add(f);
+                    }
+                }
             }
 
         }

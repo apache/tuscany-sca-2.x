@@ -23,13 +23,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.json.JSONObject;
 import org.junit.Test;
 
 /**
@@ -263,21 +266,34 @@ public class Object2JSONTestCase {
         me.setDate(new Date());
         YourBean you = new YourBean();
         you.setId(123);
-        you.setName(null);
+        you.setName("You");
         me.setYou(you);
         Object2JSON t1 = new Object2JSON();
         TransformationContext context = new TransformationContextImpl();
-        context.getMetadata().put("includedFields", Collections.singleton("name"));
+        Set<String> included = new HashSet<String>();
+        included.add("name");
+        included.add("you.name");
+        // included.add("you.id");
+        context.getMetadata().put("includedFields", included);
         Object result = t1.transform(me, context);
         System.out.println(result);
-        Assert.assertTrue(result.toString().contains("name"));
-        Assert.assertFalse(result.toString().contains("age"));
+        JSONObject json = new JSONObject(result.toString());
+        Assert.assertTrue(json.has("name"));
+        Assert.assertTrue(json.has("you"));
+        Assert.assertTrue(json.getJSONObject("you").has("name"));
+        Assert.assertFalse(json.getJSONObject("you").has("id"));
         context = new TransformationContextImpl();
-        context.getMetadata().put("excludedFields", Collections.singleton("name"));
+        Set<String> excluded = new HashSet<String>();
+        excluded.add("you.name");
+        excluded.add("age");
+        context.getMetadata().put("excludedFields", excluded);
         result = t1.transform(me, context);
         System.out.println(result);
-        Assert.assertFalse(result.toString().contains("name"));
-        Assert.assertTrue(result.toString().contains("age"));
+        json = new JSONObject(result.toString());
+        Assert.assertTrue(json.has("name"));
+        Assert.assertTrue(json.has("you"));
+        Assert.assertTrue(json.getJSONObject("you").has("id"));
+        Assert.assertFalse(json.getJSONObject("you").has("name"));
     }
 
     @Test

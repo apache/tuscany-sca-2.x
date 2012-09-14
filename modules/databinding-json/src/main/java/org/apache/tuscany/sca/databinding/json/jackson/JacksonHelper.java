@@ -25,7 +25,9 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -62,10 +64,17 @@ import org.json.JSONObject;
 import com.fasterxml.jackson.module.jsonorg.JsonOrgModule;
 
 /**
- * 
+ * Helper class for Jackson
  */
 public class JacksonHelper {
+    public static final String TUSCANY_FILTER = "tuscanyFilter";
+    public static final String EXCLUDED_FIELDS = "excludedFields";
+    public static final String INCLUDED_FIELDS = "includedFields";
     private final static SimpleBeanPropertyFilter DEFAULT_FILTER = SimpleBeanPropertyFilter.serializeAllExcept();
+
+    /**
+     * The default instance of Jackson ObjectMapper
+     */
     public final static ObjectMapper MAPPER = createMapper();
     private final static JsonFactory FACTORY = new MappingJsonFactory(createMapper());
 
@@ -123,7 +132,7 @@ public class JacksonHelper {
             @Override
             public Object findFilterId(AnnotatedClass annotatedClass) {
                 Object filterId = super.findFilterId(annotatedClass);
-                return filterId == null ? "tuscanyFilter" : filterId;
+                return filterId == null ? TUSCANY_FILTER : filterId;
             }
 
         };
@@ -136,7 +145,7 @@ public class JacksonHelper {
             .withSerializationInclusion(JsonSerialize.Inclusion.NON_NULL)
             .withDateFormat(StdDateFormat.getBlueprintISO8601Format()));
 
-        mapper.setFilters(new SimpleFilterProvider().addFilter("tuscanyFilter", DEFAULT_FILTER));
+        mapper.setFilters(new SimpleFilterProvider().addFilter(TUSCANY_FILTER, DEFAULT_FILTER));
         return mapper;
     }
 
@@ -253,21 +262,22 @@ public class JacksonHelper {
     public static FilterProvider configureFilterProvider(TransformationContext context) {
         SimpleBeanPropertyFilter filter = DEFAULT_FILTER;
         if (context != null) {
-            Set<String> included = (Set<String>)context.getMetadata().get("includedFields");
-            Set<String> excluded = (Set<String>)context.getMetadata().get("excludedFields");
-            Class<?> type = context.getSourceDataType() == null ? null : context.getSourceDataType().getPhysical();
-            filter = new TuscanyBeanPropertyFilter(type, included, excluded);
+            Set<String> included = (Set<String>)context.getMetadata().get(INCLUDED_FIELDS);
+            Set<String> excluded = (Set<String>)context.getMetadata().get(EXCLUDED_FIELDS);
+            // Class<?> type = context.getSourceDataType() == null ? null : context.getSourceDataType().getPhysical();
+            filter = new TuscanyBeanPropertyFilter(included, excluded);
         }
-        FilterProvider filters = new SimpleFilterProvider().addFilter("tuscanyFilter", filter);
+        FilterProvider filters = new SimpleFilterProvider().addFilter(TUSCANY_FILTER, filter);
         return filters;
     }
 
     private static class TuscanyBeanPropertyFilter extends SimpleBeanPropertyFilter {
-        private Class<?> type;
         private Set<String> includedFields;
         private Set<String> excludedFields;
 
-        public TuscanyBeanPropertyFilter(Class<?> type, Set<String> includedFields, Set<String> excludedFields) {
+        private Stack<String> path = new Stack<String>();
+
+        public TuscanyBeanPropertyFilter(Set<String> includedFields, Set<String> excludedFields) {
             if (includedFields == null) {
                 includedFields = Collections.emptySet();
             }
@@ -276,7 +286,6 @@ public class JacksonHelper {
             }
             this.includedFields = includedFields;
             this.excludedFields = excludedFields;
-            this.type = type;
         }
 
         @Override
@@ -284,18 +293,58 @@ public class JacksonHelper {
                                      JsonGenerator jgen,
                                      SerializerProvider provider,
                                      BeanPropertyWriter writer) throws Exception {
-            /*
-            // First check if the type matches and skip the filtering if the type is different
-            if (type != null && writer.getMember().getDeclaringClass() != type) {
-                writer.serializeAsField(bean, jgen, provider);
-                return;
+            path.push(writer.getName());
+            try {
+                // System.out.println(path);
+                if (matches(path, includedFields, true)) {
+                    writer.serializeAsField(bean, jgen, provider);
+                } else if (includedFields.isEmpty() && !matches(path, excludedFields, false)) {
+                    writer.serializeAsField(bean, jgen, provider);
+                }
+            } finally {
+                path.pop();
             }
-            */
-            if (includedFields.contains(writer.getName())) {
-                writer.serializeAsField(bean, jgen, provider);
-            } else if (includedFields.isEmpty() && !excludedFields.contains(writer.getName())) {
-                writer.serializeAsField(bean, jgen, provider);
+        }
+
+        /**
+         * Check the target string is a prefix of the source separated by .
+         * @param source
+         * @param target
+         * @return
+         */
+        private boolean isPrefix(String source, String target) {
+            int index = source.indexOf(target);
+            if (index == -1) {
+                return false;
             }
+            if (target.length() == source.length() || source.charAt(target.length()) == '.') {
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * Check if the path matches the one of the patterns
+         * @param path
+         * @param patterns
+         * @param included
+         * @return
+         */
+        private boolean matches(Stack<String> path, Set<String> patterns, boolean included) {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < path.size(); i++) {
+                builder.append(path.get(i));
+                if (i != path.size() - 1) {
+                    builder.append(".");
+                }
+            }
+            String qname = builder.toString();
+            for (String p : patterns) {
+                if ((included && isPrefix(p, qname)) || ((!included) && isPrefix(qname, p))) {
+                    return true;
+                }
+            }
+            return false;
         }
 
     }
