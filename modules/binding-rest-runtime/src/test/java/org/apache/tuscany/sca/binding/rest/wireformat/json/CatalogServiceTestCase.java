@@ -91,15 +91,47 @@ public class CatalogServiceTestCase {
     }
 
     @Test
-    public void testGetInvocationWithFilter() throws Exception {
+    public void testGetInvocationWithFilter1() throws Exception {
         WebConversation wc = new WebConversation();
-        WebRequest request = new GetMethodWebRequest(SERVICE_URL + "?excludedFields=price");
+        WebRequest request = new GetMethodWebRequest(SERVICE_URL + "?excludedFields=items.price");
         request.setHeaderField("Content-Type", "application/json");
         WebResponse response = wc.getResource(request);
 
         Assert.assertEquals(200, response.getResponseCode());
         String json = response.getText();
+        System.out.println(json);
         Assert.assertNotNull(json);
+        Assert.assertTrue(json.contains("name"));
+        Assert.assertFalse(json.contains("price"));
+    }
+
+    @Test
+    public void testGetInvocationWithFilter2() throws Exception {
+        WebConversation wc = new WebConversation();
+        WebRequest request = new GetMethodWebRequest(SERVICE_URL + "?fields=items,-items.price");
+        request.setHeaderField("Content-Type", "application/json");
+        WebResponse response = wc.getResource(request);
+
+        Assert.assertEquals(200, response.getResponseCode());
+        String json = response.getText();
+        System.out.println(json);
+        Assert.assertNotNull(json);
+        Assert.assertTrue(json.contains("name"));
+        Assert.assertFalse(json.contains("price"));
+    }
+
+    @Test
+    public void testGetInvocationWithFilter3() throws Exception {
+        WebConversation wc = new WebConversation();
+        WebRequest request = new GetMethodWebRequest(SERVICE_URL + "?includedFields=items.name&excludedFields=items");
+        request.setHeaderField("Content-Type", "application/json");
+        WebResponse response = wc.getResource(request);
+
+        Assert.assertEquals(200, response.getResponseCode());
+        String json = response.getText();
+        System.out.println(json);
+        Assert.assertNotNull(json);
+        Assert.assertTrue(json.contains("name"));
         Assert.assertFalse(json.contains("price"));
     }
 

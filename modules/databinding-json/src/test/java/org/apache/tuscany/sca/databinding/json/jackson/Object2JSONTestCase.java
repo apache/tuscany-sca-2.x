@@ -271,10 +271,15 @@ public class Object2JSONTestCase {
         Object2JSON t1 = new Object2JSON();
         TransformationContext context = new TransformationContextImpl();
         Set<String> included = new HashSet<String>();
+        Set<String> excluded = new HashSet<String>();
         included.add("name");
-        included.add("you.name");
+        included.add("you");
+        excluded.add("you.id");
+
         // included.add("you.id");
         context.getMetadata().put("includedFields", included);
+        context.getMetadata().put("excludedFields", excluded);
+
         Object result = t1.transform(me, context);
         System.out.println(result);
         JSONObject json = new JSONObject(result.toString());
@@ -282,8 +287,9 @@ public class Object2JSONTestCase {
         Assert.assertTrue(json.has("you"));
         Assert.assertTrue(json.getJSONObject("you").has("name"));
         Assert.assertFalse(json.getJSONObject("you").has("id"));
+        
         context = new TransformationContextImpl();
-        Set<String> excluded = new HashSet<String>();
+        excluded = new HashSet<String>();
         excluded.add("you.name");
         excluded.add("age");
         context.getMetadata().put("excludedFields", excluded);

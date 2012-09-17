@@ -24,8 +24,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
@@ -272,20 +274,23 @@ public class JacksonHelper {
     }
 
     private static class TuscanyBeanPropertyFilter extends SimpleBeanPropertyFilter {
-        private Set<String> includedFields;
-        private Set<String> excludedFields;
+        private List<String> includedFields;
+        private List<String> excludedFields;
 
         private Stack<String> path = new Stack<String>();
 
         public TuscanyBeanPropertyFilter(Set<String> includedFields, Set<String> excludedFields) {
             if (includedFields == null) {
-                includedFields = Collections.emptySet();
+                includedFields = new HashSet<String>();
+                includedFields.add(""); // Allows any fields
             }
             if (excludedFields == null) {
                 excludedFields = Collections.emptySet();
             }
-            this.includedFields = includedFields;
-            this.excludedFields = excludedFields;
+            this.includedFields = new ArrayList<String>(includedFields);
+            Collections.sort(this.includedFields, Collections.reverseOrder());
+            this.excludedFields = new ArrayList<String>(excludedFields);
+            Collections.sort(this.excludedFields, Collections.reverseOrder());
         }
 
         @Override
@@ -294,11 +299,11 @@ public class JacksonHelper {
                                      SerializerProvider provider,
                                      BeanPropertyWriter writer) throws Exception {
             path.push(writer.getName());
+            String fname = getFullName(path);
             try {
                 // System.out.println(path);
-                if (matches(path, includedFields, true)) {
-                    writer.serializeAsField(bean, jgen, provider);
-                } else if (includedFields.isEmpty() && !matches(path, excludedFields, false)) {
+                if (isAllowed(fname, includedFields, excludedFields)) {
+                    // Matching includes, write
                     writer.serializeAsField(bean, jgen, provider);
                 }
             } finally {
@@ -312,7 +317,7 @@ public class JacksonHelper {
          * @param target
          * @return
          */
-        private boolean isPrefix(String source, String target) {
+        private boolean matches(String source, String target) {
             int index = source.indexOf(target);
             if (index == -1) {
                 return false;
@@ -330,7 +335,29 @@ public class JacksonHelper {
          * @param included
          * @return
          */
-        private boolean matches(Stack<String> path, Set<String> patterns, boolean included) {
+        private boolean isAllowed(String fullName, List<String> included, List<String> excluded) {
+            String ex = null;
+            for (String p : excluded) {
+                if (matches(fullName, p)) {
+                    ex = p;
+                    break;
+                }
+            }
+            for (String p : included) {
+                if (matches(fullName, p) // If the parent element is included
+                    || matches(p, fullName) // If one of the child elements is included 
+                    ) {
+                    if (ex != null && ex.length() > p.length()) {
+                        // We already have an exclusion pattern that's more matching  
+                        return false;
+                    }
+                    return true;
+                }
+            }
+            return ex == null && included.contains("");
+        }
+
+        private String getFullName(Stack<String> path) {
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < path.size(); i++) {
                 builder.append(path.get(i));
@@ -339,12 +366,7 @@ public class JacksonHelper {
                 }
             }
             String qname = builder.toString();
-            for (String p : patterns) {
-                if ((included && isPrefix(p, qname)) || ((!included) && isPrefix(qname, p))) {
-                    return true;
-                }
-            }
-            return false;
+            return qname;
         }
 
     }

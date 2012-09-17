@@ -120,8 +120,16 @@ public class DataBindingJAXRSWriter<T> extends DataBindingJAXRSProvider implemen
                 Set<String> fieldSet = tokenize(fields);
                 for (String f : fieldSet) {
                     if (f.startsWith("-")) {
+                        if (excludedFields == null) {
+                            excludedFields = new HashSet<String>();
+                            metadata.put(EXCLUDED_FIELDS, excludedFields);
+                        }
                         excludedFields.add(f.substring(1));
                     } else {
+                        if (includedFields == null) {
+                            includedFields = new HashSet<String>();
+                            metadata.put(INCLUDED_FIELDS, includedFields);
+                        }
                         includedFields.add(f);
                     }
                 }
