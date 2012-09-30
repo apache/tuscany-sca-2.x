@@ -122,52 +122,55 @@ public class JsonRpcInvoker implements Invoker, DataExchangeSemantics {
 
             response = httpClient.execute(post);
 
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                //success 
+            try {
+                if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                    //success 
 
-                entity = response.getEntity();
-                String entityResponse = EntityUtils.toString(entity);
-                entity.consumeContent();
-                if (!db.equals(JSONDataBinding.NAME)) {
-                    ObjectNode jsonResponse = (ObjectNode)JacksonHelper.MAPPER.readTree(entityResponse);
+                    entity = response.getEntity();
+                    String entityResponse = EntityUtils.toString(entity);
+                    // entity.consumeContent();
+                    if (!db.equals(JSONDataBinding.NAME)) {
+                        ObjectNode jsonResponse = (ObjectNode)JacksonHelper.MAPPER.readTree(entityResponse);
 
-                    if (jsonResponse.has("error") && jsonResponse.get("error") != NullNode.instance) {
-                        processException(jsonResponse);
+                        if (jsonResponse.has("error") && jsonResponse.get("error") != NullNode.instance) {
+                            processException(jsonResponse);
+                        }
+                        DataType<List<DataType>> outputType = operation.getOutputType();
+                        DataType returnType =
+                            (outputType != null && !outputType.getLogical().isEmpty()) ? outputType.getLogical().get(0)
+                                : null;
+
+                        if (returnType == null) {
+                            msg.setBody(null);
+                            return msg;
+                        }
+
+                        //check requestId
+                        if (!requestId.equalsIgnoreCase(jsonResponse.get("id").getTextValue())) {
+                            throw new ServiceRuntimeException("Invalid response id:" + requestId);
+                        }
+
+                        JsonNode rawResult = jsonResponse.get("result");
+
+                        Class<?> returnClass = returnType.getPhysical();
+                        Type genericReturnType = returnType.getGenericType();
+
+                        ObjectMapper mapper = createObjectMapper(returnClass);
+                        String json = mapper.writeValueAsString(rawResult);
+
+                        Object body = mapper.readValue(json, TypeFactory.type(genericReturnType));
+
+                        msg.setBody(body);
+                    } else {
+                        msg.setBody(entityResponse);
                     }
-                    DataType<List<DataType>> outputType = operation.getOutputType();
-                    DataType returnType =
-                        (outputType != null && !outputType.getLogical().isEmpty()) ? outputType.getLogical().get(0)
-                            : null;
 
-                    if (returnType == null) {
-                        msg.setBody(null);
-                        return msg;
-                    }
-
-                    //check requestId
-                    if (!requestId.equalsIgnoreCase(jsonResponse.get("id").getTextValue())) {
-                        throw new ServiceRuntimeException("Invalid response id:" + requestId);
-                    }
-
-                    JsonNode rawResult = jsonResponse.get("result");
-
-                    Class<?> returnClass = returnType.getPhysical();
-                    Type genericReturnType = returnType.getGenericType();
-
-                    ObjectMapper mapper = createObjectMapper(returnClass);
-                    String json = mapper.writeValueAsString(rawResult);
-
-                    Object body = mapper.readValue(json, TypeFactory.type(genericReturnType));
-
-                    msg.setBody(body);
                 } else {
-                    msg.setBody(entityResponse);
+                    throw new ServiceRuntimeException("Abnormal HTTP response: " + response.getStatusLine().toString());
                 }
-
-            } else {
+            } finally {
                 // Consume the content so the connection can be released
-                response.getEntity().consumeContent();
-                throw new ServiceRuntimeException("Abnormal HTTP response: " + response.getStatusLine().toString());
+                EntityUtils.consumeQuietly(response.getEntity());
             }
         } catch (RuntimeException e) {
             throw e;

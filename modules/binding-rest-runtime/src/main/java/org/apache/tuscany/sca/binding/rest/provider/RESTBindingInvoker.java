@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.rest.provider;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -38,7 +39,6 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.MatrixParam;
 import javax.ws.rs.OPTIONS;
@@ -55,6 +55,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.http.client.HttpClient;
+import org.apache.http.entity.StringEntity;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
@@ -71,6 +72,8 @@ import org.apache.wink.client.ApacheHttpClientConfig;
 import org.apache.wink.client.ClientConfig;
 import org.apache.wink.client.Resource;
 import org.apache.wink.client.RestClient;
+import org.apache.wink.client.ClientWebException;
+import org.apache.wink.client.ClientResponse;
 import org.apache.wink.client.handlers.BasicAuthSecurityHandler;
 
 /**
@@ -85,7 +88,11 @@ public class RESTBindingInvoker implements Invoker {
     private String httpMethod;
     private Class<?> responseType;
 
-    public RESTBindingInvoker(ExtensionPointRegistry registry, EndpointReference endpointReference, RESTBinding binding, Operation operation, HttpClient httpClient) {
+    public RESTBindingInvoker(ExtensionPointRegistry registry,
+                              EndpointReference endpointReference,
+                              RESTBinding binding,
+                              Operation operation,
+                              HttpClient httpClient) {
         super();
         this.registry = registry;
         this.endpointReference = endpointReference;
@@ -134,10 +141,10 @@ public class RESTBindingInvoker implements Invoker {
             }
 
         });
-        
+
         config.readTimeout(binding.getReadTimeout());
         RestClient client = new RestClient(config);
-        
+
         // Default to GET for RPC
         httpMethod = HttpMethod.GET;
 
@@ -224,10 +231,10 @@ public class RESTBindingInvoker implements Invoker {
                 cookieParams.put(cookieParam.value(), args[i]);
             }
 
-            if(getAnnotation(annotations, Context.class) != null) {
+            if (getAnnotation(annotations, Context.class) != null) {
                 isEntity = false;
             }
- 
+
             if (isEntity) {
                 entity = args[i];
             }
@@ -271,8 +278,22 @@ public class RESTBindingInvoker implements Invoker {
             }
         }
 
-        Object result = resource.invoke(httpMethod, responseType, entity);
-        msg.setBody(result);
+        try {
+            Object result = resource.invoke(httpMethod, responseType, entity);
+            msg.setBody(result);
+        } catch (ClientWebException e) {
+            ClientResponse clientResponse = e.getResponse();
+            // Consume the entity 
+            String error = clientResponse.getEntity(String.class);
+            StringEntity stringEntity;
+            try {
+                stringEntity = error == null ? null : new StringEntity(error);
+                clientResponse.setEntity(stringEntity);
+            } catch (UnsupportedEncodingException e1) {
+                // Ignore
+            }
+            throw e;
+        }
         return msg;
     }
 

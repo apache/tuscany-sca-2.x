@@ -19,10 +19,17 @@
 
 package org.apache.tuscany.sca.host.http.client;
 
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.http.ConnectionReuseStrategy;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLInitializationException;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.impl.NoConnectionReuseStrategy;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.impl.conn.SchemeRegistryFactory;
@@ -30,6 +37,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HttpContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -38,6 +46,13 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
  * @version $Rev$ $Date$
  */
 public class HttpClientFactory implements LifeCycleListener {
+    private int soTimeout = 30000;
+    private int connectionTimeout = 60000;
+    private boolean staleCheckingEnabled = false;
+    private long timeToLive = 60; // seconds
+    private int maxPerRoute = 256;
+    private int maxTotal = 1024;
+    private boolean sslHostVerificationEnabled = false;
 
     private HttpClient httpClient;
 
@@ -46,12 +61,50 @@ public class HttpClientFactory implements LifeCycleListener {
         return utilities.getUtility(HttpClientFactory.class);
     }
 
+    public HttpClientFactory() {
+
+    }
+
+    public HttpClientFactory(ExtensionPointRegistry registry, Map<String, String> attributes) {
+        if (attributes != null) {
+            String val = attributes.get("soTimeout");
+            if (val != null) {
+                this.soTimeout = Integer.parseInt(val);
+            }
+            val = attributes.get("connectionTimeout");
+            if (val != null) {
+                this.connectionTimeout = Integer.parseInt(val);
+            }
+            val = attributes.get("staleCheckingEnabled");
+            if (val != null) {
+                this.staleCheckingEnabled = Boolean.parseBoolean(val);
+            }
+            val = attributes.get("timeToLive");
+            if (val != null) {
+                this.timeToLive = Long.parseLong(val);
+            }
+            val = attributes.get("sslHostVerificationEnabled");
+            if (val != null) {
+                this.sslHostVerificationEnabled = Boolean.parseBoolean(val);
+            }
+            val = attributes.get("maxTotal");
+            if (val != null) {
+                this.maxTotal = Integer.parseInt(val);
+            }
+            val = attributes.get("maxPerRoute");
+            if (val != null) {
+                this.maxPerRoute = Integer.parseInt(val);
+            }
+        }
+    }
+
     public HttpClient createHttpClient() {
         HttpParams defaultParameters = new BasicHttpParams();
 
         HttpProtocolParams.setContentCharset(defaultParameters, "UTF-8");
-        HttpConnectionParams.setConnectionTimeout(defaultParameters, 60000);
-        HttpConnectionParams.setSoTimeout(defaultParameters, 60000);
+        HttpConnectionParams.setConnectionTimeout(defaultParameters, connectionTimeout);
+        HttpConnectionParams.setSoTimeout(defaultParameters, soTimeout);
+        HttpConnectionParams.setStaleCheckingEnabled(defaultParameters, staleCheckingEnabled);
 
         // See https://issues.apache.org/jira/browse/HTTPCLIENT-1138
         SchemeRegistry supportedSchemes = null;
@@ -62,17 +115,24 @@ public class HttpClientFactory implements LifeCycleListener {
             supportedSchemes = SchemeRegistryFactory.createDefault();
         }
 
-        // FIXME: By pass host name verification
-        SSLSocketFactory socketFactory = (SSLSocketFactory)supportedSchemes.getScheme("https").getSchemeSocketFactory();
-        socketFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+        if (!sslHostVerificationEnabled) {
+            // FIXME: By pass host name verification
+            SSLSocketFactory socketFactory =
+                (SSLSocketFactory)supportedSchemes.getScheme("https").getSchemeSocketFactory();
+            socketFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+        }
 
         PoolingClientConnectionManager connectionManager =
-            new PoolingClientConnectionManager(supportedSchemes);
+            new PoolingClientConnectionManager(supportedSchemes, timeToLive, TimeUnit.SECONDS);
 
-        connectionManager.setDefaultMaxPerRoute(256);
-        connectionManager.setMaxTotal(1024);
-        
-        return new DefaultHttpClient(connectionManager, defaultParameters);
+        connectionManager.setDefaultMaxPerRoute(maxPerRoute);
+        connectionManager.setMaxTotal(maxTotal);
+
+        DefaultHttpClient client = new DefaultHttpClient(connectionManager, defaultParameters);
+        if (timeToLive <= 0) {
+            client.setReuseStrategy(new NoConnectionReuseStrategy());
+        }
+        return client;
     }
 
     @Override
