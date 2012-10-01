@@ -55,7 +55,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.http.client.HttpClient;
-import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
@@ -284,14 +284,9 @@ public class RESTBindingInvoker implements Invoker {
         } catch (ClientWebException e) {
             ClientResponse clientResponse = e.getResponse();
             // Consume the entity 
-            String error = clientResponse.getEntity(String.class);
-            StringEntity stringEntity;
-            try {
-                stringEntity = error == null ? null : new StringEntity(error);
-                clientResponse.setEntity(stringEntity);
-            } catch (UnsupportedEncodingException e1) {
-                // Ignore
-            }
+            byte[] error = clientResponse.getEntity(byte[].class);
+            ByteArrayEntity errorEntity = error == null ? null : new ByteArrayEntity(error);
+            clientResponse.setEntity(errorEntity);
             throw e;
         }
         return msg;
