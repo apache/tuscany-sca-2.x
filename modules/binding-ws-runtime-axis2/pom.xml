@@ -31,6 +31,15 @@
 
 
     <dependencies>
+
+        <!-- TUSCANY-4070: this is required here due to a bug in the opensaml pom -->
+        <dependency>
+            <groupId>org.apache</groupId>
+            <artifactId>apache</artifactId>
+            <version>8</version>
+            <type>pom</type>
+        </dependency>
+
         <!--  Compile dependencies -->
     
         <dependency>
