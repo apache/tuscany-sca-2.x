@@ -28,6 +28,7 @@ import java.util.Set;
 import javax.servlet.Servlet;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.Path;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
@@ -353,6 +354,15 @@ public class RESTServiceBindingProvider implements EndpointProvider {
                 // FIXME: [rfeng] We need to have a better way to deal with URI template for bindings
                 if (path.startsWith(servletHost.getContextPath())) {
                     path = path.substring(servletHost.getContextPath().length());
+                }
+                // Try to append the interface level @Path
+                Path p = interfaze.getAnnotation(Path.class);
+                String cp = p == null ? "" : p.value().trim();
+                if(cp.startsWith("/")) {
+                    cp = cp.substring(1);
+                }
+                if(!"".equals(cp)) {
+                   path = path +"/" + cp;
                 }
                 Class<?> cls =
                     RootResourceClassGenerator.generateRootResourceClass(interfaze,

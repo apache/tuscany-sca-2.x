@@ -40,7 +40,7 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 public class CatalogServiceTestCase {
-    private static final String SERVICE_URL = "http://localhost:8085/Catalog";
+    private static final String SERVICE_URL = "http://localhost:8085/Catalog/catalog";
 
     private static final String GET_RESPONSE =
         "{\"items\":[{\"price\":\"$1.55\",\"name\":\"Pear\"},{\"price\":\"$2.99\",\"name\":\"Apple\"},{\"price\":\"$3.55\",\"name\":\"Orange\"}]}";

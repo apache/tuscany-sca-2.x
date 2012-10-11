@@ -33,6 +33,7 @@ import org.oasisopen.sca.annotation.Remotable;
 
 
 @Remotable
+@Path("catalog")
 public interface Catalog {
     
     @GET

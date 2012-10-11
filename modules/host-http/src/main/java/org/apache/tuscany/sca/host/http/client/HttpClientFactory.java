@@ -46,15 +46,15 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
  * @version $Rev$ $Date$
  */
 public class HttpClientFactory implements LifeCycleListener {
-    private int soTimeout = 30000;
-    private int connectionTimeout = 60000;
-    private boolean staleCheckingEnabled = false;
-    private long timeToLive = 60; // seconds
-    private int maxPerRoute = 256;
-    private int maxTotal = 1024;
-    private boolean sslHostVerificationEnabled = false;
+    protected int soTimeout = 30000;
+    protected int connectionTimeout = 60000;
+    protected boolean staleCheckingEnabled = false;
+    protected long timeToLive = 60; // seconds
+    protected int maxPerRoute = 256;
+    protected int maxTotal = 1024;
+    protected boolean sslHostVerificationEnabled = false;
 
-    private HttpClient httpClient;
+    protected HttpClient httpClient;
 
     public static HttpClientFactory getInstance(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
