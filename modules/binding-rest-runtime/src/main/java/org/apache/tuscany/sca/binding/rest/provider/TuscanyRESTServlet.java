@@ -132,6 +132,11 @@ public class TuscanyRESTServlet extends RestServlet {
     public DeploymentConfiguration getDeploymentConfiguration() throws ClassNotFoundException, InstantiationException,
         IllegalAccessException, IOException {
 
+        DeploymentConfiguration config =
+            (DeploymentConfiguration)getServletContext().getAttribute(DeploymentConfiguration.class.getName());
+        if (config != null) {
+            return config;
+        }
 
         // setup proper classLoader to work on OSGi environment
         ClassLoader cl =
@@ -141,9 +146,9 @@ public class TuscanyRESTServlet extends RestServlet {
                                                      "/META-INF/wink-alternate-shortcuts.properties",
                                                      "/META-INF/server/wink-providers");
 
-        DeploymentConfiguration config = null;
         try {
             config = super.getDeploymentConfiguration();
+            getServletContext().setAttribute(DeploymentConfiguration.class.getName(), config);
         } finally {
             if (cl != null) {
                 // return previous classLoader
@@ -155,19 +160,19 @@ public class TuscanyRESTServlet extends RestServlet {
         config.setFilterConfig(new FilterConfig() {
 
             public ServletContext getServletContext() {
-                return getServletContext();
+                return TuscanyRESTServlet.this.getServletContext();
             }
 
             public Enumeration getInitParameterNames() {
-                return getInitParameterNames();
+                return TuscanyRESTServlet.this.getInitParameterNames();
             }
 
-            public String getInitParameter(String arg0) {
-                return getInitParameter(arg0);
+            public String getInitParameter(String p) {
+                return TuscanyRESTServlet.this.getInitParameter(p);
             }
 
             public String getFilterName() {
-                return getServletName();
+                return TuscanyRESTServlet.this.getServletName();
             }
         });
 
