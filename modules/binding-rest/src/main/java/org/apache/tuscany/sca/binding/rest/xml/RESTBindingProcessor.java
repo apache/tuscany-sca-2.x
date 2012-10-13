@@ -149,6 +149,9 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
                         Boolean isCORS = getBoolean(reader, CORS);
                         if(isCORS != null) {
                             restBinding.setCORS(isCORS);
+                        } else {
+                            // Default to true
+                            restBinding.setCORS(Boolean.TRUE);
                         }
                         
                         break;
