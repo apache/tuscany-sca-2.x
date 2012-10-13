@@ -146,12 +146,12 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
                             restBinding.setReadTimeout(Integer.valueOf(readTimeout));
                         }
                         
-                        Boolean isCORS = getBoolean(reader, CORS);
-                        if(isCORS != null) {
-                            restBinding.setCORS(isCORS);
+                        String corsAttr = reader.getAttributeValue(null, CORS);
+                        if(corsAttr != null) {
+                            restBinding.setCORS(getBoolean(reader, CORS));
                         } else {
                             // Default to true
-                            restBinding.setCORS(Boolean.TRUE);
+                            restBinding.setCORS(true);
                         }
                         
                         break;
