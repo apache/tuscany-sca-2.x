@@ -31,6 +31,7 @@ import org.apache.http.conn.ssl.SSLInitializationException;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.NoConnectionReuseStrategy;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.DefaultBackoffStrategy;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.impl.conn.SchemeRegistryFactory;
 import org.apache.http.params.BasicHttpParams;
@@ -129,6 +130,10 @@ public class HttpClientFactory implements LifeCycleListener {
         connectionManager.setMaxTotal(maxTotal);
 
         DefaultHttpClient client = new DefaultHttpClient(connectionManager, defaultParameters);
+
+        // Set the default connection backoff
+        client.setConnectionBackoffStrategy(new DefaultBackoffStrategy());
+
         if (timeToLive <= 0) {
             client.setReuseStrategy(new NoConnectionReuseStrategy());
         }
