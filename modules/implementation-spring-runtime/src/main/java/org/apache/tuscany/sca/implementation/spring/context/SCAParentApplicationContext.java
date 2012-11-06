@@ -29,6 +29,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
@@ -47,7 +48,7 @@ import org.springframework.core.io.Resource;
  *
  * @version $Rev$ $Date$
  */
-public class SCAParentApplicationContext implements ApplicationContext {
+public class SCAParentApplicationContext extends GenericApplicationContext implements ApplicationContext {
 
     // The Spring implementation for which this is the parent application context
     private SpringImplementationWrapper implementation;
