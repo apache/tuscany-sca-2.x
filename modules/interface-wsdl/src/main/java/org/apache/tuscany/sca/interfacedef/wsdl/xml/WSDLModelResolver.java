@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -530,6 +531,7 @@ public class WSDLModelResolver implements ModelResolver {
                     		//                with the URI of the top level WSDL which is set from the 
                     		//                relative location of the artifact that represents the WSDL
                     		wsdlDefinition.setURI(new URI(imp.getLocationURI()));
+                                indexRead(wsdlDefinition.getLocation().toURL(), context);
                     		resolved = resolveImports(WSDLDefinition.class, wsdlDefinition, context);
                     		if (!resolved.isUnresolved()) {
                     			if (resolved.getImportedDefinitions().isEmpty()) {
@@ -688,4 +690,52 @@ public class WSDLModelResolver implements ModelResolver {
             is.close();
         }
     }
+
+    protected Map<String, String> indexRead(URL doc, ProcessorContext context) throws IOException, XMLStreamException {
+         
+       Map<String, String> wsdlImports = new HashMap<String, String>();
+       InputStream is = doc.openStream();
+         try {
+             // Set up a StreamSource for the composite file, since this has an associated URL that
+             // can be used by the parser to find references to other files such as DTDs
+             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+             StreamSource wsdlSource = new StreamSource(is, doc.toString());
+             XMLStreamReader reader = inputFactory.createXMLStreamReader(wsdlSource);
+             
+             int eventType = reader.getEventType();
+             int index = 0;
+             while (true) {
+                 if (eventType == XMLStreamConstants.START_ELEMENT) {
+                     if (WSDLDocumentProcessor.XSD.equals(reader.getName())) {
+                       String tns = reader.getAttributeValue(null, "targetNamespace");
+                       XSDefinition xsd = xsdFactory.createXSDefinition();
+                         xsd.setUnresolved(true);
+                         xsd.setNamespace(tns);
+                         try {
+                             xsd.setLocation(URI.create(doc.toURI() + "#" + index));
+                         } catch (URISyntaxException e) {
+                             //TODO
+                             e.printStackTrace();
+                         }
+                         index ++;
+                         // The definition is marked as resolved but not loaded
+                         xsd.setUnresolved(false);
+                         xsd.setSchema(null);
+                         if (contribution != null) {
+                             contribution.getModelResolver().addModel(xsd, context);
+                         }
+                     }
+                 }
+                 if (reader.hasNext()) {
+                     eventType = reader.next();
+                 } else {
+                     break;
+                 }
+             }
+             return wsdlImports;
+         } finally {
+             is.close();
+         }
+     }
+
 }
