@@ -56,8 +56,10 @@ public class SCAParentApplicationContext extends GenericApplicationContext imple
     private static final String[] EMPTY_ARRAY = new String[0];
 
     public SCAParentApplicationContext(SpringImplementationWrapper implementation) {
+        super(implementation.getParentApplicationContext());
         this.implementation = implementation;
     } // end constructor
+
 
     public Object getBean(String name) throws BeansException {
         return getBean(name, (Class)null);
@@ -204,11 +206,6 @@ public class SCAParentApplicationContext extends GenericApplicationContext imple
         // REVIEW: this is almost certainly flawed, but it's not clear how the SCA runtime's
         // resource loading mechanism is exposed right now.
         return this.getClass().getClassLoader();
-    }
-
-    @Override
-    public ApplicationContext getParent() {
-        return implementation.getParentApplicationContext();
     }
 
 }
