@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.implementation.spring.SpringSCAReferenceElement;
 import org.apache.tuscany.sca.implementation.spring.SpringSCAServiceElement;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanReference;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -59,6 +60,13 @@ public class SCAGenericApplicationContext extends GenericApplicationContext {
     public SCAGenericApplicationContext(ApplicationContext parent, ClassLoader classloader) {
         super(parent);
         this.classloader = classloader;
+    }
+
+    /**
+     * Force the parent bean factory to be the SCA parent context itself
+     */
+    protected BeanFactory getInternalParentBeanFactory() {
+        return getParent();
     }
 
     @Override

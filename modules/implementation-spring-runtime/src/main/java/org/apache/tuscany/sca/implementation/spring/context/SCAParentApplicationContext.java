@@ -60,12 +60,6 @@ public class SCAParentApplicationContext extends GenericApplicationContext imple
         this.implementation = implementation;
     } // end constructor
 
-
-    protected BeanFactory getInternalParentBeanFactory() {
-        // Disable the parent delegation as we'll handle it inside the getBean()
-        return null;
-    }
-
     public Object getBean(String name) throws BeansException {
         return getBean(name, (Class)null);
     }
