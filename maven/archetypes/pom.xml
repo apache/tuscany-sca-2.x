@@ -40,7 +40,7 @@
                 <module>binding</module>
                 <module>contribution-jar</module>
                 <module>contribution-zip</module>
-                <module>contribution-zip-discriptor</module>
+                <module>contribution-zip-descriptor</module>
                 <module>policy</module>
                 <module>quickstart</module>
                 <module>quickstart-jsf</module>
