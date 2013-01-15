@@ -258,8 +258,8 @@ The following components come under Apache Software License 2.0
  groovy-all-1.7.1.jar
  hazelcast-1.9.2.2.jar
  hazelcast-client-1.9.2.2.jar
- httpclient-4.2.1.jar
- httpcore-4.2.1.jar
+ httpclient-4.2.3.jar
+ httpcore-4.2.3.jar
  jackson-core-asl-1.9.4.jar
  jackson-mapper-asl-1.9.4.jar
  jackson-xc-1.9.4.jar
