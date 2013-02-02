@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.apache.rampart</groupId>
             <artifactId>rampart-core</artifactId>
-            <version>1.5.1</version>            
+            <version>1.5.1</version>
            <exclusions>    
                <!--  
                    We can live without most of the Rampart dependencies. The following
@@ -122,6 +122,10 @@
                    <groupId>org.bouncycastle</groupId>
                    <artifactId>bcprov-ext-jdk15</artifactId>
                </exclusion> 
+               <exclusion>
+                   <groupId>bouncycastle</groupId>
+                   <artifactId>bcprov-jdk15</artifactId>
+               </exclusion>
                <exclusion>
                    <groupId>org.slf4j</groupId>
                    <artifactId>slf4j-jdk14</artifactId>
@@ -197,10 +201,27 @@
                <exclusion>
                    <groupId>org.apache.santuario</groupId>
                    <artifactId>xmlsec</artifactId>
-               </exclusion> 
+               </exclusion>
+               <exclusion>
+                  <groupId>org.apache.ws.security</groupId>
+                  <artifactId>wss4j</artifactId>
+               </exclusion>
            </exclusions>                     
         </dependency> 
-        
+
+        <dependency>
+	    <groupId>bouncycastle</groupId>
+	    <artifactId>bcprov-jdk15</artifactId>
+	    <version>140</version>
+        </dependency>
+            
+        <!-- replace the Rampart wss4j to avoid corrupted jar -->
+        <dependency>
+	    <groupId>org.apache.ws.security</groupId>
+	    <artifactId>wss4j</artifactId>
+	    <version>1.5.10</version> <!--1.6.9-->
+        </dependency>
+
         <!--  replace the Rampart xmlsec with the version Tuscany is using -->
         <dependency>
             <groupId>org.apache.santuario</groupId>
