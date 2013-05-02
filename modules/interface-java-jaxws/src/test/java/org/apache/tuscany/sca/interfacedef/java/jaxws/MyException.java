@@ -16,14 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
 /**
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class MyException extends Exception {
+
+    private static final long serialVersionUID = -8113958905758621139L;
+
     private String error;
     private int code;
 
