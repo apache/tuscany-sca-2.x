@@ -312,7 +312,7 @@ The following components come under Apache Software License 2.0
  wink-client-1.2.0-incubating.jar
  wink-client-apache-httpclient-1.2.0-incubating.jar
  wink-server-1.2.0-incubating.jar 
- wss4j-1.5.1.jar
+ wss4j-1.5.11.jar
  xalan-2.7.0.jar
  xercesImpl-2.8.1.jar
  xmlbeans-2.3.0.jar

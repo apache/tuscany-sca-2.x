@@ -210,9 +210,9 @@
         </dependency> 
 
         <dependency>
-            <groupId>wss4j</groupId>
+            <groupId>org.apache.ws.security</groupId>
             <artifactId>wss4j</artifactId>
-            <version>1.5.1</version>
+            <version>1.5.11</version>
        </dependency>
 
         <!--  replace the Rampart xmlsec with the version Tuscany is using -->
