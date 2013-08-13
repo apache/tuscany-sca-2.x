@@ -36,6 +36,18 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-otests-sca-jms-tests</artifactId>
             <version>2.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.ws.security</groupId>
+                    <artifactId>wss4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.ws.security</groupId>
+            <artifactId>wss4j</artifactId>
+            <version>1.5.11</version>
         </dependency>
 
         <dependency>
