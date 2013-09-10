@@ -30,6 +30,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
@@ -175,6 +177,12 @@ public class TuscanyRESTServlet extends RestServlet {
                 return TuscanyRESTServlet.this.getServletName();
             }
         });
+        
+        Properties properties = new Properties();
+        properties.put("wink.context.uri", getBindingContext());
+        //properties.put("wink.http.uri", binding.getURI());
+
+        config.setProperties(properties);
 
         ProvidersRegistry providers = config.getProvidersRegistry();
         providers.addProvider(new DataBindingJAXRSReader(registry), 0.2, true);
@@ -212,6 +220,16 @@ public class TuscanyRESTServlet extends RestServlet {
             e.printStackTrace();
         }
         
+    }
+    
+    private String getBindingContext() {
+        Pattern pattern = Pattern.compile("^[^#]*?://.*?(/.*)$");
+        Matcher matcher = pattern.matcher(binding.getURI());
+        if(matcher.find()) {
+            String bindingContext = matcher.group(1);
+            return bindingContext;
+        }
+        return null;
     }
 
     /**
