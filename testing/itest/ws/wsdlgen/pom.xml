@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>itest-ws</artifactId>
-        <version>2.0</version>
+        <version>2.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>itest-ws-wsdlgen</artifactId>
@@ -34,19 +34,19 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-base-runtime-pom</artifactId>
             <type>pom</type>
-            <version>2.0</version>
+            <version>2.0.1-SNAPSHOT</version>
         </dependency>
 
        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
-            <version>2.0</version>
+            <version>2.0.1-SNAPSHOT</version>
        </dependency>
        
        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-sdo</artifactId>
-            <version>2.0</version>
+            <version>2.0.1-SNAPSHOT</version>
        </dependency>       
                 
         <dependency>
