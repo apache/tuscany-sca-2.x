@@ -188,10 +188,20 @@
                <exclusion>
                    <groupId>org.apache.santuario</groupId>
                    <artifactId>xmlsec</artifactId>
-               </exclusion> 
+               </exclusion>
+               <exclusion>
+                   <groupId>org.apache.ws.security</groupId>
+                   <artifactId>wss4j</artifactId>
+               </exclusion>
            </exclusions>                     
-        </dependency> 
-        
+        </dependency>
+
+        <dependency>
+           <groupId>org.apache.ws.security</groupId>
+           <artifactId>wss4j</artifactId>
+           <version>1.5.11</version>
+        </dependency>
+
         <!--  replace the Rampart xmlsec with the version Tuscany is using -->
         <dependency>
             <groupId>org.apache.santuario</groupId>
