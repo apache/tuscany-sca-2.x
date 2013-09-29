@@ -1,3 +1,17 @@
+Changes With Apache Tuscany SCA 2.0.1 October 2013
+===================================================
+
+Highlights include:
+
+This is an Apache Tuscany SCA 2.0 maintenance release, which fixes few build issues
+due to corrupted maven jar and replaces json.org dependency with json4j.
+
+A complete list of changes since the previous release can be found with the 
+following SVN command:
+
+  svn log -r 1526672:HEAD https://svn.apache.org/repos/asf/tuscany/sca-java-2.x/tags/2.0.1
+
+
 Changes With Apache Tuscany SCA 2.0 June 2012
 =============================================
 
