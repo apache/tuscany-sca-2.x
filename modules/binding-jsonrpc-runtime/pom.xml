@@ -91,12 +91,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20090211</version>
-        </dependency>
-
         <!-- Explicitly add slf4j so that jabsorb uses the latest versions -->
         <dependency>
             <groupId>org.slf4j</groupId>

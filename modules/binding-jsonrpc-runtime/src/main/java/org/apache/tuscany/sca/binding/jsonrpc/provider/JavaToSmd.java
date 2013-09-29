@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.binding.jsonrpc.provider;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.apache.wink.json4j.JSONArray;
+import org.apache.wink.json4j.JSONObject;
 
 /**
  * Utility class to create a Simple Method Description (SMD) descriptor

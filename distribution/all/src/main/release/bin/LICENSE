@@ -263,7 +263,6 @@ The following components come under Apache Software License 2.0
  jackson-core-asl-1.9.4.jar
  jackson-mapper-asl-1.9.4.jar
  jackson-xc-1.9.4.jar
- jackson-module-json-org-0.9.1.jar
  jettison-1.2.jar
  jetty-6.1.26.jar
  jetty-util-6.1.26.jar
@@ -310,6 +309,7 @@ The following components come under Apache Software License 2.0
  tranql-connector-1.1.jar
  tribes-6.0.26.jar
  wink-common-1.2.0-incubating.jar
+ wink-json4j-1.2.0-incubating.jar
  wink-client-1.2.0-incubating.jar
  wink-client-apache-httpclient-1.2.0-incubating.jar
  wink-server-1.2.0-incubating.jar 
@@ -2230,17 +2230,3 @@ PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
 
 8. By copying, installing or otherwise using Jython, Licensee agrees to be bound by the terms and conditions of this License Agreement.
 ========================================================================================================
-
-The json-20090211.jar includes files under the following licenses: 
-========================================================================================================
-Copyright (c) 2002 JSON.org
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-The Software shall be used for Good, not Evil.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
-========================================================================================================
-

@@ -31,7 +31,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
-import org.json.JSONException;
+import org.apache.wink.json4j.JSONException;
 
 public class JsonRpc20Request extends JsonRpcRequest {
 
