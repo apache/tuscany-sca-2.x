@@ -201,7 +201,7 @@
            <artifactId>wss4j</artifactId>
            <version>1.5.11</version>
         </dependency>
-
+                
         <!--  replace the Rampart xmlsec with the version Tuscany is using -->
         <dependency>
             <groupId>org.apache.santuario</groupId>
