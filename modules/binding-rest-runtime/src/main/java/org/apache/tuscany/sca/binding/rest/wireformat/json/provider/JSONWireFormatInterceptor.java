@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
-import org.json.JSONObject;
+import org.apache.wink.json4j.JSONObject;
 
 /**
  * JSON wire format Interceptor.

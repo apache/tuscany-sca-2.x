@@ -48,9 +48,9 @@ import org.codehaus.jackson.map.util.StdDateFormat;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.codehaus.jackson.xc.XmlAdapterJsonDeserializer;
 import org.codehaus.jackson.xc.XmlAdapterJsonSerializer;
-import org.json.JSONObject;
+import org.apache.wink.json4j.JSONObject;
 
-import com.fasterxml.jackson.module.jsonorg.JsonOrgModule;
+//import com.fasterxml.jackson.module.jsonorg.JsonOrgModule;
 
 /**
  * 
@@ -91,7 +91,7 @@ public class JacksonHelper {
                             StdDeserializerProvider deserializerProvider =
                                 new StdDeserializerProvider(deserializerFactory);
                             mapper = new ObjectMapper();
-                            mapper.registerModule(new JsonOrgModule());
+                            //mapper.registerModule(new JsonOrgModule());
 
                             mapper.setSerializerFactory(serializerFactory);
                             mapper.setDeserializerProvider(deserializerProvider);
@@ -105,7 +105,7 @@ public class JacksonHelper {
         }
         if (mapper == null) {
             mapper = new ObjectMapper();
-            mapper.registerModule(new JsonOrgModule());
+            //mapper.registerModule(new JsonOrgModule());
         }
         // Let's honor the Jackson annotations first
         AnnotationIntrospector primary = new JacksonAnnotationIntrospector();
@@ -202,7 +202,7 @@ public class JacksonHelper {
     }
 
     /**
-     * Read from String into a org.json.JSONObject
+     * Read from String into a org.apache.wink.json4j.JSONObject
      * @param json
      * @return
      */

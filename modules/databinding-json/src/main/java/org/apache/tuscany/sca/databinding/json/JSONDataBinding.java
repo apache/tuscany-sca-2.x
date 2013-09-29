@@ -40,14 +40,14 @@ public class JSONDataBinding extends BaseDataBinding {
     public static final QName ROOT_ELEMENT = new QName(ROOT_NAMESPACE, "root");
 
     public JSONDataBinding() {
-        super(NAME, org.json.JSONObject.class);
+        super(NAME, org.apache.wink.json4j.JSONObject.class);
     }
 
     @Override
     public boolean introspect(DataType type, Operation operation) {
         assert type != null;
         Class cls = type.getPhysical();
-        if (JSONObject.class.isAssignableFrom(cls) || org.json.JSONObject.class.isAssignableFrom(cls)) {
+        if (JSONObject.class.isAssignableFrom(cls) || org.apache.wink.json4j.JSONObject.class.isAssignableFrom(cls)) {
             type.setDataBinding(getName());
             if (type.getLogical() == null) {
                 type.setLogical(XMLType.UNKNOWN);

@@ -26,7 +26,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.json.JSONArray;
+import org.apache.wink.json4j.JSONArray;
 
 /**
  * @version $Rev$ $Date$
@@ -45,7 +45,7 @@ public class JSONHelper {
         JSONObject json = null;
         if (source instanceof JSONObject) {
             json = (JSONObject)source;
-        } else if (source instanceof org.json.JSONObject || source instanceof String) {
+        } else if (source instanceof org.apache.wink.json4j.JSONObject || source instanceof String) {
             json = stringToJettision(source.toString());
         } else if (source instanceof JsonNode) {
             json = stringToJettision(JacksonHelper.toString((JsonNode)source));
@@ -64,20 +64,20 @@ public class JSONHelper {
     }
 
     /**
-     * Convert to org.json.JSONObject
+     * Convert to org.apache.wink.json4j.JSONObject
      * @param source
      * @return
      */
-    public static org.json.JSONObject toJSONOrg(Object source) {
-        org.json.JSONObject json = null;
+    public static org.apache.wink.json4j.JSONObject toJSONOrg(Object source) {
+        org.apache.wink.json4j.JSONObject json = null;
         if (source instanceof JSONObject) {
             try {
-                json = new org.json.JSONObject(((JSONObject)source).toString());
-            } catch (org.json.JSONException e) {
+                json = new org.apache.wink.json4j.JSONObject(((JSONObject)source).toString());
+            } catch (org.apache.wink.json4j.JSONException e) {
                 throw new IllegalArgumentException(e);
             }
-        } else if (source instanceof org.json.JSONObject) {
-            json = (org.json.JSONObject)source;
+        } else if (source instanceof org.apache.wink.json4j.JSONObject) {
+            json = (org.apache.wink.json4j.JSONObject)source;
         }
         return json;
     }
@@ -91,13 +91,13 @@ public class JSONHelper {
             }
         } else {
             if (type == null) {
-                type = org.json.JSONObject.class;
+                type = org.apache.wink.json4j.JSONObject.class;
             }
             try {
                 if (type == JSONArray.class || type.isArray() || Collection.class.isAssignableFrom(type)) {
                     return new JSONArray(json);
                 }
-                return JacksonHelper.MAPPER.readValue(json, org.json.JSONObject.class);
+                return JacksonHelper.MAPPER.readValue(json, org.apache.wink.json4j.JSONObject.class);
             } catch (Exception e) {
                 throw new IllegalArgumentException(e);
             }

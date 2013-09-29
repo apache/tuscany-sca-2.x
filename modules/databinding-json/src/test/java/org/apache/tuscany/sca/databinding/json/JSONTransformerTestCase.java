@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.databinding.json.axiom.JSON2OMElement;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.json.JSONObject;
+import org.apache.wink.json4j.JSONObject;
 import org.junit.Test;
 
 public class JSONTransformerTestCase {

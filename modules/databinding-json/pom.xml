@@ -52,25 +52,13 @@
             <artifactId>jackson-xc</artifactId>
             <version>1.9.4</version>
         </dependency>
-        
+         
         <dependency>
-            <groupId>com.fasterxml</groupId>
-            <artifactId>jackson-module-json-org</artifactId>
-            <version>0.9.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.apache.wink</groupId>
+            <artifactId>wink-json4j</artifactId>
+            <version>1.2.0-incubating</version>
         </dependency>
-        
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20090211</version>
-        </dependency>
-        
+         
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -93,6 +81,10 @@
                 <exclusion>
                     <groupId>stax</groupId>
                     <artifactId>stax-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>stax</groupId>
+                    <artifactId>jsr173</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
