@@ -22,6 +22,6 @@
     xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
     domain="uri:default">
 
-    <contribution location="target/helloworld-withdeps-2.0-SNAPSHOT.zip" startDeployables="true" />
+    <contribution location="target/helloworld-withdeps-2.0.1-SNAPSHOT.zip" startDeployables="true" />
 
 </node>
