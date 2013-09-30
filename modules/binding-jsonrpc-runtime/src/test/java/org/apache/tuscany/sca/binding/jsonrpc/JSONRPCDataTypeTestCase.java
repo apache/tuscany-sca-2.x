@@ -161,7 +161,7 @@ public class JSONRPCDataTypeTestCase {
 
         JSONObject jsonResp = new JSONObject(response.getText());
 
-        Assert.assertEquals(1, jsonResp.getJSONArray("result").getInt(0));
+        Assert.assertEquals("1", jsonResp.getJSONArray("result").getString(0));
     }	
 
 
