@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>itest-nodes</artifactId>
-        <version>2.0.1-SNAPSHOT</version>
+        <version>2.0.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>itest-domains-enpoint-uri</artifactId>
@@ -32,17 +32,17 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-base-runtime</artifactId>
-            <version>2.0.1-SNAPSHOT</version>
+            <version>2.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
-            <version>2.0.1-SNAPSHOT</version>
+            <version>2.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
-            <version>2.0.1-SNAPSHOT</version>
+            <version>2.0.1</version>
         </dependency>
     </dependencies>
     
