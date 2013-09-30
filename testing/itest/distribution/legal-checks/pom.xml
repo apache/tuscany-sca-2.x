@@ -59,14 +59,14 @@
                            <basedir>../../../../distribution/all/target/apache-tuscany-sca-all-${project.version}.dir</basedir>
                            <excludeSubProjects>false</excludeSubProjects>
                            <excludes> 
-                              <exclude>tuscany-sca-2.0/CHANGES</exclude>
+                              <exclude>tuscany-sca-2.0.1/CHANGES</exclude>
                               <exclude>**/MANIFEST.MF</exclude>
                               <exclude>**/DEPENDENCIES</exclude>
                               <exclude>**/target/**/*.log</exclude>
                               <exclude>**/config.ini</exclude>
                               <exclude>**/*.odg</exclude>
                               <exclude>**/*.html</exclude>
-                              <exclude>tuscany-sca-2.0/features/configuration/config.ini</exclude>
+                              <exclude>tuscany-sca-2.0.1/features/configuration/config.ini</exclude>
                               <exclude>../../../../maven/archetypes/policy/src/test/resources/projects/basic/goal.txt</exclude>
                            </excludes>
                         </configuration>
