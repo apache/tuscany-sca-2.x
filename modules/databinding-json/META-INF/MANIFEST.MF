@@ -20,6 +20,7 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.interfacedef;version="2.0.0",
  org.apache.tuscany.sca.interfacedef.impl;version="2.0.0";resolution:=optional,
  org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
+ org.apache.wink.jaon4j,
  org.codehaus.jackson,
  org.codehaus.jackson.map,
  org.codehaus.jackson.map.annotate,
@@ -34,7 +35,6 @@ Import-Package: javax.xml.namespace,
  org.codehaus.jettison.badgerfish,
  org.codehaus.jettison.json,
  org.codehaus.jettison.mapped,
- org.json,
  org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.json
 Bundle-DocURL: http://www.apache.org/
