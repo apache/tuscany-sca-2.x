@@ -241,6 +241,7 @@
             <id>distribution</id>
             <modules>
                 <module>maven/tuscany-maven-plugin</module>
+                <module>maven/tuscany-diagram-plugin</module>
                 <module>modules</module>
                 <module>samples</module>
                 <module>testing/itest</module>
