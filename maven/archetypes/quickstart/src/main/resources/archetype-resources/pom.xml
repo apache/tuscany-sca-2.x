@@ -134,6 +134,6 @@
 	</build>
 	<properties>
 		<tuscany.version>2.5-SNAPSHOT</tuscany.version>
-		<jetty.version>6.1.18</jetty.version>
+		<jetty.version>6.1.23</jetty.version>
 	</properties>
 </project>
