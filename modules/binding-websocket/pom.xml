@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>8.0.1.v20110908</version>
+			<version>10.0.14</version>
 			<scope>compile</scope>
 		</dependency>
 
